@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -11,4 +8,311 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────
+
+enum ContentStatus {
+  draft
+  published
+  archived
+}
+
+enum PersonType {
+  guest
+  host
+  mentioned
+  recurring
+}
+
+enum CanonStatus {
+  canonical
+  speculative
+  community_myth
+  disputed
+  humorous
+}
+
+enum SeriesType {
+  music_video
+  panel
+  tarot
+  story
+  documentary
+  other
+}
+
+enum MediaType {
+  video
+  audio
+  article
+}
+
+// ─── Core Models ─────────────────────────────────────
+
+model Episode {
+  id              String        @id @default(cuid())
+  title           String
+  slug            String        @unique
+  episodeNumber   Int?          @unique
+  airDate         DateTime?
+  duration        String?
+  youtubeVideoId  String?
+  thumbnailUrl    String?
+  summaryShort    String?
+  summaryLong     String?
+  cutOfPsyche     String?
+  transcriptRaw   String?
+  transcriptHtml  String?
+  transcriptJson  Json?
+  searchText      String?
+  status          ContentStatus @default(draft)
+  seriesId        String?
+  series          Series?       @relation(fields: [seriesId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  segments           TranscriptSegment[]
+  quotes             Quote[]
+  guests             EpisodeGuest[]
+  mentionedPeople    EpisodeMentionedPerson[]
+  loreEntries        EpisodeLore[]
+  topics             EpisodeTopic[]
+  relatedFrom        RelatedEpisode[]  @relation("relatedFrom")
+  relatedTo          RelatedEpisode[]  @relation("relatedTo")
+  firstAppearanceOf  Person[]          @relation("firstAppearance")
+  firstMentionOf     LoreEntry[]       @relation("firstMention")
+
+  @@index([airDate])
+  @@index([status])
+}
+
+model Series {
+  id            String        @id @default(cuid())
+  title         String
+  slug          String        @unique
+  description   String?
+  type          SeriesType    @default(other)
+  coverImageUrl String?
+  sortOrder     Int           @default(0)
+  status        ContentStatus @default(draft)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  episodes   Episode[]
+  mediaItems MediaItem[]
+}
+
+model Person {
+  id                       String     @id @default(cuid())
+  displayName              String
+  slug                     String     @unique
+  altNames                 String[]
+  shortBio                 String?
+  loreSummary              String?
+  avatarUrl                String?
+  personType               PersonType @default(guest)
+  searchText               String?
+  firstAppearanceEpisodeId String?
+  firstAppearanceEpisode   Episode?   @relation("firstAppearance", fields: [firstAppearanceEpisodeId], references: [id])
+  createdAt                DateTime   @default(now())
+  updatedAt                DateTime   @updatedAt
+
+  // Relations
+  quotes             Quote[]
+  guestAppearances   EpisodeGuest[]
+  mentions           EpisodeMentionedPerson[]
+  topics             PersonTopic[]
+  loreConnections    PersonLore[]
+  relatedFrom        RelatedPerson[] @relation("relatedPersonFrom")
+  relatedTo          RelatedPerson[] @relation("relatedPersonTo")
+
+  @@index([personType])
+}
+
+model LoreEntry {
+  id                    String      @id @default(cuid())
+  title                 String
+  slug                  String      @unique
+  category              String?
+  summary               String?
+  fullEntry             String?
+  canonStatus           CanonStatus @default(speculative)
+  searchText            String?
+  firstMentionEpisodeId String?
+  firstMentionEpisode   Episode?    @relation("firstMention", fields: [firstMentionEpisodeId], references: [id])
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  // Relations
+  episodes        EpisodeLore[]
+  people          PersonLore[]
+  topics          LoreTopic[]
+  relatedFrom     RelatedLore[] @relation("relatedLoreFrom")
+  relatedTo       RelatedLore[] @relation("relatedLoreTo")
+
+  @@index([canonStatus])
+}
+
+model Topic {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  episodes  EpisodeTopic[]
+  people    PersonTopic[]
+  lore      LoreTopic[]
+}
+
+model Quote {
+  id                   String             @id @default(cuid())
+  text                 String
+  speakerPersonId      String?
+  speaker              Person?            @relation(fields: [speakerPersonId], references: [id])
+  episodeId            String?
+  episode              Episode?           @relation(fields: [episodeId], references: [id])
+  transcriptSegmentId  String?
+  transcriptSegment    TranscriptSegment? @relation(fields: [transcriptSegmentId], references: [id])
+  timestampSeconds     Int?
+  context              String?
+  significance         String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([speakerPersonId])
+  @@index([episodeId])
+}
+
+model TranscriptSegment {
+  id           String   @id @default(cuid())
+  episodeId    String
+  episode      Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  startSeconds Int
+  endSeconds   Int
+  speakerLabel String?
+  text         String
+  searchText   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  quotes Quote[]
+
+  @@index([episodeId])
+  @@index([startSeconds])
+}
+
+model MediaItem {
+  id              String        @id @default(cuid())
+  title           String
+  slug            String        @unique
+  type            MediaType     @default(video)
+  youtubeVideoId  String?
+  transcriptRaw   String?
+  summary         String?
+  seriesId        String?
+  series          Series?       @relation(fields: [seriesId], references: [id])
+  releaseDate     DateTime?
+  durationSeconds Int?
+  status          ContentStatus @default(draft)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([seriesId])
+}
+
+// ─── Join Tables ─────────────────────────────────────
+
+model EpisodeGuest {
+  episodeId String
+  personId  String
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  person    Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@id([episodeId, personId])
+}
+
+model EpisodeMentionedPerson {
+  episodeId String
+  personId  String
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  person    Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@id([episodeId, personId])
+}
+
+model EpisodeLore {
+  episodeId   String
+  loreEntryId String
+  episode     Episode   @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  loreEntry   LoreEntry @relation(fields: [loreEntryId], references: [id], onDelete: Cascade)
+
+  @@id([episodeId, loreEntryId])
+}
+
+model EpisodeTopic {
+  episodeId String
+  topicId   String
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  topic     Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([episodeId, topicId])
+}
+
+model PersonTopic {
+  personId String
+  topicId  String
+  person   Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+  topic    Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([personId, topicId])
+}
+
+model PersonLore {
+  personId    String
+  loreEntryId String
+  person      Person    @relation(fields: [personId], references: [id], onDelete: Cascade)
+  loreEntry   LoreEntry @relation(fields: [loreEntryId], references: [id], onDelete: Cascade)
+
+  @@id([personId, loreEntryId])
+}
+
+model LoreTopic {
+  loreEntryId String
+  topicId     String
+  loreEntry   LoreEntry @relation(fields: [loreEntryId], references: [id], onDelete: Cascade)
+  topic       Topic     @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([loreEntryId, topicId])
+}
+
+model RelatedEpisode {
+  episodeAId String
+  episodeBId String
+  episodeA   Episode @relation("relatedFrom", fields: [episodeAId], references: [id], onDelete: Cascade)
+  episodeB   Episode @relation("relatedTo", fields: [episodeBId], references: [id], onDelete: Cascade)
+
+  @@id([episodeAId, episodeBId])
+}
+
+model RelatedPerson {
+  personAId String
+  personBId String
+  personA   Person @relation("relatedPersonFrom", fields: [personAId], references: [id], onDelete: Cascade)
+  personB   Person @relation("relatedPersonTo", fields: [personBId], references: [id], onDelete: Cascade)
+
+  @@id([personAId, personBId])
+}
+
+model RelatedLore {
+  loreAId String
+  loreBId String
+  loreA   LoreEntry @relation("relatedLoreFrom", fields: [loreAId], references: [id], onDelete: Cascade)
+  loreB   LoreEntry @relation("relatedLoreTo", fields: [loreBId], references: [id], onDelete: Cascade)
+
+  @@id([loreAId, loreBId])
 }
