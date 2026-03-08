@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getEpisodeBySlug } from "@/lib/queries/episodes";
+import { buildMetadata } from "@/lib/seo";
 import { PageShell } from "@/components/ui/page-shell";
 import { SectionCard } from "@/components/ui/section-card";
 import { TerminalPanel } from "@/components/ui/terminal-panel";
@@ -8,19 +9,29 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { formatDate } from "@/lib/format/date";
 import { formatDuration, formatSeconds } from "@/lib/format/duration";
+import type { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const episode = await getEpisodeBySlug(slug);
-  if (!episode) return { title: "Not Found — CultCodex" };
-  return {
-    title: `${episode.title} — CultCodex`,
-    description: episode.summaryShort ?? undefined,
-  };
+
+  if (!episode) {
+    return buildMetadata({
+      title: "Episode Not Found",
+      description: "This episode could not be found.",
+      path: `/episodes/${slug}`,
+    });
+  }
+
+  return buildMetadata({
+    title: episode.title,
+    description: episode.summaryShort || episode.searchText || null,
+    path: `/episodes/${episode.slug}`,
+  });
 }
 
 export default async function EpisodeDetailPage({ params }: PageProps) {

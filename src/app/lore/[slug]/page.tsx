@@ -1,14 +1,35 @@
 import { notFound } from "next/navigation";
 import { getLoreBySlug } from "@/lib/queries/lore";
+import { buildMetadata } from "@/lib/seo";
 import { PageShell } from "@/components/ui/page-shell";
 import { SectionCard } from "@/components/ui/section-card";
 import { MetaRow } from "@/components/ui/meta-row";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { formatDate } from "@/lib/format/date";
+import type { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const entry = await getLoreBySlug(slug);
+
+  if (!entry) {
+    return buildMetadata({
+      title: "Lore Entry Not Found",
+      description: "This lore entry could not be found.",
+      path: `/lore/${slug}`,
+    });
+  }
+
+  return buildMetadata({
+    title: entry.title,
+    description: entry.summary || entry.searchText || null,
+    path: `/lore/${entry.slug}`,
+  });
 }
 
 export default async function LoreDetailPage({ params }: PageProps) {

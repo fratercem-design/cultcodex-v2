@@ -1,14 +1,35 @@
 import { notFound } from "next/navigation";
 import { getPersonBySlug } from "@/lib/queries/people";
+import { buildMetadata } from "@/lib/seo";
 import { PageShell } from "@/components/ui/page-shell";
 import { SectionCard } from "@/components/ui/section-card";
 import { MetaRow } from "@/components/ui/meta-row";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { formatDate } from "@/lib/format/date";
+import type { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const person = await getPersonBySlug(slug);
+
+  if (!person) {
+    return buildMetadata({
+      title: "Person Not Found",
+      description: "This person could not be found.",
+      path: `/people/${slug}`,
+    });
+  }
+
+  return buildMetadata({
+    title: person.displayName,
+    description: person.shortBio || person.searchText || null,
+    path: `/people/${person.slug}`,
+  });
 }
 
 export default async function PersonDetailPage({ params }: PageProps) {
