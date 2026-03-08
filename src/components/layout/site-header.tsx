@@ -32,12 +32,13 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <button
+        <Link
+          href="/search"
           className="font-mono text-xs text-text-muted hover:text-accent-green border border-border rounded px-3 py-1 transition-colors"
           aria-label="Search the archive"
         >
           ⌘K Search
-        </button>
+        </Link>
       </div>
     </header>
   );

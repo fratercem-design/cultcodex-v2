@@ -30,6 +30,19 @@ export async function getLoreEntries(options?: {
   });
 }
 
+export async function getLoreCount(options?: {
+  canon?: CanonStatus;
+  category?: string;
+}) {
+  const { canon, category } = options ?? {};
+  return prisma.loreEntry.count({
+    where: {
+      ...(canon ? { canonStatus: canon } : {}),
+      ...(category ? { category } : {}),
+    },
+  });
+}
+
 export async function getLoreBySlug(slug: string) {
   return prisma.loreEntry.findUnique({
     where: { slug },

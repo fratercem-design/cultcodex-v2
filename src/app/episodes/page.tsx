@@ -1,37 +1,94 @@
 import { PageShell } from "@/components/ui/page-shell";
 import { EpisodeCard } from "@/components/archive/episode-card";
 import { EmptyState } from "@/components/ui/empty-state";
-import { getEpisodes, formatEpisodeForCard, getEpisodeCount } from "@/lib/queries/episodes";
+import { SortFilterBar } from "@/components/archive/sort-filter-bar";
+import { PaginationControls } from "@/components/ui/pagination-controls";
+import {
+  getEpisodes,
+  formatEpisodeForCard,
+  getEpisodeCount,
+} from "@/lib/queries/episodes";
+import {
+  DEFAULT_PAGE_SIZE,
+  parsePage,
+  paginationArgs,
+  buildPaginationMeta,
+} from "@/lib/pagination";
 
 export const metadata = {
-  title: "Episodes — CultCodex",
+  title: "Episodes — CULT CODEX",
   description: "Browse all Cult of Psyche episodes",
 };
 
-export default async function EpisodesPage() {
-  const [episodes, totalCount] = await Promise.all([
-    getEpisodes({ take: 50, orderBy: "episodeNumber", order: "desc" }),
-    getEpisodeCount("published"),
-  ]);
+const SORT_OPTIONS = [
+  { label: "Newest", value: "newest" },
+  { label: "Oldest", value: "oldest" },
+  { label: "A → Z", value: "az" },
+];
 
-  const cards = episodes.map(formatEpisodeForCard);
+interface EpisodesPageProps {
+  searchParams: Promise<{ sort?: string; page?: string }>;
+}
+
+function resolveSort(sort?: string): {
+  orderBy: "episodeNumber" | "airDate";
+  order: "asc" | "desc";
+} {
+  switch (sort) {
+    case "oldest":
+      return { orderBy: "episodeNumber", order: "asc" };
+    case "az":
+      return { orderBy: "episodeNumber", order: "desc" }; // sort client-side
+    default:
+      return { orderBy: "episodeNumber", order: "desc" };
+  }
+}
+
+export default async function EpisodesPage({
+  searchParams,
+}: EpisodesPageProps) {
+  const params = await searchParams;
+  const currentSort = params.sort ?? "newest";
+  const { orderBy, order } = resolveSort(currentSort);
+
+  const totalCount = await getEpisodeCount("published");
+  const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
+  const { skip, take } = paginationArgs(page);
+
+  const episodes = await getEpisodes({ take, skip: skip, orderBy, order });
+  let cards = episodes.map(formatEpisodeForCard);
+
+  if (currentSort === "az") {
+    cards = cards.sort((a, b) => a.title.localeCompare(b.title));
+  }
+
+  const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
   return (
     <PageShell
       title="EPISODES"
       subtitle={`${totalCount} transmissions in the archive`}
     >
+      <SortFilterBar
+        basePath="/episodes"
+        sortOptions={SORT_OPTIONS}
+        currentSort={currentSort}
+      />
+
       {cards.length === 0 ? (
         <EmptyState
           message="No episodes in the archive yet"
           suggestion="Episodes will appear here once data is ingested"
         />
       ) : (
-        <div className="grid gap-3">
-          {cards.map((episode) => (
-            <EpisodeCard key={episode.id} episode={episode} />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-3">
+            {cards.map((episode) => (
+              <EpisodeCard key={episode.id} episode={episode} />
+            ))}
+          </div>
+          <PaginationControls meta={paginationMeta} basePath="/episodes" />
+        </>
       )}
     </PageShell>
   );

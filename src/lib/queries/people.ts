@@ -28,6 +28,12 @@ export async function getPeople(options?: {
   });
 }
 
+export async function getPersonCount(type?: PersonType) {
+  return prisma.person.count({
+    where: type ? { personType: type } : undefined,
+  });
+}
+
 export async function getPersonBySlug(slug: string) {
   return prisma.person.findUnique({
     where: { slug },
