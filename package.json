@@ -8,7 +8,12 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "ingest": "npx tsx scripts/ingest/import-all.ts",
+    "ingest:topics": "npx tsx scripts/ingest/import-topics.ts",
+    "ingest:people": "npx tsx scripts/ingest/import-people.ts",
+    "ingest:lore": "npx tsx scripts/ingest/import-lore.ts",
+    "ingest:episodes": "npx tsx scripts/ingest/import-episodes.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
