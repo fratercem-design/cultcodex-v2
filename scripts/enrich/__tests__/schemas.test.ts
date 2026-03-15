@@ -1,6 +1,6 @@
 // scripts/enrich/__tests__/schemas.test.ts
 import { describe, it, expect } from "vitest";
-import { EnrichmentResultSchema } from "../schemas";
+import { EnrichmentResultSchema, ImportFileSchema } from "../schemas";
 
 describe("EnrichmentResultSchema", () => {
   it("parses a valid enrichment result", () => {
@@ -82,5 +82,24 @@ describe("EnrichmentResultSchema", () => {
       topics: [],
     };
     expect(() => EnrichmentResultSchema.parse(input)).toThrow();
+  });
+});
+
+describe("ImportFileSchema", () => {
+  it("wraps enrichment result with slug", () => {
+    const input = {
+      slug: "the-veil-lifts",
+      data: {
+        summaryShort: "A discussion about tarot.",
+        summaryLong: "In this episode...",
+        cutOfPsyche: "Welcome!",
+        guests: [],
+        quotes: [],
+        lore: [],
+        topics: [],
+      },
+    };
+    const result = ImportFileSchema.parse(input);
+    expect(result.slug).toBe("the-veil-lifts");
   });
 });

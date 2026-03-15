@@ -38,6 +38,12 @@ export const EnrichmentResultSchema = z.object({
   topics: z.array(z.string()),
 });
 
+export const ImportFileSchema = z.object({
+  slug: z.string().min(1),
+  data: EnrichmentResultSchema,
+});
+
+export type ImportFile = z.infer<typeof ImportFileSchema>;
 export type EnrichmentResult = z.infer<typeof EnrichmentResultSchema>;
 export type EnrichedGuest = z.infer<typeof EnrichedGuestSchema>;
 export type EnrichedQuote = z.infer<typeof EnrichedQuoteSchema>;
