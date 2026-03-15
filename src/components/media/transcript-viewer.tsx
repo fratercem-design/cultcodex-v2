@@ -33,7 +33,9 @@ export function TranscriptViewer({ segments, hasVideoEmbed }: TranscriptViewerPr
                 href={`?t=${seg.startSeconds}`}
                 onClick={(e) => {
                   e.preventDefault();
-                  const iframe = document.querySelector("iframe");
+                  const iframe = document.querySelector<HTMLIFrameElement>(
+                    'iframe[src*="youtube-nocookie.com"]'
+                  );
                   if (iframe) {
                     const baseUrl = iframe.src.split("?")[0];
                     iframe.src = `${baseUrl}?start=${seg.startSeconds}&autoplay=1`;
