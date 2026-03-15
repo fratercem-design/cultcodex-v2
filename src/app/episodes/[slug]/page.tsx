@@ -7,6 +7,7 @@ import { TerminalPanel } from "@/components/ui/terminal-panel";
 import { MetaRow } from "@/components/ui/meta-row";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
+import { YouTubeEmbed } from "@/components/media/youtube-embed";
 import { formatDate } from "@/lib/format/date";
 import { formatDuration, formatSeconds } from "@/lib/format/duration";
 import type { Metadata } from "next";
@@ -54,6 +55,14 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main content */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Video embed */}
+          {episode.youtubeVideoId && (
+            <YouTubeEmbed
+              videoId={episode.youtubeVideoId}
+              title={episode.title}
+            />
+          )}
+
           {/* Summary */}
           {episode.summaryLong && (
             <SectionCard title="Summary">
