@@ -17,9 +17,12 @@
     "ingest:topics": "npx tsx scripts/ingest/import-topics.ts",
     "ingest:people": "npx tsx scripts/ingest/import-people.ts",
     "ingest:lore": "npx tsx scripts/ingest/import-lore.ts",
-    "ingest:episodes": "npx tsx scripts/ingest/import-episodes.ts"
+    "ingest:episodes": "npx tsx scripts/ingest/import-episodes.ts",
+    "enrich:episodes": "npx tsx scripts/enrich/enrich-episodes.ts",
+    "enrich:import": "npx tsx scripts/enrich/import-enriched.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
     "@base-ui/react": "^1.2.0",
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
