@@ -80,9 +80,32 @@ async function main() {
   const raw: YouTubeRaw = JSON.parse(readFileSync(RAW_FILE, "utf-8"));
   console.log(`Transforming ${raw.totalVideos} videos...`);
 
-  const episodes: EpisodeRow[] = raw.videos.map((video, index) =>
-    transformVideo(video, index + 1),
+  // Deduplicate titles by appending episode number to duplicates
+  const titleCounts = new Map<string, number>();
+  const dedupedVideos = raw.videos.map((video, index) => {
+    const baseSlug = slugify(video.title);
+    const count = titleCounts.get(baseSlug) || 0;
+    titleCounts.set(baseSlug, count + 1);
+    // If this title has been seen before, append episode number to make it unique
+    if (count > 0) {
+      return { ...video, title: `${video.title} Ep ${index + 1}` };
+    }
+    return video;
+  });
+
+  // Second pass: also fix the first occurrence if its slug has duplicates
+  const slugsWithDupes = new Set(
+    [...titleCounts.entries()].filter(([, c]) => c > 1).map(([s]) => s)
   );
+  const episodes: EpisodeRow[] = dedupedVideos.map((video, index) => {
+    const baseSlug = slugify(video.title);
+    // If original slug (without Ep N suffix) has dupes AND this is the first occurrence
+    // (which wasn't modified in the first pass), fix it too
+    if (slugsWithDupes.has(baseSlug) && video === raw.videos[index]) {
+      return transformVideo({ ...video, title: `${video.title} Ep ${index + 1}` }, index + 1);
+    }
+    return transformVideo(video, index + 1);
+  });
 
   if (!existsSync(INGEST_DATA_DIR))
     mkdirSync(INGEST_DATA_DIR, { recursive: true });
@@ -97,9 +120,17 @@ async function main() {
     );
     const allSegments: IngestTranscriptSegment[] = [];
 
+    // Use the same deduped titles for slug mapping
     const videoIdToSlug = new Map<string, string>();
-    for (const video of raw.videos) {
-      videoIdToSlug.set(video.videoId, slugify(video.title));
+    for (let i = 0; i < dedupedVideos.length; i++) {
+      const video = dedupedVideos[i];
+      const original = raw.videos[i];
+      const baseSlug = slugify(video.title);
+      if (slugsWithDupes.has(slugify(original.title)) && video === original) {
+        videoIdToSlug.set(video.videoId, slugify(`${video.title} Ep ${i + 1}`));
+      } else {
+        videoIdToSlug.set(video.videoId, slugify(video.title));
+      }
     }
 
     for (const file of transcriptFiles) {
