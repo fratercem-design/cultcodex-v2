@@ -8,8 +8,9 @@ import { MetaRow } from "@/components/ui/meta-row";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { YouTubeEmbed } from "@/components/media/youtube-embed";
+import { TranscriptViewer } from "@/components/media/transcript-viewer";
 import { formatDate } from "@/lib/format/date";
-import { formatDuration, formatSeconds } from "@/lib/format/duration";
+import { formatDuration } from "@/lib/format/duration";
 import type { Metadata } from "next";
 
 interface PageProps {
@@ -75,23 +76,10 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
           {/* Transcript segments */}
           {episode.segments.length > 0 && (
             <TerminalPanel header="TRANSCRIPT">
-              <div className="space-y-3 max-h-[600px] overflow-y-auto">
-                {episode.segments.map((seg) => (
-                  <div key={seg.id} className="flex gap-3">
-                    <span className="shrink-0 font-mono text-[10px] text-accent-green/60 w-12 text-right pt-0.5">
-                      {formatSeconds(seg.startSeconds)}
-                    </span>
-                    <div>
-                      {seg.speakerLabel && (
-                        <span className="font-mono text-[10px] text-accent-purple font-bold uppercase">
-                          {seg.speakerLabel}
-                        </span>
-                      )}
-                      <p className="text-sm text-text-primary">{seg.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <TranscriptViewer
+                segments={episode.segments}
+                hasVideoEmbed={!!episode.youtubeVideoId}
+              />
             </TerminalPanel>
           )}
 
