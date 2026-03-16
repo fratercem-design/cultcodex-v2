@@ -30,16 +30,41 @@ export interface SearchResultLore {
   canonStatus: string;
 }
 
+export interface SearchResultTopic {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+}
+
+export interface SearchResultQuote {
+  id: string;
+  text: string;
+  speakerName: string | null;
+  episodeTitle: string | null;
+  episodeSlug: string | null;
+}
+
+export interface SearchFilters {
+  entityTypes?: string[];   // which entity types to search
+  contentType?: string;     // filter episodes by contentType
+  seriesSlug?: string;      // filter episodes by series
+}
+
 export interface GlobalSearchResults {
   query: string;
   episodes: SearchResultEpisode[];
   people: SearchResultPerson[];
   lore: SearchResultLore[];
+  topics: SearchResultTopic[];
+  quotes: SearchResultQuote[];
   totalCount: number;
   /** Total matches per entity type (may exceed SEARCH_LIMIT). */
   episodeTotalCount: number;
   peopleTotalCount: number;
   loreTotalCount: number;
+  topicsTotalCount: number;
+  quotesTotalCount: number;
 }
 
 // ── Global search ───────────────────────────────────────────────────
@@ -48,6 +73,7 @@ const SEARCH_LIMIT = 20;
 
 export async function globalSearch(
   rawQuery: string,
+  filters?: SearchFilters,
 ): Promise<GlobalSearchResults> {
   const query = rawQuery.trim();
 
@@ -57,21 +83,32 @@ export async function globalSearch(
       episodes: [],
       people: [],
       lore: [],
+      topics: [],
+      quotes: [],
       totalCount: 0,
       episodeTotalCount: 0,
       peopleTotalCount: 0,
       loreTotalCount: 0,
+      topicsTotalCount: 0,
+      quotesTotalCount: 0,
     };
   }
 
-  const [episodes, people, lore, episodeTotalCount, peopleTotalCount, loreTotalCount] =
+  const types = filters?.entityTypes;
+  const shouldSearch = (t: string) => !types || types.length === 0 || types.includes(t);
+
+  const [episodes, people, lore, topics, quotes, episodeTotalCount, peopleTotalCount, loreTotalCount, topicsTotalCount, quotesTotalCount] =
     await Promise.all([
-      searchEpisodes(query),
-      searchPeople(query),
-      searchLore(query),
-      countEpisodes(query),
-      countPeople(query),
-      countLore(query),
+      shouldSearch("episodes") ? searchEpisodes(query, filters) : Promise.resolve([] as SearchResultEpisode[]),
+      shouldSearch("people") ? searchPeople(query) : Promise.resolve([] as SearchResultPerson[]),
+      shouldSearch("lore") ? searchLore(query) : Promise.resolve([] as SearchResultLore[]),
+      shouldSearch("topics") ? searchTopics(query) : Promise.resolve([] as SearchResultTopic[]),
+      shouldSearch("quotes") ? searchQuotes(query) : Promise.resolve([] as SearchResultQuote[]),
+      shouldSearch("episodes") ? countEpisodes(query, filters) : Promise.resolve(0),
+      shouldSearch("people") ? countPeople(query) : Promise.resolve(0),
+      shouldSearch("lore") ? countLore(query) : Promise.resolve(0),
+      shouldSearch("topics") ? countTopics(query) : Promise.resolve(0),
+      shouldSearch("quotes") ? countQuotes(query) : Promise.resolve(0),
     ]);
 
   return {
@@ -79,19 +116,23 @@ export async function globalSearch(
     episodes,
     people,
     lore,
-    totalCount: episodeTotalCount + peopleTotalCount + loreTotalCount,
+    topics,
+    quotes,
+    totalCount: episodeTotalCount + peopleTotalCount + loreTotalCount + topicsTotalCount + quotesTotalCount,
     episodeTotalCount,
     peopleTotalCount,
     loreTotalCount,
+    topicsTotalCount,
+    quotesTotalCount,
   };
 }
 
 // ── Per-entity search ───────────────────────────────────────────────
 // Prisma `contains` + `mode: "insensitive"` maps to ILIKE %value%
 
-async function searchEpisodes(query: string): Promise<SearchResultEpisode[]> {
+async function searchEpisodes(query: string, filters?: SearchFilters): Promise<SearchResultEpisode[]> {
   return prisma.episode.findMany({
-    where: episodeWhere(query),
+    where: episodeWhere(query, filters),
     select: {
       id: true, title: true, slug: true, episodeNumber: true,
       airDate: true, summaryShort: true, status: true,
@@ -124,10 +165,39 @@ async function searchLore(query: string): Promise<SearchResultLore[]> {
   });
 }
 
-// ── Count helpers (run in parallel with search) ────────────────────
+async function searchTopics(query: string): Promise<SearchResultTopic[]> {
+  return prisma.topic.findMany({
+    where: topicWhere(query),
+    select: { id: true, title: true, slug: true, description: true },
+    orderBy: { title: "asc" },
+    take: SEARCH_LIMIT,
+  });
+}
 
-function episodeWhere(query: string) {
-  return {
+async function searchQuotes(query: string): Promise<SearchResultQuote[]> {
+  const quotes = await prisma.quote.findMany({
+    where: { text: { contains: query, mode: "insensitive" } },
+    select: {
+      id: true,
+      text: true,
+      speaker: { select: { displayName: true } },
+      episode: { select: { title: true, slug: true } },
+    },
+    take: SEARCH_LIMIT,
+  });
+  return quotes.map((q) => ({
+    id: q.id,
+    text: q.text,
+    speakerName: q.speaker?.displayName ?? null,
+    episodeTitle: q.episode?.title ?? null,
+    episodeSlug: q.episode?.slug ?? null,
+  }));
+}
+
+// ── Where-clause helpers ────────────────────────────────────────────
+
+function episodeWhere(query: string, filters?: SearchFilters) {
+  const where: Record<string, unknown> = {
     status: "published" as const,
     OR: [
       { title: { contains: query, mode: "insensitive" as const } },
@@ -136,6 +206,15 @@ function episodeWhere(query: string) {
       { searchText: { contains: query, mode: "insensitive" as const } },
     ],
   };
+
+  if (filters?.contentType) {
+    where.contentType = filters.contentType;
+  }
+  if (filters?.seriesSlug) {
+    where.series = { slug: filters.seriesSlug };
+  }
+
+  return where;
 }
 
 function personWhere(query: string) {
@@ -160,8 +239,19 @@ function loreWhere(query: string) {
   };
 }
 
-async function countEpisodes(query: string): Promise<number> {
-  return prisma.episode.count({ where: episodeWhere(query) });
+function topicWhere(query: string) {
+  return {
+    OR: [
+      { title: { contains: query, mode: "insensitive" as const } },
+      { description: { contains: query, mode: "insensitive" as const } },
+    ],
+  };
+}
+
+// ── Count helpers (run in parallel with search) ────────────────────
+
+async function countEpisodes(query: string, filters?: SearchFilters): Promise<number> {
+  return prisma.episode.count({ where: episodeWhere(query, filters) });
 }
 
 async function countPeople(query: string): Promise<number> {
@@ -170,4 +260,14 @@ async function countPeople(query: string): Promise<number> {
 
 async function countLore(query: string): Promise<number> {
   return prisma.loreEntry.count({ where: loreWhere(query) });
+}
+
+async function countTopics(query: string): Promise<number> {
+  return prisma.topic.count({ where: topicWhere(query) });
+}
+
+async function countQuotes(query: string): Promise<number> {
+  return prisma.quote.count({
+    where: { text: { contains: query, mode: "insensitive" } },
+  });
 }

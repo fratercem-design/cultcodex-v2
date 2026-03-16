@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { globalSearch } from "@/lib/queries/search";
+import type { SearchFilters } from "@/lib/queries/search";
 import { PageHero } from "@/components/ui/page-hero";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SectionCard } from "@/components/ui/section-card";
@@ -14,13 +15,30 @@ export const metadata: Metadata = {
 };
 
 interface SearchPageProps {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    type?: string;       // comma-separated: episodes,people,lore,topics,quotes
+    contentType?: string; // livestream,original,short,clip
+    series?: string;      // series slug
+  }>;
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const query = params.q ?? "";
-  const results = query ? await globalSearch(query) : null;
+
+  const filters: SearchFilters = {};
+  if (params.type) {
+    filters.entityTypes = params.type.split(",").filter(Boolean);
+  }
+  if (params.contentType) {
+    filters.contentType = params.contentType;
+  }
+  if (params.series) {
+    filters.seriesSlug = params.series;
+  }
+
+  const results = query ? await globalSearch(query, filters) : null;
 
   return (
     <>
@@ -35,9 +53,49 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <SearchInput defaultValue={query} />
       </div>
 
-      {/* No query yet */}
+      {/* Filter bar */}
+      {query && (
+        <div className="mb-6 flex flex-wrap gap-2">
+          {["episodes", "people", "lore", "topics", "quotes"].map((t) => {
+            const currentTypes = params.type?.split(",").filter(Boolean) ?? [];
+            const isActive = currentTypes.length === 0 || currentTypes.includes(t);
+            const newTypes = isActive && currentTypes.length > 0
+              ? currentTypes.filter((ct) => ct !== t)
+              : [...currentTypes, t];
+            const href = `/search?q=${encodeURIComponent(query)}${newTypes.length > 0 && newTypes.length < 5 ? `&type=${newTypes.join(",")}` : ""}`;
+            return (
+              <Link
+                key={t}
+                href={href}
+                className={`rounded-full border px-3 py-1 font-mono text-xs transition-colors ${
+                  isActive
+                    ? "border-accent-green text-accent-green bg-accent-green/10"
+                    : "border-border text-text-muted hover:border-accent-green/50"
+                }`}
+              >
+                {t.charAt(0).toUpperCase() + t.slice(1)}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+
+      {/* No query yet — suggested searches */}
       {!results && (
-        <EmptyState message="Enter a search query above to begin." />
+        <div className="space-y-4">
+          <p className="font-mono text-xs text-text-muted">Popular searches:</p>
+          <div className="flex flex-wrap gap-2">
+            {["tarot reading", "Lilith", "open panel", "Alexandra Mayers", "Cupid and Psyche", "astrology", "trolls", "scary tales", "Psyche Awakens", "mythology"].map((q) => (
+              <Link
+                key={q}
+                href={`/search?q=${encodeURIComponent(q)}`}
+                className="rounded-full border border-border bg-surface px-3 py-1.5 font-mono text-xs text-text-primary transition-colors hover:border-accent-green hover:text-accent-green"
+              >
+                {q}
+              </Link>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Query submitted but zero results */}
@@ -182,6 +240,63 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                         )}
                       </div>
                     </Link>
+                  </li>
+                ))}
+              </ul>
+            </SectionCard>
+          )}
+
+          {/* ── Topics ───────────────────────────── */}
+          {results.topics.length > 0 && (
+            <SectionCard title={`Topics (${results.topicsTotalCount > results.topics.length ? `${results.topics.length} of ${results.topicsTotalCount}` : results.topics.length})`}>
+              <ul className="divide-y divide-border">
+                {results.topics.map((topic) => (
+                  <li key={topic.id}>
+                    <Link
+                      href={`/topics/${topic.slug}`}
+                      className="group flex items-start gap-3 py-3 px-1 transition-colors hover:bg-elevated rounded"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors">
+                          <HighlightMatch text={topic.title} query={query} />
+                        </p>
+                        {topic.description && (
+                          <p className="mt-0.5 text-xs text-text-muted line-clamp-2">
+                            <HighlightMatch text={topic.description} query={query} />
+                          </p>
+                        )}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </SectionCard>
+          )}
+
+          {/* ── Quotes ───────────────────────────── */}
+          {results.quotes.length > 0 && (
+            <SectionCard title={`Quotes (${results.quotesTotalCount > results.quotes.length ? `${results.quotes.length} of ${results.quotesTotalCount}` : results.quotes.length})`}>
+              <ul className="divide-y divide-border">
+                {results.quotes.map((quote) => (
+                  <li key={quote.id} className="py-3 px-1">
+                    <blockquote className="border-l-2 border-accent-gold/50 pl-4">
+                      <p className="text-sm text-text-primary italic">
+                        &ldquo;<HighlightMatch text={quote.text} query={query} />&rdquo;
+                      </p>
+                      <div className="mt-1 flex items-center gap-2 font-mono text-xs text-text-muted">
+                        {quote.speakerName && (
+                          <span className="text-accent-gold">— {quote.speakerName}</span>
+                        )}
+                        {quote.episodeSlug && quote.episodeTitle && (
+                          <Link
+                            href={`/episodes/${quote.episodeSlug}`}
+                            className="hover:text-accent-green transition-colors"
+                          >
+                            in {quote.episodeTitle}
+                          </Link>
+                        )}
+                      </div>
+                    </blockquote>
                   </li>
                 ))}
               </ul>
