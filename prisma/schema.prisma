@@ -48,6 +48,13 @@ enum MediaType {
   article
 }
 
+enum ContentType {
+  livestream
+  original
+  short
+  clip
+}
+
 // ─── Core Models ─────────────────────────────────────
 
 model Episode {
@@ -67,6 +74,7 @@ model Episode {
   transcriptJson  Json?
   searchText      String?
   status          ContentStatus @default(draft)
+  contentType     ContentType   @default(original)
   seriesId        String?
   series          Series?       @relation(fields: [seriesId], references: [id])
   createdAt       DateTime      @default(now())
