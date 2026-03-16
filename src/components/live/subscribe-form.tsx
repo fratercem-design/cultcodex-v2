@@ -92,7 +92,7 @@ export function SubscribeForm() {
 
   return (
     <div className="rounded-lg border border-border bg-surface p-6">
-      <h3 className="mb-1 font-mono text-sm font-bold text-[#ffd700]">
+      <h3 className="mb-1 font-mono text-sm font-bold text-accent-gold">
         GET NOTIFIED WHEN WE GO LIVE
       </h3>
       <p className="mb-4 font-mono text-xs text-text-muted">
@@ -105,14 +105,14 @@ export function SubscribeForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
-          className="flex-1 rounded border border-border bg-void px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted/50 focus:border-[#ffd700]/50 focus:outline-none focus:ring-1 focus:ring-[#ffd700]/30"
+          className="flex-1 rounded border border-border bg-void px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted/50 focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30"
           required
           disabled={status === "loading" || status === "success"}
         />
         <button
           type="submit"
           disabled={status === "loading" || status === "success"}
-          className="rounded border border-[#ffd700] bg-[#ffd700]/10 px-4 py-2 font-mono text-xs font-bold text-[#ffd700] transition hover:bg-[#ffd700]/20 disabled:opacity-50"
+          className="rounded border border-accent-gold bg-accent-gold/10 px-4 py-2 font-mono text-xs font-bold text-accent-gold transition hover:bg-accent-gold/20 disabled:opacity-50"
         >
           {status === "loading"
             ? "..."
@@ -134,7 +134,7 @@ export function SubscribeForm() {
         <button
           onClick={handleEnablePush}
           disabled={pushStatus === "loading" || pushStatus === "granted"}
-          className="w-full rounded border border-[#00d9ff]/30 bg-[#00d9ff]/5 px-4 py-2 font-mono text-xs text-[#00d9ff] transition hover:bg-[#00d9ff]/10 disabled:opacity-50"
+          className="w-full rounded border border-accent-cyan/30 bg-accent-cyan/5 px-4 py-2 font-mono text-xs text-accent-cyan transition hover:bg-accent-cyan/10 disabled:opacity-50"
         >
           {pushStatus === "loading"
             ? "Enabling..."

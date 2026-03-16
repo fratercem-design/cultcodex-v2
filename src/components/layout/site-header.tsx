@@ -24,7 +24,7 @@ export function SiteHeader() {
             alt="CultCodex"
             width={28}
             height={28}
-            className="rounded-full border border-[#ffd700]/50"
+            className="rounded-full border border-accent-gold/50"
           />
           CULTCODEX
         </Link>

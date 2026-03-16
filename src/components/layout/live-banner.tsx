@@ -33,19 +33,19 @@ export function LiveBanner() {
   return (
     <Link
       href="/live"
-      className="relative z-[60] flex items-center justify-center gap-2 bg-gradient-to-r from-[#1a0033] via-[#2d0050] to-[#1a0033] border-b border-[#ffd700]/30 px-4 py-2 transition-colors hover:from-[#2d0050] hover:via-[#3d0070] hover:to-[#2d0050]"
+      className="relative z-[60] flex items-center justify-center gap-2 bg-gradient-to-r from-surface via-elevated to-surface border-b border-accent-gold/30 px-4 py-2 transition-colors hover:from-elevated hover:via-elevated hover:to-elevated"
     >
       <span className="relative flex h-2.5 w-2.5">
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
         <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
       </span>
-      <span className="font-mono text-xs font-bold tracking-wider text-[#ffd700]">
+      <span className="font-mono text-xs font-bold tracking-wider text-accent-gold">
         LIVE NOW
       </span>
-      <span className="hidden sm:inline font-mono text-xs text-[#00d9ff]">
+      <span className="hidden sm:inline font-mono text-xs text-accent-cyan">
         — {status.title ?? "Watch the stream"} →
       </span>
-      <span className="sm:hidden font-mono text-xs text-[#00d9ff]">→</span>
+      <span className="sm:hidden font-mono text-xs text-accent-cyan">→</span>
     </Link>
   );
 }

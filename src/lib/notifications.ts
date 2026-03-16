@@ -83,13 +83,13 @@ function buildEmailHtml(title: string, videoId: string): string {
 <body style="margin:0;padding:0;background:#0a0a0a;color:#e8e8e8;font-family:monospace;">
   <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
     <div style="text-align:center;margin-bottom:30px;">
-      <img src="https://cultcodex.me/logo.jpg" alt="Cult of Psyche" width="80" height="80" style="border-radius:50%;border:2px solid #ffd700;" />
+      <img src="https://cultcodex.me/logo.jpg" alt="Cult of Psyche" width="80" height="80" style="border-radius:50%;border:2px solid #C8A96B;" />
     </div>
-    <div style="text-align:center;padding:20px;background:#1a0033;border:1px solid #ffd700;border-radius:8px;">
+    <div style="text-align:center;padding:20px;background:#12131A;border:1px solid #C8A96B;border-radius:8px;">
       <div style="font-size:12px;color:#ff4444;letter-spacing:3px;margin-bottom:8px;">● LIVE NOW</div>
-      <h1 style="color:#ffd700;font-size:22px;margin:0 0 12px;">${title}</h1>
-      <p style="color:#00d9ff;font-size:13px;margin:0 0 24px;">The stream is live on Cult of Psyche</p>
-      <a href="https://cultcodex.me/live" style="display:inline-block;padding:12px 32px;background:#ffd700;color:#0a0a0a;text-decoration:none;font-weight:bold;font-size:14px;border-radius:4px;">
+      <h1 style="color:#C8A96B;font-size:22px;margin:0 0 12px;">${title}</h1>
+      <p style="color:#5DB7D8;font-size:13px;margin:0 0 24px;">The stream is live on Cult of Psyche</p>
+      <a href="https://cultcodex.me/live" style="display:inline-block;padding:12px 32px;background:#C8A96B;color:#0a0a0a;text-decoration:none;font-weight:bold;font-size:14px;border-radius:4px;">
         Watch Now →
       </a>
     </div>

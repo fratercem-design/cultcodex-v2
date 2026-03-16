@@ -8,7 +8,7 @@ export function LivePlayer({ videoId }: LivePlayerProps) {
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_400px]">
       {/* Video */}
-      <div className="aspect-video w-full overflow-hidden rounded-lg border border-[#ffd700]/20">
+      <div className="aspect-video w-full overflow-hidden rounded-lg border border-accent-gold/20">
         <iframe
           src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
           className="h-full w-full"
@@ -20,7 +20,7 @@ export function LivePlayer({ videoId }: LivePlayerProps) {
       {/* Chat */}
       <div className="flex flex-col overflow-hidden rounded-lg border border-border bg-surface">
         <div className="border-b border-border px-4 py-2">
-          <p className="font-mono text-xs font-bold text-[#ffd700]">
+          <p className="font-mono text-xs font-bold text-accent-gold">
             LIVE CHAT
           </p>
         </div>

@@ -27,31 +27,31 @@ export default async function HomePage() {
           priority
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-[#1a0033]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-void" />
         <div className="relative z-10 flex flex-col items-center gap-4 px-4 text-center">
           <Image
             src="/logo.jpg"
             alt="Cult of Psyche"
             width={120}
             height={120}
-            className="rounded-full border-2 border-[#ffd700] shadow-lg shadow-[#ffd700]/20"
+            className="rounded-full border-2 border-accent-gold shadow-lg shadow-accent-gold/20"
           />
-          <h1 className="font-serif text-4xl font-bold tracking-tight text-[#ffd700] drop-shadow-lg md:text-5xl">
+          <h1 className="font-display text-4xl font-bold tracking-tight text-accent-gold drop-shadow-lg md:text-5xl">
             Cult of Psyche
           </h1>
-          <p className="max-w-lg font-mono text-sm text-[#00d9ff]">
+          <p className="max-w-lg font-mono text-sm text-accent-cyan">
             The sacred intelligence terminal &mdash; 1,000+ episodes archived
           </p>
           <div className="mt-2 flex gap-3">
             <Link
               href="/episodes"
-              className="rounded border border-[#ffd700] px-4 py-2 font-mono text-xs text-[#ffd700] transition hover:bg-[#ffd700]/10"
+              className="rounded border border-accent-gold px-4 py-2 font-mono text-xs text-accent-gold transition hover:bg-accent-gold/10"
             >
               Browse Episodes
             </Link>
             <Link
               href="/search"
-              className="rounded border border-[#00d9ff] px-4 py-2 font-mono text-xs text-[#00d9ff] transition hover:bg-[#00d9ff]/10"
+              className="rounded border border-accent-cyan px-4 py-2 font-mono text-xs text-accent-cyan transition hover:bg-accent-cyan/10"
             >
               Search Archive
             </Link>
