@@ -1,4 +1,4 @@
-import { PageShell } from "@/components/ui/page-shell";
+import { PageHero } from "@/components/ui/page-hero";
 import { TopicCard } from "@/components/archive/topic-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
@@ -45,10 +45,13 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
   return (
-    <PageShell
+    <>
+    <PageHero
       title="TOPICS"
       subtitle="Key themes and recurring subjects"
-    >
+      backgroundImage="/long-form-background.jpg"
+    />
+    <main className="mx-auto max-w-7xl px-4 py-8">
       <SortFilterBar
         basePath="/topics"
         sortOptions={SORT_OPTIONS}
@@ -77,6 +80,7 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
           <PaginationControls meta={paginationMeta} basePath="/topics" />
         </>
       )}
-    </PageShell>
+    </main>
+    </>
   );
 }

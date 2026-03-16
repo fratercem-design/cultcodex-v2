@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { globalSearch } from "@/lib/queries/search";
-import { PageShell } from "@/components/ui/page-shell";
+import { PageHero } from "@/components/ui/page-hero";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SectionCard } from "@/components/ui/section-card";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -23,7 +23,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const results = query ? await globalSearch(query) : null;
 
   return (
-    <PageShell title="SEARCH" subtitle="Query the archive">
+    <>
+    <PageHero
+      title="SEARCH"
+      subtitle="Query the archive"
+      backgroundImage="/search-database-background.jpg"
+    />
+    <main className="mx-auto max-w-7xl px-4 py-8">
       {/* Search input */}
       <div className="mb-8">
         <SearchInput defaultValue={query} />
@@ -183,7 +189,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           )}
         </div>
       )}
-    </PageShell>
+    </main>
+    </>
   );
 }
 

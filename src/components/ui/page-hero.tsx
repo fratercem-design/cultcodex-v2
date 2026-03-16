@@ -1,0 +1,30 @@
+import Image from "next/image";
+
+interface PageHeroProps {
+  title: string;
+  subtitle?: string;
+  backgroundImage: string;
+}
+
+export function PageHero({ title, subtitle, backgroundImage }: PageHeroProps) {
+  return (
+    <section className="relative flex min-h-[200px] items-end overflow-hidden">
+      <Image
+        src={backgroundImage}
+        alt=""
+        fill
+        priority
+        className="object-cover"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1a0033] via-black/60 to-black/40" />
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-6">
+        <h1 className="font-mono text-2xl font-bold tracking-tight text-[#ffd700] drop-shadow-md">
+          {title}
+        </h1>
+        {subtitle && (
+          <p className="mt-1 font-mono text-sm text-[#00d9ff]">{subtitle}</p>
+        )}
+      </div>
+    </section>
+  );
+}

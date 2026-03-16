@@ -1,4 +1,4 @@
-import { PageShell } from "@/components/ui/page-shell";
+import { PageHero } from "@/components/ui/page-hero";
 import { EpisodeCard } from "@/components/archive/episode-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
@@ -65,10 +65,13 @@ export default async function EpisodesPage({
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
   return (
-    <PageShell
+    <>
+    <PageHero
       title="EPISODES"
       subtitle={`${totalCount} transmissions in the archive`}
-    >
+      backgroundImage="/articles-bacgkground.jpg"
+    />
+    <main className="mx-auto max-w-7xl px-4 py-8">
       <SortFilterBar
         basePath="/episodes"
         sortOptions={SORT_OPTIONS}
@@ -90,6 +93,7 @@ export default async function EpisodesPage({
           <PaginationControls meta={paginationMeta} basePath="/episodes" />
         </>
       )}
-    </PageShell>
+    </main>
+    </>
   );
 }

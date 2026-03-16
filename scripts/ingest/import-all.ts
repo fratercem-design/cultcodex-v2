@@ -3,7 +3,7 @@ import { execSync } from "child_process";
 import { existsSync } from "fs";
 import { resolve, dirname } from "path";
 
-const scriptDir = dirname(new URL(import.meta.url).pathname).replace(/^\/([A-Z]:)/, "$1");
+const scriptDir = decodeURIComponent(dirname(new URL(import.meta.url).pathname)).replace(/^\/([A-Z]:)/, "$1");
 
 function run(script: string, dataFile: string) {
   const fullScript = resolve(scriptDir, script);

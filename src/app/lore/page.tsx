@@ -1,4 +1,4 @@
-import { PageShell } from "@/components/ui/page-shell";
+import { PageHero } from "@/components/ui/page-hero";
 import { LoreCard } from "@/components/archive/lore-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
@@ -58,10 +58,13 @@ export default async function LorePage({ searchParams }: LorePageProps) {
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
   return (
-    <PageShell
+    <>
+    <PageHero
       title="LORE ARCHIVE"
       subtitle="Concepts, doctrines, myths, and memes"
-    >
+      backgroundImage="/lore-header.jpg"
+    />
+    <main className="mx-auto max-w-7xl px-4 py-8">
       <SortFilterBar
         basePath="/lore"
         sortOptions={SORT_OPTIONS}
@@ -92,6 +95,7 @@ export default async function LorePage({ searchParams }: LorePageProps) {
           <PaginationControls meta={paginationMeta} basePath="/lore" />
         </>
       )}
-    </PageShell>
+    </main>
+    </>
   );
 }

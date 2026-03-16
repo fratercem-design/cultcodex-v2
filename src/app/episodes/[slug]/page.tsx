@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getEpisodeBySlug } from "@/lib/queries/episodes";
 import { buildMetadata } from "@/lib/seo";
-import { PageShell } from "@/components/ui/page-shell";
+import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import { TerminalPanel } from "@/components/ui/terminal-panel";
 import { MetaRow } from "@/components/ui/meta-row";
@@ -47,12 +47,15 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
     : null;
 
   return (
-    <PageShell
+    <>
+    <PageHero
       title={episode.title}
       subtitle={[epNum, formatDate(episode.airDate), formatDuration(episode.duration)]
         .filter(Boolean)
         .join(" \u00b7 ")}
-    >
+      backgroundImage="/wiki-page-header.jpg"
+    />
+    <main className="mx-auto max-w-7xl px-4 py-8">
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main content */}
         <div className="lg:col-span-2 space-y-6">
@@ -162,6 +165,7 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
           </SectionCard>
         </div>
       </div>
-    </PageShell>
+    </main>
+    </>
   );
 }

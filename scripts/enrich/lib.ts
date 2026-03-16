@@ -1,5 +1,6 @@
 // scripts/enrich/lib.ts
-import "dotenv/config";
+import { config } from "dotenv";
+config({ override: true });
 import Anthropic from "@anthropic-ai/sdk";
 import { EnrichmentResultSchema, type EnrichmentResult } from "./schemas";
 
@@ -104,7 +105,7 @@ export async function enrichEpisode(
   input: UserMessageInput
 ): Promise<EnrichmentResult> {
   const client = getClient();
-  const model = process.env.ENRICHMENT_MODEL ?? "claude-sonnet-4-6-20250514";
+  const model = process.env.ENRICHMENT_MODEL ?? "claude-sonnet-4-20250514";
 
   const response = await client.messages.create({
     model,

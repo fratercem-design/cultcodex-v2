@@ -1,4 +1,4 @@
-import { PageShell } from "@/components/ui/page-shell";
+import { PageHero } from "@/components/ui/page-hero";
 import { PersonCard } from "@/components/archive/person-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
@@ -59,10 +59,13 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
   return (
-    <PageShell
+    <>
+    <PageHero
       title="PEOPLE"
       subtitle="Guests, hosts, and figures of the archive"
-    >
+      backgroundImage="/wiki-page-header.jpg"
+    />
+    <main className="mx-auto max-w-7xl px-4 py-8">
       <SortFilterBar
         basePath="/people"
         sortOptions={SORT_OPTIONS}
@@ -94,6 +97,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
           <PaginationControls meta={paginationMeta} basePath="/people" />
         </>
       )}
-    </PageShell>
+    </main>
+    </>
   );
 }

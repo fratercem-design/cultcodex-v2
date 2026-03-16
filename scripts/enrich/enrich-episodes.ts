@@ -118,12 +118,17 @@ async function main() {
       );
       success++;
 
-      // Rate limit: 1 request per second
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Rate limit: wait 45s to stay under 30k input tokens/min
+      await new Promise((resolve) => setTimeout(resolve, 45000));
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       log(`  FAILED ${ep.slug}: ${msg}`);
       failures++;
+      // Wait 60s after rate limit errors before retrying
+      if (msg.includes('429')) {
+        log('  Rate limited — waiting 60s...');
+        await new Promise((resolve) => setTimeout(resolve, 60000));
+      }
     }
   }
 

@@ -1,9 +1,25 @@
+import Image from "next/image";
+
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-void py-8">
-      <div className="mx-auto max-w-7xl px-4">
-        <div className="flex flex-col items-center gap-2 text-center">
-          <p className="font-mono text-xs text-text-muted">
+    <footer className="relative border-t border-border overflow-hidden py-10">
+      <Image
+        src="/footer-artwork.jpg"
+        alt=""
+        fill
+        className="object-cover opacity-20"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1a0033] to-transparent" />
+      <div className="relative z-10 mx-auto max-w-7xl px-4">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <Image
+            src="/codex-seal-stamp-mark.jpg"
+            alt="Codex Seal"
+            width={48}
+            height={48}
+            className="rounded-full border border-[#ffd700]/30 opacity-80"
+          />
+          <p className="font-mono text-xs text-[#ffd700]">
             CULT OF PSYCHE — MATRIX ARCHIVE
           </p>
           <p className="font-mono text-[10px] text-text-muted/50">

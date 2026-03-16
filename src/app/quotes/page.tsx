@@ -1,4 +1,4 @@
-import { PageShell } from "@/components/ui/page-shell";
+import { PageHero } from "@/components/ui/page-hero";
 import { QuoteCard } from "@/components/archive/quote-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PaginationControls } from "@/components/ui/pagination-controls";
@@ -30,14 +30,17 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
   return (
-    <PageShell
+    <>
+    <PageHero
       title="QUOTES"
       subtitle={
         totalCount > 0
           ? `${totalCount} notable quotes from the archive`
           : "Notable quotes from the archive"
       }
-    >
+      backgroundImage="/long-form-background.jpg"
+    />
+    <main className="mx-auto max-w-7xl px-4 py-8">
       {quotes.length === 0 ? (
         <EmptyState
           message="No quotes archived yet"
@@ -53,6 +56,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
           <PaginationControls meta={paginationMeta} basePath="/quotes" />
         </>
       )}
-    </PageShell>
+    </main>
+    </>
   );
 }
