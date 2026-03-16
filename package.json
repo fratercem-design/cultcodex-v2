@@ -19,7 +19,8 @@
     "ingest:lore": "npx tsx scripts/ingest/import-lore.ts",
     "ingest:episodes": "npx tsx scripts/ingest/import-episodes.ts",
     "enrich:episodes": "npx tsx scripts/enrich/enrich-episodes.ts",
-    "enrich:import": "npx tsx scripts/enrich/import-enriched.ts"
+    "enrich:import": "npx tsx scripts/enrich/import-enriched.ts",
+    "enrich:pipeline": "npx dotenvx run -- npx tsx scripts/enrich/full-pipeline.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

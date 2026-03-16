@@ -96,6 +96,12 @@ async function main() {
       const segments = JSON.parse(fs.readFileSync(transcriptPath, "utf-8"));
       const transcriptText = buildTranscriptText(segments);
 
+      // Truncate very long transcripts to ~150k tokens (~600k chars)
+      const MAX_CHARS = 600_000;
+      const truncatedTranscript = transcriptText.length > MAX_CHARS
+        ? transcriptText.slice(0, MAX_CHARS) + "\n\n[TRANSCRIPT TRUNCATED — original was " + transcriptText.length + " chars]"
+        : transcriptText;
+
       const video = videos.find((v) => v.videoId === ep.youtubeVideoId);
       const description = video?.description ?? "";
       const airDate = video?.publishedAt?.split("T")[0] ?? "";
@@ -108,7 +114,7 @@ async function main() {
         episodeNumber: ep.episodeNumber ?? 0,
         airDate,
         description,
-        transcript: transcriptText,
+        transcript: truncatedTranscript,
       });
 
       const outPath = path.join(DATA_DIR, `${ep.slug}.json`);
