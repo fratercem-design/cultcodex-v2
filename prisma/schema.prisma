@@ -316,3 +316,25 @@ model RelatedLore {
 
   @@id([loreAId, loreBId])
 }
+
+// ─── Live Stream ────────────────────────────────────
+
+model LiveStatus {
+  id        String    @id @default("singleton")
+  isLive    Boolean   @default(false)
+  videoId   String?
+  title     String?
+  startedAt DateTime?
+  endedAt   DateTime?
+  updatedAt DateTime  @updatedAt
+}
+
+model Subscriber {
+  id               String   @id @default(cuid())
+  email            String?  @unique
+  pushSubscription Json?
+  verified         Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  @@index([email])
+}

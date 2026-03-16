@@ -1,6 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const navItems = [
+  { label: "Live", href: "/live" },
   { label: "Episodes", href: "/episodes" },
   { label: "People", href: "/people" },
   { label: "Lore", href: "/lore" },
@@ -15,8 +17,15 @@ export function SiteHeader() {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         <Link
           href="/"
-          className="font-mono text-sm font-bold tracking-widest text-accent-green"
+          className="flex items-center gap-2 font-mono text-sm font-bold tracking-widest text-accent-green"
         >
+          <Image
+            src="/logo.jpg"
+            alt="CultCodex"
+            width={28}
+            height={28}
+            className="rounded-full border border-[#ffd700]/50"
+          />
           CULTCODEX
         </Link>
 
