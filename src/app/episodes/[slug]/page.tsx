@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getEpisodeBySlug } from "@/lib/queries/episodes";
+import { getEpisodeBySlug, getRelatedEpisodes } from "@/lib/queries/episodes";
 import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
@@ -11,6 +11,7 @@ import { YouTubeEmbed } from "@/components/media/youtube-embed";
 import { TranscriptViewer } from "@/components/media/transcript-viewer";
 import { formatDate } from "@/lib/format/date";
 import { formatDuration } from "@/lib/format/duration";
+import Link from "next/link";
 import type { Metadata } from "next";
 
 interface PageProps {
@@ -42,12 +43,25 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
 
   if (!episode) notFound();
 
+  const relatedEpisodes = await getRelatedEpisodes(episode.id, { limit: 6 });
+
   const epNum = episode.episodeNumber
     ? `EP.${String(episode.episodeNumber).padStart(3, "0")}`
     : null;
 
   return (
     <>
+    {episode.series && (
+      <nav className="mx-auto max-w-7xl px-4 pt-4">
+        <ol className="flex items-center gap-2 font-mono text-xs text-text-muted">
+          <li><Link href="/series" className="hover:text-accent-green transition-colors">Series</Link></li>
+          <li>/</li>
+          <li><Link href={`/series/${episode.series.slug}`} className="hover:text-accent-green transition-colors">{episode.series.title}</Link></li>
+          <li>/</li>
+          <li className="text-text-primary">{epNum ?? episode.title}</li>
+        </ol>
+      </nav>
+    )}
     <PageHero
       title={episode.title}
       subtitle={[epNum, formatDate(episode.airDate), formatDuration(episode.duration)]
@@ -65,6 +79,28 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
               videoId={episode.youtubeVideoId}
               title={episode.title}
             />
+          )}
+
+          {/* Watch on YouTube CTA */}
+          {episode.youtubeVideoId && (
+            <a
+              href={`https://www.youtube.com/watch?v=${episode.youtubeVideoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded border border-red-500/30 bg-red-500/10 px-4 py-2 font-mono text-xs text-red-400 transition hover:bg-red-500/20"
+            >
+              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><path fill="#fff" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              Watch on YouTube
+            </a>
+          )}
+
+          {/* Short synopsis */}
+          {episode.summaryShort && (
+            <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-4">
+              <p className="text-sm text-text-primary leading-relaxed font-medium">
+                {episode.summaryShort}
+              </p>
+            </div>
           )}
 
           {/* Summary */}
@@ -108,6 +144,35 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
               </div>
             </SectionCard>
           )}
+
+          {/* Related episodes */}
+          {relatedEpisodes.length > 0 && (
+            <section className="mt-8">
+              <SectionCard title="Related Episodes">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {relatedEpisodes.map((ep) => (
+                    <Link
+                      key={ep.id}
+                      href={`/episodes/${ep.slug}`}
+                      className="group block rounded-lg border border-border bg-surface p-3 transition-colors hover:border-accent-green/30 hover:bg-elevated"
+                    >
+                      {ep.episodeNumber != null && (
+                        <span className="font-mono text-[10px] text-accent-green font-bold">
+                          EP.{String(ep.episodeNumber).padStart(3, "0")}
+                        </span>
+                      )}
+                      <h4 className="mt-1 text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors line-clamp-2">
+                        {ep.title}
+                      </h4>
+                      {ep.summaryShort && (
+                        <p className="mt-1 text-xs text-text-muted line-clamp-2">{ep.summaryShort}</p>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              </SectionCard>
+            </section>
+          )}
         </div>
 
         {/* Sidebar */}
@@ -122,6 +187,17 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
                 label="Status"
                 value={<StatusBadge label={episode.status} variant="green" />}
               />
+              {episode.contentType && episode.contentType !== "original" && (
+                <MetaRow
+                  label="Type"
+                  value={
+                    <StatusBadge
+                      label={episode.contentType.toUpperCase()}
+                      variant={episode.contentType === "livestream" ? "purple" : "muted"}
+                    />
+                  }
+                />
+              )}
               {episode.series && (
                 <MetaRow label="Series" value={episode.series.title} />
               )}
