@@ -1,9 +1,11 @@
 import { PageHero } from "@/components/ui/page-hero";
+import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { TopicCard } from "@/components/archive/topic-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { getTopics, getTopicCount } from "@/lib/queries/topics";
+import { getTopicAggregates } from "@/lib/queries/stats";
 import {
   DEFAULT_PAGE_SIZE,
   parsePage,
@@ -29,7 +31,10 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
   const params = await searchParams;
   const currentSort = params.sort ?? "az";
 
-  const totalCount = await getTopicCount();
+  const [totalCount, aggregates] = await Promise.all([
+    getTopicCount(),
+    getTopicAggregates(),
+  ]);
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
@@ -44,6 +49,11 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
+  const glanceItems = [
+    { icon: "\uD83C\uDFF7\uFE0F", label: `${aggregates.total} topics` },
+    ...(aggregates.linkedEpisodes > 0 ? [{ icon: "\uD83D\uDD17", label: `${aggregates.linkedEpisodes} episode links` }] : []),
+  ];
+
   return (
     <>
     <PageHero
@@ -51,6 +61,7 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
       subtitle="Key themes and recurring subjects"
       backgroundImage="/long-form-background.jpg"
     />
+    <EntityGlanceBar items={glanceItems} />
     <main className="mx-auto max-w-7xl px-4 py-8">
       <SortFilterBar
         basePath="/topics"

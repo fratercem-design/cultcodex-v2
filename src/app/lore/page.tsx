@@ -1,9 +1,11 @@
 import { PageHero } from "@/components/ui/page-hero";
+import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { LoreCard } from "@/components/archive/lore-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { getLoreEntries, getLoreCount } from "@/lib/queries/lore";
+import { getLoreAggregates } from "@/lib/queries/stats";
 import {
   DEFAULT_PAGE_SIZE,
   parsePage,
@@ -42,7 +44,10 @@ export default async function LorePage({ searchParams }: LorePageProps) {
       ? (currentFilter as CanonStatus)
       : undefined;
 
-  const totalCount = await getLoreCount({ canon: canonFilter });
+  const [totalCount, aggregates] = await Promise.all([
+    getLoreCount({ canon: canonFilter }),
+    getLoreAggregates(),
+  ]);
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
@@ -57,6 +62,13 @@ export default async function LorePage({ searchParams }: LorePageProps) {
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
+  const glanceItems = [
+    { icon: "\uD83D\uDCDC", label: `${aggregates.total} lore entries` },
+    ...(aggregates.canonical > 0 ? [{ icon: "\uD83D\uDFE1", label: `${aggregates.canonical} canonical` }] : []),
+    ...(aggregates.speculative > 0 ? [{ icon: "\uD83D\uDFE3", label: `${aggregates.speculative} speculative` }] : []),
+    ...(aggregates.communityMyth > 0 ? [{ icon: "\uD83D\uDFE2", label: `${aggregates.communityMyth} community myth${aggregates.communityMyth !== 1 ? "s" : ""}` }] : []),
+  ];
+
   return (
     <>
     <PageHero
@@ -64,6 +76,7 @@ export default async function LorePage({ searchParams }: LorePageProps) {
       subtitle="Concepts, doctrines, myths, and memes"
       backgroundImage="/lore-header.jpg"
     />
+    <EntityGlanceBar items={glanceItems} />
     <main className="mx-auto max-w-7xl px-4 py-8">
       <SortFilterBar
         basePath="/lore"

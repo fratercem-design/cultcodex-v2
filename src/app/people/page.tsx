@@ -1,9 +1,11 @@
 import { PageHero } from "@/components/ui/page-hero";
+import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { PersonCard } from "@/components/archive/person-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { getPeople, getPersonCount } from "@/lib/queries/people";
+import { getPeopleAggregates } from "@/lib/queries/stats";
 import {
   DEFAULT_PAGE_SIZE,
   parsePage,
@@ -43,7 +45,10 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
       ? (currentFilter as PersonType)
       : undefined;
 
-  const totalCount = await getPersonCount(typeFilter);
+  const [totalCount, aggregates] = await Promise.all([
+    getPersonCount(typeFilter),
+    getPeopleAggregates(),
+  ]);
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
@@ -58,6 +63,13 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
+  const glanceItems = [
+    { icon: "\uD83D\uDC64", label: `${aggregates.total} people` },
+    ...(aggregates.hosts > 0 ? [{ icon: "\uD83C\uDFA4", label: `${aggregates.hosts} host${aggregates.hosts !== 1 ? "s" : ""}` }] : []),
+    ...(aggregates.recurring > 0 ? [{ icon: "\uD83D\uDD01", label: `${aggregates.recurring} recurring` }] : []),
+    ...(aggregates.guests > 0 ? [{ icon: "\uD83C\uDFAD", label: `${aggregates.guests} guest${aggregates.guests !== 1 ? "s" : ""}` }] : []),
+  ];
+
   return (
     <>
     <PageHero
@@ -65,6 +77,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
       subtitle="Guests, hosts, and figures of the archive"
       backgroundImage="/wiki-page-header.jpg"
     />
+    <EntityGlanceBar items={glanceItems} />
     <main className="mx-auto max-w-7xl px-4 py-8">
       <SortFilterBar
         basePath="/people"
