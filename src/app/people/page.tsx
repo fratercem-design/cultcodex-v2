@@ -79,7 +79,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
         <EmptyState message="No people match the current filters" />
       ) : (
         <>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2">
             {sorted.map((person) => (
               <PersonCard
                 key={person.id}
@@ -87,6 +87,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
                   displayName: person.displayName,
                   slug: person.slug,
                   shortBio: person.shortBio,
+                  avatarUrl: person.avatarUrl,
                   personType: person.personType,
                   appearanceCount:
                     person.guestAppearances.length + person.mentions.length,

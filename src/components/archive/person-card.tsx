@@ -7,6 +7,7 @@ interface PersonCardProps {
     displayName: string;
     slug: string;
     shortBio: string | null;
+    avatarUrl?: string | null;
     personType: PersonType;
     appearanceCount: number;
   };
@@ -20,27 +21,40 @@ const typeVariant: Record<PersonType, "green" | "purple" | "gold" | "muted"> = {
 };
 
 export function PersonCard({ person }: PersonCardProps) {
+  const initial = person.displayName[0]?.toUpperCase() ?? "?";
+
   return (
     <Link
       href={`/people/${person.slug}`}
-      className="group block rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-purple/30 hover:bg-elevated"
+      className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-purple/30 hover:bg-elevated"
     >
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-purple transition-colors">
+      {person.avatarUrl ? (
+        <img
+          src={person.avatarUrl}
+          alt=""
+          className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
+        />
+      ) : (
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-accent-purple/15 font-mono text-sm font-bold text-accent-purple">
+          {initial}
+        </div>
+      )}
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-purple transition-colors truncate">
             {person.displayName}
           </h3>
-          {person.shortBio && (
-            <p className="mt-1 text-xs text-text-muted line-clamp-2">
-              {person.shortBio}
-            </p>
-          )}
+          <StatusBadge label={person.personType} variant={typeVariant[person.personType]} />
         </div>
-        <StatusBadge label={person.personType} variant={typeVariant[person.personType]} />
+        {person.shortBio && (
+          <p className="mt-1 text-xs text-text-muted line-clamp-2">
+            {person.shortBio}
+          </p>
+        )}
+        <p className="mt-1.5 font-mono text-[10px] text-text-muted">
+          {person.appearanceCount} appearance{person.appearanceCount !== 1 ? "s" : ""}
+        </p>
       </div>
-      <p className="mt-2 font-mono text-[10px] text-text-muted">
-        {person.appearanceCount} appearance{person.appearanceCount !== 1 ? "s" : ""}
-      </p>
     </Link>
   );
 }
