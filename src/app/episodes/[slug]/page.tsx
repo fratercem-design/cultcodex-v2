@@ -13,6 +13,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { YouTubeEmbed } from "@/components/media/youtube-embed";
 import { TranscriptViewer } from "@/components/media/transcript-viewer";
+import { GuestGrid } from "@/components/episodes/guest-grid";
 import { ReactionBar } from "@/components/episodes/reaction-bar";
 import { EpisodeStatsPanel } from "@/components/episodes/episode-stats-panel";
 import { formatDate } from "@/lib/format/date";
@@ -244,16 +245,13 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
           />
 
           {/* Guests */}
-          <SectionCard>
-            <EntityChipList
-              title="Guests"
-              entities={episode.guests.map((g) => ({
-                label: g.person.displayName,
-                slug: g.person.slug,
-                type: "person" as const,
-              }))}
-            />
-          </SectionCard>
+          <GuestGrid
+            guests={episode.guests.map((g) => ({
+              displayName: g.person.displayName,
+              slug: g.person.slug,
+              avatarUrl: g.person.avatarUrl,
+            }))}
+          />
 
           {/* Topics */}
           <SectionCard>
