@@ -18,7 +18,7 @@ import { ReactionBar } from "@/components/episodes/reaction-bar";
 import { EpisodeStatsPanel } from "@/components/episodes/episode-stats-panel";
 import { formatDate } from "@/lib/format/date";
 import { formatDuration } from "@/lib/format/duration";
-import { QuoteShareButton } from "@/components/quotes/share-button";
+import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -146,20 +146,14 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
             <SectionCard title="Notable Quotes">
               <div className="space-y-4">
                 {episode.quotes.map((q) => (
-                  <blockquote
+                  <QuoteHighlightCard
                     key={q.id}
-                    className="border-l-2 border-accent-gold/50 pl-4"
-                  >
-                    <p className="text-sm text-text-primary italic">
-                      &ldquo;{q.text}&rdquo;
-                    </p>
-                    {q.speaker && (
-                      <cite className="mt-1 block font-mono text-xs text-accent-gold not-italic">
-                        — {q.speaker.displayName}
-                      </cite>
-                    )}
-                    <QuoteShareButton quoteId={q.id} quoteText={q.text} />
-                  </blockquote>
+                    id={q.id}
+                    text={q.text}
+                    speakerName={q.speaker?.displayName}
+                    speakerAvatarUrl={q.speaker?.avatarUrl}
+                    timestampSeconds={q.timestampSeconds}
+                  />
                 ))}
               </div>
             </SectionCard>
