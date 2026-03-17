@@ -91,6 +91,8 @@ model Episode {
   relatedTo          RelatedEpisode[]  @relation("relatedTo")
   firstAppearanceOf  Person[]          @relation("firstAppearance")
   firstMentionOf     LoreEntry[]       @relation("firstMention")
+  reactions          EpisodeReaction[]
+  comments           CodexComment[]
 
   @@index([airDate])
   @@index([status])
@@ -345,4 +347,116 @@ model Subscriber {
   createdAt        DateTime @default(now())
 
   @@index([email])
+}
+
+// ─── Auth & Community ──────────────────────────────
+
+enum CodexUserRole {
+  user
+  moderator
+  admin
+}
+
+enum ReactionType {
+  fire
+  eye
+  moon
+  skull
+  wildcard
+}
+
+model CodexUser {
+  id          String        @id @default(cuid())
+  email       String        @unique
+  displayName String
+  avatarUrl   String?
+  provider    String
+  role        CodexUserRole @default(user)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  reactions   EpisodeReaction[]
+  comments    CodexComment[]
+  reports     CommentReport[]
+  sessions    CodexSession[]
+  accounts    CodexAccount[]
+}
+
+model CodexSession {
+  id           String    @id @default(cuid())
+  sessionToken String    @unique
+  userId       String
+  user         CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      DateTime
+}
+
+model CodexAccount {
+  id                String    @id @default(cuid())
+  userId            String
+  user              CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              String
+  provider          String
+  providerAccountId String
+  access_token      String?
+  refresh_token     String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+
+  @@unique([provider, providerAccountId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model EpisodeReaction {
+  userId       String
+  episodeId    String
+  reactionType ReactionType
+  user         CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  episode      Episode   @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+
+  @@id([userId, episodeId, reactionType])
+  @@index([episodeId])
+}
+
+model CodexComment {
+  id            String         @id @default(cuid())
+  content       String
+  userId        String
+  user          CodexUser      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  episodeId     String
+  episode       Episode        @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  parentId      String?
+  parent        CodexComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies       CodexComment[] @relation("CommentReplies")
+  flagged       Boolean        @default(false)
+  flaggedReason String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  reports       CommentReport[]
+
+  @@index([episodeId])
+  @@index([userId])
+  @@index([parentId])
+}
+
+model CommentReport {
+  id        String       @id @default(cuid())
+  commentId String
+  comment   CodexComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId    String
+  user      CodexUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reason    String
+  createdAt DateTime     @default(now())
+
+  @@unique([commentId, userId])
 }
