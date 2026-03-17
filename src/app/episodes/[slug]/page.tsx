@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getEpisodeBySlug, getRelatedEpisodes } from "@/lib/queries/episodes";
 import { getCurrentUser } from "@/lib/auth";
 import { getReactionCounts } from "@/lib/queries/reactions";
+import { getCommentsForEpisode } from "@/lib/queries/comments";
+import { CommentSection } from "@/components/episodes/comment-section";
 import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
@@ -50,6 +52,7 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
 
   const user = await getCurrentUser();
   const reactionCounts = await getReactionCounts(episode.id, user?.id);
+  const commentsData = await getCommentsForEpisode(episode.id, { take: 20 });
 
   const epNum = episode.episodeNumber
     ? `EP.${String(episode.episodeNumber).padStart(3, "0")}`
@@ -186,6 +189,17 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
               </SectionCard>
             </section>
           )}
+
+          {/* Comments */}
+          <SectionCard title={`Comments (${commentsData.totalCount})`}>
+            <CommentSection
+              slug={episode.slug}
+              initialComments={JSON.parse(JSON.stringify(commentsData.comments))}
+              initialTotalCount={commentsData.totalCount}
+              isAuthenticated={!!user}
+              currentUserId={user?.id}
+            />
+          </SectionCard>
         </div>
 
         {/* Sidebar */}
