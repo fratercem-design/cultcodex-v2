@@ -1,5 +1,6 @@
 import { PageHero } from "@/components/ui/page-hero";
-import { QuoteCard } from "@/components/archive/quote-card";
+import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
+import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { getQuotes, getQuoteCount } from "@/lib/queries/quotes";
@@ -29,6 +30,10 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
   const quotes = await getQuotes({ take, skip });
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
+  const glanceItems = [
+    { icon: "\uD83D\uDCAC", label: `${totalCount} notable quote${totalCount !== 1 ? "s" : ""}` },
+  ];
+
   return (
     <>
     <PageHero
@@ -40,6 +45,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
       }
       backgroundImage="/long-form-background.jpg"
     />
+    <EntityGlanceBar items={glanceItems} />
     <main className="mx-auto max-w-7xl px-4 py-8">
       {quotes.length === 0 ? (
         <EmptyState
@@ -48,9 +54,16 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
         />
       ) : (
         <>
-          <div className="grid gap-3">
+          <div className="space-y-4">
             {quotes.map((quote) => (
-              <QuoteCard key={quote.id} quote={quote} />
+              <QuoteHighlightCard
+                key={quote.id}
+                id={quote.id}
+                text={quote.text}
+                speakerName={quote.speaker?.displayName}
+                speakerAvatarUrl={quote.speaker?.avatarUrl}
+                timestampSeconds={quote.timestampSeconds}
+              />
             ))}
           </div>
           <PaginationControls meta={paginationMeta} basePath="/quotes" />
