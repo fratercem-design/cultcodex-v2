@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { getEpisodeBySlug, getRelatedEpisodes } from "@/lib/queries/episodes";
+import { getCurrentUser } from "@/lib/auth";
+import { getReactionCounts } from "@/lib/queries/reactions";
 import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
@@ -9,6 +11,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { YouTubeEmbed } from "@/components/media/youtube-embed";
 import { TranscriptViewer } from "@/components/media/transcript-viewer";
+import { ReactionBar } from "@/components/episodes/reaction-bar";
 import { formatDate } from "@/lib/format/date";
 import { formatDuration } from "@/lib/format/duration";
 import Link from "next/link";
@@ -44,6 +47,9 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
   if (!episode) notFound();
 
   const relatedEpisodes = await getRelatedEpisodes(episode.id, { limit: 6 });
+
+  const user = await getCurrentUser();
+  const reactionCounts = await getReactionCounts(episode.id, user?.id);
 
   const epNum = episode.episodeNumber
     ? `EP.${String(episode.episodeNumber).padStart(3, "0")}`
@@ -93,6 +99,13 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
               Watch on YouTube
             </a>
           )}
+
+          {/* Reactions */}
+          <ReactionBar
+            slug={episode.slug}
+            initialCounts={reactionCounts}
+            isAuthenticated={!!user}
+          />
 
           {/* Short synopsis */}
           {episode.summaryShort && (
