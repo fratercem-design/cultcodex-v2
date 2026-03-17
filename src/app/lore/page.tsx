@@ -88,6 +88,8 @@ export default async function LorePage({ searchParams }: LorePageProps) {
                   category: entry.category,
                   summary: entry.summary,
                   canonStatus: entry.canonStatus,
+                  episodeCount: entry.episodes.length,
+                  personCount: entry.people.length,
                 }}
               />
             ))}

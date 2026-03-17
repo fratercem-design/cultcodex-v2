@@ -9,6 +9,8 @@ interface LoreCardProps {
     category: string | null;
     summary: string | null;
     canonStatus: CanonStatus;
+    episodeCount?: number;
+    personCount?: number;
   };
 }
 
@@ -20,11 +22,19 @@ const canonVariant: Record<CanonStatus, "green" | "purple" | "gold" | "muted"> =
   humorous: "muted",
 };
 
+const canonBorder: Record<CanonStatus, string> = {
+  canonical: "border-l-accent-gold/50",
+  speculative: "border-l-accent-purple/50",
+  community_myth: "border-l-accent-green/50",
+  disputed: "border-l-border",
+  humorous: "border-l-border",
+};
+
 export function LoreCard({ lore }: LoreCardProps) {
   return (
     <Link
       href={`/lore/${lore.slug}`}
-      className="group block rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated"
+      className={`group block rounded-lg border border-border border-l-[3px] ${canonBorder[lore.canonStatus]} bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated`}
     >
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
@@ -45,6 +55,17 @@ export function LoreCard({ lore }: LoreCardProps) {
           {lore.summary}
         </p>
       )}
+      {(lore.episodeCount != null && lore.episodeCount > 0) ||
+       (lore.personCount != null && lore.personCount > 0) ? (
+        <div className="mt-2 flex gap-3 font-mono text-[10px] text-text-muted">
+          {lore.episodeCount != null && lore.episodeCount > 0 && (
+            <span>{lore.episodeCount} episode{lore.episodeCount !== 1 ? "s" : ""}</span>
+          )}
+          {lore.personCount != null && lore.personCount > 0 && (
+            <span>{lore.personCount} {lore.personCount !== 1 ? "people" : "person"}</span>
+          )}
+        </div>
+      ) : null}
     </Link>
   );
 }
