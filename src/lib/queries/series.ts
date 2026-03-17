@@ -42,6 +42,7 @@ export async function getSeriesEpisodes(seriesId: string, options?: {
       episodeNumber: true,
       airDate: true,
       summaryShort: true,
+      thumbnailUrl: true,
       status: true,
       guests: { include: { person: true } },
       topics: { include: { topic: true } },
