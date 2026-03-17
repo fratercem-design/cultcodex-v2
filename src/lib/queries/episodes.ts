@@ -25,6 +25,7 @@ export interface EpisodeCardData {
   episodeNumber: number | null;
   airDate: Date | null;
   summaryShort: string | null;
+  thumbnailUrl: string | null;
   status: ContentStatus;
   guestNames: string[];
   topicNames: string[];
@@ -38,6 +39,7 @@ export function formatEpisodeForCard(episode: EpisodeWithRelations): EpisodeCard
     episodeNumber: episode.episodeNumber,
     airDate: episode.airDate,
     summaryShort: episode.summaryShort,
+    thumbnailUrl: episode.thumbnailUrl,
     status: episode.status,
     guestNames: episode.guests.map((g) => g.person.displayName),
     topicNames: episode.topics.map((t) => t.topic.title),
