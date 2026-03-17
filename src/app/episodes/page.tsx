@@ -1,19 +1,24 @@
 import { PageHero } from "@/components/ui/page-hero";
+import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EpisodeCard } from "@/components/archive/episode-card";
+import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
+import { ViewToggle } from "@/components/archive/view-toggle";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import {
   getEpisodes,
   formatEpisodeForCard,
   getEpisodeCount,
 } from "@/lib/queries/episodes";
+import { getEpisodeAggregates } from "@/lib/queries/stats";
 import {
   DEFAULT_PAGE_SIZE,
   parsePage,
   paginationArgs,
   buildPaginationMeta,
 } from "@/lib/pagination";
+import { formatDate } from "@/lib/format/date";
 
 export const metadata = {
   title: "Episodes — CULT CODEX",
@@ -26,8 +31,15 @@ const SORT_OPTIONS = [
   { label: "A → Z", value: "az" },
 ];
 
+const FILTER_OPTIONS = [
+  { label: "Livestream", value: "livestream" },
+  { label: "Original", value: "original" },
+  { label: "Short", value: "short" },
+  { label: "Clip", value: "clip" },
+];
+
 interface EpisodesPageProps {
-  searchParams: Promise<{ sort?: string; page?: string }>;
+  searchParams: Promise<{ sort?: string; page?: string; filter?: string; view?: string }>;
 }
 
 function resolveSort(sort?: string): {
@@ -38,7 +50,7 @@ function resolveSort(sort?: string): {
     case "oldest":
       return { orderBy: "episodeNumber", order: "asc" };
     case "az":
-      return { orderBy: "episodeNumber", order: "desc" }; // sort client-side
+      return { orderBy: "episodeNumber", order: "desc" };
     default:
       return { orderBy: "episodeNumber", order: "desc" };
   }
@@ -49,13 +61,18 @@ export default async function EpisodesPage({
 }: EpisodesPageProps) {
   const params = await searchParams;
   const currentSort = params.sort ?? "newest";
+  const currentView = params.view ?? "card";
   const { orderBy, order } = resolveSort(currentSort);
 
-  const totalCount = await getEpisodeCount("published");
+  const [aggregates, totalCount] = await Promise.all([
+    getEpisodeAggregates(),
+    getEpisodeCount("published"),
+  ]);
+
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
-  const episodes = await getEpisodes({ take, skip: skip, orderBy, order });
+  const episodes = await getEpisodes({ take, skip, orderBy, order });
   let cards = episodes.map(formatEpisodeForCard);
 
   if (currentSort === "az") {
@@ -64,6 +81,16 @@ export default async function EpisodesPage({
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
+  const glanceItems = [
+    { icon: "\uD83C\uDFAC", label: `${aggregates.total} episodes` },
+    ...(aggregates.earliestDate && aggregates.latestDate
+      ? [{ icon: "\uD83D\uDCC5", label: `${formatDate(aggregates.earliestDate)} — ${formatDate(aggregates.latestDate)}` }]
+      : []),
+    ...(aggregates.totalGuests > 0
+      ? [{ icon: "\uD83C\uDFA4", label: `${aggregates.totalGuests} guest appearances` }]
+      : []),
+  ];
+
   return (
     <>
     <PageHero
@@ -71,12 +98,19 @@ export default async function EpisodesPage({
       subtitle={`${totalCount} transmissions in the archive`}
       backgroundImage="/articles-bacgkground.jpg"
     />
+    <EntityGlanceBar items={glanceItems} />
     <main className="mx-auto max-w-7xl px-4 py-8">
-      <SortFilterBar
-        basePath="/episodes"
-        sortOptions={SORT_OPTIONS}
-        currentSort={currentSort}
-      />
+      <div className="flex items-center justify-between gap-3 mb-6">
+        <SortFilterBar
+          basePath="/episodes"
+          sortOptions={SORT_OPTIONS}
+          currentSort={currentSort}
+          filterLabel="Type"
+          filterOptions={FILTER_OPTIONS}
+          currentFilter={params.filter}
+        />
+        <ViewToggle basePath="/episodes" currentView={currentView} />
+      </div>
 
       {cards.length === 0 ? (
         <EmptyState
@@ -85,11 +119,27 @@ export default async function EpisodesPage({
         />
       ) : (
         <>
-          <div className="grid gap-3">
-            {cards.map((episode) => (
-              <EpisodeCard key={episode.id} episode={episode} />
-            ))}
-          </div>
+          {currentView === "list" ? (
+            <div className="grid gap-3">
+              {cards.map((ep) => (
+                <EpisodeListItem
+                  key={ep.id}
+                  slug={ep.slug}
+                  title={ep.title}
+                  episodeNumber={ep.episodeNumber}
+                  airDate={ep.airDate}
+                  summaryShort={ep.summaryShort}
+                  thumbnailUrl={ep.thumbnailUrl}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="grid gap-3">
+              {cards.map((ep) => (
+                <EpisodeCard key={ep.id} episode={ep} />
+              ))}
+            </div>
+          )}
           <PaginationControls meta={paginationMeta} basePath="/episodes" />
         </>
       )}

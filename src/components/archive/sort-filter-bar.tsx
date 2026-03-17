@@ -52,7 +52,7 @@ export function SortFilterBar({
   );
 
   return (
-    <div className="flex flex-wrap items-center gap-3 mb-6">
+    <div className="flex flex-wrap items-center gap-3">
       {/* Sort controls */}
       <div className="flex items-center gap-2">
         <span className="font-mono text-[10px] uppercase tracking-wider text-text-muted">
