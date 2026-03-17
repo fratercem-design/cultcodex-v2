@@ -16,6 +16,7 @@ import { TranscriptViewer } from "@/components/media/transcript-viewer";
 import { ReactionBar } from "@/components/episodes/reaction-bar";
 import { formatDate } from "@/lib/format/date";
 import { formatDuration } from "@/lib/format/duration";
+import { QuoteShareButton } from "@/components/quotes/share-button";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -155,6 +156,7 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
                         — {q.speaker.displayName}
                       </cite>
                     )}
+                    <QuoteShareButton quoteId={q.id} quoteText={q.text} />
                   </blockquote>
                 ))}
               </div>

@@ -7,6 +7,7 @@ import { SectionCard } from "@/components/ui/section-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatDate } from "@/lib/format/date";
 import { SearchInput } from "@/components/search/search-input";
+import { QuoteShareButton } from "@/components/quotes/share-button";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -296,6 +297,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                           </Link>
                         )}
                       </div>
+                      <QuoteShareButton quoteId={quote.id} quoteText={quote.text} />
                     </blockquote>
                   </li>
                 ))}
