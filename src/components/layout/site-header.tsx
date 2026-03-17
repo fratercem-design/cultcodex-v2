@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { auth, type SessionWithCodex } from "@/lib/auth";
+import { UserMenu } from "@/components/auth/user-menu";
 
 const navItems = [
   { label: "Live", href: "/live" },
@@ -11,7 +13,9 @@ const navItems = [
   { label: "Topics", href: "/topics" },
 ];
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const session = await auth();
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-void/90 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
@@ -41,13 +45,16 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <Link
-          href="/search"
-          className="font-mono text-xs text-text-muted hover:text-accent-green border border-border rounded px-3 py-1 transition-colors"
-          aria-label="Search the archive"
-        >
-          ⌘K Search
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/search"
+            className="font-mono text-xs text-text-muted hover:text-accent-green border border-border rounded px-3 py-1 transition-colors"
+            aria-label="Search the archive"
+          >
+            ⌘K Search
+          </Link>
+          <UserMenu user={(session as SessionWithCodex)?.codexUser ?? null} />
+        </div>
       </div>
     </header>
   );
