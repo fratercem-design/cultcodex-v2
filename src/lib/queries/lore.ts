@@ -7,6 +7,8 @@ export function buildLoreInclude() {
     episodes: { include: { episode: true } },
     people: { include: { person: true } },
     topics: { include: { topic: true } },
+    relatedFrom: { include: { loreB: true } },
+    relatedTo: { include: { loreA: true } },
   } satisfies Prisma.LoreEntryInclude;
 }
 
