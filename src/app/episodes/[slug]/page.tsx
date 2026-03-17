@@ -14,6 +14,7 @@ import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { YouTubeEmbed } from "@/components/media/youtube-embed";
 import { TranscriptViewer } from "@/components/media/transcript-viewer";
 import { ReactionBar } from "@/components/episodes/reaction-bar";
+import { EpisodeStatsPanel } from "@/components/episodes/episode-stats-panel";
 import { formatDate } from "@/lib/format/date";
 import { formatDuration } from "@/lib/format/duration";
 import { QuoteShareButton } from "@/components/quotes/share-button";
@@ -232,6 +233,15 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
               )}
             </div>
           </SectionCard>
+
+          {/* Stats */}
+          <EpisodeStatsPanel
+            guestCount={episode.guests.length}
+            quoteCount={episode.quotes.length}
+            segmentCount={episode.segments.length}
+            reactionTotal={reactionCounts.fire + reactionCounts.eye + reactionCounts.moon + reactionCounts.skull + reactionCounts.wildcard}
+            commentCount={commentsData.totalCount}
+          />
 
           {/* Guests */}
           <SectionCard>
