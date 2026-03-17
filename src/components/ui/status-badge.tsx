@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type BadgeVariant = "green" | "purple" | "gold" | "muted";
+export type BadgeVariant = "green" | "purple" | "gold" | "muted";
 
 interface StatusBadgeProps {
   label: string;
