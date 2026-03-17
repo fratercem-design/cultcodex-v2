@@ -5,7 +5,7 @@ import { getReactionCounts } from "@/lib/queries/reactions";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
 import { buildMetadata } from "@/lib/seo";
-import { PageHero } from "@/components/ui/page-hero";
+import { EpisodeHero } from "@/components/episodes/episode-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import { TerminalPanel } from "@/components/ui/terminal-panel";
 import { MetaRow } from "@/components/ui/meta-row";
@@ -74,12 +74,15 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
         </ol>
       </nav>
     )}
-    <PageHero
+    <EpisodeHero
       title={episode.title}
       subtitle={[epNum, formatDate(episode.airDate), formatDuration(episode.duration)]
         .filter(Boolean)
         .join(" \u00b7 ")}
-      backgroundImage="/wiki-page-header.jpg"
+      thumbnailUrl={episode.thumbnailUrl}
+      episodeNumber={episode.episodeNumber}
+      contentType={episode.contentType}
+      series={episode.series ? { title: episode.series.title, slug: episode.series.slug } : null}
     />
     <main className="mx-auto max-w-7xl px-4 py-8">
       <div className="grid gap-6 lg:grid-cols-3">
