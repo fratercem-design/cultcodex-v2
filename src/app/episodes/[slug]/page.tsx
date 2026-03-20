@@ -5,6 +5,7 @@ import { getReactionCounts } from "@/lib/queries/reactions";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
 import { buildMetadata } from "@/lib/seo";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EpisodeHero } from "@/components/episodes/episode-hero";
 import { EpisodeGlanceBar } from "@/components/episodes/episode-glance-bar";
 import { SectionCard } from "@/components/ui/section-card";
@@ -20,6 +21,8 @@ import { EpisodeStatsPanel } from "@/components/episodes/episode-stats-panel";
 import { formatDate } from "@/lib/format/date";
 import { formatDuration } from "@/lib/format/duration";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
+import { EpisodeListItem } from "@/components/archive/episode-list-item";
+import { RandomEpisodeButton } from "@/components/archive/random-episode-button";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -171,31 +174,26 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
           {/* Related episodes */}
           {relatedEpisodes.length > 0 && (
             <section className="mt-8">
-              <SectionCard title="Related Episodes">
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <SectionCard title={`Related Episodes (${relatedEpisodes.length})`}>
+                <div className="grid gap-3 sm:grid-cols-2">
                   {relatedEpisodes.map((ep) => (
-                    <Link
+                    <EpisodeListItem
                       key={ep.id}
-                      href={`/episodes/${ep.slug}`}
-                      className="group block rounded-lg border border-border bg-surface p-3 transition-colors hover:border-accent-green/30 hover:bg-elevated"
-                    >
-                      {ep.episodeNumber != null && (
-                        <span className="font-mono text-[10px] text-accent-green font-bold">
-                          EP.{String(ep.episodeNumber).padStart(3, "0")}
-                        </span>
-                      )}
-                      <h4 className="mt-1 text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors line-clamp-2">
-                        {ep.title}
-                      </h4>
-                      {ep.summaryShort && (
-                        <p className="mt-1 text-xs text-text-muted line-clamp-2">{ep.summaryShort}</p>
-                      )}
-                    </Link>
+                      slug={ep.slug}
+                      title={ep.title}
+                      episodeNumber={ep.episodeNumber}
+                      airDate={ep.airDate}
+                      summaryShort={ep.summaryShort}
+                    />
                   ))}
                 </div>
               </SectionCard>
             </section>
           )}
+
+          <div className="mt-4 flex justify-center">
+            <RandomEpisodeButton />
+          </div>
 
           {/* Comments */}
           <SectionCard title={`Comments (${commentsData.totalCount})`}>
