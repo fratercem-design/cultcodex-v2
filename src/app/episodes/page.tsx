@@ -5,6 +5,8 @@ import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
 import { ViewToggle } from "@/components/archive/view-toggle";
+import { RandomEpisodeButton } from "@/components/archive/random-episode-button";
+import { TimelineView } from "@/components/archive/timeline-view";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import {
   getEpisodes,
@@ -109,7 +111,10 @@ export default async function EpisodesPage({
           filterOptions={FILTER_OPTIONS}
           currentFilter={params.filter}
         />
-        <ViewToggle basePath="/episodes" currentView={currentView} />
+        <div className="flex items-center gap-2">
+          <RandomEpisodeButton />
+          <ViewToggle basePath="/episodes" currentView={currentView} />
+        </div>
       </div>
 
       {cards.length === 0 ? (
@@ -133,6 +138,18 @@ export default async function EpisodesPage({
                 />
               ))}
             </div>
+          ) : currentView === "timeline" ? (
+            <TimelineView
+              episodes={cards.map((c) => ({
+                id: c.id,
+                slug: c.slug,
+                title: c.title,
+                episodeNumber: c.episodeNumber,
+                airDate: c.airDate,
+                summaryShort: c.summaryShort,
+                thumbnailUrl: c.thumbnailUrl,
+              }))}
+            />
           ) : (
             <div className="grid gap-3">
               {cards.map((ep) => (
