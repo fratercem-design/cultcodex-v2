@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getPersonBySlug } from "@/lib/queries/people";
+import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
 import { buildMetadata } from "@/lib/seo";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
@@ -8,6 +8,7 @@ import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
 import { SectionCard } from "@/components/ui/section-card";
 import { MetaRow } from "@/components/ui/meta-row";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
@@ -67,6 +68,10 @@ export default async function PersonDetailPage({ params }: PageProps) {
     new Map(allEpisodes.map((e) => [e.id, e])).values()
   ).sort((a, b) => (b.airDate?.getTime() ?? 0) - (a.airDate?.getTime() ?? 0));
 
+  const coAppearances = person.guestAppearances.length >= 2
+    ? await getCoAppearances(person.id, 6)
+    : [];
+
   const typeLabel = PERSON_TYPE_LABELS[person.personType] ?? person.personType;
   const typeVariant = PERSON_TYPE_VARIANTS[person.personType] ?? "muted";
 
@@ -95,6 +100,11 @@ export default async function PersonDetailPage({ params }: PageProps) {
         avatarUrl={person.avatarUrl}
         badges={[{ label: typeLabel, variant: typeVariant }]}
       />
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "People", href: "/people" },
+        { label: person.displayName },
+      ]} />
       <EntityGlanceBar items={glanceItems} />
       <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-3">
@@ -159,6 +169,38 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 { icon: "\uD83D\uDD17", label: "Lore Links", value: person.loreConnections.length },
               ]}
             />
+
+            {coAppearances.length > 0 && (
+              <SectionCard title="Frequently Appears With">
+                <div className="grid grid-cols-3 gap-3">
+                  {coAppearances.map((coGuest) => (
+                    <Link
+                      key={coGuest.id}
+                      href={`/people/${coGuest.slug}`}
+                      className="group flex flex-col items-center gap-1.5 text-center"
+                    >
+                      {coGuest.avatarUrl ? (
+                        <img
+                          src={coGuest.avatarUrl}
+                          alt=""
+                          className="h-10 w-10 rounded-full object-cover border border-border group-hover:border-accent-purple/50 transition-colors"
+                        />
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple/15 font-mono text-sm font-bold text-accent-purple border border-border group-hover:border-accent-purple/50 transition-colors">
+                          {coGuest.displayName[0]?.toUpperCase() ?? "?"}
+                        </div>
+                      )}
+                      <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-purple transition-colors line-clamp-1">
+                        {coGuest.displayName}
+                      </span>
+                      <span className="font-mono text-[9px] text-text-muted">
+                        {coGuest.sharedEpisodes} shared
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </SectionCard>
+            )}
 
             <SectionCard title="Dossier">
               <MetaRow
