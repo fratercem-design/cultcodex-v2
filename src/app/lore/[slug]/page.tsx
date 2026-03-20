@@ -8,6 +8,7 @@ import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
 import { SectionCard } from "@/components/ui/section-card";
 import { MetaRow } from "@/components/ui/meta-row";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { GuestGrid } from "@/components/episodes/guest-grid";
@@ -85,6 +86,11 @@ export default async function LoreDetailPage({ params }: PageProps) {
         backgroundImage="/lore-header.jpg"
         badges={[{ label: canonLabel.toUpperCase(), variant: canonVariant }]}
       />
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "Lore", href: "/lore" },
+        { label: entry.title },
+      ]} />
       <EntityGlanceBar items={glanceItems} />
       <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-3">

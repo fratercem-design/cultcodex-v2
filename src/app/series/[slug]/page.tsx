@@ -8,6 +8,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { MetaRow } from "@/components/ui/meta-row";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PaginationControls } from "@/components/ui/pagination-controls";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import {
   getSeriesBySlug,
@@ -96,6 +97,11 @@ export default async function SeriesDetailPage({ params, searchParams }: PagePro
           { label: series.status.toUpperCase(), variant: series.status === "published" ? "green" : "muted" },
         ]}
       />
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "Series", href: "/series" },
+        { label: series.title },
+      ]} />
       <EntityGlanceBar items={glanceItems} />
       <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-3">

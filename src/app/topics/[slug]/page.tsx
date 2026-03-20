@@ -5,6 +5,7 @@ import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
 import { SectionCard } from "@/components/ui/section-card";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { GuestGrid } from "@/components/episodes/guest-grid";
@@ -58,6 +59,11 @@ export default async function TopicDetailPage({ params }: PageProps) {
         subtitle="Topic"
         backgroundImage="/wiki-page-header.jpg"
       />
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "Topics", href: "/topics" },
+        { label: topic.title },
+      ]} />
       <EntityGlanceBar items={glanceItems} />
       <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-3">

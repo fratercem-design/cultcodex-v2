@@ -86,6 +86,11 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
       contentType={episode.contentType}
       series={episode.series ? { title: episode.series.title, slug: episode.series.slug } : null}
     />
+    <Breadcrumbs items={[
+      { label: "Home", href: "/" },
+      { label: "Episodes", href: "/episodes" },
+      { label: episode.title },
+    ]} />
     <EpisodeGlanceBar
       contentType={episode.contentType}
       series={episode.series ? { title: episode.series.title, slug: episode.series.slug } : null}
