@@ -93,6 +93,7 @@ model Episode {
   firstMentionOf     LoreEntry[]       @relation("firstMention")
   reactions          EpisodeReaction[]
   comments           CodexComment[]
+  favorites          Favorite[]
 
   @@index([airDate])
   @@index([status])
@@ -382,6 +383,7 @@ model CodexUser {
   accounts                CodexAccount[]
   chatMessages            ChatMessage[]
   notificationPreference  NotificationPreference?
+  favorites               Favorite[]
 }
 
 model CodexSession {
@@ -485,4 +487,16 @@ model NotificationPreference {
   emailGoLive     Boolean   @default(false)
   pushGoLive      Boolean   @default(false)
   updatedAt       DateTime  @updatedAt
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      CodexUser @relation(fields: [userId], references: [id])
+  episodeId String
+  episode   Episode  @relation(fields: [episodeId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, episodeId])
+  @@index([userId])
 }
