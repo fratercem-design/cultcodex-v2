@@ -375,11 +375,13 @@ model CodexUser {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  reactions   EpisodeReaction[]
-  comments    CodexComment[]
-  reports     CommentReport[]
-  sessions    CodexSession[]
-  accounts    CodexAccount[]
+  reactions               EpisodeReaction[]
+  comments                CodexComment[]
+  reports                 CommentReport[]
+  sessions                CodexSession[]
+  accounts                CodexAccount[]
+  chatMessages            ChatMessage[]
+  notificationPreference  NotificationPreference?
 }
 
 model CodexSession {
@@ -459,4 +461,28 @@ model CommentReport {
   createdAt DateTime     @default(now())
 
   @@unique([commentId, userId])
+}
+
+// ─── Chat & Notifications ─────────────────────────
+
+model ChatMessage {
+  id          String    @id @default(cuid())
+  userId      String
+  user        CodexUser @relation(fields: [userId], references: [id])
+  displayName String
+  avatarUrl   String?
+  content     String
+  createdAt   DateTime  @default(now())
+
+  @@index([createdAt])
+}
+
+model NotificationPreference {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  user            CodexUser @relation(fields: [userId], references: [id])
+  emailNewEpisode Boolean   @default(false)
+  emailGoLive     Boolean   @default(false)
+  pushGoLive      Boolean   @default(false)
+  updatedAt       DateTime  @updatedAt
 }
