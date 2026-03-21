@@ -75,6 +75,64 @@ export async function notifySubscribers(title: string, videoId: string) {
   return { emailCount, pushCount };
 }
 
+export async function notifyNewEpisode(episode: {
+  title: string;
+  slug: string;
+  summaryShort: string | null;
+  thumbnailUrl: string | null;
+}) {
+  const resend = getResend();
+  if (!resend) return { emailCount: 0 };
+
+  // Get users who opted in for new episode emails
+  const prefs = await prisma.notificationPreference.findMany({
+    where: { emailNewEpisode: true },
+    select: { user: { select: { email: true } } },
+  });
+
+  const emails = prefs
+    .map((p) => p.user.email)
+    .filter((e): e is string => !!e);
+
+  if (emails.length === 0) return { emailCount: 0 };
+
+  const episodeUrl = `https://cultcodex.me/episodes/${episode.slug}`;
+
+  let emailCount = 0;
+  for (const email of emails) {
+    try {
+      await resend.emails.send({
+        from: "CultCodex <notifications@cultcodex.me>",
+        to: email,
+        subject: `New Episode: ${episode.title}`,
+        html: `
+          <div style="background: #0a0a0a; color: #e0e0e0; padding: 32px; font-family: monospace;">
+            <h1 style="color: #C8A96B; font-size: 20px; margin-bottom: 16px;">
+              NEW EPISODE
+            </h1>
+            <h2 style="color: #ffffff; font-size: 18px; margin-bottom: 8px;">
+              ${episode.title}
+            </h2>
+            ${episode.summaryShort ? `<p style="color: #999; font-size: 14px; margin-bottom: 16px;">${episode.summaryShort}</p>` : ""}
+            ${episode.thumbnailUrl ? `<img src="${episode.thumbnailUrl}" alt="" style="width: 100%; max-width: 560px; border-radius: 8px; margin-bottom: 16px;" />` : ""}
+            <a href="${episodeUrl}" style="display: inline-block; background: #C8A96B; color: #0a0a0a; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px;">
+              WATCH NOW
+            </a>
+            <p style="color: #666; font-size: 11px; margin-top: 24px;">
+              You're receiving this because you opted in at cultcodex.me
+            </p>
+          </div>
+        `,
+      });
+      emailCount++;
+    } catch (err) {
+      console.error(`[notify] Failed to send new episode email to ${email}:`, err);
+    }
+  }
+
+  return { emailCount };
+}
+
 function buildEmailHtml(title: string, videoId: string): string {
   return `
 <!DOCTYPE html>

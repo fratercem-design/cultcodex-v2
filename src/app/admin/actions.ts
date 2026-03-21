@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { notifyNewEpisode } from "@/lib/notifications";
 import type {
   ContentStatus,
   ContentType,
@@ -16,7 +17,7 @@ import type {
 export async function updateEpisode(id: string, formData: FormData) {
   await requireAdmin();
 
-  await prisma.episode.update({
+  const updated = await prisma.episode.update({
     where: { id },
     data: {
       title: formData.get("title") as string,
@@ -35,6 +36,18 @@ export async function updateEpisode(id: string, formData: FormData) {
       contentType: (formData.get("contentType") as ContentType) || null,
     },
   });
+
+  // Notify subscribers when episode is newly published
+  const newStatus = formData.get("status") as string;
+  if (newStatus === "published") {
+    // Fire and forget — don't block the response
+    notifyNewEpisode({
+      title: updated.title,
+      slug: updated.slug,
+      summaryShort: updated.summaryShort,
+      thumbnailUrl: updated.thumbnailUrl,
+    }).catch((err) => console.error("[notify] New episode notification failed:", err));
+  }
 
   revalidatePath("/admin/episodes");
   revalidatePath("/episodes");
