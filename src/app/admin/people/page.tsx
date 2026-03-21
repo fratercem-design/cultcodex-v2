@@ -57,7 +57,15 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
   return (
     <main id="main-content" className="p-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="font-display text-2xl font-bold text-accent-gold">People</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="font-display text-2xl font-bold text-accent-gold">People</h1>
+          <Link
+            href="/admin/people/new"
+            className="rounded bg-accent-green px-3 py-1.5 font-mono text-xs font-bold text-void uppercase tracking-wider hover:bg-accent-green/90 transition-colors"
+          >
+            + New Person
+          </Link>
+        </div>
         <span className="font-mono text-xs text-text-muted">{totalCount} total</span>
       </div>
 
