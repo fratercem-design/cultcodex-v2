@@ -98,7 +98,7 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
       duration={episode.duration}
       guestCount={episode.guests.length}
     />
-    <main className="mx-auto max-w-7xl px-4 py-8">
+    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main content */}
         <div className="lg:col-span-2 space-y-6">
@@ -285,6 +285,21 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
         </div>
       </div>
     </main>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "VideoObject",
+          name: episode.title,
+          description: episode.summaryShort ?? episode.title,
+          thumbnailUrl: episode.thumbnailUrl ?? undefined,
+          uploadDate: episode.airDate?.toISOString(),
+          url: `https://cultcodex.me/episodes/${episode.slug}`,
+          ...(episode.youtubeVideoId && { contentUrl: `https://www.youtube.com/watch?v=${episode.youtubeVideoId}` }),
+        }),
+      }}
+    />
     </>
   );
 }

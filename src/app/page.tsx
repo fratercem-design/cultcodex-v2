@@ -70,7 +70,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 space-y-10">
+      <main id="main-content" className="mx-auto max-w-7xl px-4 py-8 space-y-10">
         {/* Archive stats */}
         <ArchiveStatsBar
           stats={[
@@ -223,6 +223,7 @@ export default async function HomePage() {
             "@type": "WebSite",
             name: "Cult Codex",
             url: "https://cultcodex.me",
+            description: "The Living Archive of the Cult of Psyche",
             potentialAction: {
               "@type": "SearchAction",
               target: {
