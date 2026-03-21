@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { relativeTime } from "@/lib/format/relative-time";
+import { useSSE } from "@/lib/sse/use-sse";
 
 interface CommentUser {
   id: string;
@@ -44,6 +45,45 @@ export function CommentSection({
   const [replyText, setReplyText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useSSE({
+    url: `/api/sse/episodes/${slug}`,
+    onMessage: (event) => {
+      if (event.type === "new-comment" && event.data) {
+        const d = event.data as {
+          id: string;
+          content: string;
+          userId: string;
+          displayName: string;
+          avatarUrl: string | null;
+          createdAt: string;
+          parentId: string | null;
+          flagged: boolean;
+        };
+        if (d.flagged) return;
+        const newComment: Comment = {
+          id: d.id,
+          content: d.content,
+          createdAt: d.createdAt,
+          user: { id: d.userId, displayName: d.displayName, avatarUrl: d.avatarUrl },
+          replies: [],
+        };
+        setComments((prev) => {
+          if (prev.some((c) => c.id === newComment.id)) return prev;
+          if (d.parentId) {
+            // Check replies too for dedup
+            if (prev.some((c) => c.replies.some((r) => r.id === newComment.id))) return prev;
+            return prev.map((c) =>
+              c.id === d.parentId
+                ? { ...c, replies: [...c.replies, { id: d.id, content: d.content, createdAt: d.createdAt, user: newComment.user }] }
+                : c,
+            );
+          }
+          return [newComment, ...prev];
+        });
+      }
+    },
+  });
 
   const submitComment = useCallback(
     async (content: string, parentId?: string) => {

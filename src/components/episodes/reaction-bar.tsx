@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useSSE } from "@/lib/sse/use-sse";
 
 interface ReactionBarProps {
   slug: string;
@@ -30,6 +31,16 @@ export function ReactionBar({
 }: ReactionBarProps) {
   const [counts, setCounts] = useState(initialCounts);
   const [pending, setPending] = useState<string | null>(null);
+
+  useSSE({
+    url: `/api/sse/episodes/${slug}`,
+    onMessage: (event) => {
+      if (event.type === "reaction-update" && event.data) {
+        const updated = event.data as typeof counts;
+        setCounts((prev) => ({ ...prev, ...updated }));
+      }
+    },
+  });
 
   const handleReaction = useCallback(
     async (type: string) => {

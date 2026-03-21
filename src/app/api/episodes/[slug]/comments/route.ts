@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { getCommentsForEpisode, createComment } from "@/lib/queries/comments";
 import { moderateComment } from "@/lib/moderation";
+import { eventBus } from "@/lib/sse/event-bus";
 
 export async function GET(
   req: NextRequest,
@@ -72,6 +73,21 @@ export async function POST(
         { status: 202 },
       );
     }
+
+    // Publish to SSE for real-time updates (only unflagged comments)
+    eventBus.publish(`episode:${slug}`, {
+      type: "new-comment",
+      data: {
+        id: comment.id,
+        content: comment.content,
+        userId: user.id,
+        displayName: user.displayName,
+        avatarUrl: user.avatarUrl,
+        createdAt: comment.createdAt,
+        parentId: comment.parentId ?? null,
+        flagged: comment.flagged,
+      },
+    });
 
     return NextResponse.json(comment, { status: 201 });
   } catch (error) {

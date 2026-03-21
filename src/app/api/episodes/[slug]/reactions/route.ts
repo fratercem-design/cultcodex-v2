@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { getReactionCounts, toggleReaction } from "@/lib/queries/reactions";
 import { ReactionType } from "@/generated/prisma/client";
+import { eventBus } from "@/lib/sse/event-bus";
 
 const VALID_REACTIONS: Set<string> = new Set(["fire", "eye", "moon", "skull", "wildcard"]);
 
@@ -54,6 +55,12 @@ export async function POST(
 
   await toggleReaction(user.id, episode.id, type as ReactionType);
   const counts = await getReactionCounts(episode.id, user.id);
+
+  // Publish to SSE for real-time updates
+  eventBus.publish(`episode:${slug}`, {
+    type: "reaction-update",
+    data: counts,
+  });
 
   return NextResponse.json(counts);
 }
