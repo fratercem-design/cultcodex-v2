@@ -45,6 +45,16 @@ export interface SearchResultQuote {
   episodeSlug: string | null;
 }
 
+export interface SearchResultTranscript {
+  id: string;
+  text: string;
+  speakerLabel: string | null;
+  startSeconds: number;
+  episodeTitle: string;
+  episodeSlug: string;
+  episodeNumber: number | null;
+}
+
 export interface SearchFilters {
   entityTypes?: string[];   // which entity types to search
   contentType?: string;     // filter episodes by contentType
@@ -58,6 +68,7 @@ export interface GlobalSearchResults {
   lore: SearchResultLore[];
   topics: SearchResultTopic[];
   quotes: SearchResultQuote[];
+  transcripts: SearchResultTranscript[];
   totalCount: number;
   /** Total matches per entity type (may exceed SEARCH_LIMIT). */
   episodeTotalCount: number;
@@ -65,6 +76,7 @@ export interface GlobalSearchResults {
   loreTotalCount: number;
   topicsTotalCount: number;
   quotesTotalCount: number;
+  transcriptsTotalCount: number;
 }
 
 // ── Global search ───────────────────────────────────────────────────
@@ -85,30 +97,34 @@ export async function globalSearch(
       lore: [],
       topics: [],
       quotes: [],
+      transcripts: [],
       totalCount: 0,
       episodeTotalCount: 0,
       peopleTotalCount: 0,
       loreTotalCount: 0,
       topicsTotalCount: 0,
       quotesTotalCount: 0,
+      transcriptsTotalCount: 0,
     };
   }
 
   const types = filters?.entityTypes;
   const shouldSearch = (t: string) => !types || types.length === 0 || types.includes(t);
 
-  const [episodes, people, lore, topics, quotes, episodeTotalCount, peopleTotalCount, loreTotalCount, topicsTotalCount, quotesTotalCount] =
+  const [episodes, people, lore, topics, quotes, transcripts, episodeTotalCount, peopleTotalCount, loreTotalCount, topicsTotalCount, quotesTotalCount, transcriptsTotalCount] =
     await Promise.all([
       shouldSearch("episodes") ? searchEpisodes(query, filters) : Promise.resolve([] as SearchResultEpisode[]),
       shouldSearch("people") ? searchPeople(query) : Promise.resolve([] as SearchResultPerson[]),
       shouldSearch("lore") ? searchLore(query) : Promise.resolve([] as SearchResultLore[]),
       shouldSearch("topics") ? searchTopics(query) : Promise.resolve([] as SearchResultTopic[]),
       shouldSearch("quotes") ? searchQuotes(query) : Promise.resolve([] as SearchResultQuote[]),
+      shouldSearch("transcripts") ? searchTranscripts(query) : Promise.resolve([] as SearchResultTranscript[]),
       shouldSearch("episodes") ? countEpisodes(query, filters) : Promise.resolve(0),
       shouldSearch("people") ? countPeople(query) : Promise.resolve(0),
       shouldSearch("lore") ? countLore(query) : Promise.resolve(0),
       shouldSearch("topics") ? countTopics(query) : Promise.resolve(0),
       shouldSearch("quotes") ? countQuotes(query) : Promise.resolve(0),
+      shouldSearch("transcripts") ? countTranscripts(query) : Promise.resolve(0),
     ]);
 
   return {
@@ -118,12 +134,14 @@ export async function globalSearch(
     lore,
     topics,
     quotes,
-    totalCount: episodeTotalCount + peopleTotalCount + loreTotalCount + topicsTotalCount + quotesTotalCount,
+    transcripts,
+    totalCount: episodeTotalCount + peopleTotalCount + loreTotalCount + topicsTotalCount + quotesTotalCount + transcriptsTotalCount,
     episodeTotalCount,
     peopleTotalCount,
     loreTotalCount,
     topicsTotalCount,
     quotesTotalCount,
+    transcriptsTotalCount,
   };
 }
 
@@ -269,5 +287,42 @@ async function countTopics(query: string): Promise<number> {
 async function countQuotes(query: string): Promise<number> {
   return prisma.quote.count({
     where: { text: { contains: query, mode: "insensitive" } },
+  });
+}
+
+// ── Transcript search ──────────────────────────────────────────────
+
+async function searchTranscripts(query: string): Promise<SearchResultTranscript[]> {
+  const segments = await prisma.transcriptSegment.findMany({
+    where: { text: { contains: query, mode: "insensitive" } },
+    select: {
+      id: true,
+      text: true,
+      speakerLabel: true,
+      startSeconds: true,
+      episode: { select: { title: true, slug: true, episodeNumber: true, status: true } },
+    },
+    orderBy: { startSeconds: "asc" },
+    take: SEARCH_LIMIT,
+  });
+  return segments
+    .filter((s) => s.episode.status === "published")
+    .map((s) => ({
+      id: s.id,
+      text: s.text,
+      speakerLabel: s.speakerLabel,
+      startSeconds: s.startSeconds,
+      episodeTitle: s.episode.title,
+      episodeSlug: s.episode.slug,
+      episodeNumber: s.episode.episodeNumber,
+    }));
+}
+
+async function countTranscripts(query: string): Promise<number> {
+  return prisma.transcriptSegment.count({
+    where: {
+      text: { contains: query, mode: "insensitive" },
+      episode: { status: "published" },
+    },
   });
 }

@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { SectionCard } from "@/components/ui/section-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatDate } from "@/lib/format/date";
+import { formatSeconds } from "@/lib/format/duration";
 import { SearchInput } from "@/components/search/search-input";
 import { QuoteShareButton } from "@/components/quotes/share-button";
 import type { Metadata } from "next";
@@ -57,13 +58,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       {/* Filter bar */}
       {query && (
         <div className="mb-6 flex flex-wrap gap-2">
-          {["episodes", "people", "lore", "topics", "quotes"].map((t) => {
+          {["episodes", "people", "lore", "topics", "quotes", "transcripts"].map((t) => {
             const currentTypes = params.type?.split(",").filter(Boolean) ?? [];
             const isActive = currentTypes.length === 0 || currentTypes.includes(t);
             const newTypes = isActive && currentTypes.length > 0
               ? currentTypes.filter((ct) => ct !== t)
               : [...currentTypes, t];
-            const href = `/search?q=${encodeURIComponent(query)}${newTypes.length > 0 && newTypes.length < 5 ? `&type=${newTypes.join(",")}` : ""}`;
+            const href = `/search?q=${encodeURIComponent(query)}${newTypes.length > 0 && newTypes.length < 6 ? `&type=${newTypes.join(",")}` : ""}`;
             return (
               <Link
                 key={t}
@@ -299,6 +300,46 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       </div>
                       <QuoteShareButton quoteId={quote.id} quoteText={quote.text} />
                     </blockquote>
+                  </li>
+                ))}
+              </ul>
+            </SectionCard>
+          )}
+
+          {/* ── Transcripts ──────────────────────── */}
+          {results.transcripts.length > 0 && (
+            <SectionCard title={`Transcripts (${results.transcriptsTotalCount > results.transcripts.length ? `${results.transcripts.length} of ${results.transcriptsTotalCount}` : results.transcripts.length})`}>
+              <ul className="divide-y divide-border">
+                {results.transcripts.map((seg) => (
+                  <li key={seg.id} className="py-3 px-1">
+                    <Link
+                      href={`/episodes/${seg.episodeSlug}?tab=transcript&t=${seg.startSeconds}`}
+                      className="group block transition-colors hover:bg-elevated rounded p-1"
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-mono text-[10px] text-accent-green">
+                          {formatSeconds(seg.startSeconds)}
+                        </span>
+                        {seg.speakerLabel && (
+                          <span className="font-mono text-[10px] text-accent-purple font-bold uppercase">
+                            {seg.speakerLabel}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-text-primary line-clamp-2">
+                        <HighlightMatch text={seg.text} query={query} />
+                      </p>
+                      <div className="mt-1 font-mono text-[10px] text-text-muted">
+                        {seg.episodeNumber != null && (
+                          <span className="text-accent-green font-bold mr-1">
+                            EP.{String(seg.episodeNumber).padStart(3, "0")}
+                          </span>
+                        )}
+                        <span className="group-hover:text-accent-green transition-colors">
+                          {seg.episodeTitle}
+                        </span>
+                      </div>
+                    </Link>
                   </li>
                 ))}
               </ul>
