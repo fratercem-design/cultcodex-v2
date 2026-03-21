@@ -24,7 +24,9 @@ export async function GET(
   const user = await getCurrentUser();
   const counts = await getReactionCounts(episode.id, user?.id);
 
-  return NextResponse.json(counts);
+  return NextResponse.json(counts, {
+    headers: { "Cache-Control": "public, s-maxage=10, stale-while-revalidate=30" },
+  });
 }
 
 export async function POST(
