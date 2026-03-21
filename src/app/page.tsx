@@ -27,7 +27,7 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative flex min-h-[420px] items-center justify-center overflow-hidden">
+      <section className="relative flex min-h-[320px] sm:min-h-[420px] items-center justify-center overflow-hidden">
         <Image
           src="/hero-bg.jpg"
           alt=""
@@ -54,9 +54,9 @@ export default async function HomePage() {
             alt="Cult of Psyche"
             width={120}
             height={120}
-            className="rounded-full border-2 border-accent-gold shadow-lg shadow-accent-gold/20"
+            className="rounded-full border-2 border-accent-gold shadow-lg shadow-accent-gold/20 w-20 h-20 sm:w-[120px] sm:h-[120px]"
           />
-          <h1 className="font-display text-4xl font-bold tracking-tight text-accent-gold drop-shadow-lg md:text-5xl">
+          <h1 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-accent-gold drop-shadow-lg md:text-5xl">
             Cult of Psyche
           </h1>
           <p className="max-w-lg font-mono text-sm text-accent-cyan">
@@ -215,6 +215,25 @@ export default async function HomePage() {
           </div>
         </section>
       </main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Cult Codex",
+            url: "https://cultcodex.me",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: {
+                "@type": "EntryPoint",
+                urlTemplate: "https://cultcodex.me/search?q={search_term_string}",
+              },
+              "query-input": "required name=search_term_string",
+            },
+          }),
+        }}
+      />
     </>
   );
 }

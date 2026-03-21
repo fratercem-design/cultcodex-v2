@@ -101,8 +101,8 @@ export default async function EpisodesPage({
       backgroundImage="/articles-bacgkground.jpg"
     />
     <EntityGlanceBar items={glanceItems} />
-    <main className="mx-auto max-w-7xl px-4 py-8">
-      <div className="flex items-center justify-between gap-3 mb-6">
+    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <SortFilterBar
           basePath="/episodes"
           sortOptions={SORT_OPTIONS}

@@ -22,7 +22,7 @@ export function EntityHero({
   badges,
 }: EntityHeroProps) {
   return (
-    <section className="relative flex min-h-[200px] items-end overflow-hidden">
+    <section className="relative flex min-h-[160px] sm:min-h-[200px] items-end overflow-hidden">
       <Image
         src={backgroundImage}
         alt=""
@@ -48,11 +48,11 @@ export function EntityHero({
             <img
               src={avatarUrl}
               alt=""
-              className="h-20 w-20 rounded-full border-2 border-accent-gold/40 object-cover shadow-lg"
+              className="h-14 w-14 sm:h-20 sm:w-20 rounded-full border-2 border-accent-gold/40 object-cover shadow-lg"
             />
           )}
           <div>
-            <h1 className="font-display text-2xl font-bold tracking-tight text-accent-gold drop-shadow-md">
+            <h1 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-accent-gold drop-shadow-md">
               {title}
             </h1>
             {subtitle && (
