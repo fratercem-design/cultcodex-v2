@@ -5,6 +5,7 @@ import Link from "next/link";
 
 interface UserMenuProps {
   user: {
+    id: string;
     displayName: string;
     avatarUrl: string | null;
     role: string;
@@ -47,6 +48,20 @@ export function UserMenu({ user }: UserMenuProps) {
             <p className="text-xs text-text-primary font-medium truncate">{user.displayName}</p>
             <p className="text-[10px] text-text-muted font-mono">{user.role.toUpperCase()}</p>
           </div>
+          <Link
+            href={`/user/${user.id}`}
+            className="block w-full px-3 py-2 text-left text-xs text-text-primary hover:bg-elevated transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            Profile
+          </Link>
+          <Link
+            href="/favorites"
+            className="block w-full px-3 py-2 text-left text-xs text-text-primary hover:bg-elevated transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            Favorites
+          </Link>
           <Link
             href="/settings/notifications"
             className="block w-full px-3 py-2 text-left text-xs text-text-primary hover:bg-elevated transition-colors"

@@ -55,6 +55,7 @@ export async function POST(request: Request) {
     type: "new-chat-message",
     data: {
       id: message.id,
+      userId: message.userId,
       displayName: message.displayName,
       avatarUrl: message.avatarUrl,
       content: message.content,

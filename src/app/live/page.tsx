@@ -30,6 +30,7 @@ export default async function LivePage() {
         take: 100,
         select: {
           id: true,
+          userId: true,
           displayName: true,
           avatarUrl: true,
           content: true,

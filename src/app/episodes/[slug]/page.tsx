@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getEpisodeBySlug, getRelatedEpisodes } from "@/lib/queries/episodes";
 import { getCurrentUser } from "@/lib/auth";
+import { prisma } from "@/lib/db";
 import { getReactionCounts } from "@/lib/queries/reactions";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
@@ -18,6 +19,8 @@ import { YouTubeEmbed } from "@/components/media/youtube-embed";
 import { TranscriptViewer } from "@/components/media/transcript-viewer";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { ReactionBar } from "@/components/episodes/reaction-bar";
+import { ShareButtons } from "@/components/ui/share-buttons";
+import { FavoriteButton } from "@/components/ui/favorite-button";
 import { EpisodeStatsPanel } from "@/components/episodes/episode-stats-panel";
 import { EpisodeTabLayout } from "@/components/episodes/episode-tab-layout";
 import { formatDate } from "@/lib/format/date";
@@ -63,6 +66,16 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
   const relatedEpisodes = await getRelatedEpisodes(episode.id, { limit: 6 });
 
   const user = await getCurrentUser();
+
+  const favoriteData = user
+    ? await prisma.favorite.findUnique({
+        where: { userId_episodeId: { userId: user.id, episodeId: episode.id } },
+      })
+    : null;
+  const favoriteCount = await prisma.favorite.count({
+    where: { episodeId: episode.id },
+  });
+
   const reactionCounts = await getReactionCounts(episode.id, user?.id);
   const commentsData = await getCommentsForEpisode(episode.id, { take: 20 });
 
@@ -135,12 +148,25 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
             </a>
           )}
 
-          {/* Reactions */}
-          <ReactionBar
-            slug={episode.slug}
-            initialCounts={reactionCounts}
-            isAuthenticated={!!user}
-          />
+          {/* Reactions & Social */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <ReactionBar
+              slug={episode.slug}
+              initialCounts={reactionCounts}
+              isAuthenticated={!!user}
+            />
+            <FavoriteButton
+              slug={episode.slug}
+              initialFavorited={!!favoriteData}
+              initialCount={favoriteCount}
+              isAuthenticated={!!user}
+            />
+            <ShareButtons
+              url={`/episodes/${episode.slug}`}
+              title={episode.title}
+              type="episode"
+            />
+          </div>
 
           {/* Tab layout */}
           <Suspense fallback={<div className="h-40" />}>

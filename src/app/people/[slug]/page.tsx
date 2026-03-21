@@ -9,6 +9,7 @@ import { SectionCard } from "@/components/ui/section-card";
 import { MetaRow } from "@/components/ui/meta-row";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { ShareButtons } from "@/components/ui/share-buttons";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
@@ -201,6 +202,12 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </div>
               </SectionCard>
             )}
+
+            <ShareButtons
+              url={`/people/${person.slug}`}
+              title={person.displayName}
+              type="person"
+            />
 
             <SectionCard title="Dossier">
               <MetaRow

@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { useSSE } from "@/lib/sse/use-sse";
 
 interface ChatMsg {
   id: string;
+  userId: string;
   displayName: string;
   avatarUrl: string | null;
   content: string;
@@ -108,9 +110,11 @@ export function LiveChat({ isLive, isAuthenticated, initialMessages }: LiveChatP
               </div>
             )}
             <div className="min-w-0">
-              <span className="font-mono text-[10px] text-accent-cyan font-bold">
-                {msg.displayName}
-              </span>
+              <Link href={`/user/${msg.userId}`} className="hover:text-accent-green transition-colors">
+                <span className="font-mono text-[10px] text-accent-cyan font-bold">
+                  {msg.displayName}
+                </span>
+              </Link>
               <p className="text-sm text-text-primary break-words">{msg.content}</p>
             </div>
           </div>

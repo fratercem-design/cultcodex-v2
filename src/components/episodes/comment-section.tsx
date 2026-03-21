@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
 import { relativeTime } from "@/lib/format/relative-time";
 import { useSSE } from "@/lib/sse/use-sse";
 
@@ -278,16 +279,18 @@ function CommentCard({
   return (
     <div className="rounded-lg border border-border bg-surface p-3">
       <div className="flex items-center gap-2 mb-2">
-        {comment.user.avatarUrl ? (
-          <img src={comment.user.avatarUrl} alt="" className="h-6 w-6 rounded-full" />
-        ) : (
-          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-gold/20 text-[10px] text-accent-gold font-bold">
-            {comment.user.displayName[0]?.toUpperCase()}
-          </div>
-        )}
-        <span className="font-mono text-xs text-text-primary font-medium">
-          {comment.user.displayName}
-        </span>
+        <Link href={`/user/${comment.user.id}`} className="flex items-center gap-2 group">
+          {comment.user.avatarUrl ? (
+            <img src={comment.user.avatarUrl} alt="" className="h-6 w-6 rounded-full" />
+          ) : (
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-gold/20 text-[10px] text-accent-gold font-bold">
+              {comment.user.displayName[0]?.toUpperCase()}
+            </div>
+          )}
+          <span className="font-mono text-xs text-text-primary font-medium group-hover:text-accent-green transition-colors">
+            {comment.user.displayName}
+          </span>
+        </Link>
         <span className="font-mono text-[10px] text-text-muted">
           {relativeTime(comment.createdAt)}
         </span>
