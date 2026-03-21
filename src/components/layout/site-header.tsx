@@ -11,6 +11,7 @@ const navItems = [
   { label: "Series", href: "/series" },
   { label: "Quotes", href: "/quotes" },
   { label: "Transcripts", href: "/transcripts" },
+  { label: "Stats", href: "/stats" },
   { label: "Topics", href: "/topics" },
 ];
 
