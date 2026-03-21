@@ -257,6 +257,9 @@ export async function toggleLiveStream(formData: FormData) {
       update: { isLive: false, endedAt: new Date() },
       create: { id: "singleton", isLive: false },
     });
+
+    // Clear chat messages when stream ends
+    await prisma.chatMessage.deleteMany({});
   } else {
     // Going live
     const videoId = (formData.get("videoId") as string) || null;

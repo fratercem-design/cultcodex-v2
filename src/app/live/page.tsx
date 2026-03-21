@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
+import { getCurrentUser } from "@/lib/auth";
 import { PageHero } from "@/components/ui/page-hero";
 import { LivePlayer } from "./live-player";
+import { LiveChat } from "@/components/live/live-chat";
 import { SubscribeForm } from "@/components/live/subscribe-form";
 
 export const metadata: Metadata = {
@@ -16,9 +18,25 @@ export default async function LivePage() {
     where: { id: "singleton" },
   });
 
+  const user = await getCurrentUser();
+
   const isLive = status?.isLive ?? false;
   const videoId = status?.videoId ?? null;
   const title = status?.title ?? "Cult of Psyche Live Stream";
+
+  const recentMessages = isLive
+    ? await prisma.chatMessage.findMany({
+        orderBy: { createdAt: "asc" },
+        take: 100,
+        select: {
+          id: true,
+          displayName: true,
+          avatarUrl: true,
+          content: true,
+          createdAt: true,
+        },
+      })
+    : [];
 
   return (
     <>
@@ -30,7 +48,14 @@ export default async function LivePage() {
 
       <main id="main-content" className="mx-auto max-w-7xl px-4 py-6">
         {isLive && videoId ? (
-          <LivePlayer videoId={videoId} />
+          <div className="space-y-6">
+            <LivePlayer videoId={videoId} />
+            <LiveChat
+              isLive={isLive}
+              isAuthenticated={!!user}
+              initialMessages={JSON.parse(JSON.stringify(recentMessages))}
+            />
+          </div>
         ) : videoId ? (
           /* Offline but has a last-played video — show replay */
           <div className="space-y-6">
