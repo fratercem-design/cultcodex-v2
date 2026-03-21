@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
-export const alt = "Episode preview";
+export const alt = "Person profile preview";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -13,16 +13,21 @@ export default async function OGImage({
 }) {
   const { slug } = await params;
 
-  const episode = await prisma.episode.findUnique({
+  const person = await prisma.person.findUnique({
     where: { slug },
     select: {
-      title: true,
-      episodeNumber: true,
-      airDate: true,
+      displayName: true,
+      personType: true,
+      _count: {
+        select: {
+          guestAppearances: true,
+          quotes: true,
+        },
+      },
     },
   });
 
-  if (!episode) {
+  if (!person) {
     return new ImageResponse(
       (
         <div
@@ -38,24 +43,16 @@ export default async function OGImage({
             fontFamily: "monospace",
           }}
         >
-          Episode Not Found
+          Person Not Found
         </div>
       ),
       { ...size }
     );
   }
 
-  const epNum = episode.episodeNumber
-    ? `EP.${String(episode.episodeNumber).padStart(3, "0")}`
-    : null;
-
-  const airDate = episode.airDate
-    ? new Date(episode.airDate).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : null;
+  const typeLabel = person.personType
+    .replace("_", " ")
+    .toUpperCase();
 
   return new ImageResponse(
     (
@@ -73,43 +70,46 @@ export default async function OGImage({
       >
         {/* Top section */}
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          {epNum && (
-            <div
-              style={{
-                color: "#00d9ff",
-                fontSize: 28,
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-              }}
-            >
-              {epNum}
-            </div>
-          )}
+          <div
+            style={{
+              color: "#00d9ff",
+              fontSize: 22,
+              fontWeight: 700,
+              letterSpacing: "0.15em",
+            }}
+          >
+            {typeLabel}
+          </div>
           <div
             style={{
               color: "#ffffff",
-              fontSize: 56,
+              fontSize: 64,
               fontWeight: 700,
-              lineHeight: 1.2,
-              maxWidth: "900px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              lineHeight: 1.1,
             }}
           >
-            {episode.title.length > 80
-              ? episode.title.slice(0, 77) + "..."
-              : episode.title}
+            {person.displayName}
           </div>
-          {airDate && (
-            <div
-              style={{
-                color: "#666666",
-                fontSize: 22,
-              }}
-            >
-              {airDate}
+          <div
+            style={{
+              display: "flex",
+              gap: "32px",
+              marginTop: "16px",
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <div style={{ color: "#C8A96B", fontSize: 36, fontWeight: 700 }}>
+                {person._count.guestAppearances}
+              </div>
+              <div style={{ color: "#666666", fontSize: 16 }}>APPEARANCES</div>
             </div>
-          )}
+            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+              <div style={{ color: "#C8A96B", fontSize: 36, fontWeight: 700 }}>
+                {person._count.quotes}
+              </div>
+              <div style={{ color: "#666666", fontSize: 16 }}>QUOTES</div>
+            </div>
+          </div>
         </div>
 
         {/* Bottom branding */}
