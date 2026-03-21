@@ -31,7 +31,7 @@ export function PersonCard({ person }: PersonCardProps) {
       {person.avatarUrl ? (
         <img
           src={person.avatarUrl}
-          alt=""
+          alt={person.displayName}
           className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
         />
       ) : (

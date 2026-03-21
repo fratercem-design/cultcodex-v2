@@ -28,7 +28,7 @@ export default async function LivePage() {
         backgroundImage="/hero-bg.jpg"
       />
 
-      <main className="mx-auto max-w-7xl px-4 py-6">
+      <main id="main-content" className="mx-auto max-w-7xl px-4 py-6">
         {isLive && videoId ? (
           <LivePlayer videoId={videoId} />
         ) : videoId ? (

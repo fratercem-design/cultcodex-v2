@@ -77,7 +77,7 @@ export default async function LorePage({ searchParams }: LorePageProps) {
       backgroundImage="/lore-header.jpg"
     />
     <EntityGlanceBar items={glanceItems} />
-    <main className="mx-auto max-w-7xl px-4 py-8">
+    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
       <SortFilterBar
         basePath="/lore"
         sortOptions={SORT_OPTIONS}

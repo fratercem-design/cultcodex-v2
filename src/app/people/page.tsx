@@ -78,7 +78,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
       backgroundImage="/wiki-page-header.jpg"
     />
     <EntityGlanceBar items={glanceItems} />
-    <main className="mx-auto max-w-7xl px-4 py-8">
+    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
       <SortFilterBar
         basePath="/people"
         sortOptions={SORT_OPTIONS}

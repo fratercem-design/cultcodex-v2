@@ -3,6 +3,7 @@ import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
 import { LiveBanner } from "@/components/layout/live-banner";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { SkipLink } from "@/components/ui/skip-link";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -52,6 +53,7 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} font-sans antialiased bg-void text-text-primary min-h-screen flex flex-col`}
       >
+        <SkipLink />
         <LiveBanner />
         <SiteHeader />
         <div className="flex-1">{children}</div>

@@ -92,7 +92,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
         { label: entry.title },
       ]} />
       <EntityGlanceBar items={glanceItems} />
-      <main className="mx-auto max-w-7xl px-4 py-8">
+      <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             {entry.summary && (

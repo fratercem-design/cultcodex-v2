@@ -46,7 +46,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
       backgroundImage="/long-form-background.jpg"
     />
     <EntityGlanceBar items={glanceItems} />
-    <main className="mx-auto max-w-7xl px-4 py-8">
+    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
       {quotes.length === 0 ? (
         <EmptyState
           message="No quotes archived yet"

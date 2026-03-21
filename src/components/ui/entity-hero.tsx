@@ -47,7 +47,7 @@ export function EntityHero({
           {avatarUrl && (
             <img
               src={avatarUrl}
-              alt=""
+              alt={title}
               className="h-14 w-14 sm:h-20 sm:w-20 rounded-full border-2 border-accent-gold/40 object-cover shadow-lg"
             />
           )}
