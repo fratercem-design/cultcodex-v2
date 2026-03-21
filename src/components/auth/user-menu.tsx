@@ -47,6 +47,13 @@ export function UserMenu({ user }: UserMenuProps) {
             <p className="text-xs text-text-primary font-medium truncate">{user.displayName}</p>
             <p className="text-[10px] text-text-muted font-mono">{user.role.toUpperCase()}</p>
           </div>
+          <Link
+            href="/settings/notifications"
+            className="block w-full px-3 py-2 text-left text-xs text-text-primary hover:bg-elevated transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            Notifications
+          </Link>
           <form action="/api/auth/signout" method="POST">
             <button
               type="submit"
