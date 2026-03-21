@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getEpisodeBySlug, getRelatedEpisodes } from "@/lib/queries/episodes";
 import { getCurrentUser } from "@/lib/auth";
@@ -18,6 +19,7 @@ import { TranscriptViewer } from "@/components/media/transcript-viewer";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { ReactionBar } from "@/components/episodes/reaction-bar";
 import { EpisodeStatsPanel } from "@/components/episodes/episode-stats-panel";
+import { EpisodeTabLayout } from "@/components/episodes/episode-tab-layout";
 import { formatDate } from "@/lib/format/date";
 import { formatDuration } from "@/lib/format/duration";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
@@ -28,6 +30,7 @@ import type { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ tab?: string; t?: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -49,8 +52,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 }
 
-export default async function EpisodeDetailPage({ params }: PageProps) {
+export default async function EpisodeDetailPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
+  const sp = await searchParams;
+  const initialTimestamp = sp.t ? parseInt(sp.t, 10) : undefined;
   const episode = await getEpisodeBySlug(slug);
 
   if (!episode) notFound();
@@ -64,6 +69,13 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
   const epNum = episode.episodeNumber
     ? `EP.${String(episode.episodeNumber).padStart(3, "0")}`
     : null;
+
+  const tabs = [
+    { id: "overview", label: "Overview" },
+    { id: "transcript", label: "Transcript", count: episode.segments.length },
+    { id: "quotes", label: "Quotes", count: episode.quotes.length },
+    { id: "discussion", label: "Discussion", count: commentsData.totalCount },
+  ];
 
   return (
     <>
@@ -130,86 +142,104 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
             isAuthenticated={!!user}
           />
 
-          {/* Short synopsis */}
-          {episode.summaryShort && (
-            <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-4">
-              <p className="text-sm text-text-primary leading-relaxed font-medium">
-                {episode.summaryShort}
-              </p>
-            </div>
-          )}
+          {/* Tab layout */}
+          <Suspense fallback={<div className="h-40" />}>
+            <EpisodeTabLayout tabs={tabs}>
+              {{
+                overview: (
+                  <div className="space-y-6">
+                    {/* Short synopsis */}
+                    {episode.summaryShort && (
+                      <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-4">
+                        <p className="text-sm text-text-primary leading-relaxed font-medium">
+                          {episode.summaryShort}
+                        </p>
+                      </div>
+                    )}
 
-          {/* Summary */}
-          {episode.summaryLong && (
-            <SectionCard title="Summary">
-              <p className="text-sm text-text-primary leading-relaxed">
-                {episode.summaryLong}
-              </p>
-            </SectionCard>
-          )}
+                    {/* Summary */}
+                    {episode.summaryLong && (
+                      <SectionCard title="Summary">
+                        <p className="text-sm text-text-primary leading-relaxed">
+                          {episode.summaryLong}
+                        </p>
+                      </SectionCard>
+                    )}
 
-          {/* Transcript segments */}
-          {episode.segments.length > 0 && (
-            <TerminalPanel header="TRANSCRIPT">
-              <TranscriptViewer
-                segments={episode.segments}
-                hasVideoEmbed={!!episode.youtubeVideoId}
-              />
-            </TerminalPanel>
-          )}
+                    {/* Related episodes */}
+                    {relatedEpisodes.length > 0 && (
+                      <section>
+                        <SectionCard title={`Related Episodes (${relatedEpisodes.length})`}>
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            {relatedEpisodes.map((ep) => (
+                              <EpisodeListItem
+                                key={ep.id}
+                                slug={ep.slug}
+                                title={ep.title}
+                                episodeNumber={ep.episodeNumber}
+                                airDate={ep.airDate}
+                                summaryShort={ep.summaryShort}
+                              />
+                            ))}
+                          </div>
+                        </SectionCard>
+                      </section>
+                    )}
 
-          {/* Quotes */}
-          {episode.quotes.length > 0 && (
-            <SectionCard title="Notable Quotes">
-              <div className="space-y-4">
-                {episode.quotes.map((q) => (
-                  <QuoteHighlightCard
-                    key={q.id}
-                    id={q.id}
-                    text={q.text}
-                    speakerName={q.speaker?.displayName}
-                    speakerAvatarUrl={q.speaker?.avatarUrl}
-                    timestampSeconds={q.timestampSeconds}
-                  />
-                ))}
-              </div>
-            </SectionCard>
-          )}
-
-          {/* Related episodes */}
-          {relatedEpisodes.length > 0 && (
-            <section className="mt-8">
-              <SectionCard title={`Related Episodes (${relatedEpisodes.length})`}>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {relatedEpisodes.map((ep) => (
-                    <EpisodeListItem
-                      key={ep.id}
-                      slug={ep.slug}
-                      title={ep.title}
-                      episodeNumber={ep.episodeNumber}
-                      airDate={ep.airDate}
-                      summaryShort={ep.summaryShort}
+                    <div className="mt-4 flex justify-center">
+                      <RandomEpisodeButton />
+                    </div>
+                  </div>
+                ),
+                transcript: (
+                  <TerminalPanel header="TRANSCRIPT">
+                    {episode.segments.length > 0 ? (
+                      <TranscriptViewer
+                        segments={episode.segments}
+                        hasVideoEmbed={!!episode.youtubeVideoId}
+                        initialTimestamp={initialTimestamp}
+                      />
+                    ) : (
+                      <p className="py-4 text-center font-mono text-xs text-text-muted">
+                        No transcript available for this episode
+                      </p>
+                    )}
+                  </TerminalPanel>
+                ),
+                quotes: (
+                  <div className="space-y-4">
+                    {episode.quotes.length > 0 ? (
+                      episode.quotes.map((q) => (
+                        <QuoteHighlightCard
+                          key={q.id}
+                          id={q.id}
+                          text={q.text}
+                          speakerName={q.speaker?.displayName}
+                          speakerAvatarUrl={q.speaker?.avatarUrl}
+                          timestampSeconds={q.timestampSeconds}
+                        />
+                      ))
+                    ) : (
+                      <p className="py-4 text-center font-mono text-xs text-text-muted">
+                        No quotes extracted from this episode
+                      </p>
+                    )}
+                  </div>
+                ),
+                discussion: (
+                  <SectionCard title={`Comments (${commentsData.totalCount})`}>
+                    <CommentSection
+                      slug={episode.slug}
+                      initialComments={JSON.parse(JSON.stringify(commentsData.comments))}
+                      initialTotalCount={commentsData.totalCount}
+                      isAuthenticated={!!user}
+                      currentUserId={user?.id}
                     />
-                  ))}
-                </div>
-              </SectionCard>
-            </section>
-          )}
-
-          <div className="mt-4 flex justify-center">
-            <RandomEpisodeButton />
-          </div>
-
-          {/* Comments */}
-          <SectionCard title={`Comments (${commentsData.totalCount})`}>
-            <CommentSection
-              slug={episode.slug}
-              initialComments={JSON.parse(JSON.stringify(commentsData.comments))}
-              initialTotalCount={commentsData.totalCount}
-              isAuthenticated={!!user}
-              currentUserId={user?.id}
-            />
-          </SectionCard>
+                  </SectionCard>
+                ),
+              }}
+            </EpisodeTabLayout>
+          </Suspense>
         </div>
 
         {/* Sidebar */}
