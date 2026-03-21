@@ -1,0 +1,35 @@
+import { requireAdmin } from "@/lib/auth";
+import { AdminFormField } from "@/components/admin/admin-form-field";
+import { SlugField } from "@/components/admin/slug-field";
+import { createTopic } from "@/app/admin/create-actions";
+
+export const metadata = { title: "Create Topic — CultCodex Admin" };
+
+export default async function CreateTopicPage() {
+  await requireAdmin();
+
+  return (
+    <div className="max-w-2xl">
+      <h1 className="font-mono text-xl font-bold text-text-primary mb-6">
+        Create Topic
+      </h1>
+
+      <form action={createTopic} className="space-y-4">
+        <SlugField titleLabel="Title" titleName="title" />
+
+        <AdminFormField
+          label="Description"
+          name="description"
+          type="textarea"
+        />
+
+        <button
+          type="submit"
+          className="rounded bg-accent-green px-6 py-2 font-mono text-sm font-bold text-void uppercase tracking-wider hover:bg-accent-green/90 transition-colors"
+        >
+          Create Topic
+        </button>
+      </form>
+    </div>
+  );
+}
