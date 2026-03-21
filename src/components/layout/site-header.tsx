@@ -10,6 +10,7 @@ const navItems = [
   { label: "Lore", href: "/lore" },
   { label: "Series", href: "/series" },
   { label: "Quotes", href: "/quotes" },
+  { label: "Transcripts", href: "/transcripts" },
   { label: "Topics", href: "/topics" },
 ];
 
