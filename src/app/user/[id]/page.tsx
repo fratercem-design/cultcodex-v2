@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { Suspense } from "react";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { formatDate } from "@/lib/format/date";
@@ -61,10 +62,12 @@ export default async function UserProfilePage({ params }: PageProps) {
         <div className="mx-auto max-w-7xl px-4 py-8">
           <div className="flex items-center gap-4">
             {profile.avatarUrl ? (
-              <img
+              <Image
                 src={profile.avatarUrl}
                 alt=""
-                className="h-16 w-16 rounded-full"
+                width={64}
+                height={64}
+                className="h-16 w-16 rounded-full object-cover"
               />
             ) : (
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-gold/20">
@@ -193,11 +196,15 @@ export default async function UserProfilePage({ params }: PageProps) {
                           className="group rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-green/30 hover:bg-elevated"
                         >
                           {fav.episode.thumbnailUrl && (
-                            <img
-                              src={fav.episode.thumbnailUrl}
-                              alt=""
-                              className="mb-3 aspect-video w-full rounded-md object-cover"
-                            />
+                            <div className="relative mb-3 aspect-video w-full overflow-hidden rounded-md">
+                              <Image
+                                src={fav.episode.thumbnailUrl}
+                                alt=""
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, 33vw"
+                              />
+                            </div>
                           )}
                           <div className="flex items-center gap-2 mb-1">
                             {fav.episode.episodeNumber != null && (

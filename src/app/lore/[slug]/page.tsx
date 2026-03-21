@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getLoreBySlug } from "@/lib/queries/lore";
+import { prisma } from "@/lib/db";
 import { buildMetadata } from "@/lib/seo";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
@@ -16,6 +17,15 @@ import { formatDate } from "@/lib/format/date";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
+
+export async function generateStaticParams() {
+  const entries = await prisma.loreEntry.findMany({
+    select: { slug: true },
+    take: 50,
+    orderBy: { updatedAt: "desc" },
+  });
+  return entries.map((e) => ({ slug: e.slug }));
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;

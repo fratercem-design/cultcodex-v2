@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSSE } from "@/lib/sse/use-sse";
 
@@ -97,10 +98,12 @@ export function LiveChat({ isLive, isAuthenticated, initialMessages }: LiveChatP
         {messages.map((msg) => (
           <div key={msg.id} className="flex items-start gap-2">
             {msg.avatarUrl ? (
-              <img
+              <Image
                 src={msg.avatarUrl}
                 alt=""
-                className="h-6 w-6 rounded-full shrink-0 mt-0.5"
+                width={24}
+                height={24}
+                className="h-6 w-6 rounded-full object-cover shrink-0 mt-0.5"
               />
             ) : (
               <div className="h-6 w-6 rounded-full bg-accent-purple/30 shrink-0 mt-0.5 flex items-center justify-center">

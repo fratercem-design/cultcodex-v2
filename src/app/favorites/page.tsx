@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { PageHero } from "@/components/ui/page-hero";
@@ -69,11 +70,15 @@ export default async function FavoritesPage() {
                 className="group rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-green/30 hover:bg-elevated"
               >
                 {fav.episode.thumbnailUrl && (
-                  <img
-                    src={fav.episode.thumbnailUrl}
-                    alt=""
-                    className="mb-3 aspect-video w-full rounded-md object-cover"
-                  />
+                  <div className="relative mb-3 aspect-video w-full overflow-hidden rounded-md">
+                    <Image
+                      src={fav.episode.thumbnailUrl}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  </div>
                 )}
                 <div className="flex items-center gap-2 mb-1">
                   {fav.episode.episodeNumber != null && (

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { prisma } from "@/lib/db";
 import { buildMetadata } from "@/lib/seo";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
@@ -25,6 +26,15 @@ import { formatDate } from "@/lib/format/date";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
+
+export async function generateStaticParams() {
+  const series = await prisma.series.findMany({
+    select: { slug: true },
+    take: 50,
+    orderBy: { updatedAt: "desc" },
+  });
+  return series.map((s) => ({ slug: s.slug }));
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;

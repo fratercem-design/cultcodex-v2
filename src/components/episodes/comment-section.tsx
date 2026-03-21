@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { relativeTime } from "@/lib/format/relative-time";
 import { useSSE } from "@/lib/sse/use-sse";
@@ -281,7 +282,7 @@ function CommentCard({
       <div className="flex items-center gap-2 mb-2">
         <Link href={`/user/${comment.user.id}`} className="flex items-center gap-2 group">
           {comment.user.avatarUrl ? (
-            <img src={comment.user.avatarUrl} alt="" className="h-6 w-6 rounded-full" />
+            <Image src={comment.user.avatarUrl} alt="" width={24} height={24} className="h-6 w-6 rounded-full object-cover" />
           ) : (
             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-gold/20 text-[10px] text-accent-gold font-bold">
               {comment.user.displayName[0]?.toUpperCase()}

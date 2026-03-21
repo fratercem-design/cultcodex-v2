@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getTopicBySlug } from "@/lib/queries/topics";
+import { prisma } from "@/lib/db";
 import { buildMetadata } from "@/lib/seo";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
@@ -12,6 +13,15 @@ import { GuestGrid } from "@/components/episodes/guest-grid";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
+
+export async function generateStaticParams() {
+  const topics = await prisma.topic.findMany({
+    select: { slug: true },
+    take: 50,
+    orderBy: { updatedAt: "desc" },
+  });
+  return topics.map((t) => ({ slug: t.slug }));
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;

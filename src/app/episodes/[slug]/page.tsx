@@ -33,6 +33,16 @@ import type { Metadata } from "next";
 
 export const revalidate = 300;
 
+export async function generateStaticParams() {
+  const episodes = await prisma.episode.findMany({
+    where: { status: "published" },
+    select: { slug: true },
+    take: 50,
+    orderBy: { updatedAt: "desc" },
+  });
+  return episodes.map((ep) => ({ slug: ep.slug }));
+}
+
 interface PageProps {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ tab?: string; t?: string }>;

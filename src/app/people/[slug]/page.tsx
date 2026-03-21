@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
+import { prisma } from "@/lib/db";
 import { buildMetadata } from "@/lib/seo";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
@@ -18,6 +19,15 @@ import { formatDate } from "@/lib/format/date";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
+
+export async function generateStaticParams() {
+  const people = await prisma.person.findMany({
+    select: { slug: true },
+    take: 50,
+    orderBy: { updatedAt: "desc" },
+  });
+  return people.map((p) => ({ slug: p.slug }));
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -184,9 +194,11 @@ export default async function PersonDetailPage({ params }: PageProps) {
                       className="group flex flex-col items-center gap-1.5 text-center"
                     >
                       {coGuest.avatarUrl ? (
-                        <img
+                        <Image
                           src={coGuest.avatarUrl}
                           alt=""
+                          width={40}
+                          height={40}
                           className="h-10 w-10 rounded-full object-cover border border-border group-hover:border-accent-purple/50 transition-colors"
                         />
                       ) : (
