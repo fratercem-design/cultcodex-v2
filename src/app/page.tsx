@@ -12,6 +12,8 @@ import { getQuotes } from "@/lib/queries/quotes";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
 
+export const revalidate = 300;
+
 export default async function HomePage() {
   const [stats, recentEpisodes, recentQuotes, liveStatus] = await Promise.all([
     getArchiveStats(),

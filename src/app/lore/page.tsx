@@ -14,6 +14,8 @@ import {
 } from "@/lib/pagination";
 import type { CanonStatus } from "@/generated/prisma/client";
 
+export const revalidate = 600;
+
 export const metadata = {
   title: "Lore — CULT CODEX",
   description: "Concepts, doctrines, and myths of the Cult of Psyche",

@@ -31,6 +31,8 @@ import { RandomEpisodeButton } from "@/components/archive/random-episode-button"
 import Link from "next/link";
 import type { Metadata } from "next";
 
+export const revalidate = 300;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ tab?: string; t?: string }>;

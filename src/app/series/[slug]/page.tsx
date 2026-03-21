@@ -24,6 +24,8 @@ import {
 import { formatDate } from "@/lib/format/date";
 import type { Metadata } from "next";
 
+export const revalidate = 600;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ page?: string }>;

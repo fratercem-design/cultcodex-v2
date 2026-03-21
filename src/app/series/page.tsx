@@ -5,6 +5,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { getSeries } from "@/lib/queries/series";
 import { getSeriesAggregates } from "@/lib/queries/stats";
 
+export const revalidate = 600;
+
 export const metadata = {
   title: "Series — CULT CODEX",
   description: "Browse Cult of Psyche series and collections",

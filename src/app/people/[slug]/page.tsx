@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
 import { buildMetadata } from "@/lib/seo";
@@ -15,6 +16,8 @@ import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { formatDate } from "@/lib/format/date";
 import type { Metadata } from "next";
+
+export const revalidate = 600;
 
 interface PageProps {
   params: Promise<{ slug: string }>;

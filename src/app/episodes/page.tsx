@@ -22,6 +22,8 @@ import {
 } from "@/lib/pagination";
 import { formatDate } from "@/lib/format/date";
 
+export const revalidate = 60;
+
 export const metadata = {
   title: "Episodes — CULT CODEX",
   description: "Browse all Cult of Psyche episodes",

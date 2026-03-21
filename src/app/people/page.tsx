@@ -14,6 +14,8 @@ import {
 } from "@/lib/pagination";
 import type { PersonType } from "@/generated/prisma/client";
 
+export const revalidate = 600;
+
 export const metadata = {
   title: "People — CULT CODEX",
   description: "Guests, hosts, and figures of the Cult of Psyche",

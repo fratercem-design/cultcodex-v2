@@ -11,6 +11,8 @@ import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import type { Metadata } from "next";
 
+export const revalidate = 600;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

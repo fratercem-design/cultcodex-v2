@@ -13,6 +13,8 @@ import {
   buildPaginationMeta,
 } from "@/lib/pagination";
 
+export const revalidate = 600;
+
 export const metadata = {
   title: "Topics — CULT CODEX",
   description: "Explore the key topics and themes of the Cult of Psyche",

@@ -11,6 +11,8 @@ import {
   buildPaginationMeta,
 } from "@/lib/pagination";
 
+export const revalidate = 300;
+
 export const metadata = {
   title: "Quotes — CULT CODEX",
   description: "Notable quotes from Cult of Psyche episodes",
