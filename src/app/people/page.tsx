@@ -6,6 +6,7 @@ import { SortFilterBar } from "@/components/archive/sort-filter-bar";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { getPeople, getPersonCount } from "@/lib/queries/people";
 import { getPeopleAggregates } from "@/lib/queries/stats";
+import { IconPerson, IconMicrophone, IconRecurring, IconMask } from "@/components/graphics/codex-icons";
 import {
   DEFAULT_PAGE_SIZE,
   parsePage,
@@ -66,10 +67,10 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
   const glanceItems = [
-    { icon: "\uD83D\uDC64", label: `${aggregates.total} people` },
-    ...(aggregates.hosts > 0 ? [{ icon: "\uD83C\uDFA4", label: `${aggregates.hosts} host${aggregates.hosts !== 1 ? "s" : ""}` }] : []),
-    ...(aggregates.recurring > 0 ? [{ icon: "\uD83D\uDD01", label: `${aggregates.recurring} recurring` }] : []),
-    ...(aggregates.guests > 0 ? [{ icon: "\uD83C\uDFAD", label: `${aggregates.guests} guest${aggregates.guests !== 1 ? "s" : ""}` }] : []),
+    { icon: <IconPerson size={14} />, label: `${aggregates.total} people` },
+    ...(aggregates.hosts > 0 ? [{ icon: <IconMicrophone size={14} />, label: `${aggregates.hosts} host${aggregates.hosts !== 1 ? "s" : ""}` }] : []),
+    ...(aggregates.recurring > 0 ? [{ icon: <IconRecurring size={14} />, label: `${aggregates.recurring} recurring` }] : []),
+    ...(aggregates.guests > 0 ? [{ icon: <IconMask size={14} />, label: `${aggregates.guests} guest${aggregates.guests !== 1 ? "s" : ""}` }] : []),
   ];
 
   return (

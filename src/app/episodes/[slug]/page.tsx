@@ -24,6 +24,7 @@ import { FavoriteButton } from "@/components/ui/favorite-button";
 import { EpisodeStatsPanel } from "@/components/episodes/episode-stats-panel";
 import { EpisodeTabLayout } from "@/components/episodes/episode-tab-layout";
 import { formatDate } from "@/lib/format/date";
+import { cleanTitle } from "@/lib/format/text";
 import { formatDuration } from "@/lib/format/duration";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
@@ -35,7 +36,7 @@ export const revalidate = 300;
 
 export async function generateStaticParams() {
   const episodes = await prisma.episode.findMany({
-    where: { status: "published" },
+    where: {},
     select: { slug: true },
     take: 50,
     orderBy: { updatedAt: "desc" },
@@ -95,9 +96,13 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     ? `EP.${String(episode.episodeNumber).padStart(3, "0")}`
     : null;
 
+  const hasTranscript = episode.segments.length > 0;
+
   const tabs = [
     { id: "overview", label: "Overview" },
-    { id: "transcript", label: "Transcript", count: episode.segments.length },
+    ...(hasTranscript
+      ? [{ id: "transcript", label: "Transcript", count: episode.segments.length }]
+      : []),
     { id: "quotes", label: "Quotes", count: episode.quotes.length },
     { id: "discussion", label: "Discussion", count: commentsData.totalCount },
   ];
@@ -116,7 +121,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
       </nav>
     )}
     <EpisodeHero
-      title={episode.title}
+      title={cleanTitle(episode.title)}
       subtitle={episode.summaryShort ?? ""}
       thumbnailUrl={episode.thumbnailUrl}
       episodeNumber={episode.episodeNumber}
@@ -140,15 +145,38 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
         {/* Main content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Video embed */}
-          {episode.youtubeVideoId && (
+          {episode.youtubeVideoId && episode.status !== "unavailable" && (
             <YouTubeEmbed
               videoId={episode.youtubeVideoId}
               title={episode.title}
             />
           )}
 
+          {/* Unavailable notice */}
+          {episode.status === "unavailable" && (
+            <div className="relative w-full overflow-hidden rounded-lg border border-amber-500/30 bg-amber-500/5 aspect-video flex flex-col items-center justify-center gap-3 text-center px-6">
+              <svg className="h-10 w-10 text-amber-500/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+              </svg>
+              <p className="font-mono text-sm text-amber-400">This episode is no longer available on YouTube</p>
+              <p className="font-mono text-[11px] text-text-muted">The video may have been privatized or removed by the creator.</p>
+            </div>
+          )}
+
+          {/* Rumble embed — show when no YouTube available */}
+          {episode.rumbleVideoId && !episode.youtubeVideoId && (
+            <div className="relative w-full overflow-hidden rounded-lg border border-emerald-500/20 bg-void aspect-video">
+              <iframe
+                src={`https://rumble.com/embed/${episode.rumbleVideoId}/`}
+                title={episode.title}
+                allowFullScreen
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
+          )}
+
           {/* Watch on YouTube CTA */}
-          {episode.youtubeVideoId && (
+          {episode.youtubeVideoId && episode.status !== "unavailable" && (
             <a
               href={`https://www.youtube.com/watch?v=${episode.youtubeVideoId}`}
               target="_blank"
@@ -157,6 +185,19 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
             >
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><path fill="#fff" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
               Watch on YouTube
+            </a>
+          )}
+
+          {/* Watch on Rumble CTA */}
+          {episode.rumbleVideoId && (
+            <a
+              href={`https://rumble.com/${episode.rumbleVideoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 font-mono text-xs text-emerald-400 transition hover:bg-emerald-500/20"
+            >
+              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+              Watch on Rumble
             </a>
           )}
 
@@ -186,21 +227,46 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               {{
                 overview: (
                   <div className="space-y-6">
-                    {/* Short synopsis */}
-                    {episode.summaryShort && (
-                      <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-4">
-                        <p className="text-sm text-text-primary leading-relaxed font-medium">
-                          {episode.summaryShort}
-                        </p>
-                      </div>
-                    )}
-
                     {/* Summary */}
                     {episode.summaryLong && (
                       <SectionCard title="Summary">
                         <p className="text-sm text-text-primary leading-relaxed">
                           {episode.summaryLong}
                         </p>
+                      </SectionCard>
+                    )}
+
+                    {/* Guests (inline for mobile) */}
+                    {episode.guests.length > 0 && (
+                      <SectionCard title={`Guests (${episode.guests.length})`}>
+                        <div className="flex flex-wrap gap-1.5">
+                          {episode.guests.map((g) => (
+                            <Link
+                              key={g.person.slug}
+                              href={`/people/${g.person.slug}`}
+                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-text-primary hover:border-accent-green/30 hover:text-accent-green transition-colors"
+                            >
+                              {g.person.displayName}
+                            </Link>
+                          ))}
+                        </div>
+                      </SectionCard>
+                    )}
+
+                    {/* Topics (inline for mobile) */}
+                    {episode.topics.length > 0 && (
+                      <SectionCard title={`Topics (${episode.topics.length})`}>
+                        <div className="flex flex-wrap gap-1.5">
+                          {episode.topics.map((t) => (
+                            <Link
+                              key={t.topic.slug}
+                              href={`/topics/${t.topic.slug}`}
+                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-text-primary hover:border-accent-green/30 hover:text-accent-green transition-colors"
+                            >
+                              {t.topic.title}
+                            </Link>
+                          ))}
+                        </div>
                       </SectionCard>
                     )}
 
@@ -229,21 +295,17 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                     </div>
                   </div>
                 ),
-                transcript: (
-                  <TerminalPanel header="TRANSCRIPT">
-                    {episode.segments.length > 0 ? (
+                ...(hasTranscript ? {
+                  transcript: (
+                    <TerminalPanel header="TRANSCRIPT">
                       <TranscriptViewer
                         segments={episode.segments}
                         hasVideoEmbed={!!episode.youtubeVideoId}
                         initialTimestamp={initialTimestamp}
                       />
-                    ) : (
-                      <p className="py-4 text-center font-mono text-xs text-text-muted">
-                        No transcript available for this episode
-                      </p>
-                    )}
-                  </TerminalPanel>
-                ),
+                    </TerminalPanel>
+                  ),
+                } : {}),
                 quotes: (
                   <div className="space-y-4">
                     {episode.quotes.length > 0 ? (
@@ -290,7 +352,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               <MetaRow label="Duration" value={formatDuration(episode.duration)} />
               <MetaRow
                 label="Status"
-                value={<StatusBadge label={episode.status} variant="green" />}
+                value={<StatusBadge label={episode.status} variant={episode.status === "unavailable" ? "muted" : "green"} />}
               />
               {episode.contentType && episode.contentType !== "original" && (
                 <MetaRow
@@ -328,28 +390,32 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           />
 
           {/* Topics */}
-          <SectionCard>
-            <EntityChipList
-              title="Topics"
-              entities={episode.topics.map((t) => ({
-                label: t.topic.title,
-                slug: t.topic.slug,
-                type: "topic" as const,
-              }))}
-            />
-          </SectionCard>
+          {episode.topics.length > 0 && (
+            <SectionCard>
+              <EntityChipList
+                title="Topics"
+                entities={episode.topics.map((t) => ({
+                  label: t.topic.title,
+                  slug: t.topic.slug,
+                  type: "topic" as const,
+                }))}
+              />
+            </SectionCard>
+          )}
 
           {/* Lore */}
-          <SectionCard>
-            <EntityChipList
-              title="Lore"
-              entities={episode.loreEntries.map((l) => ({
-                label: l.loreEntry.title,
-                slug: l.loreEntry.slug,
-                type: "lore" as const,
-              }))}
-            />
-          </SectionCard>
+          {episode.loreEntries.length > 0 && (
+            <SectionCard>
+              <EntityChipList
+                title="Lore"
+                entities={episode.loreEntries.map((l) => ({
+                  label: l.loreEntry.title,
+                  slug: l.loreEntry.slug,
+                  type: "lore" as const,
+                }))}
+              />
+            </SectionCard>
+          )}
         </div>
       </div>
     </main>

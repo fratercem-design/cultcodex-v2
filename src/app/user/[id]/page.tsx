@@ -45,9 +45,7 @@ export default async function UserProfilePage({ params }: PageProps) {
     getUserFavorites(id),
   ]);
 
-  const publishedFavorites = favorites.filter(
-    (f) => f.episode.status === "published"
-  );
+  const publishedFavorites = favorites;
 
   const tabs = [
     { id: "activity", label: "Activity", count: activity.length },

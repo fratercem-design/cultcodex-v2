@@ -58,13 +58,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       {/* Filter bar */}
       {query && (
         <div className="mb-6 flex flex-wrap gap-2">
-          {["episodes", "people", "lore", "topics", "quotes", "transcripts"].map((t) => {
+          {["episodes", "people", "lore", "topics", "quotes"].map((t) => {
             const currentTypes = params.type?.split(",").filter(Boolean) ?? [];
             const isActive = currentTypes.length === 0 || currentTypes.includes(t);
             const newTypes = isActive && currentTypes.length > 0
               ? currentTypes.filter((ct) => ct !== t)
               : [...currentTypes, t];
-            const href = `/search?q=${encodeURIComponent(query)}${newTypes.length > 0 && newTypes.length < 6 ? `&type=${newTypes.join(",")}` : ""}`;
+            const href = `/search?q=${encodeURIComponent(query)}${newTypes.length > 0 && newTypes.length < 5 ? `&type=${newTypes.join(",")}` : ""}`;
             return (
               <Link
                 key={t}
@@ -82,20 +82,49 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         </div>
       )}
 
-      {/* No query yet — suggested searches */}
+      {/* No query yet — explore the archive */}
       {!results && (
-        <div className="space-y-4">
-          <p className="font-mono text-xs text-text-muted">Popular searches:</p>
-          <div className="flex flex-wrap gap-2">
-            {["tarot reading", "Lilith", "open panel", "Alexandra Mayers", "Cupid and Psyche", "astrology", "trolls", "scary tales", "Psyche Awakens", "mythology"].map((q) => (
+        <div className="space-y-6">
+          <div>
+            <h2 className="font-mono text-sm font-bold text-text-primary tracking-wider uppercase mb-1">
+              Explore the Archive
+            </h2>
+            <p className="font-mono text-xs text-text-muted">
+              Search for episodes, people, lore, topics, or quotes
+            </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { label: "Browse Episodes", href: "/episodes" },
+              { label: "Browse People", href: "/people" },
+              { label: "Browse Lore", href: "/lore" },
+              { label: "Browse Topics", href: "/topics" },
+            ].map((link) => (
               <Link
-                key={q}
-                href={`/search?q=${encodeURIComponent(q)}`}
-                className="rounded-full border border-border bg-surface px-3 py-1.5 font-mono text-xs text-text-primary transition-colors hover:border-accent-green hover:text-accent-green"
+                key={link.href}
+                href={link.href}
+                className="group flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3 font-mono text-sm text-text-primary transition-all hover:border-accent-green hover:text-accent-green hover:bg-accent-green/5"
               >
-                {q}
+                {link.label}
+                <span className="text-text-muted group-hover:text-accent-green transition-colors">&rarr;</span>
               </Link>
             ))}
+          </div>
+
+          <div>
+            <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest mb-3">Try searching for:</p>
+            <div className="flex flex-wrap gap-2">
+              {["tarot", "mythology", "quantum", "panel discussion", "astrology", "Lilith", "Cupid and Psyche", "scary tales"].map((q) => (
+                <Link
+                  key={q}
+                  href={`/search?q=${encodeURIComponent(q)}`}
+                  className="rounded-full border border-border bg-surface px-4 py-2 font-mono text-xs text-text-primary transition-all hover:border-accent-green hover:text-accent-green hover:bg-accent-green/5 hover:shadow-sm"
+                >
+                  {q}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       )}

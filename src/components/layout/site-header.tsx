@@ -2,15 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { auth, type SessionWithCodex } from "@/lib/auth";
 import { UserMenu } from "@/components/auth/user-menu";
+import { IconSearch } from "@/components/graphics/codex-icons";
 
 const navItems = [
-  { label: "Live", href: "/live" },
   { label: "Episodes", href: "/episodes" },
   { label: "People", href: "/people" },
   { label: "Lore", href: "/lore" },
   { label: "Series", href: "/series" },
   { label: "Quotes", href: "/quotes" },
-  { label: "Transcripts", href: "/transcripts" },
   { label: "Stats", href: "/stats" },
   { label: "Topics", href: "/topics" },
 ];
@@ -50,10 +49,11 @@ export async function SiteHeader() {
         <div className="flex items-center gap-3">
           <Link
             href="/search"
-            className="font-mono text-xs text-text-muted hover:text-accent-green border border-border rounded px-3 py-1 transition-colors"
+            className="inline-flex items-center gap-1.5 font-mono text-xs text-text-muted hover:text-accent-green border border-border rounded px-3 py-1 transition-colors"
             aria-label="Search the archive"
           >
-            ⌘K Search
+            <IconSearch size={14} className="text-text-muted" />
+            Search
           </Link>
           <UserMenu user={(session as SessionWithCodex)?.codexUser ?? null} />
         </div>

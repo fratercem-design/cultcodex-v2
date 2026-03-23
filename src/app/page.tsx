@@ -11,6 +11,9 @@ import { getArchiveStats } from "@/lib/queries/stats";
 import { getQuotes } from "@/lib/queries/quotes";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
+import { IconTransmission, IconPerson, IconScroll, IconQuote, IconTopic, IconSeries } from "@/components/graphics/codex-icons";
+import { MysticalDivider } from "@/components/graphics/mystical-divider";
+import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 
 export const revalidate = 300;
 
@@ -38,6 +41,8 @@ export default async function HomePage() {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-void" />
+        <SacredGeometryOverlay />
+        <FloatingParticles count={16} />
 
         {/* Live banner */}
         {isLive && (
@@ -76,12 +81,12 @@ export default async function HomePage() {
         {/* Archive stats */}
         <ArchiveStatsBar
           stats={[
-            { icon: "\uD83C\uDFAC", label: "Episodes", value: stats.episodes },
-            { icon: "\uD83D\uDC64", label: "People", value: stats.people },
-            { icon: "\uD83D\uDCDC", label: "Lore Entries", value: stats.loreEntries },
-            { icon: "\uD83D\uDCAC", label: "Quotes", value: stats.quotes },
-            { icon: "\uD83C\uDFF7\uFE0F", label: "Topics", value: stats.topics },
-            { icon: "\uD83D\uDCDA", label: "Series", value: stats.series },
+            { icon: <IconTransmission size={22} />, label: "Episodes", value: stats.episodes },
+            { icon: <IconPerson size={22} />, label: "People", value: stats.people },
+            { icon: <IconScroll size={22} />, label: "Lore Entries", value: stats.loreEntries },
+            { icon: <IconQuote size={22} />, label: "Quotes", value: stats.quotes },
+            { icon: <IconTopic size={22} />, label: "Topics", value: stats.topics },
+            { icon: <IconSeries size={22} />, label: "Series", value: stats.series },
           ]}
         />
 
@@ -134,6 +139,8 @@ export default async function HomePage() {
           </SectionCard>
         )}
 
+        <MysticalDivider />
+
         {/* Recent Transmissions */}
         <SectionCard title="Recent Transmissions">
           {recentCards.length > 0 ? (
@@ -181,26 +188,28 @@ export default async function HomePage() {
           </SectionCard>
         )}
 
+        <MysticalDivider />
+
         {/* Quick Links */}
         <section>
           <h2 className="mb-4 font-display text-lg font-bold text-accent-gold">
             Explore the Archive
           </h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              { href: "/episodes", icon: "\uD83C\uDFAC", label: "Episodes", count: stats.episodes, desc: "Browse all transmissions" },
-              { href: "/people", icon: "\uD83D\uDC64", label: "People", count: stats.people, desc: "Guests, hosts, and figures" },
-              { href: "/lore", icon: "\uD83D\uDCDC", label: "Lore", count: stats.loreEntries, desc: "Concepts, doctrines, and myths" },
-              { href: "/topics", icon: "\uD83C\uDFF7\uFE0F", label: "Topics", count: stats.topics, desc: "Key themes and subjects" },
-              { href: "/series", icon: "\uD83D\uDCDA", label: "Series", count: stats.series, desc: "Collections and arcs" },
-              { href: "/quotes", icon: "\uD83D\uDCAC", label: "Quotes", count: stats.quotes, desc: "Notable words and wisdom" },
-            ].map((item) => (
+            {([
+              { href: "/episodes", icon: <IconTransmission size={24} />, label: "Episodes", count: stats.episodes, desc: "Browse all transmissions" },
+              { href: "/people", icon: <IconPerson size={24} />, label: "People", count: stats.people, desc: "Guests, hosts, and figures" },
+              { href: "/lore", icon: <IconScroll size={24} />, label: "Lore", count: stats.loreEntries, desc: "Concepts, doctrines, and myths" },
+              { href: "/topics", icon: <IconTopic size={24} />, label: "Topics", count: stats.topics, desc: "Key themes and subjects" },
+              { href: "/series", icon: <IconSeries size={24} />, label: "Series", count: stats.series, desc: "Collections and arcs" },
+              { href: "/quotes", icon: <IconQuote size={24} />, label: "Quotes", count: stats.quotes, desc: "Notable words and wisdom" },
+            ] as const).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="group flex items-center gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-green/30 hover:bg-elevated"
+                className="group relative flex items-center gap-3 rounded-lg border border-border bg-surface p-4 transition-all hover:border-accent-green/30 hover:bg-elevated overflow-hidden"
               >
-                <span className="text-2xl">{item.icon}</span>
+                <div className="flex-shrink-0">{item.icon}</div>
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors">

@@ -4,6 +4,7 @@ import { SeriesCard } from "@/components/archive/series-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getSeries } from "@/lib/queries/series";
 import { getSeriesAggregates } from "@/lib/queries/stats";
+import { IconSeries, IconTransmission } from "@/components/graphics/codex-icons";
 
 export const revalidate = 600;
 
@@ -19,9 +20,9 @@ export default async function SeriesPage() {
   ]);
 
   const glanceItems = [
-    { icon: "\uD83D\uDCDA", label: `${aggregates.total} series` },
+    { icon: <IconSeries size={14} />, label: `${aggregates.total} series` },
     ...(aggregates.totalEpisodes > 0
-      ? [{ icon: "\uD83C\uDFAC", label: `${aggregates.totalEpisodes} episodes across all series` }]
+      ? [{ icon: <IconTransmission size={14} />, label: `${aggregates.totalEpisodes} episodes across all series` }]
       : []),
   ];
 

@@ -6,6 +6,7 @@ import { SortFilterBar } from "@/components/archive/sort-filter-bar";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { getTopics, getTopicCount } from "@/lib/queries/topics";
 import { getTopicAggregates } from "@/lib/queries/stats";
+import { IconTopic, IconLink } from "@/components/graphics/codex-icons";
 import {
   DEFAULT_PAGE_SIZE,
   parsePage,
@@ -21,6 +22,7 @@ export const metadata = {
 };
 
 const SORT_OPTIONS = [
+  { label: "Most Connected", value: "connected" },
   { label: "A → Z", value: "az" },
   { label: "Z → A", value: "za" },
 ];
@@ -31,7 +33,7 @@ interface TopicsPageProps {
 
 export default async function TopicsPage({ searchParams }: TopicsPageProps) {
   const params = await searchParams;
-  const currentSort = params.sort ?? "az";
+  const currentSort = params.sort ?? "connected";
 
   const [totalCount, aggregates] = await Promise.all([
     getTopicCount(),
@@ -43,6 +45,11 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
   const topics = await getTopics({ take, skip });
 
   const sorted = [...topics].sort((a, b) => {
+    if (currentSort === "connected") {
+      const aTotal = a._count.episodes + a._count.people + a._count.lore;
+      const bTotal = b._count.episodes + b._count.people + b._count.lore;
+      return bTotal - aTotal || a.title.localeCompare(b.title);
+    }
     if (currentSort === "za") {
       return b.title.localeCompare(a.title);
     }
@@ -52,8 +59,8 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
   const glanceItems = [
-    { icon: "\uD83C\uDFF7\uFE0F", label: `${aggregates.total} topics` },
-    ...(aggregates.linkedEpisodes > 0 ? [{ icon: "\uD83D\uDD17", label: `${aggregates.linkedEpisodes} episode links` }] : []),
+    { icon: <IconTopic size={14} />, label: `${aggregates.total} topic${aggregates.total !== 1 ? "s" : ""}` },
+    ...(aggregates.linkedEpisodes > 0 ? [{ icon: <IconLink size={14} />, label: `${aggregates.linkedEpisodes} episode link${aggregates.linkedEpisodes !== 1 ? "s" : ""}` }] : []),
   ];
 
   return (
@@ -83,9 +90,9 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
                   title: topic.title,
                   slug: topic.slug,
                   description: topic.description,
-                  episodeCount: topic.episodes.length,
-                  personCount: topic.people.length,
-                  loreCount: topic.lore.length,
+                  episodeCount: topic._count.episodes,
+                  personCount: topic._count.people,
+                  loreCount: topic._count.lore,
                 }}
               />
             ))}

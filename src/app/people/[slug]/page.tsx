@@ -16,6 +16,7 @@ import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { formatDate } from "@/lib/format/date";
+import { editorialFrame } from "@/lib/format/editorial-frame";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
@@ -127,7 +128,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             {person.loreSummary && (
               <SectionCard title="Lore Summary">
                 <p className="text-sm text-text-primary leading-relaxed">
-                  {person.loreSummary}
+                  {editorialFrame(person.loreSummary)}
                 </p>
               </SectionCard>
             )}

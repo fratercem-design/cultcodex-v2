@@ -47,14 +47,14 @@ interface EpisodesPageProps {
 }
 
 function resolveSort(sort?: string): {
-  orderBy: "episodeNumber" | "airDate";
+  orderBy: "episodeNumber" | "airDate" | "title";
   order: "asc" | "desc";
 } {
   switch (sort) {
     case "oldest":
       return { orderBy: "episodeNumber", order: "asc" };
     case "az":
-      return { orderBy: "episodeNumber", order: "desc" };
+      return { orderBy: "title", order: "asc" };
     default:
       return { orderBy: "episodeNumber", order: "desc" };
   }
@@ -70,28 +70,24 @@ export default async function EpisodesPage({
 
   const [aggregates, totalCount] = await Promise.all([
     getEpisodeAggregates(),
-    getEpisodeCount("published"),
+    getEpisodeCount(),
   ]);
 
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
   const episodes = await getEpisodes({ take, skip, orderBy, order });
-  let cards = episodes.map(formatEpisodeForCard);
-
-  if (currentSort === "az") {
-    cards = cards.sort((a, b) => a.title.localeCompare(b.title));
-  }
+  const cards = episodes.map(formatEpisodeForCard);
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
   const glanceItems = [
-    { icon: "\uD83C\uDFAC", label: `${aggregates.total} episodes` },
+    { icon: "\uD83C\uDFAC", label: `${aggregates.total} episode${aggregates.total !== 1 ? "s" : ""}` },
     ...(aggregates.earliestDate && aggregates.latestDate
       ? [{ icon: "\uD83D\uDCC5", label: `${formatDate(aggregates.earliestDate)} — ${formatDate(aggregates.latestDate)}` }]
       : []),
     ...(aggregates.totalGuests > 0
-      ? [{ icon: "\uD83C\uDFA4", label: `${aggregates.totalGuests} guest appearances` }]
+      ? [{ icon: "\uD83C\uDFA4", label: `${aggregates.totalGuests} guest appearance${aggregates.totalGuests !== 1 ? "s" : ""}` }]
       : []),
   ];
 

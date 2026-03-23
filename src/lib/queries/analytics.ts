@@ -66,7 +66,6 @@ export async function getDailyActivity(days = 30) {
 
 export async function getTopEpisodesByReactions(limit = 10) {
   const episodes = await prisma.episode.findMany({
-    where: { status: "published" },
     select: {
       title: true,
       slug: true,
@@ -87,7 +86,6 @@ export async function getTopEpisodesByReactions(limit = 10) {
 
 export async function getTopEpisodesByComments(limit = 10) {
   const episodes = await prisma.episode.findMany({
-    where: { status: "published" },
     select: {
       title: true,
       slug: true,
@@ -150,17 +148,15 @@ export async function getArchiveStats() {
     reactions,
     durationData,
   ] = await Promise.all([
-    prisma.episode.count({ where: { status: "published" } }),
+    prisma.episode.count(),
     prisma.person.count(),
     prisma.loreEntry.count(),
     prisma.quote.count(),
-    prisma.transcriptSegment.count({
-      where: { episode: { status: "published" } },
-    }),
+    prisma.transcriptSegment.count(),
     prisma.codexComment.count(),
     prisma.episodeReaction.count(),
     prisma.episode.findMany({
-      where: { status: "published", duration: { not: null } },
+      where: { duration: { not: null } },
       select: { duration: true },
     }),
   ]);

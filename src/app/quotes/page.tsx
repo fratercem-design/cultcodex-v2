@@ -4,6 +4,7 @@ import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { getQuotes, getQuoteCount } from "@/lib/queries/quotes";
+import { IconQuote } from "@/components/graphics/codex-icons";
 import {
   DEFAULT_PAGE_SIZE,
   parsePage,
@@ -33,7 +34,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
   const glanceItems = [
-    { icon: "\uD83D\uDCAC", label: `${totalCount} notable quote${totalCount !== 1 ? "s" : ""}` },
+    { icon: <IconQuote size={14} />, label: `${totalCount} notable quote${totalCount !== 1 ? "s" : ""}` },
   ];
 
   return (

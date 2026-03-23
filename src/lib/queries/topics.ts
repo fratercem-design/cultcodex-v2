@@ -9,6 +9,12 @@ export function buildTopicInclude() {
   } satisfies Prisma.TopicInclude;
 }
 
+export function buildTopicCountInclude() {
+  return {
+    _count: { select: { episodes: true, people: true, lore: true } },
+  } satisfies Prisma.TopicInclude;
+}
+
 export async function getTopics(options?: {
   take?: number;
   skip?: number;
@@ -16,7 +22,7 @@ export async function getTopics(options?: {
   const { take = 50, skip = 0 } = options ?? {};
 
   return prisma.topic.findMany({
-    include: buildTopicInclude(),
+    include: buildTopicCountInclude(),
     orderBy: { title: "asc" },
     take,
     skip,

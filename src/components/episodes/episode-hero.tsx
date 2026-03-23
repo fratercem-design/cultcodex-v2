@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { SacredGeometryOverlay } from "@/components/graphics/sacred-geometry";
 
 interface EpisodeHeroProps {
   title: string;
@@ -35,6 +36,7 @@ export function EpisodeHero({
         unoptimized={!!thumbnailUrl}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-void via-black/70 to-black/50" />
+      <SacredGeometryOverlay />
 
       {/* Top badges */}
       <div className="absolute top-4 left-4 right-4 z-10 flex items-start justify-between">

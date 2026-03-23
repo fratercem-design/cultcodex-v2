@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 interface GlanceItem {
-  icon?: string;
+  icon?: React.ReactNode;
   label: string;
   href?: string;
   variant?: "default" | "purple";
@@ -25,7 +25,7 @@ export function EntityGlanceBar({ items }: EntityGlanceBarProps) {
 
           const content = (
             <>
-              {item.icon && <span className="text-xs">{item.icon}</span>}
+              {item.icon && <span className="flex items-center text-xs">{item.icon}</span>}
               {item.label}
             </>
           );

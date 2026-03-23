@@ -38,7 +38,6 @@ export async function getEpisodesWithTranscripts(options: {
 }): Promise<EpisodeTranscriptSummary[]> {
   const episodes = await prisma.episode.findMany({
     where: {
-      status: "published",
       segments: { some: {} },
     },
     select: {
@@ -76,7 +75,6 @@ export async function getEpisodesWithTranscripts(options: {
 export async function getEpisodesWithTranscriptsCount(): Promise<number> {
   return prisma.episode.count({
     where: {
-      status: "published",
       segments: { some: {} },
     },
   });
@@ -88,7 +86,6 @@ export async function searchWithinTranscripts(
 ): Promise<TranscriptSearchResults> {
   const where = {
     text: { contains: query, mode: "insensitive" as const },
-    episode: { status: "published" as const },
   };
 
   const [hits, totalCount] = await Promise.all([
@@ -128,11 +125,9 @@ export async function searchWithinTranscripts(
 export async function getTranscriptStats(): Promise<TranscriptStats> {
   const [episodeCount, totalSegments] = await Promise.all([
     prisma.episode.count({
-      where: { status: "published", segments: { some: {} } },
+      where: { segments: { some: {} } },
     }),
-    prisma.transcriptSegment.count({
-      where: { episode: { status: "published" } },
-    }),
+    prisma.transcriptSegment.count(),
   ]);
   return { episodeCount, totalSegments };
 }

@@ -96,8 +96,8 @@ async function main() {
       const segments = JSON.parse(fs.readFileSync(transcriptPath, "utf-8"));
       const transcriptText = buildTranscriptText(segments);
 
-      // Truncate very long transcripts to ~150k tokens (~600k chars)
-      const MAX_CHARS = 600_000;
+      // Truncate very long transcripts to ~100k tokens (~400k chars)
+      const MAX_CHARS = 400_000;
       const truncatedTranscript = transcriptText.length > MAX_CHARS
         ? transcriptText.slice(0, MAX_CHARS) + "\n\n[TRANSCRIPT TRUNCATED — original was " + transcriptText.length + " chars]"
         : transcriptText;
@@ -124,8 +124,8 @@ async function main() {
       );
       success++;
 
-      // Rate limit: wait 45s to stay under 30k input tokens/min
-      await new Promise((resolve) => setTimeout(resolve, 45000));
+      // Rate limit: wait 65s to stay under 50k input tokens/min (Haiku)
+      await new Promise((resolve) => setTimeout(resolve, 65000));
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       log(`  FAILED ${ep.slug}: ${msg}`);

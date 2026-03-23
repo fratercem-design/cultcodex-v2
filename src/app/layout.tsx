@@ -26,15 +26,15 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CultCodex — Matrix Archive",
-  description: "The sacred intelligence terminal of the Cult of Psyche",
+  title: "CultCodex — The Living Archive",
+  description: "The living archive of the Cult of Psyche.",
   icons: {
     icon: "/favicon.jpg",
     apple: "/favicon.jpg",
   },
   openGraph: {
-    title: "CultCodex — Matrix Archive",
-    description: "The sacred intelligence terminal of the Cult of Psyche",
+    title: "CultCodex — The Living Archive",
+    description: "The living archive of the Cult of Psyche.",
     images: [{ url: "/social-share.jpg", width: 1200, height: 630 }],
   },
   twitter: {

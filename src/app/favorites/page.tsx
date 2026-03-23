@@ -34,9 +34,7 @@ export default async function FavoritesPage() {
     },
   });
 
-  const publishedFavorites = favorites.filter(
-    (f) => f.episode.status === "published"
-  );
+  const publishedFavorites = favorites;
 
   return (
     <div>

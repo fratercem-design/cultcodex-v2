@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const count = await prisma.episode.count({ where: { status: "published" } });
+  const count = await prisma.episode.count();
 
   if (count === 0) {
     return NextResponse.redirect(new URL("/episodes", process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"));
@@ -12,7 +12,6 @@ export async function GET() {
 
   const randomOffset = Math.floor(Math.random() * count);
   const episode = await prisma.episode.findFirst({
-    where: { status: "published" },
     skip: randomOffset,
     select: { slug: true },
   });

@@ -30,7 +30,7 @@ export async function getSeriesEpisodes(seriesId: string, options?: {
   skip?: number;
   status?: ContentStatus;
 }) {
-  const { take = 24, skip = 0, status = "published" } = options ?? {};
+  const { take = 24, skip = 0, status } = options ?? {};
 
   return prisma.episode.findMany({
     where: { seriesId, status },
@@ -54,6 +54,6 @@ export async function getSeriesEpisodes(seriesId: string, options?: {
 
 export async function getSeriesEpisodeCount(seriesId: string, status?: ContentStatus) {
   return prisma.episode.count({
-    where: { seriesId, status: status ?? "published" },
+    where: { seriesId, status },
   });
 }

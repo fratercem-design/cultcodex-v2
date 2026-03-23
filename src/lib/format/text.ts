@@ -3,6 +3,8 @@ export function truncate(text: string, maxLength: number): string {
   return text.slice(0, maxLength) + "...";
 }
 
+export { cleanTitle } from "./clean-title";
+
 export function slugify(text: string): string {
   return text
     .toLowerCase()

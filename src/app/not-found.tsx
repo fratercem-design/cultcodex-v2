@@ -1,13 +1,19 @@
 import Link from "next/link";
+import { VoidSigil } from "@/components/graphics/void-sigil";
+import { OrnamentalBreak } from "@/components/graphics/mystical-divider";
 
 export default function NotFound() {
   return (
     <main className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 text-center">
-      <span className="text-6xl">🔮</span>
-      <h1 className="mt-4 font-display text-3xl font-bold text-accent-gold">
+      <VoidSigil size={140} />
+
+      <h1 className="mt-6 font-display text-4xl font-bold text-accent-gold">
         404
       </h1>
-      <p className="mt-2 font-mono text-sm text-accent-cyan">
+
+      <OrnamentalBreak className="my-3" />
+
+      <p className="font-mono text-sm text-accent-cyan">
         This transmission was lost in the void
       </p>
       <p className="mt-1 font-mono text-xs text-text-muted">

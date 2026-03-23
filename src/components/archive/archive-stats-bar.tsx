@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 interface StatItem {
-  icon: string;
+  icon: React.ReactNode;
   label: string;
   value: number;
 }
@@ -43,7 +43,7 @@ export function ArchiveStatsBar({ stats }: ArchiveStatsBarProps) {
           key={stat.label}
           className="rounded-lg border border-border bg-surface p-4 text-center transition-colors hover:border-accent-green/30"
         >
-          <span className="text-lg">{stat.icon}</span>
+          <div className="flex items-center justify-center">{stat.icon}</div>
           <p className="mt-1 font-mono text-2xl font-bold text-accent-green">
             <AnimatedCounter value={stat.value} />
           </p>

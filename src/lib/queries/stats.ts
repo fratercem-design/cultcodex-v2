@@ -4,7 +4,7 @@ import type { ArchiveStats } from "@/types";
 export async function getArchiveStats(): Promise<ArchiveStats> {
   const [episodes, people, loreEntries, quotes, series, topics] =
     await Promise.all([
-      prisma.episode.count({ where: { status: "published" } }),
+      prisma.episode.count(),
       prisma.person.count(),
       prisma.loreEntry.count(),
       prisma.quote.count(),
@@ -17,14 +17,14 @@ export async function getArchiveStats(): Promise<ArchiveStats> {
 
 export async function getEpisodeAggregates() {
   const [total, earliest, latest, guestCount] = await Promise.all([
-    prisma.episode.count({ where: { status: "published" } }),
+    prisma.episode.count(),
     prisma.episode.findFirst({
-      where: { status: "published", airDate: { not: null } },
+      where: { airDate: { not: null } },
       orderBy: { airDate: "asc" },
       select: { airDate: true },
     }),
     prisma.episode.findFirst({
-      where: { status: "published", airDate: { not: null } },
+      where: { airDate: { not: null } },
       orderBy: { airDate: "desc" },
       select: { airDate: true },
     }),
@@ -73,7 +73,7 @@ export async function getTopicAggregates() {
 export async function getSeriesAggregates() {
   const [total, totalEpisodes] = await Promise.all([
     prisma.series.count(),
-    prisma.episode.count({ where: { seriesId: { not: null }, status: "published" } }),
+    prisma.episode.count({ where: { seriesId: { not: null } } }),
   ]);
 
   return { total, totalEpisodes };

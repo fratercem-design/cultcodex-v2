@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 
   const [episodes, people, lore, topics] = await Promise.all([
     prisma.episode.findMany({
-      where: { title: { contains: q, mode: "insensitive" }, status: "published" },
+      where: { title: { contains: q, mode: "insensitive" } },
       select: { title: true, slug: true },
       take: 3,
     }),

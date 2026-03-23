@@ -16,18 +16,18 @@ export function buildMetadata({
   path,
 }: BuildMetadataInput): Metadata {
   const cleanDescription =
-    description?.trim() || "The matrix archive of the Cult of Psyche.";
+    description?.trim() || "The living archive of the Cult of Psyche.";
 
   const url = `${SITE_URL}${path}`;
 
   return {
-    title: `${title} | ${SITE_NAME}`,
+    title: `${title} — ${SITE_NAME}`,
     description: cleanDescription,
     alternates: {
       canonical: url,
     },
     openGraph: {
-      title: `${title} | ${SITE_NAME}`,
+      title: `${title} — ${SITE_NAME}`,
       description: cleanDescription,
       url,
       siteName: SITE_NAME,
@@ -35,7 +35,7 @@ export function buildMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | ${SITE_NAME}`,
+      title: `${title} — ${SITE_NAME}`,
       description: cleanDescription,
     },
   };

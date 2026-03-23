@@ -1,4 +1,5 @@
 import { SectionCard } from "@/components/ui/section-card";
+import { IconMicrophone, IconQuote, IconTranscript, IconFlame, IconComment } from "@/components/graphics/codex-icons";
 
 interface EpisodeStatsPanelProps {
   guestCount: number;
@@ -9,11 +10,11 @@ interface EpisodeStatsPanelProps {
 }
 
 const STATS = [
-  { icon: "\uD83C\uDFA4", label: "Guests" },
-  { icon: "\uD83D\uDCAC", label: "Quotes" },
-  { icon: "\uD83D\uDCDD", label: "Transcript" },
-  { icon: "\uD83D\uDD25", label: "Reactions" },
-  { icon: "\uD83D\uDDE8\uFE0F", label: "Comments" },
+  { icon: <IconMicrophone size={16} />, label: "Guests" },
+  { icon: <IconQuote size={16} />, label: "Quotes" },
+  { icon: <IconTranscript size={16} />, label: "Transcript" },
+  { icon: <IconFlame size={16} />, label: "Reactions" },
+  { icon: <IconComment size={16} />, label: "Comments" },
 ] as const;
 
 export function EpisodeStatsPanel({
@@ -37,7 +38,7 @@ export function EpisodeStatsPanel({
           return (
             <div key={stat.label} className="flex items-center justify-between">
               <span className="flex items-center gap-2 font-mono text-xs text-text-muted">
-                <span className="text-sm">{stat.icon}</span>
+                {stat.icon}
                 {stat.label}
               </span>
               <span className="font-mono text-xs font-semibold text-text-primary">

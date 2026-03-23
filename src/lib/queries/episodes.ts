@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { cleanTitle } from "@/lib/format/text";
 import type { Prisma, ContentStatus, ContentType } from "@/generated/prisma/client";
 
 // Type for episode with all relations loaded
@@ -34,7 +35,7 @@ export interface EpisodeCardData {
 export function formatEpisodeForCard(episode: EpisodeWithRelations): EpisodeCardData {
   return {
     id: episode.id,
-    title: episode.title,
+    title: cleanTitle(episode.title),
     slug: episode.slug,
     episodeNumber: episode.episodeNumber,
     airDate: episode.airDate,
@@ -50,11 +51,11 @@ export async function getEpisodes(options?: {
   status?: ContentStatus;
   take?: number;
   skip?: number;
-  orderBy?: "airDate" | "episodeNumber";
+  orderBy?: "airDate" | "episodeNumber" | "title";
   order?: "asc" | "desc";
 }) {
   const {
-    status = "published",
+    status,
     take = 20,
     skip = 0,
     orderBy = "episodeNumber",
@@ -62,7 +63,7 @@ export async function getEpisodes(options?: {
   } = options ?? {};
 
   return prisma.episode.findMany({
-    where: { status },
+    where: status ? { status } : undefined,
     include: buildEpisodeInclude(),
     orderBy: { [orderBy]: order },
     take,
@@ -117,7 +118,6 @@ export async function getRelatedEpisodes(episodeId: string, options?: {
     where: {
       seriesId: episode.seriesId,
       id: { notIn: excludeIds },
-      status: "published",
     },
     select: { id: true, title: true, slug: true, episodeNumber: true, airDate: true, summaryShort: true, status: true, contentType: true },
     orderBy: { episodeNumber: "desc" },

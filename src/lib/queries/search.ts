@@ -216,7 +216,6 @@ async function searchQuotes(query: string): Promise<SearchResultQuote[]> {
 
 function episodeWhere(query: string, filters?: SearchFilters) {
   const where: Record<string, unknown> = {
-    status: "published" as const,
     OR: [
       { title: { contains: query, mode: "insensitive" as const } },
       { slug: { contains: query, mode: "insensitive" as const } },
@@ -306,7 +305,6 @@ async function searchTranscripts(query: string): Promise<SearchResultTranscript[
     take: SEARCH_LIMIT,
   });
   return segments
-    .filter((s) => s.episode.status === "published")
     .map((s) => ({
       id: s.id,
       text: s.text,
@@ -322,7 +320,6 @@ async function countTranscripts(query: string): Promise<number> {
   return prisma.transcriptSegment.count({
     where: {
       text: { contains: query, mode: "insensitive" },
-      episode: { status: "published" },
     },
   });
 }

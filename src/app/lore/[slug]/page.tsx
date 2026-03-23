@@ -14,6 +14,7 @@ import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { formatDate } from "@/lib/format/date";
+import { editorialFrame } from "@/lib/format/editorial-frame";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
@@ -110,7 +111,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
             {entry.summary && (
               <SectionCard title="Summary">
                 <p className="text-sm text-text-primary leading-relaxed">
-                  {entry.summary}
+                  {editorialFrame(entry.summary)}
                 </p>
               </SectionCard>
             )}
@@ -118,7 +119,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
             {entry.fullEntry && (
               <SectionCard title="Full Entry">
                 <div className="prose prose-invert prose-sm max-w-none text-text-primary">
-                  {entry.fullEntry}
+                  {editorialFrame(entry.fullEntry)}
                 </div>
               </SectionCard>
             )}
