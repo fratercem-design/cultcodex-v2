@@ -10,6 +10,8 @@ const mockEpisode = {
   airDate: new Date("2024-01-15"),
   summaryShort: "The inaugural episode.",
   status: "published" as const,
+  thumbnailUrl: null,
+  segmentCount: 42,
   guestNames: ["Dr. Arcana"],
   topicNames: ["Consciousness", "Tarot"],
 };

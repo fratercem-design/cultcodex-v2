@@ -52,11 +52,12 @@ function resolveSort(sort?: string): {
 } {
   switch (sort) {
     case "oldest":
-      return { orderBy: "episodeNumber", order: "asc" };
+      return { orderBy: "airDate", order: "asc" };
     case "az":
       return { orderBy: "title", order: "asc" };
     default:
-      return { orderBy: "episodeNumber", order: "desc" };
+      // Default "newest" — sort by airDate desc for proper chronological order
+      return { orderBy: "airDate", order: "desc" };
   }
 }
 

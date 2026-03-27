@@ -9,6 +9,7 @@ import { SearchInput } from "@/components/search/search-input";
 import { getEpisodes, formatEpisodeForCard } from "@/lib/queries/episodes";
 import { getArchiveStats } from "@/lib/queries/stats";
 import { getQuotes } from "@/lib/queries/quotes";
+import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
 import { IconTransmission, IconPerson, IconScroll, IconQuote, IconTopic, IconSeries } from "@/components/graphics/codex-icons";
@@ -19,11 +20,18 @@ import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 export const revalidate = 300;
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, featuredSeries, popularTopics] = await Promise.all([
     getArchiveStats(),
-    getEpisodes({ take: 6, orderBy: "episodeNumber", order: "desc" }),
+    getEpisodes({ take: 6, orderBy: "airDate", order: "desc" }),
     getQuotes({ take: 3 }),
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }),
+    prisma.series.findMany({
+      where: { type: { notIn: ["other"] } },
+      select: { title: true, slug: true, type: true, coverImageUrl: true, description: true, _count: { select: { episodes: true } } },
+      orderBy: { episodes: { _count: "desc" } },
+      take: 4,
+    }),
+    getTopTopicsByEpisodes(12),
   ]);
 
   const recentCards = recentEpisodes.map(formatEpisodeForCard);
@@ -163,6 +171,70 @@ export default async function HomePage() {
           </div>
         </SectionCard>
 
+        {/* Featured Collections */}
+        {featuredSeries.length > 0 && (
+          <SectionCard title="Featured Collections">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {featuredSeries.map((s) => (
+                <Link
+                  key={s.slug}
+                  href={`/series/${s.slug}`}
+                  className="group flex items-start gap-3 rounded-lg border border-border bg-surface/50 p-3 transition-all hover:border-accent-purple/30 hover:bg-elevated"
+                >
+                  {s.coverImageUrl ? (
+                    <img src={s.coverImageUrl} alt="" className="h-14 w-14 flex-shrink-0 rounded object-cover" />
+                  ) : (
+                    <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded bg-gradient-to-br from-accent-purple/10 to-accent-gold/10 text-xl">
+                      {s.type === "tarot" ? "🔮" : s.type === "panel" ? "🎙️" : s.type === "story" ? "📖" : "📚"}
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-purple transition-colors">
+                      {s.title}
+                    </h3>
+                    <p className="font-mono text-[10px] text-text-muted">
+                      {s._count.episodes} episode{s._count.episodes !== 1 ? "s" : ""}
+                    </p>
+                    {s.description && (
+                      <p className="mt-0.5 text-xs text-text-muted line-clamp-1">{s.description}</p>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-3">
+              <Link href="/series" className="font-mono text-xs text-accent-purple hover:underline">
+                View all series →
+              </Link>
+            </div>
+          </SectionCard>
+        )}
+
+        {/* Popular Topics */}
+        {popularTopics.length > 0 && (
+          <section>
+            <h2 className="mb-3 font-display text-lg font-bold text-accent-gold">
+              Popular Topics
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {popularTopics.map((topic, i) => (
+                <Link
+                  key={topic.slug}
+                  href={`/topics/${topic.slug}`}
+                  className={`inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-mono text-xs transition-colors hover:bg-elevated hover:border-accent-green/30 ${
+                    i < 4 ? "text-accent-gold" : i < 8 ? "text-accent-green" : "text-accent-cyan"
+                  }`}
+                >
+                  {topic.title}
+                  <span className="opacity-40 text-[9px]">{topic.count}</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <MysticalDivider />
+
         {/* Recent Quotes */}
         {recentQuotes.length > 0 && (
           <SectionCard title="Notable Quotes">
@@ -204,6 +276,7 @@ export default async function HomePage() {
               { href: "/topics", icon: <IconTopic size={24} />, label: "Topics", count: stats.topics, desc: "Key themes and subjects" },
               { href: "/series", icon: <IconSeries size={24} />, label: "Series", count: stats.series, desc: "Collections and arcs" },
               { href: "/quotes", icon: <IconQuote size={24} />, label: "Quotes", count: stats.quotes, desc: "Notable words and wisdom" },
+              { href: "/timeline", icon: <IconTransmission size={24} />, label: "Timeline", count: null, desc: "Chronological archive view" },
             ] as const).map((item) => (
               <Link
                 key={item.href}
@@ -216,9 +289,11 @@ export default async function HomePage() {
                     <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors">
                       {item.label}
                     </h3>
-                    <span className="font-mono text-[10px] text-accent-green">
-                      {item.count}
-                    </span>
+                    {item.count != null && (
+                      <span className="font-mono text-[10px] text-accent-green">
+                        {item.count}
+                      </span>
+                    )}
                   </div>
                   <p className="text-xs text-text-muted">{item.desc}</p>
                 </div>

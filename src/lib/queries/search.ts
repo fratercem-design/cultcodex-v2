@@ -152,24 +152,49 @@ export async function globalSearch(
 // Prisma `contains` + `mode: "insensitive"` maps to ILIKE %value%
 
 async function searchEpisodes(query: string, filters?: SearchFilters): Promise<SearchResultEpisode[]> {
-  // Exact title matches first, then partial matches
-  const [exact, partial] = await Promise.all([
+  const select = { id: true, title: true, slug: true, episodeNumber: true, airDate: true, summaryShort: true, status: true } as const;
+  const baseFilters = episodeBaseFilters(filters);
+
+  // Tiered search: exact title → title contains → summary → broad searchText
+  const [exactTitle, titleContains, summaryMatch, broadMatch] = await Promise.all([
     prisma.episode.findMany({
-      where: { ...episodeWhere(query, filters), title: { equals: query, mode: "insensitive" } },
-      select: { id: true, title: true, slug: true, episodeNumber: true, airDate: true, summaryShort: true, status: true },
+      where: { ...baseFilters, title: { equals: query, mode: "insensitive" } },
+      select,
       take: SEARCH_LIMIT,
     }),
     prisma.episode.findMany({
-      where: episodeWhere(query, filters),
-      select: { id: true, title: true, slug: true, episodeNumber: true, airDate: true, summaryShort: true, status: true },
-      orderBy: { episodeNumber: "desc" },
+      where: { ...baseFilters, title: { contains: query, mode: "insensitive" } },
+      select,
+      orderBy: { airDate: "desc" },
+      take: SEARCH_LIMIT,
+    }),
+    prisma.episode.findMany({
+      where: {
+        ...baseFilters,
+        OR: [
+          { summaryShort: { contains: query, mode: "insensitive" } },
+          { slug: { contains: query, mode: "insensitive" } },
+        ],
+      },
+      select,
+      orderBy: { airDate: "desc" },
+      take: SEARCH_LIMIT,
+    }),
+    prisma.episode.findMany({
+      where: {
+        ...baseFilters,
+        searchText: { contains: query, mode: "insensitive" },
+      },
+      select,
+      orderBy: { airDate: "desc" },
       take: SEARCH_LIMIT,
     }),
   ]);
-  // Dedupe, exact matches first
+
+  // Merge in priority order: exact title → title contains → summary → searchText
   const seen = new Set<string>();
   const results: SearchResultEpisode[] = [];
-  for (const ep of [...exact, ...partial]) {
+  for (const ep of [...exactTitle, ...titleContains, ...summaryMatch, ...broadMatch]) {
     if (!seen.has(ep.id)) { seen.add(ep.id); results.push(ep); }
     if (results.length >= SEARCH_LIMIT) break;
   }
@@ -270,15 +295,9 @@ async function searchQuotes(query: string): Promise<SearchResultQuote[]> {
 
 // ── Where-clause helpers ────────────────────────────────────────────
 
-function episodeWhere(query: string, filters?: SearchFilters) {
-  const where: Record<string, unknown> = {
-    OR: [
-      { title: { contains: query, mode: "insensitive" as const } },
-      { slug: { contains: query, mode: "insensitive" as const } },
-      { summaryShort: { contains: query, mode: "insensitive" as const } },
-      { searchText: { contains: query, mode: "insensitive" as const } },
-    ],
-  };
+/** Base filters without query text — used by tiered search and count */
+function episodeBaseFilters(filters?: SearchFilters) {
+  const where: Record<string, unknown> = {};
 
   if (filters?.contentType) {
     where.contentType = filters.contentType;
@@ -299,6 +318,19 @@ function episodeWhere(query: string, filters?: SearchFilters) {
   }
 
   return where;
+}
+
+/** Full episode where clause with text query — used by count */
+function episodeWhere(query: string, filters?: SearchFilters) {
+  return {
+    ...episodeBaseFilters(filters),
+    OR: [
+      { title: { contains: query, mode: "insensitive" as const } },
+      { slug: { contains: query, mode: "insensitive" as const } },
+      { summaryShort: { contains: query, mode: "insensitive" as const } },
+      { searchText: { contains: query, mode: "insensitive" as const } },
+    ],
+  };
 }
 
 function personWhere(query: string) {
