@@ -5,11 +5,14 @@ export function formatDuration(duration: string | null | undefined): string {
 
   if (parts.length === 3) {
     const [h, m] = parts;
+    // Don't show "0m" for zero-duration episodes
+    if (h === 0 && m === 0) return "—";
     return h > 0 ? `${h}h ${m}m` : `${m}m`;
   }
 
   if (parts.length === 2) {
     const [m] = parts;
+    if (m === 0) return "—";
     return `${m}m`;
   }
 

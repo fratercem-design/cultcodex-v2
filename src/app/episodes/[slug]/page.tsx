@@ -105,7 +105,10 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
       ? [{ id: "transcript", label: "Transcript", count: episode.segments.length }]
       : []),
     { id: "quotes", label: "Quotes", count: episode.quotes.length },
-    { id: "discussion", label: "Discussion", count: commentsData.totalCount },
+    // Only show Discussion tab if there are comments or user is logged in
+    ...(commentsData.totalCount > 0 || user
+      ? [{ id: "discussion", label: "Discussion", count: commentsData.totalCount }]
+      : []),
   ];
 
   return (
@@ -351,10 +354,13 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               {epNum && <MetaRow label="Episode" value={epNum} />}
               <MetaRow label="Aired" value={formatDate(episode.airDate)} />
               <MetaRow label="Duration" value={formatDuration(episode.duration)} />
-              <MetaRow
-                label="Status"
-                value={<StatusBadge label={episode.status} variant={episode.status === "unavailable" ? "muted" : "green"} />}
-              />
+              {/* Only show status when it's notable (not published) */}
+              {episode.status !== "published" && (
+                <MetaRow
+                  label="Status"
+                  value={<StatusBadge label={episode.status} variant={episode.status === "unavailable" ? "muted" : "green"} />}
+                />
+              )}
               {episode.contentType && episode.contentType !== "original" && (
                 <MetaRow
                   label="Type"

@@ -13,11 +13,16 @@ interface ArchiveStatsBarProps {
 }
 
 function AnimatedCounter({ value }: { value: number }) {
-  const [display, setDisplay] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
+  // Start at the real value for SSR — no zeros on first paint
+  const [display, setDisplay] = useState(value);
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (value === 0) return;
+    if (value === 0 || hasAnimated.current) return;
+    hasAnimated.current = true;
+
+    // Reset to 0 and animate up (only on client mount)
+    setDisplay(0);
     const duration = 1200;
     const start = performance.now();
 
@@ -32,7 +37,7 @@ function AnimatedCounter({ value }: { value: number }) {
     requestAnimationFrame(tick);
   }, [value]);
 
-  return <span ref={ref}>{display.toLocaleString()}</span>;
+  return <span>{display.toLocaleString()}</span>;
 }
 
 export function ArchiveStatsBar({ stats }: ArchiveStatsBarProps) {

@@ -34,17 +34,16 @@ export function SeriesCard({ series }: SeriesCardProps) {
       )}
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-1">
-          <StatusBadge
-            label={series.type.replace("_", " ")}
-            variant={typeVariant[series.type] ?? "muted"}
-          />
+          {/* Only show type badge when it's a meaningful category (not "other") */}
+          {series.type !== "other" && (
+            <StatusBadge
+              label={series.type.replace("_", " ")}
+              variant={typeVariant[series.type] ?? "muted"}
+            />
+          )}
           <span className="font-mono text-[10px] text-text-muted">
             {series._count.episodes} episode{series._count.episodes !== 1 ? "s" : ""}
           </span>
-          <StatusBadge
-            label={series.status}
-            variant={series.status === "published" ? "green" : "muted"}
-          />
         </div>
         <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors">
           {series.title}

@@ -57,9 +57,10 @@ export default async function StatsPage() {
     { label: "Lore Entries", value: stats.loreEntries },
     { label: "Quotes", value: stats.quotes },
     { label: "Transcript Segments", value: stats.segments },
-    { label: "Comments", value: stats.comments },
-    { label: "Reactions", value: stats.reactions },
     { label: "Hours of Content", value: stats.totalHours },
+    // Only show community stats when there's activity
+    ...(stats.comments > 0 ? [{ label: "Comments", value: stats.comments }] : []),
+    ...(stats.reactions > 0 ? [{ label: "Reactions", value: stats.reactions }] : []),
   ];
 
   return (

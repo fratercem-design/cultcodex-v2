@@ -50,8 +50,8 @@ export function EpisodeGlanceBar({
           {formatDate(airDate)}
         </span>
 
-        {/* Duration */}
-        {duration && (
+        {/* Duration — only show when we have a meaningful value */}
+        {duration && formatDuration(duration) !== "—" && (
           <span className="inline-flex items-center rounded-full border border-border bg-surface px-2.5 py-1 font-mono text-[10px] text-text-muted">
             {formatDuration(duration)}
           </span>
