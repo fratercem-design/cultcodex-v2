@@ -29,6 +29,7 @@ import { formatDuration } from "@/lib/format/duration";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { RandomEpisodeButton } from "@/components/archive/random-episode-button";
+import { TranscriptBadge } from "@/components/ui/transcript-badge";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -365,6 +366,10 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   }
                 />
               )}
+              <MetaRow
+                label="Transcript"
+                value={<TranscriptBadge segmentCount={episode.segments.length} />}
+              />
               {episode.series && (
                 <MetaRow label="Series" value={episode.series.title} />
               )}

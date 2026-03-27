@@ -59,6 +59,9 @@ export interface SearchFilters {
   entityTypes?: string[];   // which entity types to search
   contentType?: string;     // filter episodes by contentType
   seriesSlug?: string;      // filter episodes by series
+  hasTranscript?: boolean;  // filter episodes with/without transcripts
+  dateFrom?: string;        // ISO date string
+  dateTo?: string;          // ISO date string
 }
 
 export interface GlobalSearchResults {
@@ -149,47 +152,100 @@ export async function globalSearch(
 // Prisma `contains` + `mode: "insensitive"` maps to ILIKE %value%
 
 async function searchEpisodes(query: string, filters?: SearchFilters): Promise<SearchResultEpisode[]> {
-  return prisma.episode.findMany({
-    where: episodeWhere(query, filters),
-    select: {
-      id: true, title: true, slug: true, episodeNumber: true,
-      airDate: true, summaryShort: true, status: true,
-    },
-    orderBy: { episodeNumber: "desc" },
-    take: SEARCH_LIMIT,
-  });
+  // Exact title matches first, then partial matches
+  const [exact, partial] = await Promise.all([
+    prisma.episode.findMany({
+      where: { ...episodeWhere(query, filters), title: { equals: query, mode: "insensitive" } },
+      select: { id: true, title: true, slug: true, episodeNumber: true, airDate: true, summaryShort: true, status: true },
+      take: SEARCH_LIMIT,
+    }),
+    prisma.episode.findMany({
+      where: episodeWhere(query, filters),
+      select: { id: true, title: true, slug: true, episodeNumber: true, airDate: true, summaryShort: true, status: true },
+      orderBy: { episodeNumber: "desc" },
+      take: SEARCH_LIMIT,
+    }),
+  ]);
+  // Dedupe, exact matches first
+  const seen = new Set<string>();
+  const results: SearchResultEpisode[] = [];
+  for (const ep of [...exact, ...partial]) {
+    if (!seen.has(ep.id)) { seen.add(ep.id); results.push(ep); }
+    if (results.length >= SEARCH_LIMIT) break;
+  }
+  return results;
 }
 
 async function searchPeople(query: string): Promise<SearchResultPerson[]> {
-  return prisma.person.findMany({
-    where: personWhere(query),
-    select: {
-      id: true, displayName: true, slug: true, shortBio: true, personType: true,
-    },
-    orderBy: { displayName: "asc" },
-    take: SEARCH_LIMIT,
-  });
+  // Exact name matches first, then partial matches
+  const [exact, partial] = await Promise.all([
+    prisma.person.findMany({
+      where: { displayName: { equals: query, mode: "insensitive" } },
+      select: { id: true, displayName: true, slug: true, shortBio: true, personType: true },
+      take: 5,
+    }),
+    prisma.person.findMany({
+      where: personWhere(query),
+      select: { id: true, displayName: true, slug: true, shortBio: true, personType: true },
+      orderBy: { displayName: "asc" },
+      take: SEARCH_LIMIT,
+    }),
+  ]);
+  const seen = new Set<string>();
+  const results: SearchResultPerson[] = [];
+  for (const p of [...exact, ...partial]) {
+    if (!seen.has(p.id)) { seen.add(p.id); results.push(p); }
+    if (results.length >= SEARCH_LIMIT) break;
+  }
+  return results;
 }
 
 async function searchLore(query: string): Promise<SearchResultLore[]> {
-  return prisma.loreEntry.findMany({
-    where: loreWhere(query),
-    select: {
-      id: true, title: true, slug: true, summary: true,
-      category: true, canonStatus: true,
-    },
-    orderBy: { title: "asc" },
-    take: SEARCH_LIMIT,
-  });
+  // Exact title matches first, then partial matches
+  const [exact, partial] = await Promise.all([
+    prisma.loreEntry.findMany({
+      where: { title: { equals: query, mode: "insensitive" } },
+      select: { id: true, title: true, slug: true, summary: true, category: true, canonStatus: true },
+      take: 5,
+    }),
+    prisma.loreEntry.findMany({
+      where: loreWhere(query),
+      select: { id: true, title: true, slug: true, summary: true, category: true, canonStatus: true },
+      orderBy: { title: "asc" },
+      take: SEARCH_LIMIT,
+    }),
+  ]);
+  const seen = new Set<string>();
+  const results: SearchResultLore[] = [];
+  for (const l of [...exact, ...partial]) {
+    if (!seen.has(l.id)) { seen.add(l.id); results.push(l); }
+    if (results.length >= SEARCH_LIMIT) break;
+  }
+  return results;
 }
 
 async function searchTopics(query: string): Promise<SearchResultTopic[]> {
-  return prisma.topic.findMany({
-    where: topicWhere(query),
-    select: { id: true, title: true, slug: true, description: true },
-    orderBy: { title: "asc" },
-    take: SEARCH_LIMIT,
-  });
+  // Exact matches first, then partial
+  const [exact, partial] = await Promise.all([
+    prisma.topic.findMany({
+      where: { title: { equals: query, mode: "insensitive" } },
+      select: { id: true, title: true, slug: true, description: true },
+      take: 5,
+    }),
+    prisma.topic.findMany({
+      where: topicWhere(query),
+      select: { id: true, title: true, slug: true, description: true },
+      orderBy: { title: "asc" },
+      take: SEARCH_LIMIT,
+    }),
+  ]);
+  const seen = new Set<string>();
+  const results: SearchResultTopic[] = [];
+  for (const t of [...exact, ...partial]) {
+    if (!seen.has(t.id)) { seen.add(t.id); results.push(t); }
+    if (results.length >= SEARCH_LIMIT) break;
+  }
+  return results;
 }
 
 async function searchQuotes(query: string): Promise<SearchResultQuote[]> {
@@ -229,6 +285,17 @@ function episodeWhere(query: string, filters?: SearchFilters) {
   }
   if (filters?.seriesSlug) {
     where.series = { slug: filters.seriesSlug };
+  }
+  if (filters?.hasTranscript === true) {
+    where.segments = { some: {} };
+  } else if (filters?.hasTranscript === false) {
+    where.segments = { none: {} };
+  }
+  if (filters?.dateFrom || filters?.dateTo) {
+    const airDateFilter: Record<string, Date> = {};
+    if (filters.dateFrom) airDateFilter.gte = new Date(filters.dateFrom);
+    if (filters.dateTo) airDateFilter.lte = new Date(filters.dateTo);
+    where.airDate = airDateFilter;
   }
 
   return where;

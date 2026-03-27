@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/lib/format/date";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { TranscriptBadge } from "@/components/ui/transcript-badge";
 import type { EpisodeCardData } from "@/lib/queries/episodes";
 
 interface EpisodeCardProps {
@@ -49,16 +50,15 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
             {episode.summaryShort}
           </p>
         )}
-        {(episode.guestNames.length > 0 || episode.topicNames.length > 0) && (
-          <div className="mt-2 flex flex-wrap gap-1.5">
-            {episode.guestNames.map((name) => (
-              <StatusBadge key={name} label={name} variant="purple" />
-            ))}
-            {episode.topicNames.map((name) => (
-              <StatusBadge key={name} label={name} variant="muted" />
-            ))}
-          </div>
-        )}
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          <TranscriptBadge segmentCount={episode.segmentCount} />
+          {episode.guestNames.map((name) => (
+            <StatusBadge key={name} label={name} variant="purple" />
+          ))}
+          {episode.topicNames.map((name) => (
+            <StatusBadge key={name} label={name} variant="muted" />
+          ))}
+        </div>
       </div>
     </Link>
   );

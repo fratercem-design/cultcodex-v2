@@ -55,69 +55,91 @@ export async function GET(
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
-          backgroundColor: "#0A0A0F",
+          justifyContent: "center",
           padding: "60px",
-          fontFamily: "sans-serif",
+          background: "linear-gradient(135deg, #0a0015 0%, #1a0033 50%, #0d001a 100%)",
+          fontFamily: "serif",
         }}
       >
+        {/* Decorative border */}
+        <div
+          style={{
+            position: "absolute",
+            top: "16px",
+            left: "16px",
+            right: "16px",
+            bottom: "16px",
+            border: "1px solid rgba(255, 215, 0, 0.2)",
+            borderRadius: "12px",
+            display: "flex",
+          }}
+        />
+
         {/* Quote mark */}
-        <div style={{ color: "#C8A96B", fontSize: 80, lineHeight: 1, opacity: 0.3 }}>
+        <div
+          style={{
+            position: "absolute",
+            top: "30px",
+            left: "40px",
+            fontSize: "120px",
+            color: "rgba(255, 215, 0, 0.15)",
+            lineHeight: "1",
+            display: "flex",
+          }}
+        >
           {"\u201C"}
         </div>
 
         {/* Quote text */}
         <div
           style={{
+            fontSize,
+            color: "#f0e6ff",
+            lineHeight: 1.5,
+            fontStyle: "italic",
             display: "flex",
-            flexDirection: "column",
-            gap: "24px",
-            flex: 1,
-            justifyContent: "center",
+            marginBottom: "30px",
           }}
         >
+          {"\u201C"}{quote.text.slice(0, 400)}{quote.text.length > 400 ? "..." : ""}{"\u201D"}
+        </div>
+
+        {/* Attribution */}
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <div
             style={{
-              color: "#F3EEDF",
-              fontSize,
-              fontStyle: "italic",
-              lineHeight: 1.5,
-              maxHeight: "320px",
-              overflow: "hidden",
+              width: "40px",
+              height: "2px",
+              background: "linear-gradient(90deg, #ffd700, transparent)",
+              display: "flex",
             }}
-          >
-            {"\u201C"}{quote.text.slice(0, 500)}{quote.text.length > 500 ? "..." : ""}{"\u201D"}
-          </div>
-
-          {/* Attribution */}
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          />
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             {quote.speaker && (
-              <div style={{ color: "#C8A96B", fontSize: 22, fontWeight: 600 }}>
-                — {quote.speaker.displayName}
+              <div style={{ fontSize: "22px", color: "#ffd700", fontWeight: "bold", display: "flex" }}>
+                {quote.speaker.displayName}
               </div>
             )}
-            {quote.episode && (
-              <div style={{ color: "#B6AE9B", fontSize: 18 }}>
-                {epLabel ? `${epLabel}: ` : ""}
-                {quote.episode.title.slice(0, 80)}
-              </div>
-            )}
+            <div style={{ fontSize: "14px", color: "#8b7aa8", display: "flex" }}>
+              {epLabel ? `${epLabel} — ` : ""}{quote.episode?.title ? quote.episode.title.slice(0, 60) : ""}  —  cultcodex.me
+            </div>
           </div>
         </div>
 
         {/* Branding */}
         <div
           style={{
+            position: "absolute",
+            bottom: "30px",
+            right: "40px",
+            fontSize: "12px",
+            color: "rgba(0, 217, 255, 0.5)",
+            letterSpacing: "4px",
+            textTransform: "uppercase",
             display: "flex",
-            justifyContent: "flex-end",
-            color: "#C8A96B",
-            fontSize: 20,
-            fontWeight: 700,
-            letterSpacing: "0.1em",
-            opacity: 0.6,
           }}
         >
-          CULTCODEX
+          CULT CODEX
         </div>
       </div>
     ),

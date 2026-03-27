@@ -17,6 +17,8 @@ import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { formatDate } from "@/lib/format/date";
 import { editorialFrame } from "@/lib/format/editorial-frame";
+import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
+import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
@@ -264,6 +266,12 @@ export default async function PersonDetailPage({ params }: PageProps) {
             </SectionCard>
           </div>
         </div>
+
+        <SuggestCorrection
+          entityType="person"
+          entityTitle={person.displayName}
+          className="mt-8"
+        />
       </main>
     </>
   );

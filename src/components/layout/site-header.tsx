@@ -5,11 +5,14 @@ import { UserMenu } from "@/components/auth/user-menu";
 import { IconSearch } from "@/components/graphics/codex-icons";
 
 const navItems = [
+  { label: "Start Here", href: "/start-here" },
   { label: "Episodes", href: "/episodes" },
   { label: "People", href: "/people" },
   { label: "Lore", href: "/lore" },
+  { label: "Collections", href: "/collections" },
   { label: "Series", href: "/series" },
   { label: "Quotes", href: "/quotes" },
+  { label: "Timeline", href: "/timeline" },
   { label: "Stats", href: "/stats" },
   { label: "Topics", href: "/topics" },
 ];

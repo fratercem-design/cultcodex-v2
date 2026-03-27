@@ -14,6 +14,7 @@ import { formatDate } from "@/lib/format/date";
 import { IconTransmission, IconPerson, IconScroll, IconQuote, IconTopic, IconSeries } from "@/components/graphics/codex-icons";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
+import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 
 export const revalidate = 300;
 
@@ -225,6 +226,10 @@ export default async function HomePage() {
             ))}
           </div>
         </section>
+
+        <MysticalDivider />
+
+        <ArchiveDisclaimer variant="full" />
       </main>
       <script
         type="application/ld+json"

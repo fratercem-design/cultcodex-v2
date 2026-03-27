@@ -19,9 +19,12 @@ export const metadata: Metadata = {
 interface SearchPageProps {
   searchParams: Promise<{
     q?: string;
-    type?: string;       // comma-separated: episodes,people,lore,topics,quotes
+    type?: string;       // comma-separated: episodes,people,lore,topics,quotes,transcripts
     contentType?: string; // livestream,original,short,clip
     series?: string;      // series slug
+    transcript?: string;  // "yes" or "no"
+    from?: string;        // date YYYY-MM-DD
+    to?: string;          // date YYYY-MM-DD
   }>;
 }
 
@@ -38,6 +41,17 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   }
   if (params.series) {
     filters.seriesSlug = params.series;
+  }
+  if (params.transcript === "yes") {
+    filters.hasTranscript = true;
+  } else if (params.transcript === "no") {
+    filters.hasTranscript = false;
+  }
+  if (params.from) {
+    filters.dateFrom = params.from;
+  }
+  if (params.to) {
+    filters.dateTo = params.to;
   }
 
   const results = query ? await globalSearch(query, filters) : null;
@@ -57,28 +71,72 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
       {/* Filter bar */}
       {query && (
-        <div className="mb-6 flex flex-wrap gap-2">
-          {["episodes", "people", "lore", "topics", "quotes"].map((t) => {
-            const currentTypes = params.type?.split(",").filter(Boolean) ?? [];
-            const isActive = currentTypes.length === 0 || currentTypes.includes(t);
-            const newTypes = isActive && currentTypes.length > 0
-              ? currentTypes.filter((ct) => ct !== t)
-              : [...currentTypes, t];
-            const href = `/search?q=${encodeURIComponent(query)}${newTypes.length > 0 && newTypes.length < 5 ? `&type=${newTypes.join(",")}` : ""}`;
-            return (
-              <Link
-                key={t}
-                href={href}
-                className={`rounded-full border px-3 py-1 font-mono text-xs transition-colors ${
-                  isActive
-                    ? "border-accent-green text-accent-green bg-accent-green/10"
-                    : "border-border text-text-muted hover:border-accent-green/50"
-                }`}
-              >
-                {t.charAt(0).toUpperCase() + t.slice(1)}
-              </Link>
-            );
-          })}
+        <div className="mb-6 space-y-3">
+          {/* Entity type filters */}
+          <div className="flex flex-wrap gap-2">
+            {["episodes", "people", "lore", "topics", "quotes", "transcripts"].map((t) => {
+              const currentTypes = params.type?.split(",").filter(Boolean) ?? [];
+              const isActive = currentTypes.length === 0 || currentTypes.includes(t);
+              const newTypes = isActive && currentTypes.length > 0
+                ? currentTypes.filter((ct) => ct !== t)
+                : [...currentTypes, t];
+              const href = buildSearchUrl(query, { ...params, type: newTypes.length > 0 && newTypes.length < 6 ? newTypes.join(",") : undefined });
+              return (
+                <Link
+                  key={t}
+                  href={href}
+                  className={`rounded-full border px-3 py-1 font-mono text-xs transition-colors ${
+                    isActive
+                      ? "border-accent-green text-accent-green bg-accent-green/10"
+                      : "border-border text-text-muted hover:border-accent-green/50"
+                  }`}
+                >
+                  {t.charAt(0).toUpperCase() + t.slice(1)}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* Advanced filters */}
+          <div className="flex flex-wrap gap-2">
+            {/* Content type */}
+            {(["livestream", "original", "short", "clip"] as const).map((ct) => {
+              const isActive = params.contentType === ct;
+              const href = buildSearchUrl(query, { ...params, contentType: isActive ? undefined : ct });
+              return (
+                <Link
+                  key={ct}
+                  href={href}
+                  className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] transition-colors ${
+                    isActive
+                      ? "border-accent-purple text-accent-purple bg-accent-purple/10"
+                      : "border-border text-text-muted hover:border-accent-purple/50"
+                  }`}
+                >
+                  {ct}
+                </Link>
+              );
+            })}
+
+            {/* Transcript filter */}
+            {(["yes", "no"] as const).map((val) => {
+              const isActive = params.transcript === val;
+              const href = buildSearchUrl(query, { ...params, transcript: isActive ? undefined : val });
+              return (
+                <Link
+                  key={`transcript-${val}`}
+                  href={href}
+                  className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] transition-colors ${
+                    isActive
+                      ? "border-accent-cyan text-accent-cyan bg-accent-cyan/10"
+                      : "border-border text-text-muted hover:border-accent-cyan/50"
+                  }`}
+                >
+                  {val === "yes" ? "has transcript" : "no transcript"}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       )}
 
@@ -379,6 +437,23 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     </main>
     </>
   );
+}
+
+// ── URL builder ─────────────────────────────────────────────────────
+
+function buildSearchUrl(
+  query: string,
+  params: Record<string, string | undefined>,
+) {
+  const sp = new URLSearchParams();
+  sp.set("q", query);
+  if (params.type) sp.set("type", params.type);
+  if (params.contentType) sp.set("contentType", params.contentType);
+  if (params.series) sp.set("series", params.series);
+  if (params.transcript) sp.set("transcript", params.transcript);
+  if (params.from) sp.set("from", params.from);
+  if (params.to) sp.set("to", params.to);
+  return `/search?${sp.toString()}`;
 }
 
 // ── Highlight component ─────────────────────────────────────────────

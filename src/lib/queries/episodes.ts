@@ -28,6 +28,7 @@ export interface EpisodeCardData {
   summaryShort: string | null;
   thumbnailUrl: string | null;
   status: ContentStatus;
+  segmentCount: number;
   guestNames: string[];
   topicNames: string[];
 }
@@ -42,6 +43,7 @@ export function formatEpisodeForCard(episode: EpisodeWithRelations): EpisodeCard
     summaryShort: episode.summaryShort,
     thumbnailUrl: episode.thumbnailUrl,
     status: episode.status,
+    segmentCount: episode.segments.length,
     guestNames: episode.guests.map((g) => g.person.displayName),
     topicNames: episode.topics.map((t) => t.topic.title),
   };
