@@ -64,10 +64,17 @@ export async function getEpisodes(options?: {
     order = "desc",
   } = options ?? {};
 
+  // When sorting by airDate, use episodeNumber as tiebreaker so null-airDate
+  // episodes still sort reasonably instead of appearing in random order
+  const orderByClause =
+    orderBy === "airDate"
+      ? [{ airDate: { sort: order, nulls: "last" as const } }, { episodeNumber: order }]
+      : { [orderBy]: order };
+
   return prisma.episode.findMany({
     where: status ? { status } : undefined,
     include: buildEpisodeInclude(),
-    orderBy: { [orderBy]: order },
+    orderBy: orderByClause,
     take,
     skip,
   });
