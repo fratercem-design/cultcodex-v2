@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const revalidate = 300;
+export const maxDuration = 30;
 
 export const metadata: Metadata = {
   title: "Timeline — CULT CODEX",
@@ -47,22 +48,24 @@ const MONTH_NAMES = [
 ];
 
 export default async function TimelinePage() {
-  const episodes = await prisma.episode.findMany({
-    where: { airDate: { not: null } },
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      episodeNumber: true,
-      airDate: true,
-      summaryShort: true,
-      contentType: true,
-      _count: { select: { segments: true, guests: true, quotes: true } },
-    },
-    orderBy: { airDate: "asc" },
-  });
-
-  const undated = await prisma.episode.count({ where: { airDate: null } });
+  // Use a lean query — skip _count relations to avoid N+1 and keep under Vercel timeout
+  const [episodes, undated] = await Promise.all([
+    prisma.episode.findMany({
+      where: { airDate: { not: null } },
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        episodeNumber: true,
+        airDate: true,
+        summaryShort: true,
+        contentType: true,
+        _count: { select: { segments: true, guests: true, quotes: true } },
+      },
+      orderBy: { airDate: "asc" },
+    }),
+    prisma.episode.count({ where: { airDate: null } }),
+  ]);
   const yearGroups = groupByYear(episodes as TimelineEpisode[]);
   const years = [...yearGroups.keys()].sort((a, b) => b - a);
 
