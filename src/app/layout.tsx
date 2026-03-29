@@ -26,6 +26,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me"),
   title: "CultCodex — The Living Archive",
   description: "The living archive of the Cult of Psyche.",
   icons: {

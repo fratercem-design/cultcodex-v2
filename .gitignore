@@ -34,6 +34,7 @@ yarn-error.log*
 .env
 .env.local
 .env.production
+.env.vercel
 
 # Prisma
 prisma/migrations/**/migration_lock.toml
@@ -54,5 +55,3 @@ Thumbs.db
 next-env.d.ts
 
 /src/generated/prisma
-
-.vercel
