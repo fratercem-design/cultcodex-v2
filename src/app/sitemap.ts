@@ -24,6 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/series`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${baseUrl}/quotes`, changeFrequency: "weekly", priority: 0.6 },
     { url: `${baseUrl}/search`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/mythic-map`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/live`, changeFrequency: "daily", priority: 0.6 },
   ];
 

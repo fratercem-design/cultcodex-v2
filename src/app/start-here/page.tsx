@@ -109,6 +109,28 @@ export default function StartHerePage() {
 
         <MysticalDivider />
 
+        {/* Mythic Map CTA */}
+        <Link
+          href="/mythic-map"
+          className="group block rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-6 transition-all hover:border-accent-gold/40 hover:bg-accent-gold/10"
+        >
+          <div className="flex items-center gap-3">
+            <IconScroll size={28} className="text-accent-gold" />
+            <div>
+              <h2 className="font-display text-base font-bold text-accent-gold group-hover:text-accent-gold transition-colors">
+                The Mythic Map
+              </h2>
+              <p className="text-xs text-text-muted mt-0.5">
+                Archetypes, symbols, and recurring themes that drive the archive&apos;s narrative engine.
+                The Oracle, the Fool, the Scapegoat, and the hidden structure beneath 1,300+ episodes.
+              </p>
+            </div>
+            <span className="ml-auto font-mono text-[10px] text-accent-gold group-hover:underline shrink-0">
+              Explore &rarr;
+            </span>
+          </div>
+        </Link>
+
         <SectionCard title="Other Ways to Explore">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {[
