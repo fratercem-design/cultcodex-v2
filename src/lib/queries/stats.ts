@@ -1,18 +1,65 @@
 import { prisma } from "@/lib/db";
 import type { ArchiveStats } from "@/types";
 
+/**
+ * Canonical archive stats — single source of truth for all counts site-wide.
+ * Used by: homepage, stats page, admin, and any future consumer.
+ * DO NOT create a second stats function elsewhere.
+ */
 export async function getArchiveStats(): Promise<ArchiveStats> {
-  const [episodes, people, loreEntries, quotes, series, topics] =
-    await Promise.all([
-      prisma.episode.count(),
-      prisma.person.count(),
-      prisma.loreEntry.count(),
-      prisma.quote.count(),
-      prisma.series.count(),
-      prisma.topic.count(),
-    ]);
+  const [
+    episodes,
+    people,
+    loreEntries,
+    quotes,
+    series,
+    topics,
+    segments,
+    comments,
+    reactions,
+    durationData,
+  ] = await Promise.all([
+    prisma.episode.count(),
+    prisma.person.count(),
+    prisma.loreEntry.count(),
+    prisma.quote.count(),
+    prisma.series.count(),
+    prisma.topic.count(),
+    prisma.transcriptSegment.count(),
+    prisma.codexComment.count(),
+    prisma.episodeReaction.count(),
+    prisma.episode.findMany({
+      where: { duration: { not: null } },
+      select: { duration: true },
+    }),
+  ]);
 
-  return { episodes, people, loreEntries, quotes, series, topics };
+  // Parse duration strings (format: "HH:MM:SS" or "MM:SS") into total hours
+  let totalSeconds = 0;
+  for (const ep of durationData) {
+    if (ep.duration) {
+      const parts = ep.duration.split(":").map(Number);
+      if (parts.length === 3) {
+        totalSeconds += parts[0] * 3600 + parts[1] * 60 + parts[2];
+      } else if (parts.length === 2) {
+        totalSeconds += parts[0] * 60 + parts[1];
+      }
+    }
+  }
+  const totalHours = Math.round(totalSeconds / 3600);
+
+  return {
+    episodes,
+    people,
+    loreEntries,
+    quotes,
+    series,
+    topics,
+    segments,
+    totalHours,
+    comments,
+    reactions,
+  };
 }
 
 export async function getEpisodeAggregates() {

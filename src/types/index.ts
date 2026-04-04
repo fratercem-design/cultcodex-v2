@@ -13,4 +13,8 @@ export interface ArchiveStats {
   quotes: number;
   series: number;
   topics: number;
+  segments: number;
+  totalHours: number;
+  comments: number;
+  reactions: number;
 }

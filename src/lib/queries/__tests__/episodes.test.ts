@@ -24,8 +24,10 @@ describe("formatEpisodeForCard", () => {
       episodeNumber: 42,
       airDate: new Date("2024-01-15"),
       summaryShort: "A test episode.",
+      thumbnailUrl: null,
       status: "published" as const,
-      guests: [{ person: { displayName: "Guest One", slug: "guest-one" } }],
+      segments: [],
+      guests: [{ person: { displayName: "Guest One", slug: "guest-one", personType: "guest" } }],
       topics: [{ topic: { title: "Tarot", slug: "tarot" } }],
     } as unknown as EpisodeWithRelations;
 

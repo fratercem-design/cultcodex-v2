@@ -18,6 +18,7 @@ import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { formatDate } from "@/lib/format/date";
 import { editorialFrame } from "@/lib/format/editorial-frame";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
+import { ArchiveNotice } from "@/components/notices/archive-notice";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import type { Metadata } from "next";
 
@@ -48,11 +49,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
 
-  return buildMetadata({
-    title: person.displayName,
-    description: person.shortBio || person.searchText || null,
-    path: `/people/${person.slug}`,
-  });
+  // Noindex for "mentioned" people — they were only name-dropped, never appeared as guests.
+  // This reduces SEO risk for people who didn't actively participate.
+  const shouldNoIndex = person.personType === "mentioned";
+
+  return {
+    ...buildMetadata({
+      title: person.displayName,
+      description: person.shortBio || person.searchText || null,
+      path: `/people/${person.slug}`,
+    }),
+    ...(shouldNoIndex ? { robots: { index: false, follow: true } } : {}),
+  };
 }
 
 const PERSON_TYPE_LABELS: Record<string, string> = {
@@ -124,6 +132,11 @@ export default async function PersonDetailPage({ params }: PageProps) {
       ]} />
       <EntityGlanceBar items={glanceItems} />
       <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+        <ArchiveNotice
+          entityType="person"
+          entityName={person.displayName}
+          className="mb-6"
+        />
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             {/* Bio / Lore Summary */}

@@ -201,6 +201,14 @@ async function searchEpisodes(query: string, filters?: SearchFilters): Promise<S
   return results;
 }
 
+// Person type priority for search ranking (higher = shown first)
+const PERSON_TYPE_PRIORITY: Record<string, number> = {
+  host: 4,
+  recurring_guest: 3,
+  guest: 2,
+  mentioned: 1,
+};
+
 async function searchPeople(query: string): Promise<SearchResultPerson[]> {
   // Exact name matches first, then partial matches
   const [exact, partial] = await Promise.all([
@@ -213,16 +221,28 @@ async function searchPeople(query: string): Promise<SearchResultPerson[]> {
       where: personWhere(query),
       select: { id: true, displayName: true, slug: true, shortBio: true, personType: true },
       orderBy: { displayName: "asc" },
-      take: SEARCH_LIMIT,
+      take: SEARCH_LIMIT * 2, // Fetch extra to allow re-ranking
     }),
   ]);
+
+  // Merge then re-rank: exact matches first, then by person type priority
   const seen = new Set<string>();
-  const results: SearchResultPerson[] = [];
-  for (const p of [...exact, ...partial]) {
-    if (!seen.has(p.id)) { seen.add(p.id); results.push(p); }
-    if (results.length >= SEARCH_LIMIT) break;
+  const exactResults: SearchResultPerson[] = [];
+  const partialResults: SearchResultPerson[] = [];
+
+  for (const p of exact) {
+    if (!seen.has(p.id)) { seen.add(p.id); exactResults.push(p); }
   }
-  return results;
+  for (const p of partial) {
+    if (!seen.has(p.id)) { seen.add(p.id); partialResults.push(p); }
+  }
+
+  // Sort partial results by person type priority (hosts first, mentioned last)
+  partialResults.sort((a, b) =>
+    (PERSON_TYPE_PRIORITY[b.personType] ?? 0) - (PERSON_TYPE_PRIORITY[a.personType] ?? 0)
+  );
+
+  return [...exactResults, ...partialResults].slice(0, SEARCH_LIMIT);
 }
 
 async function searchLore(query: string): Promise<SearchResultLore[]> {

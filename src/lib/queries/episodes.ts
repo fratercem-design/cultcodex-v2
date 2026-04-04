@@ -44,7 +44,9 @@ export function formatEpisodeForCard(episode: EpisodeWithRelations): EpisodeCard
     thumbnailUrl: episode.thumbnailUrl,
     status: episode.status,
     segmentCount: episode.segments.length,
-    guestNames: episode.guests.map((g) => g.person.displayName),
+    guestNames: episode.guests
+      .filter((g) => g.person.personType !== "host")
+      .map((g) => g.person.displayName),
     topicNames: episode.topics.map((t) => t.topic.title),
   };
 }

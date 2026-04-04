@@ -52,12 +52,22 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
         )}
         <div className="mt-2 flex flex-wrap gap-1.5">
           <TranscriptBadge segmentCount={episode.segmentCount} />
-          {episode.guestNames.map((name) => (
+          {episode.guestNames.slice(0, 3).map((name) => (
             <StatusBadge key={name} label={name} variant="purple" />
           ))}
-          {episode.topicNames.map((name) => (
+          {episode.guestNames.length > 3 && (
+            <span className="font-mono text-[9px] text-text-muted">
+              +{episode.guestNames.length - 3} more
+            </span>
+          )}
+          {episode.topicNames.slice(0, 3).map((name) => (
             <StatusBadge key={name} label={name} variant="muted" />
           ))}
+          {episode.topicNames.length > 3 && (
+            <span className="font-mono text-[9px] text-text-muted">
+              +{episode.topicNames.length - 3} topics
+            </span>
+          )}
         </div>
       </div>
     </Link>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { IconScroll } from "@/components/graphics/codex-icons";
 
 interface ArchiveDisclaimerProps {
@@ -20,13 +21,26 @@ export function ArchiveDisclaimer({ variant = "compact", className }: ArchiveDis
         </p>
         <p>
           Descriptions aim for neutral, factual language. If you believe any content
-          is inaccurate, misattributed, or needs correction, please contact the
-          archive maintainers.
+          is inaccurate, misattributed, or needs correction, please{" "}
+          <Link href="/corrections" className="text-accent-green hover:underline">
+            submit a correction
+          </Link>.
         </p>
         <p className="text-text-muted/60">
           This archive does not represent the views of any individual mentioned.
           All content is sourced from publicly available streams and recordings.
         </p>
+        <div className="flex items-center gap-3 pt-1">
+          <Link href="/methodology" className="font-mono text-[10px] text-accent-gold/60 hover:text-accent-gold hover:underline">
+            Methodology
+          </Link>
+          <Link href="/content-policy" className="font-mono text-[10px] text-accent-gold/60 hover:text-accent-gold hover:underline">
+            Content Policy
+          </Link>
+          <Link href="/corrections" className="font-mono text-[10px] text-accent-gold/60 hover:text-accent-gold hover:underline">
+            Corrections
+          </Link>
+        </div>
       </aside>
     );
   }
@@ -34,7 +48,9 @@ export function ArchiveDisclaimer({ variant = "compact", className }: ArchiveDis
   return (
     <p className={`text-[10px] text-text-muted/50 font-mono leading-relaxed ${className ?? ""}`}>
       Content is AI-assisted and community-curated. Details may be approximate.{" "}
-      <span className="text-accent-gold/40">Suggest corrections →</span>
+      <Link href="/corrections" className="text-accent-gold/40 hover:text-accent-gold hover:underline">
+        Suggest corrections →
+      </Link>
     </p>
   );
 }

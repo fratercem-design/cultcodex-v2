@@ -30,6 +30,7 @@ import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { RandomEpisodeButton } from "@/components/archive/random-episode-button";
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
+import { ProvenanceBadge } from "@/components/ui/provenance-badge";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -99,6 +100,14 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
   const hasTranscript = episode.segments.length > 0;
 
+  // Separate hosts from actual guests — hosts should not appear in the guest list
+  const actualGuests = episode.guests.filter(
+    (g) => g.person.personType !== "host"
+  );
+  const hostGuests = episode.guests.filter(
+    (g) => g.person.personType === "host"
+  );
+
   const tabs = [
     { id: "overview", label: "Overview" },
     ...(hasTranscript
@@ -142,7 +151,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
       series={episode.series ? { title: episode.series.title, slug: episode.series.slug } : null}
       airDate={episode.airDate}
       duration={episode.duration}
-      guestCount={episode.guests.length}
+      guestCount={actualGuests.length}
     />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
       <div className="grid gap-6 lg:grid-cols-3">
@@ -240,11 +249,11 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                       </SectionCard>
                     )}
 
-                    {/* Guests (inline for mobile) */}
-                    {episode.guests.length > 0 && (
-                      <SectionCard title={`Guests (${episode.guests.length})`}>
+                    {/* Guests (inline for mobile) — hosts filtered out */}
+                    {actualGuests.length > 0 && (
+                      <SectionCard title={`Guests (${actualGuests.length})`}>
                         <div className="flex flex-wrap gap-1.5">
-                          {episode.guests.map((g) => (
+                          {actualGuests.map((g) => (
                             <Link
                               key={g.person.slug}
                               href={`/people/${g.person.slug}`}
@@ -376,6 +385,15 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 label="Transcript"
                 value={<TranscriptBadge segmentCount={episode.segments.length} />}
               />
+              <MetaRow
+                label="Source"
+                value={
+                  <ProvenanceBadge
+                    hasTranscript={hasTranscript}
+                    hasSummary={!!episode.summaryLong}
+                  />
+                }
+              />
               {episode.series && (
                 <MetaRow label="Series" value={episode.series.title} />
               )}
@@ -384,16 +402,16 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
           {/* Stats */}
           <EpisodeStatsPanel
-            guestCount={episode.guests.length}
+            guestCount={actualGuests.length}
             quoteCount={episode.quotes.length}
             segmentCount={episode.segments.length}
             reactionTotal={reactionCounts.fire + reactionCounts.eye + reactionCounts.moon + reactionCounts.skull + reactionCounts.wildcard}
             commentCount={commentsData.totalCount}
           />
 
-          {/* Guests */}
+          {/* Guests — hosts filtered out */}
           <GuestGrid
-            guests={episode.guests.map((g) => ({
+            guests={actualGuests.map((g) => ({
               displayName: g.person.displayName,
               slug: g.person.slug,
               avatarUrl: g.person.avatarUrl,

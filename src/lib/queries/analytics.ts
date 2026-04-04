@@ -136,56 +136,8 @@ export async function getMostActiveUsers(limit = 10) {
 }
 
 // ── Public Stats Queries ──
-
-export async function getArchiveStats() {
-  const [
-    episodes,
-    people,
-    loreEntries,
-    quotes,
-    segments,
-    comments,
-    reactions,
-    durationData,
-  ] = await Promise.all([
-    prisma.episode.count(),
-    prisma.person.count(),
-    prisma.loreEntry.count(),
-    prisma.quote.count(),
-    prisma.transcriptSegment.count(),
-    prisma.codexComment.count(),
-    prisma.episodeReaction.count(),
-    prisma.episode.findMany({
-      where: { duration: { not: null } },
-      select: { duration: true },
-    }),
-  ]);
-
-  // Parse duration strings (format: "HH:MM:SS" or "MM:SS") into total hours
-  let totalSeconds = 0;
-  for (const ep of durationData) {
-    if (ep.duration) {
-      const parts = ep.duration.split(":").map(Number);
-      if (parts.length === 3) {
-        totalSeconds += parts[0] * 3600 + parts[1] * 60 + parts[2];
-      } else if (parts.length === 2) {
-        totalSeconds += parts[0] * 60 + parts[1];
-      }
-    }
-  }
-  const totalHours = Math.round(totalSeconds / 3600);
-
-  return {
-    episodes,
-    people,
-    loreEntries,
-    quotes,
-    segments,
-    comments,
-    reactions,
-    totalHours,
-  };
-}
+// NOTE: getArchiveStats() is now canonical in @/lib/queries/stats.ts
+// All consumers should import from there. Do NOT recreate here.
 
 export async function getMostQuotedPeople(limit = 10) {
   const people = await prisma.person.findMany({

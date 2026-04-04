@@ -137,11 +137,13 @@ export default async function HomePage() {
                   </p>
                 )}
                 <GuestGrid
-                  guests={featured.guests.map((g) => ({
-                    displayName: g.person.displayName,
-                    slug: g.person.slug,
-                    avatarUrl: g.person.avatarUrl,
-                  }))}
+                  guests={featured.guests
+                    .filter((g) => g.person.personType !== "host")
+                    .map((g) => ({
+                      displayName: g.person.displayName,
+                      slug: g.person.slug,
+                      avatarUrl: g.person.avatarUrl,
+                    }))}
                 />
               </div>
             </Link>
@@ -173,7 +175,7 @@ export default async function HomePage() {
 
         {/* Featured Collections */}
         {featuredSeries.length > 0 && (
-          <SectionCard title="Featured Collections">
+          <SectionCard title="Featured Series">
             <div className="grid gap-3 sm:grid-cols-2">
               {featuredSeries.map((s) => (
                 <Link

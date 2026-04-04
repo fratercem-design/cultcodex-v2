@@ -1,7 +1,7 @@
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
+import { getArchiveStats } from "@/lib/queries/stats";
 import {
-  getArchiveStats,
   getMostQuotedPeople,
   getTopTopicsByEpisodes,
   getCanonBreakdown,

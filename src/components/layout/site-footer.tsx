@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { SacredBorder } from "@/components/graphics/mystical-divider";
 
 export function SiteFooter() {
@@ -41,6 +42,20 @@ export function SiteFooter() {
           <p className="font-mono text-[10px] text-text-muted/50">
             CultCodex v2 · The sacred intelligence terminal
           </p>
+
+          <div className="flex items-center gap-3 mt-2">
+            <Link href="/methodology" className="font-mono text-[10px] text-text-muted/40 hover:text-accent-gold transition-colors">
+              Methodology
+            </Link>
+            <span className="text-text-muted/20">·</span>
+            <Link href="/content-policy" className="font-mono text-[10px] text-text-muted/40 hover:text-accent-gold transition-colors">
+              Content Policy
+            </Link>
+            <span className="text-text-muted/20">·</span>
+            <Link href="/corrections" className="font-mono text-[10px] text-text-muted/40 hover:text-accent-gold transition-colors">
+              Corrections
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
