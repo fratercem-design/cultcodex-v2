@@ -31,6 +31,7 @@ import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { RandomEpisodeButton } from "@/components/archive/random-episode-button";
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
 import { ProvenanceBadge } from "@/components/ui/provenance-badge";
+import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -231,6 +232,10 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               url={`/episodes/${episode.slug}`}
               title={episode.title}
               type="episode"
+            />
+            <SuggestCorrection
+              entityType="episode"
+              entityTitle={episode.title}
             />
           </div>
 

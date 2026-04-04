@@ -10,6 +10,7 @@ import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { GuestGrid } from "@/components/episodes/guest-grid";
+import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
@@ -138,6 +139,11 @@ export default async function TopicDetailPage({ params }: PageProps) {
                 }))}
               />
             </SectionCard>
+
+            <SuggestCorrection
+              entityType="topic"
+              entityTitle={topic.title}
+            />
           </div>
         </div>
       </main>

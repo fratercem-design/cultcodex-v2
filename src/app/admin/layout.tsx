@@ -4,6 +4,7 @@ import { AdminSidebar } from "@/components/admin/admin-sidebar";
 
 export const metadata = {
   title: "Admin — CULT CODEX",
+  robots: { index: false, follow: false },
 };
 
 export default async function AdminLayout({
