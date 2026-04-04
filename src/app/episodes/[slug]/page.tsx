@@ -32,6 +32,7 @@ import { RandomEpisodeButton } from "@/components/archive/random-episode-button"
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
 import { ProvenanceBadge } from "@/components/ui/provenance-badge";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
+import { DataQualityBadge } from "@/components/ui/data-quality-badge";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -402,6 +403,21 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               {episode.series && (
                 <MetaRow label="Series" value={episode.series.title} />
               )}
+              <MetaRow
+                label="Data"
+                value={
+                  <DataQualityBadge
+                    hasSummary={!!episode.summaryLong}
+                    hasTranscript={hasTranscript}
+                    guestCount={actualGuests.length}
+                    topicCount={episode.topics.length}
+                    quoteCount={episode.quotes.length}
+                    loreCount={episode.loreEntries.length}
+                    hasAirDate={!!episode.airDate}
+                    hasDuration={!!episode.duration}
+                  />
+                }
+              />
             </div>
           </SectionCard>
 
