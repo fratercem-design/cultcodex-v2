@@ -3,7 +3,10 @@ import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { IconTarot, IconScroll, IconFlame, IconMicrophone, IconCrystalBall, IconMask, IconQuote, IconTransmission } from "@/components/graphics/codex-icons";
+import { prisma } from "@/lib/db";
 import type { Metadata } from "next";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Collections — CULT CODEX",
@@ -112,12 +115,35 @@ const COLLECTIONS: Collection[] = [
   },
 ];
 
-export default function CollectionsPage() {
+// Series slugs used by collections — fetch episode counts for these
+const SERIES_SLUGS = [
+  "psyche-awakens-tarot",
+  "mythology-and-lore",
+  "open-panel",
+  "midnight-madness",
+  "astrology-deep-dives",
+  "quantum-scary-tales",
+  "uncle-wiggly-stories",
+  "baital-pachchisi-tales",
+  "the-golden-ass",
+  "troll-tribunal",
+  "trollopedia",
+];
+
+export default async function CollectionsPage() {
+  // Fetch episode counts per series for display
+  const seriesCounts = await prisma.series.findMany({
+    where: { slug: { in: SERIES_SLUGS } },
+    select: { slug: true, _count: { select: { episodes: true } } },
+  });
+  const countMap = new Map(seriesCounts.map((s) => [s.slug, s._count.episodes]));
+  const totalCollectionEpisodes = seriesCounts.reduce((sum, s) => sum + s._count.episodes, 0);
+
   return (
     <>
       <PageHero
         title="COLLECTIONS"
-        subtitle="Curated paths through the archive"
+        subtitle={`Curated paths through ${totalCollectionEpisodes} episodes`}
         backgroundImage="/hero-bg.jpg"
       />
 
@@ -143,15 +169,26 @@ export default function CollectionsPage() {
                 {col.description}
               </p>
               <div className="flex flex-wrap gap-2">
-                {col.links.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="inline-flex items-center rounded-md border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted transition-colors hover:border-accent-green/30 hover:text-accent-green hover:bg-elevated"
-                  >
-                    {link.label} →
-                  </Link>
-                ))}
+                {col.links.map((link) => {
+                  // Extract series slug from href to show episode count
+                  const seriesMatch = link.href.match(/series=([a-z0-9-]+)/);
+                  const epCount = seriesMatch ? countMap.get(seriesMatch[1]) : undefined;
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted transition-colors hover:border-accent-green/30 hover:text-accent-green hover:bg-elevated"
+                    >
+                      {link.label}
+                      {epCount != null && (
+                        <span className="rounded-full bg-elevated px-1.5 py-0.5 text-[9px] text-text-muted">
+                          {epCount}
+                        </span>
+                      )}
+                      →
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           ))}

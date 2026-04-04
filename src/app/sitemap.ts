@@ -24,7 +24,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/series`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${baseUrl}/quotes`, changeFrequency: "weekly", priority: 0.6 },
     { url: `${baseUrl}/search`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/collections`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${baseUrl}/timeline`, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${baseUrl}/start-here`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/stats`, changeFrequency: "weekly", priority: 0.5 },
     { url: `${baseUrl}/mythic-map`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/methodology`, changeFrequency: "monthly", priority: 0.3 },
+    { url: `${baseUrl}/corrections`, changeFrequency: "monthly", priority: 0.3 },
+    { url: `${baseUrl}/content-policy`, changeFrequency: "monthly", priority: 0.3 },
     { url: `${baseUrl}/live`, changeFrequency: "daily", priority: 0.6 },
   ];
 
