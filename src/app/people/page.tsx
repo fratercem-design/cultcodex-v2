@@ -29,7 +29,7 @@ const SORT_OPTIONS = [
 
 const FILTER_OPTIONS = [
   { label: "Host", value: "host" },
-  { label: "Recurring", value: "recurring_guest" },
+  { label: "Recurring", value: "recurring" },
   { label: "Guest", value: "guest" },
   { label: "Mentioned", value: "mentioned" },
 ];

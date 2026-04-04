@@ -204,7 +204,7 @@ async function searchEpisodes(query: string, filters?: SearchFilters): Promise<S
 // Person type priority for search ranking (higher = shown first)
 const PERSON_TYPE_PRIORITY: Record<string, number> = {
   host: 4,
-  recurring_guest: 3,
+  recurring: 3,
   guest: 2,
   mentioned: 1,
 };
@@ -360,6 +360,7 @@ function personWhere(query: string) {
       { slug: { contains: query, mode: "insensitive" as const } },
       { shortBio: { contains: query, mode: "insensitive" as const } },
       { searchText: { contains: query, mode: "insensitive" as const } },
+      { altNames: { has: query } },
     ],
   };
 }

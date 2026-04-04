@@ -65,14 +65,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 const PERSON_TYPE_LABELS: Record<string, string> = {
   host: "Host",
-  recurring_guest: "Recurring Guest",
+  recurring: "Recurring",
   guest: "Guest",
   mentioned: "Mentioned",
 };
 
 const PERSON_TYPE_VARIANTS: Record<string, "green" | "purple" | "gold" | "muted"> = {
   host: "green",
-  recurring_guest: "purple",
+  recurring: "purple",
   guest: "muted",
   mentioned: "muted",
 };

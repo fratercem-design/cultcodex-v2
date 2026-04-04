@@ -49,7 +49,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
 
   const typeVariant: Record<string, "green" | "purple" | "muted"> = {
     host: "green",
-    recurring_guest: "purple",
+    recurring: "purple",
     guest: "muted",
     mentioned: "muted",
   };
@@ -80,7 +80,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
           />
         </form>
         <div className="flex gap-1.5">
-          {["all", "host", "recurring_guest", "guest", "mentioned"].map((t) => (
+          {["all", "host", "recurring", "guest", "mentioned"].map((t) => (
             <Link
               key={t}
               href={`/admin/people${t !== "all" ? `?type=${t}` : ""}`}

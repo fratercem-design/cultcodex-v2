@@ -268,7 +268,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                             variant={
                               person.personType === "host"
                                 ? "green"
-                                : person.personType === "recurring_guest"
+                                : person.personType === "recurring"
                                   ? "purple"
                                   : "muted"
                             }

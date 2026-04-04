@@ -41,7 +41,7 @@ export default async function EditPersonPage({ params }: PageProps) {
           defaultValue={person.personType}
           options={[
             { label: "Host", value: "host" },
-            { label: "Recurring Guest", value: "recurring_guest" },
+            { label: "Recurring", value: "recurring" },
             { label: "Guest", value: "guest" },
             { label: "Mentioned", value: "mentioned" },
           ]}
