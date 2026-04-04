@@ -15,6 +15,7 @@ const navItems = [
   { label: "Timeline", href: "/timeline" },
   { label: "Stats", href: "/stats" },
   { label: "Topics", href: "/topics" },
+  { label: "Lexicon", href: "/lexicon" },
 ];
 
 export async function SiteHeader() {

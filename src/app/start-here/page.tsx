@@ -138,6 +138,7 @@ export default function StartHerePage() {
               { href: "/quotes", label: "Quote Archive", desc: "Notable words and wisdom" },
               { href: "/search", label: "Search Everything", desc: "Episodes, transcripts, lore" },
               { href: "/stats", label: "Archive Stats", desc: "Numbers and visualizations" },
+              { href: "/lexicon", label: "Panelverse Lexicon", desc: "Slang, lore terms, and panel culture" },
             ].map((item) => (
               <Link
                 key={item.href}
