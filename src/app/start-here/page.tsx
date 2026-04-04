@@ -109,50 +109,84 @@ export default function StartHerePage() {
 
         <MysticalDivider />
 
-        {/* Mythic Map CTA */}
-        <Link
-          href="/mythic-map"
-          className="group block rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-6 transition-all hover:border-accent-gold/40 hover:bg-accent-gold/10"
-        >
-          <div className="flex items-center gap-3">
-            <IconScroll size={28} className="text-accent-gold" />
-            <div>
-              <h2 className="font-display text-base font-bold text-accent-gold group-hover:text-accent-gold transition-colors">
-                The Mythic Map
-              </h2>
-              <p className="text-xs text-text-muted mt-0.5">
-                Archetypes, symbols, and recurring themes that drive the archive&apos;s narrative engine.
-                The Oracle, the Fool, the Scapegoat, and the hidden structure beneath 1,300+ episodes.
-              </p>
-            </div>
-            <span className="ml-auto font-mono text-[10px] text-accent-gold group-hover:underline shrink-0">
-              Explore &rarr;
-            </span>
+        {/* Color-coded navigation groups */}
+        <div className="space-y-6">
+          {/* Legend */}
+          <div className="flex flex-wrap gap-4 text-[10px] font-mono uppercase tracking-widest justify-center">
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-accent-gold" /> <span className="text-accent-gold">Archive</span> — core content</span>
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-accent-cyan" /> <span className="text-accent-cyan">Explore</span> — discovery</span>
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-accent-violet" /> <span className="text-accent-violet">Reference</span> — meta &amp; tools</span>
           </div>
-        </Link>
 
-        <SectionCard title="Other Ways to Explore">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { href: "/people", label: "People Directory", desc: "Hosts, guests, and figures" },
-              { href: "/quotes", label: "Quote Archive", desc: "Notable words and wisdom" },
-              { href: "/search", label: "Search Everything", desc: "Episodes, transcripts, lore" },
-              { href: "/stats", label: "Archive Stats", desc: "Numbers and visualizations" },
-              { href: "/lexicon", label: "Panelverse Lexicon", desc: "Slang, lore terms, and panel culture" },
-            ].map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="group rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-green/30 hover:bg-elevated"
-              >
-                <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors">
-                  {item.label}
-                </h3>
-                <p className="mt-1 text-xs text-text-muted">{item.desc}</p>
-              </Link>
-            ))}
-          </div>
-        </SectionCard>
+          {/* Archive group — gold */}
+          <SectionCard title="Archive">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                { href: "/episodes", label: "Episodes", desc: "1,327 episodes — browse, filter, and search the full catalog" },
+                { href: "/people", label: "People", desc: "497 hosts, guests, and figures — profiles, appearances, quotes" },
+                { href: "/quotes", label: "Quotes", desc: "3,374 memorable moments — searchable and attributed" },
+                { href: "/search", label: "Search Everything", desc: "Full-text search across episodes, people, quotes, and lore" },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group rounded-lg border border-accent-gold/10 bg-surface p-4 transition-colors hover:border-accent-gold/40 hover:bg-accent-gold-dim"
+                >
+                  <h3 className="font-sans text-sm font-medium text-accent-gold transition-colors">
+                    {item.label}
+                  </h3>
+                  <p className="mt-1 text-xs text-text-muted">{item.desc}</p>
+                </Link>
+              ))}
+            </div>
+          </SectionCard>
+
+          {/* Explore group — cyan */}
+          <SectionCard title="Explore">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { href: "/lore", label: "Lore", desc: "Deep mythology and esoteric lore entries" },
+                { href: "/series", label: "Series", desc: "15 curated show series and arcs" },
+                { href: "/collections", label: "Collections", desc: "Thematic episode groupings" },
+                { href: "/topics", label: "Topics", desc: "Subjects and themes discussed across episodes" },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group rounded-lg border border-accent-cyan/10 bg-surface p-4 transition-colors hover:border-accent-cyan/40 hover:bg-accent-cyan-dim"
+                >
+                  <h3 className="font-sans text-sm font-medium text-accent-cyan transition-colors">
+                    {item.label}
+                  </h3>
+                  <p className="mt-1 text-xs text-text-muted">{item.desc}</p>
+                </Link>
+              ))}
+            </div>
+          </SectionCard>
+
+          {/* Reference group — violet */}
+          <SectionCard title="Reference">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { href: "/lexicon", label: "Lexicon", desc: "60+ panelverse slang terms and lore definitions" },
+                { href: "/timeline", label: "Timeline", desc: "Chronological journey through show history" },
+                { href: "/stats", label: "Stats", desc: "Numbers, visualizations, and archive metrics" },
+                { href: "/mythic-map", label: "Mythic Map", desc: "Archetypes, symbols, and hidden narrative structure" },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group rounded-lg border border-accent-violet/10 bg-surface p-4 transition-colors hover:border-accent-violet/40 hover:bg-accent-violet-dim"
+                >
+                  <h3 className="font-sans text-sm font-medium text-accent-violet transition-colors">
+                    {item.label}
+                  </h3>
+                  <p className="mt-1 text-xs text-text-muted">{item.desc}</p>
+                </Link>
+              ))}
+            </div>
+          </SectionCard>
+        </div>
 
         <ArchiveDisclaimer variant="full" />
       </main>

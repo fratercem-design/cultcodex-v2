@@ -30,50 +30,81 @@ type Category =
   | "music"
   | "moderation";
 
+/*
+ * Color-coded category system (matches site-wide nav grouping):
+ *   Gold    — Psycheverse & Panelverse (show-specific terms)
+ *   Cyan    — Streaming & Moderation (platform & technical)
+ *   Violet  — Tarot & Mystic (spiritual & esoteric)
+ *   Crimson — Community & Slang (social dynamics)
+ *   Pink    — Music & Performance (creative expression)
+ */
 const CATEGORY_META: Record<
   Category,
-  { label: string; color: string; description: string }
+  { label: string; color: string; dotColor: string; borderColor: string; bgHover: string; description: string }
 > = {
+  psycheverse: {
+    label: "Psycheverse",
+    color: "text-accent-gold",
+    dotColor: "bg-accent-gold",
+    borderColor: "border-accent-gold/30",
+    bgHover: "hover:bg-accent-gold-dim",
+    description: "Terms coined by or unique to the Cult of Psyche community",
+  },
   panelverse: {
     label: "Panelverse",
     color: "text-accent-gold",
+    dotColor: "bg-accent-gold",
+    borderColor: "border-accent-gold/30",
+    bgHover: "hover:bg-accent-gold-dim",
     description: "Terms specific to the YouTube panel livestream ecosystem",
   },
   streaming: {
     label: "Streaming",
     color: "text-accent-cyan",
+    dotColor: "bg-accent-cyan",
+    borderColor: "border-accent-cyan/30",
+    bgHover: "hover:bg-accent-cyan-dim",
     description: "General livestreaming and content creator terminology",
   },
-  community: {
-    label: "Community",
-    color: "text-purple-400",
-    description: "Terms describing community dynamics and social interactions",
+  moderation: {
+    label: "Moderation",
+    color: "text-accent-cyan",
+    dotColor: "bg-accent-cyan",
+    borderColor: "border-accent-cyan/30",
+    bgHover: "hover:bg-accent-cyan-dim",
+    description: "Terms related to stream moderation and chat management",
   },
   tarot: {
     label: "Tarot & Mystic",
-    color: "text-amber-400",
+    color: "text-accent-violet",
+    dotColor: "bg-accent-violet",
+    borderColor: "border-accent-violet/30",
+    bgHover: "hover:bg-accent-violet-dim",
     description: "Tarot, divination, and spiritual terminology used on the show",
   },
-  psycheverse: {
-    label: "Psycheverse",
+  community: {
+    label: "Community",
     color: "text-red-400",
-    description:
-      "Terms coined by or unique to the Cult of Psyche community",
+    dotColor: "bg-red-400",
+    borderColor: "border-red-400/30",
+    bgHover: "hover:bg-red-400/5",
+    description: "Terms describing community dynamics and social interactions",
   },
   slang: {
     label: "Slang",
-    color: "text-green-400",
+    color: "text-red-400",
+    dotColor: "bg-red-400",
+    borderColor: "border-red-400/30",
+    bgHover: "hover:bg-red-400/5",
     description: "Internet and panel culture slang terms",
   },
   music: {
     label: "Music & Performance",
     color: "text-pink-400",
+    dotColor: "bg-pink-400",
+    borderColor: "border-pink-400/30",
+    bgHover: "hover:bg-pink-400/5",
     description: "Terms related to freestyle rap, music, and live performances",
-  },
-  moderation: {
-    label: "Moderation",
-    color: "text-orange-400",
-    description: "Terms related to stream moderation and chat management",
   },
 };
 
@@ -579,6 +610,18 @@ export default function LexiconPage() {
     terms.sort((a, b) => a.word.localeCompare(b.word));
   }
 
+  // Build full alphabetical index
+  const allTermsSorted = [...LEXICON].sort((a, b) =>
+    a.word.localeCompare(b.word)
+  );
+  const letterIndex = new Map<string, Term[]>();
+  for (const term of allTermsSorted) {
+    const letter = term.word[0].toUpperCase();
+    if (!letterIndex.has(letter)) letterIndex.set(letter, []);
+    letterIndex.get(letter)!.push(term);
+  }
+  const letters = [...letterIndex.keys()].sort();
+
   // Category render order
   const order: Category[] = [
     "psycheverse",
@@ -591,6 +634,15 @@ export default function LexiconPage() {
     "slang",
   ];
 
+  // Group categories by color family for the legend
+  const colorGroups = [
+    { color: "text-accent-gold", dot: "bg-accent-gold", label: "Show & Panel", categories: ["psycheverse", "panelverse"] },
+    { color: "text-accent-cyan", dot: "bg-accent-cyan", label: "Platform & Moderation", categories: ["streaming", "moderation"] },
+    { color: "text-accent-violet", dot: "bg-accent-violet", label: "Spiritual & Mystic", categories: ["tarot"] },
+    { color: "text-red-400", dot: "bg-red-400", label: "Social & Slang", categories: ["community", "slang"] },
+    { color: "text-pink-400", dot: "bg-pink-400", label: "Music & Performance", categories: ["music"] },
+  ];
+
   return (
     <>
       <PageHero
@@ -599,21 +651,115 @@ export default function LexiconPage() {
         backgroundImage="/wiki-page-header.jpg"
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
-        {/* Category jump links */}
-        <nav className="flex flex-wrap gap-2 text-xs font-mono">
+
+        {/* Color legend */}
+        <div className="rounded-lg border border-border bg-surface p-4">
+          <h2 className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-3">Color Key</h2>
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            {colorGroups.map((g) => (
+              <span key={g.label} className="flex items-center gap-2 text-xs">
+                <span className={`w-2.5 h-2.5 rounded-full ${g.dot} shrink-0`} />
+                <span className={`font-medium ${g.color}`}>{g.label}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Alphabet jump bar */}
+        <nav className="flex flex-wrap gap-1 font-mono text-xs" aria-label="Jump to letter">
+          {letters.map((letter) => (
+            <a
+              key={letter}
+              href={`#letter-${letter}`}
+              className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-text-muted hover:text-accent-gold hover:border-accent-gold/40 transition-colors"
+            >
+              {letter}
+            </a>
+          ))}
+          <span className="border-l border-border mx-2" />
           {order.map((cat) => {
             const meta = CATEGORY_META[cat];
             return (
               <a
                 key={cat}
-                href={`#${cat}`}
-                className={`px-2 py-1 rounded border border-white/10 hover:border-white/30 transition ${meta.color}`}
+                href={`#cat-${cat}`}
+                className={`px-2 h-7 flex items-center rounded border border-white/10 hover:border-white/30 transition ${meta.color}`}
+                title={meta.label}
               >
-                {meta.label} ({grouped.get(cat)?.length ?? 0})
+                {meta.label}
               </a>
             );
           })}
         </nav>
+
+        {/* ═══════════════════════════════════════════════════════════ */}
+        {/*  ALPHABETICAL INDEX                                        */}
+        {/* ═══════════════════════════════════════════════════════════ */}
+        <SectionCard title="A–Z Index">
+          <p className="text-xs text-text-muted mb-5">
+            Every term alphabetically. Color indicates category.
+          </p>
+          <div className="space-y-6">
+            {letters.map((letter) => {
+              const terms = letterIndex.get(letter)!;
+              return (
+                <div key={letter} id={`letter-${letter}`}>
+                  <h3 className="font-display text-lg font-bold text-accent-gold border-b border-accent-gold/20 pb-1 mb-3">
+                    {letter}
+                  </h3>
+                  <dl className="space-y-4">
+                    {terms.map((term) => {
+                      const meta = CATEGORY_META[term.category];
+                      return (
+                        <div
+                          key={term.word}
+                          className={`border-l-2 ${meta.borderColor} pl-4 transition-colors`}
+                        >
+                          <dt className="flex items-start gap-2">
+                            <span className={`w-2 h-2 rounded-full ${meta.dotColor} mt-1.5 shrink-0`} />
+                            <span>
+                              <span className={`font-bold text-sm ${meta.color}`}>{term.word}</span>
+                              {term.aka && term.aka.length > 0 && (
+                                <span className="text-text-muted font-normal text-xs ml-2">
+                                  aka {term.aka.join(", ")}
+                                </span>
+                              )}
+                              <span className={`ml-2 text-[10px] font-mono uppercase tracking-wider ${meta.color} opacity-60`}>
+                                {meta.label}
+                              </span>
+                            </span>
+                          </dt>
+                          <dd className="text-sm text-text-primary leading-relaxed mt-1 ml-4">
+                            {term.definition}
+                          </dd>
+                          {term.usage && (
+                            <dd className="text-xs text-text-muted mt-1 ml-4 italic font-serif border-l border-white/10 pl-3">
+                              {term.usage}
+                            </dd>
+                          )}
+                          {term.origin && (
+                            <dd className="text-[10px] text-text-muted mt-1 ml-4 font-mono opacity-60">
+                              Origin: {term.origin}
+                            </dd>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </dl>
+                </div>
+              );
+            })}
+          </div>
+        </SectionCard>
+
+        {/* ═══════════════════════════════════════════════════════════ */}
+        {/*  BY CATEGORY                                               */}
+        {/* ═══════════════════════════════════════════════════════════ */}
+        <div className="pt-4">
+          <h2 className="font-display text-xl font-bold text-text-primary mb-6 text-center">
+            Browse by Category
+          </h2>
+        </div>
 
         {order.map((cat) => {
           const meta = CATEGORY_META[cat];
@@ -621,20 +767,27 @@ export default function LexiconPage() {
           if (!terms?.length) return null;
 
           return (
-            <SectionCard key={cat} title={meta.label} id={cat}>
-              <p className="text-xs text-text-secondary mb-4 italic">
-                {meta.description}
-              </p>
-              <dl className="space-y-5">
+            <div id={`cat-${cat}`}>
+            <SectionCard key={cat} title={meta.label}>
+              <div className="flex items-center gap-2 mb-4">
+                <span className={`w-3 h-3 rounded-full ${meta.dotColor}`} />
+                <p className="text-xs text-text-muted italic">
+                  {meta.description}
+                </p>
+                <span className={`ml-auto text-xs font-mono ${meta.color} opacity-60`}>
+                  {terms.length} terms
+                </span>
+              </div>
+              <dl className="space-y-4">
                 {terms.map((term) => (
                   <div
                     key={term.word}
-                    className="border-l-2 border-white/10 pl-4 hover:border-accent-gold/50 transition-colors"
+                    className={`border-l-2 ${meta.borderColor} pl-4 transition-colors`}
                   >
                     <dt className="font-bold text-sm">
                       <span className={meta.color}>{term.word}</span>
                       {term.aka && term.aka.length > 0 && (
-                        <span className="text-text-secondary font-normal text-xs ml-2">
+                        <span className="text-text-muted font-normal text-xs ml-2">
                           aka {term.aka.join(", ")}
                         </span>
                       )}
@@ -643,12 +796,12 @@ export default function LexiconPage() {
                       {term.definition}
                     </dd>
                     {term.usage && (
-                      <dd className="text-xs text-text-secondary mt-1 italic font-serif">
+                      <dd className="text-xs text-text-muted mt-1 italic font-serif border-l border-white/10 pl-3">
                         {term.usage}
                       </dd>
                     )}
                     {term.origin && (
-                      <dd className="text-xs text-accent-gold/60 mt-1 font-mono">
+                      <dd className="text-[10px] text-text-muted mt-1 font-mono opacity-60">
                         Origin: {term.origin}
                       </dd>
                     )}
@@ -656,11 +809,12 @@ export default function LexiconPage() {
                 ))}
               </dl>
             </SectionCard>
+            </div>
           );
         })}
 
         <SectionCard title="About This Lexicon">
-          <div className="text-sm text-text-secondary leading-relaxed space-y-2">
+          <div className="text-sm text-text-muted leading-relaxed space-y-3">
             <p>
               This lexicon was compiled from analysis of 3,374 quotes, 1,327
               episode summaries, and 497 community member profiles in the Cult
@@ -668,6 +822,20 @@ export default function LexiconPage() {
               the show, supplemented by community knowledge and Urban Dictionary
               where applicable.
             </p>
+            <div className="rounded border border-border bg-void p-3 space-y-2">
+              <h3 className="font-mono text-[10px] uppercase tracking-widest text-text-muted">Reading the colors</h3>
+              <div className="grid gap-1.5 text-xs">
+                {colorGroups.map((g) => (
+                  <div key={g.label} className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${g.dot} shrink-0`} />
+                    <span className={`font-medium ${g.color} w-40`}>{g.label}</span>
+                    <span className="text-text-muted">
+                      {g.categories.map((c) => CATEGORY_META[c as Category].label).join(", ")}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
             <p>
               The Panelverse is a living, evolving ecosystem. New terms emerge as
               the community grows. If you know a term that should be here,

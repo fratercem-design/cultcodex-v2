@@ -4,19 +4,33 @@ import { auth, type SessionWithCodex } from "@/lib/auth";
 import { UserMenu } from "@/components/auth/user-menu";
 import { IconSearch } from "@/components/graphics/codex-icons";
 
+/*
+ * Color-coded navigation groups:
+ *   Gold    — Archive (core content: episodes, people, quotes)
+ *   Cyan    — Explore (discovery: lore, series, collections, topics)
+ *   Violet  — Reference (meta: lexicon, timeline, stats, mythic map)
+ */
 const navItems = [
-  { label: "Start Here", href: "/start-here" },
-  { label: "Episodes", href: "/episodes" },
-  { label: "People", href: "/people" },
-  { label: "Lore", href: "/lore" },
-  { label: "Collections", href: "/collections" },
-  { label: "Series", href: "/series" },
-  { label: "Quotes", href: "/quotes" },
-  { label: "Timeline", href: "/timeline" },
-  { label: "Stats", href: "/stats" },
-  { label: "Topics", href: "/topics" },
-  { label: "Lexicon", href: "/lexicon" },
+  // Archive — core content (gold)
+  { label: "Episodes", href: "/episodes", group: "archive" as const },
+  { label: "People", href: "/people", group: "archive" as const },
+  { label: "Quotes", href: "/quotes", group: "archive" as const },
+  // Explore — discovery (cyan)
+  { label: "Lore", href: "/lore", group: "explore" as const },
+  { label: "Series", href: "/series", group: "explore" as const },
+  { label: "Collections", href: "/collections", group: "explore" as const },
+  { label: "Topics", href: "/topics", group: "explore" as const },
+  // Reference — meta pages (violet)
+  { label: "Lexicon", href: "/lexicon", group: "reference" as const },
+  { label: "Timeline", href: "/timeline", group: "reference" as const },
+  { label: "Stats", href: "/stats", group: "reference" as const },
 ];
+
+const groupColors = {
+  archive: "text-accent-gold hover:text-accent-gold",
+  explore: "text-accent-cyan hover:text-accent-cyan",
+  reference: "text-accent-violet hover:text-accent-violet",
+} as const;
 
 export async function SiteHeader() {
   const session = await auth();
@@ -38,16 +52,31 @@ export async function SiteHeader() {
           CULTCODEX
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="font-mono text-xs uppercase tracking-wider text-text-muted hover:text-accent-green transition-colors"
-            >
-              {item.label}
-            </Link>
-          ))}
+        <nav className="hidden md:flex items-center gap-1">
+          {/* Start Here — standalone accent */}
+          <Link
+            href="/start-here"
+            className="font-mono text-xs uppercase tracking-wider px-2 py-1 rounded text-accent-gold hover:bg-accent-gold-dim transition-colors"
+          >
+            Start Here
+          </Link>
+          <span className="text-border mx-1">|</span>
+          {/* Grouped nav items with color coding */}
+          {navItems.map((item, i) => {
+            const prevGroup = i > 0 ? navItems[i - 1].group : null;
+            const showDivider = prevGroup && prevGroup !== item.group;
+            return (
+              <span key={item.href} className="flex items-center">
+                {showDivider && <span className="text-border mx-1">|</span>}
+                <Link
+                  href={item.href}
+                  className={`font-mono text-xs uppercase tracking-wider px-2 py-1 rounded transition-colors opacity-80 hover:opacity-100 ${groupColors[item.group]}`}
+                >
+                  {item.label}
+                </Link>
+              </span>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">
