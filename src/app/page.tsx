@@ -12,15 +12,16 @@ import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
-import { IconTransmission, IconPerson, IconScroll, IconQuote, IconTopic, IconSeries } from "@/components/graphics/codex-icons";
-import { MysticalDivider } from "@/components/graphics/mystical-divider";
+import { IconTransmission, IconPerson, IconScroll, IconQuote, IconTopic, IconSeries, IconCrystalBall } from "@/components/graphics/codex-icons";
+import { MysticalDivider, OrnamentalBreak } from "@/components/graphics/mystical-divider";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
+import { ColorLegend } from "@/components/ui/color-legend";
 
 export const revalidate = 300;
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, featuredSeries, popularTopics] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, featuredSeries, popularTopics, quoteCount] = await Promise.all([
     getArchiveStats(),
     getEpisodes({ take: 6, orderBy: "airDate", order: "desc" }),
     getQuotes({ take: 3 }),
@@ -32,7 +33,19 @@ export default async function HomePage() {
       take: 4,
     }),
     getTopTopicsByEpisodes(12),
+    prisma.quote.count(),
   ]);
+
+  // Random oracle quote for the homepage teaser
+  const oracleQuote = quoteCount > 0
+    ? await prisma.quote.findFirst({
+        skip: Math.floor(Math.random() * quoteCount),
+        select: {
+          text: true,
+          speaker: { select: { displayName: true, slug: true } },
+        },
+      })
+    : null;
 
   const recentCards = recentEpisodes.map(formatEpisodeForCard);
   const featured = recentEpisodes[0];
@@ -87,6 +100,17 @@ export default async function HomePage() {
       </section>
 
       <main id="main-content" className="mx-auto max-w-7xl px-4 py-8 space-y-10">
+        {/* New visitor prompt */}
+        <div className="flex items-center justify-center gap-3">
+          <Link
+            href="/start-here"
+            className="inline-flex items-center gap-2 rounded-full border border-accent-gold/20 bg-accent-gold/5 px-4 py-1.5 font-mono text-xs text-accent-gold/80 transition-all hover:border-accent-gold/40 hover:bg-accent-gold/10 hover:text-accent-gold"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-accent-gold/60 animate-pulse" />
+            New to the Codex? Start here
+          </Link>
+        </div>
+
         {/* Archive stats */}
         <ArchiveStatsBar
           stats={[
@@ -99,9 +123,12 @@ export default async function HomePage() {
           ]}
         />
 
+        {/* Color legend */}
+        <ColorLegend className="justify-center" />
+
         {/* Featured episode */}
         {featured && (
-          <SectionCard title="Featured Episode">
+          <SectionCard title="Latest Transmission">
             <Link
               href={`/episodes/${featured.slug}`}
               className="group flex flex-col sm:flex-row items-start gap-4"
@@ -113,12 +140,12 @@ export default async function HomePage() {
                   className="w-full sm:w-48 h-32 rounded-lg object-cover flex-shrink-0"
                 />
               ) : (
-                <div className="w-full sm:w-48 h-32 rounded-lg bg-gradient-to-br from-accent-green/10 to-accent-purple/10 flex-shrink-0" />
+                <div className="w-full sm:w-48 h-32 rounded-lg bg-gradient-to-br from-accent-gold/10 to-accent-violet/10 flex-shrink-0" />
               )}
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   {featured.episodeNumber && (
-                    <span className="font-mono text-[10px] text-accent-green font-bold">
+                    <span className="font-mono text-[10px] text-accent-gold font-bold">
                       EP.{String(featured.episodeNumber).padStart(3, "0")}
                     </span>
                   )}
@@ -128,7 +155,7 @@ export default async function HomePage() {
                     </span>
                   )}
                 </div>
-                <h3 className="text-lg font-medium text-text-primary group-hover:text-accent-green transition-colors">
+                <h3 className="text-lg font-medium text-text-primary group-hover:text-accent-gold transition-colors">
                   {featured.title}
                 </h3>
                 {featured.summaryShort && (
@@ -166,14 +193,14 @@ export default async function HomePage() {
           <div className="mt-4">
             <Link
               href="/episodes"
-              className="font-mono text-xs text-accent-green hover:underline"
+              className="font-mono text-xs text-accent-gold hover:underline"
             >
               View all episodes →
             </Link>
           </div>
         </SectionCard>
 
-        {/* Featured Collections */}
+        {/* Featured Series */}
         {featuredSeries.length > 0 && (
           <SectionCard title="Featured Series">
             <div className="grid gap-3 sm:grid-cols-2">
@@ -181,17 +208,17 @@ export default async function HomePage() {
                 <Link
                   key={s.slug}
                   href={`/series/${s.slug}`}
-                  className="group flex items-start gap-3 rounded-lg border border-border bg-surface/50 p-3 transition-all hover:border-accent-purple/30 hover:bg-elevated"
+                  className="group flex items-start gap-3 rounded-lg border border-border bg-surface/50 p-3 transition-all hover:border-accent-cyan/30 hover:bg-elevated"
                 >
                   {s.coverImageUrl ? (
                     <img src={s.coverImageUrl} alt="" className="h-14 w-14 flex-shrink-0 rounded object-cover" />
                   ) : (
-                    <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded bg-gradient-to-br from-accent-purple/10 to-accent-gold/10 text-xl">
+                    <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded bg-gradient-to-br from-accent-cyan/10 to-accent-violet/10 text-xl">
                       {s.type === "tarot" ? "🔮" : s.type === "panel" ? "🎙️" : s.type === "story" ? "📖" : "📚"}
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-purple transition-colors">
+                    <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-cyan transition-colors">
                       {s.title}
                     </h3>
                     <p className="font-mono text-[10px] text-text-muted">
@@ -205,27 +232,26 @@ export default async function HomePage() {
               ))}
             </div>
             <div className="mt-3">
-              <Link href="/series" className="font-mono text-xs text-accent-purple hover:underline">
+              <Link href="/series" className="font-mono text-xs text-accent-cyan hover:underline">
                 View all series →
               </Link>
             </div>
           </SectionCard>
         )}
 
-        {/* Popular Topics */}
+        {/* Popular Topics — cyan (topics color) */}
         {popularTopics.length > 0 && (
           <section>
-            <h2 className="mb-3 font-display text-lg font-bold text-accent-gold">
+            <h2 className="mb-3 font-display text-lg font-bold text-accent-cyan flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-accent-cyan shrink-0" />
               Popular Topics
             </h2>
             <div className="flex flex-wrap gap-2">
-              {popularTopics.map((topic, i) => (
+              {popularTopics.map((topic) => (
                 <Link
                   key={topic.slug}
                   href={`/topics/${topic.slug}`}
-                  className={`inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-mono text-xs transition-colors hover:bg-elevated hover:border-accent-green/30 ${
-                    i < 4 ? "text-accent-gold" : i < 8 ? "text-accent-green" : "text-accent-cyan"
-                  }`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-mono text-xs text-accent-cyan transition-colors hover:bg-elevated hover:border-accent-cyan/30"
                 >
                   {topic.title}
                   <span className="opacity-40 text-[9px]">{topic.count}</span>
@@ -255,7 +281,7 @@ export default async function HomePage() {
             <div className="mt-4">
               <Link
                 href="/quotes"
-                className="font-mono text-xs text-accent-green hover:underline"
+                className="font-mono text-xs text-red-400 hover:underline"
               >
                 Explore all quotes →
               </Link>
@@ -265,42 +291,125 @@ export default async function HomePage() {
 
         <MysticalDivider />
 
-        {/* Quick Links */}
+        {/* Oracle Teaser */}
+        {oracleQuote && (
+          <Link href="/oracle" className="group block">
+            <div className="relative rounded-lg border border-accent-violet/20 bg-gradient-to-r from-accent-violet/5 via-transparent to-accent-violet/5 p-6 text-center transition-all hover:border-accent-violet/40 hover:shadow-lg hover:shadow-accent-violet/10 overflow-hidden">
+              <div className="absolute top-2 left-4 font-mono text-[9px] text-accent-violet/50 uppercase tracking-widest">
+                The Oracle Speaks
+              </div>
+              <div className="flex justify-center mb-2">
+                <IconCrystalBall size={28} className="text-accent-violet/60 group-hover:text-accent-violet transition-colors" />
+              </div>
+              <p className="font-mono text-sm text-text-muted italic line-clamp-2 max-w-2xl mx-auto">
+                &ldquo;{oracleQuote.text.length > 140 ? `${oracleQuote.text.slice(0, 140)}…` : oracleQuote.text}&rdquo;
+              </p>
+              {oracleQuote.speaker && (
+                <p className="mt-1 font-mono text-[10px] text-accent-gold">
+                  — {oracleQuote.speaker.displayName}
+                </p>
+              )}
+              <p className="mt-2 font-mono text-[10px] text-accent-violet/60 group-hover:text-accent-violet transition-colors">
+                Consult the Oracle →
+              </p>
+            </div>
+          </Link>
+        )}
+
+        <OrnamentalBreak />
+
+        {/* Explore the Archive — color-coded by category */}
         <section>
           <h2 className="mb-4 font-display text-lg font-bold text-accent-gold">
             Explore the Archive
           </h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {([
-              { href: "/episodes", icon: <IconTransmission size={24} />, label: "Episodes", count: stats.episodes, desc: "Browse all transmissions" },
-              { href: "/people", icon: <IconPerson size={24} />, label: "People", count: stats.people, desc: "Guests, hosts, and figures" },
-              { href: "/lore", icon: <IconScroll size={24} />, label: "Lore", count: stats.loreEntries, desc: "Concepts, doctrines, and myths" },
-              { href: "/topics", icon: <IconTopic size={24} />, label: "Topics", count: stats.topics, desc: "Key themes and subjects" },
-              { href: "/series", icon: <IconSeries size={24} />, label: "Series", count: stats.series, desc: "Collections and arcs" },
-              { href: "/quotes", icon: <IconQuote size={24} />, label: "Quotes", count: stats.quotes, desc: "Notable words and wisdom" },
-              { href: "/timeline", icon: <IconTransmission size={24} />, label: "Timeline", count: null, desc: "Chronological archive view" },
-            ] as const).map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="group relative flex items-center gap-3 rounded-lg border border-border bg-surface p-4 transition-all hover:border-accent-green/30 hover:bg-elevated overflow-hidden"
-              >
-                <div className="flex-shrink-0">{item.icon}</div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors">
-                      {item.label}
-                    </h3>
-                    {item.count != null && (
-                      <span className="font-mono text-[10px] text-accent-green">
-                        {item.count}
-                      </span>
-                    )}
+
+          {/* Archive (Gold) */}
+          <div className="mb-4">
+            <h3 className="mb-2 font-mono text-[10px] text-accent-gold/70 uppercase tracking-widest flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-gold" />
+              Archive
+            </h3>
+            <div className="grid gap-2 sm:grid-cols-3">
+              {([
+                { href: "/episodes", icon: <IconTransmission size={20} />, label: "Episodes", count: stats.episodes, desc: "Browse all transmissions" },
+                { href: "/people", icon: <IconPerson size={20} />, label: "People", count: stats.people, desc: "Guests, hosts, and figures" },
+                { href: "/quotes", icon: <IconQuote size={20} />, label: "Quotes", count: stats.quotes, desc: "Notable words and wisdom" },
+              ] as const).map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group flex items-center gap-3 rounded-lg border border-border bg-surface p-3 transition-all hover:border-accent-gold/30 hover:bg-elevated"
+                >
+                  <div className="flex-shrink-0 text-accent-gold/60">{item.icon}</div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">{item.label}</span>
+                      <span className="font-mono text-[10px] text-accent-gold/60">{item.count}</span>
+                    </div>
+                    <p className="text-[11px] text-text-muted truncate">{item.desc}</p>
                   </div>
-                  <p className="text-xs text-text-muted">{item.desc}</p>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Explore (Cyan) */}
+          <div className="mb-4">
+            <h3 className="mb-2 font-mono text-[10px] text-accent-cyan/70 uppercase tracking-widest flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan" />
+              Explore
+            </h3>
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {([
+                { href: "/lore", icon: <IconScroll size={20} />, label: "Lore", count: stats.loreEntries, desc: "Mythology and deep lore" },
+                { href: "/series", icon: <IconSeries size={20} />, label: "Series", count: stats.series, desc: "Collections and arcs" },
+                { href: "/topics", icon: <IconTopic size={20} />, label: "Topics", count: stats.topics, desc: "Themes and subjects" },
+                { href: "/collections", icon: <IconSeries size={20} />, label: "Collections", count: null, desc: "Curated pathways" },
+              ] as const).map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group flex items-center gap-3 rounded-lg border border-border bg-surface p-3 transition-all hover:border-accent-cyan/30 hover:bg-elevated"
+                >
+                  <div className="flex-shrink-0 text-accent-cyan/60">{item.icon}</div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-cyan transition-colors">{item.label}</span>
+                      {item.count != null && <span className="font-mono text-[10px] text-accent-cyan/60">{item.count}</span>}
+                    </div>
+                    <p className="text-[11px] text-text-muted truncate">{item.desc}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Reference (Violet) */}
+          <div>
+            <h3 className="mb-2 font-mono text-[10px] text-accent-violet/70 uppercase tracking-widest flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-violet" />
+              Reference
+            </h3>
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              {([
+                { href: "/lexicon", label: "Lexicon", desc: "Panelverse dictionary" },
+                { href: "/timeline", label: "Timeline", desc: "Chronological archive" },
+                { href: "/stats", label: "Stats", desc: "Archive analytics" },
+                { href: "/mythic-map", label: "Mythic Map", desc: "Connections mapped" },
+              ] as const).map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="group flex items-center gap-3 rounded-lg border border-border bg-surface p-3 transition-all hover:border-accent-violet/30 hover:bg-elevated"
+                >
+                  <div className="min-w-0">
+                    <span className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-violet transition-colors">{item.label}</span>
+                    <p className="text-[11px] text-text-muted truncate">{item.desc}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
 
