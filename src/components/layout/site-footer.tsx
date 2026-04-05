@@ -5,6 +5,14 @@ import { SacredBorder } from "@/components/graphics/mystical-divider";
 export function SiteFooter() {
   return (
     <footer className="relative border-t border-border overflow-hidden py-10">
+      {/*
+  ╔══════════════════════════════════════╗
+  ║  You found the source code.          ║
+  ║  The Codex remembers all who look.   ║
+  ║  Try: /meow, /oracle, /stormborn    ║
+  ║  Or:  ↑↑↓↓←→←→BA                    ║
+  ╚══════════════════════════════════════╝
+      */}
       <Image
         src="/footer-artwork.jpg"
         alt=""
@@ -39,6 +47,15 @@ export function SiteFooter() {
           <p className="font-mono text-xs text-accent-gold">
             CULT OF PSYCHE — MATRIX ARCHIVE
           </p>
+
+          {/* Color legend signature dots */}
+          <div className="flex items-center gap-1.5" aria-hidden="true">
+            <span className="block h-1.5 w-1.5 rounded-full bg-accent-gold/60" title="Gold — Lore" />
+            <span className="block h-1.5 w-1.5 rounded-full bg-accent-cyan/60" title="Cyan — Archive" />
+            <span className="block h-1.5 w-1.5 rounded-full bg-purple-500/60" title="Violet — Mystical" />
+            <span className="block h-1.5 w-1.5 rounded-full bg-red-500/60" title="Red — Live" />
+          </div>
+
           <p className="font-mono text-[10px] text-text-muted/50">
             CultCodex v2 · The sacred intelligence terminal
           </p>
@@ -55,7 +72,16 @@ export function SiteFooter() {
             <Link href="/corrections" className="font-mono text-[10px] text-text-muted/40 hover:text-accent-gold transition-colors">
               Corrections
             </Link>
+            <span className="text-text-muted/20">·</span>
+            <Link href="/lexicon" className="font-mono text-[10px] text-text-muted/40 hover:text-accent-gold transition-colors">
+              Lexicon
+            </Link>
           </div>
+
+          {/* Copyright */}
+          <p className="mt-3 font-mono text-[9px] text-text-muted/30 tracking-wider">
+            &copy; {new Date().getFullYear()} Cult of Psyche. All transmissions archived.
+          </p>
         </div>
       </div>
     </footer>

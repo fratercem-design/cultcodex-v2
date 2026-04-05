@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { LiveBanner } from "@/components/layout/live-banner";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SkipLink } from "@/components/ui/skip-link";
+import { KonamiEasterEgg } from "@/components/ui/konami-easter-egg";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -59,6 +60,7 @@ export default function RootLayout({
         <SiteHeader />
         <div className="flex-1">{children}</div>
         <SiteFooter />
+        <KonamiEasterEgg />
       </body>
     </html>
   );

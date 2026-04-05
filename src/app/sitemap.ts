@@ -30,6 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/stats`, changeFrequency: "weekly", priority: 0.5 },
     { url: `${baseUrl}/lexicon`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/mythic-map`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/oracle`, changeFrequency: "always", priority: 0.6 },
     { url: `${baseUrl}/methodology`, changeFrequency: "monthly", priority: 0.3 },
     { url: `${baseUrl}/corrections`, changeFrequency: "monthly", priority: 0.3 },
     { url: `${baseUrl}/content-policy`, changeFrequency: "monthly", priority: 0.3 },
