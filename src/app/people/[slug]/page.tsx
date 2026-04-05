@@ -20,6 +20,7 @@ import { editorialFrame } from "@/lib/format/editorial-frame";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { ArchiveNotice } from "@/components/notices/archive-notice";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
+import { ColorLegend } from "@/components/ui/color-legend";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
@@ -147,6 +148,9 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </p>
               </SectionCard>
             )}
+
+            {/* Color legend */}
+            <ColorLegend />
 
             {/* Appearances */}
             <SectionCard title={`Appearances (${uniqueEpisodes.length})`}>

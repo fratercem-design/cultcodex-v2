@@ -33,6 +33,7 @@ import { TranscriptBadge } from "@/components/ui/transcript-badge";
 import { ProvenanceBadge } from "@/components/ui/provenance-badge";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import { DataQualityBadge } from "@/components/ui/data-quality-badge";
+import { ColorLegend } from "@/components/ui/color-legend";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -429,6 +430,9 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
             reactionTotal={reactionCounts.fire + reactionCounts.eye + reactionCounts.moon + reactionCounts.skull + reactionCounts.wildcard}
             commentCount={commentsData.totalCount}
           />
+
+          {/* Color legend */}
+          <ColorLegend />
 
           {/* Guests — hosts filtered out */}
           <GuestGrid

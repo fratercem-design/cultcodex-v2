@@ -17,10 +17,10 @@ export function QuoteHighlightCard({
   timestampSeconds,
 }: QuoteHighlightCardProps) {
   return (
-    <div className="relative rounded-lg border border-border bg-elevated p-5 border-l-[3px] border-l-accent-gold/50">
+    <div className="relative rounded-lg border border-border bg-elevated p-5 border-l-[3px] border-l-red-400/50">
       {/* Decorative quote mark */}
       <span
-        className="pointer-events-none absolute top-3 left-4 font-serif text-5xl leading-none text-accent-gold/15 select-none"
+        className="pointer-events-none absolute top-3 left-4 font-serif text-5xl leading-none text-red-400/15 select-none"
         aria-hidden="true"
       >
         {"\u201C"}
@@ -40,7 +40,7 @@ export function QuoteHighlightCard({
                 <img
                   src={speakerAvatarUrl}
                   alt=""
-                  className="h-6 w-6 rounded-full"
+                  className="h-6 w-6 rounded-full border border-accent-gold/30"
                 />
               ) : (
                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-gold/20 text-[10px] font-bold text-accent-gold">
