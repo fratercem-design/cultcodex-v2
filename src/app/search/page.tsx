@@ -87,8 +87,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   href={href}
                   className={`rounded-full border px-3 py-1 font-mono text-xs transition-colors ${
                     isActive
-                      ? "border-accent-green text-accent-green bg-accent-green/10"
-                      : "border-border text-text-muted hover:border-accent-green/50"
+                      ? "border-accent-gold text-accent-gold bg-accent-gold/10"
+                      : "border-border text-text-muted hover:border-accent-gold/50"
                   }`}
                 >
                   {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -162,10 +162,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="group flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3 font-mono text-sm text-text-primary transition-all hover:border-accent-green hover:text-accent-green hover:bg-accent-green/5"
+                className="group flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3 font-mono text-sm text-text-primary transition-all hover:border-accent-gold hover:text-accent-gold hover:bg-accent-gold/5"
               >
                 {link.label}
-                <span className="text-text-muted group-hover:text-accent-green transition-colors">&rarr;</span>
+                <span className="text-text-muted group-hover:text-accent-gold transition-colors">&rarr;</span>
               </Link>
             ))}
           </div>
@@ -177,7 +177,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 <Link
                   key={q}
                   href={`/search?q=${encodeURIComponent(q)}`}
-                  className="rounded-full border border-border bg-surface px-4 py-2 font-mono text-xs text-text-primary transition-all hover:border-accent-green hover:text-accent-green hover:bg-accent-green/5 hover:shadow-sm"
+                  className="rounded-full border border-border bg-surface px-4 py-2 font-mono text-xs text-text-primary transition-all hover:border-accent-gold hover:text-accent-gold hover:bg-accent-gold/5 hover:shadow-sm"
                 >
                   {q}
                 </Link>
@@ -216,7 +216,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-0.5">
                           {ep.episodeNumber != null && (
-                            <span className="font-mono text-[10px] text-accent-green font-bold">
+                            <span className="font-mono text-[10px] text-accent-gold font-bold">
                               EP.{String(ep.episodeNumber).padStart(3, "0")}
                             </span>
                           )}
@@ -226,7 +226,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                             </span>
                           )}
                         </div>
-                        <p className="text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors">
+                        <p className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
                           <HighlightMatch text={ep.title} query={query} />
                         </p>
                         {ep.summaryShort && (
@@ -257,7 +257,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-0.5">
-                          <p className="text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors">
+                          <p className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
                             <HighlightMatch
                               text={person.displayName}
                               query={query}
@@ -302,7 +302,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-0.5">
-                          <p className="text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors">
+                          <p className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
                             <HighlightMatch
                               text={entry.title}
                               query={query}
@@ -346,7 +346,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       className="group flex items-start gap-3 py-3 px-1 transition-colors hover:bg-elevated rounded"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors">
+                        <p className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
                           <HighlightMatch text={topic.title} query={query} />
                         </p>
                         {topic.description && (
@@ -379,7 +379,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                         {quote.episodeSlug && quote.episodeTitle && (
                           <Link
                             href={`/episodes/${quote.episodeSlug}`}
-                            className="hover:text-accent-green transition-colors"
+                            className="hover:text-accent-gold transition-colors"
                           >
                             in {quote.episodeTitle}
                           </Link>
@@ -404,7 +404,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       className="group block transition-colors hover:bg-elevated rounded p-1"
                     >
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-mono text-[10px] text-accent-green">
+                        <span className="font-mono text-[10px] text-accent-gold">
                           {formatSeconds(seg.startSeconds)}
                         </span>
                         {seg.speakerLabel && (
@@ -418,11 +418,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       </p>
                       <div className="mt-1 font-mono text-[10px] text-text-muted">
                         {seg.episodeNumber != null && (
-                          <span className="text-accent-green font-bold mr-1">
+                          <span className="text-accent-gold font-bold mr-1">
                             EP.{String(seg.episodeNumber).padStart(3, "0")}
                           </span>
                         )}
-                        <span className="group-hover:text-accent-green transition-colors">
+                        <span className="group-hover:text-accent-gold transition-colors">
                           {seg.episodeTitle}
                         </span>
                       </div>
@@ -479,7 +479,7 @@ function HighlightMatch({
         regex.test(part) ? (
           <mark
             key={i}
-            className="bg-accent-green/20 text-accent-green rounded-sm px-0.5"
+            className="bg-accent-gold/20 text-accent-gold rounded-sm px-0.5"
           >
             {part}
           </mark>

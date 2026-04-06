@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export type BadgeVariant = "green" | "purple" | "gold" | "muted";
+export type BadgeVariant = "green" | "purple" | "gold" | "cyan" | "crimson" | "muted";
 
 interface StatusBadgeProps {
   label: string;
@@ -11,6 +11,8 @@ const variantStyles: Record<BadgeVariant, string> = {
   green: "border-accent-green/30 text-accent-green bg-accent-green-dim",
   purple: "border-accent-purple/30 text-accent-purple bg-accent-purple-dim",
   gold: "border-accent-gold/30 text-accent-gold bg-accent-gold/10",
+  cyan: "border-accent-cyan/30 text-accent-cyan bg-accent-cyan/10",
+  crimson: "border-accent-crimson/30 text-accent-crimson bg-accent-crimson/10",
   muted: "border-border text-text-muted bg-surface",
 };
 

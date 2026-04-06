@@ -17,7 +17,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
   return (
     <Link
       href={`/episodes/${episode.slug}`}
-      className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-green/30 hover:bg-elevated"
+      className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated"
     >
       {episode.thumbnailUrl ? (
         <Image
@@ -29,12 +29,12 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
           unoptimized
         />
       ) : (
-        <div className="h-16 w-16 flex-shrink-0 rounded bg-gradient-to-br from-accent-green/10 to-accent-purple/10" />
+        <div className="h-16 w-16 flex-shrink-0 rounded bg-gradient-to-br from-accent-gold/10 to-accent-violet/10" />
       )}
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-1">
           {epNum && (
-            <span className="font-mono text-[10px] text-accent-green font-bold">
+            <span className="font-mono text-[10px] text-accent-gold font-bold">
               {epNum}
             </span>
           )}
@@ -42,7 +42,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
             {formatDate(episode.airDate)}
           </span>
         </div>
-        <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors truncate">
+        <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors truncate">
           {episode.title}
         </h3>
         {episode.summaryShort && (
@@ -53,15 +53,15 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
         <div className="mt-2 flex flex-wrap gap-1.5">
           <TranscriptBadge segmentCount={episode.segmentCount} />
           {episode.guestNames.slice(0, 3).map((name) => (
-            <StatusBadge key={name} label={name} variant="purple" />
+            <StatusBadge key={name} label={name} variant="gold" />
           ))}
           {episode.guestNames.length > 3 && (
-            <span className="font-mono text-[9px] text-text-muted">
+            <span className="font-mono text-[9px] text-accent-gold/60">
               +{episode.guestNames.length - 3} more
             </span>
           )}
           {episode.topicNames.slice(0, 3).map((name) => (
-            <StatusBadge key={name} label={name} variant="muted" />
+            <StatusBadge key={name} label={name} variant="cyan" />
           ))}
           {episode.topicNames.length > 3 && (
             <span className="font-mono text-[9px] text-text-muted">
