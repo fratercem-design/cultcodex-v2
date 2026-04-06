@@ -17,6 +17,7 @@ import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { formatDate } from "@/lib/format/date";
 import { editorialFrame } from "@/lib/format/editorial-frame";
+import { getExternalLinks } from "@/lib/format/external-links";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { ArchiveNotice } from "@/components/notices/archive-notice";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
@@ -72,9 +73,9 @@ const PERSON_TYPE_LABELS: Record<string, string> = {
 };
 
 const PERSON_TYPE_VARIANTS: Record<string, "green" | "purple" | "gold" | "muted"> = {
-  host: "green",
+  host: "gold",
   recurring: "purple",
-  guest: "muted",
+  guest: "green",
   mentioned: "muted",
 };
 
@@ -259,6 +260,34 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 <MetaRow label="Also Known As" value={person.altNames.join(", ")} />
               )}
             </SectionCard>
+
+            {/* External Links */}
+            {(() => {
+              const links = getExternalLinks(person.slug);
+              if (links.length === 0) return null;
+              return (
+                <SectionCard title="External Links">
+                  <ul className="space-y-2">
+                    {links.map((link) => (
+                      <li key={link.url}>
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 transition-colors hover:border-accent-cyan/40 hover:bg-elevated"
+                        >
+                          <span className="text-sm">{link.icon ?? "🔗"}</span>
+                          <span className="font-mono text-xs text-accent-cyan group-hover:underline">
+                            {link.label}
+                          </span>
+                          <span className="ml-auto font-mono text-[10px] text-text-muted">↗</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </SectionCard>
+              );
+            })()}
 
             <SectionCard>
               <EntityChipList
