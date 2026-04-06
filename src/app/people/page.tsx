@@ -25,6 +25,7 @@ export const metadata = {
 const SORT_OPTIONS = [
   { label: "A → Z", value: "az" },
   { label: "Z → A", value: "za" },
+  { label: "Most Appearances", value: "most" },
 ];
 
 const FILTER_OPTIONS = [
@@ -60,6 +61,11 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
   const sorted = [...people].sort((a, b) => {
     if (currentSort === "za") {
       return b.displayName.localeCompare(a.displayName);
+    }
+    if (currentSort === "most") {
+      const aCount = a.guestAppearances.length + a.mentions.length;
+      const bCount = b.guestAppearances.length + b.mentions.length;
+      return bCount - aCount;
     }
     return a.displayName.localeCompare(b.displayName);
   });

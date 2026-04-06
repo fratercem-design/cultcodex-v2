@@ -14,9 +14,9 @@ interface PersonCardProps {
 }
 
 const typeVariant: Record<PersonType, "green" | "purple" | "gold" | "muted"> = {
-  host: "green",
+  host: "gold",
   recurring: "purple",
-  guest: "muted",
+  guest: "green",
   mentioned: "muted",
 };
 
@@ -26,22 +26,23 @@ export function PersonCard({ person }: PersonCardProps) {
   return (
     <Link
       href={`/people/${person.slug}`}
-      className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-purple/30 hover:bg-elevated"
+      className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated"
     >
       {person.avatarUrl ? (
         <img
           src={person.avatarUrl}
           alt={person.displayName}
-          className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
+          className="h-10 w-10 flex-shrink-0 rounded-full object-cover border border-accent-gold/20"
         />
       ) : (
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-accent-purple/15 font-mono text-sm font-bold text-accent-purple">
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-accent-gold/15 font-mono text-sm font-bold text-accent-gold">
           {initial}
         </div>
       )}
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-purple transition-colors truncate">
+          <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors truncate">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent-gold/60 mr-1.5 align-middle" />
             {person.displayName}
           </h3>
           <StatusBadge label={person.personType} variant={typeVariant[person.personType]} />

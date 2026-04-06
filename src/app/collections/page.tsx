@@ -49,8 +49,8 @@ const COLLECTIONS: Collection[] = [
     title: "Funniest Panels",
     description: "The most chaotic, hilarious, and memorable live panel moments. Community mayhem at its finest.",
     icon: <IconMicrophone size={28} />,
-    color: "text-accent-green",
-    borderColor: "border-accent-green/20",
+    color: "text-accent-cyan",
+    borderColor: "border-accent-cyan/20",
     links: [
       { label: "Open Panel episodes", href: "/episodes?series=open-panel" },
       { label: "Midnight Madness", href: "/episodes?series=midnight-madness" },
@@ -177,7 +177,7 @@ export default async function CollectionsPage() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted transition-colors hover:border-accent-green/30 hover:text-accent-green hover:bg-elevated"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted transition-colors hover:border-accent-cyan/30 hover:text-accent-cyan hover:bg-elevated"
                     >
                       {link.label}
                       {epCount != null && (
