@@ -26,7 +26,7 @@ export function EpisodeListItem({
   return (
     <Link
       href={`/episodes/${slug}`}
-      className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-3 transition-colors hover:border-accent-green/30 hover:bg-elevated"
+      className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-3 transition-colors hover:border-accent-gold/30 hover:bg-elevated"
     >
       {thumbnailUrl && (
         <Image
@@ -41,7 +41,7 @@ export function EpisodeListItem({
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-0.5">
           {epNum && (
-            <span className="font-mono text-[10px] text-accent-green font-bold">
+            <span className="font-mono text-[10px] text-accent-gold font-bold">
               {epNum}
             </span>
           )}
@@ -51,7 +51,7 @@ export function EpisodeListItem({
             </span>
           )}
         </div>
-        <h4 className="text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors line-clamp-2">
+        <h4 className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
           {title}
         </h4>
         {summaryShort && (

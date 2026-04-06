@@ -40,7 +40,7 @@ export async function SiteHeader() {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         <Link
           href="/"
-          className="flex items-center gap-2 font-mono text-sm font-bold tracking-widest text-accent-green"
+          className="flex items-center gap-2 font-mono text-sm font-bold tracking-widest text-accent-gold"
         >
           <Image
             src="/logo.jpg"
@@ -82,7 +82,7 @@ export async function SiteHeader() {
         <div className="flex items-center gap-3">
           <Link
             href="/search"
-            className="inline-flex items-center gap-1.5 font-mono text-xs text-text-muted hover:text-accent-green border border-border rounded px-3 py-1 transition-colors"
+            className="inline-flex items-center gap-1.5 font-mono text-xs text-text-muted hover:text-accent-gold border border-border rounded px-3 py-1 transition-colors"
             aria-label="Search the archive"
           >
             <IconSearch size={14} className="text-text-muted" />

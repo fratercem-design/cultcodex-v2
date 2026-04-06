@@ -128,9 +128,9 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     {episode.series && (
       <nav className="mx-auto max-w-7xl px-4 pt-4">
         <ol className="flex items-center gap-2 font-mono text-xs text-text-muted">
-          <li><Link href="/series" className="hover:text-accent-green transition-colors">Series</Link></li>
+          <li><Link href="/series" className="hover:text-accent-cyan transition-colors">Series</Link></li>
           <li>/</li>
-          <li><Link href={`/series/${episode.series.slug}`} className="hover:text-accent-green transition-colors">{episode.series.title}</Link></li>
+          <li><Link href={`/series/${episode.series.slug}`} className="hover:text-accent-cyan transition-colors">{episode.series.title}</Link></li>
           <li>/</li>
           <li className="text-text-primary">{epNum ?? episode.title}</li>
         </ol>
@@ -264,7 +264,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                             <Link
                               key={g.person.slug}
                               href={`/people/${g.person.slug}`}
-                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-text-primary hover:border-accent-green/30 hover:text-accent-green transition-colors"
+                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-text-primary hover:border-accent-gold/30 hover:text-accent-gold transition-colors"
                             >
                               {g.person.displayName}
                             </Link>
@@ -281,7 +281,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                             <Link
                               key={t.topic.slug}
                               href={`/topics/${t.topic.slug}`}
-                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-text-primary hover:border-accent-green/30 hover:text-accent-green transition-colors"
+                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-text-primary hover:border-accent-cyan/30 hover:text-accent-cyan transition-colors"
                             >
                               {t.topic.title}
                             </Link>

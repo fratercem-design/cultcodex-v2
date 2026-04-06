@@ -36,8 +36,8 @@ const PATHS = [
     description: "The chaotic, hilarious, and unfiltered live sessions with community guests. Where legends are made.",
     href: "/episodes?series=open-panel",
     seriesLink: "/series",
-    color: "text-accent-green",
-    borderColor: "hover:border-accent-green/40",
+    color: "text-accent-cyan",
+    borderColor: "hover:border-accent-cyan/40",
   },
   {
     icon: <IconFlame size={32} />,
@@ -100,7 +100,7 @@ export default function StartHerePage() {
               <p className="text-xs text-text-muted leading-relaxed flex-1">
                 {path.description}
               </p>
-              <span className="font-mono text-[10px] text-accent-green group-hover:underline">
+              <span className="font-mono text-[10px] text-accent-cyan group-hover:underline">
                 Explore →
               </span>
             </Link>
