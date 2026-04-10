@@ -15,6 +15,7 @@ const navItems = [
   { label: "Episodes", href: "/episodes", group: "archive" as const },
   { label: "People", href: "/people", group: "archive" as const },
   { label: "Quotes", href: "/quotes", group: "archive" as const },
+  { label: "Transcripts", href: "/transcripts", group: "archive" as const },
   // Explore — discovery (cyan)
   { label: "Lore", href: "/lore", group: "explore" as const },
   { label: "Series", href: "/series", group: "explore" as const },

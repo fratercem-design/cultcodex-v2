@@ -14,15 +14,22 @@ export type QuoteWithRelations = Prisma.QuoteGetPayload<{
 
 export async function getQuotes(options?: {
   speakerSlug?: string;
+  search?: string;
   take?: number;
   skip?: number;
 }) {
-  const { speakerSlug, take = 24, skip = 0 } = options ?? {};
+  const { speakerSlug, search, take = 24, skip = 0 } = options ?? {};
+
+  const where: Prisma.QuoteWhereInput = {};
+  if (speakerSlug) {
+    where.speaker = { slug: speakerSlug };
+  }
+  if (search) {
+    where.text = { contains: search, mode: "insensitive" };
+  }
 
   return prisma.quote.findMany({
-    where: speakerSlug
-      ? { speaker: { slug: speakerSlug } }
-      : undefined,
+    where,
     include: buildQuoteInclude(),
     orderBy: { createdAt: "desc" },
     take,
@@ -30,10 +37,43 @@ export async function getQuotes(options?: {
   });
 }
 
-export async function getQuoteCount(speakerSlug?: string) {
-  return prisma.quote.count({
-    where: speakerSlug
-      ? { speaker: { slug: speakerSlug } }
-      : undefined,
+export async function getQuoteCount(options?: {
+  speakerSlug?: string;
+  search?: string;
+}) {
+  const { speakerSlug, search } = options ?? {};
+
+  const where: Prisma.QuoteWhereInput = {};
+  if (speakerSlug) {
+    where.speaker = { slug: speakerSlug };
+  }
+  if (search) {
+    where.text = { contains: search, mode: "insensitive" };
+  }
+
+  return prisma.quote.count({ where });
+}
+
+/** Get top speakers by quote count for the filter sidebar */
+export async function getTopSpeakers(limit = 20) {
+  const speakers = await prisma.person.findMany({
+    where: {
+      quotes: { some: {} },
+    },
+    select: {
+      slug: true,
+      displayName: true,
+      _count: { select: { quotes: true } },
+    },
+    orderBy: {
+      quotes: { _count: "desc" },
+    },
+    take: limit,
   });
+
+  return speakers.map((s) => ({
+    slug: s.slug,
+    displayName: s.displayName,
+    quoteCount: s._count.quotes,
+  }));
 }
