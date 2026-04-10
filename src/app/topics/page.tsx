@@ -5,7 +5,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { getTopics, getTopicCount } from "@/lib/queries/topics";
-import { getTopicAggregates } from "@/lib/queries/stats";
+import { getTopicAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
+import { formatRelativeDate } from "@/lib/format/date";
 import { IconTopic, IconLink } from "@/components/graphics/codex-icons";
 import {
   DEFAULT_PAGE_SIZE,
@@ -35,9 +36,10 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
   const params = await searchParams;
   const currentSort = params.sort ?? "connected";
 
-  const [totalCount, aggregates] = await Promise.all([
+  const [totalCount, aggregates, lastUpdated] = await Promise.all([
     getTopicCount(),
     getTopicAggregates(),
+    getArchiveLastUpdated(),
   ]);
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
@@ -61,6 +63,7 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
   const glanceItems = [
     { icon: <IconTopic size={14} />, label: `${aggregates.total} topic${aggregates.total !== 1 ? "s" : ""}` },
     ...(aggregates.linkedEpisodes > 0 ? [{ icon: <IconLink size={14} />, label: `${aggregates.linkedEpisodes} episode link${aggregates.linkedEpisodes !== 1 ? "s" : ""}` }] : []),
+    ...(lastUpdated ? [{ icon: "\uD83D\uDD04", label: `Updated ${formatRelativeDate(lastUpdated)}` }] : []),
   ];
 
   return (

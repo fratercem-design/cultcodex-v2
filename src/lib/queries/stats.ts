@@ -125,3 +125,20 @@ export async function getSeriesAggregates() {
 
   return { total, totalEpisodes };
 }
+
+/** Most recent updatedAt across core archive tables */
+export async function getArchiveLastUpdated(): Promise<Date | null> {
+  const [ep, person, quote, topic, lore] = await Promise.all([
+    prisma.episode.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
+    prisma.person.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
+    prisma.quote.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
+    prisma.topic.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
+    prisma.loreEntry.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
+  ]);
+
+  const dates = [ep?.updatedAt, person?.updatedAt, quote?.updatedAt, topic?.updatedAt, lore?.updatedAt]
+    .filter((d): d is Date => d != null);
+
+  if (dates.length === 0) return null;
+  return dates.reduce((latest, d) => (d > latest ? d : latest));
+}

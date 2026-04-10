@@ -5,7 +5,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { getLoreEntries, getLoreCount } from "@/lib/queries/lore";
-import { getLoreAggregates } from "@/lib/queries/stats";
+import { getLoreAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
+import { formatRelativeDate } from "@/lib/format/date";
 import { IconScroll, IconCanonical, IconSpeculative, IconCommunity } from "@/components/graphics/codex-icons";
 import {
   DEFAULT_PAGE_SIZE,
@@ -47,9 +48,10 @@ export default async function LorePage({ searchParams }: LorePageProps) {
       ? (currentFilter as CanonStatus)
       : undefined;
 
-  const [totalCount, aggregates] = await Promise.all([
+  const [totalCount, aggregates, lastUpdated] = await Promise.all([
     getLoreCount({ canon: canonFilter }),
     getLoreAggregates(),
+    getArchiveLastUpdated(),
   ]);
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
@@ -70,6 +72,7 @@ export default async function LorePage({ searchParams }: LorePageProps) {
     ...(aggregates.canonical > 0 ? [{ icon: <IconCanonical size={14} />, label: `${aggregates.canonical} canonical` }] : []),
     ...(aggregates.speculative > 0 ? [{ icon: <IconSpeculative size={14} />, label: `${aggregates.speculative} speculative` }] : []),
     ...(aggregates.communityMyth > 0 ? [{ icon: <IconCommunity size={14} />, label: `${aggregates.communityMyth} community myth${aggregates.communityMyth !== 1 ? "s" : ""}` }] : []),
+    ...(lastUpdated ? [{ icon: "\uD83D\uDD04", label: `Updated ${formatRelativeDate(lastUpdated)}` }] : []),
   ];
 
   return (

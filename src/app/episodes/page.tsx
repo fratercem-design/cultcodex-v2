@@ -13,14 +13,14 @@ import {
   formatEpisodeForCard,
   getEpisodeCount,
 } from "@/lib/queries/episodes";
-import { getEpisodeAggregates } from "@/lib/queries/stats";
+import { getEpisodeAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
 import {
   DEFAULT_PAGE_SIZE,
   parsePage,
   paginationArgs,
   buildPaginationMeta,
 } from "@/lib/pagination";
-import { formatDate } from "@/lib/format/date";
+import { formatDate, formatRelativeDate } from "@/lib/format/date";
 
 export const revalidate = 60;
 
@@ -69,9 +69,10 @@ export default async function EpisodesPage({
   const currentView = params.view ?? "card";
   const { orderBy, order } = resolveSort(currentSort);
 
-  const [aggregates, totalCount] = await Promise.all([
+  const [aggregates, totalCount, lastUpdated] = await Promise.all([
     getEpisodeAggregates(),
     getEpisodeCount(),
+    getArchiveLastUpdated(),
   ]);
 
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
@@ -89,6 +90,9 @@ export default async function EpisodesPage({
       : []),
     ...(aggregates.totalGuests > 0
       ? [{ icon: "\uD83C\uDFA4", label: `${aggregates.totalGuests} guest appearance${aggregates.totalGuests !== 1 ? "s" : ""}` }]
+      : []),
+    ...(lastUpdated
+      ? [{ icon: "\uD83D\uDD04", label: `Updated ${formatRelativeDate(lastUpdated)}` }]
       : []),
   ];
 

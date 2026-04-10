@@ -7,6 +7,8 @@ import { SectionCard } from "@/components/ui/section-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { getQuotes, getQuoteCount, getTopSpeakers } from "@/lib/queries/quotes";
+import { getArchiveLastUpdated } from "@/lib/queries/stats";
+import { formatRelativeDate } from "@/lib/format/date";
 import { IconQuote } from "@/components/graphics/codex-icons";
 import {
   DEFAULT_PAGE_SIZE,
@@ -31,9 +33,10 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
   const search = params.q?.trim() ?? "";
   const speakerFilter = params.speaker?.trim() ?? "";
 
-  const [totalCount, topSpeakers] = await Promise.all([
+  const [totalCount, topSpeakers, lastUpdated] = await Promise.all([
     getQuoteCount({ search: search || undefined, speakerSlug: speakerFilter || undefined }),
     getTopSpeakers(20),
+    getArchiveLastUpdated(),
   ]);
 
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
@@ -66,6 +69,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
   const glanceItems = [
     { icon: <IconQuote size={14} />, label: `${allQuoteCount.toLocaleString()} quotes` },
     { icon: "\uD83C\uDFA4", label: `${topSpeakers.length} speakers` },
+    ...(lastUpdated ? [{ icon: "\uD83D\uDD04", label: `Updated ${formatRelativeDate(lastUpdated)}` }] : []),
   ];
 
   // Build pagination basePath with filters preserved

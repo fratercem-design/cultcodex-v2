@@ -5,7 +5,8 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { getPeople, getPersonCount } from "@/lib/queries/people";
-import { getPeopleAggregates } from "@/lib/queries/stats";
+import { getPeopleAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
+import { formatRelativeDate } from "@/lib/format/date";
 import { IconPerson, IconMicrophone, IconRecurring, IconMask } from "@/components/graphics/codex-icons";
 import {
   DEFAULT_PAGE_SIZE,
@@ -49,9 +50,10 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
       ? (currentFilter as PersonType)
       : undefined;
 
-  const [totalCount, aggregates] = await Promise.all([
+  const [totalCount, aggregates, lastUpdated] = await Promise.all([
     getPersonCount(typeFilter),
     getPeopleAggregates(),
+    getArchiveLastUpdated(),
   ]);
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
@@ -77,6 +79,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
     ...(aggregates.hosts > 0 ? [{ icon: <IconMicrophone size={14} />, label: `${aggregates.hosts} host${aggregates.hosts !== 1 ? "s" : ""}` }] : []),
     ...(aggregates.recurring > 0 ? [{ icon: <IconRecurring size={14} />, label: `${aggregates.recurring} recurring` }] : []),
     ...(aggregates.guests > 0 ? [{ icon: <IconMask size={14} />, label: `${aggregates.guests} guest${aggregates.guests !== 1 ? "s" : ""}` }] : []),
+    ...(lastUpdated ? [{ icon: "\uD83D\uDD04", label: `Updated ${formatRelativeDate(lastUpdated)}` }] : []),
   ];
 
   return (

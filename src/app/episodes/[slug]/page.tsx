@@ -168,19 +168,8 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
             />
           )}
 
-          {/* Unavailable notice */}
-          {episode.status === "unavailable" && (
-            <div className="relative w-full overflow-hidden rounded-lg border border-amber-500/30 bg-amber-500/5 aspect-video flex flex-col items-center justify-center gap-3 text-center px-6">
-              <svg className="h-10 w-10 text-amber-500/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-              </svg>
-              <p className="font-mono text-sm text-amber-400">This episode is no longer available on YouTube</p>
-              <p className="font-mono text-[11px] text-text-muted">The video may have been privatized or removed by the creator.</p>
-            </div>
-          )}
-
           {/* Rumble embed — show when no YouTube available */}
-          {episode.rumbleVideoId && !episode.youtubeVideoId && (
+          {episode.rumbleVideoId && (!episode.youtubeVideoId || episode.status === "unavailable") && (
             <div className="relative w-full overflow-hidden rounded-lg border border-emerald-500/20 bg-void aspect-video">
               <iframe
                 src={`https://rumble.com/embed/${episode.rumbleVideoId}/`}
@@ -191,31 +180,53 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
             </div>
           )}
 
-          {/* Watch on YouTube CTA */}
-          {episode.youtubeVideoId && episode.status !== "unavailable" && (
-            <a
-              href={`https://www.youtube.com/watch?v=${episode.youtubeVideoId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded border border-red-500/30 bg-red-500/10 px-4 py-2 font-mono text-xs text-red-400 transition hover:bg-red-500/20"
-            >
-              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><path fill="#fff" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-              Watch on YouTube
-            </a>
+          {/* Unavailable notice — only if NO playable source exists */}
+          {episode.status === "unavailable" && !episode.rumbleVideoId && (
+            <div className="relative w-full overflow-hidden rounded-lg border border-amber-500/30 bg-amber-500/5 aspect-video flex flex-col items-center justify-center gap-3 text-center px-6">
+              <svg className="h-10 w-10 text-amber-500/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+              </svg>
+              <p className="font-mono text-sm text-amber-400">Video unavailable</p>
+              <p className="font-mono text-[11px] text-text-muted">This episode's video has been privatized or removed. Browse the transcript, quotes, and metadata below.</p>
+            </div>
           )}
 
-          {/* Watch on Rumble CTA */}
-          {episode.rumbleVideoId && (
-            <a
-              href={`https://rumble.com/${episode.rumbleVideoId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 font-mono text-xs text-emerald-400 transition hover:bg-emerald-500/20"
-            >
-              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-              Watch on Rumble
-            </a>
+          {/* No media at all — archive stub */}
+          {!episode.youtubeVideoId && !episode.rumbleVideoId && episode.status !== "unavailable" && (
+            <div className="relative w-full overflow-hidden rounded-lg border border-border bg-surface aspect-video flex flex-col items-center justify-center gap-3 text-center px-6">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-gold/10">
+                <span className="text-2xl">📼</span>
+              </div>
+              <p className="font-mono text-sm text-text-muted">No video linked yet</p>
+              <p className="font-mono text-[10px] text-text-muted">This episode is archived from metadata. Check the transcript, summary, and quotes below.</p>
+            </div>
           )}
+
+          {/* Watch externally CTAs */}
+          <div className="flex flex-wrap gap-2">
+            {episode.youtubeVideoId && episode.status !== "unavailable" && (
+              <a
+                href={`https://www.youtube.com/watch?v=${episode.youtubeVideoId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded border border-red-500/30 bg-red-500/10 px-4 py-2 font-mono text-xs text-red-400 transition hover:bg-red-500/20"
+              >
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/><path fill="#fff" d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                Watch on YouTube
+              </a>
+            )}
+            {episode.rumbleVideoId && (
+              <a
+                href={`https://rumble.com/${episode.rumbleVideoId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 font-mono text-xs text-emerald-400 transition hover:bg-emerald-500/20"
+              >
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+                Watch on Rumble
+              </a>
+            )}
+          </div>
 
           {/* Reactions & Social */}
           <div className="flex items-center gap-2 flex-wrap">
