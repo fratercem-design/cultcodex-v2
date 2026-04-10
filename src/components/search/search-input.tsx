@@ -83,7 +83,7 @@ export function SearchInput({ defaultValue = "" }: SearchInputProps) {
           onInput={handleInput}
           onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
           onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-          className="w-full rounded-lg border border-border bg-surface px-4 py-3 pl-10 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-none focus:ring-1 focus:ring-accent-green transition-colors"
+          className="w-full rounded-lg border border-border bg-surface py-3 pl-10 pr-20 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold focus:outline-none focus:ring-1 focus:ring-accent-gold transition-colors"
         />
         {/* Search icon */}
         <svg
@@ -102,7 +102,7 @@ export function SearchInput({ defaultValue = "" }: SearchInputProps) {
         </svg>
         <button
           type="submit"
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded bg-accent-green/10 px-3 py-1.5 font-mono text-xs text-accent-green hover:bg-accent-green/20 transition-colors"
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded bg-accent-gold/10 px-3 py-1.5 font-mono text-xs text-accent-gold hover:bg-accent-gold/20 transition-colors"
         >
           Search
         </button>
