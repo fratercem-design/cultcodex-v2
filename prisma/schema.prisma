@@ -380,6 +380,11 @@ model CodexUser {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
+  stripeCustomerId        String?   @unique
+  subscriptionId          String?   @unique
+  subscriptionStatus      String?   // "active", "past_due", "canceled", "unpaid"
+  currentPeriodEnd        DateTime?
+
   reactions               EpisodeReaction[]
   comments                CodexComment[]
   reports                 CommentReport[]

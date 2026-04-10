@@ -36,7 +36,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user?.email) {
         const codexUser = await prisma.codexUser.findUnique({
           where: { email: session.user.email },
-          select: { id: true, displayName: true, role: true, avatarUrl: true },
+          select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true },
         });
         if (codexUser) {
           (session as SessionWithCodex).codexUser = codexUser;
@@ -55,6 +55,7 @@ export interface CodexSessionUser {
   displayName: string;
   role: CodexUserRole;
   avatarUrl: string | null;
+  subscriptionStatus: string | null;
 }
 
 export interface SessionWithCodex {

@@ -17,6 +17,8 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { YouTubeEmbed } from "@/components/media/youtube-embed";
 import { TranscriptViewer } from "@/components/media/transcript-viewer";
+import { PaywallGate } from "@/components/subscription/paywall-gate";
+import { isSubscribed } from "@/lib/subscription";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { ReactionBar } from "@/components/episodes/reaction-bar";
 import { ShareButtons } from "@/components/ui/share-buttons";
@@ -102,6 +104,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     : null;
 
   const hasTranscript = episode.segments.length > 0;
+  const hasTranscriptAccess = user ? await isSubscribed(user.id) : false;
 
   // Separate hosts from actual guests — hosts should not appear in the guest list
   const actualGuests = episode.guests.filter(
@@ -346,12 +349,20 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   </div>
                 ),
                 ...(hasTranscript ? {
-                  transcript: (
+                  transcript: hasTranscriptAccess ? (
                     <TerminalPanel header="TRANSCRIPT">
                       <TranscriptViewer
                         segments={episode.segments}
                         hasVideoEmbed={!!episode.youtubeVideoId}
                         initialTimestamp={initialTimestamp}
+                      />
+                    </TerminalPanel>
+                  ) : (
+                    <TerminalPanel header="TRANSCRIPT">
+                      <PaywallGate
+                        previewSegments={episode.segments.slice(0, 5)}
+                        totalCount={episode.segments.length}
+                        isAuthenticated={!!user}
                       />
                     </TerminalPanel>
                   ),
