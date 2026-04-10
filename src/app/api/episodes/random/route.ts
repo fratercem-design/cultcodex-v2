@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+export async function GET(request: NextRequest) {
+  const origin = request.nextUrl.origin;
 
   // Only pick published episodes with playable video
   const where = {
@@ -18,7 +18,7 @@ export async function GET() {
   const count = await prisma.episode.count({ where });
 
   if (count === 0) {
-    return NextResponse.redirect(new URL("/episodes", baseUrl));
+    return NextResponse.redirect(new URL("/episodes", origin));
   }
 
   const randomOffset = Math.floor(Math.random() * count);
@@ -29,8 +29,8 @@ export async function GET() {
   });
 
   if (!episode) {
-    return NextResponse.redirect(new URL("/episodes", baseUrl));
+    return NextResponse.redirect(new URL("/episodes", origin));
   }
 
-  return NextResponse.redirect(new URL(`/episodes/${episode.slug}`, baseUrl));
+  return NextResponse.redirect(new URL(`/episodes/${episode.slug}`, origin));
 }

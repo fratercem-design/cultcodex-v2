@@ -1,22 +1,20 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 export function RandomEpisodeButton() {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const handleClick = useCallback(async () => {
+  const handleClick = useCallback(() => {
     setLoading(true);
-    router.push("/api/episodes/random");
-  }, [router]);
+    window.location.href = "/api/episodes/random";
+  }, []);
 
   return (
     <button
       onClick={handleClick}
       disabled={loading}
-      className="inline-flex items-center gap-1.5 rounded border border-border px-2.5 py-1.5 font-mono text-xs text-text-muted transition-colors hover:border-accent-green/50 hover:text-accent-green disabled:opacity-50"
+      className="inline-flex items-center gap-1.5 rounded border border-border px-2.5 py-1.5 font-mono text-xs text-text-muted transition-colors hover:border-accent-gold/50 hover:text-accent-gold disabled:opacity-50"
       title="Random episode"
       aria-label="Random episode"
     >
