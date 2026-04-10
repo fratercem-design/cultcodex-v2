@@ -28,6 +28,7 @@ export interface EpisodeCardData {
   summaryShort: string | null;
   thumbnailUrl: string | null;
   status: ContentStatus;
+  hasVideo: boolean;
   segmentCount: number;
   guestNames: string[];
   topicNames: string[];
@@ -43,6 +44,7 @@ export function formatEpisodeForCard(episode: EpisodeWithRelations): EpisodeCard
     summaryShort: episode.summaryShort,
     thumbnailUrl: episode.thumbnailUrl,
     status: episode.status,
+    hasVideo: !!(episode.youtubeVideoId || episode.rumbleVideoId),
     segmentCount: episode.segments.length,
     guestNames: episode.guests
       .filter((g) => g.person.personType !== "host")

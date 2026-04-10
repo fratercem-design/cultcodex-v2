@@ -301,6 +301,25 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                       </SectionCard>
                     )}
 
+                    {/* Transcript status — show when no transcript */}
+                    {!hasTranscript && (
+                      <SectionCard title="Transcript">
+                        <div className="flex items-center gap-3 py-2">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface border border-border">
+                            <span className="font-mono text-[10px] text-text-muted">░░░</span>
+                          </div>
+                          <div>
+                            <p className="font-mono text-xs text-text-muted">No transcript available</p>
+                            <p className="font-mono text-[10px] text-text-muted mt-0.5">
+                              {episode.youtubeVideoId
+                                ? "Auto-captions may be disabled for this video"
+                                : "No video source linked to extract captions from"}
+                            </p>
+                          </div>
+                        </div>
+                      </SectionCard>
+                    )}
+
                     {/* Related episodes */}
                     {relatedEpisodes.length > 0 && (
                       <section>

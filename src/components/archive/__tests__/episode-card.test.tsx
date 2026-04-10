@@ -11,6 +11,7 @@ const mockEpisode = {
   summaryShort: "The inaugural episode.",
   status: "published" as const,
   thumbnailUrl: null,
+  hasVideo: true,
   segmentCount: 42,
   guestNames: ["Dr. Arcana"],
   topicNames: ["Consciousness", "Tarot"],

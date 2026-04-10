@@ -51,6 +51,12 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
           </p>
         )}
         <div className="mt-2 flex flex-wrap gap-1.5">
+          {episode.status === "unavailable" && (
+            <StatusBadge label="Unavailable" variant="muted" />
+          )}
+          {!episode.hasVideo && episode.status !== "unavailable" && (
+            <StatusBadge label="No Video" variant="muted" />
+          )}
           <TranscriptBadge segmentCount={episode.segmentCount} />
           {episode.guestNames.slice(0, 3).map((name) => (
             <StatusBadge key={name} label={name} variant="gold" />
