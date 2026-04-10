@@ -220,14 +220,14 @@ export default async function PersonDetailPage({ params }: PageProps) {
                           alt=""
                           width={40}
                           height={40}
-                          className="h-10 w-10 rounded-full object-cover border border-border group-hover:border-accent-purple/50 transition-colors"
+                          className="h-10 w-10 rounded-full object-cover border border-border group-hover:border-accent-gold/50 transition-colors"
                         />
                       ) : (
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple/15 font-mono text-sm font-bold text-accent-purple border border-border group-hover:border-accent-purple/50 transition-colors">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-gold/15 font-mono text-sm font-bold text-accent-gold border border-border group-hover:border-accent-gold/50 transition-colors">
                           {coGuest.displayName[0]?.toUpperCase() ?? "?"}
                         </div>
                       )}
-                      <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-purple transition-colors line-clamp-1">
+                      <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-gold transition-colors line-clamp-1">
                         {coGuest.displayName}
                       </span>
                       <span className="font-mono text-[9px] text-text-muted">
