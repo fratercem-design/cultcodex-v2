@@ -102,7 +102,7 @@ export default async function AdminDashboard() {
               >
                 <div className="flex items-center gap-2 min-w-0">
                   {ep.episodeNumber && (
-                    <span className="font-mono text-[10px] text-accent-green font-bold">
+                    <span className="font-mono text-[10px] text-accent-gold font-bold">
                       EP.{String(ep.episodeNumber).padStart(3, "0")}
                     </span>
                   )}
@@ -136,7 +136,7 @@ export default async function AdminDashboard() {
               </div>
               <Link
                 href="/admin/live"
-                className="font-mono text-[10px] text-accent-green hover:underline"
+                className="font-mono text-[10px] text-accent-gold hover:underline"
               >
                 Manage →
               </Link>
@@ -150,13 +150,13 @@ export default async function AdminDashboard() {
             <div className="grid gap-2">
               <Link
                 href="/admin/episodes"
-                className="flex items-center gap-2 rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary hover:border-accent-green/30 transition-colors"
+                className="flex items-center gap-2 rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary hover:border-accent-gold/30 transition-colors"
               >
                 <span>🎬</span> Manage Episodes
               </Link>
               <Link
                 href="/admin/comments"
-                className="flex items-center gap-2 rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary hover:border-accent-green/30 transition-colors"
+                className="flex items-center gap-2 rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary hover:border-accent-gold/30 transition-colors"
               >
                 <span>💬</span> Moderate Comments
                 {flaggedCount > 0 && (
@@ -167,7 +167,7 @@ export default async function AdminDashboard() {
               </Link>
               <Link
                 href="/admin/live"
-                className="flex items-center gap-2 rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary hover:border-accent-green/30 transition-colors"
+                className="flex items-center gap-2 rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary hover:border-accent-gold/30 transition-colors"
               >
                 <span>🔴</span> Live Stream Controls
               </Link>
