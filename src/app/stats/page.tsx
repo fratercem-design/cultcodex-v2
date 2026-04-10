@@ -101,7 +101,7 @@ export default async function StatsPage() {
                 <span className="shrink-0 font-mono text-[10px] text-text-muted w-5 text-right">
                   {i + 1}.
                 </span>
-                <span className="shrink-0 font-mono text-xs text-text-primary w-40 truncate group-hover:text-accent-green transition-colors">
+                <span className="shrink-0 font-mono text-xs text-text-primary w-40 truncate group-hover:text-accent-gold transition-colors">
                   {person.displayName}
                 </span>
                 <div className="flex-1 h-2 rounded-full bg-elevated overflow-hidden">
@@ -135,13 +135,13 @@ export default async function StatsPage() {
               // Color tiers
               let colorClass = "text-accent-cyan";
               if (i < 5) colorClass = "text-accent-gold";
-              else if (i < 10) colorClass = "text-accent-green";
+              else if (i < 10) colorClass = "text-accent-gold";
 
               return (
                 <Link
                   key={topic.slug}
                   href={`/topics/${topic.slug}`}
-                  className={`inline-block rounded-full border border-border px-3 py-1 font-mono transition-colors hover:bg-elevated hover:border-accent-green/30 ${colorClass}`}
+                  className={`inline-block rounded-full border border-border px-3 py-1 font-mono transition-colors hover:bg-elevated hover:border-accent-gold/30 ${colorClass}`}
                   style={{ fontSize: `${fontSize}px` }}
                 >
                   {topic.title}

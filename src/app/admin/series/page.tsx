@@ -52,7 +52,7 @@ export default async function AdminSeriesPage({ searchParams }: PageProps) {
           </h1>
           <Link
             href="/admin/series/new"
-            className="rounded bg-accent-green px-3 py-1.5 font-mono text-xs font-bold text-void uppercase tracking-wider hover:bg-accent-green/90 transition-colors"
+            className="rounded bg-accent-gold px-3 py-1.5 font-mono text-xs font-bold text-void uppercase tracking-wider hover:bg-accent-gold/90 transition-colors"
           >
             + New Series
           </Link>
@@ -70,7 +70,7 @@ export default async function AdminSeriesPage({ searchParams }: PageProps) {
             type="search"
             defaultValue={search ?? ""}
             placeholder="Search series..."
-            className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-none"
+            className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold focus:outline-none"
           />
         </form>
       </div>
@@ -111,7 +111,7 @@ export default async function AdminSeriesPage({ searchParams }: PageProps) {
                 <td className="px-3 py-2 text-right">
                   <Link
                     href={`/admin/series/${s.id}/edit`}
-                    className="font-mono text-[10px] text-accent-green hover:underline"
+                    className="font-mono text-[10px] text-accent-gold hover:underline"
                   >
                     Edit
                   </Link>

@@ -31,7 +31,7 @@ export function EpisodeListItem({
       {thumbnailUrl && (
         <Image
           src={thumbnailUrl}
-          alt=""
+          alt={`Thumbnail for ${title}`}
           width={48}
           height={48}
           className="h-12 w-12 flex-shrink-0 rounded object-cover"

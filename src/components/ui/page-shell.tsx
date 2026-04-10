@@ -8,7 +8,7 @@ export function PageShell({ title, subtitle, children }: PageShellProps) {
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
       <div className="mb-8">
-        <h1 className="font-mono text-2xl font-bold tracking-tight text-accent-green">
+        <h1 className="font-mono text-2xl font-bold tracking-tight text-accent-gold">
           {title}
         </h1>
         {subtitle && (

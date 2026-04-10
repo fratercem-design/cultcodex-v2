@@ -49,7 +49,7 @@ export default function ContentPolicyPage() {
             <p>
               Individuals mentioned in the archive may request corrections or removal
               via our{" "}
-              <Link href="/corrections" className="text-accent-green hover:underline">
+              <Link href="/corrections" className="text-accent-gold hover:underline">
                 corrections page
               </Link>.
             </p>
@@ -95,11 +95,11 @@ export default function ContentPolicyPage() {
         </SectionCard>
 
         <div className="flex items-center justify-center gap-4 text-xs">
-          <Link href="/methodology" className="font-mono text-accent-green hover:underline">
+          <Link href="/methodology" className="font-mono text-accent-gold hover:underline">
             Methodology
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/corrections" className="font-mono text-accent-green hover:underline">
+          <Link href="/corrections" className="font-mono text-accent-gold hover:underline">
             Corrections
           </Link>
         </div>

@@ -124,7 +124,7 @@ export function SubscribeForm() {
 
       {message && (
         <p
-          className={`mt-2 font-mono text-xs ${status === "success" ? "text-accent-green" : "text-red-400"}`}
+          className={`mt-2 font-mono text-xs ${status === "success" ? "text-accent-gold" : "text-red-400"}`}
         >
           {message}
         </p>

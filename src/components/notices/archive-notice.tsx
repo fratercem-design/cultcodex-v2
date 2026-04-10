@@ -54,7 +54,7 @@ export function ArchiveNotice({ entityType, entityName, className }: ArchiveNoti
           <div className="mt-2 flex items-center gap-3">
             <Link
               href="/corrections"
-              className="font-mono text-[10px] text-accent-green hover:underline"
+              className="font-mono text-[10px] text-accent-gold hover:underline"
             >
               Report an error
             </Link>

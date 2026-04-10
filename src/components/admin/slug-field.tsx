@@ -58,7 +58,7 @@ export function SlugField({
           value={title}
           onChange={handleTitleChange}
           required
-          className="w-full rounded border border-border bg-elevated px-3 py-1.5 font-mono text-sm text-text-primary focus:border-accent-green focus:outline-none"
+          className="w-full rounded border border-border bg-elevated px-3 py-1.5 font-mono text-sm text-text-primary focus:border-accent-gold focus:outline-none"
         />
       </div>
       <div>
@@ -70,7 +70,7 @@ export function SlugField({
           name="slug"
           value={slug}
           onChange={handleSlugChange}
-          className="w-full rounded border border-border bg-elevated px-3 py-1.5 font-mono text-sm text-text-primary focus:border-accent-green focus:outline-none"
+          className="w-full rounded border border-border bg-elevated px-3 py-1.5 font-mono text-sm text-text-primary focus:border-accent-gold focus:outline-none"
         />
         <p className="mt-0.5 font-mono text-[9px] text-text-muted">
           Auto-generated from {titleLabel.toLowerCase()}. Edit to customize.

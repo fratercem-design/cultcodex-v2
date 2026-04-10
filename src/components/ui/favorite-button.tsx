@@ -72,6 +72,7 @@ export function FavoriteButton({
           : "text-text-muted hover:text-red-400"
       } ${isPending ? "opacity-50" : ""}`}
       title={favorited ? "Remove from favorites" : "Add to favorites"}
+      aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
     >
       <span className={isSm ? "text-xs" : "text-sm"}>
         {favorited ? "\u2665" : "\u2661"}

@@ -21,7 +21,7 @@ export function ArchiveStatsDisplay({ stats }: ArchiveStatsProps) {
           key={item.key}
           className="rounded-lg border border-border bg-surface p-3 text-center"
         >
-          <p className="font-mono text-2xl font-bold text-accent-green">
+          <p className="font-mono text-2xl font-bold text-accent-gold">
             {stats[item.key]}
           </p>
           <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">

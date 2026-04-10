@@ -27,7 +27,7 @@ export function SuggestCorrection({ entityType, entityTitle, className }: Sugges
           </p>
           <a
             href={mailtoLink}
-            className="inline-block font-mono text-[10px] text-accent-green hover:text-accent-green/80 hover:underline transition-colors"
+            className="inline-block font-mono text-[10px] text-accent-gold hover:text-accent-gold/80 hover:underline transition-colors"
           >
             Suggest a correction &rarr;
           </a>

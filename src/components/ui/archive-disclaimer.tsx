@@ -22,7 +22,7 @@ export function ArchiveDisclaimer({ variant = "compact", className }: ArchiveDis
         <p>
           Descriptions aim for neutral, factual language. If you believe any content
           is inaccurate, misattributed, or needs correction, please{" "}
-          <Link href="/corrections" className="text-accent-green hover:underline">
+          <Link href="/corrections" className="text-accent-gold hover:underline">
             submit a correction
           </Link>.
         </p>

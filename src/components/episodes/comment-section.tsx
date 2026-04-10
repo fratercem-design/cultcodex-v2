@@ -288,7 +288,7 @@ function CommentCard({
               {comment.user.displayName[0]?.toUpperCase()}
             </div>
           )}
-          <span className="font-mono text-xs text-text-primary font-medium group-hover:text-accent-green transition-colors">
+          <span className="font-mono text-xs text-text-primary font-medium group-hover:text-accent-gold transition-colors">
             {comment.user.displayName}
           </span>
         </Link>

@@ -10,13 +10,13 @@ export function TerminalPanel({ header, className, children }: TerminalPanelProp
   return (
     <div
       className={cn(
-        "rounded-lg border border-accent-green/20 bg-void overflow-hidden",
+        "rounded-lg border border-accent-gold/20 bg-void overflow-hidden",
         className
       )}
     >
       {header && (
-        <div className="border-b border-accent-green/20 bg-accent-green-dim px-4 py-2">
-          <span className="font-mono text-xs font-bold text-accent-green">
+        <div className="border-b border-accent-gold/20 bg-accent-gold-dim px-4 py-2">
+          <span className="font-mono text-xs font-bold text-accent-gold">
             {header}
           </span>
         </div>

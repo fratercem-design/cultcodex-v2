@@ -25,7 +25,7 @@ export default async function EditPersonPage({ params }: PageProps) {
     <main id="main-content" className="p-8 max-w-3xl">
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display text-2xl font-bold text-accent-gold">Edit Person</h1>
-        <Link href="/admin/people" className="font-mono text-xs text-text-muted hover:text-accent-green">← Back</Link>
+        <Link href="/admin/people" className="font-mono text-xs text-text-muted hover:text-accent-gold">← Back</Link>
       </div>
 
       <form action={handleSubmit} className="space-y-4">
@@ -53,7 +53,7 @@ export default async function EditPersonPage({ params }: PageProps) {
         <AdminFormField label="Alt Names (comma-separated)" name="altNames" defaultValue={person.altNames.join(", ")} />
 
         <div className="flex items-center gap-3 pt-4">
-          <button type="submit" className="rounded bg-accent-green px-6 py-2 font-mono text-sm font-bold text-void hover:bg-accent-green/80">
+          <button type="submit" className="rounded bg-accent-gold px-6 py-2 font-mono text-sm font-bold text-void hover:bg-accent-gold/80">
             Save Changes
           </button>
           <Link href="/admin/people" className="font-mono text-xs text-text-muted hover:text-text-primary">Cancel</Link>

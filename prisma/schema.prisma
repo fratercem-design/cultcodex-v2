@@ -99,6 +99,8 @@ model Episode {
 
   @@index([airDate])
   @@index([status])
+  @@index([episodeNumber])
+  @@index([seriesId])
 }
 
 model Series {

@@ -58,7 +58,7 @@ export default function RootLayout({
         <SkipLink />
         <LiveBanner />
         <SiteHeader />
-        <div className="flex-1">{children}</div>
+        <div id="main-content" className="flex-1">{children}</div>
         <SiteFooter />
         <KonamiEasterEgg />
       </body>

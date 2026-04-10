@@ -29,7 +29,7 @@ export function EpisodeHero({
     <section className="relative flex min-h-[220px] items-end overflow-hidden">
       <Image
         src={bgSrc}
-        alt=""
+        alt={`Background for ${title}`}
         fill
         priority
         className={`object-cover ${thumbnailUrl ? "blur-sm scale-105" : ""}`}

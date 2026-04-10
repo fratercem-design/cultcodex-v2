@@ -27,7 +27,7 @@ export function CommentActions({ commentId, flagged }: Props) {
         <button
           onClick={() => handleAction("approve")}
           disabled={isPending}
-          className="rounded border border-accent-green/30 bg-accent-green/10 px-3 py-1 font-mono text-[10px] text-accent-green hover:bg-accent-green/20 disabled:opacity-50"
+          className="rounded border border-accent-gold/30 bg-accent-gold/10 px-3 py-1 font-mono text-[10px] text-accent-gold hover:bg-accent-gold/20 disabled:opacity-50"
         >
           Approve
         </button>

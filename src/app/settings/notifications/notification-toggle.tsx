@@ -32,7 +32,7 @@ export function NotificationToggle({
       onClick={() => !isPending && handleChange(!checked)}
     >
       <div>
-        <p className="font-mono text-sm text-text-primary group-hover:text-accent-green transition-colors">
+        <p className="font-mono text-sm text-text-primary group-hover:text-accent-gold transition-colors">
           {label}
         </p>
         <p className="font-mono text-[10px] text-text-muted">{description}</p>
@@ -40,11 +40,11 @@ export function NotificationToggle({
       <div
         className={`relative h-6 w-11 rounded-full border transition-colors ${
           isPending ? "opacity-50" : ""
-        } ${checked ? "bg-accent-green/20 border-accent-green" : "bg-elevated border-border"}`}
+        } ${checked ? "bg-accent-gold/20 border-accent-gold" : "bg-elevated border-border"}`}
       >
         <div
           className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full transition-all ${
-            checked ? "translate-x-5 bg-accent-green" : "bg-text-muted"
+            checked ? "translate-x-5 bg-accent-gold" : "bg-text-muted"
           }`}
         />
       </div>

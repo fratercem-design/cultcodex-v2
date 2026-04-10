@@ -53,7 +53,7 @@ export default async function CreateSeriesPage() {
 
         <button
           type="submit"
-          className="rounded bg-accent-green px-6 py-2 font-mono text-sm font-bold text-void uppercase tracking-wider hover:bg-accent-green/90 transition-colors"
+          className="rounded bg-accent-gold px-6 py-2 font-mono text-sm font-bold text-void uppercase tracking-wider hover:bg-accent-gold/90 transition-colors"
         >
           Create Series
         </button>

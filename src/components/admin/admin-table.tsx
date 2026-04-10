@@ -62,7 +62,7 @@ export function AdminTable<T extends { id: string }>({
     <div>
       {/* Bulk actions bar */}
       {bulkActions && bulkActions.length > 0 && selected.size > 0 && (
-        <div className="mb-3 flex items-center gap-2 rounded border border-accent-green/20 bg-accent-green/5 px-3 py-2">
+        <div className="mb-3 flex items-center gap-2 rounded border border-accent-gold/20 bg-accent-gold/5 px-3 py-2">
           <span className="font-mono text-xs text-text-muted">
             {selected.size} selected
           </span>
@@ -87,7 +87,7 @@ export function AdminTable<T extends { id: string }>({
               }
             }}
             disabled={!bulkValue}
-            className="rounded bg-accent-green px-3 py-1 font-mono text-xs font-bold text-void disabled:opacity-50"
+            className="rounded bg-accent-gold px-3 py-1 font-mono text-xs font-bold text-void disabled:opacity-50"
           >
             Apply
           </button>
@@ -160,7 +160,7 @@ export function AdminTable<T extends { id: string }>({
                             <Link
                               key={action.label}
                               href={action.href(row)}
-                              className="font-mono text-[10px] text-accent-green hover:underline"
+                              className="font-mono text-[10px] text-accent-gold hover:underline"
                             >
                               {action.label}
                             </Link>
@@ -171,7 +171,7 @@ export function AdminTable<T extends { id: string }>({
                               className={`font-mono text-[10px] hover:underline ${
                                 action.variant === "danger"
                                   ? "text-red-400"
-                                  : "text-accent-green"
+                                  : "text-accent-gold"
                               }`}
                             >
                               {action.label}

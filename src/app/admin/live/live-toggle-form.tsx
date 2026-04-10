@@ -44,7 +44,7 @@ export function LiveToggleForm({ isLive, currentVideoId, currentTitle }: Props) 
               value={videoId}
               onChange={(e) => setVideoId(e.target.value)}
               placeholder="e.g. dQw4w9WgXcQ"
-              className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-none"
+              className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold focus:outline-none"
             />
           </div>
           <div>
@@ -55,7 +55,7 @@ export function LiveToggleForm({ isLive, currentVideoId, currentTitle }: Props) 
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Stream title"
-              className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-none"
+              className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold focus:outline-none"
             />
           </div>
         </div>
@@ -67,7 +67,7 @@ export function LiveToggleForm({ isLive, currentVideoId, currentTitle }: Props) 
         className={`w-full rounded px-6 py-3 font-mono text-sm font-bold transition-colors disabled:opacity-50 ${
           isLive
             ? "bg-red-500/20 text-red-400 border border-red-400/30 hover:bg-red-500/30"
-            : "bg-accent-green text-void hover:bg-accent-green/80"
+            : "bg-accent-gold text-void hover:bg-accent-gold/80"
         }`}
       >
         {isPending

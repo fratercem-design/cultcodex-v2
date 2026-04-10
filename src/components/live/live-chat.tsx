@@ -113,7 +113,7 @@ export function LiveChat({ isLive, isAuthenticated, initialMessages }: LiveChatP
               </div>
             )}
             <div className="min-w-0">
-              <Link href={`/user/${msg.userId}`} className="hover:text-accent-green transition-colors">
+              <Link href={`/user/${msg.userId}`} className="hover:text-accent-gold transition-colors">
                 <span className="font-mono text-[10px] text-accent-cyan font-bold">
                   {msg.displayName}
                 </span>
@@ -134,13 +134,13 @@ export function LiveChat({ isLive, isAuthenticated, initialMessages }: LiveChatP
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type a message..."
             maxLength={500}
-            className="flex-1 rounded border border-border bg-elevated px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-none"
+            className="flex-1 rounded border border-border bg-elevated px-3 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold focus:outline-none"
             disabled={sending}
           />
           <button
             type="submit"
             disabled={sending || !input.trim()}
-            className="shrink-0 rounded bg-accent-green px-3 py-1.5 font-mono text-xs text-void font-bold uppercase disabled:opacity-50 transition-opacity"
+            className="shrink-0 rounded bg-accent-gold px-3 py-1.5 font-mono text-xs text-void font-bold uppercase disabled:opacity-50 transition-opacity"
           >
             Send
           </button>
@@ -149,7 +149,7 @@ export function LiveChat({ isLive, isAuthenticated, initialMessages }: LiveChatP
         <div className="border-t border-border p-3 text-center">
           <a
             href="/auth/signin"
-            className="font-mono text-xs text-accent-green hover:underline"
+            className="font-mono text-xs text-accent-gold hover:underline"
           >
             Sign in to chat
           </a>

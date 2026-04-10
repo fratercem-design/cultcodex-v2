@@ -22,7 +22,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
       {episode.thumbnailUrl ? (
         <Image
           src={episode.thumbnailUrl}
-          alt=""
+          alt={`Thumbnail for ${episode.title}`}
           width={64}
           height={64}
           className="h-16 w-16 flex-shrink-0 rounded object-cover"

@@ -15,7 +15,7 @@ const lostTransmissions = [
 ];
 
 export default function NotFound() {
-  const [quote, setQuote] = useState("");
+  const [quote, setQuote] = useState(lostTransmissions[0]);
 
   useEffect(() => {
     setQuote(lostTransmissions[Math.floor(Math.random() * lostTransmissions.length)]);
@@ -103,13 +103,13 @@ export default function NotFound() {
       <div className="mt-6 flex gap-3">
         <Link
           href="/"
-          className="rounded-lg border border-accent-green bg-accent-green/10 px-4 py-2 font-mono text-xs text-accent-green transition-all hover:bg-accent-green/20 hover:shadow-lg hover:shadow-accent-green/10"
+          className="rounded-lg border border-accent-gold bg-accent-gold/10 px-4 py-2 font-mono text-xs text-accent-gold transition-all hover:bg-accent-gold/20 hover:shadow-lg hover:shadow-accent-gold/10"
         >
           Return Home
         </Link>
         <Link
           href="/episodes"
-          className="rounded-lg border border-border px-4 py-2 font-mono text-xs text-text-muted transition-all hover:border-accent-green/30 hover:text-text-primary hover:shadow-lg hover:shadow-accent-green/5"
+          className="rounded-lg border border-border px-4 py-2 font-mono text-xs text-text-muted transition-all hover:border-accent-gold/30 hover:text-text-primary hover:shadow-lg hover:shadow-accent-gold/5"
         >
           Browse Episodes
         </Link>

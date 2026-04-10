@@ -10,7 +10,7 @@ export function YouTubeEmbed({ videoId, title, startSeconds }: YouTubeEmbedProps
   const src = `https://www.youtube-nocookie.com/embed/${videoId}${startSeconds ? `?start=${startSeconds}` : ""}`;
 
   return (
-    <div className="relative w-full overflow-hidden rounded-lg border border-accent-green/20 bg-void aspect-video">
+    <div className="relative w-full overflow-hidden rounded-lg border border-accent-gold/20 bg-void aspect-video">
       <iframe
         src={src}
         title={title || "YouTube video"}

@@ -19,16 +19,16 @@ export function SeriesCard({ series }: SeriesCardProps) {
   return (
     <Link
       href={`/series/${series.slug}`}
-      className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-green/30 hover:bg-elevated"
+      className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated"
     >
       {series.coverImageUrl ? (
         <img
           src={series.coverImageUrl}
-          alt=""
+          alt={`Cover for ${series.title}`}
           className="h-16 w-16 flex-shrink-0 rounded object-cover"
         />
       ) : (
-        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded bg-gradient-to-br from-accent-green/10 to-accent-gold/10 text-2xl">
+        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded bg-gradient-to-br from-accent-gold/10 to-accent-gold/10 text-2xl">
           📚
         </div>
       )}
@@ -45,7 +45,7 @@ export function SeriesCard({ series }: SeriesCardProps) {
             {series._count.episodes} episode{series._count.episodes !== 1 ? "s" : ""}
           </span>
         </div>
-        <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors">
+        <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
           {series.title}
         </h3>
         {series.description && (

@@ -50,7 +50,7 @@ export function PaginationControls({
         {page > 1 ? (
           <Link
             href={href(page - 1)}
-            className="rounded border border-border px-3 py-1 font-mono text-[11px] text-text-muted hover:text-accent-green hover:border-accent-green/30 transition-colors"
+            className="rounded border border-border px-3 py-1 font-mono text-[11px] text-text-muted hover:text-accent-gold hover:border-accent-gold/30 transition-colors"
           >
             ← Prev
           </Link>
@@ -75,8 +75,8 @@ export function PaginationControls({
               href={href(n)}
               className={`rounded border px-2.5 py-1 font-mono text-[11px] transition-colors ${
                 n === page
-                  ? "border-accent-green/50 bg-accent-green/10 text-accent-green"
-                  : "border-border text-text-muted hover:text-accent-green hover:border-accent-green/30"
+                  ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold"
+                  : "border-border text-text-muted hover:text-accent-gold hover:border-accent-gold/30"
               }`}
             >
               {n}
@@ -88,7 +88,7 @@ export function PaginationControls({
         {page < totalPages ? (
           <Link
             href={href(page + 1)}
-            className="rounded border border-border px-3 py-1 font-mono text-[11px] text-text-muted hover:text-accent-green hover:border-accent-green/30 transition-colors"
+            className="rounded border border-border px-3 py-1 font-mono text-[11px] text-text-muted hover:text-accent-gold hover:border-accent-gold/30 transition-colors"
           >
             Next →
           </Link>

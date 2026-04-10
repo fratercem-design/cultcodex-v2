@@ -26,13 +26,13 @@ export default function GlobalError({
       <div className="mt-6 flex gap-3">
         <button
           onClick={reset}
-          className="rounded-lg border border-accent-green bg-accent-green/10 px-4 py-2 font-mono text-xs text-accent-green transition-colors hover:bg-accent-green/20"
+          className="rounded-lg border border-accent-gold bg-accent-gold/10 px-4 py-2 font-mono text-xs text-accent-gold transition-colors hover:bg-accent-gold/20"
         >
           Try Again
         </button>
         <Link
           href="/"
-          className="rounded-lg border border-border px-4 py-2 font-mono text-xs text-text-muted transition-colors hover:border-accent-green/30 hover:text-text-primary"
+          className="rounded-lg border border-border px-4 py-2 font-mono text-xs text-text-muted transition-colors hover:border-accent-gold/30 hover:text-text-primary"
         >
           Return Home
         </Link>

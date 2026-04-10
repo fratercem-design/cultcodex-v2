@@ -28,7 +28,7 @@ export default async function EditEpisodePage({ params }: PageProps) {
         </h1>
         <Link
           href="/admin/episodes"
-          className="font-mono text-xs text-text-muted hover:text-accent-green transition-colors"
+          className="font-mono text-xs text-text-muted hover:text-accent-gold transition-colors"
         >
           &larr; Back to Episodes
         </Link>
@@ -121,7 +121,7 @@ export default async function EditEpisodePage({ params }: PageProps) {
         <div className="flex items-center gap-3 pt-4">
           <button
             type="submit"
-            className="rounded bg-accent-green px-6 py-2 font-mono text-sm font-bold text-void transition-colors hover:bg-accent-green/80"
+            className="rounded bg-accent-gold px-6 py-2 font-mono text-sm font-bold text-void transition-colors hover:bg-accent-gold/80"
           >
             Save Changes
           </button>

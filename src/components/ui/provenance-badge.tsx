@@ -14,7 +14,7 @@ const CONFIG: Record<ProvenanceLevel, { label: string; title: string; style: str
   transcript: {
     label: "TRANSCRIPT-BACKED",
     title: "Summary was generated from a full transcript of this episode",
-    style: "border-accent-green/30 text-accent-green bg-accent-green-dim",
+    style: "border-accent-gold/30 text-accent-gold bg-accent-gold-dim",
   },
   inferred: {
     label: "INFERRED",

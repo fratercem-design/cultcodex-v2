@@ -65,7 +65,7 @@ export function SortFilterBar({
               onClick={() => updateParams("sort", opt.value)}
               className={`px-3 py-1 font-mono text-[11px] transition-colors ${
                 currentSort === opt.value
-                  ? "bg-accent-green/15 text-accent-green"
+                  ? "bg-accent-gold/15 text-accent-gold"
                   : "text-text-muted hover:text-text-primary hover:bg-elevated"
               }`}
             >
@@ -86,7 +86,7 @@ export function SortFilterBar({
               onClick={() => updateParams("filter", "all")}
               className={`px-3 py-1 font-mono text-[11px] transition-colors ${
                 !currentFilter || currentFilter === "all"
-                  ? "bg-accent-green/15 text-accent-green"
+                  ? "bg-accent-gold/15 text-accent-gold"
                   : "text-text-muted hover:text-text-primary hover:bg-elevated"
               }`}
             >
@@ -98,7 +98,7 @@ export function SortFilterBar({
                 onClick={() => updateParams("filter", opt.value)}
                 className={`px-3 py-1 font-mono text-[11px] transition-colors ${
                   currentFilter === opt.value
-                    ? "bg-accent-green/15 text-accent-green"
+                    ? "bg-accent-gold/15 text-accent-gold"
                     : "text-text-muted hover:text-text-primary hover:bg-elevated"
                 }`}
               >

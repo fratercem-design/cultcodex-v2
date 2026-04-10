@@ -53,7 +53,7 @@ export default async function FavoritesPage() {
             <div className="mt-4 text-center">
               <Link
                 href="/episodes"
-                className="font-mono text-sm text-accent-green hover:underline"
+                className="font-mono text-sm text-accent-gold hover:underline"
               >
                 Browse Episodes
               </Link>
@@ -65,7 +65,7 @@ export default async function FavoritesPage() {
               <Link
                 key={fav.id}
                 href={`/episodes/${fav.episode.slug}`}
-                className="group rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-green/30 hover:bg-elevated"
+                className="group rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated"
               >
                 {fav.episode.thumbnailUrl && (
                   <div className="relative mb-3 aspect-video w-full overflow-hidden rounded-md">
@@ -80,7 +80,7 @@ export default async function FavoritesPage() {
                 )}
                 <div className="flex items-center gap-2 mb-1">
                   {fav.episode.episodeNumber != null && (
-                    <span className="font-mono text-[10px] text-accent-green font-bold">
+                    <span className="font-mono text-[10px] text-accent-gold font-bold">
                       EP.{String(fav.episode.episodeNumber).padStart(3, "0")}
                     </span>
                   )}
@@ -90,7 +90,7 @@ export default async function FavoritesPage() {
                     </span>
                   )}
                 </div>
-                <h3 className="font-mono text-sm font-medium text-text-primary group-hover:text-accent-green transition-colors line-clamp-2">
+                <h3 className="font-mono text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
                   {fav.episode.title}
                 </h3>
                 {fav.episode.summaryShort && (

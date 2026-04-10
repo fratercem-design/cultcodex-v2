@@ -38,7 +38,7 @@ function computeScore(props: DataQualityBadgeProps): number {
 }
 
 function gradeFromScore(score: number): { letter: string; color: string; bg: string } {
-  if (score >= 90) return { letter: "A", color: "text-accent-green", bg: "bg-accent-green/10 border-accent-green/30" };
+  if (score >= 90) return { letter: "A", color: "text-accent-gold", bg: "bg-accent-gold/10 border-accent-gold/30" };
   if (score >= 70) return { letter: "B", color: "text-accent-cyan", bg: "bg-accent-cyan/10 border-accent-cyan/30" };
   if (score >= 50) return { letter: "C", color: "text-accent-gold", bg: "bg-accent-gold/10 border-accent-gold/30" };
   if (score >= 30) return { letter: "D", color: "text-orange-400", bg: "bg-orange-400/10 border-orange-400/30" };

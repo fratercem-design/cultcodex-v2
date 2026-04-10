@@ -101,11 +101,11 @@ export default function MethodologyPage() {
         </SectionCard>
 
         <div className="flex items-center justify-center gap-4 text-xs">
-          <Link href="/corrections" className="font-mono text-accent-green hover:underline">
+          <Link href="/corrections" className="font-mono text-accent-gold hover:underline">
             Submit a Correction
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/content-policy" className="font-mono text-accent-green hover:underline">
+          <Link href="/content-policy" className="font-mono text-accent-gold hover:underline">
             Content Policy
           </Link>
         </div>

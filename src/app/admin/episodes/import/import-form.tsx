@@ -136,7 +136,7 @@ export function ImportForm() {
             type="file"
             accept=".csv"
             onChange={handleFileUpload}
-            className="font-mono text-xs text-text-muted file:mr-3 file:rounded file:border-0 file:bg-accent-green file:px-3 file:py-1.5 file:font-mono file:text-xs file:font-bold file:text-void file:cursor-pointer"
+            className="font-mono text-xs text-text-muted file:mr-3 file:rounded file:border-0 file:bg-accent-gold file:px-3 file:py-1.5 file:font-mono file:text-xs file:font-bold file:text-void file:cursor-pointer"
           />
         </div>
 
@@ -149,7 +149,7 @@ export function ImportForm() {
             onChange={(e) => setCsvText(e.target.value)}
             placeholder={`title,episodeNumber,airDate,youtubeVideoId,summaryShort,status\nThe Void Speaks,42,2024-01-15,dQw4w9WgXcQ,A deep dive into the void,published`}
             rows={8}
-            className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted/40 focus:border-accent-green focus:outline-none"
+            className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted/40 focus:border-accent-gold focus:outline-none"
           />
         </div>
 
@@ -231,7 +231,7 @@ export function ImportForm() {
           <button
             onClick={handleImport}
             disabled={isPending || validCount === 0}
-            className="rounded bg-accent-green px-6 py-2 font-mono text-sm font-bold text-void uppercase tracking-wider disabled:opacity-50"
+            className="rounded bg-accent-gold px-6 py-2 font-mono text-sm font-bold text-void uppercase tracking-wider disabled:opacity-50"
           >
             {isPending
               ? "Importing..."
@@ -243,7 +243,7 @@ export function ImportForm() {
       {/* Results */}
       {result && (
         <div className="rounded border border-border bg-surface p-4 space-y-2">
-          <p className="font-mono text-sm text-accent-green font-bold">
+          <p className="font-mono text-sm text-accent-gold font-bold">
             Import Complete
           </p>
           <p className="font-mono text-xs text-text-primary">

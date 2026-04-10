@@ -46,7 +46,7 @@ export function AdminSidebar({ userName, userAvatar }: AdminSidebarProps) {
             href={item.href}
             className={`flex items-center gap-2.5 rounded px-3 py-2 font-mono text-xs transition-colors ${
               isActive(item.href)
-                ? "bg-accent-green/10 text-accent-green"
+                ? "bg-accent-gold/10 text-accent-gold"
                 : "text-text-muted hover:bg-elevated hover:text-text-primary"
             }`}
           >
@@ -76,7 +76,7 @@ export function AdminSidebar({ userName, userAvatar }: AdminSidebarProps) {
         </div>
         <Link
           href="/"
-          className="flex items-center gap-1.5 font-mono text-[10px] text-text-muted hover:text-accent-green transition-colors"
+          className="flex items-center gap-1.5 font-mono text-[10px] text-text-muted hover:text-accent-gold transition-colors"
         >
           ← Back to Site
         </Link>

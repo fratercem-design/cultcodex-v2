@@ -17,7 +17,7 @@ const coverageConfig: Record<TranscriptCoverage, { label: string; icon: string; 
   full: {
     label: "Full Transcript",
     icon: "\u2588\u2588\u2588",
-    style: "border-accent-green/30 text-accent-green bg-accent-green-dim",
+    style: "border-accent-gold/30 text-accent-gold bg-accent-gold-dim",
   },
   partial: {
     label: "Partial Transcript",

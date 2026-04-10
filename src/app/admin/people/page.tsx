@@ -61,7 +61,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
           <h1 className="font-display text-2xl font-bold text-accent-gold">People</h1>
           <Link
             href="/admin/people/new"
-            className="rounded bg-accent-green px-3 py-1.5 font-mono text-xs font-bold text-void uppercase tracking-wider hover:bg-accent-green/90 transition-colors"
+            className="rounded bg-accent-gold px-3 py-1.5 font-mono text-xs font-bold text-void uppercase tracking-wider hover:bg-accent-gold/90 transition-colors"
           >
             + New Person
           </Link>
@@ -76,7 +76,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
             type="search"
             defaultValue={search ?? ""}
             placeholder="Search people..."
-            className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-green focus:outline-none"
+            className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold focus:outline-none"
           />
         </form>
         <div className="flex gap-1.5">
@@ -86,8 +86,8 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
               href={`/admin/people${t !== "all" ? `?type=${t}` : ""}`}
               className={`rounded-full border px-3 py-1 font-mono text-[10px] transition-colors ${
                 (typeFilter ?? "all") === t || (!typeFilter && t === "all")
-                  ? "border-accent-green text-accent-green bg-accent-green/10"
-                  : "border-border text-text-muted hover:border-accent-green/50"
+                  ? "border-accent-gold text-accent-gold bg-accent-gold/10"
+                  : "border-border text-text-muted hover:border-accent-gold/50"
               }`}
             >
               {t.replace("_", " ")}
@@ -117,7 +117,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
                 <td className="px-3 py-2 font-mono text-xs text-text-muted">{person._count.guestAppearances}</td>
                 <td className="px-3 py-2 font-mono text-xs text-text-muted">{person._count.quotes}</td>
                 <td className="px-3 py-2 text-right">
-                  <Link href={`/admin/people/${person.id}/edit`} className="font-mono text-[10px] text-accent-green hover:underline">
+                  <Link href={`/admin/people/${person.id}/edit`} className="font-mono text-[10px] text-accent-gold hover:underline">
                     Edit
                   </Link>
                 </td>
