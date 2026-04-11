@@ -29,7 +29,6 @@
     "@base-ui/react": "^1.2.0",
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
-    "@stripe/stripe-js": "^9.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "googleapis": "^171.4.0",

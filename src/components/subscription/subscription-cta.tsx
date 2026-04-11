@@ -8,16 +8,22 @@ interface SubscriptionCTAProps {
 
 export function SubscriptionCTA({ variant = "card" }: SubscriptionCTAProps) {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubscribe() {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/stripe/checkout", { method: "POST" });
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
+      } else {
+        setError(data.error || "Failed to start checkout");
+        setLoading(false);
       }
     } catch {
+      setError("Network error. Please try again.");
       setLoading(false);
     }
   }
@@ -56,6 +62,9 @@ export function SubscriptionCTA({ variant = "card" }: SubscriptionCTAProps) {
           {loading ? "Redirecting to checkout..." : "Subscribe \u2014 $10/month"}
         </button>
       </div>
+      {error && (
+        <p className="mt-2 font-mono text-[10px] text-red-400">{error}</p>
+      )}
       <p className="mt-3 font-mono text-[10px] text-text-muted/60">
         Cancel anytime. Manage your subscription in settings.
       </p>

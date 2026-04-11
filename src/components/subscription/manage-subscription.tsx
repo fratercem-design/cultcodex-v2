@@ -15,16 +15,22 @@ export function ManageSubscription({
   isAdmin,
 }: ManageSubscriptionProps) {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function openPortal() {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/stripe/portal", { method: "POST" });
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
+      } else {
+        setError(data.error || "Failed to open portal");
+        setLoading(false);
       }
     } catch {
+      setError("Network error. Please try again.");
       setLoading(false);
     }
   }
@@ -62,6 +68,9 @@ export function ManageSubscription({
             {loading ? "..." : "Manage"}
           </button>
         </div>
+        {error && (
+          <p className="mt-2 font-mono text-[10px] text-red-400">{error}</p>
+        )}
       </div>
     );
   }

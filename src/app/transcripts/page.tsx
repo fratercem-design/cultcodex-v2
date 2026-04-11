@@ -20,6 +20,9 @@ import {
 import { formatDate } from "@/lib/format/date";
 import { formatDuration } from "@/lib/format/duration";
 import { formatSeconds } from "@/lib/format/duration";
+import { auth } from "@/lib/auth";
+import { isSubscribed } from "@/lib/subscription";
+import { SubscriptionCTA } from "@/components/subscription/subscription-cta";
 
 export const revalidate = 600;
 
@@ -45,6 +48,32 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
   ];
 
   if (isSearch) {
+    // Transcript search requires an active subscription
+    const session = await auth();
+    const userId = (session?.user as { id?: string } | undefined)?.id;
+    const hasAccess = userId ? await isSubscribed(userId) : false;
+
+    if (!hasAccess) {
+      return (
+        <>
+          <PageHero
+            title="TRANSCRIPTS"
+            subtitle="Full-text transcript search is a subscriber feature"
+            backgroundImage="/search-database-background.jpg"
+          />
+          <EntityGlanceBar items={glanceItems} />
+          <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+            <div className="mx-auto max-w-lg py-12">
+              <SubscriptionCTA />
+              <p className="mt-4 text-center font-mono text-xs text-text-muted">
+                Browse the episode directory below, or subscribe to search across all transcripts.
+              </p>
+            </div>
+          </main>
+        </>
+      );
+    }
+
     const totalCount = (await searchWithinTranscripts(query, { take: 0, skip: 0 })).totalCount;
     const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
     const { skip, take } = paginationArgs(page);
