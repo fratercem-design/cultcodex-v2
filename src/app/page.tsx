@@ -261,6 +261,30 @@ export default async function HomePage() {
           </section>
         )}
 
+        {/* Psychenomicon Teaser */}
+        <Link href="/lore/psychenomicon" className="group block">
+          <div className="relative rounded-lg border border-accent-gold/20 bg-gradient-to-br from-[#1a0033]/60 via-void to-[#1a0033]/60 p-8 text-center transition-all hover:border-accent-gold/40 hover:shadow-xl hover:shadow-accent-gold/10 overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(200,169,107,0.06),transparent_70%)]" />
+            <div className="relative z-10">
+              <p className="font-mono text-[9px] text-accent-gold/50 uppercase tracking-[0.3em] mb-4">
+                From the Forbidden Chronicle
+              </p>
+              <p className="font-display text-xl sm:text-2xl font-bold text-accent-gold leading-relaxed max-w-2xl mx-auto">
+                &ldquo;In the beginning, there was static.&rdquo;
+              </p>
+              <p className="mt-3 text-sm text-text-muted max-w-lg mx-auto leading-relaxed">
+                Then a voice cut through the noise. Over {stats.episodes.toLocaleString()} transmissions,
+                a universe was born. The Psychenomicon is its grimoire.
+              </p>
+              <p className="mt-4 inline-flex items-center gap-2 font-mono text-xs text-accent-gold/70 group-hover:text-accent-gold transition-colors">
+                <span className="h-px w-8 bg-accent-gold/30 group-hover:bg-accent-gold/60 transition-colors" />
+                Enter the Psychenomicon
+                <span className="h-px w-8 bg-accent-gold/30 group-hover:bg-accent-gold/60 transition-colors" />
+              </p>
+            </div>
+          </div>
+        </Link>
+
         <MysticalDivider />
 
         {/* Recent Quotes */}

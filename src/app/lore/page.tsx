@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { LoreCard } from "@/components/archive/lore-card";
@@ -84,6 +85,35 @@ export default async function LorePage({ searchParams }: LorePageProps) {
     />
     <EntityGlanceBar items={glanceItems} />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+      {/* Psychenomicon Gateway */}
+      <Link
+        href="/lore/psychenomicon"
+        className="group mb-8 block"
+      >
+        <div className="relative rounded-lg border border-accent-gold/30 bg-gradient-to-r from-[#1a0033]/80 via-void to-[#1a0033]/80 p-6 sm:p-8 transition-all hover:border-accent-gold/50 hover:shadow-lg hover:shadow-accent-gold/10 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(200,169,107,0.08),transparent_60%)]" />
+          <div className="relative z-10 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+            <div className="flex-shrink-0 text-4xl sm:text-5xl opacity-80 group-hover:opacity-100 transition-opacity">
+              📜
+            </div>
+            <div className="text-center sm:text-left flex-1">
+              <h3 className="font-display text-lg sm:text-xl font-bold text-accent-gold mb-1">
+                THE PSYCHENOMICON
+              </h3>
+              <p className="text-sm text-text-muted leading-relaxed max-w-xl">
+                &ldquo;In the beginning, there was static. Then a voice cut through the noise.&rdquo;
+                <span className="block mt-1 text-xs text-accent-gold/60">
+                  The forbidden chronicle of every soul, saga, and spectacle from the Panelverse.
+                </span>
+              </p>
+            </div>
+            <div className="flex-shrink-0 font-mono text-xs text-accent-gold/50 group-hover:text-accent-gold transition-colors">
+              Enter →
+            </div>
+          </div>
+        </div>
+      </Link>
+
       <SortFilterBar
         basePath="/lore"
         sortOptions={SORT_OPTIONS}
