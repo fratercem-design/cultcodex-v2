@@ -592,6 +592,377 @@ const LEXICON: Term[] = [
       "\"Welcome to the Psyche Haters Club where the jealous gather up begging for attention. Thirsty and stuck.\"",
     category: "slang",
   },
+
+  // ── NEW ENTRIES (mined from transcripts) ────────────────────────
+
+  // ── PSYCHEVERSE ─────────────────────────────────────────────────
+  {
+    word: "Transmission",
+    definition:
+      "The Cult of Psyche term for an episode or livestream broadcast. Frames each stream as a signal beamed out from the Psycheverse rather than mere 'content.' The Codex catalogs over 1,300 transmissions.",
+    usage: "\"The portal is open, no place to hide. There's no other show that can shake you.\"",
+    origin: "Cult of Psyche",
+    category: "psycheverse",
+  },
+  {
+    word: "The Void",
+    definition:
+      "The liminal space between streams, between thoughts, between identities. In the Psycheverse, the void is not emptiness but fertile darkness — where new ideas, characters, and lore are born. Psyche has described creating things 'from the void.'",
+    usage: "\"I created my daughters from the void in the light.\"",
+    category: "psycheverse",
+  },
+  {
+    word: "Spiritual Technology",
+    aka: ["Wisdom Technology"],
+    definition:
+      "Psyche's framework for understanding tarot, ritual, mythology, and even AI as functional tools for transformation rather than mere superstition. The Codex itself is described as 'wisdom technology.'",
+    usage: "\"This system, this codex is what I call wisdom technology. It's not about manipulation. It's about transformation.\"",
+    origin: "Cult of Psyche — Psyche's philosophical framework",
+    category: "psycheverse",
+  },
+  {
+    word: "The Crypt",
+    definition:
+      "A metaphor for the darkest psychological spaces a person has survived — addiction, abuse, spiritual crisis. To 'survive the crypt' means to have walked through hell and returned with hard-won wisdom.",
+    usage: "\"He survived the crypt. The narcissist charm. The psychopath's grin. The false alarm.\"",
+    category: "psycheverse",
+  },
+  {
+    word: "Traveling Sorcerer",
+    definition:
+      "Psyche's metaphor for the modern internet user who moves between platforms and communities like a wandering magician — carrying spells (skills), encountering monsters (trolls), and seeking treasure (connection).",
+    usage: "\"The internet as a fairy tale — why you're a 'traveling sorcerer.'\"",
+    origin: "Cult of Psyche — episode title and recurring metaphor",
+    category: "psycheverse",
+  },
+  {
+    word: "Smear Architecture",
+    definition:
+      "Psyche's term for the deliberate, structural campaign of lies and distortions built against someone online. Not just gossip — an architecture, engineered to destroy reputation systematically.",
+    origin: "Cult of Psyche — episode 'Smear Architecture 2.0'",
+    category: "psycheverse",
+  },
+  {
+    word: "The 9 Seals",
+    aka: ["9 Seals of Psyche"],
+    definition:
+      "An astrological framework Psyche developed mapping nine key aspects of his natal chart to nine archetypal qualities. Each 'seal' represents a facet of his cosmic identity.",
+    origin: "Cult of Psyche — 'The 9 Seals of Psyche: Astrological Analysis'",
+    category: "psycheverse",
+  },
+  {
+    word: "Midnight Madness",
+    definition:
+      "Late-night streams that start after midnight, known for their unhinged energy, raw confessions, and the kind of conversations that only happen when the normal world is asleep. A recurring series format.",
+    origin: "Cult of Psyche — recurring stream series",
+    category: "psycheverse",
+  },
+  {
+    word: "Wacky Wednesday",
+    aka: ["Thirsty Tuesday", "Freaky Friday"],
+    definition:
+      "Themed weekday streams on the Cult of Psyche. Each day has its own personality: Thirsty Tuesday (chaotic energy), Wacky Wednesday (anything goes), Freaky Friday (spooky/wild vibes). All feature open panels, tarot, and cats.",
+    origin: "Cult of Psyche — recurring stream schedule",
+    category: "psycheverse",
+  },
+  {
+    word: "Psyche's Angels",
+    definition:
+      "The channel membership tier on the Cult of Psyche. Members get custom badges, panel access priority, and visibility in chat. A riff on 'Charlie's Angels' — loyal supporters with inner-circle status.",
+    origin: "Cult of Psyche YouTube membership",
+    category: "psycheverse",
+  },
+  {
+    word: "The Psychenomicon",
+    definition:
+      "The forbidden chronicle of the Cult of Psyche — a living grimoire documenting every soul, saga, and spectacle from over 1,300 transmissions. Part mythology, part encyclopedia, part love letter to the community.",
+    origin: "Cult Codex — subscriber-exclusive content",
+    category: "psycheverse",
+  },
+  {
+    word: "Digital Resurrection",
+    definition:
+      "The act of reviving a canceled show, banned account, or forgotten community figure through sheer willpower and audience support. Psyche has done this multiple times across platform strikes and channel suspensions.",
+    usage: "\"The cult of two becomes the many. Digital resurrection. Mystic alchemy.\"",
+    category: "psycheverse",
+  },
+  // ── PANELVERSE ──────────────────────────────────────────────────
+  {
+    word: "Panel God",
+    definition:
+      "A streamer who has mastered the art of running open panels — managing chaos, moderating egos, and turning raw conversation into entertainment. Used both sincerely and sarcastically.",
+    category: "panelverse",
+  },
+  {
+    word: "Crossover Episode",
+    definition:
+      "When communities from different panel channels collide in a single stream — either through raids, guest appearances, or deliberate collaborations. Can produce legendary content or spectacular drama.",
+    category: "panelverse",
+  },
+  {
+    word: "Lore Drop",
+    definition:
+      "When a panelist accidentally or intentionally reveals significant backstory, personal history, or community secrets during a stream. The chat erupts. Receipts are screenshotted. The timeline shifts.",
+    category: "panelverse",
+  },
+  {
+    word: "Arc",
+    aka: ["Character Arc", "Redemption Arc", "Villain Arc"],
+    definition:
+      "A narrative framework applied to real community members. Someone might be on their 'redemption arc' (reforming after drama), 'villain arc' (going rogue), or 'fumble arc' (making increasingly bad decisions). The panelverse treats life like a serialized show.",
+    category: "panelverse",
+  },
+  {
+    word: "Era",
+    definition:
+      "A defined period in a streamer's or community member's journey, marked by a shift in behavior, aesthetic, or allegiance. 'That was her toxic era' or 'He's in his healing era.' Borrowed from music fandom culture.",
+    category: "panelverse",
+  },
+  {
+    word: "The Algorithm",
+    definition:
+      "YouTube's recommendation system, spoken of like a capricious deity that giveth and taketh away. Streamers appease, curse, and strategize around the algorithm as if performing rituals to an unknowable god.",
+    usage: "\"Under the algorithm truth.\"",
+    category: "panelverse",
+  },
+
+  // ── STREAMING ───────────────────────────────────────────────────
+  {
+    word: "Shadowban",
+    aka: ["Shadow Ban", "Shadowbanned"],
+    definition:
+      "When a platform silently reduces someone's visibility without notifying them — their content stops appearing in recommendations and search. The streamer's worst nightmare: shouting into a void that used to echo back.",
+    category: "streaming",
+  },
+  {
+    word: "Strike",
+    definition:
+      "A formal penalty from YouTube for violating community guidelines. Three strikes and the channel is terminated. Psyche has weathered multiple strikes, often from porn bombing attacks or false reports.",
+    category: "streaming",
+  },
+  {
+    word: "Demonetized",
+    aka: ["Demonetization"],
+    definition:
+      "When YouTube removes a video's ability to earn ad revenue, usually for 'sensitive content.' In the panelverse, getting demonetized is almost a badge of honor — it means the conversation got too real.",
+    category: "streaming",
+  },
+  {
+    word: "Stream Snipe",
+    aka: ["Stream Sniping"],
+    definition:
+      "Joining someone's panel or game with advance knowledge from watching their stream, giving an unfair advantage or enabling targeted trolling. The digital equivalent of reading someone's cards.",
+    category: "streaming",
+  },
+  {
+    word: "Whale",
+    definition:
+      "A viewer who donates extremely large amounts of money to a streamer. In the panelverse, whales can shift the entire dynamic of a stream — their super chats get read, their requests get fulfilled, their presence is acknowledged.",
+    category: "streaming",
+  },
+
+  // ── MODERATION ──────────────────────────────────────────────────
+  {
+    word: "Troll Tribunal",
+    definition:
+      "A recurring Cult of Psyche series format where trolls are put 'on trial' — their behavior is examined, debated, and judged by the panel. Part comedy court, part group therapy, part content creation engine.",
+    origin: "Cult of Psyche — recurring series",
+    category: "moderation",
+  },
+  {
+    word: "Caught in 4K",
+    definition:
+      "Undeniable evidence of someone's behavior, captured in high definition. When someone is 'caught in 4K,' there's no denying what they did — the receipts are crystal clear.",
+    category: "moderation",
+  },
+
+  // ── TAROT & MYSTIC ──────────────────────────────────────────────
+  {
+    word: "Shadow Work",
+    definition:
+      "The Jungian practice of confronting repressed parts of yourself — the things you hide, deny, or project onto others. A central theme in Psyche's readings and philosophy. The panels themselves often become involuntary shadow work sessions.",
+    category: "tarot",
+  },
+  {
+    word: "Twin Flame",
+    definition:
+      "A spiritual concept describing an intense soul connection — your mirror, your other half. In the panelverse, the term is both sacred and memed: genuine seekers ask about twin flames in readings, while skeptics roast the concept mercilessly.",
+    category: "tarot",
+  },
+  {
+    word: "Divine Feminine",
+    aka: ["Divine Masculine"],
+    definition:
+      "Archetypal energies representing receptive/intuitive power (feminine) and active/protective power (masculine). Psyche explores these through tarot, Hindu goddesses (the Mahavidyas), and Jungian anima/animus theory.",
+    usage: "\"Coming in union with your inner self — the divine masculine and divine feminine coming in union with yourself.\"",
+    category: "tarot",
+  },
+  {
+    word: "Karmic",
+    aka: ["Karmic Cycle", "Karmic Lesson"],
+    definition:
+      "Relating to the cosmic law of cause and effect. In the Psycheverse, 'karmic' describes relationships, debts, or patterns that repeat until the lesson is learned. A karmic relationship is one you were fated to have — and fated to outgrow.",
+    usage: "\"Whatever you do to people, you have to experience how they feel yourself.\"",
+    category: "tarot",
+  },
+  {
+    word: "Portal",
+    definition:
+      "A moment of spiritual opening — a full moon, a solstice, an 11/11 date, or simply a stream where the energy shifts and something beyond normal conversation occurs. Psyche's show is itself described as a portal.",
+    usage: "\"The portal is open, no place to hide.\"",
+    category: "tarot",
+  },
+  {
+    word: "Cord Cutting",
+    definition:
+      "A spiritual practice of energetically severing unhealthy attachments to people, habits, or situations. Referenced in readings when someone needs to break free from a toxic connection that lingers in the psyche.",
+    category: "tarot",
+  },
+  {
+    word: "Mercury Retrograde",
+    aka: ["Retrograde"],
+    definition:
+      "When the planet Mercury appears to move backward in the sky, traditionally blamed for communication breakdowns, tech failures, and exes texting. In the Psycheverse, retrograde is invoked to explain why the panel is extra chaotic.",
+    category: "tarot",
+  },
+  {
+    word: "Dark Night of the Soul",
+    definition:
+      "A period of profound spiritual crisis and despair that precedes transformation. Borrowed from St. John of the Cross, used extensively in readings. Psyche's own story embodies this — suppressing an awakening with medication, surviving, and emerging.",
+    usage: "\"After every dark night, there's a rainbow. You can't go any lower. Then it's all uphill from there.\"",
+    category: "tarot",
+  },
+
+  // ── COMMUNITY ───────────────────────────────────────────────────
+  {
+    word: "Trauma Bond",
+    aka: ["Trauma Bonding"],
+    definition:
+      "An attachment formed through shared intense, often negative experiences. In the Psycheverse, this describes both toxic relationships discussed in readings and the deep connection forged between panelists who've weathered chaos together.",
+    usage: "\"Continued communication prolongs the trauma bonding. It gives the abuser opportunities to manipulate.\"",
+    category: "community",
+  },
+  {
+    word: "Narcissist",
+    aka: ["Narc"],
+    definition:
+      "One of the most-discussed personality types in the Psycheverse. Used clinically (NPD) and colloquially to describe manipulative, self-centered behavior. Psyche has dedicated entire episodes to narcissistic abuse patterns, supply, and recovery.",
+    usage: "\"This is basically epidemic narcissism. They think they're gods and everyone else is an animal.\"",
+    category: "community",
+  },
+  {
+    word: "Empath",
+    definition:
+      "Someone who absorbs the emotions and energy of others — the perceived opposite of a narcissist. In the Psycheverse, empaths are both celebrated and cautioned: their sensitivity is a gift that can be exploited.",
+    usage: "\"Someone or something keeps knocking on your psychic door. The dead adore your empathy.\"",
+    category: "community",
+  },
+  {
+    word: "Flying Monkey",
+    definition:
+      "A person manipulated by a narcissist into doing their bidding — harassing, spying on, or smearing the narcissist's target. Named after the Wicked Witch's servants in The Wizard of Oz. Discussed in abuse recovery segments.",
+    category: "community",
+  },
+  {
+    word: "Grey Rock",
+    aka: ["Gray Rock", "Grey Rocking"],
+    definition:
+      "A defense strategy against narcissists: becoming as boring and unreactive as a grey rock so they lose interest. Give them nothing to feed on. Discussed in Psyche's segments on surviving toxic relationships.",
+    category: "community",
+  },
+  {
+    word: "No Contact",
+    aka: ["NC"],
+    definition:
+      "The strategy of completely ceasing all communication with a toxic person. Described as 'the number one strategy recommended for dealing with psychopaths and narcissists.' A frequent topic in readings and advice segments.",
+    usage: "\"No contact. Zero. Nothing. That's how you get your power back.\"",
+    category: "community",
+  },
+  {
+    word: "Love Bombing",
+    definition:
+      "An manipulation tactic where someone overwhelms you with affection, attention, and gifts early in a relationship to create dependency. Once you're hooked, the affection is withdrawn. Discussed extensively in abuse awareness episodes.",
+    category: "community",
+  },
+  {
+    word: "Parasocial",
+    definition:
+      "A one-sided emotional relationship where a viewer feels intimately connected to a streamer who doesn't know them. In the panelverse, the line between parasocial and genuine connection is perpetually blurry — especially when chat talks back.",
+    category: "community",
+  },
+  {
+    word: "Gaslighting",
+    definition:
+      "Manipulating someone into questioning their own reality, memories, or sanity. A term from the 1944 film 'Gaslight,' now a core concept in the Psycheverse's vocabulary for describing abusive dynamics on and off stream.",
+    category: "community",
+  },
+
+  // ── SLANG ───────────────────────────────────────────────────────
+  {
+    word: "Ratio",
+    definition:
+      "When a reply gets more engagement than the original post or statement, indicating the community disagrees with the original. In live panels, getting 'ratioed' means the chat is siding against you. A public execution by democracy.",
+    category: "slang",
+  },
+  {
+    word: "Cooked",
+    definition:
+      "Utterly destroyed in an argument, debate, or roast. When someone is 'cooked,' there's no coming back — the panel has collectively decided they've lost. Can also mean someone has gone too far and ruined their reputation.",
+    category: "slang",
+  },
+  {
+    word: "Unhinged",
+    definition:
+      "Behaving in a wildly unpredictable, chaotic, or boundary-less way. In the Psycheverse, 'unhinged' is used affectionately as often as critically — some of the best content comes from unhinged energy.",
+    category: "slang",
+  },
+  {
+    word: "Delulu",
+    aka: ["Delusional"],
+    definition:
+      "Short for delusional — believing something that's clearly not true, especially about relationships or one's own importance. 'Delulu is the solulu' (delusion is the solution) is the ironic motto of those who refuse to accept reality.",
+    category: "slang",
+  },
+  {
+    word: "Rent Free",
+    definition:
+      "When someone or something occupies your thoughts constantly without paying for the privilege. 'Living rent free in your head' means you can't stop thinking about them — an admission of obsession disguised as an accusation.",
+    category: "slang",
+  },
+  {
+    word: "Ate That",
+    aka: ["Ate", "Slayed"],
+    definition:
+      "Performed something excellently. 'She ate that freestyle' means she killed it. 'Ate and left no crumbs' means the performance was so complete there's nothing left to critique. High praise in panel culture.",
+    category: "slang",
+  },
+  {
+    word: "Ick",
+    aka: ["The Ick"],
+    definition:
+      "A sudden, visceral feeling of repulsion toward someone you were previously attracted to, triggered by something small and specific. 'He gave me the ick when he clapped when the plane landed.' Discussed frequently in dating panels.",
+    category: "slang",
+  },
+  {
+    word: "Main Character",
+    aka: ["Main Character Energy", "MC Energy"],
+    definition:
+      "Behaving as though the world revolves around you and everyone else is a supporting character in your story. Can be empowering ('main character energy') or delusional ('they think they're the main character').",
+    category: "slang",
+  },
+  {
+    word: "Chaos Magick",
+    definition:
+      "A postmodern occult practice that treats belief itself as a tool — use whatever symbols, rituals, or systems work for you, discard the rest. Psyche's approach to spirituality borrows heavily from this tradition: tarot, Hindu deities, Jungian psychology, and AI all in one cauldron.",
+    category: "tarot",
+  },
+  {
+    word: "Energy Vampire",
+    aka: ["3D Energy Vampire"],
+    definition:
+      "A person who drains your emotional and spiritual energy through constant negativity, neediness, or drama. In the Psycheverse, energy vampires are a recognized species — discussed in readings and identified in real-time on panels.",
+    category: "community",
+  },
 ];
 
 /* ------------------------------------------------------------------ */
