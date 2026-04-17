@@ -130,10 +130,13 @@ async function main() {
   const videoIds = playlistItems.map((i) => i.videoId);
   const details = await fetchVideoDetails(videoIds);
 
-  // Merge into video list
-  const videos: YouTubeVideo[] = playlistItems.map((item) => {
+  // Merge into video list — fresh data for currently-public videos,
+  // preserving existing entries for videos that were removed from the
+  // public playlist (deleted/privated) so we don't lose historical data.
+  const mergedById = new Map<string, YouTubeVideo>(existing);
+  for (const item of playlistItems) {
     const detail = details.get(item.videoId);
-    return {
+    mergedById.set(item.videoId, {
       videoId: item.videoId,
       title: item.title,
       description: item.description,
@@ -142,11 +145,16 @@ async function main() {
       thumbnailUrl: item.thumbnailUrl,
       viewCount: detail?.viewCount || null,
       channelTitle,
-    };
-  });
+    });
+  }
+  const videos: YouTubeVideo[] = Array.from(mergedById.values());
 
   // Sort chronologically (oldest first)
   videos.sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime());
+
+  const freshCount = playlistItems.length;
+  const preservedCount = videos.length - freshCount;
+  console.log(`Merged: ${freshCount} fresh + ${preservedCount} preserved from prior run = ${videos.length} total`);
 
   // Write output
   if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
