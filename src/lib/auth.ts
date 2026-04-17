@@ -84,3 +84,11 @@ export async function requireAdmin(): Promise<CodexSessionUser> {
   if (user.role !== "admin") throw new Error("Admin access required");
   return user;
 }
+
+export async function requireSubscriber(): Promise<CodexSessionUser> {
+  const user = await requireAuth();
+  const { isSubscribed } = await import("@/lib/subscription");
+  const subscribed = await isSubscribed(user.id);
+  if (!subscribed) throw new Error("Premium subscription required");
+  return user;
+}

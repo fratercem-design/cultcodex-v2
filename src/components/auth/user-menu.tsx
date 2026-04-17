@@ -63,11 +63,33 @@ export function UserMenu({ user }: UserMenuProps) {
             Favorites
           </Link>
           <Link
+            href="/settings/profile"
+            className="block w-full px-3 py-2 text-left text-xs text-accent-gold hover:bg-elevated transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            ✦ Member Profile
+          </Link>
+          <Link
+            href="/members"
+            className="block w-full px-3 py-2 text-left text-xs text-text-muted hover:bg-elevated transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            Member Roll
+          </Link>
+          <Link
             href="/settings/notifications"
             className="block w-full px-3 py-2 text-left text-xs text-text-primary hover:bg-elevated transition-colors"
             onClick={() => setOpen(false)}
           >
             Notifications
+          </Link>
+          <div className="border-t border-border my-1" />
+          <Link
+            href="/subscribe"
+            className="block w-full px-3 py-2 text-left text-xs font-bold text-accent-gold hover:bg-elevated transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            Premium Access
           </Link>
           <form action="/api/auth/signout" method="POST">
             <button

@@ -21,6 +21,7 @@ const navItems = [
   { label: "Series", href: "/series", group: "explore" as const },
   { label: "Collections", href: "/collections", group: "explore" as const },
   { label: "Topics", href: "/topics", group: "explore" as const },
+  { label: "Members", href: "/members", group: "explore" as const },
   // Reference — meta pages (violet)
   { label: "Lexicon", href: "/lexicon", group: "reference" as const },
   { label: "Timeline", href: "/timeline", group: "reference" as const },
@@ -80,7 +81,7 @@ export async function SiteHeader() {
           })}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Link
             href="/search"
             className="inline-flex items-center gap-1.5 font-mono text-xs text-text-muted hover:text-accent-gold border border-border rounded px-3 py-1 transition-colors"
@@ -88,6 +89,12 @@ export async function SiteHeader() {
           >
             <IconSearch size={14} className="text-text-muted" />
             Search
+          </Link>
+          <Link
+            href="/subscribe"
+            className="hidden sm:inline-flex items-center rounded border border-accent-gold/40 bg-accent-gold/10 px-3 py-1 font-mono text-[11px] font-bold text-accent-gold transition-all hover:bg-accent-gold/20 hover:shadow-md hover:shadow-accent-gold/20"
+          >
+            ✦ Premium
           </Link>
           <UserMenu user={(session as SessionWithCodex)?.codexUser ?? null} />
         </div>

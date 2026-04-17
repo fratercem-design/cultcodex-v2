@@ -385,6 +385,10 @@ model CodexUser {
   subscriptionStatus      String?   // "active", "past_due", "canceled", "unpaid"
   currentPeriodEnd        DateTime?
 
+  // Member identity
+  memberTitle             String?   // chosen flair title e.g. "Oracle", "Acolyte"
+  isPublicMember          Boolean   @default(false) // opt-in to public Member Roll
+
   reactions               EpisodeReaction[]
   comments                CodexComment[]
   reports                 CommentReport[]
