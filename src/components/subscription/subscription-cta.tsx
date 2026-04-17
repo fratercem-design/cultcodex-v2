@@ -33,9 +33,9 @@ export function SubscriptionCTA({ variant = "card" }: SubscriptionCTAProps) {
       <button
         onClick={handleSubscribe}
         disabled={loading}
-        className="inline-flex items-center gap-2 rounded border border-accent-gold bg-accent-gold/10 px-4 py-2 font-mono text-xs text-accent-gold transition-colors hover:bg-accent-gold/20 disabled:opacity-50"
+        className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/10 disabled:opacity-50"
       >
-        {loading ? "Redirecting..." : "Unlock Transcripts \u2014 $10/mo"}
+        {loading ? "Redirecting to checkout..." : "Subscribe \u2014 $10/month"}
       </button>
     );
   }
