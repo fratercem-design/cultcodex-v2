@@ -439,8 +439,9 @@ const LEXICON: Term[] = [
   },
   {
     word: "Mahavidyas",
+    aka: ["The Ten Mahavidyas", "Ten Wisdom Goddesses"],
     definition:
-      "The ten Hindu tantric goddesses that Psyche studies and references extensively in his spiritual content. Each represents a different aspect of divine feminine power and cosmic knowledge.",
+      "The ten Hindu tantric goddesses Psyche studies and invokes — Kali, Tara, Tripura Sundari, Bhuvaneshwari, Chinnamasta, Bhairavi, Dhumavati, Bagalamukhi, Matangi, and Kamala. Each represents a cosmic function. Central to the show's recurring 'Ten Mystical Women' song cycle.",
     category: "psycheverse",
   },
   {
@@ -963,6 +964,341 @@ const LEXICON: Term[] = [
       "A person who drains your emotional and spiritual energy through constant negativity, neediness, or drama. In the Psycheverse, energy vampires are a recognized species — discussed in readings and identified in real-time on panels.",
     category: "community",
   },
+
+  // ── NEW ENTRIES (mined from 2,781 lore entries + 3,476 topics) ──
+
+  // ── PSYCHEVERSE ─────────────────────────────────────────────────
+  {
+    word: "BKG",
+    aka: ["Bea's Kitty Gang", "Beta's Kitty Gang", "Beetus Kitty Gang"],
+    definition:
+      "The cult-adjacent chosen family named after Psyche's devotion to cats and his on-again/off-again ally Bea/Beta. Psyche has a BKG tattoo over his heart. Membership is claimed loosely — anyone who rides for the cats and the community counts. Mascot: an angry cat with claws out.",
+    usage: "\"I got BKG tattooed on my chest — Bea's Kitty Gang. The cats are the real leaders.\"",
+    origin: "Cult of Psyche — tattoo and recurring community identity",
+    category: "psycheverse",
+  },
+  {
+    word: "Biscuitgate",
+    definition:
+      "The months-long feud between Psyche and streamer Beta/VA that began when she tormented him over 'biscuits' and escalated into diss tracks, panel raids, and tattoo revisions. The first great saga of the modern Psycheverse.",
+    usage: "\"Biscuitgate is how the BKG was born — and how it almost ended.\"",
+    origin: "Cult of Psyche — Beta vs Psyche feud arc",
+    category: "psycheverse",
+  },
+  {
+    word: "Biscuit Song",
+    aka: ["Biscuit Diss Track", "Beta's Biscuit Song"],
+    definition:
+      "Psyche's AI-generated diss track format using biscuit/cookie metaphors to call out someone for being shallow, crumbly, or fake. Born from Biscuitgate and now a recurring weapon in the show's musical arsenal.",
+    origin: "Cult of Psyche — Ep. 428 and beyond",
+    category: "music",
+  },
+  {
+    word: "Algorithm Wine",
+    definition:
+      "Metaphor for the intoxicating, mind-bending effect of engagement metrics, views, and livestream dopamine. You drink algorithm wine; it drinks you right back. A Psyche-coined warning to creators about chasing the numbers instead of the truth.",
+    usage: "\"Under the algorithm truth — too many are drunk on algorithm wine.\"",
+    category: "psycheverse",
+  },
+  {
+    word: "Backup Joy",
+    definition:
+      "The reserve of joy the cult keeps 'stored deep within' — untouchable by trolls, strikes, or smear campaigns. A spiritual savings account. When the panel gets porn-bombed, backup joy is what gets you through the next stream.",
+    origin: "Cult of Psyche lore",
+    category: "psycheverse",
+  },
+  {
+    word: "Alchemical Biography",
+    definition:
+      "Psyche's framework that every crack in your story is alchemical material — raw ore for turning pain into gold, straw into wisdom. 'Every crack is my biography.' Your wounds aren't damage; they're ingredients.",
+    usage: "\"He survived the crypt. Every crack — his biography.\"",
+    origin: "Cult of Psyche — spiritual teaching",
+    category: "psycheverse",
+  },
+  {
+    word: "The Quack Pack",
+    definition:
+      "Psyche's affectionate name for his rotating cast of quirky recurring guests. A riff on Howard Stern's 'Wack Pack' — plus the StreamYard duck logo. Members are the strange, the loud, the loyal, and the occasionally unhinged.",
+    origin: "Cult of Psyche — coined by Psyche",
+    category: "psycheverse",
+  },
+  {
+    word: "Church of Psyche Awakens",
+    definition:
+      "Psyche's reframing of his Sunday morning livestreams as a spiritual gathering — part tarot, part group therapy, part raw confessional. Bring your coffee and your shadow.",
+    usage: "\"Welcome to the Church of Psyche Awakens. Pull up a pew.\"",
+    origin: "Cult of Psyche — Sunday morning format",
+    category: "psycheverse",
+  },
+  {
+    word: "Charlie's Angels",
+    definition:
+      "Psyche's term for the circle of trusted female guests who protect him on and off panel — Tiger Butterfly, Tracy, Zara, Lauren, Jamie Rose, and others rotating through. A divine feminine protection squad with receipts.",
+    origin: "Cult of Psyche — coined by Psyche",
+    category: "psycheverse",
+  },
+  {
+    word: "The Switzerland Philosophy",
+    definition:
+      "Psyche's stated policy of staying neutral in community drama — letting all sides speak, refusing to pick one camp, maintaining peace even when sides beg for allegiance. Diplomacy as spiritual practice.",
+    origin: "Cult of Psyche — Psyche's stance on beef",
+    category: "psycheverse",
+  },
+  {
+    word: "The Oracle's Shield",
+    definition:
+      "Legendary moment in cult history when Alexandra Mayers (Neon Priestess) publicly defended Psyche against coordinated attacks and death threats, declaring on air that what the attackers were doing was not okay. Canonized as a turning point.",
+    origin: "Cult of Psyche — Alexandra Mayers defense moment",
+    category: "psycheverse",
+  },
+  {
+    word: "Ring Light Hex",
+    definition:
+      "Psyche's concept that coordinated social-media smear campaigns function as a modern curse — the ring light and the phone camera replacing the candle and the sigil. The hex is cast through views, hashtags, and stitched reactions.",
+    category: "psycheverse",
+  },
+  {
+    word: "Sacred Stealth",
+    definition:
+      "A survival strategy of helping and observing from the sidelines instead of centering yourself. Born out of past persecution — you serve quietly so the wolves don't catch the scent. Sometimes the most powerful mystics are invisible.",
+    category: "psycheverse",
+  },
+  {
+    word: "April Fool's Raids",
+    definition:
+      "Psyche's recurring tradition of pranking other channels by raiding them in masks and under fake names on April 1st. A rare case where a raid is played purely for laughs, not loyalty or beef.",
+    origin: "Cult of Psyche — annual April 1st bit",
+    category: "psycheverse",
+  },
+  {
+    word: "The Scalpel Quote",
+    definition:
+      "Alexandra Mayers' shadow-work revelation during the Beeta's Biscuit session (Ep. 428): 'I was in love with who I wanted him to be, not who he is.' Canonized on the show as a psychological scalpel — a single line that cuts to the bone of projection.",
+    usage: "\"I was in love with who I wanted him to be, not who he is.\"",
+    origin: "Cult of Psyche — Ep. 428, Alexandra Mayers",
+    category: "psycheverse",
+  },
+  {
+    word: "Nine Cats",
+    aka: ["The Cat Family", "The Nine"],
+    definition:
+      "Psyche's rotating household of cats — Lenor the black familiar, Trix the namesake, Rudy the elder rescue, Lola and her Pi-Day kittens, plus a few more depending on the season. Regularly co-star the show and function as spiritual guardians.",
+    origin: "Cult of Psyche household",
+    category: "psycheverse",
+  },
+  {
+    word: "Lenor",
+    aka: ["Lenore"],
+    definition:
+      "Psyche's black cat, OG familiar, and unofficial cult mascot. Named after Edgar Allan Poe's 'The Raven.' Rescued as a kitten from a parking lot and now treated as the show's spiritual bouncer — guards the stream, glares at trolls, naps on the altar.",
+    origin: "Cult of Psyche — Psyche's cat",
+    category: "psycheverse",
+  },
+  {
+    word: "Trix",
+    definition:
+      "A cat born on Pi Day (March 14th) who shares her name with one of Psyche's co-hosts and the broader community mythos. Regularly appears on stream, walks through tarot spreads, and is generally treated as a co-author of the show.",
+    origin: "Cult of Psyche — Psyche's cat + co-host namesake",
+    category: "psycheverse",
+  },
+
+  // ── PANELVERSE ──────────────────────────────────────────────────
+  {
+    word: "Clap",
+    aka: ["Clapped"],
+    definition:
+      "Panelverse slang for removing someone from a panel or stream. Less dramatic than getting gonged — more of a silent, swift kick. 'They got clapped off.'",
+    category: "panelverse",
+  },
+  {
+    word: "Putting Jackets",
+    aka: ["Putting a Jacket On"],
+    definition:
+      "Panelverse term for labeling someone with a damaging association or accusation. Once the jacket is on, it's hard to shake — the panel remembers. Close cousin of a smear campaign, but done in real time.",
+    category: "panelverse",
+  },
+  {
+    word: "The Panel Haunting",
+    definition:
+      "When someone who claims to want nothing to do with Psyche keeps showing up on his panels anyway. The classic paradox: loud block announcements followed by quiet ghost appearances. Immortalized in the Alexandra arc.",
+    origin: "Cult of Psyche — recurring pattern",
+    category: "panelverse",
+  },
+
+  // ── STREAMING ───────────────────────────────────────────────────
+  {
+    word: "LOL Cow Farmers",
+    definition:
+      "Psyche's metaphor for the attention economy: if you want the milk (entertainment, drama, reactions), you have to feed the cow (the streamer and their content). The transaction is rarely acknowledged but always present.",
+    origin: "Cult of Psyche — coined by Psyche",
+    category: "streaming",
+  },
+  {
+    word: "Love Raid",
+    definition:
+      "A raid sent with the explicit intention of supporting, complimenting, or lifting up the target channel rather than mobbing it. Psyche's preferred style — raids as blessings instead of invasions.",
+    category: "streaming",
+  },
+  {
+    word: "Hate Bombing",
+    definition:
+      "The inverse of a love raid: directing your audience at another channel to harass, dogpile, or disrupt. Psyche treats hate bombing as a line you don't cross; calling it out is part of his moderation ethic.",
+    origin: "Cult of Psyche — Psyche's distinction from love bombing",
+    category: "streaming",
+  },
+  {
+    word: "Mass Unban",
+    definition:
+      "Psyche's ritualized policy of periodically wiping the ban list — inviting even old enemies back in. Part spectacle, part spiritual practice. The opposite of a purge.",
+    usage: "\"I do mass unbans. I don't really keep anyone blocked.\"",
+    origin: "Cult of Psyche — recurring practice",
+    category: "streaming",
+  },
+
+  // ── MODERATION ──────────────────────────────────────────────────
+  {
+    word: "No-Ban Policy",
+    definition:
+      "Psyche's default operating mode: almost no one stays permanently banned. The channel is framed as a place of forgiveness — you can always come back, if the cards say you should.",
+    origin: "Cult of Psyche — stated channel policy",
+    category: "moderation",
+  },
+  {
+    word: "21 and Over Rule",
+    definition:
+      "Community guideline that panel participants must be 21+ given the frequently adult nature of weekend streams. A rare example of formal gatekeeping in the otherwise open panel format.",
+    origin: "Cult of Psyche — weekend panel rule",
+    category: "moderation",
+  },
+  {
+    word: "Reactive Abuse",
+    definition:
+      "A trolling tactic where agitators poke at someone repeatedly until they snap — then use the outburst as evidence that the target 'lost it first.' The panel has receipts on this one; Psyche calls it out often.",
+    category: "moderation",
+  },
+  {
+    word: "Screenshot Evidence Culture",
+    definition:
+      "The panelverse convention of documenting every mod action, chat deletion, and backstage DM with screenshots — so that when the story flips, the receipts hit harder than the accusation.",
+    category: "moderation",
+  },
+
+  // ── TAROT & MYSTIC ──────────────────────────────────────────────
+  {
+    word: "Bagalamukhi",
+    definition:
+      "Hindu tantric goddess, one of the ten Mahavidyas, who silences enemies and reverses slander — often depicted grabbing a demon by the tongue. Associated with yellow and with 'stopping the chaos.' A recurring protector figure in Psyche's pantheon.",
+    origin: "Hindu tantra; canonical reference in Cult of Psyche",
+    category: "tarot",
+  },
+  {
+    word: "Matangi",
+    definition:
+      "Hindu tantric goddess of speech, music, and the outcast — patron of artists, truth-tellers, and marginalized voices. One of the ten Mahavidyas. Psyche has written devotional songs to her; she's woven into the show's mythology.",
+    origin: "Hindu tantra; canonical reference in Cult of Psyche",
+    category: "tarot",
+  },
+  {
+    word: "Baital Pachisi",
+    aka: ["Baital Pachchisi", "Vetala Panchavimshati"],
+    definition:
+      "Ancient Indian cycle of 25 tales in which a vetala (a vampiric sprite) tells King Vikram riddle-stories — if the king answers, the sprite escapes; if he stays silent, his head splits in seven. A recurring storytelling framework on the show.",
+    origin: "Classical Indian folklore — recurring on the show",
+    category: "tarot",
+  },
+  {
+    word: "Mahammaya",
+    definition:
+      "The great cosmic goddess of illusion in Hindu cosmology — simultaneously the cause of bondage and the means of liberation. The eternal divine feminine pervading creation itself. Psyche invokes her as the meta-principle behind Maya.",
+    category: "tarot",
+  },
+  {
+    word: "Lilith in Scorpio",
+    definition:
+      "Psyche's signature astrological placement — Black Moon Lilith in Scorpio. Represents the shadow feminine, the refusal to submit, and the power to turn taboo into truth. The lens through which much of the show's mythology is read.",
+    origin: "Cult of Psyche — Psyche's natal chart",
+    category: "tarot",
+  },
+  {
+    word: "Black Moon Lilith",
+    definition:
+      "The astrological point marking the part of the self that refuses to be domesticated — raw edge, shamed hungers, suppressed truths. In the Psycheverse, Lilith's position in your chart tells you where you're misunderstood and where your power lives.",
+    category: "tarot",
+  },
+  {
+    word: "Life Path Nine",
+    definition:
+      "Psyche's numerological signature (born 1/7/1981). Life Path 9 represents endings, completion, and the archetype of the wounded healer — one who carries collective pain and transmutes it into art.",
+    origin: "Cult of Psyche — Psyche's numerology",
+    category: "tarot",
+  },
+  {
+    word: "Amor Fati",
+    definition:
+      "Latin for 'love of fate.' A philosophical stance of fully embracing every part of your life — the beautiful, the ugly, the controversial — as necessary material for who you're becoming. A recurring Psyche teaching.",
+    category: "tarot",
+  },
+  {
+    word: "Maya",
+    definition:
+      "The veil of illusion in Hindu and Buddhist cosmology — not 'fake,' but the interface through which the formless takes form. On the show, Maya is framed as a feature of reality, not a bug: the necessary distortion that lets the infinite become visible.",
+    category: "tarot",
+  },
+  {
+    word: "Awen",
+    definition:
+      "Celtic concept of poetic inspiration — a flowing divine breath that lights up bards, mystics, and seers. Psyche connects it to the Egyptian Aten, framing both as solar rays of creative revelation.",
+    category: "tarot",
+  },
+  {
+    word: "Sabian Symbols",
+    definition:
+      "A 360-symbol astrological system Psyche treats as a core breakthrough in chart reading — each degree of the zodiac carries a specific image that reveals the deeper mission of that placement. Essential to the Nine Seals framework.",
+    origin: "Astrological system; central to Psyche's methodology",
+    category: "tarot",
+  },
+  {
+    word: "Return to Sender",
+    definition:
+      "A protective energy practice: when something nasty is thrown at you, you send it back to its source 'with love' — multiplied, not weaponized. Psyche credits this ritual with breaking trolling attacks in real time.",
+    origin: "Spiritual practice; recurring on the show",
+    category: "tarot",
+  },
+  {
+    word: "Sadhana",
+    definition:
+      "In tantra, the path of committed spiritual practice aimed at transformation — not a transaction with deity, but an alignment. Referenced when Psyche distinguishes ritual-as-prayer from ritual-as-discipline.",
+    category: "tarot",
+  },
+  // ── COMMUNITY ───────────────────────────────────────────────────
+  {
+    word: "Chat Friends Forever",
+    aka: ["CFF"],
+    definition:
+      "Digital friendships that survive platform changes, channel terminations, and cross-community drama. The real ones. A Psyche-community concept acknowledging that some bonds form in chat and outlive everything around them.",
+    category: "community",
+  },
+  {
+    word: "Pure Soul People",
+    definition:
+      "Psyche's term for people with no hate in their hearts — genuine, kind, incapable of cruelty even when cornered. Miguel is the usual example. A small, precious category in a chaotic ecosystem.",
+    origin: "Cult of Psyche — coined by Psyche",
+    category: "community",
+  },
+  {
+    word: "Black Fishing",
+    definition:
+      "The practice of artificially darkening one's skin (tanning, filters, melanin injections) to appear another race — often for social or financial gain. Discussed critically on the show alongside broader conversations about identity and appropriation.",
+    category: "community",
+  },
+
+  // ── SLANG ───────────────────────────────────────────────────────
+  {
+    word: "Auggling",
+    definition:
+      "Panelverse slang for creepily ogling someone on camera — the kind of staring that becomes a form of harassment. Coined on the show as a tongue-in-cheek 'crime' with a real underlying complaint.",
+    category: "slang",
+  },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -1188,10 +1524,11 @@ export default function LexiconPage() {
           <div className="text-sm text-text-muted leading-relaxed space-y-3">
             <p>
               This lexicon was compiled from analysis of 3,374 quotes, 1,327
-              episode summaries, and 497 community member profiles in the Cult
-              Codex archive. Definitions are derived from contextual usage within
-              the show, supplemented by community knowledge and Urban Dictionary
-              where applicable.
+              episode summaries, 497 community member profiles, 2,781 lore
+              entries, and 3,476 topics catalogued in the Cult Codex archive.
+              Definitions are derived from contextual usage within the show,
+              supplemented by community knowledge and Urban Dictionary where
+              applicable.
             </p>
             <div className="rounded border border-border bg-void p-3 space-y-2">
               <h3 className="font-mono text-[10px] uppercase tracking-widest text-text-muted">Reading the colors</h3>
