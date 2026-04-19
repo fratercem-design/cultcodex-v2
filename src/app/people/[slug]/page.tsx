@@ -25,6 +25,81 @@ import { ColorLegend } from "@/components/ui/color-legend";
 import { PersonSigil } from "@/components/ui/person-sigil";
 import type { Metadata } from "next";
 
+// ── Lore Summary renderer ─────────────────────────────────────────────────────
+// Handles two formats:
+//   1. Flat prose — render as paragraphs (legacy)
+//   2. Sectioned markdown with ## headers — render each section with a heading
+//      (produced by enrich-nightmares-people.ts character profiles)
+function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
+  const hasSections = /^##\s+\S/m.test(loreSummary);
+
+  if (!hasSections) {
+    return (
+      <SectionCard title="Lore Summary">
+        {loreSummary.split(/\n{2,}/).map((para, i) => (
+          <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
+            {editorialFrame(para.trim())}
+          </p>
+        ))}
+      </SectionCard>
+    );
+  }
+
+  // Split on ## headers, keeping the header text
+  const sections: Array<{ heading: string; body: string }> = [];
+  const parts = loreSummary.split(/^##\s+/m).filter(Boolean);
+  for (const part of parts) {
+    const newline = part.indexOf("\n");
+    const heading = newline === -1 ? part.trim() : part.slice(0, newline).trim();
+    const body = newline === -1 ? "" : part.slice(newline + 1).trim();
+    sections.push({ heading, body });
+  }
+
+  const SECTION_ICONS: Record<string, string> = {
+    overview: "📖",
+    storylines: "🎭",
+    controversies: "⚡",
+    "key relationships": "🔗",
+  };
+
+  return (
+    <>
+      {sections.map(({ heading, body }) => {
+        const icon = SECTION_ICONS[heading.toLowerCase()] ?? "📄";
+        return (
+          <SectionCard key={heading} title={`${icon} ${heading}`}>
+            {body.split(/\n{2,}|\n(?=[-•*])/).map((para, i) => {
+              const trimmed = para.trim();
+              if (!trimmed) return null;
+              // Render bullet points
+              if (/^[-•*]\s/.test(trimmed)) {
+                const bullets = trimmed
+                  .split(/\n/)
+                  .filter((l) => l.trim())
+                  .map((l) => l.replace(/^[-•*]\s*/, "").trim());
+                return (
+                  <ul key={i} className="list-disc list-inside space-y-1 mb-3 last:mb-0">
+                    {bullets.map((b, j) => (
+                      <li key={j} className="text-sm text-text-primary leading-relaxed">
+                        {editorialFrame(b)}
+                      </li>
+                    ))}
+                  </ul>
+                );
+              }
+              return (
+                <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
+                  {editorialFrame(trimmed)}
+                </p>
+              );
+            })}
+          </SectionCard>
+        );
+      })}
+    </>
+  );
+}
+
 export const revalidate = 600;
 
 export async function generateStaticParams() {
@@ -152,13 +227,9 @@ export default async function PersonDetailPage({ params }: PageProps) {
         />
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            {/* Bio / Lore Summary */}
+            {/* Bio / Lore Summary — renders flat text or ## sectioned profiles */}
             {person.loreSummary && (
-              <SectionCard title="Lore Summary">
-                <p className="text-sm text-text-primary leading-relaxed">
-                  {editorialFrame(person.loreSummary)}
-                </p>
-              </SectionCard>
+              <LoreSummaryCard loreSummary={person.loreSummary} />
             )}
 
             {/* Color legend */}
