@@ -1,5 +1,6 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTopicBySlug } from "@/lib/queries/topics";
+import { getTopicBySlug, getRelatedTopics } from "@/lib/queries/topics";
 import { prisma } from "@/lib/db";
 import { buildMetadata } from "@/lib/seo";
 import { getCurrentUser } from "@/lib/auth";
@@ -49,15 +50,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 }
 
+// Split a description into its factual part and "In the Psycheverse:" part
+function splitDescription(description: string): { base: string; psycheverse: string | null } {
+  const match = description.match(/^([\s\S]*?)(?:\n\n?)(In the Psycheverse:[\s\S]*)$/i);
+  if (match) {
+    return { base: match[1].trim(), psycheverse: match[2].trim() };
+  }
+  return { base: description.trim(), psycheverse: null };
+}
+
 export default async function TopicDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const topic = await getTopicBySlug(slug);
 
+  const topic = await getTopicBySlug(slug);
   if (!topic) notFound();
 
-  // /codex save state — is this signal already pinned by the current user?
   const user = await getCurrentUser();
-  const [initialSaved, savedCount] = await Promise.all([
+  const [initialSaved, savedCount, relatedTopics] = await Promise.all([
     user
       ? prisma.savedTopic
           .findUnique({
@@ -66,17 +75,29 @@ export default async function TopicDetailPage({ params }: PageProps) {
           .then((row) => !!row)
       : Promise.resolve(false),
     prisma.savedTopic.count({ where: { topicId: topic.id } }),
+    getRelatedTopics(topic.id, 8),
   ]);
+
+  const { base: descBase, psycheverse: descPsycheverse } = topic.description
+    ? splitDescription(topic.description)
+    : { base: null, psycheverse: null };
+
+  const sortedEpisodes = [...topic.episodes].sort(
+    (a, b) => (b.episode.airDate?.getTime() ?? 0) - (a.episode.airDate?.getTime() ?? 0)
+  );
 
   const glanceItems = [
     ...(topic.episodes.length > 0
-      ? [{ icon: "\uD83C\uDFAC", label: `${topic.episodes.length} episode${topic.episodes.length !== 1 ? "s" : ""}` }]
+      ? [{ icon: "🎬", label: `${topic.episodes.length} episode${topic.episodes.length !== 1 ? "s" : ""}` }]
       : []),
     ...(topic.people.length > 0
-      ? [{ icon: "\uD83D\uDC64", label: `${topic.people.length} ${topic.people.length !== 1 ? "people" : "person"}` }]
+      ? [{ icon: "👤", label: `${topic.people.length} ${topic.people.length !== 1 ? "people" : "person"}` }]
       : []),
     ...(topic.lore.length > 0
-      ? [{ icon: "\uD83D\uDCDC", label: `${topic.lore.length} lore entr${topic.lore.length !== 1 ? "ies" : "y"}` }]
+      ? [{ icon: "📜", label: `${topic.lore.length} lore entr${topic.lore.length !== 1 ? "ies" : "y"}` }]
+      : []),
+    ...(relatedTopics.length > 0
+      ? [{ icon: "🔗", label: `${relatedTopics.length} related topics` }]
       : []),
   ];
 
@@ -84,7 +105,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
     <>
       <EntityHero
         title={topic.title}
-        subtitle="Topic"
+        subtitle={descBase ?? "Topic"}
         backgroundImage="/wiki-page-header.jpg"
       />
       <Breadcrumbs items={[
@@ -93,6 +114,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
         { label: topic.title },
       ]} />
       <EntityGlanceBar items={glanceItems} />
+
       <div className="mx-auto max-w-7xl px-4 pt-3 flex justify-end">
         <SaveSignalButton
           slug={topic.slug}
@@ -102,21 +124,26 @@ export default async function TopicDetailPage({ params }: PageProps) {
           size="md"
         />
       </div>
+
       <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            {topic.description && (
-              <SectionCard title="Description">
-                <p className="text-sm text-text-primary leading-relaxed">
-                  {topic.description}
+
+            {descPsycheverse && (
+              <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-5 py-4">
+                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold/60 mb-2">
+                  In the Psycheverse
                 </p>
-              </SectionCard>
+                <p className="text-sm text-text-primary leading-relaxed">
+                  {descPsycheverse.replace(/^In the Psycheverse:\s*/i, "")}
+                </p>
+              </div>
             )}
 
             <SectionCard title={`Episodes (${topic.episodes.length})`}>
-              {topic.episodes.length > 0 ? (
+              {sortedEpisodes.length > 0 ? (
                 <div className="grid gap-3">
-                  {topic.episodes.map((e) => (
+                  {sortedEpisodes.map((e) => (
                     <EpisodeListItem
                       key={e.episode.id}
                       slug={e.episode.slug}
@@ -132,19 +159,44 @@ export default async function TopicDetailPage({ params }: PageProps) {
                 <p className="text-xs text-text-muted">No episodes linked yet</p>
               )}
             </SectionCard>
+
+            {relatedTopics.length > 0 && (
+              <SectionCard title="🐇 Rabbit Hole">
+                <p className="text-xs text-text-muted mb-4">
+                  Topics that frequently appear alongside{" "}
+                  <strong className="text-text-primary">{topic.title}</strong>
+                </p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {relatedTopics.map((rt) => (
+                    <Link
+                      key={rt.slug}
+                      href={`/topics/${rt.slug}`}
+                      className="group flex flex-col gap-1 rounded-lg border border-border bg-surface p-3 transition-colors hover:border-accent-cyan/30 hover:bg-elevated"
+                    >
+                      <span className="font-mono text-sm font-semibold text-accent-cyan group-hover:underline">
+                        {rt.title}
+                      </span>
+                      {rt.description && (
+                        <span className="text-xs text-text-muted line-clamp-2 leading-relaxed">
+                          {rt.description.split("\n\n")[0]}
+                        </span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              </SectionCard>
+            )}
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-6">
             <EntityStatsPanel
               stats={[
-                { icon: "\uD83C\uDFAC", label: "Episodes", value: topic.episodes.length },
-                { icon: "\uD83D\uDC64", label: "People", value: topic.people.length },
-                { icon: "\uD83D\uDCDC", label: "Lore Entries", value: topic.lore.length },
+                { icon: "🎬", label: "Episodes", value: topic.episodes.length },
+                { icon: "👤", label: "People", value: topic.people.length },
+                { icon: "📜", label: "Lore Entries", value: topic.lore.length },
               ]}
             />
 
-            {/* People — avatar grid */}
             <GuestGrid
               guests={topic.people.map((p) => ({
                 displayName: p.person.displayName,

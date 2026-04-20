@@ -22,6 +22,7 @@
     "ingest:episodes": "npx tsx scripts/ingest/import-episodes.ts",
     "enrich:episodes": "npx tsx scripts/enrich/enrich-episodes.ts",
     "enrich:import": "npx tsx scripts/enrich/import-enriched.ts",
+    "enrich:topics": "npx dotenvx run -- npx tsx scripts/enrich/enrich-topics.ts",
     "enrich:pipeline": "npx dotenvx run -- npx tsx scripts/enrich/full-pipeline.ts",
     "nightmares:fetch": "npx dotenvx run -- npx tsx scripts/_fetch-psychesnightmares.ts",
     "nightmares:transcripts": "npx tsx scripts/scrape/fetch-transcripts-nightmares.ts",
