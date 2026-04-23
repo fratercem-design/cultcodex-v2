@@ -22,11 +22,10 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
       {episode.thumbnailUrl ? (
         <Image
           src={episode.thumbnailUrl}
-          alt={`Thumbnail for ${episode.title}`}
+          alt=""
           width={64}
           height={64}
           className="h-16 w-16 flex-shrink-0 rounded object-cover"
-          unoptimized
         />
       ) : (
         <div className="h-16 w-16 flex-shrink-0 rounded bg-gradient-to-br from-accent-gold/10 to-accent-violet/10" />
@@ -38,13 +37,18 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
               {epNum}
             </span>
           )}
-          <span className="font-mono text-[10px] text-text-muted">
-            {formatDate(episode.airDate)}
-          </span>
+          {epNum && episode.airDate && (
+            <span className="text-text-muted" aria-hidden="true">·</span>
+          )}
+          {episode.airDate && (
+            <time dateTime={episode.airDate.toISOString()} className="font-mono text-[10px] text-text-muted">
+              {formatDate(episode.airDate)}
+            </time>
+          )}
         </div>
-        <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors truncate">
+        <h2 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors truncate">
           {episode.title}
-        </h3>
+        </h2>
         {episode.summaryShort && (
           <p className="mt-1 text-xs text-text-muted line-clamp-2">
             {episode.summaryShort}

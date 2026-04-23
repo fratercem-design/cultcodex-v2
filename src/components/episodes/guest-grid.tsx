@@ -27,11 +27,10 @@ export function GuestGrid({ guests }: GuestGridProps) {
             {guest.avatarUrl ? (
               <Image
                 src={guest.avatarUrl}
-                alt={`Avatar for ${guest.displayName}`}
+                alt=""
                 width={40}
                 height={40}
                 className="h-10 w-10 rounded-full border-2 border-transparent object-cover transition-colors group-hover:border-accent-gold"
-                unoptimized
               />
             ) : (
               <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-transparent bg-accent-gold/20 text-sm font-bold text-accent-gold transition-colors group-hover:border-accent-gold">

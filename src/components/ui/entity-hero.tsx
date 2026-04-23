@@ -28,6 +28,7 @@ export function EntityHero({
         alt=""
         fill
         priority
+        sizes="100vw"
         className="object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-void via-black/70 to-black/50" />
@@ -45,9 +46,11 @@ export function EntityHero({
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-6">
         <div className="flex items-end gap-4">
           {avatarUrl && (
-            <img
+            <Image
               src={avatarUrl}
-              alt={title}
+              alt=""
+              width={80}
+              height={80}
               className="h-14 w-14 sm:h-20 sm:w-20 rounded-full border-2 border-accent-gold/40 object-cover shadow-lg"
             />
           )}

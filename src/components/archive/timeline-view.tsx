@@ -67,12 +67,12 @@ export function TimelineView({ episodes }: TimelineViewProps) {
           {/* Timeline dot */}
           <div className="absolute left-[-3px] top-1 h-1.5 w-1.5 rounded-full bg-accent-gold" />
 
-          <h3 className="sticky top-0 z-10 mb-3 bg-void/90 py-1 font-display text-sm font-bold text-accent-gold backdrop-blur-sm">
+          <h2 className="sticky top-0 z-10 mb-3 bg-void/90 py-1 font-display text-sm font-bold text-accent-gold backdrop-blur-sm">
             {group.label}
             <span className="ml-2 font-mono text-[10px] font-normal text-text-muted">
               ({group.episodes.length})
             </span>
-          </h3>
+          </h2>
           <div className="grid gap-2">
             {group.episodes.map((ep) => (
               <EpisodeListItem

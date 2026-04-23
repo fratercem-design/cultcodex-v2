@@ -13,20 +13,20 @@ function getCoverage(segmentCount: number): TranscriptCoverage {
   return "partial";
 }
 
-const coverageConfig: Record<TranscriptCoverage, { label: string; icon: string; style: string }> = {
+const coverageConfig: Record<TranscriptCoverage, { label: string; indicator: string; style: string }> = {
   full: {
     label: "Full Transcript",
-    icon: "\u2588\u2588\u2588",
+    indicator: "●●●",
     style: "border-accent-gold/30 text-accent-gold bg-accent-gold-dim",
   },
   partial: {
     label: "Partial Transcript",
-    icon: "\u2588\u2588\u2591",
+    indicator: "●●○",
     style: "border-amber-500/30 text-amber-400 bg-amber-500/10",
   },
   none: {
     label: "No Transcript",
-    icon: "\u2591\u2591\u2591",
+    indicator: "○○○",
     style: "border-border text-text-muted bg-surface",
   },
 };
@@ -44,7 +44,7 @@ export function TranscriptBadge({ segmentCount, className }: TranscriptBadgeProp
       )}
       title={`${segmentCount} transcript segments`}
     >
-      <span className="text-[8px] leading-none tracking-tighter">{config.icon}</span>
+      <span className="text-[8px] leading-none tracking-tighter" aria-hidden="true">{config.indicator}</span>
       {config.label}
     </span>
   );

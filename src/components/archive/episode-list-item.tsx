@@ -31,11 +31,10 @@ export function EpisodeListItem({
       {thumbnailUrl && (
         <Image
           src={thumbnailUrl}
-          alt={`Thumbnail for ${title}`}
+          alt=""
           width={48}
           height={48}
           className="h-12 w-12 flex-shrink-0 rounded object-cover"
-          unoptimized
         />
       )}
       <div className="min-w-0 flex-1">
@@ -45,15 +44,18 @@ export function EpisodeListItem({
               {epNum}
             </span>
           )}
+          {epNum && airDate && (
+            <span className="text-text-muted" aria-hidden="true">·</span>
+          )}
           {airDate && (
-            <span className="font-mono text-[10px] text-text-muted">
+            <time dateTime={airDate.toISOString()} className="font-mono text-[10px] text-text-muted">
               {formatDate(airDate)}
-            </span>
+            </time>
           )}
         </div>
-        <h4 className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
+        <h2 className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
           {title}
-        </h4>
+        </h2>
         {summaryShort && (
           <p className="mt-1 text-xs text-text-muted line-clamp-2">
             {summaryShort}

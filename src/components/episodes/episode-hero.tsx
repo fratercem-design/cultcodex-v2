@@ -29,11 +29,11 @@ export function EpisodeHero({
     <section className="relative flex min-h-[220px] items-end overflow-hidden">
       <Image
         src={bgSrc}
-        alt={`Background for ${title}`}
+        alt=""
         fill
         priority
+        sizes="100vw"
         className={`object-cover ${thumbnailUrl ? "blur-sm scale-105" : ""}`}
-        unoptimized={!!thumbnailUrl}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-void via-black/70 to-black/50" />
       <SacredGeometryOverlay />
