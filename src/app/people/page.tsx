@@ -3,6 +3,7 @@ import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { PersonCard } from "@/components/archive/person-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
+import { AlphabetFilter } from "@/components/archive/alphabet-filter";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { getPeople, getPersonCount } from "@/lib/queries/people";
 import { getPeopleAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
@@ -37,13 +38,14 @@ const FILTER_OPTIONS = [
 ];
 
 interface PeoplePageProps {
-  searchParams: Promise<{ sort?: string; filter?: string; page?: string }>;
+  searchParams: Promise<{ sort?: string; filter?: string; page?: string; letter?: string }>;
 }
 
 export default async function PeoplePage({ searchParams }: PeoplePageProps) {
   const params = await searchParams;
   const currentSort = params.sort ?? "az";
   const currentFilter = params.filter;
+  const currentLetter = params.letter?.toUpperCase();
 
   const typeFilter =
     currentFilter && currentFilter !== "all"
@@ -51,14 +53,14 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
       : undefined;
 
   const [totalCount, aggregates, lastUpdated] = await Promise.all([
-    getPersonCount(typeFilter),
+    getPersonCount(typeFilter, currentLetter),
     getPeopleAggregates(),
     getArchiveLastUpdated(),
   ]);
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
-  const people = await getPeople({ take, skip, type: typeFilter });
+  const people = await getPeople({ take, skip, type: typeFilter, letter: currentLetter });
 
   const sorted = [...people].sort((a, b) => {
     if (currentSort === "za") {
@@ -99,6 +101,17 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
         filterOptions={FILTER_OPTIONS}
         currentFilter={currentFilter}
       />
+
+      <div className="mt-3">
+        <AlphabetFilter basePath="/people" currentLetter={currentLetter} />
+      </div>
+
+      {currentLetter && (
+        <p className="mt-2 font-mono text-[11px] text-text-muted">
+          {totalCount} {totalCount === 1 ? "person" : "people"} starting with{" "}
+          <span className="text-accent-gold font-bold">{currentLetter}</span>
+        </p>
+      )}
 
       {sorted.length === 0 ? (
         <EmptyState message="No people match the current filters" />

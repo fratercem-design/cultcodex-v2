@@ -16,11 +16,26 @@ export async function getPeople(options?: {
   type?: PersonType;
   take?: number;
   skip?: number;
+  letter?: string;
 }) {
-  const { type, take = 50, skip = 0 } = options ?? {};
+  const { type, take = 50, skip = 0, letter } = options ?? {};
+
+  const where: Prisma.PersonWhereInput = {};
+  if (type) where.personType = type;
+  if (letter) {
+    if (letter === "#") {
+      // Non-letter starters: anything not A-Z
+      where.NOT = { displayName: { gte: "A", lt: "[" } };
+    } else {
+      where.displayName = {
+        startsWith: letter,
+        mode: "insensitive",
+      };
+    }
+  }
 
   return prisma.person.findMany({
-    where: type ? { personType: type } : undefined,
+    where,
     include: buildPersonInclude(),
     orderBy: { displayName: "asc" },
     take,
@@ -28,10 +43,20 @@ export async function getPeople(options?: {
   });
 }
 
-export async function getPersonCount(type?: PersonType) {
-  return prisma.person.count({
-    where: type ? { personType: type } : undefined,
-  });
+export async function getPersonCount(type?: PersonType, letter?: string) {
+  const where: Prisma.PersonWhereInput = {};
+  if (type) where.personType = type;
+  if (letter) {
+    if (letter === "#") {
+      where.NOT = { displayName: { gte: "A", lt: "[" } };
+    } else {
+      where.displayName = {
+        startsWith: letter,
+        mode: "insensitive",
+      };
+    }
+  }
+  return prisma.person.count({ where });
 }
 
 export async function getPersonBySlug(slug: string) {
