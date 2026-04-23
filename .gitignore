@@ -55,3 +55,11 @@ Thumbs.db
 next-env.d.ts
 
 /src/generated/prisma
+
+# Local runtime artefacts for data-ingest / ASR pipelines
+scripts/*.log
+scripts/cookies.txt
+scripts/asr-pending.json
+scripts/remaining-episodes.json
+scripts/_download-list.json
+scripts/enrich/*.log
