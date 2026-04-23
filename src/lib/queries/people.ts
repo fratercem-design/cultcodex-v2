@@ -1,6 +1,54 @@
 import { prisma } from "@/lib/db";
 import type { Prisma, PersonType } from "@/generated/prisma/client";
 
+/** Lean card data — no heavy nested relations. */
+export type PersonCard = {
+  id: string;
+  displayName: string;
+  slug: string;
+  shortBio: string | null;
+  avatarUrl: string | null;
+  personType: PersonType;
+  appearanceCount: number;
+};
+
+/** Fetch top N people per type, ordered by appearance count descending. */
+export async function getPeopleByType(
+  type: PersonType,
+  limit = 8,
+): Promise<PersonCard[]> {
+  const rows = await prisma.person.findMany({
+    where: { personType: type },
+    select: {
+      id: true,
+      displayName: true,
+      slug: true,
+      shortBio: true,
+      avatarUrl: true,
+      personType: true,
+      _count: { select: { guestAppearances: true, mentions: true } },
+    },
+    orderBy: { guestAppearances: { _count: "desc" } },
+    take: limit,
+  });
+  return rows.map((r) => ({
+    ...r,
+    appearanceCount: r._count.guestAppearances + r._count.mentions,
+  }));
+}
+
+/** Counts per personType for section headers. */
+export async function getPeopleTypeCounts(): Promise<Record<PersonType, number>> {
+  const groups = await prisma.person.groupBy({
+    by: ["personType"],
+    _count: { _all: true },
+  });
+  return groups.reduce(
+    (acc, g) => ({ ...acc, [g.personType]: g._count._all }),
+    {} as Record<PersonType, number>,
+  );
+}
+
 export function buildPersonInclude() {
   return {
     firstAppearanceEpisode: true,

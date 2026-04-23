@@ -63,6 +63,8 @@ export async function getTopSpeakers(limit = 20) {
     select: {
       slug: true,
       displayName: true,
+      avatarUrl: true,
+      personType: true,
       _count: { select: { quotes: true } },
     },
     orderBy: {
@@ -74,6 +76,8 @@ export async function getTopSpeakers(limit = 20) {
   return speakers.map((s) => ({
     slug: s.slug,
     displayName: s.displayName,
+    avatarUrl: s.avatarUrl,
+    personType: s.personType,
     quoteCount: s._count.quotes,
   }));
 }
