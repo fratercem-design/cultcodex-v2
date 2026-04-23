@@ -1,6 +1,12 @@
 import "dotenv/config";
 import { PrismaClient } from "../../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { neonConfig } from "@neondatabase/serverless";
+import ws from "ws";
+
+// Use WebSocket transport so scripts work in sandboxed envs where TCP 5432 is blocked
+neonConfig.webSocketConstructor = ws;
 
 // ─── Prisma client for scripts ──────────────────────
 let _prisma: PrismaClient | null = null;
@@ -11,7 +17,11 @@ export function getPrisma(): PrismaClient {
   if (!connectionString) {
     throw new Error("DATABASE_URL environment variable is not set");
   }
-  const adapter = new PrismaPg({ connectionString });
+  // Prefer Neon serverless (WSS) when the URL points to Neon, else fall back to pg
+  const isNeon = connectionString.includes("neon.tech");
+  const adapter = isNeon
+    ? new PrismaNeon({ connectionString })
+    : new PrismaPg({ connectionString });
   _prisma = new PrismaClient({ adapter });
   return _prisma;
 }
