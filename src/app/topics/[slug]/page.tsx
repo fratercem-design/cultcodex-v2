@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getTopicBySlug } from "@/lib/queries/topics";
 import { prisma } from "@/lib/db";
 import { buildMetadata } from "@/lib/seo";
+import { getCurrentUser } from "@/lib/auth";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
@@ -11,6 +12,7 @@ import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
+import { SaveSignalButton } from "@/components/codex/save-signal-button";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
@@ -53,6 +55,19 @@ export default async function TopicDetailPage({ params }: PageProps) {
 
   if (!topic) notFound();
 
+  // /codex save state — is this signal already pinned by the current user?
+  const user = await getCurrentUser();
+  const [initialSaved, savedCount] = await Promise.all([
+    user
+      ? prisma.savedTopic
+          .findUnique({
+            where: { userId_topicId: { userId: user.id, topicId: topic.id } },
+          })
+          .then((row) => !!row)
+      : Promise.resolve(false),
+    prisma.savedTopic.count({ where: { topicId: topic.id } }),
+  ]);
+
   const glanceItems = [
     ...(topic.episodes.length > 0
       ? [{ icon: "\uD83C\uDFAC", label: `${topic.episodes.length} episode${topic.episodes.length !== 1 ? "s" : ""}` }]
@@ -78,6 +93,15 @@ export default async function TopicDetailPage({ params }: PageProps) {
         { label: topic.title },
       ]} />
       <EntityGlanceBar items={glanceItems} />
+      <div className="mx-auto max-w-7xl px-4 pt-3 flex justify-end">
+        <SaveSignalButton
+          slug={topic.slug}
+          initialSaved={initialSaved}
+          initialCount={savedCount}
+          isAuthenticated={!!user}
+          size="md"
+        />
+      </div>
       <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">

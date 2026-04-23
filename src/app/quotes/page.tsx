@@ -8,6 +8,9 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { getQuotes, getQuoteCount, getTopSpeakers } from "@/lib/queries/quotes";
 import { getArchiveLastUpdated } from "@/lib/queries/stats";
+import { getSavedQuoteIds } from "@/lib/queries/codex";
+import { getCurrentUser } from "@/lib/auth";
+import { SaveQuoteButton } from "@/components/codex/save-quote-button";
 import { formatRelativeDate } from "@/lib/format/date";
 import { IconQuote } from "@/components/graphics/codex-icons";
 import {
@@ -48,6 +51,13 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
     search: search || undefined,
     speakerSlug: speakerFilter || undefined,
   });
+
+  // /codex save state — mark which quotes the current user has already saved.
+  const user = await getCurrentUser();
+  const savedIds = await getSavedQuoteIds(
+    user?.id ?? null,
+    quotes.map((q) => q.id)
+  );
 
   const allQuoteCount = search || speakerFilter
     ? await getQuoteCount()
@@ -161,19 +171,29 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
                         speakerAvatarUrl={quote.speaker?.avatarUrl}
                         timestampSeconds={quote.timestampSeconds}
                       />
-                      {/* Episode context link */}
-                      {quote.episode && (
-                        <div className="mt-1 ml-4 flex items-center gap-2">
-                          <span className="font-mono text-[10px] text-text-muted">from</span>
-                          <Link
-                            href={`/episodes/${quote.episode.slug}`}
-                            className="font-mono text-[10px] text-accent-gold hover:underline line-clamp-1"
-                          >
-                            {quote.episode.episodeNumber != null && `EP ${quote.episode.episodeNumber}: `}
-                            {quote.episode.title}
-                          </Link>
-                        </div>
-                      )}
+                      {/* Episode context link + save button */}
+                      <div className="mt-1 ml-4 flex items-center justify-between gap-2">
+                        {quote.episode ? (
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="font-mono text-[10px] text-text-muted">from</span>
+                            <Link
+                              href={`/episodes/${quote.episode.slug}`}
+                              className="font-mono text-[10px] text-accent-gold hover:underline line-clamp-1"
+                            >
+                              {quote.episode.episodeNumber != null && `EP ${quote.episode.episodeNumber}: `}
+                              {quote.episode.title}
+                            </Link>
+                          </div>
+                        ) : (
+                          <span />
+                        )}
+                        <SaveQuoteButton
+                          quoteId={quote.id}
+                          initialSaved={savedIds.has(quote.id)}
+                          isAuthenticated={!!user}
+                          size="sm"
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>

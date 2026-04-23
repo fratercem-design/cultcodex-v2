@@ -182,6 +182,7 @@ model Topic {
   episodes  EpisodeTopic[]
   people    PersonTopic[]
   lore      LoreTopic[]
+  savedBy   SavedTopic[]
 }
 
 model Quote {
@@ -198,6 +199,8 @@ model Quote {
   significance         String?
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
+
+  savedBy              SavedQuote[]
 
   @@index([speakerPersonId])
   @@index([episodeId])
@@ -397,6 +400,8 @@ model CodexUser {
   chatMessages            ChatMessage[]
   notificationPreference  NotificationPreference?
   favorites               Favorite[]
+  savedTopics             SavedTopic[]
+  savedQuotes             SavedQuote[]
 }
 
 model CodexSession {
@@ -512,4 +517,39 @@ model Favorite {
 
   @@unique([userId, episodeId])
   @@index([userId])
+}
+
+// ─── Personal /codex layer ────────────────────────
+//
+// SavedTopic and SavedQuote are the signed-in user's personal pins of
+// signals and moments. Episode saves continue to live on Favorite for
+// back-compat with /favorites and the existing FavoriteButton API.
+//
+// Together these three tables back the /codex dashboard and the
+// per-entity "Save" buttons (topics, quotes, episodes).
+
+model SavedTopic {
+  id        String    @id @default(cuid())
+  userId    String
+  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topicId   String
+  topic     Topic     @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@unique([userId, topicId])
+  @@index([userId])
+  @@index([topicId])
+}
+
+model SavedQuote {
+  id        String    @id @default(cuid())
+  userId    String
+  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quoteId   String
+  quote     Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@unique([userId, quoteId])
+  @@index([userId])
+  @@index([quoteId])
 }

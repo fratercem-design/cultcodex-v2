@@ -56,11 +56,11 @@ export function UserMenu({ user }: UserMenuProps) {
             Profile
           </Link>
           <Link
-            href="/favorites"
-            className="block w-full px-3 py-2 text-left text-xs text-text-primary hover:bg-elevated transition-colors"
+            href="/codex"
+            className="block w-full px-3 py-2 text-left text-xs font-bold text-accent-gold hover:bg-elevated transition-colors"
             onClick={() => setOpen(false)}
           >
-            Favorites
+            ✦ Your Codex
           </Link>
           <Link
             href="/settings/profile"
@@ -85,11 +85,11 @@ export function UserMenu({ user }: UserMenuProps) {
           </Link>
           <div className="border-t border-border my-1" />
           <Link
-            href="/subscribe"
+            href="/premium"
             className="block w-full px-3 py-2 text-left text-xs font-bold text-accent-gold hover:bg-elevated transition-colors"
             onClick={() => setOpen(false)}
           >
-            Premium Access
+            ✦ Premium
           </Link>
           <form action="/api/auth/signout" method="POST">
             <button
