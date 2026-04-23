@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
-import { SectionCard } from "@/components/ui/section-card";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { IconTarot, IconScroll, IconFlame, IconMicrophone, IconCrystalBall, IconMask, IconQuote, IconTransmission } from "@/components/graphics/codex-icons";
 import { prisma } from "@/lib/db";
+import { THEMED_COLLECTIONS } from "@/lib/collections/themed-collections";
+import { CollectionIcon } from "@/components/collections/collection-icon";
+import { accentFor } from "@/components/collections/collection-accents";
 import type { Metadata } from "next";
 
 export const revalidate = 3600;
@@ -147,11 +149,80 @@ export default async function CollectionsPage() {
         backgroundImage="/hero-bg.jpg"
       />
 
-      <main id="main-content" className="mx-auto max-w-6xl px-4 py-10 space-y-8">
+      <main id="main-content" className="mx-auto max-w-6xl px-4 py-10 space-y-12">
         <p className="text-center text-sm text-text-muted max-w-2xl mx-auto">
           Hand-picked collections to help you discover the best of the Cult of Psyche.
           Each collection groups episodes, lore, and quotes by theme.
         </p>
+
+        {/* Themed Signal Packs — the Guided-Path destinations */}
+        <section className="space-y-5">
+          <div className="space-y-1">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan">
+              /// signal_packs
+            </p>
+            <h2 className="font-display text-xl font-bold text-text-primary">
+              Themed Signal Packs
+            </h2>
+            <p className="text-sm text-text-muted max-w-2xl">
+              The editorial entry points — each one a map of the cult&rsquo;s
+              recurring confrontation with a single question.
+            </p>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-3">
+            {THEMED_COLLECTIONS.map((col) => {
+              const a = accentFor(col.accent);
+              return (
+                <Link
+                  key={col.slug}
+                  href={`/collections/${col.slug}`}
+                  className={`group relative flex flex-col gap-3 rounded-lg border ${a.border} bg-surface p-6 transition-all ${a.hoverBorder} ${a.hoverBg} hover:-translate-y-0.5`}
+                >
+                  <div className={`${a.icon} transition-transform group-hover:scale-110`}>
+                    <CollectionIcon iconKey={col.iconKey} size={36} />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+                      {col.eyebrow}
+                    </p>
+                    <h3 className={`font-display text-lg font-bold ${a.title}`}>
+                      {col.title}
+                    </h3>
+                    <p className={`font-mono text-xs italic ${a.eyebrow} leading-snug`}>
+                      &ldquo;{col.subtitle}&rdquo;
+                    </p>
+                  </div>
+                  <p className="text-xs text-text-muted leading-relaxed flex-1 line-clamp-3">
+                    {col.description[0]}
+                  </p>
+                  <span
+                    className={`font-mono text-[10px] uppercase tracking-widest ${a.eyebrow} inline-flex items-center gap-2 group-hover:gap-3 transition-all`}
+                  >
+                    Enter pack <span aria-hidden>→</span>
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+
+        <MysticalDivider />
+
+        {/* Series-based collections */}
+        <section className="space-y-5">
+          <div className="space-y-1">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">
+              /// series_packs
+            </p>
+            <h2 className="font-display text-xl font-bold text-text-primary">
+              By Series
+            </h2>
+            <p className="text-sm text-text-muted max-w-2xl">
+              Curated routes into the show&rsquo;s ongoing series — tarot, mythology,
+              panels, scary tales.
+            </p>
+          </div>
 
         <div className="grid gap-5 sm:grid-cols-2">
           {COLLECTIONS.map((col) => (
@@ -193,6 +264,7 @@ export default async function CollectionsPage() {
             </div>
           ))}
         </div>
+        </section>
 
         <MysticalDivider />
 

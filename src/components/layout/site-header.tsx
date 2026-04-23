@@ -5,34 +5,25 @@ import { UserMenu } from "@/components/auth/user-menu";
 import { IconSearch } from "@/components/graphics/codex-icons";
 
 /*
- * Color-coded navigation groups:
- *   Gold    — Archive (core content: episodes, people, quotes)
- *   Cyan    — Explore (discovery: lore, series, collections, topics)
- *   Violet  — Reference (meta: lexicon, timeline, stats, mythic map)
+ * Codex top bar — mythic identity, minimal surface.
+ *
+ * Primary nav is the user's entry gate + the three core content surfaces:
+ *   SIGNALS       → /topics      (themes, concepts, threads)
+ *   TRANSMISSIONS → /episodes    (the full catalog)
+ *   COLLECTIONS   → /collections (curated groupings)
+ *
+ * Route paths stay the same (/topics, /episodes, /collections) to preserve
+ * SEO, inbound links, and server code. Only the visible labels change.
+ *
+ * The older discovery/reference links (People, Quotes, Lore, Series, Lexicon,
+ * Timeline, Stats, Members, Transcripts) are now reached via /start-here,
+ * which is the canonical map of the archive.
  */
-const navItems = [
-  // Archive — core content (gold)
-  { label: "Episodes", href: "/episodes", group: "archive" as const },
-  { label: "People", href: "/people", group: "archive" as const },
-  { label: "Quotes", href: "/quotes", group: "archive" as const },
-  { label: "Transcripts", href: "/transcripts", group: "archive" as const },
-  // Explore — discovery (cyan)
-  { label: "Lore", href: "/lore", group: "explore" as const },
-  { label: "Series", href: "/series", group: "explore" as const },
-  { label: "Collections", href: "/collections", group: "explore" as const },
-  { label: "Topics", href: "/topics", group: "explore" as const },
-  { label: "Members", href: "/members", group: "explore" as const },
-  // Reference — meta pages (violet)
-  { label: "Lexicon", href: "/lexicon", group: "reference" as const },
-  { label: "Timeline", href: "/timeline", group: "reference" as const },
-  { label: "Stats", href: "/stats", group: "reference" as const },
-];
-
-const groupColors = {
-  archive: "text-accent-gold hover:text-accent-gold",
-  explore: "text-accent-cyan hover:text-accent-cyan",
-  reference: "text-accent-violet hover:text-accent-violet",
-} as const;
+const PRIMARY_NAV = [
+  { label: "Signals", href: "/topics" },
+  { label: "Transmissions", href: "/episodes" },
+  { label: "Collections", href: "/collections" },
+] as const;
 
 export async function SiteHeader() {
   const session = await auth();
@@ -40,6 +31,7 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-void/90 backdrop-blur-sm">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
+        {/* Logo */}
         <Link
           href="/"
           className="flex items-center gap-2 font-mono text-sm font-bold tracking-widest text-accent-gold"
@@ -54,33 +46,29 @@ export async function SiteHeader() {
           CULTCODEX
         </Link>
 
+        {/* Primary nav */}
         <nav className="hidden md:flex items-center gap-1">
-          {/* Start Here — standalone accent */}
+          {/* Start Here — the doorway */}
           <Link
             href="/start-here"
-            className="font-mono text-xs uppercase tracking-wider px-2 py-1 rounded text-accent-gold hover:bg-accent-gold-dim transition-colors"
+            className="font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded text-accent-gold border border-accent-gold/30 hover:bg-accent-gold-dim hover:border-accent-gold/60 transition-colors"
           >
             Start Here
           </Link>
-          <span className="text-border mx-1">|</span>
-          {/* Grouped nav items with color coding */}
-          {navItems.map((item, i) => {
-            const prevGroup = i > 0 ? navItems[i - 1].group : null;
-            const showDivider = prevGroup && prevGroup !== item.group;
-            return (
-              <span key={item.href} className="flex items-center">
-                {showDivider && <span className="text-border mx-1">|</span>}
-                <Link
-                  href={item.href}
-                  className={`font-mono text-xs uppercase tracking-wider px-2 py-1 rounded transition-colors opacity-80 hover:opacity-100 ${groupColors[item.group]}`}
-                >
-                  {item.label}
-                </Link>
-              </span>
-            );
-          })}
+          <span className="text-border mx-2">·</span>
+          {/* The three core surfaces */}
+          {PRIMARY_NAV.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded text-text-primary hover:text-accent-gold hover:bg-accent-gold-dim transition-colors"
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
+        {/* Right side: search, premium, profile */}
         <div className="flex items-center gap-2">
           <Link
             href="/search"
@@ -91,7 +79,7 @@ export async function SiteHeader() {
             Search
           </Link>
           <Link
-            href="/subscribe"
+            href="/premium"
             className="hidden sm:inline-flex items-center rounded border border-accent-gold/40 bg-accent-gold/10 px-3 py-1 font-mono text-[11px] font-bold text-accent-gold transition-all hover:bg-accent-gold/20 hover:shadow-md hover:shadow-accent-gold/20"
           >
             ✦ Premium
