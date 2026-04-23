@@ -14,6 +14,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { google } from "googleapis";
 import { prisma } from "@/lib/db";
+import { notifyNewEpisode } from "@/lib/notifications";
 import { ContentStatus } from "@/generated/prisma/client";
 
 export const runtime = "nodejs";
@@ -178,6 +179,14 @@ async function handle(req: NextRequest) {
     { fetched: number; newCount: number; titles: string[] }
   > = {};
 
+  // Collect newly created episodes for post-ingest notifications
+  const newEpisodes: Array<{
+    title: string;
+    slug: string;
+    summaryShort: string | null;
+    thumbnailUrl: string | null;
+  }> = [];
+
   // Seed the set of known videoIds once so we don't re-query per video
   const existingVideoIds = new Set<string>(
     (
@@ -239,6 +248,7 @@ async function handle(req: NextRequest) {
         });
 
         existingVideoIds.add(v.videoId);
+        newEpisodes.push({ title: v.title, slug, summaryShort, thumbnailUrl: v.thumbnailUrl });
         summary.newCount++;
         summary.titles.push(`[${v.publishedAt.split("T")[0]}] ${v.title}`);
       }
@@ -256,6 +266,20 @@ async function handle(req: NextRequest) {
     perChannel[handle] = summary;
   }
 
+  // Send new-episode email notifications (cap at 3 to avoid flooding)
+  let notifiedCount = 0;
+  if (newEpisodes.length > 0) {
+    const toNotify = newEpisodes.slice(0, 3);
+    for (const ep of toNotify) {
+      try {
+        const result = await notifyNewEpisode(ep);
+        notifiedCount += result.emailCount;
+      } catch (err) {
+        console.error("[cron] notifyNewEpisode failed:", err);
+      }
+    }
+  }
+
   const elapsed = Date.now() - started;
   const totalNew = Object.values(perChannel).reduce(
     (acc, s) => acc + s.newCount,
@@ -265,6 +289,7 @@ async function handle(req: NextRequest) {
   return NextResponse.json({
     ok: true,
     totalNew,
+    notifiedCount,
     elapsedMs: elapsed,
     perChannel,
   });

@@ -34,6 +34,13 @@ export const metadata: Metadata = {
     icon: "/favicon.jpg",
     apple: "/favicon.jpg",
   },
+  alternates: {
+    types: {
+      "application/rss+xml": [
+        { url: "/feed.xml", title: "CultCodex — Cult of Psyche Episode Archive" },
+      ],
+    },
+  },
   openGraph: {
     title: "CultCodex — The Living Archive",
     description: "The living archive of the Cult of Psyche.",
