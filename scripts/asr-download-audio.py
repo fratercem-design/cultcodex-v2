@@ -16,6 +16,13 @@ import subprocess
 import sys
 import time
 
+# Force UTF-8 stdout/stderr so Unicode episode titles don't crash on Windows cp1252.
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 PENDING = os.path.join(HERE, "asr-pending.json")
 AUDIO_DIR = os.path.join(HERE, "scrape", "data", "audio")
@@ -35,7 +42,12 @@ def main() -> int:
     parser.add_argument("--batch", type=int, default=999, help="Max episodes to download")
     parser.add_argument(
         "--no-cookies", action="store_true",
-        help="Skip cookies.txt even if present (default: use it if file exists)"
+        help="Skip cookies.txt even if present"
+    )
+    parser.add_argument(
+        "--cookies-from-browser", default=None,
+        help="Pull cookies live from a browser profile, e.g. 'chrome', 'firefox', 'edge'. "
+             "More reliable than a stale cookies.txt."
     )
     args = parser.parse_args()
 
@@ -47,8 +59,11 @@ def main() -> int:
     with open(PENDING, "r", encoding="utf-8") as f:
         episodes = json.load(f)
 
-    use_cookies = (not args.no_cookies) and os.path.exists(COOKIES)
-    if use_cookies:
+    use_browser_cookies = args.cookies_from_browser
+    use_cookies_file = (not args.no_cookies) and (not use_browser_cookies) and os.path.exists(COOKIES)
+    if use_browser_cookies:
+        log(f"Using cookies live from browser: {use_browser_cookies}")
+    elif use_cookies_file:
         log(f"Using cookies from {COOKIES}")
 
     downloaded = 0
@@ -74,7 +89,9 @@ def main() -> int:
             "-x", "--audio-format", "mp3", "--audio-quality", "5",
             "-o", os.path.join(AUDIO_DIR, "%(id)s.%(ext)s"),
         ]
-        if use_cookies:
+        if use_browser_cookies:
+            cmd.extend(["--cookies-from-browser", use_browser_cookies])
+        elif use_cookies_file:
             cmd.extend(["--cookies", COOKIES])
         cmd.append(f"https://www.youtube.com/watch?v={ytid}")
 

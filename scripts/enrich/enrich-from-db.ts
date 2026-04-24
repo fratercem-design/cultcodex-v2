@@ -49,8 +49,18 @@ async function main() {
     fs.readdirSync(DATA_DIR).filter((f) => f.endsWith(".json")).map((f) => f.replace(".json", ""))
   );
 
-  const todo = episodes.filter((e) => !existing.has(e.slug));
+  let todo = episodes.filter((e) => !existing.has(e.slug));
   console.log(`Skipping ${episodes.length - todo.length} already on disk, ${todo.length} to process\n`);
+
+  // Optional --limit N for staged runs / smoke tests
+  const limitIdx = process.argv.indexOf("--limit");
+  if (limitIdx !== -1) {
+    const n = parseInt(process.argv[limitIdx + 1] ?? "0", 10);
+    if (n > 0) {
+      console.log(`(--limit ${n} active — processing first ${n})\n`);
+      todo = todo.slice(0, n);
+    }
+  }
 
   let done = 0;
   let failed = 0;

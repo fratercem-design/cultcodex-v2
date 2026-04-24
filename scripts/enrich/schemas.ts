@@ -31,7 +31,9 @@ export const EnrichedLoreSchema = z.object({
 export const EnrichmentResultSchema = z.object({
   summaryShort: z.string(),
   summaryLong: z.string(),
-  cutOfPsyche: z.string(),
+  // Allow null/missing — for transcript-less enrichment the model often
+  // can't produce a representative quote.
+  cutOfPsyche: z.string().nullable().optional().default(""),
   guests: z.array(EnrichedGuestSchema),
   quotes: z.array(EnrichedQuoteSchema),
   lore: z.array(EnrichedLoreSchema),

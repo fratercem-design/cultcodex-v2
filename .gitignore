@@ -63,3 +63,7 @@ scripts/asr-pending.json
 scripts/remaining-episodes.json
 scripts/_download-list.json
 scripts/enrich/*.log
+scripts/enrich/run-log.txt
+
+# Claude Code local config
+.claude/
