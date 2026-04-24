@@ -1,0 +1,923 @@
+(node:1944) Warning: SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'.
+In the next major version (pg-connection-string v3.0.0 and pg v9.0.0), these modes will adopt standard libpq semantics, which have weaker security guarantees.
+
+To prepare for this change:
+- If you want the current behavior, explicitly use 'sslmode=verify-full'
+- If you want libpq compatibility now, use 'uselibpqcompat=true&sslmode=require'
+
+See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode definitions.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+=== People dedup candidates: 82 clusters ===
+
+
+[MERGE?] cluster anchor "Psyche" (35 records)
+  cmn46jta40000b0ttcrogz2xs | 492g/1215q/0m | host      | "Psyche" (psyche) <- KEEP
+      bio: Host of the Cult of Psyche podcast, also known as Trix
+  cmo3b1q4s000dckttvik107oz | 785g/803q/0m | host      | "Psyche/Trix" (psyche-trix)
+      bio: The host of the 'Cult of Psyche' podcast
+  cmo3b38310034cktthnulzd0q | 43g/78q/0m | host      | "Trix/Psyche" (trix-psyche)
+      bio: Host of Cult of Psyche, identifies as Aquarius
+  cmnt1kqmh0000hwttu14xwe6t | 31g/75q/0m | host      | "Trix" (trix)
+      bio: Host of Cult of Psyche who has decided to stop participating in another creator's panel due to feeli…
+  cmnt1ob9b007mhwttelhgveh1 | 25g/9q/0m | guest     | "Tracy" (tracy)
+      bio: Panel participant dealing with having to put down her dog Budweiser due to cancer
+  cmnmh6i0u00cvosttkhhoumqc | 2g/25q/0m | host      | "Narrator" (narrator)
+      bio: Unnamed narrator presenting this folk tale episode
+  cmn46ota200hzb0tt73yqw7kl | 10g/4q/0m | mentioned | "Emma Leviathan" (emma-leviathan)
+      bio: Known as Satan's ex-wife, fellow tarot streamer with 16,000 YouTube subscribers, formerly had 23,000…
+  cmo3b6k1r009tckttgv9x351k | 11g/0q/0m | mentioned | "Emma" (emma)
+      bio: Character who is trapped in purgatory and channels through an old lady spirit
+  cmnt23k7g013yhwttzrbfg4pp | 1g/7q/0m | host      | "Father Psyche" (father-psyche)
+      bio: The recipient of the tribute song, characterized as an 'Electric Prophet' and spiritual guide born u…
+  cmnt2sgcl02mqhwttqo92earn | 1g/4q/0m | host      | "Host/Narrator" (host-narrator)
+      bio: Experienced content creator providing streaming advice and tips
+  cmnt20ska00xnhwtt9xtpd52s | 1g/3q/0m | host      | "Psyche Awakens" (psyche-awakens)
+      bio: Musical artist and performer, likely an extension of the show's host Psyche/Trix
+  cmo3by25z01tzckttrhs6lkcg | 2g/0q/0m | host      | "Psych" (psych)
+      bio: Main host referred to as being 'in the building' and the 'psychic cat daddy, king of the stream'
+  cmo3bm895015xckttcxgyy5ft | 2g/0q/0m | host      | "Host/Trix" (host-trix)
+      bio: The host managing the livestream and panel participants
+  cmo3bnysn019ockttzlkzr2s5 | 2g/0q/0m | host      | "Psyche/Psych" (psyche-psych)
+      bio: The host, also called 'daddy, king of the stream' and 'the cat,' who leads this mystical show about …
+  cmo3cu6fn03qbckttrcicssyn | 2g/0q/0m | guest     | "John Clark" (john-clark)
+      bio: Supportive chat participant from London who receives multiple detailed tarot readings throughout the…
+  cmo3bh8ml00v4ckttv1b97f6i | 2g/0q/0m | guest     | "Tracy X" (tracy-x)
+      bio: A regular guest who is recently monetized, has extensive tattoo collection, and owns various weapons…
+  cmn46lctw0059b0ttshebdxl0 | 1g/1q/0m | mentioned | "Psyche's Father" (psyches-father)
+      bio: Real estate entrepreneur, Marine veteran, and UCLA graduate who passed away at 85, described as lovi…
+  cmo3c0evd01ytckttxrju9p7y | 1g/1q/0m | host      | "Host/Psyche/Trix" (host-psyche-trix)
+      bio: The host of the Cult of Psyche podcast/livestream
+  cmo3b6k67009ucktt48w75icb | 1g/0q/0m | mentioned | "Leviathan" (leviathan)
+      bio: One of several people the host dedicates the story to
+  cmo3ca8g102klcktt1szt02xd | 1g/0q/0m | mentioned | "Emma/Psyche" (emma-psyche)
+      bio: Former friend/collaborator who the host had a falling out with, apparently runs tarot readings and p…
+  cmo3c1gbn020zcktt1gmfof6b | 1g/0q/0m | guest     | "Tracy (X Tracy)" (tracy-x-tracy)
+      bio: Recurring panelist and YouTuber with channel X1965, involved in ongoing conflict with Michael over m…
+  cmo3c4oe9027ocktt4f3f98ii | 1g/0q/0m | mentioned | "Emma/Alexandra" (emma-alexandra)
+      bio: Streamer who is reportedly leaving the streaming universe
+  cmo3cskkt03mpcktto8f6guo0 | 1g/0q/0m | guest     | "John" (john)
+      bio: A viewer from London who practices BJJ (Brazilian Jiu-Jitsu) and receives multiple tarot readings du…
+  cmo3cucao03qrcktt2d76v5ff | 1g/0q/0m | host      | "Psyche/Trix/John Bates" (psyche-trix-john-bates)
+      bio: Host who does tarot readings, lives in Redondo Beach California, born 1981, has two cats named Tux a…
+  cmo3e4l91069ackttdv7qoa9r | 1g/0q/0m | host      | "Unknown Host/Moderator" (unknown-host-moderator)
+      bio: Appears to be facilitating the conversation and making commentary
+  cmo3czohh041wcktti0vcjh1k | 1g/0q/0m | mentioned | "Psyche's Cat" (psyches-cat)
+      bio: The host's cat, who makes frequent appearances and 'cat moments' throughout the episode.
+  cmo3efafo06wfcktt4wjfqfja | 1g/0q/0m | host      | "Father Psyche/Psyche/Trix" (father-psyche-psyche-trix)
+      bio: The main host, referred to as 'Father Psyche the cat daddy' and 'king of the stream'
+  cmo3d1yan0462cktto2eeip71 | 1g/0q/0m | host      | "John/Psyche/Trix" (john-psyche-trix)
+      bio: The host of Cult of Psyche, a Capricorn who does tarot readings and discusses consciousness and occu…
+  cmo3ejhhi075vckttdy2w6vk8 | 1g/0q/0m | host      | "Sy/Syke" (sy-syke)
+      bio: Appears to be managing the livestream technical aspects and panel layouts
+  cmo3d8boj04jjcktt71bmoe21 | 1g/0q/0m | mentioned | "Mr. Trix" (mr-trix)
+      bio: The host's cat, described as having freckles on his nose and a fast heartbeat
+  cmo3d9lxj04m5cktte38pima5 | 1g/0q/0m | host      | "Psyche/Trix/Tracy" (psyche-trix-tracy)
+      bio: The main host of the show, defending themselves against accusations in this episode
+  cmo3dt1w305nsckttkvvvud9x | 1g/0q/0m | host      | "Father Psyche/Trix" (father-psyche-trix)
+      bio: Host of the show, self-described as 'cat daddy' and 'henchman of Lilith,' creates AI music and provi…
+  cmo3dbybi04qzcktta0e0df5h | 1g/0q/0m | host      | "Host/Moderator" (host-moderator)
+      bio: The show moderator who attempts to regain control of the chaotic panel discussion
+  cmo3de5p504v3ckttusxd58a4 | 1g/0q/0m | host      | "Etruth" (etruth)
+      bio: The co-host of the 'Cult of Psyche' podcast
+  cmo3bd4wp00n8ckttuyyksp3f | 1g/0q/0m | recurring | "Psyche's Cats" (psyches-cats)
+      bio: Psyche's cats, who are regularly featured during the livestreams and tarot readings
+
+[MERGE?] cluster anchor "Unknown Participant" (45 records)
+  cmn47d40b02l9b0ttwqkh7q7j | 2g/173q/0m | guest     | "Unknown Participant" (unknown-participant) <- KEEP
+      bio: Panel participant who responded to the suspension news
+  cmnmi2ih8026qostttxf42blb | 11g/127q/0m | host      | "Unknown Speaker" (unknown-speaker)
+      bio: Discussing business and marketing challenges, expressing frustration with traditional marketing serv…
+  cmnt1lx3r0027hwttzl3zv3z3 | 36g/54q/0m | guest     | "Unknown Speaker 1" (unknown-speaker-1)
+      bio: Participant in the discussion making comments about gay adoption and family structures
+  cmnt1lx7z0028hwttmya719k3 | 36g/33q/0m | guest     | "Unknown Speaker 2" (unknown-speaker-2)
+      bio: Participant who made concerning historical references to 1942
+  cmn46m4cf007yb0ttetsjr8k4 | 10g/20q/0m | guest     | "Unknown Guest" (unknown-guest)
+      bio: Panel participant who discusses personal experiences with substance use and unexplained physical phe…
+  cmnt1u3ri00k3hwttymktnh9m | 8g/8q/0m | guest     | "Unknown Participant 1" (unknown-participant-1)
+      bio: Debate participant who claims they couldn't see someone's name and asserts intellectual superiority
+  cmnt1u3vn00k4hwttsqx4prye | 8g/3q/0m | guest     | "Unknown Participant 2" (unknown-participant-2)
+      bio: Debate participant who challenges others and uses confrontational language
+  cmnt4vgs7073thwtt1z2uthvv | 1g/4q/0m | guest     | "Unknown Speaker/Performer" (unknown-speaker-performer)
+      bio: The voice performing this deeply personal piece about spiritual manipulation and loss of faith
+  cmnt4a2au05srhwttkx550au3 | 1g/3q/0m | guest     | "Anonymous Guest" (anonymous-guest)
+      bio: 44-year-old caller reflecting on past involvement with drugs and gangs, now finding community online…
+  cmnmj3wqo04fqosttg22q98sy | 1g/3q/0m | host      | "Unknown Reader" (unknown-reader)
+      bio: Tarot practitioner with almost two years of experience conducting readings focused on self-love and …
+  cmnt1tn1g00j1hwttouu6a2m0 | 1g/2q/0m | guest     | "Unnamed Speaker 1" (unnamed-speaker-1)
+      bio: Participant discussing California wildfire experiences and causes
+  cmn46pvy900lcb0ttum3j09lg | 1g/2q/0m | guest     | "Unnamed Panelist" (unnamed-panelist)
+      bio: A moderator/panelist who becomes emotionally distressed over being called a witch and demands to be …
+  cmnt42qqu05dqhwttvpdx6qrl | 1g/2q/0m | guest     | "Unidentified Guest" (unidentified-guest)
+      bio: A guest participating in the discussion about the impact of substance use on communication
+  cmnt2guea01wkhwtttg3okybq | 1g/2q/0m | guest     | "Unknown Rapper 1" (unknown-rapper-1)
+      bio: Participant in the rap battle who references being from California and claims to be a 'lyrical assas…
+  cmo3bwww801rpckttdj7m1dy3 | 2g/0q/0m | guest     | "Open Panel Guests" (open-panel-guests)
+      bio: A group of panelists who join Psyche for the tarot and cats discussion
+  cmo3cckme02ozcktt270qau7e | 2g/0q/0m | guest     | "Unnamed participant" (unnamed-participant)
+      bio: Panel participant engaging in conversation about Psyche's health condition
+  cmnt1tn5p00j2hwttlms2f4wn | 1g/1q/0m | guest     | "Unnamed Speaker 2" (unnamed-speaker-2)
+      bio: Participant contributing to wildfire discussion, mentions firefighting prisoners and drone issues
+  cmnt3cr0z03vthwttr5vo86oi | 1g/1q/0m | recurring | "Recurring Panel Guest 2" (recurring-panel-guest-2)
+      bio: Another regular guest expert on the spiritual and esoteric significance of cats
+  cmnt4txj6070uhwtt5dltt8ry | 1g/1q/0m | guest     | "Unknown Female Guest" (unknown-female-guest)
+      bio: Partner of the male guest, also part of the couple that resembles each other
+  cmn9perhv02zpq0tt6n5l1d4l | 1g/1q/0m | guest     | "Tarot Reader" (tarot-reader)
+      bio: An expert tarot reader who shares their insights on the practice
+  cmo3c5o6s02a2cktty5mvnfpe | 2g/0q/0m | guest     | "Unnamed Guests" (unnamed-guests)
+      bio: Several regular panel participants who share their knowledge and personal experiences related to tar…
+  cmnt2guir01wlhwtth6gekqec | 1g/1q/0m | guest     | "Unknown Rapper 2" (unknown-rapper-2)
+      bio: Participant in the rap battle who was nicknamed 'Golden Girl' and graciously accepted defeat
+  cmnt1n273004uhwtthqm7k0si | 1g/1q/0m | guest     | "Unknown Speaker 3" (unknown-speaker-3)
+      bio: Person who commented on the adventurous spirit described
+  cmo3bua6w01muckttckjrudr6 | 1g/0q/0m | recurring | "Recurring Guests" (recurring-guests)
+      bio: The show's regular panel of experts and contributors
+  cmo3bvy6j01pzckttmhqfbo48 | 1g/0q/0m | guest     | "Open Panel Participants" (open-panel-participants)
+      bio: Several experts and enthusiasts who join the discussion on tarot readings.
+  cmo3bw07501q4ckttrox47qgs | 1g/0q/0m | recurring | "Recurring Panel" (recurring-panel)
+      bio: A group of regular guests who frequently appear on the show to discuss a variety of esoteric subject…
+  cmo3duben05qbckttycghbh4c | 1g/0q/0m | guest     | "Recurring panel guests" (recurring-panel-guests)
+      bio: Regular participants in the open panel discussions on the show
+  cmo3cdqiu02rcckttqdy5t46b | 1g/0q/0m | guest     | "Open Panel" (open-panel)
+      bio: A group of experts and enthusiasts discussing the intersection of cats and tarot
+  cmo3bpd5w01chcktt24b2804w | 1g/0q/0m | guest     | "Unknown Guests" (unknown-guests)
+      bio: Guests who engaged in a confrontation and boasted about yachts
+  cmo3chpvr02zkcktti610zbgg | 1g/0q/0m | guest     | "Unnamed Participant 2" (unnamed-participant-2)
+      bio: Another participant engaging in the verbal sparring
+  cmo3bqoj501exckttcsf1jkkn | 1g/0q/0m | guest     | "Tarot Cat Expert" (tarot-cat-expert)
+      bio: A recurring guest who provides insights on the metaphysical connection between cats and tarot divina…
+  cmo3cv31k03sicktt2e9675gp | 1g/0q/0m | guest     | "Recurring Panelist" (recurring-panelist)
+      bio: A regular contributor to the show's open panel discussions
+  cmo3e2csy064wckttgf0ni9ux | 1g/0q/0m | guest     | "Unknown participants" (unknown-participants)
+      bio: Multiple unidentified speakers engaging in crude verbal exchanges
+  cmo3e845806gzckttfu8d5jyf | 1g/0q/0m | guest     | "Panelist 2" (panelist-2)
+      bio: A guest participant in the open panel discussion
+  cmo3e840e06gyckttl03bs2f6 | 1g/0q/0m | guest     | "Panelist 1" (panelist-1)
+      bio: A guest participant in the open panel discussion
+  cmo3e7n5506g0ckttkeet3tq4 | 1g/0q/0m | guest     | "Various Panel Members" (various-panel-members)
+      bio: Multiple other participants in chaotic panel discussions throughout the episode
+  cmo3cwb0y03uqcktt7afkcw7i | 1g/0q/0m | guest     | "Various Guests" (various-guests)
+      bio: Unspecified panel participants providing tarot readings and commentary
+  cmo3cz6us0416ckttv5r2tue3 | 1g/0q/0m | guest     | "Unspecified Guests" (unspecified-guests)
+      bio: Participants in the open panel discussion
+  cmo3cxt9103xzcktt1km2t11m | 1g/0q/0m | recurring | "Recurring Panel Guest 1" (recurring-panel-guest-1)
+      bio: A regular contributor to the show's tarot and occult discussions
+  cmo3edxcp06t6ckttkzs7niza | 1g/0q/0m | guest     | "Unspecified Guest" (unspecified-guest)
+      bio: Joined Psyche for a walk to the store to buy cigars
+  cmo3ej9ra075ecktt0wkb2u3h | 1g/0q/0m | guest     | "Unknown Male Guest" (unknown-male-guest)
+      bio: Part of a couple that frequently gets told they look like siblings
+  cmo3cwzq203weckttcfnjmqe2 | 1g/0q/0m | recurring | "Recurring Tarot Reader" (recurring-tarot-reader)
+      bio: A regular panel member who provides tarot card readings and insights
+  cmo3c8boq02fscktt98cwr3yk | 1g/0q/0m | recurring | "Recurring Panelist 1" (recurring-panelist-1)
+      bio: A regular guest on the show, contributing insights on tarot, mythology, and esoteric symbolism.
+  cmo3c8bsy02ftcktt94oaplxo | 1g/0q/0m | recurring | "Recurring Panelist 2" (recurring-panelist-2)
+      bio: Another frequent participant in the Cult of Psyche discussions, focused on the intersection of cats,…
+  cmo3chpre02zjcktt88e04io1 | 1g/0q/0m | guest     | "Unnamed Participant 1" (unnamed-participant-1)
+      bio: Participant in the rap battle, claims to have won
+
+[MERGE?] cluster anchor "Jamie" (3 records)
+  cmn46n09t00b7b0tt0tbdgk0t | 38g/7q/0m | guest     | "Jamie" (jamie) <- KEEP
+      bio: Panel participant with Capricorn sun and Aquarius moon in first house
+  cmn46p33x00iyb0ttn47bcfvm | 10g/3q/0m | guest     | "Jamie Rose" (jamie-rose)
+      bio: Participant asked to twerk but declined
+  cmo3cifsi030zckttn5ut29ur | 2g/0q/0m | recurring | "Jamie/Cowboys" (jamie-cowboys)
+      bio: Long-time supporter and moderator who becomes upset during this stream over panel management issues
+
+[MERGE?] cluster anchor "Bea" (22 records)
+  cmn9hme700089w8ttp79it7hx | 15g/6q/0m | mentioned | "Bea" (bea) <- KEEP
+      bio: Panel participant described as calling in slurring words and being a 'rage queen'
+  cmnt1rzyv00fkhwttxupyh8ay | 5g/3q/0m | mentioned | "Beeta" (beeta)
+      bio: Person who was allegedly traumatized by an inappropriate phone call incident
+  cmnt1ynot00t3hwttrxvf5n7c | 5g/1q/0m | guest     | "Bita" (bita)
+      bio: Regular panelist involved in relationship drama with Barry, drinks on streams
+  cmo3bmga9016gckttn7xuxspo | 2g/0q/0m | mentioned | "Vita" (vita)
+      bio: Another streamer who named a live stream calling Psyche 'the fool' and referring to herself as 'the …
+  cmo3b3p9p0048ckttcpxmx8a8 | 1g/0q/0m | guest     | "The 'Ham Sandwich Girl'" (the-ham-sandwich-girl)
+      bio: A panel guest who accused Psyche of doxxing her and making insensitive comments
+  cmo3btzs501m5cktt8ihqq4eb | 1g/0q/0m | guest     | "Bita/Vida" (bita-vida)
+      bio: Persian regular who conflicts with Crystal and defends against various allegations
+  cmo3bbf9y00jzckttgz00wmwo | 1g/0q/0m | mentioned | "Beeta (Beta)" (beeta-beta)
+      bio: Close friend of Psyche who taught him how to handle 'porn bombs' and woke him up during the incident
+  cmo3bk9yq0119cktthq6aybl3 | 1g/0q/0m | mentioned | "Beatas" (beatas)
+      bio: Someone who Crystal had reportedly been speaking negatively about in recent days
+  cmo3cjrzd033rckttt3u3kdjy | 1g/0q/0m | guest     | "Beeta/Bea" (beeta-bea)
+      bio: Recurring participant who lives in Canada and is involved in travel planning discussions
+  cmo3cnyx403csckttc36dk00x | 1g/0q/0m | mentioned | "Bea / Beanie" (bea-beanie)
+      bio: Mentioned frequently by other guests. Known for standing up for people, good heart. Gets involved in…
+  cmo3cwk1e03veckttf40kxcow | 1g/0q/0m | guest     | "Bea/Bea's Kitties" (bea-beas-kitties)
+      bio: Persian regular guest who appears frequently, known for spicy personality and cooking
+  cmo3cx2hb03wjcktt96fze59j | 1g/0q/0m | guest     | "Bea/Beta Kitties" (bea-beta-kitties)
+      bio: Co-host and frequent collaborator, supportive friend who helps manage the show
+  cmo3edkyg06s9ckttouglni1q | 1g/0q/0m | guest     | "Beeta/VA" (beeta-va)
+      bio: Regular guest and fellow streamer who becomes involved in heated drama defending herself against blo…
+  cmo3d251i046ockttc4qwxzh5 | 1g/0q/0m | guest     | "Beta/Beeta" (beta-beeta)
+      bio: A trusted moderator and friend of the show who enjoys video games, swimming, and shopping for antiqu…
+  cmo3dnwtv05deckttqh1xf3zy | 1g/0q/0m | guest     | "BT/Beta/Beeta" (bt-beta-beeta)
+      bio: A recurring participant who lives in Canada and is part of the travel and citizenship discussion
+  cmo3efhrb06x3ckttnjdglbjl | 1g/0q/0m | mentioned | "Bita/Beeta" (bita-beeta)
+      bio: Former friend and collaborator who allegedly performed a 'spider ritual' against Psyche
+  cmo3en60z07ctcktt4djovt1w | 1g/0q/0m | guest     | "Be/Golden Girl/Cat Lady" (be-golden-girl-cat-lady)
+      bio: Female guest who participates in rap battles and claims to have two cats
+  cmo3d4qfb04bxckttuy0sw6ob | 1g/0q/0m | guest     | "Beata" (beata)
+      bio: Regular participant referred to as 'Persian princess,' involved in the Discord photo incident
+  cmo3d44vi04anckttw3vx60dw | 1g/0q/0m | guest     | "VA/Vita" (va-vita)
+      bio: A recurring participant who engages in intimate dialogue with Psyche, described as attractive
+  cmo3d8snn04kkckttk4xj05bn | 1g/0q/0m | mentioned | "Vita/VA/Beeta" (vita-va-beeta)
+      bio: Friend and recurring guest who was apparently attacked in previous episodes, described as scrappy an…
+  cmo3daox204occktt4kn0am68 | 1g/0q/0m | guest     | "Bea's Kitties" (beas-kitties)
+      bio: Regular guest who had conflicts during the show, longtime friend of Psyche with history of panels
+  cmo3cadoj02kzckttv5hskh0i | 1g/0q/0m | mentioned | "VA (Beeta)" (va-beeta)
+      bio: Fellow streamer; had feud with Psyche over satirical biscuit song; blocked Psyche from her chat; nam…
+
+[MERGE?] cluster anchor "Christine" (10 records)
+  cmn46ptbd00l4b0tty1ujwmoz | 15g/4q/0m | mentioned | "Christine" (christine) <- KEEP
+      bio: Long-time supporter currently upset with Psyche over allowing Crystal Marie to make accusations abou…
+  cmn46kp6m0035b0ttse0qsir9 | 8g/3q/0m | mentioned | "Raging Demon" (raging-demon)
+      bio: A controversial figure discussed extensively for past conflicts and inappropriate behavior on panels
+  cmn46m1u5007ob0ttzbevfxku | 5g/2q/0m | mentioned | "Carl" (carl)
+      bio: Beta's ex-boyfriend who goes by 'King Paimon' and made inappropriate comments to Mason, described as…
+  cmn5hzghb005wvgttp186g5de | 3g/3q/0m | mentioned | "King Vikram" (king-vikram)
+      bio: The king who must answer the sprite's riddles in the Baital Paichisi frame story
+  cmnt26a9j01a1hwttf97tm5va | 1g/1q/0m | guest     | "Carl/LD" (carl-ld)
+      bio: Individual facing accusations of inappropriate behavior toward underage individuals
+  cmo3c6rve02chckttovzadktm | 1g/0q/0m | mentioned | "King Vaughn" (king-vaughn)
+      bio: Rapper mentioned as an example of artists who rap about violence and drugs
+  cmo3b8cbj00dtcktthj4wevd1 | 1g/0q/0m | mentioned | "King Rupson" (king-rupson)
+      bio: Ruler of Bardwan who tests and rewards loyal service
+  cmo3bbb6700jockttbd3va9i3 | 1g/0q/0m | mentioned | "Demon" (demon)
+      bio: Person allegedly turned gay by the host's influence
+  cmo3bpggf01cockttemluioq5 | 1g/0q/0m | mentioned | "Christine Carl" (christine-carl)
+      bio: A person defended during the heated exchange, though their role or connection to the show is unclear…
+  cmo3dt9ow05occkttrhwct2o5 | 1g/0q/0m | guest     | "Carl/Aging Demon" (carl-aging-demon)
+      bio: Controversial figure involved in ongoing drama with Beta, formerly into black magic for seven years
+
+[MERGE?] cluster anchor "Paige" (6 records)
+  cmn46tozl00xgb0ttddb39ybu | 23g/14q/0m | mentioned | "Paige" (paige) <- KEEP
+      bio: Person mentioned as being approximately 20 years younger than another participant
+  cmnt2ab7s01ihhwttr9unxfe1 | 5g/3q/0m | guest     | "Prairie Paige" (prairie-paige)
+      bio: Canadian regular panel member and tarot reader from Alberta, has cats named Raven and Fart Bean, rec…
+  cmnt1oas2007ihwttamthnck2 | 1g/1q/0m | guest     | "Prairie" (prairie)
+      bio: Regular community member who coordinated gift purchase for Psyche's equipment and provides spiritual…
+  cmo3bfkkm00rzckttnl0nhg01 | 1g/0q/0m | mentioned | "Prairie Page" (prairie-page)
+      bio: A medium who has channeled deceased people
+  cmo3cwjvu03vdcktti08d0t7l | 1g/0q/0m | guest     | "Paige (Prairie Paige)" (paige-prairie-paige)
+      bio: Regular guest from Canada who hosts trivia segments and does tarot readings, known for her calming p…
+  cmo3d7dpa04hncktt3cun6fii | 1g/0q/0m | mentioned | "Pi/Paige" (pi-paige)
+      bio: Former friend and collaborator who now accuses Psyche of cult-like behavior
+
+[MERGE?] cluster anchor "Janet" (3 records)
+  cmn46mevk0092b0ttkrqr4cei | 25g/7q/0m | mentioned | "Janet" (janet) <- KEEP
+      bio: Community member noted for holding the line and keeping love alive
+  cmnt1ppvh00alhwttpcj52s2o | 9g/5q/0m | mentioned | "Empress Janet" (empress-janet)
+      bio: Former co-host who apparently made comments about Psyche being a 'gay guy hitting on straight guys' …
+  cmo3c9heb02ihckttmjlvrlos | 2g/0q/0m | recurring | "Janet/Empress Janet" (janet-empress-janet)
+      bio: Managing moderator and self-described cousin of Psyche, takes control when host becomes distressed
+
+[MERGE?] cluster anchor "Tiger Butterfly" (10 records)
+  cmn46lkex0061b0ttarceiome | 21g/4q/0m | guest     | "Tiger Butterfly" (tiger-butterfly) <- KEEP
+      bio: Guest receiving reading with Capricorn sun, Cancer rising, Virgo moon, and Aquarius Venus, born exac…
+  cmo3bekqf00pxcktty40q1mum | 7g/0q/0m | recurring | "Lola" (lola)
+      bio: Panel member described as 'queening on the chair'
+  cmnt2kv8z0255hwtt399ou9br | 1g/4q/0m | guest     | "Laura" (laura)
+      bio: Healthcare worker who can pass meds and transition between nursing home and assisted living sections…
+  cmo3b9i4z00g0cktttwit57ik | 1g/0q/0m | guest     | "Lola/Laura" (lola-laura)
+      bio: Chat participant whose real name is Laura, appears to be a regular viewer
+  cmo3b9pu100gickttntmwuzmf | 1g/0q/0m | guest     | "Tig/Tiger Butterfly" (tig-tiger-butterfly)
+      bio: Guest who participated in previous episodes and became somewhat of a community celebrity
+  cmo3bkjoa0120ckttb7ivstwx | 1g/0q/0m | guest     | "Laura Tiger Butterfly" (laura-tiger-butterfly)
+      bio: Guest on the show who was initially in a subdued mood but expected to engage in the evening's discus…
+  cmo3ch5s302yicktt5et733o3 | 1g/0q/0m | recurring | "Bea/V/Tiger Butterfly" (bea-v-tiger-butterfly)
+      bio: Close friend who channels spiritual messages and provides tarot readings
+  cmo3cxftc03x9cktt9dn3tb2k | 1g/0q/0m | mentioned | "Butterfly" (butterfly)
+      bio: Guest who was present during the terminated livestream
+  cmo3cxfox03x8cktti7mz8cbh | 1g/0q/0m | mentioned | "Tiger" (tiger)
+      bio: Guest who was receiving a tarot reading when the stream went down
+  cmoc346jy00q72ott3dv7gnfd | 1g/0q/0m | guest     | "Tiger Butterfly Joe" (tiger-butterfly-joe)
+      bio: Guest appearing on this classic episode
+
+[MERGE?] cluster anchor "Nick" (15 records)
+  cmn5tcu8800idpottpwuwwpa3 | 11g/1q/0m | guest     | "Nick" (nick) <- KEEP
+      bio: Panel member who appears to be exercising throughout the stream, described as having a nice physique
+  cmo3bg6kl00suckttcrb197vc | 6g/0q/0m | guest     | "Nick Johnson" (nick-johnson)
+      bio: Entertainer guest who provided visual comedy and antics, described as having model-like appearance
+  cmn46kp290034b0tty3eekex7 | 3g/1q/0m | guest     | "Jim Nick" (jim-nick)
+      bio: Guest who joins later in the episode for rap battles
+  cmo3cne6k03b8ckttkj6ssagp | 2g/0q/0m | guest     | "Nick Winters" (nick-winters)
+      bio: A quieter participant who has experience with the ip2 streaming network and discusses pharmaceutical…
+  cmo3b6t2k00afckttoo0wg1k7 | 1g/0q/0m | guest     | "Jim/Jimny/Jimnik" (jim-jimny-jimnik)
+      bio: Panel participant who was apparently twerking or doing some kind of physical performance
+  cmo3bebvt00peckttnsbt02e6 | 1g/0q/0m | mentioned | "Jim/Jimny" (jim-jimny)
+      bio: Person mentioned in relation to the $50 wager and complimented on a hoodie
+  cmo3ch5wc02yjcktt9wqd7ujm | 1g/0q/0m | recurring | "Nick Johnson/Erica B" (nick-johnson-erica-b)
+      bio: Artistic panel regular known for costumes and visual performances
+  cmo3b6xxg00atcktttd0u0brc | 1g/0q/0m | guest     | "Nick Johnson (Erica Abadu)" (nick-johnson-erica-abadu)
+      bio: Regular panel participant known for working out shirtless on stream and skateboarding, met through J…
+  cmo3ciffj030wckttigjfjcxg | 1g/0q/0m | guest     | "Nick/Nick Johnson" (nick-nick-johnson)
+      bio: Content creator who cooks on stream and performs in costumes, described as entertaining and supporti…
+  cmo3bsr9y01jeckttzr5o5gri | 1g/0q/0m | guest     | "Nick/Nitro Nick" (nick-nitro-nick)
+      bio: Silent participant who appears on camera smoking and entertaining through visual antics rather than …
+  cmo3dp2nt05fxckttmbf4n7x1 | 1g/0q/0m | guest     | "Wayne" (wayne)
+      bio: Participant who has been making accusations against Psyche and questioning her about the situation
+  cmo3d4qjq04bycktt3f2qfitw | 1g/0q/0m | guest     | "Jimnik" (jimnik)
+      bio: Streamer living in an RV dealing with relationship issues, briefly appeared on panel
+  cmo3ddhlg04u4cktt4fo8l9oi | 1g/0q/0m | mentioned | "Jimnick" (jimnick)
+      bio: Person involved in an argument with VA during a livestream
+  cmo3bbf1800jxcktt9fmgr1kw | 1g/0q/0m | guest     | "Nick (Nick Winters/Syrup Wizard)" (nick-nick-winters-syrup-wizard)
+      bio: Northern California resident dealing with bank fraud, former medicinal cannabis business worker
+  cmo3bfkoy00s0ckttgmwsepz8 | 1g/0q/0m | mentioned | "Nick Wayne Johnson" (nick-wayne-johnson)
+      bio: Someone referenced in casual conversation, possibly a viewer or community member
+
+[MERGE?] cluster anchor "Mini Manson" (5 records)
+  cmn46p2v900iwb0ttrysqgs55 | 9g/10q/0m | guest     | "Mini Manson" (mini-manson) <- KEEP
+      bio: Content creator discussing misconceptions about her past streaming content and experiences with coor…
+  cmn46sabh00t5b0ttu4bfrjqi | 5g/2q/0m | guest     | "Minnie Manson" (minnie-manson)
+      bio: Musician, artist, and entertainer from Chicago who creates coloring books, performs live band karaok…
+  cmo3bd16000n1ckttmnq4v8ph | 1g/0q/0m | mentioned | "Charles Manson" (charles-manson)
+      bio: Cult leader discussed as an example of using drugs to manipulate followers
+  cmo3bo5mu01a3ckttj14tq830 | 1g/0q/0m | guest     | "Marilyn Manson" (marilyn-manson)
+      bio: The controversial shock-rock musician who was co-headlining a tour with Hole, and broke his ankle on…
+  cmo3d2zg5048dckttmysx7htf | 1g/0q/0m | mentioned | "Minnie Mans" (minnie-mans)
+      bio: Referenced as someone who would appreciate improvisation-focused content
+
+[MERGE?] cluster anchor "Flirty Diamond" (5 records)
+  cmn46kf8j0025b0ttfpnsh5dh | 16g/6q/0m | mentioned | "Flirty Diamond" (flirty-diamond) <- KEEP
+      bio: Guest who was on an earlier show that apparently caused chaos in the channel
+  cmo3bwrw301rgcktttou24qu6 | 2g/0q/0m | mentioned | "Flirty" (flirty)
+      bio: Person referenced in relation to gender identity discussion
+  cmo3b3i62003qckttvwgr4uds | 2g/0q/0m | mentioned | "Diamond" (diamond)
+      bio: Flirtatious panel participant who creates reactions from other female participants
+  cmo3c93q602hecktt9fc0t2gc | 1g/0q/0m | guest     | "Flirty Diamond (David)" (flirty-diamond-david)
+      bio: Controversial panel participant involved in identity disputes and conflicts with other guests
+  cmo3blffr0146ckttntzy9ni3 | 1g/0q/0m | mentioned | "RG diamond" (rg-diamond)
+      bio: Someone who was apparently ranting on panels and either left or was moved backstage
+
+[MERGE?] cluster anchor "Mason" (5 records)
+  cmn46npg900drb0ttpq84hpqj | 18g/5q/0m | mentioned | "Mason" (mason) <- KEEP
+      bio: Community member described as pacing with redeyed rage and making threats
+  cmoc5lcr205so2ottqi8uo5i0 | 1g/0q/0m | guest     | "Thing That Is/Mason" (thing-that-is-mason)
+      bio: Regular panel participant who sold his drum set and visits Guitar Center to play drums
+  cmo3e3awl066ucktt1u82nus5 | 1g/0q/0m | mentioned | "ThingThatIs" (thingthatis)
+      bio: Subject of the musical tribute, described as a Canadian intellectual and debater with a gentle natur…
+  cmo3b2ujk002jckttai0dgqtj | 1g/0q/0m | mentioned | "Mrs. Mason" (mrs-mason)
+      bio: Psyche's mother, who was briefly mentioned during the exchange
+  cmoc5l5ee05s72ottovrkucn5 | 1g/0q/0m | mentioned | "Thing That Is" (thing-that-is)
+      bio: Canadian panel member suspected by some of having hidden motives, subject of one of Psyche's songs
+
+[MERGE?] cluster anchor "Summer" (5 records)
+  cmn46q9o800mnb0ttta19g9oq | 16g/4q/0m | guest     | "Summer" (summer) <- KEEP
+      bio: Known as 'the boss,' does weekly outreach helping unfortunate people and hosts her own podcast
+  cmo3c8h8v02g6cktt01ugpu8g | 3g/0q/0m | guest     | "Sweet Pea" (sweet-pea)
+      bio: Channel member with distinctive sweet voice, has cats named Finegan and Yoko, received detailed taro…
+  cmo3dt9ki05obckttr8rdrenx | 1g/0q/0m | guest     | "Summer/Hot Summer" (summer-hot-summer)
+      bio: Kentucky native with tattoos who has a prosthetic leg and engages in crude banter with other panelis…
+  cmo3bdiqp00o2ckttc2btj702 | 1g/0q/0m | mentioned | "Sweet Summer" (sweet-summer)
+      bio: Character in the song who tries to warn Christine and defends her afterward
+  cmo3d8e0z04jocktt0p8saj06 | 1g/0q/0m | mentioned | "Summer Dickerson (@HotMessSummer)" (summer-dickerson-hotmesssummer)
+      bio: Kentucky woman described as a mother of 10, advocate for marginalized people, and dear friend of the…
+
+[MERGE?] cluster anchor "Alexandra Mayers" (3 records)
+  cmn5tenff00mgpottlmcnwxje | 18g/5q/0m | mentioned | "Alexandra Mayers" (alexandra-mayers) <- KEEP
+      bio: The dedicatee of this tribute, portrayed as a 'Neon Priestess' and divine guide figure
+  cmoc56xki05152ottuy6eo3jw | 2g/0q/0m | mentioned | "Alexander Mayors" (alexander-mayors)
+      bio: Panel personality mentioned as potential romantic interest for Carl
+  cmoc4wk7l04g72ottw1250c75 | 1g/0q/0m | mentioned | "Alexandra Mares" (alexandra-mares)
+      bio: IRL streamer known for confrontational content and showing up at people's locations
+
+[MERGE?] cluster anchor "Michael" (3 records)
+  cmn46kb49001pb0ttzbaktqb2 | 18g/4q/0m | mentioned | "Michael" (michael) <- KEEP
+      bio: Community member described as dropping light then fading away
+  cmo3c9axc02hwckttxuh5kv8k | 2g/0q/0m | mentioned | "Michael L" (michael-l)
+      bio: A former moderator suspected of hiding chat participants as a 'rogue mod'
+  cmo3c15fz020bcktt6q722bjq | 1g/0q/0m | mentioned | "Michael Leguizamon" (michael-leguizamon)
+      bio: Deceased former panel participant who had conflicts with other guests, remembered as having 'a good …
+
+[MERGE?] cluster anchor "Joker" (2 records)
+  cmn46n9pm00c8b0ttvr9fqfzg | 20g/2q/0m | guest     | "Joker" (joker) <- KEEP
+      bio: Panel member with dogs who has an arm injury and discusses his pets during the stream
+  cmo3eiz9l074mckttuffvu7q2 | 1g/0q/0m | mentioned | "Joker TV" (joker-tv)
+      bio: Regular community member who apparently disappeared from the stream, possibly due to crude conversat…
+
+[MERGE?] cluster anchor "Arthur" (5 records)
+  cmn46w5mj015nb0tt33zk0qa0 | 9g/1q/0m | guest     | "Arthur" (arthur) <- KEEP
+      bio: A panel participant who joined discussions about streaming personalities and content
+  cmn47iwtb032eb0ttn84y0y22 | 7g/2q/0m | mentioned | "Sam Man" (sam)
+      bio: Another streamer mentioned in conversation
+  cmo3b9i9d00g1ckttkubsdufn | 1g/0q/0m | mentioned | "Samman" (samman)
+      bio: Another content creator who hosted a panel that Trix participated in
+  cmo3bvn6i01p9ckttk4llx3e0 | 1g/0q/0m | guest     | "Arthur/Sam Man/ELO" (arthur-sam-man-elo)
+      bio: Confusing caller(s) with unclear identity that caused debate about whether multiple people were usin…
+  cmo3cf5aa02u5cktt4i8xxwd1 | 1g/0q/0m | guest     | "Sam/Samman NYC" (sam-samman-nyc)
+      bio: Later revealed to be Carl's real identity, takes over hosting duties when Psyche disappears, has str…
+
+[MERGE?] cluster anchor "DJ Electra" (3 records)
+  cmn46koy20033b0ttkzuu6x2i | 16g/3q/0m | mentioned | "DJ Electra" (dj-electra) <- KEEP
+      bio: Professional DJ who gifted headphones to improve the show's audio quality and created intro music
+  cmo3e8wzx06j0cktt5pqpyjfy | 1g/0q/0m | guest     | "DJ Electra/BE" (dj-electra-be)
+      bio: Regular panel participant who creates intro videos for streamers, gifted Psyche the wireless earbuds
+  cmo3dehc504vqckttk7q8alfc | 1g/0q/0m | mentioned | "Electra" (electra)
+      bio: A VTuber referenced in the conversation, associated with lights
+
+[MERGE?] cluster anchor "Canada Dry" (11 records)
+  cmo3c5hxs029lckttd65aw94r | 6g/0q/0m | guest     | "Canada Dry" (canada-dry) <- KEEP
+      bio: Regular panel participant and nightbot hacker who helps with technical aspects
+  cmo3c7upe02esckttlgenxt3e | 2g/0q/0m | guest     | "Sask" (sask)
+      bio: Artist who creates drawings, marijuana user with distinctive aura effects on camera, engages in conf…
+  cmnt2lzdq027qhwttxv4106m4 | 1g/1q/0m | guest     | "Canada" (canada)
+      bio: A participant who was being called to bed during the recording, creating the comedic exchange
+  cmo3e8ci506hockttuipy38cr | 2g/0q/0m | guest     | "Solo" (solo)
+      bio: New guest from Texas that Psyche met the previous night, curious about other community members
+  cmo3e5yer06cackttp4mjiiig | 2g/0q/0m | guest     | "Sask/Canada Dry" (sask-canada-dry)
+      bio: Canadian artist who creates drawings for panel participants, drew a picture of Wendy during the show
+  cmo3c1ahh020kcktt2vnmn26m | 1g/0q/0m | guest     | "SS/Sean/Cheyenne/Solo" (ss-sean-cheyenne-solo)
+      bio: Main guest, claims to be 100% heterosexual but admits to kissing guys, nearly 50 years old, from Tex…
+  cmo3d849804j2ckttg40aoky2 | 1g/0q/0m | guest     | "Saskatchewan Sean (Sask)" (saskatchewan-sean-sask)
+      bio: Canadian guest from British Columbia (not actually Saskatchewan), graphic designer who has connectio…
+  cmo3cwka203vgcktt86t72hod | 1g/0q/0m | guest     | "Alexander/Canada Dry" (alexander-canada-dry)
+      bio: Guest who provides audio technical support and participates in trivia, appears to be an artist who d…
+  cmo3e8bs006hickttgfrxc1kn | 1g/0q/0m | guest     | "Saskatchewan/Sask/Sketch" (saskatchewan-sask-sketch)
+      bio: Canadian artist who created drawings of panel members during the show, praised by Psyche for his art…
+  cmo3ejelo075pcktte6zan1rg | 1g/0q/0m | mentioned | "Sean" (sean)
+      bio: A viewer who was greeted during the stream
+  cmo3d5uh804eicktt680hm8iu | 1g/0q/0m | guest     | "Canada Dry (Sass)" (canada-dry-sass)
+      bio: A Canadian graphics creator who makes content for Psyche's channel, received Page of Pentacles in ta…
+
+[MERGE?] cluster anchor "Alisa Jordana" (6 records)
+  cmnmhhdfm00ycosttwozm0pjd | 10g/1q/0m | mentioned | "Alisa Jordana" (alisa-jordana) <- KEEP
+      bio: Howard Stern-connected streamer who Psyche calls regularly and raids, had dramatic incident with Tan…
+  cmo3b2eot001qckttr8wq087n | 4g/0q/0m | mentioned | "Alisa" (alisa)
+      bio: Another streamer that Psyche supports, currently has a friend Eric visiting from out of town
+  cmo3crm4503kbckttkvo8lcja | 2g/0q/0m | mentioned | "Elisa Jordana" (elisa-jordana)
+      bio: Person involved in a dispute with Tan Mom over a borrowed coat that escalated to alleged harassment
+  cmo3ca8ka02kmckttd7jnl4qp | 1g/0q/0m | mentioned | "Lisa/Alisa" (lisa-alisa)
+      bio: Another streamer the host plans to call into at the end of the episode
+  cmo3bt7hn01kgckttn1tm6a2p | 1g/0q/0m | mentioned | "Lisa Jordana" (lisa-jordana)
+      bio: Content creator and musician who Psyche considers a friend, appeared in Playboy
+  cmo3edrxr06swcktt9vbg9opv | 1g/0q/0m | mentioned | "Alisa Jordan" (alisa-jordan)
+      bio: Streamer who Psyche frequently calls and supports, controversial figure in the community
+
+[MERGE?] cluster anchor "Kate" (6 records)
+  cmn6db8ik00j6l8ttdjs93qlh | 6g/2q/0m | recurring | "Kate" (kate) <- KEEP
+      bio: Regular participant and moderator who receives astrological readings
+  cmn47j7gx033fb0ttzei0iwcj | 3g/2q/0m | guest     | "Barry" (barry)
+      bio: Regular panelist and top donator who has ongoing drama with other community members
+  cmo3ecqxm06qgckttgzyyl93o | 2g/0q/0m | mentioned | "Kate the Turtle" (kate-the-turtle)
+      bio: Rival streamer who made a video calling Psyche a 'weirdo lurker' and runs her own Discord
+  cmo3bpt5n01d9cktt1frjj02c | 1g/0q/0m | mentioned | "Barry the Turtle" (barry-the-turtle)
+      bio: A regular supporter/donator mentioned in thanks
+  cmo3b9a9000fmckttlqrplijz | 1g/0q/0m | mentioned | "Kareless Kate" (kareless-kate)
+      bio: Content creator described as a 'wannabe' in conflict with Beeta
+  cmo3bekus00pycktt2uixue52 | 1g/0q/0m | mentioned | "Barry the Turtle/Tortuga" (barry-the-turtle-tortuga)
+      bio: Mysterious character that listeners have been discussing for weeks, unknown trustworthiness
+
+[MERGE?] cluster anchor "Crystal" (2 records)
+  cmnt22c98010thwttdmdiefq6 | 7g/3q/0m | guest     | "Crystal" (crystal) <- KEEP
+      bio: Panel participant in the discussion
+  cmn46u92l00zbb0tta08kd4dh | 7g/1q/0m | mentioned | "Crystal Marie" (crystal-marie)
+      bio: Controversial panel figure who made accusations that caused conflict with Christine
+
+[MERGE?] cluster anchor "Ghost" (4 records)
+  cmn46qp5600o0b0tt6caulcpe | 10g/3q/0m | mentioned | "Ghost" (ghost) <- KEEP
+      bio: Community member referenced as crashing out and getting disconnected
+  cmo3bhzys00wockttkb667yyb | 2g/0q/0m | guest     | "Crucible Ghost" (crucible-ghost)
+      bio: A guest who shows romantic interest in Tiger Butterfly and exchanges contact information
+  cmo3dt9xp05oecktt9o1vrc2g | 1g/0q/0m | guest     | "Ghost/Crucible Ghost" (ghost-crucible-ghost)
+      bio: Panelist who engages in debates and arguments, particularly about controversial political topics
+  cmo3dbyfx04r0cktttwkj4spd | 1g/0q/0m | guest     | "Crucible" (crucible)
+      bio: Panel participant involved in the heated exchange
+
+[MERGE?] cluster anchor "Meer" (6 records)
+  cmnmi1jr3024fosttyktrrezb | 5g/2q/0m | guest     | "Meer" (meer) <- KEEP
+      bio: Tarot reader and artist making his own oracle deck, provides readings for other guests
+  cmn46rlyo00r5b0ttu6hu7twa | 2g/2q/0m | guest     | "Caesar" (caesar)
+      bio: Crystal's boyfriend who appears briefly on camera
+  cmo3bl0jq0135cktt6q864uxq | 3g/0q/0m | recurring | "Meer/Caesar" (meer-caesar)
+      bio: Psyche's boyfriend, artist who creates handmade tarot cards, does fire performances and readings
+  cmo3b9vur00gzckttsit26v8x | 1g/0q/0m | guest     | "Cesar/Me" (cesar-me)
+      bio: Provides tarot readings in chat and compliments on appearances
+  cmo3d1ynr0465ckttw7zoou3q | 1g/0q/0m | guest     | "Caesar/Meer" (caesar-meer)
+      bio: Psyche's boyfriend from Chicago who also does tarot readings
+  cmo3cx2uc03wmcktt8iif5xwm | 1g/0q/0m | guest     | "Meer/Me" (meer-me)
+      bio: Artist guest who creates tarot-inspired artwork live on stream and shares various paintings
+
+[MERGE?] cluster anchor "Teresa" (7 records)
+  cmo3byyil01vxcktt3vt5hixf | 7g/0q/0m | guest     | "Teresa" (teresa) <- KEEP
+      bio: A Canadian healthcare worker and tarot reader who has been part of the community for over a year, pe…
+  cmo3cgzpe02y3cktt6lalp2ro | 4g/0q/0m | mentioned | "Traveling Gypsy" (traveling-gypsy)
+      bio: Another former friend who turned against Psyche in the recent friendship conflicts
+  cmo3ctyec03psckttlxim4udv | 2g/0q/0m | mentioned | "Teresa/Traveling Gypsy" (teresa-traveling-gypsy)
+      bio: Tarot reader who sponsored the panel episode
+  cmo3c4fno0277ckttipkjobwq | 1g/0q/0m | mentioned | "Traveling Tipsy" (traveling-tipsy)
+      bio: Regular chat supporter who donated $5 during the stream
+  cmo3e7ick06fnckttoilt7mo3 | 1g/0q/0m | mentioned | "Gypsy" (gypsy)
+      bio: Viewer who made a donation at the end of the stream
+  cmo3edd6106rpcktt5803n3xn | 1g/0q/0m | guest     | "Traveling Gypsy Teresa" (traveling-gypsy-teresa)
+      bio: Canadian tarot reader with a cat named Jackass who performs card readings, known Psyche for over a y…
+  cmo3d5tug04edckttlrxreu4e | 1g/0q/0m | guest     | "TY (Traveling Gypsy)" (ty-traveling-gypsy)
+      bio: A loyal friend and supporter of the show, known for his street wisdom and protective nature toward t…
+
+[MERGE?] cluster anchor "Mr. Big Pipes" (2 records)
+  cmn46qpdx00o2b0ttzhjuu2me | 8g/6q/0m | guest     | "Mr. Big Pipes" (mr-big-pipes) <- KEEP
+      bio: 39-year-old panel regular from Massachusetts, former heroin addict (clean since 2018), motorcycle en…
+  cmo3c5i6k029nckttie42p0sn | 1g/0q/0m | guest     | "MrBigPipes" (mrbigpipes)
+      bio: A participant who joined later in the episode and did VR boxing/cardio during the stream
+
+[MERGE?] cluster anchor "Miser" (3 records)
+  cmn46mnjq009zb0tt5b7iikt3 | 7g/2q/0m | mentioned | "Miser" (miser) <- KEEP
+      bio: Community member involved in relationship drama, former boyfriend now friend of someone in the group
+  cmo3b6tbc00ahcktt7gqt80dm | 3g/0q/0m | mentioned | "Maser" (maser)
+      bio: Someone the host refers to as a romantic interest who may no longer be interested
+  cmo3cgtgj02xqckttutgwash6 | 1g/0q/0m | guest     | "Miser/Maser" (miser-maser)
+      bio: A quiet participant who rarely speaks during panels, often experiencing technical difficulties with …
+
+[MERGE?] cluster anchor "Rogue Nomad" (2 records)
+  cmn46n9le00c7b0tt94kkt9fy | 6g/6q/0m | guest     | "Rogue Nomad" (rogue-nomad) <- KEEP
+      bio: Panel participant who had an experience with a self-driving car during the stream
+  cmo3duuc505reckttf43pknge | 1g/0q/0m | mentioned | "Rogue" (rogue)
+      bio: Someone who apparently needs coaching about on-camera behavior
+
+[MERGE?] cluster anchor "Sig" (2 records)
+  cmn46r6cz00pob0ttatkij4ak | 11g/1q/0m | guest     | "Sig" (sig) <- KEEP
+      bio: A recurring contrarian guest who tends to argue and was accused of using 'cult-like tactics' languag…
+  cmo3c5b8m0294cktthi3kux0n | 1g/0q/0m | recurring | "Sig/Signal66" (sig-signal66)
+      bio: Recurring problematic guest who drinks heavily and repeatedly uses offensive language despite warnin…
+
+[MERGE?] cluster anchor "Benny Blanco" (5 records)
+  cmo3crp8t03kmckttjkjd5684 | 5g/0q/0m | mentioned | "Benny Blanco" (benny-blanco) <- KEEP
+      bio: 23-year-old man who is the subject of the accusations, described as someone who likes dirt bikes and…
+  cmo3b6kfn009wckttywb1ytet | 4g/0q/0m | mentioned | "Benny" (benny)
+      bio: Person discussed in relation to age difference concerns, described as having mental issues
+  cmo3b6kjy009xckttett3l3ih | 1g/0q/0m | mentioned | "Blanco" (blanco)
+      bio: One of several people the host dedicates the story to
+  cmo3ciwdn031yckttpp65ipfh | 1g/0q/0m | mentioned | "Benny/Benny Blanco" (benny-benny-blanco)
+      bio: Person central to the accusations discussion, described as having mental health issues
+  cmo3cy46t03yuckttdx4gg6jt | 1g/0q/0m | mentioned | "Benny Brand" (benny-brand)
+      bio: Streamer mentioned as former friend of Q who helped promote Q's early channel
+
+[MERGE?] cluster anchor "Lenor" (2 records)
+  cmo3braok01gackttkx07tmfq | 11g/0q/0m | recurring | "Lenor" (lenor) <- KEEP
+      bio: Panel member described as being 'in the corner' with 'claws out for lies'
+  cmo3ekrrm0789ckttk6m2tmt9 | 1g/0q/0m | guest     | "Lenor/Lunar" (lenor-lunar)
+      bio: Viewer/participant in the stream chat
+
+[MERGE?] cluster anchor "Untrackable" (2 records)
+  cmn46vr6n0148b0ttfqlqlnxp | 3g/6q/0m | guest     | "Untrackable" (untrackable) <- KEEP
+      bio: Respectful regular guest celebrating his birthday, works in healthcare with elderly patients, offers…
+  cmnt2z0070312hwttl0r1s0u6 | 1g/2q/0m | guest     | "UN TRACKABLE" (un-trackable)
+      bio: A guest who discusses their approach to handling chaotic situations and references 'the craziness of…
+
+[MERGE?] cluster anchor "Clumsy" (4 records)
+  cmo3cs7uj03lucktt77t9w6qm | 4g/0q/0m | mentioned | "Clumsy" (clumsy) <- KEEP
+      bio: Guest who was expected to participate in body-showing challenges but left the panel
+  cmo3crphq03kocktt4wgyjhtx | 3g/0q/0m | mentioned | "Clumsy Clairvoyant" (clumsy-clairvoyant)
+      bio: Another tarot reader that Psyche has been texting and wants to reconcile with as friends
+  cmo3c66i202backtt77l73vnz | 3g/0q/0m | mentioned | "Clumsy Clairvoyance" (clumsy-clairvoyance)
+      bio: Former close friend and supporter who recently blocked Psyche over a screenshot misunderstanding
+  cmo3b6kag009vckttthc7ki7f | 1g/0q/0m | mentioned | "Clumsy Clair" (clumsy-clair)
+      bio: One of several people the host dedicates the story to
+
+[MERGE?] cluster anchor "Blade" (7 records)
+  cmo3c5if5029pckttncnbiqsa | 5g/0q/0m | guest     | "Blade" (blade) <- KEEP
+      bio: Long-time supportive friend and viewer who receives a comprehensive tarot reading
+  cmo3cqu3903iscktttm1lsevl | 1g/0q/0m | recurring | "Big Tall" (big-tall)
+      bio: 6'7" 350lb Samoan/Spanish viewer who wants to gain more weight, former stripper
+  cmo3c9bev02i0ckttk243qs4v | 1g/0q/0m | mentioned | "Blade/Big Tall" (blade-big-tall)
+      bio: Alleged arch nemesis using multiple accounts to cause problems
+  cmo3bekm500pwckttk6fe6j80 | 1g/0q/0m | guest     | "Big tall sex" (big-tall-sex)
+      bio: Panel member from Canada that the host trusts to help drive the conversation
+  cmo3cndkz03b3cktth1vvoidk | 1g/0q/0m | guest     | "Big Tall Rob/Sexy Rob" (big-tall-rob-sexy-rob)
+      bio: Claims to be 6'7", engages in extended crude scenarios with Alexander throughout the stream
+  cmo3d84v104j7cktt088qthv9 | 1g/0q/0m | recurring | "Big Rob/Blade" (big-rob-blade)
+      bio: Recurring controversial figure who trolls the chat and causes confusion about his identity
+  cmo3c807i02f5ckttnzoy4dzn | 1g/0q/0m | guest     | "Big Tall Sexy Rob" (big-tall-sexy-rob)
+      bio: 6'8" Samoan guest known for his deep voice, hunting stories, and ability to do voice impressions (pa…
+
+[MERGE?] cluster anchor "Joe" (2 records)
+  cmn46k5l20016b0ttdq9s531r | 7g/2q/0m | guest     | "Joe" (joe) <- KEEP
+      bio: Panel participant who briefly appears, clarifies he's not 'Joe Shipley' and expresses criticism of t…
+  cmo3b9ppl00ghckttjm04h9rn | 2g/0q/0m | mentioned | "Joe Shipley" (joe-shipley)
+      bio: Person who made death threats against Alexandra, causing community tensions
+
+[MERGE?] cluster anchor "Jimmy" (4 records)
+  cmo3b955s00f9cktt0hq2fqio | 4g/0q/0m | mentioned | "Jimmy" (jimmy) <- KEEP
+      bio: A viewer mentioned by the chat but not actually present on the stream
+  cmo3d2izo047hckttyx0w3ksh | 3g/0q/0m | mentioned | "Groovy Jimmy" (groovy-jimmy)
+      bio: Former co-host and friend of Psyche who allegedly engaged in threatening behavior toward women
+  cmo3bhu1b00wdcktt5m3xb5u1 | 2g/0q/0m | guest     | "Groovy Abdul" (groovy-abdul)
+      bio: Supportive chat member who helped with the poll campaign
+  cmo3d4qo004bzckttwgfum7rm | 1g/0q/0m | guest     | "Groovy" (groovy)
+      bio: Newer participant to the panel scene, came from DABVerse community
+
+[MERGE?] cluster anchor "Isaiah" (4 records)
+  cmn46ph4w00k5b0ttm1z2m7jb | 4g/2q/0m | guest     | "Isaiah" (isaiah) <- KEEP
+      bio: A guest who appears to do lawn mowing for work, participating in what seems to be a psychedelic expe…
+  cmo3d7ceg04hdcktttlfpvn0s | 2g/0q/0m | guest     | "School of Athens" (school-of-athens)
+      bio: Panel participant interested in philosophy, influences, and literary works like 'Preplay'
+  cmo3cp4d303f0cktt6lsy312e | 1g/0q/0m | guest     | "Athens/School of Athens" (athens-school-of-athens)
+      bio: Supporter who provides super chat donations for readings
+  cmo3br4oc01fwckttewfo3ghq | 1g/0q/0m | guest     | "Isaiah/School of Athens" (isaiah-school-of-athens)
+      bio: 23-year-old panel participant, Cleveland Indians fan with strong opinions about baseball
+
+[MERGE?] cluster anchor "Trevor" (2 records)
+  cmn46wbos0168b0ttjbjzrigh | 6g/1q/0m | guest     | "Trevor" (trevor) <- KEEP
+      bio: Regular guest from Michigan who has friendly conversations with Psyche about various topics includin…
+  cmo3bjxuz010gcktt67ttshd7 | 1g/0q/0m | guest     | "Trevor Ryan" (trevor-ryan)
+      bio: Panelist known for his humor and playful energy. Has been part of the show's regular circle.
+
+[MERGE?] cluster anchor "Chris K" (2 records)
+  cmn46r6lh00pqb0ttfk5p0zds | 4g/1q/0m | mentioned | "Chris K" (chris-k) <- KEEP
+      bio: A controversial figure who openly expresses white supremacist views and uses racist language extensi…
+  cmo3cxfxp03xackttuctvouuu | 3g/0q/0m | guest     | "Chris" (chris)
+      bio: A younger panel member whose birthday is March 10th, well-liked by the community
+
+[MERGE?] cluster anchor "Caller" (3 records)
+  cmn47i0ka02zmb0tt9b67kb9u | 2g/3q/0m | guest     | "Caller" (caller) <- KEEP
+      bio: 49-year-old registered nurse who was deceived by a manipulative man and is now exposing his patterns…
+  cmo3ebg8n06nxckttsvkhc6ij | 1g/0q/0m | guest     | "Angry Caller" (angry-caller)
+      bio: Confrontational caller engaging in heated exchange with the host about Trump and political divisions
+  cmo3da3o104n2ckttuef5dgkr | 1g/0q/0m | guest     | "Chicago/Kentucky Caller" (chicago-kentucky-caller)
+      bio: A caller who claims to be from Chicago but is accused of being from Kentucky, leading to heated exch…
+
+[MERGE?] cluster anchor "Tommy James" (3 records)
+  cmn6dyd6w022dl8ttgy3pz5ix | 4g/1q/0m | guest     | "Tommy James" (tommy-james) <- KEEP
+      bio: Regular guest who joins via video call to discuss various topics including conspiracy theories and s…
+  cmo3clzgc037wckttk6cfdwic | 1g/0q/0m | guest     | "James Carrington Craig" (james-carrington-craig)
+      bio: Individual involved in the confrontation, shared personal address information
+  cmo3dd7l604tjcktt1gttmhof | 1g/0q/0m | mentioned | "James" (james)
+      bio: Characterized as crying truth with mascara eyes, suggesting an emotional truth-teller
+
+[MERGE?] cluster anchor "Capricorn Soul tribe" (5 records)
+  cmo3cszd203nocktt4hphobt0 | 2g/0q/0m | mentioned | "Capricorn Soul tribe" (capricorn-soul-tribe) <- KEEP
+      bio: A viewer/community member who receives personal card readings
+  cmo3c80g602f7ckttxd0gpzle | 1g/0q/0m | guest     | "Miss Fearless Soul" (miss-fearless-soul)
+      bio: British panelist who has two YouTube channels (one spiritual, one general) and has been part of the …
+  cmo3cttv803phcktt483v318k | 1g/0q/0m | guest     | "Miss A" (miss-a)
+      bio: Scorpio viewer with a Pisces daughter who received a Queen of Cups reading
+  cmo3d84qp04j6ckttcowloxov | 1g/0q/0m | guest     | "Fearless Soul" (fearless-soul)
+      bio: British guest who helps resolve confusion about the identity of 'Big Rob/Blade' character
+  cmo3de85y04v9ckttuoq02min | 1g/0q/0m | mentioned | "Miss Liz" (miss-liz)
+      bio: Person thanked during the heated exchange
+
+[MERGE?] cluster anchor "Chona" (3 records)
+  cmo3btcs001krcktt9pakiafl | 4g/0q/0m | guest     | "Chona" (chona) <- KEEP
+      bio: Regular viewer from the Philippines who received Greek goddess card readings
+  cmo3cruxs03l0cktt6uo13fgq | 1g/0q/0m | guest     | "Jonah" (jonah)
+      bio: Chat participant who received a prosperity reading with Queen and King of Pentacles
+  cmo3cskgd03mocktt2b5r755t | 1g/0q/0m | recurring | "Jonah/Chona" (jonah-chona)
+      bio: A regular viewer and moderator from the Philippines who runs 'Chona Adventure Vlogs' channel and is …
+
+[MERGE?] cluster anchor "Rudy" (2 records)
+  cmo3bgsq300udckttxod14jr0 | 5g/0q/0m | recurring | "Rudy" (rudy) <- KEEP
+      bio: Panel member noted for having 'flare'
+  cmo3e25yk064ickttuli4x0pv | 1g/0q/0m | mentioned | "Mr. Rudy" (mr-rudy)
+      bio: The host's cat who once caught and ate a hummingbird
+
+[MERGE?] cluster anchor "Bronze Bird" (3 records)
+  cmo3cwkef03vhckttl47na3g7 | 3g/0q/0m | guest     | "Bronze Bird" (bronze-bird) <- KEEP
+      bio: Panel guest who engages in extended rap battles and crude exchanges
+  cmnt3bt4e03trhwttf8vgaslf | 1g/1q/0m | guest     | "Bronze" (bronze)
+      bio: Upset panel guest who confronted Psyche about previous interactions and perceived slights
+  cmo3cvjtr03t9cktteugflmmz | 1g/0q/0m | mentioned | "Bronze chicken" (bronze-chicken)
+      bio: Nickname for someone described as strutting around but looking like a lunatic
+
+[MERGE?] cluster anchor "Norcal" (2 records)
+  cmn47j7tv033ib0ttvagnt479 | 4g/1q/0m | guest     | "Norcal" (norcal) <- KEEP
+      bio: Guest who was challenged to show body parts but backed down, involved in various confrontations
+  cmo3eloww079ycktttydy0wju | 1g/0q/0m | mentioned | "Norca" (norca)
+      bio: Person addressed in confrontational manner during this brief episode
+
+[MERGE?] cluster anchor "Lenore" (3 records)
+  cmo3c8x7y02h1cktttfl33mf8 | 2g/0q/0m | mentioned | "Lenore" (lenore) <- KEEP
+      bio: The mascot of the Cult of Psyche with cinematic skills
+  cmnmi67em02foosttl9qu89pa | 1g/1q/0m | guest     | "Be's Kitty" (bes-kitty)
+      bio: Regular guest who Psyche considers one of his most trusted friends
+  cmo3cucwf03qwckttcqs6rts1 | 1g/0q/0m | mentioned | "Lenore/Pie/Mr. Kitty" (lenore-pie-mr-kitty)
+      bio: Psyche's other cat who scratched his arm and hid, letting Tux take the blame
+
+[MERGE?] cluster anchor "Kirk" (3 records)
+  cmn46ria000qtb0ttmybbke21 | 1g/1q/0m | guest     | "Kirk" (kirk) <- KEEP
+      bio: Participant in the confrontation, critical of Psyche's approach to conflict resolution
+  cmo3bjycr010kckttcbrhw6os | 2g/0q/0m | mentioned | "Charlie Kirk" (charlie-kirk)
+      bio: 31-year-old conservative activist and founder of Turning Point USA who was assassinated during the e…
+  cmo3bmrna0179ckttk4js4ebr | 1g/0q/0m | mentioned | "Charlie" (charlie)
+      bio: Chat participant who was reportedly timed out without reason
+
+[MERGE?] cluster anchor "Theo" (2 records)
+  cmn46wbt10169b0tt6rtks6dv | 3g/1q/0m | guest     | "Theo" (theo) <- KEEP
+      bio: Panel participant who needs to leave to spend time with their baby
+  cmo3ca8bj02kkckttw5yg308p | 1g/0q/0m | guest     | "Theo/thegate61802" (theo-thegate61802)
+      bio: Regular panel participant who joins the stream and discusses confrontations with other streamers
+
+[MERGE?] cluster anchor "Uncle Scam" (3 records)
+  cmn47krgj0380b0ttm5e04vpr | 2g/1q/0m | guest     | "Uncle Scam" (uncle-scam) <- KEEP
+      bio: Caller who appears to have been kicked from a previous show and confronts Psyche
+  cmo3be8do00p6ckttt6fyus1j | 1g/0q/0m | mentioned | "Scam" (scam)
+      bio: Discord community member who allegedly made threats while claiming to represent 'the Greece'
+  cmo3cx2pz03wlcktt9wsp49kl | 1g/0q/0m | guest     | "Uncle Scram" (uncle-scram)
+      bio: Controversial guest who admits to past fraudulent activities and attempts to make peace with other g…
+
+[MERGE?] cluster anchor "Drunk Person" (2 records)
+  cmn9p5e6n02eoq0ttpc3oo4vs | 1g/2q/0m | guest     | "Drunk Person" (drunk-person) <- KEEP
+      bio: An intoxicated individual engaging in a confrontational conversation with the host
+  cmn9ppgn803m9q0tt787tmrqm | 1g/1q/0m | guest     | "Unnamed Person" (unnamed-person)
+      bio: The other individual threatening to physically attack Gotti
+
+[MERGE?] cluster anchor "Allied" (3 records)
+  cmn46ujp70105b0ttn53n2b4o | 1g/1q/0m | guest     | "Allied" (allied) <- KEEP
+      bio: Regular participant known for pranking and impersonations, involved in ongoing prank wars with other…
+  cmnmhsp0e01mhosttfqneswho | 1g/1q/0m | guest     | "Master Computer Guy (Ali)" (master-computer-guy-ali)
+      bio: Panel participant who engages in political discussions, Jewish, describes himself as fired up about …
+  cmo3d9m1v04m6ckttlfulcgqd | 1g/0q/0m | mentioned | "Allied Master Computer" (allied-master-computer)
+      bio: Accused of being a mole who shared personal information and pretended to be bisexual
+
+[MERGE?] cluster anchor "Spunky" (3 records)
+  cmn5t78in004hpotts0s39w2g | 2g/1q/0m | mentioned | "Spunky" (spunky) <- KEEP
+      bio: Another community member associated with Gotti's trolling activities
+  cmo3bs3dw01hwcktt46m6udzy | 1g/0q/0m | mentioned | "Spunky/Stephanie" (spunky-stephanie)
+      bio: Host of another streaming channel where drama occurred involving the guests
+  cmo3dlad8058rckttn6mpjduf | 1g/0q/0m | mentioned | "Stephanie" (stephanie)
+      bio: Someone mentioned in relation to a nickname that might stick
+
+[MERGE?] cluster anchor "Meezer" (2 records)
+  cmnjbd7s902xf4ott2frs1hfm | 3g/1q/0m | guest     | "Meezer" (meezer) <- KEEP
+      bio: Psyche's ex-boyfriend who remains a friend, artist and musician who performed Bo Burnham's 'That Fun…
+  cmo3eezwk06vtckttim18pv70 | 1g/0q/0m | guest     | "Meezer/Measor" (meezer-measor)
+      bio: Panel participant who creates artwork and may work at or own a tattoo shop called Pink Ink
+
+[MERGE?] cluster anchor "Bradley" (2 records)
+  cmo3cgt3k02xnckttsitvh6u7 | 3g/0q/0m | guest     | "Bradley" (bradley) <- KEEP
+      bio: A recurring guest who became disruptive during the stream and was suspected of being a 'rogue modera…
+  cmo3cy3pg03yqcktt0jcu0oiz | 1g/0q/0m | guest     | "Bradley/Crusty" (bradley-crusty)
+      bio: Panel regular who shares backyard wrestling videos, drinks and jokes around, compared to Jeffrey Dah…
+
+[MERGE?] cluster anchor "Rando" (2 records)
+  cmn46xubu01b5b0ttxe2t57of | 2g/1q/0m | guest     | "Rando" (rando) <- KEEP
+      bio: Guest who performs a brief musical piece for the show
+  cmo3bnczq018gcktttt78c7en | 1g/0q/0m | guest     | "Random guy/Rando" (random-guy-rando)
+      bio: Casual participant who joined the discussion mid-episode
+
+[MERGE?] cluster anchor "Paul" (2 records)
+  cmo3bjxqp010fcktt1f30t2os | 3g/0q/0m | mentioned | "Paul" (paul) <- KEEP
+      bio: Mentioned as someone the host likes
+  cmo3dk9kg056uckttakxa7rnl | 1g/0q/0m | guest     | "Paul Shepherd" (paul-shepherd)
+      bio: Guest living in a rented studio apartment; receives extended tarot reading; interested in spiritual …
+
+[REVIEW] cluster anchor "Music is Marty" (3 records)
+  cmo3bvnax01packttblffunx6 | 1g/0q/0m | mentioned | "Music is Marty" (music-is-marty) <- KEEP
+      bio: Deceased streamer who appeared on Psyche's show and helped with sports predictions based on team col…
+  cmo3bz7hu01wgckttxg5iqctp | 1g/0q/0m | mentioned | "Marty" (marty)
+      bio: Former collaborator who engaged in trolling activities with Psyche and called himself 'the slayer'
+  cmo3bniry018scktt4p8i6o09 | 1g/0q/0m | mentioned | "Music Biz Marty" (music-biz-marty)
+      bio: Deceased internet personality who visited Mini Manson and was filmed at his home
+
+[REVIEW] cluster anchor "Kell/Kelloggs" (3 records)
+  cmo3c70v702d5ckttc3f5llhg | 1g/0q/0m | recurring | "Kell/Kelloggs" (kell-kelloggs) <- KEEP
+      bio: Long-time community member and mod, described as a 'scouser' from Liverpool area
+  cmo3crv6f03l2ckttryrjcmjm | 1g/0q/0m | guest     | "Kell/Kelly" (kell-kelly)
+      bio: Chat participant dealing with despair who received fairy cards and encouragement about endless possi…
+  cmo3cs7m103lsckttvo3hkrsb | 1g/0q/0m | guest     | "Kellog/Kelly" (kellog-kelly)
+      bio: Chat participant who received readings and was made a mod during the stream
+
+[REVIEW] cluster anchor "Beta/Beat Up" (3 records)
+  cmo3c8hd802g7ckttcb7zc201 | 1g/0q/0m | guest     | "Beta/Beat Up" (beta-beat-up) <- KEEP
+      bio: Panel regular from Orange County who engaged in the heated exchanges
+  cmo3cf5ev02u6ckttsvjuj48f | 1g/0q/0m | mentioned | "Beat the Witch" (beat-the-witch)
+      bio: Controversial female streamer heavily criticized by Sam, described as 'the devil' and accused of bei…
+  cmo3cuo1m03rncktt3777nwcp | 1g/0q/0m | guest     | "demonic witch" (demonic-witch)
+      bio: Regular viewer who receives a reading about new journeys and money offers
+
+[MERGE?] cluster anchor "Uncomfortably Numb" (2 records)
+  cmo3cifb9030vckttdwx8td4k | 2g/0q/0m | guest     | "Uncomfortably Numb" (uncomfortably-numb) <- KEEP
+      bio: Female guest whose name references Pink Floyd, mentioned personal tragedy involving her niece
+  cmo3c0pe801zbckttrmg2ma63 | 1g/0q/0m | recurring | "Katie (Uncomfortably Numb)" (katie-uncomfortably-numb)
+      bio: Long-time supporter and regular panelist, one of Psyche's OG viewers
+
+[MERGE?] cluster anchor "Shan" (2 records)
+  cmo3bkjsk0121ckttpky25v4h | 2g/0q/0m | guest     | "Shan" (shan) <- KEEP
+      bio: A chat participant with multiple sock accounts
+  cmo3eawda06n5ckttd83mj4gi | 1g/0q/0m | mentioned | "Shan Camp" (shan-camp)
+      bio: A member who receives special recognition and thanks from Psyche
+
+[MERGE?] cluster anchor "Salmon" (2 records)
+  cmo3bdf1l00nsckttp8076o5s | 1g/1q/0m | mentioned | "Salmon" (salmon) <- KEEP
+      bio: Individual mentioned in relation to alleged wiki page coordination schemes that the host denies
+  cmo3e8k7j06ibcktts0zdub1d | 1g/0q/0m | guest     | "Salmon/RG" (salmon-rg)
+      bio: Panel member who defends Beta and criticizes Psyche's content choices, gets repeatedly kicked from t…
+
+[MERGE?] cluster anchor "Easy" (2 records)
+  cmo3beoce00q9ckttvft04bbo | 2g/0q/0m | mentioned | "Easy" (easy) <- KEEP
+      bio: Chat participant greeted by the host
+  cmo3c0q4n01zhcktt1xrfqba2 | 1g/0q/0m | recurring | "EZ (Easy)" (ez-easy)
+      bio: Regular from the 1A auditing community who does his own streams
+
+[MERGE?] cluster anchor "Victoria Jay" (2 records)
+  cmo3c152s0208cktt9lw510ab | 2g/0q/0m | mentioned | "Victoria Jay" (victoria-jay) <- KEEP
+      bio: Someone who was described as sounding like a maniac during the panel
+  cmo3ctnyx03p1ckttwkwv5c2t | 1g/0q/0m | guest     | "Victoria" (victoria)
+      bio: Early viewer who joined the stream
+
+[MERGE?] cluster anchor "Peter" (2 records)
+  cmn5th58700t1pottsabjlrwb | 1g/1q/0m | guest     | "Peter" (peter) <- KEEP
+      bio: Participant in the rap battle who opens with aggressive freestyle verses
+  cmo3c34p7024cckttjdj302d5 | 1g/0q/0m | guest     | "Peta/Peter" (peta-peter)
+      bio: Panel participant involved in the conversation and banter
+
+[MERGE?] cluster anchor "Bronberg" (2 records)
+  cmo3dolmq05evckttvhy6xl5m | 2g/0q/0m | guest     | "Bronberg" (bronberg) <- KEEP
+      bio: Panel participant who engages in trolling and commentary
+  cmo3c1zlf022ackttm7gijh3j | 1g/0q/0m | guest     | "Bronzbird/Bronberg" (bronzbird-bronberg)
+      bio: Guest who got into heated arguments with Flirty Diamond about identity and respect
+
+[MERGE?] cluster anchor "Mina" (2 records)
+  cmo3dj9ri0554ckttzw34fqmw | 2g/0q/0m | mentioned | "Mina" (mina) <- KEEP
+      bio: A member receiving a tarot reading during the session
+  cmo3e8bnq06hhcktt75qfdexe | 1g/0q/0m | guest     | "Mina/Mirina" (mina-mirina)
+      bio: Michael's 49-year-old girlfriend who works as a nurse, came on panel to defend Michael
+
+[REVIEW] cluster anchor "Tricks" (2 records)
+  cmo3bl0f40134ckttkisebfu3 | 1g/0q/0m | recurring | "Tricks" (tricks) <- KEEP
+      bio: Psyche's cat who makes appearances on the show
+  cmo3e5l5206b9ckttcxy7qfjs | 1g/0q/0m | mentioned | "Mr. Tricks" (mr-tricks)
+      bio: One of Psyche's cats featured in the stream
+
+[REVIEW] cluster anchor "Samantha Avery" (2 records)
+  cmo3bf8bz00recktthfvxdpy1 | 1g/0q/0m | guest     | "Samantha Avery" (samantha-avery) <- KEEP
+      bio: A guest participating in the financial situation debate
+  cmo3c4k8y027icktt1gt6d1n8 | 1g/0q/0m | mentioned | "Samantha" (samantha)
+      bio: Chat participant referenced in the episode title and greeted as 'Nightbot Samantha'
+
+[REVIEW] cluster anchor "Divine" (2 records)
+  cmo3bm0g2015gckttwqc30f1w | 1g/0q/0m | guest     | "Divine" (divine) <- KEEP
+      bio: Chat participant dealing with shelter situation who requests a reading
+  cmo3ehuio0726cktte2d18d4p | 1g/0q/0m | mentioned | "Storm Entity/Divine Voice" (storm-entity-divine-voice)
+      bio: A mystical being or consciousness that speaks in poetic verse, describing itself as born from storms…
+
+[REVIEW] cluster anchor "RG Scott Macintosh" (2 records)
+  cmo3clzpc037ycktt23jlswmx | 1g/0q/0m | mentioned | "RG Scott Macintosh" (rg-scott-macintosh) <- KEEP
+      bio: Person whose information was allegedly shared during the confrontation
+  cmo3cxg1x03xbckttt29ftk35 | 1g/0q/0m | mentioned | "Scott Henderson" (scott-henderson)
+      bio: Person who filed the copyright strike against Psyche's channel
+
+[REVIEW] cluster anchor "Alexandria" (2 records)
+  cmo3dvx3j05t7cktt3rfhud1y | 1g/0q/0m | guest     | "Alexandria" (alexandria) <- KEEP
+      bio: A recurring guest on the show who the host is interviewing to learn more about her as a person
+  cmo3e8jq106i7cktta0xmz93j | 1g/0q/0m | guest     | "Alexandria/Alexander" (alexandria-alexander)
+      bio: Panel regular who helps with technical issues and provides commentary on community drama
+
+[REVIEW] cluster anchor "Arushi/Roshi" (2 records)
+  cmo3csktf03mrckttd7sbusr4 | 1g/0q/0m | guest     | "Arushi/Roshi" (arushi-roshi) <- KEEP
+      bio: A viewer preparing to become a doctor who receives cards related to healing and medicine
+  cmo3cu6wq03qfckttmlq3webp | 1g/0q/0m | guest     | "Arushi" (arushi)
+      bio: Viewer who shared a dream about bears for interpretation
+
+[REVIEW] cluster anchor "Fuzzy" (2 records)
+  cmo3cnrnp03c9cktt0qezv1k5 | 1g/0q/0m | mentioned | "Fuzzy" (fuzzy) <- KEEP
+      bio: A community member who quotes scripture while trolling
+  cmo3bt1in01jwcktt2enz1hia | 1g/0q/0m | guest     | "Fuzzy Bear" (fuzzy-bear)
+      bio: Panel participant who made controversial comments about Amber
+
+[REVIEW] cluster anchor "sleeping" (2 records)
+  cmo3ctobr03p4cktt431e67ha | 1g/0q/0m | guest     | "sleeping" (sleeping) <- KEEP
+      bio: Viewer who asked for a tarot reading about being stalked by devils
+  cmo3cs1g603lfcktt1yix6oaf | 1g/0q/0m | guest     | "Sleeping Energy" (sleeping-energy)
+      bio: A returning viewer who received a previous reading about dealing with negative forces and requests o…
+
+[REVIEW] cluster anchor "Jerry Leane" (2 records)
+  cmo3cnz5v03cuckttzfpej6ju | 1g/0q/0m | mentioned | "Jerry Leane" (jerry-leane) <- KEEP
+      bio: Works on Star Trek, designed Mars rover, written famous songs. Mentioned as being in chat and suppor…
+  cmo3cgtky02xrcktt632hxer3 | 1g/0q/0m | guest     | "Jerry" (jerry)
+      bio: A writer who claims to have worked on various entertainment projects including Mars rover work, Howa…
+
+[REVIEW] cluster anchor "Mr. Rude" (2 records)
+  cmo3e4aij068pckttar8ivuxp | 1g/0q/0m | mentioned | "Mr. Rude" (mr-rude) <- KEEP
+      bio: Psyche's soft and sweethearted cat who appears ready for bed
+  cmo3cfv9j02vtckttpzpio55q | 1g/0q/0m | recurring | "Rude" (rude)
+      bio: Another of Psyche's cats, also called "Mr. Rude" and "Rudy Rude," described as a soft, strawberry bl…
+
+[REVIEW] cluster anchor "Terror Destroyer" (2 records)
+  cmo3e9xp606l2ckttjiopgz0v | 1g/0q/0m | mentioned | "Terror Destroyer" (terror-destroyer) <- KEEP
+      bio: Viewer who joined the chat during the episode
+  cmo3eap8l06mlckttt8hms6u1 | 1g/0q/0m | recurring | "Terror" (terror)
+      bio: Recurring character described as spreading wide 'like a hacker on the net'
+
+[REVIEW] cluster anchor "Goddess of Love" (2 records)
+  cmo3cucjd03qtckttuuxo2iyc | 1g/0q/0m | guest     | "Goddess of Love" (goddess-of-love) <- KEEP
+      bio: Chat participant who receives guidance about relationships and letting go of someone who isn't right…
+  cmo3bo5if01a2cktt5kbj60rx | 1g/0q/0m | guest     | "Courtney Love" (courtney-love)
+      bio: The frontwoman of the '90s grunge band Hole, known for her outspoken personality and relationship wi…
+
+[REVIEW] cluster anchor "Eliza (Fifth Sage)" (2 records)
+  cmo3cwk5n03vfckttz84r8urd | 1g/0q/0m | guest     | "Eliza (Fifth Sage)" (eliza-fifth-sage) <- KEEP
+      bio: Bronze Bird's sister with colorful hair, mother of eight children, married to Exiled One
+  cmo3bghab00tlckttmw3vcqu2 | 1g/0q/0m | mentioned | "Fifth Sage" (fifth-sage)
+      bio: Community member whose identity was impersonated by trolls in a porn bombing incident
+
+[REVIEW] cluster anchor "Susanna" (2 records)
+  cmo3cqtpz03ipcktttc6st2bj | 1g/0q/0m | recurring | "Susanna" (susanna) <- KEEP
+      bio: Regular viewer who creates art and does energy work like 'return to sender' spells
+  cmo3ca14t02k4ckttznqjd8af | 1g/0q/0m | guest     | "Susan/Susanna Holly Blossom" (susan-susanna-holly-blossom)
+      bio: Experienced guest who shares stories about astral projection and spiritual protection
+
+--- Summary ---
+Total persons: 713
+Multi-record clusters: 82
+Records that could collapse: 289
