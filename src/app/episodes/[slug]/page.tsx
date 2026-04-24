@@ -377,6 +377,8 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                           text={q.text}
                           speakerName={q.speaker?.displayName}
                           speakerAvatarUrl={q.speaker?.avatarUrl}
+                          speakerSlug={q.speaker?.slug}
+                          speakerType={q.speaker?.personType}
                           timestampSeconds={q.timestampSeconds}
                         />
                       ))

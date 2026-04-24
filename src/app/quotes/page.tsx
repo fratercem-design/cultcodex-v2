@@ -169,6 +169,8 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
                         text={quote.text}
                         speakerName={quote.speaker?.displayName}
                         speakerAvatarUrl={quote.speaker?.avatarUrl}
+                        speakerSlug={quote.speaker?.slug}
+                        speakerType={quote.speaker?.personType}
                         timestampSeconds={quote.timestampSeconds}
                       />
                       {/* Episode context link + save button */}

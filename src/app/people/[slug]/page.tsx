@@ -185,6 +185,8 @@ export default async function PersonDetailPage({ params }: PageProps) {
                       text={q.text}
                       speakerName={person.displayName}
                       speakerAvatarUrl={person.avatarUrl}
+                      speakerSlug={person.slug}
+                      speakerType={person.personType}
                       timestampSeconds={q.timestampSeconds}
                     />
                   ))}

@@ -299,6 +299,8 @@ export default async function HomePage() {
                   text={q.text}
                   speakerName={q.speaker?.displayName}
                   speakerAvatarUrl={q.speaker?.avatarUrl}
+                  speakerSlug={q.speaker?.slug}
+                  speakerType={q.speaker?.personType}
                   timestampSeconds={q.timestampSeconds}
                 />
               ))}
