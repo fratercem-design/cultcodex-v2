@@ -1,11 +1,15 @@
 import { QuoteShareButton } from "@/components/quotes/share-button";
+import { PersonSigil } from "@/components/ui/person-sigil";
 import { formatSeconds } from "@/lib/format/duration";
+import type { PersonType } from "@/generated/prisma/client";
 
 interface QuoteHighlightCardProps {
   id: string;
   text: string;
   speakerName?: string | null;
   speakerAvatarUrl?: string | null;
+  speakerSlug?: string | null;
+  speakerType?: PersonType | null;
   timestampSeconds?: number | null;
 }
 
@@ -14,6 +18,8 @@ export function QuoteHighlightCard({
   text,
   speakerName,
   speakerAvatarUrl,
+  speakerSlug,
+  speakerType,
   timestampSeconds,
 }: QuoteHighlightCardProps) {
   return (
@@ -41,6 +47,14 @@ export function QuoteHighlightCard({
                   src={speakerAvatarUrl}
                   alt=""
                   className="h-6 w-6 rounded-full border border-accent-gold/30"
+                />
+              ) : speakerSlug ? (
+                <PersonSigil
+                  slug={speakerSlug}
+                  name={speakerName}
+                  personType={speakerType ?? "guest"}
+                  size={24}
+                  className="rounded-full border border-accent-gold/30"
                 />
               ) : (
                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-gold/20 text-[10px] font-bold text-accent-gold">
