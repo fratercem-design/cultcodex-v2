@@ -150,6 +150,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
                 displayName: p.person.displayName,
                 slug: p.person.slug,
                 avatarUrl: p.person.avatarUrl,
+                personType: p.person.personType,
               }))}
             />
 

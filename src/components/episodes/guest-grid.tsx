@@ -1,11 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { SectionCard } from "@/components/ui/section-card";
+import { PersonSigil } from "@/components/ui/person-sigil";
+import type { PersonType } from "@/generated/prisma/client";
 
 interface Guest {
   displayName: string;
   slug: string;
   avatarUrl: string | null;
+  personType: PersonType;
 }
 
 interface GuestGridProps {
@@ -33,9 +36,13 @@ export function GuestGrid({ guests }: GuestGridProps) {
                 className="h-10 w-10 rounded-full border-2 border-transparent object-cover transition-colors group-hover:border-accent-gold"
               />
             ) : (
-              <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-transparent bg-accent-gold/20 text-sm font-bold text-accent-gold transition-colors group-hover:border-accent-gold">
-                {guest.displayName[0]?.toUpperCase()}
-              </div>
+              <PersonSigil
+                slug={guest.slug}
+                name={guest.displayName}
+                personType={guest.personType}
+                size={40}
+                className="rounded-full border-2 border-transparent transition-colors group-hover:border-accent-gold"
+              />
             )}
             <span className="w-full truncate text-center font-mono text-[10px] text-text-muted transition-colors group-hover:text-accent-gold">
               {guest.displayName}

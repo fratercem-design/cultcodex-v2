@@ -207,6 +207,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
                 displayName: p.person.displayName,
                 slug: p.person.slug,
                 avatarUrl: p.person.avatarUrl,
+                personType: p.person.personType,
               }))}
             />
 

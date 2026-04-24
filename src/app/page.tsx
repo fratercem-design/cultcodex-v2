@@ -170,6 +170,7 @@ export default async function HomePage() {
                       displayName: g.person.displayName,
                       slug: g.person.slug,
                       avatarUrl: g.person.avatarUrl,
+                      personType: g.person.personType,
                     }))}
                 />
               </div>

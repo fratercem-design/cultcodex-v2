@@ -481,6 +481,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               displayName: g.person.displayName,
               slug: g.person.slug,
               avatarUrl: g.person.avatarUrl,
+              personType: g.person.personType,
             }))}
           />
 
