@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { PersonSigil } from "@/components/ui/person-sigil";
 import type { PersonType } from "@/generated/prisma/client";
 
 interface PersonCardProps {
@@ -21,8 +22,6 @@ const typeVariant: Record<PersonType, "green" | "purple" | "gold" | "muted"> = {
 };
 
 export function PersonCard({ person }: PersonCardProps) {
-  const initial = person.displayName[0]?.toUpperCase() ?? "?";
-
   return (
     <Link
       href={`/people/${person.slug}`}
@@ -35,9 +34,13 @@ export function PersonCard({ person }: PersonCardProps) {
           className="h-10 w-10 flex-shrink-0 rounded-full object-cover border border-accent-gold/20"
         />
       ) : (
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-accent-gold/15 font-mono text-sm font-bold text-accent-gold">
-          {initial}
-        </div>
+        <PersonSigil
+          slug={person.slug}
+          name={person.displayName}
+          personType={person.personType}
+          size={40}
+          className="flex-shrink-0 rounded-full border border-accent-gold/20 p-0.5"
+        />
       )}
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
