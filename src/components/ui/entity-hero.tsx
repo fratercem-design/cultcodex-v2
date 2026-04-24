@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 import { StatusBadge } from "@/components/ui/status-badge";
 
 interface HeroBadge {
@@ -11,6 +12,7 @@ interface EntityHeroProps {
   subtitle?: string;
   backgroundImage: string;
   avatarUrl?: string | null;
+  fallbackAvatar?: ReactNode;
   badges?: HeroBadge[];
 }
 
@@ -19,6 +21,7 @@ export function EntityHero({
   subtitle,
   backgroundImage,
   avatarUrl,
+  fallbackAvatar,
   badges,
 }: EntityHeroProps) {
   return (
@@ -45,7 +48,7 @@ export function EntityHero({
       {/* Title area */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-6">
         <div className="flex items-end gap-4">
-          {avatarUrl && (
+          {avatarUrl ? (
             <Image
               src={avatarUrl}
               alt=""
@@ -53,6 +56,8 @@ export function EntityHero({
               height={80}
               className="h-14 w-14 sm:h-20 sm:w-20 rounded-full border-2 border-accent-gold/40 object-cover shadow-lg"
             />
+          ) : (
+            fallbackAvatar
           )}
           <div>
             <h1 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-accent-gold drop-shadow-md">

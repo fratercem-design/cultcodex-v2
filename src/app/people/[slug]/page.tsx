@@ -22,6 +22,7 @@ import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { ArchiveNotice } from "@/components/notices/archive-notice";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import { ColorLegend } from "@/components/ui/color-legend";
+import { PersonSigil } from "@/components/ui/person-sigil";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
@@ -125,6 +126,15 @@ export default async function PersonDetailPage({ params }: PageProps) {
         subtitle={person.shortBio ?? undefined}
         backgroundImage="/wiki-page-header.jpg"
         avatarUrl={person.avatarUrl}
+        fallbackAvatar={
+          <PersonSigil
+            slug={person.slug}
+            name={person.displayName}
+            personType={person.personType}
+            size={80}
+            className="h-14 w-14 sm:h-20 sm:w-20 rounded-full border-2 border-accent-gold/40 shadow-lg"
+          />
+        }
         badges={[{ label: typeLabel, variant: typeVariant }]}
       />
       <Breadcrumbs items={[
