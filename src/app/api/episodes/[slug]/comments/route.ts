@@ -74,20 +74,26 @@ export async function POST(
       );
     }
 
-    // Publish to SSE for real-time updates (only unflagged comments)
-    eventBus.publish(`episode:${slug}`, {
-      type: "new-comment",
-      data: {
-        id: comment.id,
-        content: comment.content,
-        userId: user.id,
-        displayName: user.displayName,
-        avatarUrl: user.avatarUrl,
-        createdAt: comment.createdAt,
-        parentId: comment.parentId ?? null,
-        flagged: comment.flagged,
-      },
-    });
+    // Publish to SSE for real-time updates (only unflagged comments).
+    // Wrapped because PgEventBus.publish is now async and a Postgres
+    // hiccup must not break comment creation — the row is already saved.
+    try {
+      await eventBus.publish(`episode:${slug}`, {
+        type: "new-comment",
+        data: {
+          id: comment.id,
+          content: comment.content,
+          userId: user.id,
+          displayName: user.displayName,
+          avatarUrl: user.avatarUrl,
+          createdAt: comment.createdAt,
+          parentId: comment.parentId ?? null,
+          flagged: comment.flagged,
+        },
+      });
+    } catch (err) {
+      console.error("[comments] eventBus.publish failed:", err);
+    }
 
     return NextResponse.json(comment, { status: 201 });
   } catch (error) {
