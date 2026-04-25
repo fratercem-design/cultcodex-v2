@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { SseLogger } from "../log";
 
 describe("SseLogger", () => {
@@ -37,5 +37,31 @@ describe("SseLogger", () => {
     (first as unknown as unknown[]).push({ poison: true });
     const second = logger.recent();
     expect(second).toHaveLength(1);
+  });
+
+  it("routes log levels to the correct console method", () => {
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    try {
+      logger.log("info", "connect");
+      logger.log("warn", "client-end");
+      logger.log("error", "client-error");
+
+      expect(logSpy).toHaveBeenCalledTimes(1);
+      expect(warnSpy).toHaveBeenCalledTimes(1);
+      expect(errorSpy).toHaveBeenCalledTimes(1);
+
+      // Each call should pass a JSON string
+      expect(typeof logSpy.mock.calls[0][0]).toBe("string");
+      expect(JSON.parse(logSpy.mock.calls[0][0]).event).toBe("connect");
+      expect(JSON.parse(warnSpy.mock.calls[0][0]).event).toBe("client-end");
+      expect(JSON.parse(errorSpy.mock.calls[0][0]).event).toBe("client-error");
+    } finally {
+      logSpy.mockRestore();
+      warnSpy.mockRestore();
+      errorSpy.mockRestore();
+    }
   });
 });
