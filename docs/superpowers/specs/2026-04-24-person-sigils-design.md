@@ -1,6 +1,6 @@
 # Person Sigils — Design
 
-**Status:** approved, ready for implementation plan
+**Status:** shipped 2026-04-24
 **Date:** 2026-04-24
 
 ## Goal
