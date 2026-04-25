@@ -210,3 +210,102 @@ describe("subscribe / unsubscribe", () => {
     expect(() => unsub()).not.toThrow();
   });
 });
+
+// ---------------------------------------------------------------------------
+// notification fan-out
+// ---------------------------------------------------------------------------
+
+describe("notification fan-out", () => {
+  it("incoming NOTIFY routes to all listeners on that channel", async () => {
+    const bus = await loadBus();
+    const a: unknown[] = [];
+    const b: unknown[] = [];
+
+    bus.subscribe("live:chat", (data) => a.push(data));
+    bus.subscribe("live:chat", (data) => b.push(data));
+    const client = await getMockClient();
+    await new Promise((r) => setTimeout(r, 20));
+
+    client.emit("notification", {
+      channel: "live:chat",
+      payload: JSON.stringify({ hello: "world" }),
+    });
+
+    expect(a).toEqual([{ hello: "world" }]);
+    expect(b).toEqual([{ hello: "world" }]);
+  });
+
+  it("NOTIFY on a channel with no listeners is silently dropped", async () => {
+    const bus = await loadBus();
+    bus.subscribe("live:chat", () => {});
+    const client = await getMockClient();
+    await new Promise((r) => setTimeout(r, 20));
+
+    expect(() =>
+      client.emit("notification", {
+        channel: "no-such-channel",
+        payload: '{"x":1}',
+      }),
+    ).not.toThrow();
+  });
+
+  it("a listener that throws does not block other listeners", async () => {
+    const bus = await loadBus();
+    const received: unknown[] = [];
+
+    bus.subscribe("live:chat", () => {
+      throw new Error("boom");
+    });
+    bus.subscribe("live:chat", (data) => received.push(data));
+    const client = await getMockClient();
+    await new Promise((r) => setTimeout(r, 20));
+
+    client.emit("notification", {
+      channel: "live:chat",
+      payload: '{"ok":true}',
+    });
+
+    expect(received).toEqual([{ ok: true }]);
+  });
+
+  it("NOTIFY with malformed JSON payload is dropped without invoking listeners", async () => {
+    const bus = await loadBus();
+    const received: unknown[] = [];
+
+    bus.subscribe("live:chat", (data) => received.push(data));
+    const client = await getMockClient();
+    await new Promise((r) => setTimeout(r, 20));
+
+    client.emit("notification", {
+      channel: "live:chat",
+      payload: "{not valid json",
+    });
+
+    expect(received).toEqual([]);
+  });
+
+  it("hashed-channel raw lookup works (long channel name round-trip)", async () => {
+    const bus = await loadBus();
+    const received: unknown[] = [];
+
+    const longChannel = "episode:" + "x".repeat(60);
+    bus.subscribe(longChannel, (data) => received.push(data));
+    const client = await getMockClient();
+    await new Promise((r) => setTimeout(r, 20));
+
+    const listenQueries = client.queries.filter((q) =>
+      q.sql.startsWith("LISTEN"),
+    );
+    expect(listenQueries.length).toBeGreaterThanOrEqual(1);
+    // Extract the safe channel from the LISTEN sql (e.g., LISTEN "ch_abcdef...")
+    const match = listenQueries[0].sql.match(/^LISTEN "(.+)"$/);
+    expect(match).not.toBeNull();
+    const safe = match![1];
+
+    client.emit("notification", {
+      channel: safe,
+      payload: '{"ok":true}',
+    });
+    expect(received).toEqual([{ ok: true }]);
+  });
+});
