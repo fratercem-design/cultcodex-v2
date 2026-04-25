@@ -1,6 +1,6 @@
 # Postgres-backed SSE Event Bus — Design
 
-**Status:** approved
+**Status:** shipped 2026-04-25
 **Date:** 2026-04-24
 
 ## Goal
