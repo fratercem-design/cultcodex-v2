@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useSSE } from "@/lib/sse/use-sse";
+import { ConnectionDot } from "@/components/sse/connection-dot";
 
 interface ReactionBarProps {
   slug: string;
@@ -32,7 +33,7 @@ export function ReactionBar({
   const [counts, setCounts] = useState(initialCounts);
   const [pending, setPending] = useState<string | null>(null);
 
-  useSSE({
+  const { status } = useSSE({
     url: `/api/sse/episodes/${slug}`,
     onMessage: (event) => {
       if (event.type === "reaction-update" && event.data) {
@@ -87,7 +88,7 @@ export function ReactionBar({
   );
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       {REACTIONS.map(({ type, emoji, label }) => {
         const count = counts[type as keyof typeof counts] as number;
         const isActive = counts.userReactions.includes(type);
@@ -109,6 +110,7 @@ export function ReactionBar({
           </button>
         );
       })}
+      <ConnectionDot status={status} />
     </div>
   );
 }

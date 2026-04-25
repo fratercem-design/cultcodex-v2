@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { relativeTime } from "@/lib/format/relative-time";
 import { useSSE } from "@/lib/sse/use-sse";
+import { ConnectionDot } from "@/components/sse/connection-dot";
 
 interface CommentUser {
   id: string;
@@ -48,7 +49,7 @@ export function CommentSection({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useSSE({
+  const { status } = useSSE({
     url: `/api/sse/episodes/${slug}`,
     onMessage: (event) => {
       if (event.type === "new-comment" && event.data) {
@@ -158,6 +159,7 @@ export function CommentSection({
 
   return (
     <div className="space-y-6">
+      <ConnectionDot status={status} />
       {/* Comment form */}
       <div className="space-y-3">
         {isAuthenticated ? (

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSSE } from "@/lib/sse/use-sse";
+import { ConnectionDot } from "@/components/sse/connection-dot";
 
 interface ChatMsg {
   id: string;
@@ -27,7 +28,7 @@ export function LiveChat({ isLive, isAuthenticated, initialMessages }: LiveChatP
   const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useSSE({
+  const { status } = useSSE({
     url: "/api/sse/live/chat",
     enabled: isLive,
     onMessage: (event) => {
@@ -87,6 +88,7 @@ export function LiveChat({ isLive, isAuthenticated, initialMessages }: LiveChatP
         <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
         <span className="font-mono text-xs text-accent-gold uppercase tracking-wider">
           Live Chat
+          <ConnectionDot status={status} />
         </span>
         <span className="ml-auto font-mono text-[10px] text-text-muted">
           {messages.length} messages
