@@ -39,6 +39,7 @@ export function PersonCard({ person }: PersonCardProps) {
           name={person.displayName}
           personType={person.personType}
           size={40}
+          decorative
           className="flex-shrink-0 rounded-full border border-accent-gold/20 p-0.5"
         />
       )}

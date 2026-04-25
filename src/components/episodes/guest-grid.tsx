@@ -41,6 +41,7 @@ export function GuestGrid({ guests }: GuestGridProps) {
                 name={guest.displayName}
                 personType={guest.personType}
                 size={40}
+                decorative
                 className="rounded-full border-2 border-transparent transition-colors group-hover:border-accent-gold"
               />
             )}

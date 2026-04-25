@@ -7,6 +7,14 @@ interface PersonSigilProps {
   personType: PersonType;
   size?: number;
   className?: string;
+  /**
+   * If true, the sigil is treated as decorative — the SVG receives
+   * `aria-hidden="true"` and no `role`/`aria-label`. Use this when the
+   * person's name is already announced by an adjacent visible label,
+   * to avoid double-announcement by screen readers.
+   * Defaults to false.
+   */
+  decorative?: boolean;
 }
 
 // 32-bit FNV-1a hash — deterministic, fast, pure.
@@ -136,6 +144,7 @@ export function PersonSigil({
   personType,
   size = 40,
   className,
+  decorative = false,
 }: PersonSigilProps): JSX.Element {
   const hashKey = slug || name || "void";
   const hash = fnv1a(hashKey);
@@ -154,10 +163,13 @@ export function PersonSigil({
 
   const tint = TINT_CLASS[personType] ?? TINT_CLASS.guest;
 
+  const a11yProps = decorative
+    ? ({ "aria-hidden": true } as const)
+    : ({ role: "img", "aria-label": name } as const);
+
   return (
     <svg
-      role="img"
-      aria-label={name}
+      {...a11yProps}
       width={size}
       height={size}
       viewBox="0 0 40 40"

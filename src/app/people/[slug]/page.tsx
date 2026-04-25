@@ -132,6 +132,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             name={person.displayName}
             personType={person.personType}
             size={80}
+            decorative
             className="h-14 w-14 sm:h-20 sm:w-20 rounded-full border-2 border-accent-gold/40 shadow-lg"
           />
         }

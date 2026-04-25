@@ -54,6 +54,7 @@ export function QuoteHighlightCard({
                   name={speakerName}
                   personType={speakerType ?? "guest"}
                   size={24}
+                  decorative
                   className="rounded-full border border-accent-gold/30"
                 />
               ) : (
