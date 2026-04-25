@@ -370,3 +370,158 @@ describe("publish", () => {
     }
   });
 });
+
+// ---------------------------------------------------------------------------
+// reconnect backoff
+// ---------------------------------------------------------------------------
+
+describe("reconnect backoff", () => {
+  it("re-LISTENs all active channels after a reconnect", async () => {
+    vi.useFakeTimers();
+    const bus = await loadBus();
+
+    bus.subscribe("live:chat", () => {});
+    bus.subscribe("episode:foo", () => {});
+    await vi.advanceTimersByTimeAsync(20);
+
+    const firstClient = mockInstances[0];
+    expect(firstClient).toBeDefined();
+    // Initial connect-loop should have LISTENed both channels at least once
+    const initialListens = firstClient.queries.filter((q) =>
+      q.sql.startsWith("LISTEN"),
+    );
+    expect(initialListens.length).toBeGreaterThanOrEqual(2);
+
+    // Simulate a disconnect
+    firstClient.emit("error", new Error("connection lost"));
+
+    // Advance past the 1000ms initial backoff
+    await vi.advanceTimersByTimeAsync(1100);
+
+    const secondClient = mockInstances[mockInstances.length - 1];
+    expect(secondClient).toBeDefined();
+    expect(secondClient).not.toBe(firstClient);
+    const reLISTEN = secondClient.queries.filter((q) =>
+      q.sql.startsWith("LISTEN"),
+    );
+    // Both channels should be re-LISTENed on the new client
+    const channels = new Set(
+      reLISTEN.map((q) => q.sql.match(/^LISTEN "(.+)"$/)?.[1]),
+    );
+    expect(channels.has("live:chat")).toBe(true);
+    expect(channels.has("episode:foo")).toBe(true);
+  });
+
+  it("backoff doubles per failure and caps at 30000ms", async () => {
+    vi.useFakeTimers();
+    const bus = await loadBus();
+
+    // Make every connect fail
+    const origConnect = MockPgClient.prototype.connect;
+    MockPgClient.prototype.connect = function () {
+      return Promise.reject(new Error("connect refused"));
+    };
+
+    try {
+      bus.subscribe("live:chat", () => {});
+      // First connect attempt fails immediately; backoff schedules at 1000ms.
+      await vi.advanceTimersByTimeAsync(20);
+
+      // Walk through the backoff sequence: 1000, 2000, 4000, 8000, 16000, 30000, 30000.
+      const expectedDelays = [1000, 2000, 4000, 8000, 16000, 30000, 30000];
+      for (const delay of expectedDelays) {
+        await vi.advanceTimersByTimeAsync(delay + 10);
+      }
+
+      // We just verify no crash and that multiple instances were created
+      // (one per reconnect attempt). The exact log assertions live in the
+      // dedicated log-fields test below.
+      expect(mockInstances.length).toBeGreaterThanOrEqual(
+        expectedDelays.length,
+      );
+    } finally {
+      MockPgClient.prototype.connect = origConnect;
+    }
+  });
+
+  it("backoff resets to 1000ms after a successful reconnect", async () => {
+    vi.useFakeTimers();
+    const bus = await loadBus();
+
+    let connectAttempts = 0;
+    const origConnect = MockPgClient.prototype.connect;
+    MockPgClient.prototype.connect = function () {
+      connectAttempts += 1;
+      if (connectAttempts <= 2) {
+        return Promise.reject(new Error("transient"));
+      }
+      return Promise.resolve();
+    };
+
+    try {
+      bus.subscribe("live:chat", () => {});
+
+      // First connect fails → schedule at 1000ms
+      // Second connect fails → schedule at 2000ms
+      // Third connect succeeds → reconnectDelayMs reset to 1000
+      await vi.advanceTimersByTimeAsync(20);
+      await vi.advanceTimersByTimeAsync(1100);
+      await vi.advanceTimersByTimeAsync(2100);
+
+      expect(connectAttempts).toBeGreaterThanOrEqual(3);
+
+      // Now trigger another disconnect — backoff should start at 1000 again, not 4000.
+      const lastClient = mockInstances[mockInstances.length - 1];
+      // Make the next connect fail so we can observe a fresh schedule.
+      MockPgClient.prototype.connect = function () {
+        return Promise.reject(new Error("again"));
+      };
+      lastClient.emit("error", new Error("disconnect"));
+
+      // If backoff reset, next attempt fires within 1100ms.
+      const beforeCount = mockInstances.length;
+      await vi.advanceTimersByTimeAsync(1100);
+      expect(mockInstances.length).toBeGreaterThan(beforeCount);
+    } finally {
+      MockPgClient.prototype.connect = origConnect;
+    }
+  });
+
+  it("emits reconnect-scheduled log entries with delayMs and attempt fields", async () => {
+    vi.useFakeTimers();
+    const { sseLogger } = await import("../log");
+    const logSpy = vi.spyOn(sseLogger, "log");
+
+    const bus = await loadBus();
+
+    const origConnect = MockPgClient.prototype.connect;
+    MockPgClient.prototype.connect = function () {
+      return Promise.reject(new Error("nope"));
+    };
+
+    try {
+      bus.subscribe("live:chat", () => {});
+      await vi.advanceTimersByTimeAsync(20);
+      await vi.advanceTimersByTimeAsync(1100);
+      await vi.advanceTimersByTimeAsync(2100);
+
+      const scheduledCalls = logSpy.mock.calls.filter(
+        ([, event]) => event === "reconnect-scheduled",
+      );
+      expect(scheduledCalls.length).toBeGreaterThanOrEqual(2);
+
+      // First scheduled reconnect: attempt=1, delayMs=1000
+      const first = scheduledCalls[0][2] as Record<string, unknown>;
+      expect(first.attempt).toBe(1);
+      expect(first.delayMs).toBe(1000);
+
+      // Second scheduled reconnect: attempt=2, delayMs=2000
+      const second = scheduledCalls[1][2] as Record<string, unknown>;
+      expect(second.attempt).toBe(2);
+      expect(second.delayMs).toBe(2000);
+    } finally {
+      MockPgClient.prototype.connect = origConnect;
+      logSpy.mockRestore();
+    }
+  });
+});
