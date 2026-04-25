@@ -32,7 +32,7 @@ Four cohesive layers:
 3. **Connection state in `useSSE`** — hook returns `{ status }` (debounced 2s on the non-open direction, instant on flip back to open).
 4. **Admin endpoint + visual dot** — `/api/admin/sse-status` returns `eventBus.getStatus()`; `ConnectionDot` component renders an inline pulsing dot when status is non-open.
 
-### Files to create (5)
+### Files to create (6)
 
 | Path | Responsibility |
 |---|---|
@@ -242,7 +242,7 @@ const { status } = useSSE({ url: ..., onMessage: ... });
 <h2>Comments <ConnectionDot status={status} /></h2>
 ```
 
-Same pattern for `ReactionBar` (next to its heading or count) and `LiveChat` (next to its heading).
+Same pattern for `ReactionBar` (next to its heading) and `LiveChat` (next to its heading).
 
 ### Admin endpoint (`src/app/api/admin/sse-status/route.ts`)
 
