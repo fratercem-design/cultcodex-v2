@@ -309,3 +309,64 @@ describe("notification fan-out", () => {
     expect(received).toEqual([{ ok: true }]);
   });
 });
+
+// ---------------------------------------------------------------------------
+// publish + timeout
+// ---------------------------------------------------------------------------
+
+describe("publish", () => {
+  it("calls pg_notify with safe channel name and JSON payload", async () => {
+    const bus = await loadBus();
+    bus.subscribe("live:chat", () => {}); // ensures client is created
+    const client = await getMockClient();
+    await new Promise((r) => setTimeout(r, 20));
+
+    await bus.publish("live:chat", { hello: "world" });
+
+    const notifyQueries = client.queries.filter(
+      (q) => q.sql === "SELECT pg_notify($1, $2)",
+    );
+    expect(notifyQueries).toHaveLength(1);
+    expect(notifyQueries[0].params).toEqual(["live:chat", '{"hello":"world"}']);
+  });
+
+  it("hashes channel name when publishing to a long channel", async () => {
+    const bus = await loadBus();
+    const longChannel = "episode:" + "x".repeat(60);
+    bus.subscribe(longChannel, () => {});
+    const client = await getMockClient();
+    await new Promise((r) => setTimeout(r, 20));
+
+    await bus.publish(longChannel, { x: 1 });
+
+    const notifyQueries = client.queries.filter(
+      (q) => q.sql === "SELECT pg_notify($1, $2)",
+    );
+    expect(notifyQueries).toHaveLength(1);
+    expect((notifyQueries[0].params![0] as string).startsWith("ch_")).toBe(true);
+  });
+
+  it("rejects with a timeout error if the client hangs for >2s", async () => {
+    vi.useFakeTimers();
+    const bus = await loadBus();
+
+    // Make connect() never resolve so getClient() inside publish hangs.
+    const origConnect = MockPgClient.prototype.connect;
+    MockPgClient.prototype.connect = function () {
+      return new Promise<void>(() => {}); // pending forever
+    };
+
+    try {
+      const publishPromise = bus.publish("live:chat", { x: 1 });
+      // Attach a no-op rejection handler so the unhandled rejection doesn't
+      // surface before our assertion runs.
+      publishPromise.catch(() => {});
+
+      await vi.advanceTimersByTimeAsync(2100);
+
+      await expect(publishPromise).rejects.toThrow(/publish timed out/);
+    } finally {
+      MockPgClient.prototype.connect = origConnect;
+    }
+  });
+});
