@@ -1,5 +1,6 @@
 import { Client as PgClient } from "pg";
 import { createHash } from "node:crypto";
+import { sseLogger } from "./log";
 
 type Listener = (data: unknown) => void;
 
@@ -32,6 +33,7 @@ class PgEventBus {
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private reconnectDelayMs = 1000;
   private readonly MAX_RECONNECT_DELAY_MS = 30_000;
+  private reconnectAttempt = 0;
 
   private getSafeChannel(raw: string): string {
     let safe = this.safeByRaw.get(raw);
@@ -64,29 +66,40 @@ class PgEventBus {
         try {
           data = msg.payload ? JSON.parse(msg.payload) : null;
         } catch (err) {
-          console.error("[PgEventBus] Failed to parse NOTIFY payload:", err);
+          sseLogger.log("error", "notify-parse-failed", {
+            channel: msg.channel,
+            error: err instanceof Error ? err.message : String(err),
+          });
           return;
         }
         for (const fn of set) {
           try {
             fn(data);
           } catch (err) {
-            console.error("[PgEventBus] Listener threw:", err);
+            sseLogger.log("error", "listener-threw", {
+              channel: raw,
+              error: err instanceof Error ? err.message : String(err),
+            });
           }
         }
       });
 
       client.on("error", (err) => {
-        console.error("[PgEventBus] Client error:", err);
+        sseLogger.log("error", "client-error", {
+          error: err instanceof Error ? err.message : String(err),
+        });
         this.scheduleReconnect();
       });
 
       client.on("end", () => {
-        console.error("[PgEventBus] Client ended unexpectedly");
+        sseLogger.log("warn", "client-end");
         this.scheduleReconnect();
       });
 
       await client.connect();
+
+      sseLogger.log("info", "connect");
+      this.reconnectAttempt = 0;
 
       // Re-LISTEN to every channel that currently has subscribers.
       // On reconnect this restores all subscriptions before publish/dispatch resumes.
@@ -95,6 +108,7 @@ class PgEventBus {
       for (const raw of this.listeners.keys()) {
         const safe = this.getSafeChannel(raw);
         await client.query(`LISTEN "${safe}"`);
+        sseLogger.log("info", "listen", { channel: safe, rawChannel: raw });
       }
 
       this.reconnectDelayMs = 1000; // reset backoff on successful connect
@@ -137,10 +151,17 @@ class PgEventBus {
       this.MAX_RECONNECT_DELAY_MS,
     );
 
+    this.reconnectAttempt += 1;
+    sseLogger.log("warn", "reconnect-scheduled", {
+      delayMs: delay,
+      attempt: this.reconnectAttempt,
+    });
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
       this.getClient().catch((err) => {
-        console.error("[PgEventBus] Reconnect failed:", err);
+        sseLogger.log("error", "reconnect-failed", {
+          error: err instanceof Error ? err.message : String(err),
+        });
       });
     }, delay);
   }
@@ -161,8 +182,14 @@ class PgEventBus {
       // SSE — subscribers expect future events, not historical ones.
       this.getClient()
         .then((c) => c.query(`LISTEN "${safe}"`))
+        .then(() => {
+          sseLogger.log("info", "listen", { channel: safe, rawChannel: channel });
+        })
         .catch((err) =>
-          console.error(`[PgEventBus] LISTEN failed for ${safe}:`, err),
+          sseLogger.log("error", "listen-failed", {
+            channel: safe,
+            error: err instanceof Error ? err.message : String(err),
+          }),
         );
     }
 
@@ -173,9 +200,16 @@ class PgEventBus {
       if (s.size === 0) {
         this.listeners.delete(channel);
         if (this.client) {
-          this.client.query(`UNLISTEN "${safe}"`).catch((err) => {
-            console.error(`[PgEventBus] UNLISTEN failed for ${safe}:`, err);
-          });
+          this.client.query(`UNLISTEN "${safe}"`)
+            .then(() => {
+              sseLogger.log("info", "unlisten", { channel: safe, rawChannel: channel });
+            })
+            .catch((err) => {
+              sseLogger.log("error", "unlisten-failed", {
+                channel: safe,
+                error: err instanceof Error ? err.message : String(err),
+              });
+            });
         }
       }
     };
@@ -203,15 +237,34 @@ class PgEventBus {
     // Avoid an unhandled rejection if the racers settle first.
     timeoutPromise.catch(() => {});
 
+    const payload = JSON.stringify(data);
+
     try {
       const client = await Promise.race([this.getClient(), timeoutPromise]);
       await Promise.race([
-        client.query("SELECT pg_notify($1, $2)", [
-          safe,
-          JSON.stringify(data),
-        ]),
+        client.query("SELECT pg_notify($1, $2)", [safe, payload]),
         timeoutPromise,
       ]);
+      sseLogger.log("info", "publish", {
+        channel: safe,
+        rawChannel: channel,
+        payloadBytes: payload.length,
+      });
+    } catch (err) {
+      const isTimeout =
+        err instanceof Error && err.message.includes("publish timed out");
+      if (isTimeout) {
+        sseLogger.log("error", "publish-timeout", {
+          channel: safe,
+          timeoutMs: PUBLISH_TIMEOUT_MS,
+        });
+      } else {
+        sseLogger.log("error", "publish-failed", {
+          channel: safe,
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
+      throw err;
     } finally {
       if (timeoutHandle !== undefined) clearTimeout(timeoutHandle);
     }
