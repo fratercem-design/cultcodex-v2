@@ -58,11 +58,17 @@ export async function POST(
   await toggleReaction(user.id, episode.id, type as ReactionType);
   const counts = await getReactionCounts(episode.id, user.id);
 
-  // Publish to SSE for real-time updates
-  eventBus.publish(`episode:${slug}`, {
-    type: "reaction-update",
-    data: counts,
-  });
+  // Publish to SSE for real-time updates.
+  // Wrapped because PgEventBus.publish is now async and a Postgres
+  // hiccup must not break the reaction toggle — the change is already saved.
+  try {
+    await eventBus.publish(`episode:${slug}`, {
+      type: "reaction-update",
+      data: counts,
+    });
+  } catch (err) {
+    console.error("[reactions] eventBus.publish failed:", err);
+  }
 
   return NextResponse.json(counts);
 }
