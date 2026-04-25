@@ -89,7 +89,9 @@ class PgEventBus {
       await client.connect();
 
       // Re-LISTEN to every channel that currently has subscribers.
-      // (After a reconnect, this restores all subscriptions before publish/dispatch resumes.)
+      // On reconnect this restores all subscriptions before publish/dispatch resumes.
+      // On initial connect it also covers any subscribe() that registered while
+      // getClient() was pending — its own background LISTEN may not have fired yet.
       for (const raw of this.listeners.keys()) {
         const safe = this.getSafeChannel(raw);
         await client.query(`LISTEN "${safe}"`);
@@ -181,11 +183,38 @@ class PgEventBus {
 
   async publish(channel: string, data: unknown): Promise<void> {
     const safe = this.getSafeChannel(channel);
-    const client = await this.getClient();
-    await client.query("SELECT pg_notify($1, $2)", [
-      safe,
-      JSON.stringify(data),
-    ]);
+
+    // Bound publish latency so a stalled connect/reconnect can't make a
+    // user-facing POST appear hung. Callers wrap publish in try/catch and
+    // continue; the dropped fan-out is logged via the thrown error.
+    const PUBLISH_TIMEOUT_MS = 2000;
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timeoutHandle = setTimeout(
+        () =>
+          reject(
+            new Error(
+              `[PgEventBus] publish timed out after ${PUBLISH_TIMEOUT_MS}ms`,
+            ),
+          ),
+        PUBLISH_TIMEOUT_MS,
+      );
+    });
+    // Avoid an unhandled rejection if the racers settle first.
+    timeoutPromise.catch(() => {});
+
+    try {
+      const client = await Promise.race([this.getClient(), timeoutPromise]);
+      await Promise.race([
+        client.query("SELECT pg_notify($1, $2)", [
+          safe,
+          JSON.stringify(data),
+        ]),
+        timeoutPromise,
+      ]);
+    } finally {
+      if (timeoutHandle !== undefined) clearTimeout(timeoutHandle);
+    }
   }
 }
 
