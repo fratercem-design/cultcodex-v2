@@ -525,3 +525,51 @@ describe("reconnect backoff", () => {
     }
   });
 });
+
+// ---------------------------------------------------------------------------
+// getStatus()
+// ---------------------------------------------------------------------------
+
+describe("getStatus()", () => {
+  it("reports disconnected state before any subscribe/publish", async () => {
+    const bus = await loadBus();
+    const status = bus.getStatus();
+    expect(status.client.connected).toBe(false);
+    expect(status.client.pendingReconnect).toBe(false);
+    expect(status.channels).toEqual([]);
+    // recentEvents may have prior entries from the singleton — just check shape
+    expect(Array.isArray(status.recentEvents)).toBe(true);
+  });
+
+  it("reports connected state and channel listener counts after subscriptions", async () => {
+    const bus = await loadBus();
+
+    bus.subscribe("live:chat", () => {});
+    bus.subscribe("live:chat", () => {});
+    bus.subscribe("episode:foo", () => {});
+    await getMockClient();
+    await new Promise((r) => setTimeout(r, 20));
+
+    const status = bus.getStatus();
+    expect(status.client.connected).toBe(true);
+    expect(status.channels).toHaveLength(2);
+    const liveChat = status.channels.find((c) => c.rawChannel === "live:chat");
+    const episodeFoo = status.channels.find(
+      (c) => c.rawChannel === "episode:foo",
+    );
+    expect(liveChat?.listenerCount).toBe(2);
+    expect(episodeFoo?.listenerCount).toBe(1);
+  });
+
+  it("includes recent events from the logger", async () => {
+    const bus = await loadBus();
+    bus.subscribe("live:chat", () => {});
+    await getMockClient();
+    await new Promise((r) => setTimeout(r, 20));
+
+    const status = bus.getStatus();
+    const events = status.recentEvents.map((e) => e.event);
+    expect(events).toContain("connect");
+    expect(events).toContain("listen");
+  });
+});

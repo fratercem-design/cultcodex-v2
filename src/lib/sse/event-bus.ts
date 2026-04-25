@@ -1,6 +1,7 @@
 import { Client as PgClient } from "pg";
 import { createHash } from "node:crypto";
 import { sseLogger } from "./log";
+import type { LogEntry } from "./log";
 
 type Listener = (data: unknown) => void;
 
@@ -18,6 +19,20 @@ export function safeChannelName(raw: string): string {
     return raw;
   }
   return "ch_" + createHash("sha256").update(raw).digest("hex").slice(0, 16);
+}
+
+export interface BusStatus {
+  client: {
+    connected: boolean;
+    pendingReconnect: boolean;
+    nextReconnectDelayMs: number;
+  };
+  channels: Array<{
+    rawChannel: string;
+    safeChannel: string;
+    listenerCount: number;
+  }>;
+  recentEvents: readonly LogEntry[];
 }
 
 class PgEventBus {
@@ -268,6 +283,22 @@ class PgEventBus {
     } finally {
       if (timeoutHandle !== undefined) clearTimeout(timeoutHandle);
     }
+  }
+
+  getStatus(): BusStatus {
+    return {
+      client: {
+        connected: this.client !== null,
+        pendingReconnect: this.reconnectTimer !== null,
+        nextReconnectDelayMs: this.reconnectDelayMs,
+      },
+      channels: Array.from(this.listeners.entries()).map(([raw, set]) => ({
+        rawChannel: raw,
+        safeChannel: this.getSafeChannel(raw),
+        listenerCount: set.size,
+      })),
+      recentEvents: sseLogger.recent(),
+    };
   }
 }
 
