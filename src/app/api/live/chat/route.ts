@@ -51,17 +51,23 @@ export async function POST(request: Request) {
 
   lastMessageTime.set(user.id, now);
 
-  eventBus.publish("live:chat", {
-    type: "new-chat-message",
-    data: {
-      id: message.id,
-      userId: message.userId,
-      displayName: message.displayName,
-      avatarUrl: message.avatarUrl,
-      content: message.content,
-      createdAt: message.createdAt,
-    },
-  });
+  // Wrapped because PgEventBus.publish is now async and a Postgres
+  // hiccup must not break the chat message — the row is already saved.
+  try {
+    await eventBus.publish("live:chat", {
+      type: "new-chat-message",
+      data: {
+        id: message.id,
+        userId: message.userId,
+        displayName: message.displayName,
+        avatarUrl: message.avatarUrl,
+        content: message.content,
+        createdAt: message.createdAt,
+      },
+    });
+  } catch (err) {
+    console.error("[live/chat] eventBus.publish failed:", err);
+  }
 
   return NextResponse.json({ id: message.id }, { status: 201 });
 }
