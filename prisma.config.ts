@@ -10,6 +10,8 @@ export default defineConfig({
     seed: "npx tsx prisma/seed.ts",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    // Use DIRECT_URL (non-pooled) for migrate so pg_advisory_lock works.
+    // Falls back to DATABASE_URL for generate/studio where pooling is fine.
+    url: process.env["DIRECT_URL"] ?? process.env["DATABASE_URL"],
   },
 });
