@@ -3,6 +3,7 @@ import Link from "next/link";
 import { auth, type SessionWithCodex } from "@/lib/auth";
 import { UserMenu } from "@/components/auth/user-menu";
 import { IconSearch } from "@/components/graphics/codex-icons";
+import { SearchTrigger } from "@/components/search/search-trigger";
 
 /*
  * Codex top bar — mythic identity, minimal surface.
@@ -70,14 +71,7 @@ export async function SiteHeader() {
 
         {/* Right side: search, premium, profile */}
         <div className="flex items-center gap-2">
-          <Link
-            href="/search"
-            className="inline-flex items-center gap-1.5 font-mono text-xs text-text-muted hover:text-accent-gold border border-border rounded px-3 py-1 transition-colors"
-            aria-label="Search the archive"
-          >
-            <IconSearch size={14} className="text-text-muted" />
-            Search
-          </Link>
+          <SearchTrigger />
           <Link
             href="/premium"
             className="hidden sm:inline-flex items-center rounded border border-accent-gold/40 bg-accent-gold/10 px-3 py-1 font-mono text-[11px] font-bold text-accent-gold transition-all hover:bg-accent-gold/20 hover:shadow-md hover:shadow-accent-gold/20"

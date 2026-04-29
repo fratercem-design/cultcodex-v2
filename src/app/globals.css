@@ -47,10 +47,11 @@
   --color-background: var(--bg-void);
   --color-foreground: var(--text-primary);
 
-  /* Typography — 3-font system */
+  /* Typography — 4-font system */
   --font-sans: var(--font-body), "Inter", system-ui, sans-serif;
   --font-mono: var(--font-mono), "IBM Plex Mono", monospace;
   --font-display: var(--font-display), "Space Grotesk", sans-serif;
+  --font-serif: var(--font-serif), "Playfair Display", Georgia, serif;
 
   /* shadcn/ui token passthrough */
   --color-sidebar-ring: var(--sidebar-ring);

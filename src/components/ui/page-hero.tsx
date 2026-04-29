@@ -22,7 +22,7 @@ export function PageHero({ title, subtitle, backgroundImage }: PageHeroProps) {
       <SacredGeometryOverlay />
       <FloatingParticles count={8} />
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-6">
-        <h1 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-accent-gold drop-shadow-md">
+        <h1 className="font-serif text-2xl sm:text-3xl font-black tracking-tight text-accent-gold drop-shadow-md">
           {title}
         </h1>
         {subtitle && (

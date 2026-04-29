@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, IBM_Plex_Mono } from "next/font/google";
+import { Space_Grotesk, Inter, IBM_Plex_Mono, Playfair_Display } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
 import { LiveBanner } from "@/components/layout/live-banner";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SkipLink } from "@/components/ui/skip-link";
 import { KonamiEasterEgg } from "@/components/ui/konami-easter-egg";
+import { CommandPalette } from "@/components/search/command-palette";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -24,6 +25,13 @@ const ibmPlexMono = IBM_Plex_Mono({
   weight: ["400", "500", "600"],
   subsets: ["latin"],
   display: "swap",
+});
+
+const playfairDisplay = Playfair_Display({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -53,7 +61,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} font-sans antialiased bg-void text-text-primary min-h-screen flex flex-col`}
+        className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} ${playfairDisplay.variable} font-sans antialiased bg-void text-text-primary min-h-screen flex flex-col`}
       >
         <SkipLink />
         <LiveBanner />
@@ -61,6 +69,7 @@ export default function RootLayout({
         <div id="main-content" className="flex-1">{children}</div>
         <SiteFooter />
         <KonamiEasterEgg />
+        <CommandPalette />
       </body>
     </html>
   );
