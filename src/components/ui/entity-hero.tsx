@@ -60,7 +60,7 @@ export function EntityHero({
             fallbackAvatar
           )}
           <div>
-            <h1 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-accent-gold drop-shadow-md">
+            <h1 className="font-serif text-2xl sm:text-3xl font-black tracking-tight text-accent-gold drop-shadow-md">
               {title}
             </h1>
             {subtitle && (
