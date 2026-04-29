@@ -346,6 +346,43 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                     <div className="mt-4 flex justify-center">
                       <RandomEpisodeButton />
                     </div>
+
+                    {/* Go Deeper — topic rabbit holes */}
+                    {(() => {
+                      const topicsWithDesc = episode.topics
+                        .filter((t) => t.topic.description && t.topic.description.length > 20)
+                        .slice(0, 3);
+                      if (topicsWithDesc.length === 0) return null;
+                      return (
+                        <SectionCard title="🐇 Go Deeper">
+                          <p className="text-xs text-text-muted mb-4">
+                            Explore the ideas at the heart of this episode
+                          </p>
+                          <div className="grid gap-3 sm:grid-cols-3">
+                            {topicsWithDesc.map(({ topic: t }) => {
+                              const desc = t.description!.split("\n\n")[0];
+                              return (
+                                <Link
+                                  key={t.slug}
+                                  href={`/topics/${t.slug}`}
+                                  className="group flex flex-col gap-1.5 rounded-lg border border-border bg-surface p-3 transition-all hover:border-accent-cyan/30 hover:bg-elevated"
+                                >
+                                  <span className="font-mono text-xs font-semibold text-accent-cyan group-hover:underline line-clamp-1">
+                                    {t.title}
+                                  </span>
+                                  <span className="text-[11px] text-text-muted leading-relaxed line-clamp-3">
+                                    {desc}
+                                  </span>
+                                  <span className="mt-auto font-mono text-[10px] text-text-muted group-hover:text-accent-cyan transition-colors">
+                                    Explore topic →
+                                  </span>
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        </SectionCard>
+                      );
+                    })()}
                   </div>
                 ),
                 ...(hasTranscript ? {

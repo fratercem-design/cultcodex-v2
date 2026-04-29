@@ -39,3 +39,39 @@ export async function getTopicBySlug(slug: string) {
     include: buildTopicInclude(),
   });
 }
+
+// Find topics that most frequently share episodes with this topic.
+// Used for "rabbit hole" discovery on topic pages.
+export async function getRelatedTopics(topicId: string, limit = 8) {
+  const episodeLinks = await prisma.episodeTopic.findMany({
+    where: { topicId },
+    select: { episodeId: true },
+  });
+  if (episodeLinks.length === 0) return [];
+
+  const episodeIds = episodeLinks.map((e) => e.episodeId);
+
+  const grouped = await prisma.episodeTopic.groupBy({
+    by: ["topicId"],
+    where: {
+      episodeId: { in: episodeIds },
+      topicId: { not: topicId },
+    },
+    _count: { topicId: true },
+    orderBy: { _count: { topicId: "desc" } },
+    take: limit,
+  });
+
+  if (grouped.length === 0) return [];
+
+  const relatedIds = grouped.map((g) => g.topicId);
+  const topics = await prisma.topic.findMany({
+    where: { id: { in: relatedIds } },
+    select: { id: true, title: true, slug: true, description: true },
+  });
+
+  // Preserve sort order from groupBy result
+  return relatedIds
+    .map((id) => topics.find((t) => t.id === id))
+    .filter((t): t is NonNullable<typeof t> => !!t);
+}
