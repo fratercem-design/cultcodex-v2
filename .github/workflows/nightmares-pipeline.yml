@@ -1,0 +1,78 @@
+name: PsychesNightmares Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_fetch:
+        description: 'Skip YouTube fetch (if data already exists)'
+        required: false
+        default: 'false'
+      skip_transcripts:
+        description: 'Skip transcript download (if already downloaded)'
+        required: false
+        default: 'false'
+      enrich_batch:
+        description: 'Episodes to enrich per run'
+        required: false
+        default: '30'
+
+jobs:
+  pipeline:
+    name: Fetch, transcribe, enrich, import nightmares episodes
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+      ENRICHMENT_MODEL: claude-haiku-4-5-20251001
+      ENRICHMENT_BATCH_SIZE: ${{ github.event.inputs.enrich_batch || '30' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: 1. Fetch @PsychesNightmares channel
+        if: github.event.inputs.skip_fetch != 'true'
+        run: npx tsx scripts/_fetch-psychesnightmares.ts
+
+      - name: 2. Download transcripts
+        if: github.event.inputs.skip_transcripts != 'true'
+        run: npx tsx scripts/scrape/fetch-transcripts-nightmares.ts
+
+      - name: 3. Prepare for ingest
+        run: npx tsx scripts/_prep-nightmares-ingest.ts
+
+      - name: 4. Enrich episodes with AI (loop until done)
+        run: |
+          MAX_ROUNDS=20
+          for ROUND in $(seq 1 $MAX_ROUNDS); do
+            echo "=== Enrich round $ROUND ==="
+            OUTPUT=$(npx tsx scripts/enrich/enrich-nightmares.ts \
+              --batch "${{ github.event.inputs.enrich_batch || '30' }}" 2>&1)
+            echo "$OUTPUT"
+
+            REMAINING=$(echo "$OUTPUT" | grep -oP 'Total remaining: \K[0-9]+' | tail -1)
+            if [ "${REMAINING:-1}" = "0" ]; then
+              echo "✅ All episodes enriched!"
+              break
+            fi
+            sleep 2
+          done
+
+      - name: 5. Import enriched data to DB
+        run: npx tsx scripts/enrich/import-enriched.ts
+
+      - name: 6. Build character profiles
+        run: npx tsx scripts/enrich/enrich-nightmares-people.ts
