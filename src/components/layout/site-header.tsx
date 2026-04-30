@@ -76,7 +76,7 @@ export async function SiteHeader() {
             href="/premium"
             className="hidden sm:inline-flex items-center rounded border border-accent-gold/40 bg-accent-gold/10 px-3 py-1 font-mono text-[11px] font-bold text-accent-gold transition-all hover:bg-accent-gold/20 hover:shadow-md hover:shadow-accent-gold/20"
           >
-            ✦ Premium
+            ✦ Initiate+
           </Link>
           <UserMenu user={(session as SessionWithCodex)?.codexUser ?? null} />
         </div>
