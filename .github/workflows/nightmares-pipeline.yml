@@ -49,6 +49,7 @@ jobs:
 
       - name: 2. Download transcripts
         if: github.event.inputs.skip_transcripts != 'true'
+        continue-on-error: true
         run: npx tsx scripts/scrape/fetch-transcripts-nightmares.ts
 
       - name: 3. Prepare for ingest
