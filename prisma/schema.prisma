@@ -386,11 +386,17 @@ model CodexUser {
   stripeCustomerId        String?   @unique
   subscriptionId          String?   @unique
   subscriptionStatus      String?   // "active", "past_due", "canceled", "unpaid"
+  subscriptionTier        String?   // "access" | "system"
   currentPeriodEnd        DateTime?
 
   // Member identity
   memberTitle             String?   // chosen flair title e.g. "Oracle", "Acolyte"
   isPublicMember          Boolean   @default(false) // opt-in to public Member Roll
+
+  // Personal codex page (system tier)
+  bio                     String?
+  codexSlug               String?   @unique
+  codexPagePublic         Boolean   @default(true)
 
   reactions               EpisodeReaction[]
   comments                CodexComment[]

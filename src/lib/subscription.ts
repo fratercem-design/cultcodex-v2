@@ -32,6 +32,25 @@ export async function isSubscribed(userId: string): Promise<boolean> {
 }
 
 /**
+ * Check if a user has the "system" tier (Full System, $29/mo).
+ * Admins always qualify.
+ */
+export async function hasSystemTier(userId: string): Promise<boolean> {
+  const user = await prisma.codexUser.findUnique({
+    where: { id: userId },
+    select: { role: true, subscriptionStatus: true, subscriptionTier: true, currentPeriodEnd: true },
+  });
+  if (!user) return false;
+  if (user.role === "admin") return true;
+  return (
+    user.subscriptionStatus === "active" &&
+    user.subscriptionTier === "system" &&
+    !!user.currentPeriodEnd &&
+    user.currentPeriodEnd > new Date()
+  );
+}
+
+/**
  * Get full subscription status for UI display.
  */
 export async function getSubscriptionStatus(userId: string) {
@@ -40,6 +59,7 @@ export async function getSubscriptionStatus(userId: string) {
     select: {
       role: true,
       subscriptionStatus: true,
+      subscriptionTier: true,
       subscriptionId: true,
       currentPeriodEnd: true,
       stripeCustomerId: true,
@@ -51,6 +71,7 @@ export async function getSubscriptionStatus(userId: string) {
   return {
     isAdmin: user.role === "admin",
     status: user.subscriptionStatus,
+    tier: user.subscriptionTier,
     periodEnd: user.currentPeriodEnd,
     hasSubscription: !!user.subscriptionId,
     hasStripeCustomer: !!user.stripeCustomerId,

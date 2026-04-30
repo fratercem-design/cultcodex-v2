@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
+import { getTierByPriceId } from "@/lib/subscription-tiers";
 import type Stripe from "stripe";
 
 /** Extract current_period_end from a subscription's first item */
@@ -53,12 +54,19 @@ export async function POST(request: NextRequest) {
           const subId = typeof session.subscription === "string"
             ? session.subscription
             : session.subscription.id;
-          const subscription = await stripe.subscriptions.retrieve(subId);
+          const subscription = await stripe.subscriptions.retrieve(subId, {
+            expand: ["items.data.price"],
+          });
+          // Resolve tier from: checkout metadata → subscription metadata → price ID
+          const tierFromMeta = session.metadata?.tier || subscription.metadata?.tier;
+          const priceId = subscription.items?.data?.[0]?.price?.id;
+          const tier = tierFromMeta || getTierByPriceId(priceId)?.slug || null;
           await prisma.codexUser.updateMany({
             where: { stripeCustomerId: session.customer as string },
             data: {
               subscriptionId: subscription.id,
               subscriptionStatus: subscription.status,
+              subscriptionTier: tier,
               currentPeriodEnd: getPeriodEnd(subscription),
             },
           });
@@ -110,10 +118,13 @@ export async function POST(request: NextRequest) {
       case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
         if (subscription.customer) {
+          const priceId = subscription.items?.data?.[0]?.price?.id;
+          const tier = subscription.metadata?.tier || getTierByPriceId(priceId)?.slug || null;
           await prisma.codexUser.updateMany({
             where: { stripeCustomerId: subscription.customer as string },
             data: {
               subscriptionStatus: subscription.status,
+              subscriptionTier: tier ?? undefined,
               currentPeriodEnd: getPeriodEnd(subscription),
             },
           });
