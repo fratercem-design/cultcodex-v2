@@ -23,6 +23,7 @@ import { ArchiveNotice } from "@/components/notices/archive-notice";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import { ColorLegend } from "@/components/ui/color-legend";
 import { PersonSigil } from "@/components/ui/person-sigil";
+import { ArchetypeTimeline } from "@/components/people/archetype-timeline";
 import type { Metadata } from "next";
 
 // ── Lore Summary renderer ─────────────────────────────────────────────────────
@@ -175,6 +176,57 @@ export default async function PersonDetailPage({ params }: PageProps) {
     ? await getCoAppearances(person.id, 6)
     : [];
 
+  // Archetype evolution — query guest appearance episodes with decodeData
+  const archetypeEpisodes = person.guestAppearances.length > 0
+    ? await prisma.episode.findMany({
+        where: {
+          guests: { some: { personId: person.id } },
+          NOT: { decodeData: { equals: "DbNull" } },
+        },
+        select: {
+          slug: true,
+          title: true,
+          episodeNumber: true,
+          airDate: true,
+          decodeData: true,
+        },
+        orderBy: { airDate: "asc" },
+        take: 30,
+      })
+    : [];
+
+  type ArchetypeEntry = {
+    episodeSlug: string;
+    episodeTitle: string;
+    episodeNumber: number | null;
+    airDate: Date | null;
+    archetype: string;
+    supporting: string;
+  };
+
+  const archetypeEntries: ArchetypeEntry[] = archetypeEpisodes.flatMap((ep) => {
+    const data = ep.decodeData as Record<string, unknown> | null;
+    if (!data) return [];
+    const archetypes = data.archetypes as Array<{ speaker: string; archetype: string; supporting: string }> | undefined;
+    if (!archetypes) return [];
+
+    // Match by name similarity — person.displayName or altNames
+    const names = [person.displayName, ...person.altNames].map((n) => n.toLowerCase());
+    const match = archetypes.find((a) =>
+      names.some((n) => a.speaker.toLowerCase().includes(n) || n.includes(a.speaker.toLowerCase()))
+    );
+    if (!match) return [];
+
+    return [{
+      episodeSlug: ep.slug,
+      episodeTitle: ep.title,
+      episodeNumber: ep.episodeNumber,
+      airDate: ep.airDate,
+      archetype: match.archetype,
+      supporting: match.supporting,
+    }];
+  });
+
   const typeLabel = PERSON_TYPE_LABELS[person.personType] ?? person.personType;
   const typeVariant = PERSON_TYPE_VARIANTS[person.personType] ?? "muted";
 
@@ -230,6 +282,16 @@ export default async function PersonDetailPage({ params }: PageProps) {
             {/* Bio / Lore Summary — renders flat text or ## sectioned profiles */}
             {person.loreSummary && (
               <LoreSummaryCard loreSummary={person.loreSummary} />
+            )}
+
+            {/* Archetype Evolution */}
+            {archetypeEntries.length > 0 && (
+              <SectionCard title="Archetype Evolution">
+                <ArchetypeTimeline
+                  entries={archetypeEntries}
+                  personName={person.displayName}
+                />
+              </SectionCard>
             )}
 
             {/* Color legend */}

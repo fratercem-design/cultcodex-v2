@@ -11,11 +11,15 @@ interface Segment {
   text: string;
 }
 
+type SignalClass = "signal" | "noise" | "neutral";
+type FilterMode = "all" | "signal" | "highlighted";
+
 interface TranscriptViewerProps {
   segments: Segment[];
   hasVideoEmbed?: boolean;
   initialSearchQuery?: string;
   initialTimestamp?: number;
+  signalMap?: Record<string, SignalClass>;
 }
 
 const SPEAKER_COLORS = [
@@ -30,10 +34,14 @@ export function TranscriptViewer({
   hasVideoEmbed,
   initialSearchQuery,
   initialTimestamp,
+  signalMap,
 }: TranscriptViewerProps) {
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery ?? "");
   const [activeIndex, setActiveIndex] = useState(-1);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [filterMode, setFilterMode] = useState<FilterMode>("all");
+
+  const hasSignalData = signalMap && Object.keys(signalMap).length > 0;
   const containerRef = useRef<HTMLDivElement>(null);
   const segmentRefs = useRef<Map<number, HTMLDivElement>>(new Map());
 
@@ -47,16 +55,29 @@ export function TranscriptViewer({
     return map;
   }, [segments]);
 
-  // Filter segments by search
+  // Filter segments by search and signal mode
   const filtered = useMemo(() => {
-    if (!searchQuery.trim()) return segments;
-    const q = searchQuery.toLowerCase();
-    return segments.filter(
-      (s) =>
-        s.text.toLowerCase().includes(q) ||
-        (s.speakerLabel && s.speakerLabel.toLowerCase().includes(q))
-    );
-  }, [segments, searchQuery]);
+    let result = segments;
+
+    // Signal filter
+    if (filterMode === "signal" && signalMap) {
+      result = result.filter(
+        (s) => (signalMap[String(s.startSeconds)] ?? "neutral") === "signal"
+      );
+    }
+
+    // Text search
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (s) =>
+          s.text.toLowerCase().includes(q) ||
+          (s.speakerLabel && s.speakerLabel.toLowerCase().includes(q))
+      );
+    }
+
+    return result;
+  }, [segments, searchQuery, filterMode, signalMap]);
 
   // Scroll to initial timestamp
   useEffect(() => {
@@ -134,6 +155,33 @@ export function TranscriptViewer({
 
   return (
     <div onKeyDown={handleKeyDown} tabIndex={0} className="outline-none">
+      {/* Signal/Noise filter bar */}
+      {hasSignalData && (
+        <div className="mb-3 flex items-center gap-1.5">
+          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-text-muted mr-1">Filter:</span>
+          {(["all", "signal", "highlighted"] as FilterMode[]).map((mode) => (
+            <button
+              key={mode}
+              onClick={() => setFilterMode(mode)}
+              className={`px-2.5 py-1 rounded font-mono text-[9px] uppercase tracking-wider transition-colors border ${
+                filterMode === mode
+                  ? mode === "signal"
+                    ? "border-green-500/60 bg-green-500/15 text-green-400"
+                    : "border-accent-gold/50 bg-accent-gold/10 text-accent-gold"
+                  : "border-border text-text-muted hover:text-text-primary hover:border-border/60"
+              }`}
+            >
+              {mode === "all" ? "Raw" : mode === "signal" ? "Signal only" : "Highlighted"}
+            </button>
+          ))}
+          {filterMode === "signal" && (
+            <span className="font-mono text-[9px] text-text-muted ml-1">
+              {filtered.length} signal moment{filtered.length !== 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Search bar */}
       <div className="mb-3 flex items-center gap-2">
         <input
@@ -157,17 +205,24 @@ export function TranscriptViewer({
       <div ref={containerRef} className="space-y-1 max-h-[600px] overflow-y-auto pr-1">
         {filtered.map((seg, idx) => {
           const isActive = idx === activeIndex;
+          const signalClass = signalMap ? (signalMap[String(seg.startSeconds)] ?? "neutral") : "neutral";
+          const showHighlight = filterMode === "highlighted" && hasSignalData;
+
+          const borderCls = isActive
+            ? "border-accent-gold bg-accent-gold/5"
+            : showHighlight && signalClass === "signal"
+            ? "border-green-500/60 bg-green-500/5 hover:bg-green-500/8"
+            : showHighlight && signalClass === "noise"
+            ? "border-red-500/30 opacity-50 hover:opacity-70"
+            : "border-transparent hover:bg-elevated";
+
           return (
             <div
               key={seg.id}
               ref={(el) => {
                 if (el) segmentRefs.current.set(idx, el);
               }}
-              className={`group flex gap-3 rounded px-2 py-1.5 transition-colors ${
-                isActive
-                  ? "border-l-2 border-accent-gold bg-accent-gold/5"
-                  : "border-l-2 border-transparent hover:bg-elevated"
-              }`}
+              className={`group flex gap-3 rounded px-2 py-1.5 transition-colors border-l-2 ${borderCls}`}
               onClick={() => setActiveIndex(idx)}
             >
               {/* Timestamp */}

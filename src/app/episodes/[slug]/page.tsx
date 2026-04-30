@@ -30,6 +30,7 @@ import { cleanTitle } from "@/lib/format/text";
 import { formatDuration } from "@/lib/format/duration";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { DecodeModePanel } from "@/components/episodes/decode-mode-panel";
+import { WhatYouMissed } from "@/components/episodes/what-you-missed";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { RandomEpisodeButton } from "@/components/archive/random-episode-button";
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
@@ -108,6 +109,12 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
   const hasTranscriptAccess = user ? await isSubscribed(user.id) : false;
   const hasDecodeAccess = hasTranscriptAccess; // same tier — Initiate+
   const hasDecodeData = !!episode.decodeData;
+
+  // Signal/Noise map — only exposed to subscribers
+  const signalMap =
+    hasTranscriptAccess && episode.decodeData
+      ? ((episode.decodeData as Record<string, unknown>).signal_noise as Record<string, "signal" | "noise" | "neutral"> | undefined)
+      : undefined;
 
   // Separate hosts from actual guests — hosts should not appear in the guest list
   const actualGuests = episode.guests.filter(
@@ -259,6 +266,14 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
             />
           </div>
 
+          {/* What You Missed */}
+          <WhatYouMissed
+            decodeData={hasDecodeData ? (episode.decodeData as Parameters<typeof WhatYouMissed>[0]["decodeData"]) : null}
+            isUnlocked={hasDecodeAccess}
+            isAuthenticated={!!user}
+            episodeSlug={episode.slug}
+          />
+
           {/* Tab layout */}
           <Suspense fallback={<div className="h-40" />}>
             <EpisodeTabLayout tabs={tabs}>
@@ -396,6 +411,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         segments={episode.segments}
                         hasVideoEmbed={!!episode.youtubeVideoId}
                         initialTimestamp={initialTimestamp}
+                        signalMap={signalMap}
                       />
                     </TerminalPanel>
                   ) : (
