@@ -35,15 +35,37 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install Node dependencies
         run: npm ci --ignore-scripts
 
-      - name: Run import pipeline
+      - name: Install yt-dlp
+        run: pip install -q yt-dlp
+
+      - name: Write YouTube cookies
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+        run: |
+          if [ -n "$YOUTUBE_COOKIES" ]; then
+            printf '%s' "$YOUTUBE_COOKIES" > /tmp/yt-cookies.txt
+            echo "Cookies written."
+          else
+            echo "No YOUTUBE_COOKIES secret — transcript fetch will likely fail."
+          fi
+
+      - name: Import episodes
+        if: ${{ github.event.inputs.step == 'episodes' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
         env:
           ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
           VERCEL_URL: https://cultcodex.me
+        run: npx tsx scripts/import-nightmares.ts --step episodes
+
+      - name: Import transcripts
+        if: ${{ github.event.inputs.step == 'transcripts' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
+        env:
+          ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
+          VERCEL_URL: https://cultcodex.me
+          YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
         run: |
-          npx tsx scripts/import-nightmares.ts \
-            --step "${{ github.event.inputs.step || 'all' }}" \
+          npx tsx scripts/import-nightmares-ytdlp.ts \
             --delay "${{ github.event.inputs.delay_ms || '2000' }}" \
             --max "${{ github.event.inputs.max_transcripts || '0' }}"
