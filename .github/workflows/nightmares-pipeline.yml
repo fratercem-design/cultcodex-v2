@@ -1,33 +1,31 @@
-name: PsychesNightmares Pipeline
+name: PsychesNightmares Import Pipeline
 
 on:
   workflow_dispatch:
     inputs:
-      skip_fetch:
-        description: 'Skip YouTube fetch (if data already exists)'
+      step:
+        description: 'Which step to run'
         required: false
-        default: 'false'
-      skip_transcripts:
-        description: 'Skip transcript download (if already downloaded)'
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - episodes
+          - transcripts
+      max_transcripts:
+        description: 'Max transcripts to fetch (0 = all)'
         required: false
-        default: 'false'
-      enrich_batch:
-        description: 'Episodes to enrich per run'
+        default: '0'
+      delay_ms:
+        description: 'Delay between transcript fetches (ms)'
         required: false
-        default: '30'
+        default: '2000'
 
 jobs:
-  pipeline:
-    name: Fetch, transcribe, enrich, import nightmares episodes
+  import:
+    name: Import via Vercel endpoint
     runs-on: ubuntu-latest
-    timeout-minutes: 360
-
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-      ENRICHMENT_MODEL: claude-haiku-4-5-20251001
-      ENRICHMENT_BATCH_SIZE: ${{ github.event.inputs.enrich_batch || '30' }}
+    timeout-minutes: 120
 
     steps:
       - uses: actions/checkout@v4
@@ -40,43 +38,12 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
-      - name: Generate Prisma client
-        run: npx prisma generate
-
-      - name: Install yt-dlp
-        run: pip install -q yt-dlp
-
-      - name: 1. Fetch @PsychesNightmares channel
-        if: github.event.inputs.skip_fetch != 'true'
-        run: npx tsx scripts/_fetch-psychesnightmares.ts
-
-      - name: 2. Download transcripts (via yt-dlp)
-        if: github.event.inputs.skip_transcripts != 'true'
-        continue-on-error: true
-        run: npx tsx scripts/scrape/fetch-transcripts-ytdlp.ts
-
-      - name: 3. Prepare for ingest
-        run: npx tsx scripts/_prep-nightmares-ingest.ts
-
-      - name: 4. Enrich episodes with AI (loop until done)
+      - name: Run import pipeline
+        env:
+          ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
+          VERCEL_URL: https://cultcodex.me
         run: |
-          MAX_ROUNDS=20
-          for ROUND in $(seq 1 $MAX_ROUNDS); do
-            echo "=== Enrich round $ROUND ==="
-            OUTPUT=$(npx tsx scripts/enrich/enrich-nightmares.ts \
-              --batch "${{ github.event.inputs.enrich_batch || '30' }}" 2>&1)
-            echo "$OUTPUT"
-
-            REMAINING=$(echo "$OUTPUT" | grep -oP 'Total remaining: \K[0-9]+' | tail -1)
-            if [ "${REMAINING:-1}" = "0" ]; then
-              echo "✅ All episodes enriched!"
-              break
-            fi
-            sleep 2
-          done
-
-      - name: 5. Import enriched data to DB
-        run: npx tsx scripts/enrich/import-enriched.ts
-
-      - name: 6. Build character profiles
-        run: npx tsx scripts/enrich/enrich-nightmares-people.ts
+          npx tsx scripts/import-nightmares.ts \
+            --step "${{ github.event.inputs.step || 'all' }}" \
+            --delay "${{ github.event.inputs.delay_ms || '2000' }}" \
+            --max "${{ github.event.inputs.max_transcripts || '0' }}"
