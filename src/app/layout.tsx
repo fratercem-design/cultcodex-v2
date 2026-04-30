@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter, IBM_Plex_Mono, Playfair_Display } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SiteHeader } from "@/components/layout/site-header";
 import { LiveBanner } from "@/components/layout/live-banner";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -70,6 +71,7 @@ export default function RootLayout({
         <SiteFooter />
         <KonamiEasterEgg />
         <CommandPalette />
+        <SpeedInsights />
       </body>
     </html>
   );
