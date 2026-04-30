@@ -43,14 +43,17 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
+      - name: Install yt-dlp
+        run: pip install -q yt-dlp
+
       - name: 1. Fetch @PsychesNightmares channel
         if: github.event.inputs.skip_fetch != 'true'
         run: npx tsx scripts/_fetch-psychesnightmares.ts
 
-      - name: 2. Download transcripts
+      - name: 2. Download transcripts (via yt-dlp)
         if: github.event.inputs.skip_transcripts != 'true'
         continue-on-error: true
-        run: npx tsx scripts/scrape/fetch-transcripts-nightmares.ts
+        run: npx tsx scripts/scrape/fetch-transcripts-ytdlp.ts
 
       - name: 3. Prepare for ingest
         run: npx tsx scripts/_prep-nightmares-ingest.ts
