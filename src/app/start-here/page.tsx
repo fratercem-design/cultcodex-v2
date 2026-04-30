@@ -284,6 +284,14 @@ export default async function StartHerePage() {
                 { href: "/premium", label: "Premium", desc: "Initiate+ · Oracle tiers" },
               ],
             },
+            {
+              label: "Intelligence Layer",
+              color: "violet" as const,
+              items: [
+                { href: "/psychenomicon", label: "Psychenomicon", desc: "Living myth-engine — chapters, entities, threads" },
+                { href: "/psychenomicon/entities", label: "Entities", desc: "Tracked archetypes across the archive" },
+              ],
+            },
           ].map((group) => {
             const c = colorMap[group.color];
             return (
