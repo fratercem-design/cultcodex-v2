@@ -170,12 +170,13 @@ export async function POST(req: NextRequest) {
         where: { contentType: "livestream", segments: { some: {} } },
       }),
     ]);
-    const missing = await prisma.episode.findMany({
+    const missingRaw = await prisma.episode.findMany({
       where: { contentType: "livestream", segments: { none: {} }, youtubeVideoId: { not: null } },
       select: { youtubeVideoId: true, title: true, episodeNumber: true },
       orderBy: { airDate: "asc" },
       take: 50,
     });
+    const missing = missingRaw.map((e) => ({ videoId: e.youtubeVideoId!, title: e.title, episodeNumber: e.episodeNumber }));
     return NextResponse.json({ total, withTranscripts, withoutTranscripts: total - withTranscripts, missing });
   }
 
