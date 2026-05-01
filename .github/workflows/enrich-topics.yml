@@ -84,3 +84,4 @@ jobs:
           echo "═══ Final Summary ═══"
           echo "Total enriched: $SUCCESS"
           echo "Total failures: $FAILURES"
+          echo "::notice title=Topics enriched::Total enriched: $SUCCESS, failures: $FAILURES, remaining: ${REMAINING:-unknown}"
