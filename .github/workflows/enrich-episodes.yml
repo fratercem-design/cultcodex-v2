@@ -1,0 +1,43 @@
+name: Enrich CultofPsyche Episodes
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: 'Episodes to enrich per run'
+        required: false
+        default: '50'
+
+jobs:
+  enrich:
+    name: AI enrichment via Claude
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ENRICHMENT_MODEL: claude-haiku-4-5-20251001
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Enrich episodes
+        run: |
+          BATCH="${{ github.event.inputs.batch || '50' }}"
+          echo "── Enriching up to $BATCH episodes ──"
+          npx tsx scripts/enrich/enrich-episodes.ts --batch "$BATCH"
+          echo ""
+          echo "── Importing enriched data to DB ──"
+          npx tsx scripts/enrich/import-enriched.ts
