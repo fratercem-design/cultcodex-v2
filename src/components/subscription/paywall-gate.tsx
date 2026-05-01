@@ -11,11 +11,8 @@ interface Segment {
 }
 
 interface PaywallGateProps {
-  /** First few segments to show as a preview */
   previewSegments: Segment[];
-  /** Total number of segments in the full transcript */
   totalCount: number;
-  /** Whether the user is signed in */
   isAuthenticated: boolean;
 }
 
@@ -56,27 +53,37 @@ export function PaywallGate({
         {isAuthenticated ? (
           <SubscriptionCTA />
         ) : (
-          <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-transparent p-6 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full border border-accent-gold/30 bg-accent-gold/10">
-              <span className="text-xl">🔐</span>
-            </div>
-            <h3 className="font-display text-lg font-bold text-accent-gold">
-              Full Transcript Access
-            </h3>
-            <p className="mt-2 font-mono text-xs text-text-muted">
-              {totalCount} searchable segments. Sign in to subscribe.
+          <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-transparent p-6 text-center space-y-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
+              /// observer_mode
             </p>
-            <Link
-              href="/auth/signin"
-              className="mt-4 inline-block rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
-            >
-              Sign in to unlock
-            </Link>
+            <h3 className="font-display text-xl font-bold text-accent-gold">
+              Observers see the surface.
+            </h3>
+            <p className="font-mono text-xs text-text-muted max-w-sm mx-auto leading-relaxed">
+              Initiates see everything underneath.{" "}
+              <span className="text-text-primary">{totalCount.toLocaleString()} segments</span>{" "}
+              — searchable, timestamped, clickable. Sign in to become one.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3 pt-1">
+              <Link
+                href="/auth/signin"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
+              >
+                Sign in to unlock →
+              </Link>
+              <Link
+                href="/premium"
+                className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 font-mono text-xs text-text-muted hover:text-text-primary hover:border-text-muted/40 transition-colors"
+              >
+                See what opens
+              </Link>
+            </div>
           </div>
         )}
 
-        <p className="mt-3 text-center font-mono text-[10px] text-text-muted">
-          Preview showing {previewSegments.length} of {totalCount} segments
+        <p className="mt-3 text-center font-mono text-[10px] text-text-muted/50">
+          Showing {previewSegments.length} of {totalCount} segments
         </p>
       </div>
     </div>

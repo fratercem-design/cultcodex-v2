@@ -1,8 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { SectionCard } from "@/components/ui/section-card";
 import { EpisodeCard } from "@/components/archive/episode-card";
-import { ArchiveStatsBar } from "@/components/archive/archive-stats-bar";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SearchInput } from "@/components/search/search-input";
@@ -12,40 +10,20 @@ import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
-import { IconTransmission, IconPerson, IconScroll, IconQuote, IconTopic, IconSeries, IconCrystalBall } from "@/components/graphics/codex-icons";
-import { MysticalDivider, OrnamentalBreak } from "@/components/graphics/mystical-divider";
+import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
-import { ColorLegend } from "@/components/ui/color-legend";
 
 export const revalidate = 300;
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, featuredSeries, popularTopics, quoteCount] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics] = await Promise.all([
     getArchiveStats(),
-    getEpisodes({ take: 6, orderBy: "airDate", order: "desc" }),
-    getQuotes({ take: 3 }),
+    getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }),
+    getQuotes({ take: 2 }),
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }),
-    prisma.series.findMany({
-      where: { type: { notIn: ["other"] } },
-      select: { title: true, slug: true, type: true, coverImageUrl: true, description: true, _count: { select: { episodes: true } } },
-      orderBy: { episodes: { _count: "desc" } },
-      take: 4,
-    }),
-    getTopTopicsByEpisodes(12),
-    prisma.quote.count(),
+    getTopTopicsByEpisodes(10),
   ]);
-
-  // Random oracle quote for the homepage teaser
-  const oracleQuote = quoteCount > 0
-    ? await prisma.quote.findFirst({
-        skip: Math.floor(Math.random() * quoteCount),
-        select: {
-          text: true,
-          speaker: { select: { displayName: true, slug: true } },
-        },
-      })
-    : null;
 
   const recentCards = recentEpisodes.map(formatEpisodeForCard);
   const featured = recentEpisodes[0];
@@ -53,20 +31,15 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative flex min-h-[320px] sm:min-h-[420px] items-center justify-center overflow-hidden">
-        <Image
-          src="/hero-bg.jpg"
-          alt=""
-          fill
-          priority
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-void" />
+      {/* ══════════════════════════════════════════════════
+          HERO — "This isn't a content library."
+      ══════════════════════════════════════════════════ */}
+      <section className="relative flex min-h-[540px] sm:min-h-[620px] items-center justify-center overflow-hidden">
+        <Image src="/hero-bg.jpg" alt="" fill priority className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-void" />
         <SacredGeometryOverlay />
-        <FloatingParticles count={16} />
+        <FloatingParticles count={20} />
 
-        {/* Live banner */}
         {isLive && (
           <Link
             href="/live"
@@ -77,373 +50,481 @@ export default async function HomePage() {
           </Link>
         )}
 
-        <div className="relative z-10 flex flex-col items-center gap-4 px-4 text-center">
+        <div className="relative z-10 flex flex-col items-center gap-6 px-4 text-center max-w-3xl mx-auto">
           <Image
             src="/logo.jpg"
             alt="Cult of Psyche"
-            width={120}
-            height={120}
-            className="rounded-full border-2 border-accent-gold shadow-lg shadow-accent-gold/20 w-20 h-20 sm:w-[120px] sm:h-[120px]"
+            width={80}
+            height={80}
+            className="rounded-full border-2 border-accent-gold/60 shadow-xl shadow-accent-gold/20 opacity-90"
           />
-          <h1 className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-accent-gold drop-shadow-lg md:text-5xl">
-            Cult of Psyche
-          </h1>
-          <p className="max-w-lg font-mono text-sm text-accent-cyan">
-            The Living Archive of the Cult of Psyche
-          </p>
 
-          {/* Search bar */}
+          <div className="space-y-3">
+            <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-cyan/80">
+              ✦ &nbsp; CultCodex &nbsp; ✦
+            </p>
+            <h1
+              className="font-display text-3xl sm:text-5xl font-bold leading-tight text-white"
+              style={{ textShadow: "0 0 60px rgba(212,175,55,0.3)" }}
+            >
+              This isn&rsquo;t a content library.
+              <br />
+              <span className="text-accent-gold" style={{ textShadow: "0 0 40px rgba(212,175,55,0.6)" }}>
+                It&rsquo;s a system for seeing
+                <br className="hidden sm:block" /> what others miss.
+              </span>
+            </h1>
+            <p className="font-mono text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
+              {stats.episodes.toLocaleString()}+ conversations. Patterns decoded.
+              Behavior mapped. Reality, organized.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/start-here"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
+            >
+              Enter the Codex →
+            </Link>
+            <Link
+              href="/premium"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 px-7 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/20"
+            >
+              ✦ Choose your role
+            </Link>
+          </div>
+
+          {/* Search */}
           <div className="mt-2 w-full max-w-md">
             <SearchInput />
           </div>
         </div>
       </section>
 
-      <main id="main-content" className="mx-auto max-w-7xl px-4 py-8 space-y-10">
-        {/* New visitor prompt */}
-        <div className="flex items-center justify-center gap-3">
-          <Link
-            href="/start-here"
-            className="inline-flex items-center gap-2 rounded-full border border-accent-gold/20 bg-accent-gold/5 px-4 py-1.5 font-mono text-xs text-accent-gold/80 transition-all hover:border-accent-gold/40 hover:bg-accent-gold/10 hover:text-accent-gold"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-accent-gold/60 animate-pulse" />
-            New to the Codex? Start here
-          </Link>
-        </div>
+      <main id="main-content" className="space-y-0">
 
-        {/* Archive stats */}
-        <ArchiveStatsBar
-          stats={[
-            { icon: <IconTransmission size={22} />, label: "Episodes", value: stats.episodes },
-            { icon: <IconPerson size={22} />, label: "People", value: stats.people },
-            { icon: <IconScroll size={22} />, label: "Lore Entries", value: stats.loreEntries },
-            { icon: <IconQuote size={22} />, label: "Quotes", value: stats.quotes },
-            { icon: <IconTopic size={22} />, label: "Topics", value: stats.topics },
-            { icon: <IconSeries size={22} />, label: "Series", value: stats.series },
-          ]}
-        />
+        {/* ══════════════════════════════════════════════════
+            PROBLEM — "Most people watch content."
+        ══════════════════════════════════════════════════ */}
+        <section className="relative overflow-hidden bg-gradient-to-b from-void via-[#0a0010] to-void py-20 px-4">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.04),transparent_70%)]" />
+          <div className="relative mx-auto max-w-4xl text-center space-y-10">
+            <div className="space-y-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/50">
+                /// the_problem
+              </p>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold text-white leading-tight">
+                Most people watch content.
+                <br />
+                <span className="text-text-muted font-normal text-2xl sm:text-3xl">They don&rsquo;t understand it.</span>
+              </h2>
+            </div>
 
-        {/* Color legend */}
-        <ColorLegend className="justify-center" />
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 max-w-3xl mx-auto">
+              {[
+                { icon: "🎭", label: "Manipulation", desc: "Playing out in plain sight" },
+                { icon: "🧠", label: "Psychological patterns", desc: "Repeating across every guest" },
+                { icon: "⚡", label: "Power dynamics", desc: "Who controls the room and how" },
+                { icon: "🕸️", label: "Hidden connections", desc: "Between people, events, episodes" },
+              ].map((item) => (
+                <div key={item.label} className="rounded-xl border border-accent-gold/10 bg-surface/60 p-5 text-center space-y-2">
+                  <p className="text-2xl">{item.icon}</p>
+                  <p className="font-mono text-xs font-bold text-text-primary">{item.label}</p>
+                  <p className="font-mono text-[10px] text-text-muted leading-relaxed">{item.desc}</p>
+                </div>
+              ))}
+            </div>
 
-        {/* Featured episode */}
-        {featured && (
-          <SectionCard title="Latest Transmission">
-            <Link
-              href={`/episodes/${featured.slug}`}
-              className="group flex flex-col sm:flex-row items-start gap-4"
-            >
-              {featured.thumbnailUrl ? (
-                <img
-                  src={featured.thumbnailUrl}
-                  alt=""
-                  className="w-full sm:w-48 h-32 rounded-lg object-cover flex-shrink-0"
-                />
-              ) : (
-                <div className="w-full sm:w-48 h-32 rounded-lg bg-gradient-to-br from-accent-gold/10 to-accent-violet/10 flex-shrink-0" />
-              )}
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  {featured.episodeNumber && (
-                    <span className="font-mono text-[10px] text-accent-gold font-bold">
-                      EP.{String(featured.episodeNumber).padStart(3, "0")}
-                    </span>
-                  )}
-                  {featured.airDate && (
-                    <span className="font-mono text-[10px] text-text-muted">
-                      {formatDate(featured.airDate)}
-                    </span>
+            <p className="font-mono text-sm text-text-muted/80 max-w-lg mx-auto leading-relaxed italic">
+              You&rsquo;ve seen it. You felt it. But you couldn&rsquo;t fully explain it.
+            </p>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════
+            SOLUTION — "CultCodex turns chaos into structure."
+        ══════════════════════════════════════════════════ */}
+        <section className="relative bg-gradient-to-b from-[#0a0010] to-void py-20 px-4 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,217,255,0.04),transparent_60%)]" />
+          <div className="relative mx-auto max-w-5xl space-y-12">
+            <div className="text-center space-y-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-cyan/60">
+                /// the_solution
+              </p>
+              <h2 className="font-display text-3xl sm:text-4xl font-bold text-white">
+                CultCodex turns chaos into structure.
+              </h2>
+              <p className="font-mono text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
+                Every guest, every panel, every moment becomes part of a larger map.
+                <br />
+                Not entertainment. <span className="text-text-primary font-bold">Intelligence.</span>
+              </p>
+            </div>
+
+            {/* Feature grid */}
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                {
+                  icon: "📜",
+                  title: "Full Transcripts",
+                  desc: `${stats.segments.toLocaleString()} segments — every word spoken, searchable and timestamped. Click any line to seek.`,
+                  tier: "Initiate+",
+                  color: "gold",
+                },
+                {
+                  icon: "🧠",
+                  title: "Decode Mode",
+                  desc: "AI psychological breakdowns of every panel. Guest archetypes, behavior patterns, manipulation tactics — named and mapped.",
+                  tier: "Initiate+",
+                  color: "gold",
+                },
+                {
+                  icon: "🔍",
+                  title: "Pattern Detection",
+                  desc: "Find every time a tactic repeats across guests. Filter by archetype, behavior type, conflict pattern.",
+                  tier: "Initiate+",
+                  color: "gold",
+                },
+                {
+                  icon: "🕸️",
+                  title: "Hidden Connections",
+                  desc: "Episodes, guests, and topics linked through shared patterns. The map shows what the timeline hides.",
+                  tier: "Oracle",
+                  color: "violet",
+                },
+                {
+                  icon: "🎭",
+                  title: "Behavioral Archetypes",
+                  desc: "Every recurring guest profile broken down — not just who they are, but how they operate and why.",
+                  tier: "Oracle",
+                  color: "violet",
+                },
+                {
+                  icon: "👁",
+                  title: "Personal Codex",
+                  desc: "Save signals, annotate transmissions, and build your own map of the Psycheverse. Your intelligence layer.",
+                  tier: "Initiate+",
+                  color: "gold",
+                },
+              ].map((item) => {
+                const isViolet = item.color === "violet";
+                return (
+                  <div
+                    key={item.title}
+                    className={`rounded-xl border ${isViolet ? "border-accent-violet/20" : "border-accent-gold/20"} bg-surface p-6 space-y-3 transition-colors hover:${isViolet ? "border-accent-violet/40" : "border-accent-gold/40"}`}
+                  >
+                    <p className="text-2xl">{item.icon}</p>
+                    <div>
+                      <h3 className={`font-display text-base font-bold ${isViolet ? "text-accent-violet" : "text-accent-gold"}`}>
+                        {item.title}
+                      </h3>
+                      <span className={`font-mono text-[9px] uppercase tracking-widest ${isViolet ? "text-accent-violet/60" : "text-accent-gold/60"}`}>
+                        {item.tier}
+                      </span>
+                    </div>
+                    <p className="font-mono text-[11px] text-text-muted leading-relaxed">{item.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════
+            TIER COMPARISON — simplified 3-role strip
+        ══════════════════════════════════════════════════ */}
+        <section className="bg-gradient-to-b from-void to-[#0a0010] py-20 px-4">
+          <div className="mx-auto max-w-5xl space-y-8">
+            <div className="text-center space-y-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
+                /// three_roles
+              </p>
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-white">
+                Three positions in the system.
+              </h2>
+            </div>
+
+            <div className="grid gap-px md:grid-cols-3 overflow-hidden rounded-2xl border border-border">
+              {[
+                {
+                  role: "Observer",
+                  price: "Free",
+                  hook: "Limited access. Surface-level view.",
+                  color: "text-text-muted",
+                  bg: "bg-surface",
+                  items: ["Browse episodes + summaries", "Guest profiles and bios", "Quotes, topics, lore", "Basic search"],
+                },
+                {
+                  role: "Initiate+",
+                  price: "$9/month",
+                  hook: "Full access. Decode what you're watching. Build your personal Codex.",
+                  color: "text-accent-gold",
+                  bg: "bg-surface",
+                  items: ["Everything above", "Full transcripts + click-to-seek", "Decode Mode (AI breakdowns)", "Pattern detection + advanced search", "Personal Codex"],
+                },
+                {
+                  role: "Oracle",
+                  price: "$29/month",
+                  hook: "Direct access. Influence the system. See what's not public.",
+                  color: "text-accent-violet",
+                  bg: "bg-surface",
+                  items: ["Everything above", "Vote on guests + topics", "Submit investigations", "Guest intelligence files", "Named Oracle role"],
+                },
+              ].map((tier, i) => (
+                <div key={tier.role} className={`${tier.bg} p-6 space-y-4 ${i === 1 ? "border-t-2 border-t-accent-gold" : i === 2 ? "border-t-2 border-t-accent-violet" : ""}`}>
+                  <div>
+                    <h3 className={`font-display text-xl font-bold ${tier.color}`}>{tier.role}</h3>
+                    <p className={`font-mono text-xs font-bold mt-0.5 ${tier.color}`}>{tier.price}</p>
+                  </div>
+                  <p className="font-mono text-[11px] italic text-text-muted leading-relaxed">{tier.hook}</p>
+                  <ul className="space-y-1.5">
+                    {tier.items.map((item) => (
+                      <li key={item} className="flex items-start gap-2 font-mono text-[11px] text-text-muted">
+                        <span className={`mt-0.5 ${tier.color}`}>✦</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  {i > 0 && (
+                    <Link
+                      href="/premium"
+                      className={`mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 font-mono text-xs font-bold transition-all ${
+                        i === 1
+                          ? "border-accent-gold/40 bg-accent-gold/10 text-accent-gold hover:bg-accent-gold/20"
+                          : "border-accent-violet/40 bg-accent-violet/10 text-accent-violet hover:bg-accent-violet/20"
+                      }`}
+                    >
+                      Become {tier.role} →
+                    </Link>
                   )}
                 </div>
-                <h3 className="text-lg font-medium text-text-primary group-hover:text-accent-gold transition-colors">
-                  {featured.title}
-                </h3>
-                {featured.summaryShort && (
-                  <p className="mt-2 text-sm text-text-muted line-clamp-3">
-                    {featured.summaryShort}
-                  </p>
-                )}
-                <GuestGrid
-                  guests={featured.guests
-                    .filter((g) => g.person.personType !== "host")
-                    .map((g) => ({
-                      displayName: g.person.displayName,
-                      slug: g.person.slug,
-                      avatarUrl: g.person.avatarUrl,
-                      personType: g.person.personType,
-                    }))}
-                />
-              </div>
-            </Link>
-          </SectionCard>
-        )}
-
-        <MysticalDivider />
-
-        {/* Recent Transmissions */}
-        <SectionCard title="Recent Transmissions">
-          {recentCards.length > 0 ? (
-            <div className="grid gap-3">
-              {recentCards.slice(1).map((ep) => (
-                <EpisodeCard key={ep.id} episode={ep} />
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-text-muted">No transmissions yet.</p>
-          )}
-          <div className="mt-4">
-            <Link
-              href="/episodes"
-              className="font-mono text-xs text-accent-gold hover:underline"
-            >
-              View all episodes →
-            </Link>
-          </div>
-        </SectionCard>
-
-        {/* Featured Series */}
-        {featuredSeries.length > 0 && (
-          <SectionCard title="Featured Series">
-            <div className="grid gap-3 sm:grid-cols-2">
-              {featuredSeries.map((s) => (
-                <Link
-                  key={s.slug}
-                  href={`/series/${s.slug}`}
-                  className="group flex items-start gap-3 rounded-lg border border-border bg-surface/50 p-3 transition-all hover:border-accent-cyan/30 hover:bg-elevated"
-                >
-                  {s.coverImageUrl ? (
-                    <img src={s.coverImageUrl} alt="" className="h-14 w-14 flex-shrink-0 rounded object-cover" />
-                  ) : (
-                    <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded bg-gradient-to-br from-accent-cyan/10 to-accent-violet/10 text-xl">
-                      {s.type === "tarot" ? "🔮" : s.type === "panel" ? "🎙️" : s.type === "story" ? "📖" : "📚"}
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-cyan transition-colors">
-                      {s.title}
-                    </h3>
-                    <p className="font-mono text-[10px] text-text-muted">
-                      {s._count.episodes} episode{s._count.episodes !== 1 ? "s" : ""}
-                    </p>
-                    {s.description && (
-                      <p className="mt-0.5 text-xs text-text-muted line-clamp-1">{s.description}</p>
-                    )}
-                  </div>
-                </Link>
-              ))}
-            </div>
-            <div className="mt-3">
-              <Link href="/series" className="font-mono text-xs text-accent-cyan hover:underline">
-                View all series →
-              </Link>
-            </div>
-          </SectionCard>
-        )}
-
-        {/* Popular Topics — cyan (topics color) */}
-        {popularTopics.length > 0 && (
-          <section>
-            <h2 className="mb-3 font-display text-lg font-bold text-accent-cyan flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-accent-cyan shrink-0" />
-              Popular Topics
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {popularTopics.map((topic) => (
-                <Link
-                  key={topic.slug}
-                  href={`/topics/${topic.slug}`}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-mono text-xs text-accent-cyan transition-colors hover:bg-elevated hover:border-accent-cyan/30"
-                >
-                  {topic.title}
-                  <span className="opacity-40 text-[9px]">{topic.count}</span>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Psychenomicon Teaser */}
-        <Link href="/lore/psychenomicon" className="group block">
-          <div className="relative rounded-lg border border-accent-gold/20 bg-gradient-to-br from-[#1a0033]/60 via-void to-[#1a0033]/60 p-8 text-center transition-all hover:border-accent-gold/40 hover:shadow-xl hover:shadow-accent-gold/10 overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(200,169,107,0.06),transparent_70%)]" />
-            <div className="relative z-10">
-              <p className="font-mono text-[9px] text-accent-gold/50 uppercase tracking-[0.3em] mb-4">
-                From the Forbidden Chronicle
-              </p>
-              <p className="font-display text-xl sm:text-2xl font-bold text-accent-gold leading-relaxed max-w-2xl mx-auto">
-                &ldquo;In the beginning, there was static.&rdquo;
-              </p>
-              <p className="mt-3 text-sm text-text-muted max-w-lg mx-auto leading-relaxed">
-                Then a voice cut through the noise. Over {stats.episodes.toLocaleString()} transmissions,
-                a universe was born. The Psychenomicon is its grimoire.
-              </p>
-              <p className="mt-4 inline-flex items-center gap-2 font-mono text-xs text-accent-gold/70 group-hover:text-accent-gold transition-colors">
-                <span className="h-px w-8 bg-accent-gold/30 group-hover:bg-accent-gold/60 transition-colors" />
-                Enter the Psychenomicon
-                <span className="h-px w-8 bg-accent-gold/30 group-hover:bg-accent-gold/60 transition-colors" />
-              </p>
-            </div>
-          </div>
-        </Link>
-
-        <MysticalDivider />
-
-        {/* Recent Quotes */}
-        {recentQuotes.length > 0 && (
-          <SectionCard title="Notable Quotes">
-            <div className="space-y-4">
-              {recentQuotes.map((q) => (
-                <QuoteHighlightCard
-                  key={q.id}
-                  id={q.id}
-                  text={q.text}
-                  speakerName={q.speaker?.displayName}
-                  speakerAvatarUrl={q.speaker?.avatarUrl}
-                  speakerSlug={q.speaker?.slug}
-                  speakerType={q.speaker?.personType}
-                  timestampSeconds={q.timestampSeconds}
-                />
-              ))}
-            </div>
-            <div className="mt-4">
-              <Link
-                href="/quotes"
-                className="font-mono text-xs text-red-400 hover:underline"
-              >
-                Explore all quotes →
-              </Link>
-            </div>
-          </SectionCard>
-        )}
-
-        <MysticalDivider />
-
-        {/* Oracle Teaser */}
-        {oracleQuote && (
-          <Link href="/oracle" className="group block">
-            <div className="relative rounded-lg border border-accent-violet/20 bg-gradient-to-r from-accent-violet/5 via-transparent to-accent-violet/5 p-6 text-center transition-all hover:border-accent-violet/40 hover:shadow-lg hover:shadow-accent-violet/10 overflow-hidden">
-              <div className="absolute top-2 left-4 font-mono text-[9px] text-accent-violet/50 uppercase tracking-widest">
-                The Oracle Speaks
-              </div>
-              <div className="flex justify-center mb-2">
-                <IconCrystalBall size={28} className="text-accent-violet/60 group-hover:text-accent-violet transition-colors" />
-              </div>
-              <p className="font-mono text-sm text-text-muted italic line-clamp-2 max-w-2xl mx-auto">
-                &ldquo;{oracleQuote.text.length > 140 ? `${oracleQuote.text.slice(0, 140)}…` : oracleQuote.text}&rdquo;
-              </p>
-              {oracleQuote.speaker && (
-                <p className="mt-1 font-mono text-[10px] text-accent-gold">
-                  — {oracleQuote.speaker.displayName}
-                </p>
-              )}
-              <p className="mt-2 font-mono text-[10px] text-accent-violet/60 group-hover:text-accent-violet transition-colors">
-                Consult the Oracle →
-              </p>
-            </div>
-          </Link>
-        )}
-
-        <OrnamentalBreak />
-
-        {/* Explore the Archive — color-coded by category */}
-        <section>
-          <h2 className="mb-4 font-display text-lg font-bold text-accent-gold">
-            Explore the Archive
-          </h2>
-
-          {/* Archive (Gold) */}
-          <div className="mb-4">
-            <h3 className="mb-2 font-mono text-[10px] text-accent-gold/70 uppercase tracking-widest flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-gold" />
-              Archive
-            </h3>
-            <div className="grid gap-2 sm:grid-cols-3">
-              {([
-                { href: "/episodes", icon: <IconTransmission size={20} />, label: "Episodes", count: stats.episodes, desc: "Browse all transmissions" },
-                { href: "/people", icon: <IconPerson size={20} />, label: "People", count: stats.people, desc: "Guests, hosts, and figures" },
-                { href: "/quotes", icon: <IconQuote size={20} />, label: "Quotes", count: stats.quotes, desc: "Notable words and wisdom" },
-              ] as const).map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="group flex items-center gap-3 rounded-lg border border-border bg-surface p-3 transition-all hover:border-accent-gold/30 hover:bg-elevated"
-                >
-                  <div className="flex-shrink-0 text-accent-gold/60">{item.icon}</div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">{item.label}</span>
-                      <span className="font-mono text-[10px] text-accent-gold/60">{item.count}</span>
-                    </div>
-                    <p className="text-[11px] text-text-muted truncate">{item.desc}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Explore (Cyan) */}
-          <div className="mb-4">
-            <h3 className="mb-2 font-mono text-[10px] text-accent-cyan/70 uppercase tracking-widest flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-cyan" />
-              Explore
-            </h3>
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-              {([
-                { href: "/lore", icon: <IconScroll size={20} />, label: "Lore", count: stats.loreEntries, desc: "Mythology and deep lore" },
-                { href: "/series", icon: <IconSeries size={20} />, label: "Series", count: stats.series, desc: "Collections and arcs" },
-                { href: "/topics", icon: <IconTopic size={20} />, label: "Topics", count: stats.topics, desc: "Themes and subjects" },
-                { href: "/collections", icon: <IconSeries size={20} />, label: "Collections", count: null, desc: "Curated pathways" },
-              ] as const).map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="group flex items-center gap-3 rounded-lg border border-border bg-surface p-3 transition-all hover:border-accent-cyan/30 hover:bg-elevated"
-                >
-                  <div className="flex-shrink-0 text-accent-cyan/60">{item.icon}</div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-cyan transition-colors">{item.label}</span>
-                      {item.count != null && <span className="font-mono text-[10px] text-accent-cyan/60">{item.count}</span>}
-                    </div>
-                    <p className="text-[11px] text-text-muted truncate">{item.desc}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Reference (Violet) */}
-          <div>
-            <h3 className="mb-2 font-mono text-[10px] text-accent-violet/70 uppercase tracking-widest flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-violet" />
-              Reference
-            </h3>
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-              {([
-                { href: "/lexicon", label: "Lexicon", desc: "Panelverse dictionary" },
-                { href: "/timeline", label: "Timeline", desc: "Chronological archive" },
-                { href: "/stats", label: "Stats", desc: "Archive analytics" },
-                { href: "/mythic-map", label: "Mythic Map", desc: "Connections mapped" },
-              ] as const).map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="group flex items-center gap-3 rounded-lg border border-border bg-surface p-3 transition-all hover:border-accent-violet/30 hover:bg-elevated"
-                >
-                  <div className="min-w-0">
-                    <span className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-violet transition-colors">{item.label}</span>
-                    <p className="text-[11px] text-text-muted truncate">{item.desc}</p>
-                  </div>
-                </Link>
               ))}
             </div>
           </div>
         </section>
 
+        {/* ══════════════════════════════════════════════════
+            IDENTITY PUSH — "Two types of people."
+        ══════════════════════════════════════════════════ */}
+        <section className="relative overflow-hidden bg-gradient-to-b from-[#0a0010] via-[#100020] to-void py-20 px-4">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.06),transparent_70%)]" />
+          <div className="relative mx-auto max-w-2xl text-center space-y-8">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/50">
+              /// identity
+            </p>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold text-white leading-tight">
+              There are two types of people here.
+            </h2>
+            <div className="grid gap-4 sm:grid-cols-2 text-left">
+              <div className="rounded-xl border border-border bg-surface/60 p-5 space-y-2">
+                <p className="font-mono text-xs font-bold text-text-muted uppercase tracking-widest">Those who watch</p>
+                <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+                  They see what happens on the surface. They can&rsquo;t explain the patterns underneath.
+                  They leave entertained — but not changed.
+                </p>
+              </div>
+              <div className="rounded-xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-5 space-y-2">
+                <p className="font-mono text-xs font-bold text-accent-gold uppercase tracking-widest">Those who understand</p>
+                <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+                  They have the map. They see manipulation as it happens.
+                  They know the archetypes before they speak. The archive gave them the system.
+                </p>
+              </div>
+            </div>
+            <p className="font-display text-xl font-bold text-accent-gold">
+              Choose your role.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link
+                href="/premium"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
+              >
+                Become Initiate+ — $9/mo
+              </Link>
+              <Link
+                href="/premium#system"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 px-7 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/20"
+              >
+                Become Oracle — $29/mo
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════
+            URGENCY — "Entering before it scales."
+        ══════════════════════════════════════════════════ */}
+        <section className="bg-void py-12 px-4">
+          <div className="mx-auto max-w-2xl text-center space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full border border-accent-gold/30 bg-accent-gold/8 px-5 py-2.5 shadow-lg shadow-accent-gold/10">
+              <span className="flex h-2 w-2 animate-pulse rounded-full bg-accent-gold" />
+              <span className="font-mono text-xs text-text-muted">
+                Early adopter window &nbsp;·&nbsp;{" "}
+                <span className="text-accent-gold font-bold">Oracle access is limited.</span>
+              </span>
+            </div>
+            <p className="font-mono text-sm text-text-muted leading-relaxed max-w-md mx-auto">
+              You&rsquo;re entering before this scales.
+              The people who come in now lock founding rates and shape what gets built.
+            </p>
+            <Link
+              href="/premium"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-8 py-3.5 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
+            >
+              Unlock the Codex →
+            </Link>
+          </div>
+        </section>
+
         <MysticalDivider />
 
-        <ArchiveDisclaimer variant="full" />
+        {/* ══════════════════════════════════════════════════
+            ARCHIVE — proof. Recent transmissions + live data.
+        ══════════════════════════════════════════════════ */}
+        <div className="mx-auto max-w-7xl px-4 py-12 space-y-12">
+
+          {/* Archive weight bar */}
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+            {[
+              { n: stats.episodes.toLocaleString(), label: "Episodes" },
+              { n: stats.people.toLocaleString(), label: "People" },
+              { n: stats.loreEntries.toLocaleString(), label: "Lore entries" },
+              { n: stats.quotes.toLocaleString(), label: "Quotes" },
+              { n: stats.topics.toLocaleString(), label: "Signals" },
+              { n: `${stats.totalHours.toLocaleString()}+`, label: "Hours" },
+            ].map((s) => (
+              <Link
+                key={s.label}
+                href={s.label === "Episodes" ? "/episodes" : s.label === "People" ? "/people" : s.label === "Lore entries" ? "/lore" : s.label === "Quotes" ? "/quotes" : s.label === "Signals" ? "/topics" : "/stats"}
+                className="rounded-lg border border-border bg-surface p-3 text-center transition-colors hover:border-accent-gold/40 hover:bg-surface-raised"
+              >
+                <p className="font-mono text-lg font-bold text-accent-gold">{s.n}</p>
+                <p className="mt-0.5 font-mono text-[10px] text-text-muted">{s.label}</p>
+              </Link>
+            ))}
+          </div>
+
+          {/* Featured + Recent */}
+          {featured && (
+            <div className="space-y-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
+                /// latest_transmission
+              </p>
+              <Link
+                href={`/episodes/${featured.slug}`}
+                className="group flex flex-col sm:flex-row items-start gap-4 rounded-xl border border-border bg-surface p-4 transition-all hover:border-accent-gold/30 hover:bg-elevated"
+              >
+                {featured.thumbnailUrl ? (
+                  <img src={featured.thumbnailUrl} alt="" className="w-full sm:w-48 h-32 rounded-lg object-cover flex-shrink-0" />
+                ) : (
+                  <div className="w-full sm:w-48 h-32 rounded-lg bg-gradient-to-br from-accent-gold/10 to-accent-violet/10 flex-shrink-0" />
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    {featured.episodeNumber && (
+                      <span className="font-mono text-[10px] text-accent-gold font-bold">
+                        EP.{String(featured.episodeNumber).padStart(3, "0")}
+                      </span>
+                    )}
+                    {featured.airDate && (
+                      <span className="font-mono text-[10px] text-text-muted">{formatDate(featured.airDate)}</span>
+                    )}
+                  </div>
+                  <h3 className="text-lg font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+                    {featured.title}
+                  </h3>
+                  {featured.summaryShort && (
+                    <p className="mt-2 text-sm text-text-muted line-clamp-2">{featured.summaryShort}</p>
+                  )}
+                  <GuestGrid
+                    guests={featured.guests
+                      .filter((g) => g.person.personType !== "host")
+                      .map((g) => ({
+                        displayName: g.person.displayName,
+                        slug: g.person.slug,
+                        avatarUrl: g.person.avatarUrl,
+                        personType: g.person.personType,
+                      }))}
+                  />
+                </div>
+              </Link>
+            </div>
+          )}
+
+          {/* Recent transmissions */}
+          {recentCards.length > 1 && (
+            <div className="space-y-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
+                /// recent_transmissions
+              </p>
+              <div className="grid gap-3">
+                {recentCards.slice(1).map((ep) => (
+                  <EpisodeCard key={ep.id} episode={ep} />
+                ))}
+              </div>
+              <Link href="/episodes" className="font-mono text-xs text-accent-gold hover:underline">
+                View all {stats.episodes.toLocaleString()} episodes →
+              </Link>
+            </div>
+          )}
+
+          <MysticalDivider />
+
+          {/* Popular Topics */}
+          {popularTopics.length > 0 && (
+            <div className="space-y-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60">
+                /// active_signals
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {popularTopics.map((topic) => (
+                  <Link
+                    key={topic.slug}
+                    href={`/topics/${topic.slug}`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 font-mono text-xs text-accent-cyan transition-colors hover:bg-elevated hover:border-accent-cyan/30"
+                  >
+                    {topic.title}
+                    <span className="opacity-40 text-[9px]">{topic.count}</span>
+                  </Link>
+                ))}
+              </div>
+              <Link href="/topics" className="font-mono text-xs text-accent-cyan hover:underline">
+                Explore all signals →
+              </Link>
+            </div>
+          )}
+
+          {/* Recent Quotes */}
+          {recentQuotes.length > 0 && (
+            <div className="space-y-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
+                /// notable_moments
+              </p>
+              <div className="space-y-4">
+                {recentQuotes.map((q) => (
+                  <QuoteHighlightCard
+                    key={q.id}
+                    id={q.id}
+                    text={q.text}
+                    speakerName={q.speaker?.displayName}
+                    speakerAvatarUrl={q.speaker?.avatarUrl}
+                    speakerSlug={q.speaker?.slug}
+                    speakerType={q.speaker?.personType}
+                    timestampSeconds={q.timestampSeconds}
+                  />
+                ))}
+              </div>
+              <Link href="/quotes" className="font-mono text-xs text-text-muted hover:underline">
+                Explore all quotes →
+              </Link>
+            </div>
+          )}
+
+          <ArchiveDisclaimer variant="full" />
+        </div>
       </main>
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -452,13 +533,10 @@ export default async function HomePage() {
             "@type": "WebSite",
             name: "Cult Codex",
             url: "https://cultcodex.me",
-            description: "The Living Archive of the Cult of Psyche",
+            description: "A pattern intelligence system. 1,500+ conversations. Every word. Every soul. Every connection.",
             potentialAction: {
               "@type": "SearchAction",
-              target: {
-                "@type": "EntryPoint",
-                urlTemplate: "https://cultcodex.me/search?q={search_term_string}",
-              },
+              target: { "@type": "EntryPoint", urlTemplate: "https://cultcodex.me/search?q={search_term_string}" },
               "query-input": "required name=search_term_string",
             },
           }),

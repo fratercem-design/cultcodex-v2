@@ -39,21 +39,18 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
-      - name: Generate Prisma client
-        run: npx prisma generate
-
       - name: Enrich episodes
         if: ${{ github.event.inputs.step == 'episodes' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
         run: |
           BATCH="${{ github.event.inputs.batch || '20' }}"
           echo "── Enriching up to $BATCH episodes ──"
-          npx tsx scripts/enrich/enrich-nightmares.ts --batch "$BATCH"
+          npx dotenvx run -- npx tsx scripts/enrich/enrich-nightmares.ts --batch "$BATCH"
           echo ""
           echo "── Importing enriched data to DB ──"
-          npx tsx scripts/enrich/import-enriched.ts
+          npx dotenvx run -- npx tsx scripts/enrich/import-enriched.ts
 
       - name: Enrich character profiles
         if: ${{ github.event.inputs.step == 'people' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
         run: |
           echo "── Building character profiles ──"
-          npx tsx scripts/enrich/enrich-nightmares-people.ts
+          npx dotenvx run -- npx tsx scripts/enrich/enrich-nightmares-people.ts

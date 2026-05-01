@@ -24,6 +24,7 @@ const PRIMARY_NAV = [
   { label: "Signals", href: "/topics" },
   { label: "Transmissions", href: "/episodes" },
   { label: "Collections", href: "/collections" },
+  { label: "Psychenomicon", href: "/psychenomicon", accent: true },
 ] as const;
 
 export async function SiteHeader() {
@@ -62,7 +63,11 @@ export async function SiteHeader() {
             <Link
               key={item.href}
               href={item.href}
-              className="font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded text-text-primary hover:text-accent-gold hover:bg-accent-gold-dim transition-colors"
+              className={
+                "accent" in item && item.accent
+                  ? "font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded text-accent-violet border border-accent-violet/30 hover:bg-accent-violet/10 hover:border-accent-violet/60 transition-colors"
+                  : "font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded text-text-primary hover:text-accent-gold hover:bg-accent-gold-dim transition-colors"
+              }
             >
               {item.label}
             </Link>
@@ -76,7 +81,7 @@ export async function SiteHeader() {
             href="/premium"
             className="hidden sm:inline-flex items-center rounded border border-accent-gold/40 bg-accent-gold/10 px-3 py-1 font-mono text-[11px] font-bold text-accent-gold transition-all hover:bg-accent-gold/20 hover:shadow-md hover:shadow-accent-gold/20"
           >
-            ✦ Premium
+            ✦ Initiate+
           </Link>
           <UserMenu user={(session as SessionWithCodex)?.codexUser ?? null} />
         </div>

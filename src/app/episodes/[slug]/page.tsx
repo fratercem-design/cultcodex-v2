@@ -29,6 +29,8 @@ import { formatDate } from "@/lib/format/date";
 import { cleanTitle } from "@/lib/format/text";
 import { formatDuration } from "@/lib/format/duration";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
+import { DecodeModePanel } from "@/components/episodes/decode-mode-panel";
+import { WhatYouMissed } from "@/components/episodes/what-you-missed";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { RandomEpisodeButton } from "@/components/archive/random-episode-button";
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
@@ -105,6 +107,14 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
   const hasTranscript = episode.segments.length > 0;
   const hasTranscriptAccess = user ? await isSubscribed(user.id) : false;
+  const hasDecodeAccess = hasTranscriptAccess; // same tier — Initiate+
+  const hasDecodeData = !!episode.decodeData;
+
+  // Signal/Noise map — only exposed to subscribers
+  const signalMap =
+    hasTranscriptAccess && episode.decodeData
+      ? ((episode.decodeData as Record<string, unknown>).signal_noise as Record<string, "signal" | "noise" | "neutral"> | undefined)
+      : undefined;
 
   // Separate hosts from actual guests — hosts should not appear in the guest list
   const actualGuests = episode.guests.filter(
@@ -119,6 +129,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     ...(hasTranscript
       ? [{ id: "transcript", label: "Transcript", count: episode.segments.length }]
       : []),
+    { id: "decode", label: "Decode", locked: !hasDecodeAccess },
     { id: "quotes", label: "Quotes", count: episode.quotes.length },
     // Only show Discussion tab if there are comments or user is logged in
     ...(commentsData.totalCount > 0 || user
@@ -254,6 +265,14 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               entityTitle={episode.title}
             />
           </div>
+
+          {/* What You Missed */}
+          <WhatYouMissed
+            decodeData={hasDecodeData ? (episode.decodeData as Parameters<typeof WhatYouMissed>[0]["decodeData"]) : null}
+            isUnlocked={hasDecodeAccess}
+            isAuthenticated={!!user}
+            episodeSlug={episode.slug}
+          />
 
           {/* Tab layout */}
           <Suspense fallback={<div className="h-40" />}>
@@ -392,6 +411,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         segments={episode.segments}
                         hasVideoEmbed={!!episode.youtubeVideoId}
                         initialTimestamp={initialTimestamp}
+                        signalMap={signalMap}
                       />
                     </TerminalPanel>
                   ) : (
@@ -404,6 +424,13 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                     </TerminalPanel>
                   ),
                 } : {}),
+                decode: (
+                  <DecodeModePanel
+                    decodeData={hasDecodeData ? (episode.decodeData as Parameters<typeof DecodeModePanel>[0]["decodeData"]) : null}
+                    isUnlocked={hasDecodeAccess}
+                    isAuthenticated={!!user}
+                  />
+                ),
                 quotes: (
                   <div className="space-y-4">
                     {episode.quotes.length > 0 ? (
@@ -513,6 +540,33 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
           {/* Color legend */}
           <ColorLegend />
+
+          {/* Upgrade CTA — only for non-subscribers */}
+          {!hasTranscriptAccess && (
+            <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-5 space-y-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">/// initiate_layer</p>
+              <p className="font-mono text-xs font-bold text-accent-gold">Observers see the surface.</p>
+              <ul className="space-y-1.5">
+                {[
+                  "Full searchable transcript",
+                  "Decode Mode — AI analysis",
+                  "Jump to any timestamp",
+                  "Pattern search across all episodes",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 font-mono text-[10px] text-text-muted">
+                    <span className="text-accent-gold mt-0.5">✦</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/premium"
+                className="block w-full rounded-lg border border-accent-gold bg-accent-gold/15 px-4 py-2.5 text-center font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
+              >
+                Become Initiate+ — $9/mo
+              </Link>
+            </div>
+          )}
 
           {/* Guests — hosts filtered out */}
           <GuestGrid

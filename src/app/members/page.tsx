@@ -25,6 +25,9 @@ async function getPublicMembers() {
       displayName: true,
       avatarUrl: true,
       memberTitle: true,
+      codexSlug: true,
+      codexPagePublic: true,
+      subscriptionTier: true,
       createdAt: true,
       role: true,
     },
@@ -161,12 +164,17 @@ function MemberCard({
     displayName: string;
     avatarUrl: string | null;
     memberTitle: string | null;
+    codexSlug: string | null;
+    codexPagePublic: boolean;
+    subscriptionTier: string | null;
     createdAt: Date;
     role: string;
   };
   index: number;
 }) {
   const isAdmin = member.role === "admin";
+  const isSystem = member.subscriptionTier === "system" || isAdmin;
+  const hasPage = isSystem && member.codexSlug && member.codexPagePublic;
   const joinYear = new Date(member.createdAt).getFullYear();
   const joinMonth = new Date(member.createdAt).toLocaleDateString("en-US", {
     month: "short",
@@ -175,14 +183,24 @@ function MemberCard({
   // Rotate between gold and cyan accents for visual rhythm
   const accent = index % 3 === 2 ? "cyan" : "gold";
 
+  const CardWrapper = hasPage
+    ? ({ children }: { children: React.ReactNode }) => (
+        <Link href={`/members/${member.codexSlug}`} className={`group relative overflow-hidden rounded-xl border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg ${
+          accent === "cyan"
+            ? "border-accent-cyan/20 hover:border-accent-cyan/40 hover:shadow-accent-cyan/10"
+            : "border-accent-gold/20 hover:border-accent-gold/40 hover:shadow-accent-gold/10"
+        } block`}>{children}</Link>
+      )
+    : ({ children }: { children: React.ReactNode }) => (
+        <div className={`group relative overflow-hidden rounded-xl border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg ${
+          accent === "cyan"
+            ? "border-accent-cyan/20 hover:border-accent-cyan/40 hover:shadow-accent-cyan/10"
+            : "border-accent-gold/20 hover:border-accent-gold/40 hover:shadow-accent-gold/10"
+        }`}>{children}</div>
+      );
+
   return (
-    <div
-      className={`group relative overflow-hidden rounded-xl border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg ${
-        accent === "cyan"
-          ? "border-accent-cyan/20 hover:border-accent-cyan/40 hover:shadow-accent-cyan/10"
-          : "border-accent-gold/20 hover:border-accent-gold/40 hover:shadow-accent-gold/10"
-      }`}
-    >
+    <CardWrapper>
       {/* Founding member glow for early joiners */}
       {index < 10 && (
         <div className="absolute right-3 top-3">
@@ -237,8 +255,13 @@ function MemberCard({
           <p className="mt-0.5 font-mono text-[10px] text-text-muted/60">
             Member since {joinMonth} {joinYear}
           </p>
+          {hasPage && (
+            <p className={`mt-1 font-mono text-[10px] ${accent === "cyan" ? "text-accent-cyan/60" : "text-accent-gold/60"}`}>
+              View page →
+            </p>
+          )}
         </div>
       </div>
-    </div>
+    </CardWrapper>
   );
 }

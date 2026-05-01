@@ -74,6 +74,7 @@ model Episode {
   transcriptRaw   String?
   transcriptHtml  String?
   transcriptJson  Json?
+  decodeData      Json?
   searchText      String?
   status          ContentStatus @default(draft)
   contentType     ContentType   @default(original)
@@ -96,6 +97,7 @@ model Episode {
   reactions          EpisodeReaction[]
   comments           CodexComment[]
   favorites          Favorite[]
+  psychenomiconChapter PsychenomiconChapter?
 
   @@index([airDate])
   @@index([status])
@@ -386,11 +388,17 @@ model CodexUser {
   stripeCustomerId        String?   @unique
   subscriptionId          String?   @unique
   subscriptionStatus      String?   // "active", "past_due", "canceled", "unpaid"
+  subscriptionTier        String?   // "access" | "system"
   currentPeriodEnd        DateTime?
 
   // Member identity
   memberTitle             String?   // chosen flair title e.g. "Oracle", "Acolyte"
   isPublicMember          Boolean   @default(false) // opt-in to public Member Roll
+
+  // Personal codex page (system tier)
+  bio                     String?
+  codexSlug               String?   @unique
+  codexPagePublic         Boolean   @default(true)
 
   reactions               EpisodeReaction[]
   comments                CodexComment[]
@@ -552,4 +560,91 @@ model SavedQuote {
   @@unique([userId, quoteId])
   @@index([userId])
   @@index([quoteId])
+}
+
+// ─── Psychenomicon ────────────────────────────────
+
+model PsychenomiconChapter {
+  id             String   @id @default(cuid())
+  chapterNumber  Int      @unique
+  title          String
+  slug           String   @unique
+  episodeId      String?  @unique
+  episode        Episode? @relation(fields: [episodeId], references: [id])
+
+  canonText          String  @db.Text
+  interpretationText String  @db.Text
+  mythicText         String  @db.Text
+  emergingSignals    String[]
+
+  // JSON blobs for archetypes, entity snapshots, and thread refs
+  archetypesData Json?
+  threadRefs     Json?
+  isMajorEvent   Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  entityAppearances PsychenomiconEntityAppearance[]
+  threadChapters    PsychenomiconThreadChapter[]
+
+  @@index([chapterNumber])
+}
+
+model PsychenomiconEntity {
+  id         String  @id @default(cuid())
+  name       String
+  slug       String  @unique
+  personSlug String? // soft link to Person (no FK — person may not be in DB yet)
+
+  primaryArchetype  String?
+  archetypeHistory  Json?    // [{archetype, chapterNumber, reason}]
+  radarData         Json?    // {influence, volatility, manipulation, control, emotionalIntensity} 0-10
+  behaviorPatterns  String[]
+  status            String   @default("active") // active | dormant | evolved
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appearances PsychenomiconEntityAppearance[]
+
+  @@index([status])
+}
+
+model PsychenomiconThread {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  description String? @db.Text
+  status      String  @default("active") // active | resolved | emerging
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chapterLinks PsychenomiconThreadChapter[]
+
+  @@index([status])
+}
+
+model PsychenomiconEntityAppearance {
+  id          String              @id @default(cuid())
+  chapterId   String
+  entityId    String
+  chapter     PsychenomiconChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  entity      PsychenomiconEntity  @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  archetypeAt String?
+  significance String?
+
+  @@unique([chapterId, entityId])
+  @@index([chapterId])
+  @@index([entityId])
+}
+
+model PsychenomiconThreadChapter {
+  chapterId String
+  threadId  String
+  chapter   PsychenomiconChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  thread    PsychenomiconThread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@id([chapterId, threadId])
 }

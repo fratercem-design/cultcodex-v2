@@ -79,24 +79,22 @@ export function SoftGate({
       <div
         className={`relative -mt-8 rounded-lg border ${accentBorderCls} bg-surface p-6 text-center space-y-3 shadow-lg`}
       >
-        <p
-          className={`font-mono text-[10px] uppercase tracking-[0.3em] ${accentTextCls}`}
-        >
-          /// locked &middot; {t.name}
+        <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${accentTextCls}`}>
+          /// {t.role}_only
         </p>
         <h3 className={`font-display text-lg font-bold ${accentTextCls}`}>
-          {feature} — ${t.priceMonthly}/mo
+          {t.role}s see this. Observers don&rsquo;t.
         </h3>
         <p className="text-sm text-text-muted max-w-md mx-auto leading-relaxed">
-          {t.tagline} The rest of this view opens on{" "}
-          <span className="text-text-primary font-medium">{t.name}</span>.
+          <span className="text-text-primary">{feature}</span> opens on {t.name} (${t.priceMonthly}/mo).{" "}
+          {t.tagline}
         </p>
         <div className="flex flex-wrap justify-center gap-3 pt-1">
           <Link
             href={`/premium#${t.slug}`}
             className={`inline-flex items-center gap-2 rounded-lg border ${accentBorderCls} ${accentBgCls} px-5 py-2 font-mono text-xs font-bold ${accentTextCls} transition-colors`}
           >
-            Unlock with {t.name} <span aria-hidden>→</span>
+            Become {t.role} — ${t.priceMonthly}/mo <span aria-hidden>→</span>
           </Link>
           <Link
             href="/premium"
