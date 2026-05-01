@@ -1,0 +1,56 @@
+name: Enrich Nightmares Episodes
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: 'Episodes to enrich per run (0 = all)'
+        required: false
+        default: '20'
+      step:
+        description: 'Which step to run'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - episodes
+          - people
+
+jobs:
+  enrich:
+    name: AI enrichment via Claude
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ENRICHMENT_MODEL: claude-haiku-4-5-20251001
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Enrich episodes
+        if: ${{ github.event.inputs.step == 'episodes' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
+        run: |
+          BATCH="${{ github.event.inputs.batch || '20' }}"
+          echo "── Enriching up to $BATCH episodes ──"
+          npx dotenvx run -- npx tsx scripts/enrich/enrich-nightmares.ts --batch "$BATCH"
+          echo ""
+          echo "── Importing enriched data to DB ──"
+          npx dotenvx run -- npx tsx scripts/enrich/import-enriched.ts
+
+      - name: Enrich character profiles
+        if: ${{ github.event.inputs.step == 'people' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
+        run: |
+          echo "── Building character profiles ──"
+          npx dotenvx run -- npx tsx scripts/enrich/enrich-nightmares-people.ts
