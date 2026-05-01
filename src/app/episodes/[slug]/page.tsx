@@ -563,7 +563,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 href="/premium"
                 className="block w-full rounded-lg border border-accent-gold bg-accent-gold/15 px-4 py-2.5 text-center font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
               >
-                Become Initiate+ — $9/mo
+                Become Initiate+ — $10/mo
               </Link>
             </div>
           )}

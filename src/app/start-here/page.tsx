@@ -216,7 +216,7 @@ export default async function StartHerePage() {
             {/* CTA strip */}
             <div className="border-t border-accent-gold/20 bg-accent-gold/5 px-6 py-4 flex flex-wrap items-center justify-between gap-3">
               <p className="font-mono text-xs text-text-muted">
-                Initiate+ opens for <span className="text-accent-gold font-bold">$9/month</span>. Cancel any time.
+                Initiate+ opens for <span className="text-accent-gold font-bold">$10/month</span>. Cancel any time.
               </p>
               <Link
                 href="/premium"

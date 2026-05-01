@@ -32,7 +32,7 @@ export async function isSubscribed(userId: string): Promise<boolean> {
 }
 
 /**
- * Check if a user has the "system" tier (Full System, $29/mo).
+ * Check if a user has the "system" tier (Full System, $25/mo).
  * Admins always qualify.
  */
 export async function hasSystemTier(userId: string): Promise<boolean> {

@@ -257,7 +257,7 @@ export default async function HomePage() {
                 },
                 {
                   role: "Initiate+",
-                  price: "$9/month",
+                  price: "$10/month",
                   hook: "Full access. Decode what you're watching. Build your personal Codex.",
                   color: "text-accent-gold",
                   bg: "bg-surface",
@@ -265,7 +265,7 @@ export default async function HomePage() {
                 },
                 {
                   role: "Oracle",
-                  price: "$29/month",
+                  price: "$25/month",
                   hook: "Direct access. Influence the system. See what's not public.",
                   color: "text-accent-violet",
                   bg: "bg-surface",
@@ -340,13 +340,13 @@ export default async function HomePage() {
                 href="/premium"
                 className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
               >
-                Become Initiate+ — $9/mo
+                Become Initiate+ — $10/mo
               </Link>
               <Link
                 href="/premium#system"
                 className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 px-7 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/20"
               >
-                Become Oracle — $29/mo
+                Become Oracle — $25/mo
               </Link>
             </div>
           </div>

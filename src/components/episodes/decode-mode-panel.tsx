@@ -66,7 +66,7 @@ function DecodeModeLocked({ isAuthenticated }: DecodeModeLockedProps) {
           href="/premium#access"
           className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 hover:bg-accent-violet/20 px-5 py-2 font-mono text-xs font-bold text-accent-violet transition-colors"
         >
-          Become Initiate+ — $9/mo <span aria-hidden>→</span>
+          Become Initiate+ — $10/mo <span aria-hidden>→</span>
         </Link>
       </div>
     </div>

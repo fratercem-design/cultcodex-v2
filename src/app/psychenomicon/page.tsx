@@ -34,7 +34,7 @@ function PsychenomiconGate({ isAuthenticated }: { isAuthenticated: boolean }) {
           href="/premium#access"
           className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 hover:bg-accent-violet/20 px-5 py-2.5 font-mono text-xs font-bold text-accent-violet transition-colors"
         >
-          Become Initiate+ — $9/mo →
+          Become Initiate+ — $10/mo →
         </Link>
       </div>
     </div>

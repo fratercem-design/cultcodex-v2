@@ -6,7 +6,7 @@
  *   - /api/stripe/webhook (map priceId back to tier)
  *   - SoftGate component (which tier a surface requires)
  *
- * Identity ladder: Observer (free) → Initiate+ ($9) → Oracle ($29)
+ * Identity ladder: Observer (free) → Initiate+ ($10) → Oracle ($25)
  * People don't upgrade for features — they upgrade to change their role.
  *
  * Stripe price IDs are read from env at request time so the same config
@@ -36,7 +36,7 @@ export const TIERS: Tier[] = [
     role: "Initiate",
     tagline: "The archive becomes a tool you can use.",
     psychologyHook: "Now I can actually understand what I'm watching.",
-    priceMonthly: 9,
+    priceMonthly: 10,
     accent: "gold",
     priceEnvVar: "STRIPE_PRICE_ACCESS_ID",
     features: [
@@ -59,7 +59,7 @@ export const TIERS: Tier[] = [
     role: "Oracle",
     tagline: "You're not watching anymore. You're inside it.",
     psychologyHook: "I am inside the system. Not just watching it.",
-    priceMonthly: 29,
+    priceMonthly: 25,
     accent: "violet",
     badge: "Most immersive",
     priceEnvVar: "STRIPE_PRICE_SYSTEM_ID",

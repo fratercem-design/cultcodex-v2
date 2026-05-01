@@ -40,7 +40,7 @@ export function SubscriptionCTA({ variant = "card" }: SubscriptionCTAProps) {
         disabled={loading}
         className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/10 disabled:opacity-50"
       >
-        {loading ? "Redirecting..." : "Become Initiate+ — $9/month"}
+        {loading ? "Redirecting..." : "Become Initiate+ — $10/month"}
       </button>
     );
   }
@@ -55,7 +55,7 @@ export function SubscriptionCTA({ variant = "card" }: SubscriptionCTAProps) {
       </h3>
       <p className="font-mono text-xs text-text-muted leading-relaxed max-w-sm mx-auto">
         Initiates see everything underneath — full transcripts, click-to-seek,
-        Decode Mode, and the intelligence layer. $9/month.
+        Decode Mode, and the intelligence layer. $10/month.
       </p>
       <div className="flex flex-wrap justify-center gap-3 pt-1">
         <button
@@ -63,7 +63,7 @@ export function SubscriptionCTA({ variant = "card" }: SubscriptionCTAProps) {
           disabled={loading}
           className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/10 disabled:opacity-50"
         >
-          {loading ? "Redirecting..." : "Become Initiate+ — $9/mo →"}
+          {loading ? "Redirecting..." : "Become Initiate+ — $10/mo →"}
         </button>
         <Link
           href="/premium"

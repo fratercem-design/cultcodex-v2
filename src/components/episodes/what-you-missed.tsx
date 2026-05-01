@@ -85,7 +85,7 @@ export function WhatYouMissed({ decodeData, isUnlocked, isAuthenticated, episode
                   href="/premium#access"
                   className="inline-flex items-center gap-2 rounded border border-amber-500/40 bg-amber-500/10 px-4 py-2 font-mono text-xs font-bold text-amber-400 hover:bg-amber-500/20 transition-colors"
                 >
-                  Unlock Decode Mode — $9/mo →
+                  Unlock Decode Mode — $10/mo →
                 </Link>
               </div>
             </div>

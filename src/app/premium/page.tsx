@@ -22,7 +22,7 @@ export const revalidate = 300;
 export const metadata: Metadata = buildMetadata({
   title: "Join the Archive — Choose Your Role",
   description:
-    "Observer. Initiate. Oracle. Three roles in the system. Initiate+ ($9/mo) unlocks the archive. Oracle ($29/mo) puts you inside it.",
+    "Observer. Initiate. Oracle. Three roles in the system. Initiate+ ($10/mo) unlocks the archive. Oracle ($25/mo) puts you inside it.",
   path: "/premium",
 });
 
@@ -98,7 +98,7 @@ export default async function PremiumPage() {
               },
               {
                 role: "Initiate",
-                price: "$9/mo",
+                price: "$10/mo",
                 hook: "Now I can actually understand what I'm watching.",
                 color: "text-accent-gold",
                 bg: "bg-surface",
@@ -115,7 +115,7 @@ export default async function PremiumPage() {
               },
               {
                 role: "Oracle",
-                price: "$29/mo",
+                price: "$25/mo",
                 hook: "I am inside the system. Not just watching it.",
                 color: "text-accent-violet",
                 bg: "bg-surface",
@@ -366,19 +366,19 @@ export default async function PremiumPage() {
                 <span className="text-white">Start Initiating.</span>
               </h3>
               <p className="font-mono text-xs text-text-muted max-w-sm mx-auto">
-                Initiate+ opens for $9/month. Oracle opens for $29/month.<br />
+                Initiate+ opens for $10/month. Oracle opens for $25/month.<br />
                 Both include instant access. Cancel any time.
               </p>
               <div className="flex flex-wrap justify-center gap-4 pt-2">
                 <TierCheckoutButton
                   tier="access"
-                  label={notSignedIn ? "Sign in to become Initiate+ — $9/mo" : "Become Initiate+ — $9/mo"}
+                  label={notSignedIn ? "Sign in to become Initiate+ — $10/mo" : "Become Initiate+ — $10/mo"}
                   accent="gold"
                   requireSignIn={notSignedIn}
                 />
                 <TierCheckoutButton
                   tier="system"
-                  label={notSignedIn ? "Sign in to become Oracle — $29/mo" : "Become Oracle — $29/mo"}
+                  label={notSignedIn ? "Sign in to become Oracle — $25/mo" : "Become Oracle — $25/mo"}
                   accent="violet"
                   requireSignIn={notSignedIn}
                 />
@@ -426,7 +426,7 @@ const COMPARISON_ROWS: [string, boolean, boolean, boolean][] = [
 const FAQ: { q: string; a: string }[] = [
   {
     q: "What's the difference between Observer, Initiate+, and Oracle?",
-    a: "Observer is free — you can see the whole archive but can't go deep. Initiate+ ($9/mo) unlocks transcripts, Decode Mode, personal Codex, and the intelligence layer. Oracle ($29/mo) puts you inside the system — you influence what gets investigated, access raw footage, and hold a named role.",
+    a: "Observer is free — you can see the whole archive but can't go deep. Initiate+ ($10/mo) unlocks transcripts, Decode Mode, personal Codex, and the intelligence layer. Oracle ($25/mo) puts you inside the system — you influence what gets investigated, access raw footage, and hold a named role.",
   },
   {
     q: "Can I upgrade from Initiate+ to Oracle later?",
