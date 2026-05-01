@@ -149,22 +149,21 @@ async function main() {
   const { batch, force } = parseArgs();
   const prisma = getPrisma();
 
-  if (!fs.existsSync(NIGHTMARES_RAW)) {
-    log("youtube-raw-psychesnightmares.json not found. Run _fetch-psychesnightmares.ts first.");
-    process.exit(1);
+  // Load optional local metadata for descriptions (may not exist in CI)
+  const videoMeta = new Map<string, RawVideo>();
+  if (fs.existsSync(NIGHTMARES_RAW)) {
+    const raw = JSON.parse(fs.readFileSync(NIGHTMARES_RAW, "utf-8")) as { videos: RawVideo[] };
+    for (const v of raw.videos) videoMeta.set(v.videoId, v);
+    log(`Loaded ${videoMeta.size} video metadata entries from local file`);
+  } else {
+    log("No local raw JSON — descriptions will be sourced from DB summaryShort");
   }
 
-  const raw = JSON.parse(fs.readFileSync(NIGHTMARES_RAW, "utf-8")) as {
-    videos: RawVideo[];
-  };
-
-  const nightmaresVideoIds = new Set(raw.videos.map((v) => v.videoId));
-  const videoMeta = new Map(raw.videos.map((v) => [v.videoId, v]));
-
-  // Find nightmares episodes in DB that need enrichment
+  // Find nightmares episodes in DB that need enrichment (contentType=livestream)
   const episodes = await prisma.episode.findMany({
     where: {
-      youtubeVideoId: { in: Array.from(nightmaresVideoIds) },
+      contentType: "livestream",
+      youtubeVideoId: { not: null },
       OR: [{ summaryLong: null }, { summaryLong: "" }],
     },
     select: {
@@ -174,6 +173,7 @@ async function main() {
       episodeNumber: true,
       airDate: true,
       youtubeVideoId: true,
+      summaryShort: true,
     },
     orderBy: { episodeNumber: "asc" },
   });
@@ -241,7 +241,7 @@ async function main() {
         title: ep.title,
         episodeNumber: ep.episodeNumber,
         airDate: ep.airDate?.toISOString().split("T")[0] ?? "unknown",
-        description: meta?.description ?? "",
+        description: meta?.description ?? ep.summaryShort ?? "",
         transcript: truncated,
       });
 
