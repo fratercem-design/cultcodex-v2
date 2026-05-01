@@ -61,4 +61,7 @@ jobs:
           npx tsx scripts/import-episodes-ytdlp.ts \
             --content-type "${{ github.event.inputs.content_type || 'original' }}" \
             --delay "${{ github.event.inputs.delay_ms || '1500' }}" \
-            --max "${{ github.event.inputs.max_transcripts || '0' }}"
+            --max "${{ github.event.inputs.max_transcripts || '0' }}" \
+            | tee /tmp/import-output.txt
+          echo "## Transcript Import Summary" >> $GITHUB_STEP_SUMMARY
+          grep -E "Total episodes:|Have transcripts:|Missing:|Done —|Nothing to do" /tmp/import-output.txt >> $GITHUB_STEP_SUMMARY || true
