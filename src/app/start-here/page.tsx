@@ -18,6 +18,7 @@ import {
 } from "@/components/graphics/codex-icons";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { getArchiveStats } from "@/lib/queries/stats";
+import { prisma } from "@/lib/db";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -26,36 +27,16 @@ export const metadata: Metadata = {
     "A structured archive of the Cult of Psyche. 1,500+ episodes. Every word. Every soul. Every pattern. Choose how deep you want to go.",
 };
 
-const TOP_EPISODES = [
-  {
-    slug: "the-most-manipulative-panel-ever",
-    label: "Start with the most chaotic panel in the archive",
-    hint: "Good first transmission",
-  },
-  {
-    slug: "psyche-explains-the-system",
-    label: "Psyche explains how it all works",
-    hint: "Context + lore foundation",
-  },
-  {
-    slug: "consciousness-loop",
-    label: "The consciousness loop — pattern across 34 episodes",
-    hint: "Deep signal",
-  },
-  {
-    slug: "first-ever-tarot-session",
-    label: "Where it started — the first tarot session",
-    hint: "Origin",
-  },
-  {
-    slug: "the-watcher-panel",
-    label: "The Watcher Panel — four archetypes in one room",
-    hint: "Character study",
-  },
-];
-
 export default async function StartHerePage() {
-  const stats = await getArchiveStats();
+  const [stats, recentEpisodes] = await Promise.all([
+    getArchiveStats(),
+    prisma.episode.findMany({
+      where: { status: "published" },
+      orderBy: { airDate: "desc" },
+      take: 5,
+      select: { slug: true, title: true, episodeNumber: true },
+    }),
+  ]);
 
   return (
     <>
@@ -174,7 +155,7 @@ export default async function StartHerePage() {
           </p>
           <p className="text-center text-sm text-text-muted">Five transmissions that orient you to the system.</p>
           <div className="space-y-3">
-            {TOP_EPISODES.map((ep, i) => (
+            {recentEpisodes.map((ep, i) => (
               <Link
                 key={ep.slug}
                 href={`/episodes/${ep.slug}`}
@@ -185,9 +166,11 @@ export default async function StartHerePage() {
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="font-mono text-sm text-text-primary group-hover:text-accent-gold transition-colors truncate">
-                    {ep.label}
+                    {ep.title}
                   </p>
-                  <p className="font-mono text-[10px] text-text-muted/60 mt-0.5">{ep.hint}</p>
+                  {ep.episodeNumber && (
+                    <p className="font-mono text-[10px] text-text-muted/60 mt-0.5">Episode {ep.episodeNumber}</p>
+                  )}
                 </div>
                 <span className="font-mono text-[11px] text-accent-gold opacity-0 group-hover:opacity-100 transition-opacity">→</span>
               </Link>
