@@ -21,7 +21,7 @@ import * as os from "os";
 import { execFileSync } from "child_process";
 
 const BASE_URL = (process.env.VERCEL_URL ?? "https://cultcodex.me").replace(/\/$/, "");
-const SECRET = process.env.ENRICH_SECRET ?? "";
+const SECRET = (process.env.ENRICH_SECRET ?? "").trim();
 const COOKIES_FILE = process.env.YOUTUBE_COOKIES_FILE ?? "";
 
 if (!SECRET) {
