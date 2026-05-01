@@ -44,13 +44,13 @@ jobs:
         run: |
           BATCH="${{ github.event.inputs.batch || '20' }}"
           echo "── Enriching up to $BATCH episodes ──"
-          npx dotenvx run -- npx tsx scripts/enrich/enrich-nightmares.ts --batch "$BATCH"
+          npx tsx scripts/enrich/enrich-nightmares.ts --batch "$BATCH"
           echo ""
           echo "── Importing enriched data to DB ──"
-          npx dotenvx run -- npx tsx scripts/enrich/import-enriched.ts
+          npx tsx scripts/enrich/import-enriched.ts
 
       - name: Enrich character profiles
         if: ${{ github.event.inputs.step == 'people' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
         run: |
           echo "── Building character profiles ──"
-          npx dotenvx run -- npx tsx scripts/enrich/enrich-nightmares-people.ts
+          npx tsx scripts/enrich/enrich-nightmares-people.ts
