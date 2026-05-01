@@ -77,6 +77,46 @@ export default async function EntityPage({ params }: PageProps) {
 
   // Detect archetype shifts for alert badges
   const shifts: Array<{ from: string; to: string; chapterNumber: number; trigger?: string }> = [];
+
+  // Pattern detection: derive behavioral insights from events + trigger text
+  const patterns: string[] = [];
+  if (entity.archetypeEvents.length >= 2) {
+    // Dominant archetype
+    const archetypeCounts: Record<string, number> = {};
+    for (const e of entity.archetypeEvents) {
+      archetypeCounts[e.primaryArchetype] = (archetypeCounts[e.primaryArchetype] ?? 0) + 1;
+    }
+    const dominant = Object.entries(archetypeCounts).sort((a, b) => b[1] - a[1])[0];
+    if (dominant) patterns.push(`Default state: ${dominant[0]}`);
+
+    // Trigger keyword patterns
+    const triggerText = entity.archetypeEvents
+      .map((e) => e.triggerEvent ?? "")
+      .join(" ")
+      .toLowerCase();
+    if (triggerText.includes("chaos") || triggerText.includes("disrupt")) {
+      patterns.push("Escalates under structural tension");
+    }
+    if (triggerText.includes("ignored") || triggerText.includes("no response") || triggerText.includes("silence")) {
+      patterns.push("Shifts archetype when responses are withheld");
+    }
+    if (triggerText.includes("accused") || triggerText.includes("accusation") || triggerText.includes("cult")) {
+      patterns.push("Identity intensifies under external accusation");
+    }
+    if (triggerText.includes("boundary") || triggerText.includes("enforce") || triggerText.includes("authority")) {
+      patterns.push("Tests the limit of enforcement, not permission");
+    }
+    if (triggerText.includes("consistent") || triggerText.includes("presence") || triggerText.includes("orbit")) {
+      patterns.push("Influence compounds through repetition, not force");
+    }
+
+    // Trajectory
+    const first = entity.archetypeEvents[0].primaryArchetype;
+    const last = entity.archetypeEvents[entity.archetypeEvents.length - 1].primaryArchetype;
+    if (first !== last) {
+      patterns.push(`Trajectory: ${first} → ${last}`);
+    }
+  }
   for (let i = 1; i < entity.archetypeEvents.length; i++) {
     const prev = entity.archetypeEvents[i - 1];
     const curr = entity.archetypeEvents[i];
@@ -165,6 +205,21 @@ export default async function EntityPage({ params }: PageProps) {
                   {s.trigger && <p className="text-[10px] text-text-muted italic leading-relaxed">{s.trigger}</p>}
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Pattern detection */}
+          {patterns.length > 0 && (
+            <div className="space-y-2">
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// behavioral_patterns</p>
+              <div className="rounded-lg border border-border bg-surface p-4 space-y-2">
+                {patterns.map((p, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <span className="font-mono text-[9px] text-accent-violet/60 flex-shrink-0 mt-0.5">▸</span>
+                    <p className="text-xs text-text-muted leading-relaxed">{p}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 

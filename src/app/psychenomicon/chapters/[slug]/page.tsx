@@ -166,6 +166,11 @@ export default async function ChapterPage({ params }: PageProps) {
               canonText={chapter.canonText}
               interpretationText={chapter.interpretationText}
               mythicText={chapter.mythicText}
+              entities={chapter.entityAppearances.map((ea) => ({
+                name: ea.entity.name,
+                slug: ea.entity.slug,
+                primaryArchetype: ea.entity.primaryArchetype,
+              }))}
             />
           </ScrollReveal>
 
