@@ -37,7 +37,9 @@ jobs:
         run: |
           BATCH="${{ github.event.inputs.batch || '50' }}"
           echo "── Enriching up to $BATCH episodes ──"
-          npx tsx scripts/enrich/enrich-episodes.ts --batch "$BATCH"
+          npx tsx scripts/enrich/enrich-episodes.ts --batch "$BATCH" | tee /tmp/enrich-output.txt
           echo ""
           echo "── Importing enriched data to DB ──"
-          npx tsx scripts/enrich/import-enriched.ts
+          npx tsx scripts/enrich/import-enriched.ts | tee /tmp/import-output.txt
+          SUMMARY=$(grep -E "Found [0-9]+ original|candidates with|Done —|Imported|Nothing" /tmp/enrich-output.txt /tmp/import-output.txt 2>/dev/null | tr '\n' ' ')
+          echo "::notice title=Enrichment results::$SUMMARY"
