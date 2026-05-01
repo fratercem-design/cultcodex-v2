@@ -71,7 +71,11 @@ export async function POST(req: Request) {
     }
 
     const baseUrl = process.env.NEXTAUTH_URL || "https://cultcodex.me";
-    const successPath = tier ? "/premium?subscribed=true" : "/episodes?subscribed=true";
+    const successPath = tier === "system"
+      ? "/welcome/oracle"
+      : tier === "access"
+      ? "/welcome/initiate"
+      : "/episodes?subscribed=true";
     const cancelPath = tier ? "/premium" : "/subscribe";
 
     const session = await stripe.checkout.sessions.create({
