@@ -78,7 +78,7 @@ export default async function StartHerePage() {
               The Cult of Psyche is not a podcast.
             </p>
             <p className="text-sm text-text-muted leading-relaxed max-w-xl mx-auto">
-              It&rsquo;s a decade of transmissions — panels, tarot, archetypes, AI, the occult,
+              It is over a year of transmissions — panels, tarot, archetypes, AI, the occult,
               human behavior, and a host who treats every conversation as a psychological experiment.
               CultCodex is the structured archive of everything that happened.
             </p>
