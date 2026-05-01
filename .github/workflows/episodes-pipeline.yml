@@ -65,3 +65,6 @@ jobs:
             | tee /tmp/import-output.txt
           echo "## Transcript Import Summary" >> $GITHUB_STEP_SUMMARY
           grep -E "Total episodes:|Have transcripts:|Missing:|Done —|Nothing to do" /tmp/import-output.txt >> $GITHUB_STEP_SUMMARY || true
+          # emit counts as annotations so they're readable via API
+          SUMMARY=$(grep -E "Total episodes:|Have transcripts:|Missing:|Done —|Nothing to do" /tmp/import-output.txt | tr '\n' ' ')
+          echo "::notice title=Transcript counts::$SUMMARY"
