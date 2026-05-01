@@ -69,6 +69,12 @@ jobs:
             echo "→ This round: +${DONE_COUNT:-0} enriched, ${FAIL_COUNT:-0} failed"
             echo "→ Total remaining: ${REMAINING:-unknown}"
 
+            # Capture first round failure samples for diagnosis
+            if [ "$ROUND" = "1" ]; then
+              SAMPLE_FAILURES=$(echo "$OUTPUT" | grep "✗ FAILED" | head -5 | tr '\n' ' | ')
+              echo "::notice title=Sample failures (round 1)::$SAMPLE_FAILURES"
+            fi
+
             # Stop when nothing left
             if [ "${REMAINING:-1}" = "0" ]; then
               echo ""
