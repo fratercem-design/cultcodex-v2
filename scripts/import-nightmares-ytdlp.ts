@@ -158,7 +158,7 @@ function fetchVtt(videoId: string): string {
 
   args.push(`https://www.youtube.com/watch?v=${videoId}`);
 
-  execFileSync("yt-dlp", args, { stdio: "pipe", timeout: 90_000 });
+  execFileSync("yt-dlp", args, { stdio: "pipe", timeout: 30_000 });
 
   // yt-dlp appends .<lang>.vtt — look for any matching file
   const produced = fs.readdirSync(os.tmpdir()).filter(
