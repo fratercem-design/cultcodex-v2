@@ -182,19 +182,26 @@ async function main() {
 
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
-  const candidates = episodes.filter((ep) => {
-    if (!ep.youtubeVideoId) return false;
-    const transcriptPath = path.join(TRANSCRIPTS_DIR, `${ep.youtubeVideoId}.json`);
-    if (!fs.existsSync(transcriptPath)) {
-      log(`  SKIP (no transcript): ${ep.slug}`);
-      return false;
-    }
-    if (!force) {
-      const enrichedPath = path.join(DATA_DIR, `${ep.slug}.json`);
-      if (fs.existsSync(enrichedPath)) return false;
-    }
-    return true;
-  });
+  const candidates = await Promise.all(
+    episodes
+      .filter((ep) => {
+        if (!ep.youtubeVideoId) return false;
+        if (!force) {
+          const enrichedPath = path.join(DATA_DIR, `${ep.slug}.json`);
+          if (fs.existsSync(enrichedPath)) return false;
+        }
+        return true;
+      })
+      .map(async (ep) => {
+        const localPath = path.join(TRANSCRIPTS_DIR, `${ep.youtubeVideoId}.json`);
+        const hasLocal = fs.existsSync(localPath);
+        if (!hasLocal) {
+          const count = await prisma.transcriptSegment.count({ where: { episodeId: ep.id } });
+          if (count === 0) { log(`  SKIP (no transcript): ${ep.slug}`); return null; }
+        }
+        return ep;
+      })
+  ).then((eps) => eps.filter(Boolean) as typeof episodes);
 
   log(`${candidates.length} candidates with transcripts (batch: ${batch})`);
 
@@ -205,8 +212,22 @@ async function main() {
   for (const ep of toProcess) {
     log(`Processing: ${ep.slug} (${ep.title})`);
     try {
-      const transcriptPath = path.join(TRANSCRIPTS_DIR, `${ep.youtubeVideoId!}.json`);
-      const segments = JSON.parse(fs.readFileSync(transcriptPath, "utf-8"));
+      const localPath = path.join(TRANSCRIPTS_DIR, `${ep.youtubeVideoId!}.json`);
+      let segments: Array<{ offset: number; duration: number; text: string }>;
+      if (fs.existsSync(localPath)) {
+        segments = JSON.parse(fs.readFileSync(localPath, "utf-8"));
+      } else {
+        const dbSegs = await prisma.transcriptSegment.findMany({
+          where: { episodeId: ep.id },
+          orderBy: { startSeconds: "asc" },
+          select: { startSeconds: true, endSeconds: true, text: true },
+        });
+        segments = dbSegs.map((s) => ({
+          offset: s.startSeconds * 1000,
+          duration: Math.max((s.endSeconds - s.startSeconds) * 1000, 1000),
+          text: s.text,
+        }));
+      }
       const transcriptText = buildTranscriptText(segments);
 
       const MAX_CHARS = 400_000;
