@@ -212,6 +212,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
           />
         }
         badges={[{ label: typeLabel, variant: typeVariant }]}
+        neonTitle={person.slug === "alexandra-mayers"}
       />
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
@@ -349,6 +350,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             {(() => {
               const links = getExternalLinks(person.slug);
               if (links.length === 0) return null;
+              const isYt = (url: string) => url.includes("youtube.com") || url.includes("youtu.be");
               return (
                 <SectionCard title="External Links">
                   <ul className="space-y-2">
@@ -358,12 +360,23 @@ export default async function PersonDetailPage({ params }: PageProps) {
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 transition-colors hover:border-accent-cyan/40 hover:bg-elevated"
+                          className={`group flex items-center gap-2 rounded-md border px-3 py-2 transition-colors ${
+                            isYt(link.url)
+                              ? "border-red-800/50 bg-red-950/30 hover:border-red-500/60 hover:bg-red-900/30"
+                              : "border-border bg-surface hover:border-accent-cyan/40 hover:bg-elevated"
+                          }`}
                         >
-                          <span className="text-sm">{link.icon ?? "🔗"}</span>
-                          <span className="font-mono text-xs text-accent-cyan group-hover:underline">
+                          <span className="text-sm">
+                            {isYt(link.url) ? "▶" : (link.icon ?? "🔗")}
+                          </span>
+                          <span className={`font-mono text-xs group-hover:underline ${isYt(link.url) ? "text-red-400" : "text-accent-cyan"}`}>
                             {link.label}
                           </span>
+                          {isYt(link.url) && (
+                            <span className="ml-1 rounded-sm bg-red-600 px-1 py-0.5 text-[9px] font-bold uppercase text-white tracking-wide">
+                              YouTube
+                            </span>
+                          )}
                           <span className="ml-auto font-mono text-[10px] text-text-muted">↗</span>
                         </a>
                       </li>

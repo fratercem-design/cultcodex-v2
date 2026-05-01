@@ -14,6 +14,7 @@ interface EntityHeroProps {
   avatarUrl?: string | null;
   fallbackAvatar?: ReactNode;
   badges?: HeroBadge[];
+  neonTitle?: boolean;
 }
 
 export function EntityHero({
@@ -23,6 +24,7 @@ export function EntityHero({
   avatarUrl,
   fallbackAvatar,
   badges,
+  neonTitle,
 }: EntityHeroProps) {
   return (
     <section className="relative flex min-h-[160px] sm:min-h-[200px] items-end overflow-hidden">
@@ -60,9 +62,23 @@ export function EntityHero({
             fallbackAvatar
           )}
           <div>
-            <h1 className="font-serif text-2xl sm:text-3xl font-black tracking-tight text-accent-gold drop-shadow-md">
-              {title}
-            </h1>
+            {neonTitle ? (
+              <h1
+                className="font-serif text-2xl sm:text-3xl font-black tracking-tight drop-shadow-md"
+                style={{
+                  color: "#fff",
+                  textShadow:
+                    "0 0 6px #d946ef, 0 0 14px #d946ef, 0 0 30px #a21caf, 0 0 60px #7e22ce, 0 0 100px #6b21a8",
+                  animation: "neon-pulse 2.4s ease-in-out infinite",
+                }}
+              >
+                {title}
+              </h1>
+            ) : (
+              <h1 className="font-serif text-2xl sm:text-3xl font-black tracking-tight text-accent-gold drop-shadow-md">
+                {title}
+              </h1>
+            )}
             {subtitle && (
               <p className="mt-1 font-mono text-sm text-accent-cyan">
                 {subtitle}
@@ -71,6 +87,15 @@ export function EntityHero({
           </div>
         </div>
       </div>
+
+      {neonTitle && (
+        <style>{`
+          @keyframes neon-pulse {
+            0%, 100% { text-shadow: 0 0 6px #d946ef, 0 0 14px #d946ef, 0 0 30px #a21caf, 0 0 60px #7e22ce, 0 0 100px #6b21a8; }
+            50%       { text-shadow: 0 0 10px #e879f9, 0 0 24px #e879f9, 0 0 50px #c026d3, 0 0 90px #9333ea, 0 0 140px #7c3aed; }
+          }
+        `}</style>
+      )}
     </section>
   );
 }
