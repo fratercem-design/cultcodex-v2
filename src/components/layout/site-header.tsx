@@ -21,10 +21,11 @@ import { SearchTrigger } from "@/components/search/search-trigger";
  * which is the canonical map of the archive.
  */
 const PRIMARY_NAV = [
+  { label: "Archive", href: "/episodes" },
   { label: "Signals", href: "/topics" },
-  { label: "Transmissions", href: "/episodes" },
   { label: "Collections", href: "/collections" },
-  { label: "Psychenomicon", href: "/psychenomicon", accent: true },
+  { label: "Psychenomicon", href: "/psychenomicon", accent: "violet" },
+  { label: "Initiation", href: "/premium", accent: "gold" },
 ] as const;
 
 export async function SiteHeader() {
@@ -64,8 +65,10 @@ export async function SiteHeader() {
               key={item.href}
               href={item.href}
               className={
-                "accent" in item && item.accent
+                "accent" in item && item.accent === "violet"
                   ? "font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded text-accent-violet border border-accent-violet/30 hover:bg-accent-violet/10 hover:border-accent-violet/60 transition-colors"
+                  : "accent" in item && item.accent === "gold"
+                  ? "font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded text-accent-gold border border-accent-gold/30 hover:bg-accent-gold/10 hover:border-accent-gold/60 transition-colors"
                   : "font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded text-text-primary hover:text-accent-gold hover:bg-accent-gold-dim transition-colors"
               }
             >
@@ -77,12 +80,6 @@ export async function SiteHeader() {
         {/* Right side: search, premium, profile */}
         <div className="flex items-center gap-2">
           <SearchTrigger />
-          <Link
-            href="/premium"
-            className="hidden sm:inline-flex items-center rounded border border-accent-gold/40 bg-accent-gold/10 px-3 py-1 font-mono text-[11px] font-bold text-accent-gold transition-all hover:bg-accent-gold/20 hover:shadow-md hover:shadow-accent-gold/20"
-          >
-            ✦ Initiate+
-          </Link>
           <UserMenu user={(session as SessionWithCodex)?.codexUser ?? null} />
         </div>
       </div>

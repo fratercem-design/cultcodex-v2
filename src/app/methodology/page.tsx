@@ -70,7 +70,7 @@ export default function MethodologyPage() {
               Each episode displays provenance badges indicating whether its data is
               &ldquo;transcript-backed&rdquo; (derived from a full transcript) or
               &ldquo;inferred&rdquo; (generated from title and metadata only).
-              This helps users gauge the reliability of each entry.
+              This helps members gauge the reliability of each entry.
             </p>
           </div>
         </SectionCard>

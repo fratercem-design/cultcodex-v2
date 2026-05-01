@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Inter, IBM_Plex_Mono, Playfair_Display } from "next/font/google";
 import { SiteHeader } from "@/components/layout/site-header";
 import { LiveBanner } from "@/components/layout/live-banner";
+import { EntryBanner } from "@/components/layout/entry-banner";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SkipLink } from "@/components/ui/skip-link";
 import { KonamiEasterEgg } from "@/components/ui/konami-easter-egg";
@@ -65,6 +66,7 @@ export default function RootLayout({
       >
         <SkipLink />
         <LiveBanner />
+        <EntryBanner />
         <SiteHeader />
         <div id="main-content" className="flex-1">{children}</div>
         <SiteFooter />

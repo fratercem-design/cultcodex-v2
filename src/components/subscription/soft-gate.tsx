@@ -58,27 +58,29 @@ export function SoftGate({
     <div className="relative">
       {preview && <div className="mb-4">{preview}</div>}
 
-      {/* Faded preview of the gated children */}
+      {/* Blurred preview of the gated children */}
       <div
-        className="relative overflow-hidden"
+        className="relative overflow-hidden rounded-t-lg"
         style={{
           maxHeight: `${previewHeight}px`,
-          maskImage:
-            "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, black 0%, black 55%, transparent 100%)",
+          maskImage: "linear-gradient(to bottom, black 0%, black 40%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 40%, transparent 100%)",
         }}
         aria-hidden="true"
       >
-        <div className="pointer-events-none select-none opacity-70 blur-[0.5px]">
+        <div className="pointer-events-none select-none blur-sm opacity-50 saturate-50">
           {children}
+        </div>
+        {/* Lock icon overlay */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className={`flex h-10 w-10 items-center justify-center rounded-full border ${accentBorderCls} bg-surface/80 shadow-lg backdrop-blur-sm`}>
+            <span className={`text-lg ${accentTextCls}`} aria-hidden>🔒</span>
+          </div>
         </div>
       </div>
 
-      {/* Unlock panel — layered below the fade */}
-      <div
-        className={`relative -mt-8 rounded-lg border ${accentBorderCls} bg-surface p-6 text-center space-y-3 shadow-lg`}
-      >
+      {/* Unlock panel */}
+      <div className={`relative -mt-2 rounded-b-lg border ${accentBorderCls} bg-gradient-to-b from-surface to-elevated p-6 text-center space-y-3 shadow-xl`}>
         <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${accentTextCls}`}>
           /// {t.role}_only
         </p>
@@ -86,13 +88,12 @@ export function SoftGate({
           {t.role}s see this. Observers don&rsquo;t.
         </h3>
         <p className="text-sm text-text-muted max-w-md mx-auto leading-relaxed">
-          <span className="text-text-primary">{feature}</span> opens on {t.name} (${t.priceMonthly}/mo).{" "}
-          {t.tagline}
+          <span className="text-text-primary font-medium">{feature}</span> unlocks on {t.name} — ${t.priceMonthly}/mo.
         </p>
         <div className="flex flex-wrap justify-center gap-3 pt-1">
           <Link
             href={`/premium#${t.slug}`}
-            className={`inline-flex items-center gap-2 rounded-lg border ${accentBorderCls} ${accentBgCls} px-5 py-2 font-mono text-xs font-bold ${accentTextCls} transition-colors`}
+            className={`inline-flex items-center gap-2 rounded-lg border ${accentBorderCls} ${accentBgCls} px-5 py-2 font-mono text-xs font-bold ${accentTextCls} transition-all hover:shadow-lg`}
           >
             Become {t.role} — ${t.priceMonthly}/mo <span aria-hidden>→</span>
           </Link>
@@ -100,7 +101,7 @@ export function SoftGate({
             href="/premium"
             className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2 font-mono text-xs text-text-muted hover:text-text-primary hover:border-text-muted/40 transition-colors"
           >
-            Compare tiers
+            See all tiers
           </Link>
         </div>
       </div>

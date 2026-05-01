@@ -80,29 +80,39 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/start-here"
-              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
-            >
-              Enter the Codex →
-            </Link>
-            <Link
-              href="/premium"
-              className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 px-7 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/20"
-            >
-              ✦ Choose your role
-            </Link>
-          </div>
+          <Link
+            href="/start-here"
+            className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-8 py-3.5 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
+          >
+            Enter the Codex →
+          </Link>
 
           {/* Search */}
-          <div className="mt-2 w-full max-w-md">
+          <div className="w-full max-w-md">
             <SearchInput />
           </div>
         </div>
       </section>
 
       <main id="main-content" className="space-y-0">
+
+        {/* ══════════════════════════════════════════════════
+            SOCIAL PROOF STRIP — live archive signals
+        ══════════════════════════════════════════════════ */}
+        <div className="border-b border-border/40 bg-void/80 backdrop-blur-sm py-3 px-4">
+          <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-center gap-x-8 gap-y-1">
+            {[
+              { value: stats.episodes.toLocaleString(), label: "transmissions archived" },
+              { value: stats.segments.toLocaleString(), label: "transcript segments" },
+              { value: stats.people.toLocaleString(), label: "voices profiled" },
+              { value: `${stats.totalHours.toLocaleString()}+`, label: "hours decoded" },
+            ].map((s) => (
+              <span key={s.label} className="font-mono text-[11px] text-text-muted whitespace-nowrap">
+                <span className="text-accent-gold font-bold">{s.value}</span>{" "}{s.label}
+              </span>
+            ))}
+          </div>
+        </div>
 
         {/* ══════════════════════════════════════════════════
             PROBLEM — "Most people watch content."
