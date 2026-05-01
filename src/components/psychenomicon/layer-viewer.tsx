@@ -19,7 +19,7 @@ function renderParagraphs(text: string, className?: string) {
 }
 
 export function LayerViewer({ canonText, interpretationText, mythicText }: LayerViewerProps) {
-  const [activeLayer, setActiveLayer] = useState<Layer>("all");
+  const [activeLayer, setActiveLayer] = useState<Layer>("mythic");
   const [pulseLayer, setPulseLayer] = useState<Layer | null>(null);
 
   function switchLayer(layer: Layer) {

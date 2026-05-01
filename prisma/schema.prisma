@@ -581,12 +581,14 @@ model PsychenomiconChapter {
   archetypesData Json?
   threadRefs     Json?
   isMajorEvent   Boolean @default(false)
+  status         String  @default("stable") // stable | contested | evolving
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   entityAppearances PsychenomiconEntityAppearance[]
   threadChapters    PsychenomiconThreadChapter[]
+  archetypeEvents   ArchetypeEvent[]
 
   @@index([chapterNumber])
 }
@@ -601,14 +603,34 @@ model PsychenomiconEntity {
   archetypeHistory  Json?    // [{archetype, chapterNumber, reason}]
   radarData         Json?    // {influence, volatility, manipulation, control, emotionalIntensity} 0-10
   behaviorPatterns  String[]
+  archetypeState    Json?    // current weighted state: {[archetype]: 0-1}
   status            String   @default("active") // active | dormant | evolved
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  appearances PsychenomiconEntityAppearance[]
+  appearances      PsychenomiconEntityAppearance[]
+  archetypeEvents  ArchetypeEvent[]
 
   @@index([status])
+}
+
+model ArchetypeEvent {
+  id                  String  @id @default(cuid())
+  entityId            String
+  entity              PsychenomiconEntity  @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  chapterId           String?
+  chapter             PsychenomiconChapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  chapterNumber       Int
+  primaryArchetype    String
+  secondaryArchetypes String[]
+  confidenceScore     Float   @default(1.0)
+  triggerEvent        String? @db.Text
+
+  createdAt DateTime @default(now())
+
+  @@index([entityId])
+  @@index([chapterNumber])
 }
 
 model PsychenomiconThread {

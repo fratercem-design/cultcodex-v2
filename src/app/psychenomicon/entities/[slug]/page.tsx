@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
+import { ArchetypeTimelineChart } from "@/components/psychenomicon/archetype-timeline-chart";
+import { ArchetypeRadarChart } from "@/components/psychenomicon/archetype-radar-chart";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -32,24 +34,6 @@ interface ArchetypeHistoryEntry {
   reason: string;
 }
 
-function RadarBar({ label, value, color }: { label: string; value: number; color: string }) {
-  const pct = Math.min(100, Math.max(0, (value / 10) * 100));
-  return (
-    <div className="space-y-1">
-      <div className="flex justify-between">
-        <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted">{label}</span>
-        <span className="font-mono text-[9px] text-text-muted">{value}/10</span>
-      </div>
-      <div className="h-1.5 rounded-full bg-border overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all ${color}`}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
 export default async function EntityPage({ params }: PageProps) {
   const { slug } = await params;
 
@@ -74,10 +58,12 @@ export default async function EntityPage({ params }: PageProps) {
     where: { slug },
     include: {
       appearances: {
-        include: {
-          chapter: { select: { slug: true, chapterNumber: true, title: true, isMajorEvent: true } },
-        },
+        include: { chapter: { select: { slug: true, chapterNumber: true, title: true, isMajorEvent: true } } },
         orderBy: { chapter: { chapterNumber: "asc" } },
+      },
+      archetypeEvents: {
+        orderBy: { chapterNumber: "asc" },
+        select: { chapterNumber: true, primaryArchetype: true, secondaryArchetypes: true, confidenceScore: true, triggerEvent: true },
       },
     },
   });
@@ -87,18 +73,26 @@ export default async function EntityPage({ params }: PageProps) {
   const archetypeHistory = (entity.archetypeHistory as ArchetypeHistoryEntry[] | null) ?? [];
   const radarData = (entity.radarData as RadarData | null) ?? {};
   const hasRadar = Object.keys(radarData).length > 0;
+  const hasEvents = entity.archetypeEvents.length > 0;
 
-  const radarFields: Array<{ key: keyof RadarData; label: string; color: string }> = [
-    { key: "influence", label: "Influence", color: "bg-accent-gold" },
-    { key: "volatility", label: "Volatility", color: "bg-red-500" },
-    { key: "manipulation", label: "Manipulation", color: "bg-accent-violet" },
-    { key: "control", label: "Control", color: "bg-accent-cyan" },
-    { key: "emotionalIntensity", label: "Emotional Intensity", color: "bg-amber-500" },
-  ];
+  // Detect archetype shifts for alert badges
+  const shifts: Array<{ from: string; to: string; chapterNumber: number; trigger?: string }> = [];
+  for (let i = 1; i < entity.archetypeEvents.length; i++) {
+    const prev = entity.archetypeEvents[i - 1];
+    const curr = entity.archetypeEvents[i];
+    if (prev.primaryArchetype !== curr.primaryArchetype) {
+      shifts.push({
+        from: prev.primaryArchetype,
+        to: curr.primaryArchetype,
+        chapterNumber: curr.chapterNumber,
+        trigger: curr.triggerEvent ?? undefined,
+      });
+    }
+  }
 
   return (
     <main className="min-h-screen bg-void">
-      {/* Entity header */}
+      {/* Header */}
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-4xl space-y-3">
           <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">
@@ -111,7 +105,7 @@ export default async function EntityPage({ params }: PageProps) {
                 <p className="font-mono text-sm text-accent-violet mt-1">{entity.primaryArchetype}</p>
               )}
             </div>
-            <div className="flex flex-col items-end gap-1">
+            <div className="flex flex-col items-end gap-1.5">
               <span className={`inline-flex items-center rounded border px-2.5 py-1 font-mono text-[9px] uppercase ${
                 entity.status === "evolved"
                   ? "border-accent-gold/40 text-accent-gold bg-accent-gold/10"
@@ -121,14 +115,20 @@ export default async function EntityPage({ params }: PageProps) {
               }`}>
                 {entity.status}
               </span>
-              <span className="font-mono text-[9px] text-text-muted">{entity.appearances.length} chapter{entity.appearances.length !== 1 ? "s" : ""}</span>
+              <span className="font-mono text-[9px] text-text-muted">
+                {entity.appearances.length} chapter{entity.appearances.length !== 1 ? "s" : ""}
+              </span>
+              {shifts.length > 0 && (
+                <span className="inline-flex items-center gap-1 rounded border border-accent-gold/40 bg-accent-gold/10 px-2 py-0.5 font-mono text-[9px] text-accent-gold">
+                  ⚠ {shifts.length} shift{shifts.length !== 1 ? "s" : ""} detected
+                </span>
+              )}
             </div>
           </div>
 
-          {/* Behavior patterns */}
           {entity.behaviorPatterns.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2">
-              {entity.behaviorPatterns.slice(0, 6).map((p) => (
+              {entity.behaviorPatterns.map((p) => (
                 <span key={p} className="inline-flex items-center rounded border border-border px-2 py-0.5 font-mono text-[9px] text-text-muted">
                   {p}
                 </span>
@@ -139,11 +139,38 @@ export default async function EntityPage({ params }: PageProps) {
       </header>
 
       <div className="mx-auto max-w-4xl px-4 py-10 grid gap-8 lg:grid-cols-3">
-        {/* Main: Archetype timeline */}
+        {/* Main */}
         <div className="lg:col-span-2 space-y-8">
+
+          {/* Evolution timeline chart */}
+          {hasEvents && (
+            <ArchetypeTimelineChart
+              events={entity.archetypeEvents}
+              entityName={entity.name}
+            />
+          )}
+
+          {/* Archetype shift alerts */}
+          {shifts.length > 0 && (
+            <div className="space-y-2">
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">/// shift_alerts</p>
+              {shifts.map((s, i) => (
+                <div key={i} className="rounded border border-accent-gold/20 bg-accent-gold/5 px-4 py-3 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[9px] text-accent-gold">⚠ CH.{String(s.chapterNumber).padStart(3, "0")}</span>
+                    <span className="font-mono text-[9px] text-text-muted">{s.from}</span>
+                    <span className="font-mono text-[9px] text-text-muted">→</span>
+                    <span className="font-mono text-[9px] text-accent-gold font-bold">{s.to}</span>
+                  </div>
+                  {s.trigger && <p className="text-[10px] text-text-muted italic leading-relaxed">{s.trigger}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Chapter appearances timeline */}
           <section className="space-y-4">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// archetype_timeline</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// chapter_appearances</p>
             {entity.appearances.length > 0 ? (
               <div className="relative pl-6">
                 <div className="absolute left-[9px] top-2 bottom-2 w-px bg-border" />
@@ -196,10 +223,10 @@ export default async function EntityPage({ params }: PageProps) {
             )}
           </section>
 
-          {/* Full archetype history */}
+          {/* Archetype history detail */}
           {archetypeHistory.length > 1 && (
             <section className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// archetype_evolution</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// known_transitions</p>
               <div className="space-y-2">
                 {archetypeHistory.map((h, i) => (
                   <div key={i} className="flex items-start gap-3 text-xs">
@@ -217,16 +244,45 @@ export default async function EntityPage({ params }: PageProps) {
           )}
         </div>
 
-        {/* Sidebar: Radar */}
+        {/* Sidebar */}
         <aside className="space-y-6">
+          {/* Radar chart */}
           {hasRadar && (
-            <div className="rounded-lg border border-border bg-surface p-5 space-y-4">
+            <div className="rounded-lg border border-border bg-surface p-4 space-y-3">
               <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// trait_profile</p>
-              {radarFields.map((f) => {
-                const val = radarData[f.key];
-                if (val == null) return null;
-                return <RadarBar key={f.key} label={f.label} value={val} color={f.color} />;
-              })}
+              <ArchetypeRadarChart radarData={radarData} />
+              <div className="space-y-1.5 pt-1">
+                {(["influence", "volatility", "manipulation", "control", "emotionalIntensity"] as const).map((key) => {
+                  const labels: Record<string, string> = {
+                    influence: "Influence",
+                    volatility: "Volatility",
+                    manipulation: "Manipulation",
+                    control: "Control",
+                    emotionalIntensity: "Emotion",
+                  };
+                  const val = radarData[key];
+                  if (val == null) return null;
+                  const pct = (val / 10) * 100;
+                  const colors: Record<string, string> = {
+                    influence: "bg-accent-gold",
+                    volatility: "bg-red-500",
+                    manipulation: "bg-accent-violet",
+                    control: "bg-accent-cyan",
+                    emotionalIntensity: "bg-amber-500",
+                  };
+                  return (
+                    <div key={key} className="space-y-0.5">
+                      <div className="flex justify-between">
+                        <span className="font-mono text-[8px] uppercase tracking-widest text-text-muted">{labels[key]}</span>
+                        <span className="font-mono text-[8px] text-text-muted">{val}/10</span>
+                      </div>
+                      <div className="h-1 rounded-full bg-border overflow-hidden">
+                        <div className={`h-full rounded-full ${colors[key]}`} style={{ width: `${pct}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 

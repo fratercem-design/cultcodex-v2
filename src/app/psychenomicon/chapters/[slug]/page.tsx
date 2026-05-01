@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { LayerViewer } from "@/components/psychenomicon/layer-viewer";
 import { TimelineStrip } from "@/components/psychenomicon/timeline-strip";
+import { ScrollReveal } from "@/components/psychenomicon/scroll-reveal";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -98,10 +99,23 @@ export default async function ChapterPage({ params }: PageProps) {
           <p className={`font-mono text-[9px] uppercase tracking-[0.5em] ${chapter.isMajorEvent ? "text-accent-gold/60" : "text-accent-violet/60"}`}>
             ψ PSYCHENOMICON · CH.{String(chapter.chapterNumber).padStart(3, "0")} ψ
           </p>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary leading-tight">
-            {chapter.isMajorEvent && <span className="text-accent-gold mr-2">✦</span>}
-            {chapter.title}
-          </h1>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary leading-tight">
+              {chapter.isMajorEvent && <span className="text-accent-gold mr-2">✦</span>}
+              {chapter.title}
+            </h1>
+            {(chapter as { status?: string }).status && (
+              <span className={`inline-flex items-center rounded border px-2 py-0.5 font-mono text-[9px] uppercase ${
+                (chapter as { status?: string }).status === "contested"
+                  ? "border-red-500/40 text-red-400 bg-red-500/10"
+                  : (chapter as { status?: string }).status === "evolving"
+                  ? "border-accent-gold/40 text-accent-gold bg-accent-gold/10"
+                  : "border-accent-violet/30 text-accent-violet/70 bg-accent-violet/5"
+              }`}>
+                {(chapter as { status?: string }).status}
+              </span>
+            )}
+          </div>
           {chapter.episode && (
             <p className="font-mono text-xs text-text-muted">
               Source:{" "}
@@ -147,23 +161,27 @@ export default async function ChapterPage({ params }: PageProps) {
       <div className="mx-auto max-w-7xl px-4 py-10 grid gap-10 lg:grid-cols-3">
         {/* Chapter body */}
         <article className="lg:col-span-2 space-y-8">
-          <LayerViewer
-            canonText={chapter.canonText}
-            interpretationText={chapter.interpretationText}
-            mythicText={chapter.mythicText}
-          />
+          <ScrollReveal delay={100}>
+            <LayerViewer
+              canonText={chapter.canonText}
+              interpretationText={chapter.interpretationText}
+              mythicText={chapter.mythicText}
+            />
+          </ScrollReveal>
 
           {/* Emerging signals */}
           {chapter.emergingSignals.length > 0 && (
-            <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-5 space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">/// emerging_signals</p>
-              {chapter.emergingSignals.map((signal, i) => (
-                <div key={i} className="flex items-start gap-2.5">
-                  <span className="text-accent-gold font-mono text-[10px] mt-0.5 flex-shrink-0">▸</span>
-                  <p className="text-xs text-text-muted leading-relaxed">{signal}</p>
-                </div>
-              ))}
-            </div>
+            <ScrollReveal delay={300}>
+              <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-5 space-y-3">
+                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">/// emerging_signals</p>
+                {chapter.emergingSignals.map((signal, i) => (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <span className="text-accent-gold font-mono text-[10px] mt-0.5 flex-shrink-0">▸</span>
+                    <p className="text-xs text-text-muted leading-relaxed">{signal}</p>
+                  </div>
+                ))}
+              </div>
+            </ScrollReveal>
           )}
 
           {/* Prev / Next navigation */}
