@@ -21,7 +21,7 @@ import * as path from "path";
 import * as https from "https";
 
 const BASE_URL = (process.env.VERCEL_URL ?? "https://cultcodex.me").replace(/\/$/, "");
-const SECRET = process.env.ENRICH_SECRET ?? "";
+const SECRET = (process.env.ENRICH_SECRET ?? "").trim();
 const RAW_FILE = path.join(__dirname, "scrape", "data", "youtube-raw-psychesnightmares.json");
 
 if (!SECRET) {
