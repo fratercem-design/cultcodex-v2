@@ -24,6 +24,7 @@ const PRIMARY_NAV = [
   { label: "Archive", href: "/episodes" },
   { label: "Signals", href: "/topics" },
   { label: "Collections", href: "/collections" },
+  { label: "Posts", href: "/posts" },
   { label: "Psychenomicon", href: "/psychenomicon", accent: "violet" },
   { label: "Initiation", href: "/premium", accent: "gold" },
 ] as const;
