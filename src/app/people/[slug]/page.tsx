@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
 import { prisma } from "@/lib/db";
+import { Prisma } from "@/generated/prisma/client";
 import { buildMetadata } from "@/lib/seo";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
@@ -174,15 +175,15 @@ export default async function PersonDetailPage({ params }: PageProps) {
   ).sort((a, b) => (b.airDate?.getTime() ?? 0) - (a.airDate?.getTime() ?? 0));
 
   const coAppearances = person.guestAppearances.length >= 2
-    ? await getCoAppearances(person.id, 6)
+    ? await getCoAppearances(person.id, 6).catch(() => [])
     : [];
 
-  // Archetype evolution — query guest appearance episodes with decodeData
+  // Archetype evolution — query guest appearance episodes with decodeData (not null)
   const archetypeEpisodes = person.guestAppearances.length > 0
     ? await prisma.episode.findMany({
         where: {
           guests: { some: { personId: person.id } },
-          NOT: { decodeData: { equals: "DbNull" } },
+          NOT: { decodeData: { equals: Prisma.AnyNull } },
         },
         select: {
           slug: true,
@@ -193,7 +194,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
         },
         orderBy: { airDate: "asc" },
         take: 30,
-      })
+      }).catch(() => [])
     : [];
 
   type ArchetypeEntry = {
@@ -246,7 +247,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
       rawContent: true,
       channelHandle: true,
     },
-  });
+  }).catch(() => []);
 
   // Serialize Date → string before crossing the server/client boundary
   const personMediaSerialized: PersonMediaItem[] = personMediaRaw.map((m) => ({

@@ -66,10 +66,12 @@ export async function getPersonBySlug(slug: string) {
 }
 
 export async function getCoAppearances(personId: string, limit = 6) {
-  // Get all episode IDs where this person appears as a guest
+  // Get episode IDs where this person appears as a guest (cap at 100 most recent)
   const appearances = await prisma.episodeGuest.findMany({
     where: { personId },
     select: { episodeId: true },
+    take: 100,
+    orderBy: { episode: { airDate: "desc" } },
   });
 
   const episodeIds = appearances.map((a) => a.episodeId);
