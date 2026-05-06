@@ -7,6 +7,8 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SkipLink } from "@/components/ui/skip-link";
 import { KonamiEasterEgg } from "@/components/ui/konami-easter-egg";
 import { CommandPalette } from "@/components/search/command-palette";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -72,6 +74,8 @@ export default function RootLayout({
         <SiteFooter />
         <KonamiEasterEgg />
         <CommandPalette />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
