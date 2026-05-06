@@ -1,0 +1,84 @@
+name: Person Media Sync — Alexandra Mayers
+
+on:
+  workflow_dispatch:
+    inputs:
+      person_slug:
+        description: 'Person slug'
+        required: false
+        default: 'alexandra-mayers'
+      youtube_channel:
+        description: 'YouTube channel handle'
+        required: false
+        default: '@irlnewstime'
+      wiki_page:
+        description: 'ip2wiki page title'
+        required: false
+        default: 'Alexandra_Mayers'
+
+jobs:
+  sync-youtube:
+    name: Sync @irlnewstime videos
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+      PERSON_SLUG: ${{ github.event.inputs.person_slug || 'alexandra-mayers' }}
+      YOUTUBE_CHANNEL_HANDLE: ${{ github.event.inputs.youtube_channel || '@irlnewstime' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Sync YouTube channel
+        run: |
+          npx tsx scripts/sync-person-youtube.ts | tee /tmp/yt-output.txt
+          echo "## YouTube Sync" >> $GITHUB_STEP_SUMMARY
+          grep -E "Upserted:|Total videos:|Channel:" /tmp/yt-output.txt >> $GITHUB_STEP_SUMMARY || true
+          SUMMARY=$(grep "Upserted:" /tmp/yt-output.txt | tr '\n' ' ')
+          echo "::notice title=YouTube sync::$SUMMARY"
+
+  sync-wiki:
+    name: Sync ip2wiki.info
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PERSON_SLUG: ${{ github.event.inputs.person_slug || 'alexandra-mayers' }}
+      WIKI_PAGE: ${{ github.event.inputs.wiki_page || 'Alexandra_Mayers' }}
+      WIKI_BASE_URL: 'https://ip2wiki.info'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Sync ip2wiki article
+        run: |
+          npx tsx scripts/scrape/fetch-ip2wiki.ts | tee /tmp/wiki-output.txt
+          echo "## Wiki Sync" >> $GITHUB_STEP_SUMMARY
+          grep -E "Upserted|article" /tmp/wiki-output.txt >> $GITHUB_STEP_SUMMARY || true
+          SUMMARY=$(grep "Upserted" /tmp/wiki-output.txt | tr '\n' ' ')
+          echo "::notice title=Wiki sync::$SUMMARY"
