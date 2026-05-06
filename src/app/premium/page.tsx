@@ -59,7 +59,7 @@ export default async function PremiumPage() {
           <section className="max-w-3xl mx-auto">
             <ManageSubscription
               status={subStatus.status}
-              periodEnd={subStatus.periodEnd}
+              periodEnd={subStatus.periodEnd ? subStatus.periodEnd.toISOString() : null}
               isAdmin={subStatus.isAdmin}
             />
             <p className="mt-4 text-center font-mono text-xs text-accent-gold">

@@ -53,7 +53,7 @@ export default async function ProfilePage() {
             avatarUrl={codexUser.avatarUrl}
             memberTitle={codexUser.memberTitle}
             isPublicMember={codexUser.isPublicMember}
-            memberSince={codexUser.createdAt}
+            memberSince={codexUser.createdAt.toISOString()}
             isAdmin={codexUser.role === "admin"}
             isSystemTier={systemTier}
             bio={codexUser.bio}

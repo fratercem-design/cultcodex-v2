@@ -110,7 +110,7 @@ export default async function SubscribePage() {
           <div className="mb-12">
             <ManageSubscription
               status={subStatus.status}
-              periodEnd={subStatus.periodEnd}
+              periodEnd={subStatus.periodEnd ? subStatus.periodEnd.toISOString() : null}
               isAdmin={subStatus.isAdmin}
             />
             <p className="mt-4 text-center font-mono text-xs text-accent-gold">

@@ -5,7 +5,7 @@ import { formatRelativeDate } from "@/lib/format/date";
 
 interface ManageSubscriptionProps {
   status: string | null;
-  periodEnd: Date | null;
+  periodEnd: string | null;
   isAdmin: boolean;
 }
 
@@ -57,7 +57,7 @@ export function ManageSubscription({
               MEMBER
             </span>
             <p className="mt-1 font-mono text-[10px] text-text-muted">
-              Renews {formatRelativeDate(periodEnd)}
+              Renews {formatRelativeDate(new Date(periodEnd))}
             </p>
           </div>
           <button

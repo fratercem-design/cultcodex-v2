@@ -27,7 +27,7 @@ interface ProfileFormProps {
   avatarUrl: string | null;
   memberTitle: string | null;
   isPublicMember: boolean;
-  memberSince: Date;
+  memberSince: string;
   isAdmin: boolean;
   isSystemTier: boolean;
   bio: string | null;
@@ -137,7 +137,7 @@ export function ProfileForm({
         <div className="flex items-center gap-4">
           {avatarUrl ? (
             <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-accent-gold/40 shadow-lg shadow-accent-gold/20">
-              <Image src={avatarUrl} alt={displayName} fill className="object-cover" />
+              <Image src={avatarUrl} alt={displayName} fill sizes="64px" className="object-cover" />
             </div>
           ) : (
             <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-accent-gold/40 bg-accent-gold/10 text-2xl shadow-lg shadow-accent-gold/20">
