@@ -671,6 +671,29 @@ model PsychenomiconThreadChapter {
   @@id([chapterId, threadId])
 }
 
+// ─── Person Media (external content per person) ───────────────────────────────
+
+model PersonMedia {
+  id           String    @id @default(cuid())
+  personSlug   String
+  source       String    // "youtube" | "wiki" | "other"
+  sourceId     String?
+  sourceUrl    String
+  title        String
+  description  String?   @db.Text
+  thumbnailUrl String?
+  publishedAt  DateTime?
+  durationStr  String?
+  viewCount    Int?
+  rawContent   String?   @db.Text
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([source, sourceId])
+  @@index([personSlug, source])
+  @@index([publishedAt])
+}
+
 // ─── Community Posts ───────────────────────────────────────────────────────────
 
 model CommunityPost {

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { SectionCard } from "@/components/ui/section-card";
@@ -90,6 +91,7 @@ function VideoCard({ item }: { item: PersonMediaItem }) {
       rel="noopener noreferrer"
       className="group flex flex-col rounded-lg border border-border bg-surface hover:border-red-800/50 hover:bg-red-950/20 transition-all overflow-hidden"
     >
+      {/* Thumbnail */}
       <div className="relative aspect-video bg-void overflow-hidden">
         {item.thumbnailUrl ? (
           <Image
@@ -104,6 +106,7 @@ function VideoCard({ item }: { item: PersonMediaItem }) {
             <span className="text-2xl opacity-30">▶</span>
           </div>
         )}
+        {/* Play overlay */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
           <div className="rounded-full bg-red-600/90 p-3">
             <svg viewBox="0 0 24 24" className="h-5 w-5 fill-white" aria-hidden>
@@ -111,6 +114,7 @@ function VideoCard({ item }: { item: PersonMediaItem }) {
             </svg>
           </div>
         </div>
+        {/* Duration badge */}
         {item.durationStr && (
           <span className="absolute bottom-1.5 right-1.5 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[10px] text-white">
             {item.durationStr}
@@ -118,6 +122,7 @@ function VideoCard({ item }: { item: PersonMediaItem }) {
         )}
       </div>
 
+      {/* Info */}
       <div className="flex-1 p-3 space-y-1.5">
         <p className="font-mono text-xs font-medium text-text-primary group-hover:text-red-400 transition-colors line-clamp-2 leading-relaxed">
           {item.title}
@@ -150,14 +155,16 @@ export function PersonMediaSection({ personName, videos, wiki }: Props) {
 
   return (
     <div className="space-y-6">
+      {/* Section header */}
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-border" />
         <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">
-          {personName.toLowerCase()} — external content
+          alexandra mayers — external content
         </p>
         <div className="h-px flex-1 bg-border" />
       </div>
 
+      {/* ip2wiki card */}
       {wiki && (
         <div>
           <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted mb-2">
@@ -167,6 +174,7 @@ export function PersonMediaSection({ personName, videos, wiki }: Props) {
         </div>
       )}
 
+      {/* irlnewstime video grid */}
       {videos.length > 0 && (
         <SectionCard title={`irlnewstime (${videos.length} videos)`}>
           <div className="space-y-4">
@@ -191,6 +199,7 @@ export function PersonMediaSection({ personName, videos, wiki }: Props) {
               ))}
             </div>
 
+            {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex items-center justify-between pt-2 border-t border-border">
                 <button
@@ -218,7 +227,7 @@ export function PersonMediaSection({ personName, videos, wiki }: Props) {
 
       {videos.length === 0 && !wiki && (
         <p className="text-xs text-text-muted italic text-center py-6">
-          No external content imported yet. Run the person-media-sync workflow.
+          No external content imported yet. Run the sync workflow.
         </p>
       )}
     </div>

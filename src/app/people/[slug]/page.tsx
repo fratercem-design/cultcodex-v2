@@ -228,6 +228,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
     }];
   });
 
+  // External media (videos + wiki) — only loaded for people who have it
   const personMediaRaw = await prisma.personMedia.findMany({
     where: { personSlug: slug },
     orderBy: { publishedAt: "desc" },
@@ -492,19 +493,16 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 }))}
               />
             </SectionCard>
-          </div>
-        </div>
-
-        {/* Alexandra Mayers external content section */}
-        {hasPersonMedia && (
-          <div className="mt-10">
+          {/* Alexandra Mayers external content section */}
+          {hasPersonMedia && (
             <PersonMediaSection
               personName={person.displayName}
               videos={personMediaVideos}
               wiki={personMediaWiki}
             />
+          )}
           </div>
-        )}
+        </div>
 
         <SuggestCorrection
           entityType="person"
