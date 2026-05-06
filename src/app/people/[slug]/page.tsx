@@ -24,6 +24,7 @@ import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import { ColorLegend } from "@/components/ui/color-legend";
 import { PersonSigil } from "@/components/ui/person-sigil";
 import { ArchetypeTimeline } from "@/components/people/archetype-timeline";
+import { PersonMediaSection, type PersonMediaItem } from "@/components/people/person-media-section";
 import type { Metadata } from "next";
 
 // ── Lore Summary renderer ─────────────────────────────────────────────────────
@@ -226,6 +227,28 @@ export default async function PersonDetailPage({ params }: PageProps) {
       supporting: match.supporting,
     }];
   });
+
+  const personMediaRaw = await prisma.personMedia.findMany({
+    where: { personSlug: slug },
+    orderBy: { publishedAt: "desc" },
+    select: {
+      id: true,
+      source: true,
+      sourceId: true,
+      sourceUrl: true,
+      title: true,
+      description: true,
+      thumbnailUrl: true,
+      publishedAt: true,
+      durationStr: true,
+      viewCount: true,
+      rawContent: true,
+    },
+  });
+
+  const personMediaVideos = personMediaRaw.filter((m) => m.source === "youtube") as PersonMediaItem[];
+  const personMediaWiki = (personMediaRaw.find((m) => m.source === "wiki") ?? null) as PersonMediaItem | null;
+  const hasPersonMedia = personMediaRaw.length > 0;
 
   const typeLabel = PERSON_TYPE_LABELS[person.personType] ?? person.personType;
   const typeVariant = PERSON_TYPE_VARIANTS[person.personType] ?? "muted";
@@ -471,6 +494,17 @@ export default async function PersonDetailPage({ params }: PageProps) {
             </SectionCard>
           </div>
         </div>
+
+        {/* Alexandra Mayers external content section */}
+        {hasPersonMedia && (
+          <div className="mt-10">
+            <PersonMediaSection
+              personName={person.displayName}
+              videos={personMediaVideos}
+              wiki={personMediaWiki}
+            />
+          </div>
+        )}
 
         <SuggestCorrection
           entityType="person"
