@@ -21,7 +21,7 @@ export const revalidate = 600;
 export async function generateStaticParams() {
   const topics = await prisma.topic.findMany({
     select: { slug: true },
-    take: 50,
+    take: 300,
     orderBy: { updatedAt: "desc" },
   });
   return topics.map((t) => ({ slug: t.slug }));
@@ -224,6 +224,24 @@ export default async function TopicDetailPage({ params }: PageProps) {
           </div>
         </div>
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "DefinedTerm",
+            name: topic.title,
+            ...(topic.description ? { description: topic.description.split("\n\n")[0].trim() } : {}),
+            url: `https://cultcodex.me/topics/${topic.slug}`,
+            inDefinedTermSet: {
+              "@type": "DefinedTermSet",
+              name: "Cult of Psyche Signal Archive",
+              url: "https://cultcodex.me/topics",
+            },
+          }),
+        }}
+      />
     </>
   );
 }

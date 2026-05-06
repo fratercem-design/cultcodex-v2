@@ -47,8 +47,8 @@ export async function generateStaticParams() {
   const episodes = await prisma.episode.findMany({
     where: {},
     select: { slug: true },
-    take: 50,
-    orderBy: { updatedAt: "desc" },
+    take: 500,
+    orderBy: { airDate: "desc" },
   });
   return episodes.map((ep) => ({ slug: ep.slug }));
 }

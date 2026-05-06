@@ -107,7 +107,7 @@ export const revalidate = 600;
 export async function generateStaticParams() {
   const people = await prisma.person.findMany({
     select: { slug: true },
-    take: 50,
+    take: 300,
     orderBy: { updatedAt: "desc" },
   });
   return people.map((p) => ({ slug: p.slug }));
@@ -511,6 +511,24 @@ export default async function PersonDetailPage({ params }: PageProps) {
           className="mt-8"
         />
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            name: person.displayName,
+            ...(person.shortBio ? { description: person.shortBio } : {}),
+            ...(person.avatarUrl ? { image: person.avatarUrl } : {}),
+            url: `https://cultcodex.me/people/${person.slug}`,
+            ...(person.firstAppearanceEpisode?.airDate
+              ? { firstAppearance: person.firstAppearanceEpisode.airDate.toISOString().slice(0, 10) }
+              : {}),
+            numberOfAppearances: uniqueEpisodes.length,
+          }),
+        }}
+      />
     </>
   );
 }

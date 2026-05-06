@@ -16,6 +16,24 @@ import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 
 export const revalidate = 300;
 
+export const metadata = {
+  title: "CultCodex — Decode Cult of Psyche | 1,500+ Episodes Archived",
+  description:
+    "The definitive archive of Cult of Psyche. 1,500+ episodes with full transcripts, AI psychological breakdowns, guest profiles, topic signals, and behavioral pattern maps.",
+  openGraph: {
+    title: "CultCodex — Decode Cult of Psyche",
+    description:
+      "1,500+ conversations decoded. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
+    type: "website" as const,
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "CultCodex — Decode Cult of Psyche",
+    description:
+      "Full transcripts, AI breakdowns, guest profiles, and pattern maps for every Cult of Psyche episode.",
+  },
+};
+
 export default async function HomePage() {
   const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics] = await Promise.all([
     getArchiveStats(),

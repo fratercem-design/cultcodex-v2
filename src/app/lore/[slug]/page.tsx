@@ -24,7 +24,7 @@ export const revalidate = 600;
 export async function generateStaticParams() {
   const entries = await prisma.loreEntry.findMany({
     select: { slug: true },
-    take: 50,
+    take: 300,
     orderBy: { updatedAt: "desc" },
   });
   return entries.map((e) => ({ slug: e.slug }));
@@ -230,6 +230,25 @@ export default async function LoreDetailPage({ params }: PageProps) {
           className="mt-8"
         />
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: entry.title,
+            ...(entry.summary ? { description: entry.summary.slice(0, 300) } : {}),
+            url: `https://cultcodex.me/lore/${entry.slug}`,
+            ...(entry.category ? { articleSection: entry.category } : {}),
+            publisher: {
+              "@type": "Organization",
+              name: "CultCodex",
+              url: "https://cultcodex.me",
+            },
+          }),
+        }}
+      />
     </>
   );
 }
