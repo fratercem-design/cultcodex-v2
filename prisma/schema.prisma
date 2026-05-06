@@ -670,3 +670,19 @@ model PsychenomiconThreadChapter {
 
   @@id([chapterId, threadId])
 }
+
+// ─── Community Posts ───────────────────────────────────────────────────────────
+
+model CommunityPost {
+  id            String    @id @default(cuid())
+  youtubePostId String    @unique
+  text          String    @db.Text
+  imageUrls     String[]
+  likeCount     Int?
+  commentCount  Int?
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([publishedAt])
+}
