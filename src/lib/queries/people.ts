@@ -1,14 +1,38 @@
 import { prisma } from "@/lib/db";
 import type { Prisma, PersonType } from "@/generated/prisma/client";
 
+const EPISODE_CARD_SELECT = {
+  id: true,
+  slug: true,
+  title: true,
+  episodeNumber: true,
+  airDate: true,
+  summaryShort: true,
+  thumbnailUrl: true,
+} satisfies Prisma.EpisodeSelect;
+
 export function buildPersonInclude() {
   return {
-    firstAppearanceEpisode: true,
-    guestAppearances: { include: { episode: true } },
-    mentions: { include: { episode: true } },
+    firstAppearanceEpisode: { select: { airDate: true } },
+    guestAppearances: {
+      select: { episode: { select: EPISODE_CARD_SELECT } },
+      orderBy: { episode: { airDate: "desc" } },
+    },
+    mentions: {
+      select: { episode: { select: EPISODE_CARD_SELECT } },
+      orderBy: { episode: { airDate: "desc" } },
+      take: 200,
+    },
     topics: { include: { topic: true } },
     loreConnections: { include: { loreEntry: true } },
-    quotes: { include: { episode: true } },
+    quotes: {
+      select: {
+        id: true,
+        text: true,
+        timestampSeconds: true,
+        episode: { select: { id: true } },
+      },
+    },
   } satisfies Prisma.PersonInclude;
 }
 
