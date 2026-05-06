@@ -244,6 +244,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
       durationStr: true,
       viewCount: true,
       rawContent: true,
+      channelHandle: true,
     },
   });
 

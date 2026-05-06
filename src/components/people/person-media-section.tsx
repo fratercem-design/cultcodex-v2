@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { SectionCard } from "@/components/ui/section-card";
@@ -17,6 +16,7 @@ export interface PersonMediaItem {
   durationStr: string | null;
   viewCount: number | null;
   rawContent: string | null;
+  channelHandle: string | null;
 }
 
 interface Props {
@@ -143,15 +143,105 @@ function VideoCard({ item }: { item: PersonMediaItem }) {
 
 const PAGE_SIZE = 12;
 
-export function PersonMediaSection({ personName, videos, wiki }: Props) {
+function VideoChannelSection({
+  handle,
+  label,
+  channelUrl,
+  videos,
+  personName,
+}: {
+  handle: string;
+  label: string;
+  channelUrl: string;
+  videos: PersonMediaItem[];
+  personName: string;
+}) {
   const [page, setPage] = useState(0);
-
-  const sortedVideos = [...videos].sort(
+  const sorted = [...videos].sort(
     (a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0),
   );
+  const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
+  const visible = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
-  const totalPages = Math.ceil(sortedVideos.length / PAGE_SIZE);
-  const visibleVideos = sortedVideos.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+  return (
+    <SectionCard title={`${label} (${videos.length} videos)`}>
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded border border-red-800/50 bg-red-950/30 px-2.5 py-1 font-mono text-[9px] text-red-400">
+            <span>▶</span>
+            <a href={channelUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+              {handle}
+            </a>
+          </span>
+          <span className="font-mono text-[9px] text-text-muted">{personName}&apos;s channel</span>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {visible.map((v) => (
+            <VideoCard key={v.id} item={v} />
+          ))}
+        </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between pt-2 border-t border-border">
+            <button
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              className="rounded border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted hover:text-text-primary hover:border-accent-violet/40 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            >
+              ← Previous
+            </button>
+            <span className="font-mono text-[9px] text-text-muted">
+              {page + 1} / {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={page === totalPages - 1}
+              className="rounded border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted hover:text-text-primary hover:border-accent-violet/40 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            >
+              Next →
+            </button>
+          </div>
+        )}
+      </div>
+    </SectionCard>
+  );
+}
+
+const KNOWN_CHANNELS: Record<string, { label: string; url: string }> = {
+  "@irlnewstime": { label: "irlnewstime", url: "https://www.youtube.com/@irlnewstime" },
+  "@alexandramayers": { label: "AlexandraMayers", url: "https://www.youtube.com/@AlexandraMayers" },
+};
+
+function channelMeta(handle: string | null): { label: string; url: string } {
+  const key = (handle ?? "").toLowerCase();
+  return KNOWN_CHANNELS[key] ?? { label: handle ?? "unknown", url: `https://www.youtube.com/${handle ?? ""}` };
+}
+
+export function PersonMediaSection({ personName, videos, wiki }: Props) {
+  if (videos.length === 0 && !wiki) {
+    return (
+      <p className="text-xs text-text-muted italic text-center py-6">
+        No external content imported yet. Run the sync workflow.
+      </p>
+    );
+  }
+
+  // Group videos by channelHandle (null → fallback "@irlnewstime")
+  const byChannel = new Map<string, PersonMediaItem[]>();
+  for (const v of videos) {
+    const key = v.channelHandle ?? "@irlnewstime";
+    const existing = byChannel.get(key) ?? [];
+    existing.push(v);
+    byChannel.set(key, existing);
+  }
+
+  // Stable channel order: irlnewstime first, then others alphabetically
+  const channelOrder = [...byChannel.keys()].sort((a, b) => {
+    if (a === "@irlnewstime") return -1;
+    if (b === "@irlnewstime") return 1;
+    return a.localeCompare(b);
+  });
 
   return (
     <div className="space-y-6">
@@ -174,62 +264,21 @@ export function PersonMediaSection({ personName, videos, wiki }: Props) {
         </div>
       )}
 
-      {/* irlnewstime video grid */}
-      {videos.length > 0 && (
-        <SectionCard title={`irlnewstime (${videos.length} videos)`}>
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded border border-red-800/50 bg-red-950/30 px-2.5 py-1 font-mono text-[9px] text-red-400">
-                <span>▶</span>
-                <a
-                  href="https://www.youtube.com/@irlnewstime"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                >
-                  @irlnewstime
-                </a>
-              </span>
-              <span className="font-mono text-[9px] text-text-muted">{personName}&apos;s channel</span>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {visibleVideos.map((v) => (
-                <VideoCard key={v.id} item={v} />
-              ))}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between pt-2 border-t border-border">
-                <button
-                  onClick={() => setPage((p) => Math.max(0, p - 1))}
-                  disabled={page === 0}
-                  className="rounded border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted hover:text-text-primary hover:border-accent-violet/40 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                >
-                  ← Previous
-                </button>
-                <span className="font-mono text-[9px] text-text-muted">
-                  {page + 1} / {totalPages}
-                </span>
-                <button
-                  onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-                  disabled={page === totalPages - 1}
-                  className="rounded border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted hover:text-text-primary hover:border-accent-violet/40 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                >
-                  Next →
-                </button>
-              </div>
-            )}
-          </div>
-        </SectionCard>
-      )}
-
-      {videos.length === 0 && !wiki && (
-        <p className="text-xs text-text-muted italic text-center py-6">
-          No external content imported yet. Run the sync workflow.
-        </p>
-      )}
+      {/* One section per channel */}
+      {channelOrder.map((handle) => {
+        const channelVideos = byChannel.get(handle)!;
+        const meta = channelMeta(handle);
+        return (
+          <VideoChannelSection
+            key={handle}
+            handle={handle}
+            label={meta.label}
+            channelUrl={meta.url}
+            videos={channelVideos}
+            personName={personName}
+          />
+        );
+      })}
     </div>
   );
 }

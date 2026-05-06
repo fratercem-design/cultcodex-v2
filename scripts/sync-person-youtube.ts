@@ -139,12 +139,14 @@ async function main() {
         publishedAt: item.publishedAt ? new Date(item.publishedAt) : null,
         durationStr: detail?.durationStr ?? null,
         viewCount: detail?.viewCount ?? null,
+        channelHandle: CHANNEL_HANDLE,
       },
       update: {
         title: item.title,
         thumbnailUrl: item.thumbnailUrl,
         durationStr: detail?.durationStr ?? null,
         viewCount: detail?.viewCount ?? null,
+        channelHandle: CHANNEL_HANDLE,
       },
     });
 
