@@ -12,7 +12,7 @@ export interface PersonMediaItem {
   title: string;
   description: string | null;
   thumbnailUrl: string | null;
-  publishedAt: Date | null;
+  publishedAt: string | null;
   durationStr: string | null;
   viewCount: number | null;
   rawContent: string | null;
@@ -31,8 +31,8 @@ function formatViewCount(n: number): string {
   return String(n);
 }
 
-function formatDate(d: Date): string {
-  return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+function formatDate(d: string): string {
+  return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
 
 function WikiCard({ item }: { item: PersonMediaItem }) {
@@ -158,7 +158,9 @@ function VideoChannelSection({
 }) {
   const [page, setPage] = useState(0);
   const sorted = [...videos].sort(
-    (a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0),
+    (a, b) =>
+      (b.publishedAt ? new Date(b.publishedAt).getTime() : 0) -
+      (a.publishedAt ? new Date(a.publishedAt).getTime() : 0),
   );
   const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
   const visible = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
