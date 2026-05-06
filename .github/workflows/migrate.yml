@@ -3,8 +3,8 @@ name: Run DB Migrations
 on:
   workflow_dispatch: {}
   push:
-    tags:
-      - 'ci-migrate'
+    branches:
+      - 'ci/run-migrate'
 
 jobs:
   migrate:
