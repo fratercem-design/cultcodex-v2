@@ -1,9 +1,6 @@
 name: Person Media Sync — Alexandra Mayers
 
 on:
-  push:
-    branches:
-      - 'ci/run-sync'
   workflow_dispatch:
     inputs:
       person_slug:

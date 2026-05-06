@@ -1,9 +1,6 @@
 name: Community Posts — Fetch & Import
 
 on:
-  push:
-    branches:
-      - 'ci/run-sync'
   workflow_dispatch:
     inputs:
       channel_handle:
