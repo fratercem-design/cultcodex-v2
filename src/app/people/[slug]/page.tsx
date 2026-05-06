@@ -248,8 +248,13 @@ export default async function PersonDetailPage({ params }: PageProps) {
     },
   });
 
-  const personMediaVideos = personMediaRaw.filter((m) => m.source === "youtube") as PersonMediaItem[];
-  const personMediaWiki = (personMediaRaw.find((m) => m.source === "wiki") ?? null) as PersonMediaItem | null;
+  // Serialize Date → string before crossing the server/client boundary
+  const personMediaSerialized: PersonMediaItem[] = personMediaRaw.map((m) => ({
+    ...m,
+    publishedAt: m.publishedAt ? m.publishedAt.toISOString() : null,
+  }));
+  const personMediaVideos = personMediaSerialized.filter((m) => m.source === "youtube");
+  const personMediaWiki = personMediaSerialized.find((m) => m.source === "wiki") ?? null;
   const hasPersonMedia = personMediaRaw.length > 0;
 
   const typeLabel = PERSON_TYPE_LABELS[person.personType] ?? person.personType;
