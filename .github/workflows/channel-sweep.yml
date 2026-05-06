@@ -1,6 +1,9 @@
 name: Channel Sweep — Sync YouTube Uploads
 
 on:
+  push:
+    tags:
+      - 'ci-sync'
   workflow_dispatch:
     inputs:
       run_transcripts:
