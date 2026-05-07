@@ -23,6 +23,7 @@ import {
   buildPaginationMeta,
 } from "@/lib/pagination";
 import { formatDate } from "@/lib/format/date";
+import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
@@ -132,7 +133,7 @@ export default async function SeriesDetailPage({ params, searchParams }: PagePro
                       episodeNumber={ep.episodeNumber}
                       airDate={ep.airDate}
                       summaryShort={ep.summaryShort}
-                      thumbnailUrl={ep.thumbnailUrl}
+                      thumbnailUrl={fixThumbnailUrl(ep.thumbnailUrl)}
                     />
                   ))}
                 </div>

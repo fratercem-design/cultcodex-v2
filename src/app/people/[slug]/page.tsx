@@ -17,6 +17,7 @@ import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { formatDate } from "@/lib/format/date";
+import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { editorialFrame } from "@/lib/format/editorial-frame";
 import { getExternalLinks } from "@/lib/format/external-links";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
@@ -341,7 +342,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                       episodeNumber={ep.episodeNumber}
                       airDate={ep.airDate}
                       summaryShort={ep.summaryShort}
-                      thumbnailUrl={ep.thumbnailUrl}
+                      thumbnailUrl={fixThumbnailUrl(ep.thumbnailUrl)}
                     />
                   ))}
                 </div>
