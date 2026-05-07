@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { SacredGeometryOverlay } from "@/components/graphics/sacred-geometry";
+import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 
 interface EpisodeHeroProps {
   title: string;
@@ -20,7 +21,7 @@ export function EpisodeHero({
   contentType,
   series,
 }: EpisodeHeroProps) {
-  const bgSrc = thumbnailUrl || "/wiki-page-header.jpg";
+  const bgSrc = fixThumbnailUrl(thumbnailUrl) || "/wiki-page-header.jpg";
   const epNum = episodeNumber
     ? `EP.${String(episodeNumber).padStart(3, "0")}`
     : null;

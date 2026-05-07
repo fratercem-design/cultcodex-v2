@@ -10,6 +10,7 @@ import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
+import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
@@ -172,7 +173,7 @@ export default async function HomePage() {
                 className="group flex flex-col sm:flex-row items-start gap-4 rounded-xl border border-border bg-surface p-4 transition-all hover:border-accent-gold/30 hover:bg-elevated"
               >
                 {featured.thumbnailUrl ? (
-                  <img src={featured.thumbnailUrl} alt="" className="w-full sm:w-48 h-32 rounded-lg object-cover flex-shrink-0" />
+                  <img src={fixThumbnailUrl(featured.thumbnailUrl)!} alt="" className="w-full sm:w-48 h-32 rounded-lg object-cover flex-shrink-0" />
                 ) : (
                   <div className="w-full sm:w-48 h-32 rounded-lg bg-gradient-to-br from-accent-gold/10 to-accent-violet/10 flex-shrink-0" />
                 )}

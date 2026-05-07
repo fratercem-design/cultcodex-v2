@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { cleanTitle } from "@/lib/format/text";
+import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import type { Prisma, ContentStatus, ContentType } from "@/generated/prisma/client";
 
 // Type for episode with all relations loaded
@@ -42,7 +43,7 @@ export function formatEpisodeForCard(episode: EpisodeWithRelations): EpisodeCard
     episodeNumber: episode.episodeNumber,
     airDate: episode.airDate,
     summaryShort: episode.summaryShort,
-    thumbnailUrl: episode.thumbnailUrl,
+    thumbnailUrl: fixThumbnailUrl(episode.thumbnailUrl),
     status: episode.status,
     hasVideo: !!(episode.youtubeVideoId || episode.rumbleVideoId),
     segmentCount: episode.segments.length,

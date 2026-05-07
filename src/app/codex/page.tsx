@@ -13,6 +13,7 @@
  */
 import Link from "next/link";
 import Image from "next/image";
+import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
@@ -132,9 +133,10 @@ export default async function CodexPage() {
                   {fav.episode.thumbnailUrl && (
                     <div className="relative mb-3 aspect-video w-full overflow-hidden rounded-md">
                       <Image
-                        src={fav.episode.thumbnailUrl}
+                        src={fixThumbnailUrl(fav.episode.thumbnailUrl)!}
                         alt=""
                         fill
+                        unoptimized
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, 33vw"
                       />
