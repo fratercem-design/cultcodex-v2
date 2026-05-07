@@ -4,7 +4,7 @@ import { isSubscribed } from "@/lib/subscription";
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "The Psychenomicon — CULT CODEX",
@@ -88,12 +88,11 @@ export default async function PsychenomiconPage() {
           <div className="space-y-2">
             <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">ψ THE PSYCHENOMICON ψ</p>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">A Living Record of Evolving Patterns</h1>
-            <p className="text-xs text-text-muted">
-              {chapters.length > 0
-                ? `${chapters.length} chapter${chapters.length !== 1 ? "s" : ""} · ${entities.length} entities tracked · ${activeThreads.length} threads active`
-                : "The archive is being compiled."
-              }
-            </p>
+            {chapters.length > 0 && (
+              <p className="text-xs text-text-muted">
+                {chapters.length} chapter{chapters.length !== 1 ? "s" : ""} &middot; {entities.length} entities tracked &middot; {activeThreads.length} threads active
+              </p>
+            )}
           </div>
           {latest && (
             <Link
