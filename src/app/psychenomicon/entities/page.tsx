@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 export default async function EntitiesPage() {
   const user = await getCurrentUser();
   const canRead = user ? await isSubscribed(user.id) : false;
+  const isAdmin = user?.role === "admin";
 
   if (!canRead) {
     return (
@@ -101,12 +102,40 @@ export default async function EntitiesPage() {
           <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">ψ PSYCHENOMICON · ENTITIES ψ</p>
           <h1 className="font-display text-2xl font-bold text-text-primary">Entity Network</h1>
           <p className="text-xs text-text-muted">
-            {nodes.length} entities tracked &middot; {edges.length} relationship edges
+            {nodes.length > 0
+              ? `${nodes.length} entities tracked · ${edges.length} relationship edges`
+              : "No entities recorded yet."
+            }
           </p>
         </div>
       </header>
 
       <div className="mx-auto max-w-5xl px-4 py-8 space-y-10">
+        {nodes.length === 0 ? (
+          <div className="py-20 text-center space-y-6">
+            <p className="font-mono text-4xl text-accent-violet/20">ψ</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">/// no_entities_recorded</p>
+            <p className="text-sm text-text-muted leading-relaxed max-w-sm mx-auto">
+              Entities are extracted automatically when Psychenomicon chapters are generated. Each significant person becomes a tracked entity with archetype evolution, radar traits, and chapter appearances.
+            </p>
+            {isAdmin ? (
+              <Link
+                href="/admin/psychenomicon"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-6 py-3 font-mono text-xs font-bold text-accent-gold transition-colors"
+              >
+                Generate Chapters →
+              </Link>
+            ) : (
+              <p className="font-mono text-[10px] text-text-muted/50 uppercase tracking-widest">
+                Entities will appear as chapters are processed.
+              </p>
+            )}
+            <Link href="/psychenomicon" className="block font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors">
+              ← Return to Psychenomicon
+            </Link>
+          </div>
+        ) : (
+        <>
         {/* Network graph */}
         {nodes.length > 1 && (
           <EntityNetworkGraph nodes={nodes} edges={edges} width={700} height={420} />
@@ -166,6 +195,8 @@ export default async function EntitiesPage() {
         <Link href="/psychenomicon" className="block font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors">
           ← Return to Psychenomicon
         </Link>
+        </>
+        )}
       </div>
     </main>
   );

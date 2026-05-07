@@ -48,6 +48,7 @@ const ARCS = [
 export default async function PsychenomiconPage() {
   const user = await getCurrentUser();
   const canRead = user ? await isSubscribed(user.id) : false;
+  const isAdmin = user?.role === "admin";
 
   if (!canRead) {
     return <main className="min-h-screen bg-void"><PsychenomiconGate isAuthenticated={!!user} /></main>;
@@ -88,7 +89,10 @@ export default async function PsychenomiconPage() {
             <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">ψ THE PSYCHENOMICON ψ</p>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">A Living Record of Evolving Patterns</h1>
             <p className="text-xs text-text-muted">
-              {chapters.length} chapter{chapters.length !== 1 ? "s" : ""} &middot; {entities.length} entities tracked &middot; {activeThreads.length} threads active
+              {chapters.length > 0
+                ? `${chapters.length} chapter${chapters.length !== 1 ? "s" : ""} · ${entities.length} entities tracked · ${activeThreads.length} threads active`
+                : "The archive is being compiled."
+              }
             </p>
           </div>
           {latest && (
@@ -102,7 +106,34 @@ export default async function PsychenomiconPage() {
         </div>
       </section>
 
+      {/* Empty state — no chapters generated yet */}
+      {chapters.length === 0 && (
+        <div className="mx-auto max-w-2xl px-4 py-24 text-center space-y-8">
+          <div className="space-y-3">
+            <p className="font-mono text-4xl text-accent-violet/20">ψ</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">/// no_chapters_recorded</p>
+            <h2 className="font-display text-xl font-bold text-text-primary">The chronicles have not yet begun.</h2>
+            <p className="text-sm text-text-muted leading-relaxed max-w-sm mx-auto">
+              The Psychenomicon is a living record built episode by episode. Once chapters are generated from transcripts, they will appear here — with entities, threads, and archetypal patterns tracked across time.
+            </p>
+          </div>
+          {isAdmin ? (
+            <Link
+              href="/admin/psychenomicon"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-6 py-3 font-mono text-xs font-bold text-accent-gold transition-colors"
+            >
+              Generate First Chapter →
+            </Link>
+          ) : (
+            <p className="font-mono text-[10px] text-text-muted/50 uppercase tracking-widest">
+              The first transmissions are being processed.
+            </p>
+          )}
+        </div>
+      )}
+
       {/* 3-panel layout */}
+      {chapters.length > 0 && (
       <div className="mx-auto max-w-7xl px-4 py-8 grid gap-6 lg:grid-cols-[200px_1fr_260px]">
 
         {/* ── Left: Chapter nav + arcs ── */}
@@ -266,6 +297,7 @@ export default async function PsychenomiconPage() {
           </div>
         </aside>
       </div>
+      )}
     </main>
   );
 }
