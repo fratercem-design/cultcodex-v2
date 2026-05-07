@@ -110,11 +110,7 @@ async function fetchRecentUploads(
         title: s.title || "",
         description: s.description || "",
         publishedAt: s.publishedAt || new Date().toISOString(),
-        thumbnailUrl:
-          s.thumbnails?.maxres?.url ||
-          s.thumbnails?.high?.url ||
-          s.thumbnails?.default?.url ||
-          null,
+        thumbnailUrl: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`,
       },
     ];
   });

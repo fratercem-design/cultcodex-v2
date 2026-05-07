@@ -32,6 +32,7 @@ export function EpisodeHero({
         alt=""
         fill
         priority
+        unoptimized
         sizes="100vw"
         className={`object-cover ${thumbnailUrl ? "blur-sm scale-105" : ""}`}
       />

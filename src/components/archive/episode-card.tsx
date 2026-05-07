@@ -25,6 +25,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
           alt=""
           width={64}
           height={64}
+          unoptimized
           className="h-16 w-16 flex-shrink-0 rounded object-cover"
         />
       ) : (
