@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { AdminFormField } from "@/components/admin/admin-form-field";
 import { updateEpisode } from "@/app/admin/actions";
+import { PsychenomiconWidget } from "./psychenomicon-widget";
 import Link from "next/link";
 
 interface PageProps {
@@ -11,8 +12,16 @@ interface PageProps {
 export default async function EditEpisodePage({ params }: PageProps) {
   const { id } = await params;
 
-  const episode = await prisma.episode.findUnique({ where: { id } });
+  const episode = await prisma.episode.findUnique({
+    where: { id },
+    include: {
+      psychenomiconChapter: { select: { chapterNumber: true, title: true, slug: true } },
+      _count: { select: { segments: true } },
+    },
+  });
   if (!episode) notFound();
+
+  const hasTranscript = episode._count.segments > 0 || !!episode.transcriptRaw;
 
   async function handleSubmit(formData: FormData) {
     "use server";
@@ -133,6 +142,14 @@ export default async function EditEpisodePage({ params }: PageProps) {
           </Link>
         </div>
       </form>
+
+      <div className="mt-8">
+        <PsychenomiconWidget
+          episodeId={id}
+          hasTranscript={hasTranscript}
+          chapter={episode.psychenomiconChapter}
+        />
+      </div>
     </main>
   );
 }
