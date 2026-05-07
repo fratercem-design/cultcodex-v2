@@ -103,6 +103,74 @@ export default async function SubscribePage() {
         </div>
       </section>
 
+      {!isActive && (
+        <>
+          {/* ═══ PROBLEM ══════════════════════════════════════════════════════ */}
+          <section className="border-b border-border/40 bg-void/80 py-14 px-4">
+            <div className="mx-auto max-w-4xl">
+              <p className="mb-6 text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/50">
+                /// the_problem
+              </p>
+              <h2 className="mb-4 text-center font-display text-3xl font-bold text-white">
+                Most people watch content.
+                <br />
+                <span className="text-2xl font-normal text-text-muted">
+                  They don&apos;t understand it.
+                </span>
+              </h2>
+              <p className="mx-auto mb-10 max-w-2xl text-center font-mono text-sm text-text-muted">
+                Cult of Psyche is 8+ years of live-streamed psychology, manipulation, and chaos.
+                Without a system for decoding it, you&apos;re just watching. With CultCodex, you see everything.
+              </p>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                {[
+                  { icon: "🎭", label: "Manipulation tactics", desc: "Identified and documented across every episode" },
+                  { icon: "🧠", label: "Psychological patterns", desc: "Recurring behaviors mapped across years" },
+                  { icon: "⚡", label: "Power dynamics", desc: "Who holds power, who loses it, and why" },
+                  { icon: "🕸️", label: "Hidden connections", desc: "Links between guests, events, and arcs" },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-xl border border-border bg-surface p-4 text-center">
+                    <p className="mb-2 text-2xl">{item.icon}</p>
+                    <p className="font-mono text-xs font-bold text-text-primary">{item.label}</p>
+                    <p className="mt-1 font-mono text-[10px] leading-relaxed text-text-muted">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ═══ SOLUTION ═════════════════════════════════════════════════════ */}
+          <section className="border-b border-border/40 bg-surface/50 py-14 px-4">
+            <div className="mx-auto max-w-4xl">
+              <p className="mb-6 text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-cyan/50">
+                /// the_system
+              </p>
+              <h2 className="mb-10 text-center font-display text-3xl font-bold text-white">
+                CultCodex turns chaos
+                <br />
+                <span className="text-accent-cyan">into structure.</span>
+              </h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {[
+                  { icon: "🔍", label: "Full-text search", desc: "Search every word spoken across all episodes. Find any quote, topic, or moment instantly." },
+                  { icon: "📜", label: "The Psychenomicon", desc: "A living grimoire of every soul, saga, and spectacle. The mythology of the Psycheverse, documented." },
+                  { icon: "👁️", label: "Character profiles", desc: "Every guest profiled — their patterns, their history, their arc across the show." },
+                  { icon: "🗺️", label: "Topic signal maps", desc: "See which themes dominate, which topics connect, and what patterns keep surfacing." },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-start gap-4 rounded-xl border border-border bg-surface p-5">
+                    <span className="flex-shrink-0 text-2xl">{item.icon}</span>
+                    <div>
+                      <p className="font-mono text-xs font-bold text-text-primary">{item.label}</p>
+                      <p className="mt-1 font-mono text-[10px] leading-relaxed text-text-muted">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
+
       <main className="mx-auto max-w-5xl px-4 py-12">
 
         {/* ═══ ALREADY SUBSCRIBED ═══════════════════════════════════════════ */}

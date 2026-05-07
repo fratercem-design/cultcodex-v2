@@ -49,9 +49,7 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ══════════════════════════════════════════════════
-          HERO — "This isn't a content library."
-      ══════════════════════════════════════════════════ */}
+      {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section className="relative flex min-h-[540px] sm:min-h-[620px] items-center justify-center overflow-hidden">
         <Image src="/hero-bg.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-void" />
@@ -76,7 +74,6 @@ export default async function HomePage() {
             height={80}
             className="rounded-full border-2 border-accent-gold/60 shadow-xl shadow-accent-gold/20 opacity-90"
           />
-
           <div className="space-y-3">
             <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-cyan/80">
               ✦ &nbsp; CultCodex &nbsp; ✦
@@ -98,14 +95,21 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <Link
-            href="/start-here"
-            className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-8 py-3.5 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
-          >
-            Enter the Codex →
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/start-here"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-8 py-3.5 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
+            >
+              Enter the Codex →
+            </Link>
+            <Link
+              href="/subscribe"
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/60 px-6 py-3.5 font-mono text-sm text-text-muted transition-all hover:border-accent-gold/30 hover:text-accent-gold"
+            >
+              Unlock full access
+            </Link>
+          </div>
 
-          {/* Search */}
           <div className="w-full max-w-md">
             <SearchInput />
           </div>
@@ -114,9 +118,7 @@ export default async function HomePage() {
 
       <main id="main-content" className="space-y-0">
 
-        {/* ══════════════════════════════════════════════════
-            SOCIAL PROOF STRIP — live archive signals
-        ══════════════════════════════════════════════════ */}
+        {/* ── STATS STRIP ──────────────────────────────────────────────── */}
         <div className="border-b border-border/40 bg-void/80 backdrop-blur-sm py-3 px-4">
           <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-center gap-x-8 gap-y-1">
             {[
@@ -132,313 +134,39 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* ══════════════════════════════════════════════════
-            PROBLEM — "Most people watch content."
-        ══════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-void via-[#0a0010] to-void py-20 px-4">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.04),transparent_70%)]" />
-          <div className="relative mx-auto max-w-4xl text-center space-y-10">
-            <div className="space-y-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/50">
-                /// the_problem
-              </p>
-              <h2 className="font-display text-3xl sm:text-4xl font-bold text-white leading-tight">
-                Most people watch content.
-                <br />
-                <span className="text-text-muted font-normal text-2xl sm:text-3xl">They don&rsquo;t understand it.</span>
-              </h2>
-            </div>
+        <div className="mx-auto max-w-7xl px-4 py-10 space-y-12">
 
-            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 max-w-3xl mx-auto">
-              {[
-                { icon: "🎭", label: "Manipulation", desc: "Playing out in plain sight" },
-                { icon: "🧠", label: "Psychological patterns", desc: "Repeating across every guest" },
-                { icon: "⚡", label: "Power dynamics", desc: "Who controls the room and how" },
-                { icon: "🕸️", label: "Hidden connections", desc: "Between people, events, episodes" },
-              ].map((item) => (
-                <div key={item.label} className="rounded-xl border border-accent-gold/10 bg-surface/60 p-5 text-center space-y-2">
-                  <p className="text-2xl">{item.icon}</p>
-                  <p className="font-mono text-xs font-bold text-text-primary">{item.label}</p>
-                  <p className="font-mono text-[10px] text-text-muted leading-relaxed">{item.desc}</p>
+          {/* ── SECTION NAV ──────────────────────────────────────────── */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {([
+              { href: "/episodes", icon: "📺", label: "Episodes", count: stats.episodes.toLocaleString(), accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
+              { href: "/people",   icon: "👁",  label: "People",   count: stats.people.toLocaleString(),   accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5 group-hover:text-accent-cyan" },
+              { href: "/topics",   icon: "🕸️", label: "Topics",   count: stats.topics.toLocaleString(),   accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
+              { href: "/lore",     icon: "📜",  label: "Lore",     count: stats.loreEntries.toLocaleString(), accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
+            ] as const).map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`group flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-4 transition-all ${item.accent}`}
+              >
+                <span className="text-xl flex-shrink-0">{item.icon}</span>
+                <div className="min-w-0">
+                  <p className="font-mono text-xs font-bold text-text-primary truncate">{item.label}</p>
+                  <p className="font-mono text-[10px] text-text-muted">{item.count}</p>
                 </div>
-              ))}
-            </div>
-
-            <p className="font-mono text-sm text-text-muted/80 max-w-lg mx-auto leading-relaxed italic">
-              You&rsquo;ve seen it. You felt it. But you couldn&rsquo;t fully explain it.
-            </p>
-          </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════
-            SOLUTION — "CultCodex turns chaos into structure."
-        ══════════════════════════════════════════════════ */}
-        <section className="relative bg-gradient-to-b from-[#0a0010] to-void py-20 px-4 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(0,217,255,0.04),transparent_60%)]" />
-          <div className="relative mx-auto max-w-5xl space-y-12">
-            <div className="text-center space-y-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-cyan/60">
-                /// the_solution
-              </p>
-              <h2 className="font-display text-3xl sm:text-4xl font-bold text-white">
-                CultCodex turns chaos into structure.
-              </h2>
-              <p className="font-mono text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
-                Every guest, every panel, every moment becomes part of a larger map.
-                <br />
-                Not entertainment. <span className="text-text-primary font-bold">Intelligence.</span>
-              </p>
-            </div>
-
-            {/* Feature grid */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                {
-                  icon: "📜",
-                  title: "Full Transcripts",
-                  desc: `${stats.segments.toLocaleString()} segments — every word spoken, searchable and timestamped. Click any line to seek.`,
-                  tier: "Initiate+",
-                  color: "gold",
-                },
-                {
-                  icon: "🧠",
-                  title: "Decode Mode",
-                  desc: "AI psychological breakdowns of every panel. Guest archetypes, behavior patterns, manipulation tactics — named and mapped.",
-                  tier: "Initiate+",
-                  color: "gold",
-                },
-                {
-                  icon: "🔍",
-                  title: "Pattern Detection",
-                  desc: "Find every time a tactic repeats across guests. Filter by archetype, behavior type, conflict pattern.",
-                  tier: "Initiate+",
-                  color: "gold",
-                },
-                {
-                  icon: "🕸️",
-                  title: "Hidden Connections",
-                  desc: "Episodes, guests, and topics linked through shared patterns. The map shows what the timeline hides.",
-                  tier: "Oracle",
-                  color: "violet",
-                },
-                {
-                  icon: "🎭",
-                  title: "Behavioral Archetypes",
-                  desc: "Every recurring guest profile broken down — not just who they are, but how they operate and why.",
-                  tier: "Oracle",
-                  color: "violet",
-                },
-                {
-                  icon: "👁",
-                  title: "Personal Codex",
-                  desc: "Save signals, annotate transmissions, and build your own map of the Psycheverse. Your intelligence layer.",
-                  tier: "Initiate+",
-                  color: "gold",
-                },
-              ].map((item) => {
-                const isViolet = item.color === "violet";
-                return (
-                  <div
-                    key={item.title}
-                    className={`rounded-xl border ${isViolet ? "border-accent-violet/20" : "border-accent-gold/20"} bg-surface p-6 space-y-3 transition-colors hover:${isViolet ? "border-accent-violet/40" : "border-accent-gold/40"}`}
-                  >
-                    <p className="text-2xl">{item.icon}</p>
-                    <div>
-                      <h3 className={`font-display text-base font-bold ${isViolet ? "text-accent-violet" : "text-accent-gold"}`}>
-                        {item.title}
-                      </h3>
-                      <span className={`font-mono text-[9px] uppercase tracking-widest ${isViolet ? "text-accent-violet/60" : "text-accent-gold/60"}`}>
-                        {item.tier}
-                      </span>
-                    </div>
-                    <p className="font-mono text-[11px] text-text-muted leading-relaxed">{item.desc}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════
-            TIER COMPARISON — simplified 3-role strip
-        ══════════════════════════════════════════════════ */}
-        <section className="bg-gradient-to-b from-void to-[#0a0010] py-20 px-4">
-          <div className="mx-auto max-w-5xl space-y-8">
-            <div className="text-center space-y-2">
-              <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-                /// three_roles
-              </p>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-white">
-                Three positions in the system.
-              </h2>
-            </div>
-
-            <div className="grid gap-px md:grid-cols-3 overflow-hidden rounded-2xl border border-border">
-              {[
-                {
-                  role: "Observer",
-                  price: "Free",
-                  hook: "Limited access. Surface-level view.",
-                  color: "text-text-muted",
-                  bg: "bg-surface",
-                  items: ["Browse episodes + summaries", "Guest profiles and bios", "Quotes, topics, lore", "Basic search"],
-                },
-                {
-                  role: "Initiate+",
-                  price: "$10/month",
-                  hook: "Full access. Decode what you're watching. Build your personal Codex.",
-                  color: "text-accent-gold",
-                  bg: "bg-surface",
-                  items: ["Everything above", "Full transcripts + click-to-seek", "Decode Mode (AI breakdowns)", "Pattern detection + advanced search", "Personal Codex"],
-                },
-                {
-                  role: "Oracle",
-                  price: "$25/month",
-                  hook: "Direct access. Influence the system. See what's not public.",
-                  color: "text-accent-violet",
-                  bg: "bg-surface",
-                  items: ["Everything above", "Vote on guests + topics", "Submit investigations", "Guest intelligence files", "Named Oracle role"],
-                },
-              ].map((tier, i) => (
-                <div key={tier.role} className={`${tier.bg} p-6 space-y-4 ${i === 1 ? "border-t-2 border-t-accent-gold" : i === 2 ? "border-t-2 border-t-accent-violet" : ""}`}>
-                  <div>
-                    <h3 className={`font-display text-xl font-bold ${tier.color}`}>{tier.role}</h3>
-                    <p className={`font-mono text-xs font-bold mt-0.5 ${tier.color}`}>{tier.price}</p>
-                  </div>
-                  <p className="font-mono text-[11px] italic text-text-muted leading-relaxed">{tier.hook}</p>
-                  <ul className="space-y-1.5">
-                    {tier.items.map((item) => (
-                      <li key={item} className="flex items-start gap-2 font-mono text-[11px] text-text-muted">
-                        <span className={`mt-0.5 ${tier.color}`}>✦</span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  {i > 0 && (
-                    <Link
-                      href="/premium"
-                      className={`mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2.5 font-mono text-xs font-bold transition-all ${
-                        i === 1
-                          ? "border-accent-gold/40 bg-accent-gold/10 text-accent-gold hover:bg-accent-gold/20"
-                          : "border-accent-violet/40 bg-accent-violet/10 text-accent-violet hover:bg-accent-violet/20"
-                      }`}
-                    >
-                      Become {tier.role} →
-                    </Link>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════
-            IDENTITY PUSH — "Two types of people."
-        ══════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-[#0a0010] via-[#100020] to-void py-20 px-4">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.06),transparent_70%)]" />
-          <div className="relative mx-auto max-w-2xl text-center space-y-8">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/50">
-              /// identity
-            </p>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-white leading-tight">
-              There are two types of people here.
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2 text-left">
-              <div className="rounded-xl border border-border bg-surface/60 p-5 space-y-2">
-                <p className="font-mono text-xs font-bold text-text-muted uppercase tracking-widest">Those who watch</p>
-                <p className="font-mono text-[11px] text-text-muted leading-relaxed">
-                  They see what happens on the surface. They can&rsquo;t explain the patterns underneath.
-                  They leave entertained — but not changed.
-                </p>
-              </div>
-              <div className="rounded-xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-5 space-y-2">
-                <p className="font-mono text-xs font-bold text-accent-gold uppercase tracking-widest">Those who understand</p>
-                <p className="font-mono text-[11px] text-text-muted leading-relaxed">
-                  They have the map. They see manipulation as it happens.
-                  They know the archetypes before they speak. The archive gave them the system.
-                </p>
-              </div>
-            </div>
-            <p className="font-display text-xl font-bold text-accent-gold">
-              Choose your role.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link
-                href="/premium"
-                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
-              >
-                Become Initiate+ — $10/mo
-              </Link>
-              <Link
-                href="/premium#system"
-                className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 px-7 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/20"
-              >
-                Become Oracle — $25/mo
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════
-            URGENCY — "Entering before it scales."
-        ══════════════════════════════════════════════════ */}
-        <section className="bg-void py-12 px-4">
-          <div className="mx-auto max-w-2xl text-center space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full border border-accent-gold/30 bg-accent-gold/8 px-5 py-2.5 shadow-lg shadow-accent-gold/10">
-              <span className="flex h-2 w-2 animate-pulse rounded-full bg-accent-gold" />
-              <span className="font-mono text-xs text-text-muted">
-                Early adopter window &nbsp;·&nbsp;{" "}
-                <span className="text-accent-gold font-bold">Oracle access is limited.</span>
-              </span>
-            </div>
-            <p className="font-mono text-sm text-text-muted leading-relaxed max-w-md mx-auto">
-              You&rsquo;re entering before this scales.
-              The people who come in now lock founding rates and shape what gets built.
-            </p>
-            <Link
-              href="/premium"
-              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-8 py-3.5 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
-            >
-              Unlock the Codex →
-            </Link>
-          </div>
-        </section>
-
-        <MysticalDivider />
-
-        {/* ══════════════════════════════════════════════════
-            ARCHIVE — proof. Recent transmissions + live data.
-        ══════════════════════════════════════════════════ */}
-        <div className="mx-auto max-w-7xl px-4 py-12 space-y-12">
-
-          {/* Archive weight bar */}
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-            {[
-              { n: stats.episodes.toLocaleString(), label: "Episodes" },
-              { n: stats.people.toLocaleString(), label: "People" },
-              { n: stats.loreEntries.toLocaleString(), label: "Lore entries" },
-              { n: stats.quotes.toLocaleString(), label: "Quotes" },
-              { n: stats.topics.toLocaleString(), label: "Signals" },
-              { n: `${stats.totalHours.toLocaleString()}+`, label: "Hours" },
-            ].map((s) => (
-              <Link
-                key={s.label}
-                href={s.label === "Episodes" ? "/episodes" : s.label === "People" ? "/people" : s.label === "Lore entries" ? "/lore" : s.label === "Quotes" ? "/quotes" : s.label === "Signals" ? "/topics" : "/stats"}
-                className="rounded-lg border border-border bg-surface p-3 text-center transition-colors hover:border-accent-gold/40 hover:bg-surface-raised"
-              >
-                <p className="font-mono text-lg font-bold text-accent-gold">{s.n}</p>
-                <p className="mt-0.5 font-mono text-[10px] text-text-muted">{s.label}</p>
               </Link>
             ))}
           </div>
 
-          {/* Featured + Recent */}
+          {/* ── FEATURED EPISODE ─────────────────────────────────────── */}
           {featured && (
             <div className="space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
-                /// latest_transmission
-              </p>
+              <Link
+                href="/episodes"
+                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60 hover:text-accent-gold transition-colors"
+              >
+                /// latest_transmission <span className="opacity-50 ml-1">→</span>
+              </Link>
               <Link
                 href={`/episodes/${featured.slug}`}
                 className="group flex flex-col sm:flex-row items-start gap-4 rounded-xl border border-border bg-surface p-4 transition-all hover:border-accent-gold/30 hover:bg-elevated"
@@ -480,12 +208,15 @@ export default async function HomePage() {
             </div>
           )}
 
-          {/* Recent transmissions */}
+          {/* ── RECENT TRANSMISSIONS ─────────────────────────────────── */}
           {recentCards.length > 1 && (
             <div className="space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
-                /// recent_transmissions
-              </p>
+              <Link
+                href="/episodes"
+                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60 hover:text-accent-gold transition-colors"
+              >
+                /// recent_transmissions <span className="opacity-50 ml-1">→</span>
+              </Link>
               <div className="grid gap-3">
                 {recentCards.slice(1).map((ep) => (
                   <EpisodeCard key={ep.id} episode={ep} />
@@ -499,12 +230,15 @@ export default async function HomePage() {
 
           <MysticalDivider />
 
-          {/* Popular Topics */}
+          {/* ── ACTIVE SIGNALS ───────────────────────────────────────── */}
           {popularTopics.length > 0 && (
             <div className="space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60">
-                /// active_signals
-              </p>
+              <Link
+                href="/topics"
+                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60 hover:text-accent-cyan transition-colors"
+              >
+                /// active_signals <span className="opacity-50 ml-1">→</span>
+              </Link>
               <div className="flex flex-wrap gap-2">
                 {popularTopics.map((topic) => (
                   <Link
@@ -523,12 +257,15 @@ export default async function HomePage() {
             </div>
           )}
 
-          {/* Recent Quotes */}
+          {/* ── NOTABLE MOMENTS ──────────────────────────────────────── */}
           {recentQuotes.length > 0 && (
             <div className="space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-                /// notable_moments
-              </p>
+              <Link
+                href="/quotes"
+                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50 hover:text-text-muted transition-colors"
+              >
+                /// notable_moments <span className="opacity-50 ml-1">→</span>
+              </Link>
               <div className="space-y-4">
                 {recentQuotes.map((q) => (
                   <QuoteHighlightCard
@@ -548,6 +285,27 @@ export default async function HomePage() {
               </Link>
             </div>
           )}
+
+          {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
+          <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">/// unlock_the_archive</p>
+            <p className="font-display text-xl font-bold text-white">Full transcripts. The Psychenomicon. Your cult identity.</p>
+            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ unlocks everything for $10/mo. No contracts.</p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link
+                href="/subscribe"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
+              >
+                Become Initiate+ — $10/mo →
+              </Link>
+              <Link
+                href="/premium"
+                className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-3 font-mono text-xs text-text-muted transition-all hover:border-accent-gold/30 hover:text-text-primary"
+              >
+                Compare tiers
+              </Link>
+            </div>
+          </div>
 
           <ArchiveDisclaimer variant="full" />
         </div>
