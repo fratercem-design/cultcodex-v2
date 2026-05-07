@@ -157,8 +157,9 @@ export default async function PsychenomiconPage() {
             {activeThreads.length > 0 ? (
               <div className="space-y-2">
                 {activeThreads.map((t) => (
-                  <div
+                  <Link
                     key={t.slug}
+                    href={`/psychenomicon/threads/${t.slug}`}
                     className="group flex items-start gap-4 rounded-lg border border-border bg-surface p-4 hover:border-accent-violet/40 hover:bg-accent-violet/5 transition-all"
                   >
                     <div className="flex-shrink-0 mt-1">
@@ -173,11 +174,16 @@ export default async function PsychenomiconPage() {
                       </div>
                       {t.description && <p className="text-xs text-text-muted leading-relaxed line-clamp-2">{t.description}</p>}
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             ) : (
               <p className="text-xs text-text-muted italic">No threads established yet.</p>
+            )}
+            {activeThreads.length > 0 && (
+              <Link href="/psychenomicon/threads" className="font-mono text-[10px] text-accent-violet hover:underline block">
+                View all threads →
+              </Link>
             )}
           </div>
 

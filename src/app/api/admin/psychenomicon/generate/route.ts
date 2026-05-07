@@ -312,5 +312,24 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
     select: { id: true, chapterNumber: true, slug: true, title: true },
   });
 
+  // Create ArchetypeEvent records so entity timeline charts populate
+  for (let i = 0; i < entityIds.length; i++) {
+    const e = generated.entities?.[i];
+    if (!e) continue;
+    await prisma.archetypeEvent.create({
+      data: {
+        entityId: entityIds[i],
+        chapterId: chapter.id,
+        chapterNumber: nextChapterNumber,
+        primaryArchetype: e.archetype,
+        secondaryArchetypes: [],
+        confidenceScore: 1.0,
+        triggerEvent: e.archetypeShift
+          ? `Archetype shift — previously: ${e.archetypeShift}`
+          : (e.notes ?? null),
+      },
+    });
+  }
+
   return NextResponse.json({ ok: true, chapter });
 }

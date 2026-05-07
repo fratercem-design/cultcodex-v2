@@ -66,13 +66,29 @@ export default async function AdminPsychenomiconPage() {
             {chapters.length > 0 ? `${chapters[0]?.chapterNumber ?? 0}` : "0"} chapters · {entities} entities · {threads} threads
           </p>
         </div>
-        <Link
-          href="/psychenomicon"
-          target="_blank"
-          className="font-mono text-[10px] text-text-muted hover:text-accent-gold transition-colors"
-        >
-          View public page →
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/psychenomicon/threads"
+            target="_blank"
+            className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors"
+          >
+            Threads →
+          </Link>
+          <Link
+            href="/psychenomicon/entities"
+            target="_blank"
+            className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors"
+          >
+            Entities →
+          </Link>
+          <Link
+            href="/psychenomicon"
+            target="_blank"
+            className="font-mono text-[10px] text-text-muted hover:text-accent-gold transition-colors"
+          >
+            Public page →
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
