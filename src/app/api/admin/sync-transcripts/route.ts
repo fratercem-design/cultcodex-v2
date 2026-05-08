@@ -71,7 +71,12 @@ export async function POST(req: NextRequest) {
     const videoId = ep.youtubeVideoId!;
 
     try {
-      const rawSegments = await YoutubeTranscript.fetchTranscript(videoId, { lang: "en" });
+      // Try without lang filter first (catches auto-generated captions),
+      // fall back to explicit "en" if that returns nothing.
+      let rawSegments = await YoutubeTranscript.fetchTranscript(videoId).catch(() => null);
+      if (!rawSegments || rawSegments.length === 0) {
+        rawSegments = await YoutubeTranscript.fetchTranscript(videoId, { lang: "en" }).catch(() => null);
+      }
 
       if (!rawSegments || rawSegments.length === 0) {
         results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "no_transcript" });
