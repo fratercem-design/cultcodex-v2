@@ -52,7 +52,14 @@ export function GenerateChapterButton({ episodes }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ episodeId: selectedId }),
       });
-      const data = await res.json() as { ok?: boolean; chapter?: { chapterNumber: number; title: string; slug: string }; error?: string };
+      let data: { ok?: boolean; chapter?: { chapterNumber: number; title: string; slug: string }; error?: string };
+      try {
+        data = await res.json();
+      } catch {
+        const text = await res.text().catch(() => "");
+        setSingleResult({ ok: false, message: `HTTP ${res.status}: ${text.slice(0, 200) || "non-JSON response"}` });
+        return;
+      }
       if (data.ok && data.chapter) {
         setSingleResult({ ok: true, message: `CH.${String(data.chapter.chapterNumber).padStart(3, "0")} "${data.chapter.title}" generated.` });
         setSelectedId("");
@@ -60,8 +67,8 @@ export function GenerateChapterButton({ episodes }: Props) {
       } else {
         setSingleResult({ ok: false, message: data.error ?? "Generation failed." });
       }
-    } catch {
-      setSingleResult({ ok: false, message: "Network error. Try again." });
+    } catch (err) {
+      setSingleResult({ ok: false, message: `Network error: ${err instanceof Error ? err.message : String(err)}` });
     } finally {
       setSingleLoading(false);
     }
