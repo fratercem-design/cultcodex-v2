@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
   const episodes = await prisma.episode.findMany({
     where: { youtubeVideoId: { not: null }, status: "published" },
     select: { id: true, slug: true, youtubeVideoId: true },
-    orderBy: { airDate: "desc" },
+    orderBy: { airDate: "asc" },
   });
 
   const pending = episodes.filter((ep) => !hasTranscript.has(ep.id)).slice(0, limit);
