@@ -172,14 +172,15 @@ export async function POST(req: NextRequest) {
     activeThreads
   );
 
-  // Build transcript text
+  // Build transcript text — cap at ~30k chars to leave room for output tokens
   let transcriptText: string;
   if (episode.segments.length > 0) {
     transcriptText = episode.segments
       .map((s) => (s.speakerLabel ? `${s.speakerLabel}: ${s.text}` : s.text))
-      .join("\n");
+      .join("\n")
+      .slice(0, 30000);
   } else {
-    transcriptText = episode.transcriptRaw!.slice(0, 40000);
+    transcriptText = episode.transcriptRaw!.slice(0, 30000);
   }
 
   const guestList = episode.guests
@@ -216,7 +217,7 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 4096,
+    max_tokens: 16000,
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: userPrompt }],
   });
@@ -228,9 +229,15 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
 
   let generated: GeneratedChapter;
   try {
-    generated = JSON.parse(rawText) as GeneratedChapter;
+    // Strip markdown fences if model wrapped the JSON
+    const cleaned = rawText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+    generated = JSON.parse(cleaned) as GeneratedChapter;
   } catch {
-    return NextResponse.json({ error: "Model returned invalid JSON", raw: rawText.slice(0, 1000) }, { status: 502 });
+    const stopReason = message.stop_reason;
+    return NextResponse.json(
+      { error: `Model returned invalid JSON (stop_reason: ${stopReason})`, raw: rawText.slice(0, 2000) },
+      { status: 502 }
+    );
   }
 
   // Upsert entities
