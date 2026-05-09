@@ -52,12 +52,12 @@ export function GenerateChapterButton({ episodes }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ episodeId: selectedId }),
       });
+      const responseText = await res.text();
       let data: { ok?: boolean; chapter?: { chapterNumber: number; title: string; slug: string }; error?: string };
       try {
-        data = await res.json();
+        data = JSON.parse(responseText);
       } catch {
-        const text = await res.text().catch(() => "");
-        setSingleResult({ ok: false, message: `HTTP ${res.status}: ${text.slice(0, 200) || "non-JSON response"}` });
+        setSingleResult({ ok: false, message: `HTTP ${res.status}: ${responseText.slice(0, 200) || "empty response"}` });
         return;
       }
       if (data.ok && data.chapter) {
