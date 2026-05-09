@@ -133,12 +133,7 @@ export async function POST(req: NextRequest) {
   const hasTranscript = new Set(episodesWithTranscripts.map((e) => e.episodeId));
 
   const episodes = await prisma.episode.findMany({
-    where: {
-      youtubeVideoId: { not: null },
-      status: "published",
-      // Skip live-stream episodes — YouTube live streams rarely have auto-captions
-      slug: { not: { contains: "-live-" } },
-    },
+    where: { youtubeVideoId: { not: null }, status: "published" },
     select: { id: true, slug: true, youtubeVideoId: true },
     orderBy: { airDate: "asc" },
   });
