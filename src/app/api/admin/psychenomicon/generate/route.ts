@@ -104,6 +104,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Admin access required" }, { status: 403 });
   }
 
+  try {
+    return await generateChapter(req);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("[psychenomicon/generate] unhandled error:", msg);
+    return NextResponse.json({ error: msg.slice(0, 500) }, { status: 500 });
+  }
+}
+
+async function generateChapter(req: NextRequest) {
   const body = await req.json() as { episodeId?: string };
   const { episodeId } = body;
 
