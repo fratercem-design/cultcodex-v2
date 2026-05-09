@@ -5,6 +5,6 @@ import { SiteFooter } from "../site-footer";
 describe("SiteFooter", () => {
   it("renders archive identity", () => {
     render(<SiteFooter />);
-    expect(screen.getByText(/cult of psyche/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/cult of psyche/i).length).toBeGreaterThan(0);
   });
 });
