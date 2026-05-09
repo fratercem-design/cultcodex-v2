@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
 
+export const runtime = "nodejs";
+export const maxDuration = 300;
+
 /**
  * POST /api/admin/psychenomicon/generate-batch
  * Body: { episodeIds: string[] }

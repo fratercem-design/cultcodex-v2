@@ -3,6 +3,9 @@ import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import Anthropic from "@anthropic-ai/sdk";
 
+export const runtime = "nodejs";
+export const maxDuration = 300;
+
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const SYSTEM_PROMPT = `You are the Archivist of the Psychenomicon.
