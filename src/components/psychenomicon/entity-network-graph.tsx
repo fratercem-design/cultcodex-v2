@@ -107,7 +107,13 @@ export function EntityNetworkGraph({ nodes, edges, width = 600, height = 400 }: 
         {positioned.map((node) => {
           const isActive = hovered === node.id;
           return (
-            <g key={node.id} onMouseEnter={() => setHovered(node.id)} onMouseLeave={() => setHovered(null)}>
+            <a
+              key={node.id}
+              href={`/psychenomicon/entities/${node.slug}`}
+              onMouseEnter={() => setHovered(node.id)}
+              onMouseLeave={() => setHovered(null)}
+              style={{ cursor: "pointer" }}
+            >
               {/* Glow ring when hovered */}
               {isActive && (
                 <circle
@@ -127,14 +133,14 @@ export function EntityNetworkGraph({ nodes, edges, width = 600, height = 400 }: 
                 stroke={node.color}
                 strokeWidth={1}
                 strokeOpacity={0.8}
-                style={{ cursor: "pointer", transition: "all 0.15s ease" }}
+                style={{ transition: "all 0.15s ease" }}
               />
               {/* Label */}
               <text
                 x={node.x}
                 y={node.y + node.r + 12}
                 textAnchor="middle"
-                fill="rgba(255,255,255,0.6)"
+                fill={isActive ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.6)"}
                 fontSize={isActive ? 9 : 8}
                 fontFamily="monospace"
                 style={{ transition: "font-size 0.1s", pointerEvents: "none" }}
@@ -160,9 +166,8 @@ export function EntityNetworkGraph({ nodes, edges, width = 600, height = 400 }: 
                 cx={node.x} cy={node.y}
                 r={node.r + 8}
                 fill="transparent"
-                style={{ cursor: "pointer" }}
               />
-            </g>
+            </a>
           );
         })}
       </svg>

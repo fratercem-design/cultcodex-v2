@@ -10,6 +10,7 @@ interface TranscriptResult {
   status: "ok" | "no_transcript" | "error";
   segments?: number;
   error?: string;
+  reason?: string;
 }
 
 interface ChannelSyncResult {
@@ -198,6 +199,7 @@ export function SyncPanel({ withoutTranscript }: { withoutTranscript: number }) 
                         </span>
                         <span className="text-text-muted truncate flex-1">{r.slug}</span>
                         {r.segments && <span className="text-text-muted/50">{r.segments}s</span>}
+                        {r.reason && r.status !== "ok" && <span className="text-yellow-500/60 truncate">{r.reason}</span>}
                         {r.error && <span className="text-red-400/70 truncate">{r.error}</span>}
                       </div>
                     ))}

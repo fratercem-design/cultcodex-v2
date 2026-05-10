@@ -25,62 +25,18 @@ interface TranscriptResult {
   status: "ok" | "no_transcript" | "error";
   segments?: number;
   error?: string;
+  reason?: string;
 }
 
-// Fetch transcript via YouTube's innertube API with browser-like headers.
-// Much more reliable from Vercel IPs than the youtube-transcript scraper.
-async function fetchTranscriptInnertube(videoId: string): Promise<TranscriptSegmentRaw[] | null> {
-  // Step 1: get the transcript track URL from the video page
-  const pageRes = await fetch(`https://www.youtube.com/watch?v=${videoId}`, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      "Accept-Language": "en-US,en;q=0.9",
-      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    },
-  });
+const CHROME_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+  "Accept-Language": "en-US,en;q=0.9",
+  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+};
 
-  if (!pageRes.ok) return null;
-  const html = await pageRes.text();
-
-  // Extract the serialised player response
-  const match = html.match(/"captionTracks":(\[.*?\])/);
-  if (!match) return null;
-
-  let tracks: Array<{ baseUrl: string; languageCode: string; kind?: string }>;
-  try {
-    tracks = JSON.parse(match[1]);
-  } catch {
-    return null;
-  }
-
-  if (!tracks || tracks.length === 0) return null;
-
-  // Prefer auto-generated English, then any English, then first available
-  const track =
-    tracks.find((t) => t.languageCode === "en" && t.kind === "asr") ||
-    tracks.find((t) => t.languageCode === "en") ||
-    tracks.find((t) => t.languageCode?.startsWith("en")) ||
-    tracks[0];
-
-  if (!track?.baseUrl) return null;
-
-  // Step 2: fetch the timed text as JSON3
-  const timedRes = await fetch(`${track.baseUrl}&fmt=json3`, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    },
-  });
-
-  if (!timedRes.ok) return null;
-
-  const timedData = await timedRes.json() as {
-    events?: Array<{ segs?: Array<{ utf8: string }>; tStartMs?: number; dDurationMs?: number }>;
-  };
-
-  if (!timedData.events) return null;
-
+function parseTimedEvents(timedData: { events?: Array<{ segs?: Array<{ utf8: string }>; tStartMs?: number; dDurationMs?: number }> }): TranscriptSegmentRaw[] {
   const segments: TranscriptSegmentRaw[] = [];
-  for (const event of timedData.events) {
+  for (const event of timedData.events ?? []) {
     if (!event.segs) continue;
     const text = event.segs.map((s) => s.utf8 ?? "").join("").replace(/\n/g, " ").trim();
     if (!text || text === " ") continue;
@@ -90,8 +46,74 @@ async function fetchTranscriptInnertube(videoId: string): Promise<TranscriptSegm
       duration: (event.dDurationMs ?? 5000) / 1000,
     });
   }
+  return segments;
+}
 
-  return segments.length > 0 ? segments : null;
+// Returns segments and a reason string for diagnostics.
+async function fetchTranscriptInnertube(videoId: string): Promise<{ segments: TranscriptSegmentRaw[] | null; reason: string }> {
+  // Step 1: get the transcript track URL from the video page
+  const pageRes = await fetch(`https://www.youtube.com/watch?v=${videoId}`, { headers: CHROME_HEADERS });
+
+  if (!pageRes.ok) return { segments: null, reason: `page_${pageRes.status}` };
+  const html = await pageRes.text();
+
+  // Try broad regex first, then tighter fallback
+  const match = html.match(/"captionTracks":(\[[\s\S]*?\](?=[,}]))/);
+  if (!match) {
+    // Try direct timedtext API as fallback (works for some videos without parsing page)
+    return tryDirectTimedtext(videoId, html);
+  }
+
+  let tracks: Array<{ baseUrl: string; languageCode: string; kind?: string }>;
+  try {
+    tracks = JSON.parse(match[1]);
+  } catch {
+    return tryDirectTimedtext(videoId, html);
+  }
+
+  if (!tracks || tracks.length === 0) return tryDirectTimedtext(videoId, html);
+
+  // Prefer auto-generated English, then any English, then first available
+  const track =
+    tracks.find((t) => t.languageCode === "en" && t.kind === "asr") ||
+    tracks.find((t) => t.languageCode === "en") ||
+    tracks.find((t) => t.languageCode?.startsWith("en")) ||
+    tracks[0];
+
+  if (!track?.baseUrl) return { segments: null, reason: "no_baseUrl" };
+
+  // Step 2: fetch the timed text as JSON3
+  const timedRes = await fetch(`${track.baseUrl}&fmt=json3`, { headers: { "User-Agent": CHROME_HEADERS["User-Agent"] } });
+  if (!timedRes.ok) return { segments: null, reason: `timed_${timedRes.status}` };
+
+  const timedData = await timedRes.json() as { events?: Array<{ segs?: Array<{ utf8: string }>; tStartMs?: number; dDurationMs?: number }> };
+  if (!timedData.events) return { segments: null, reason: "no_events" };
+
+  const segments = parseTimedEvents(timedData);
+  return { segments: segments.length > 0 ? segments : null, reason: segments.length > 0 ? "ok" : "empty_segments" };
+}
+
+async function tryDirectTimedtext(videoId: string, html: string): Promise<{ segments: TranscriptSegmentRaw[] | null; reason: string }> {
+  // Diagnose why page parse failed
+  const hasPlayerResponse = html.includes("playerResponse") || html.includes("ytInitialPlayerResponse");
+  const hasCaptionTracks = html.includes("captionTracks");
+  const isConsentPage = html.includes("consent.youtube.com") || html.includes("CONSENT");
+  const diagReason = isConsentPage ? "consent_page" : !hasPlayerResponse ? "no_player_response" : hasCaptionTracks ? "caption_tracks_parse_failed" : "no_caption_tracks";
+
+  // Try direct timedtext API — works for some videos
+  for (const lang of ["en", "en-US"]) {
+    const url = `https://www.youtube.com/api/timedtext?v=${videoId}&lang=${lang}&fmt=json3`;
+    try {
+      const res = await fetch(url, { headers: { "User-Agent": CHROME_HEADERS["User-Agent"] } });
+      if (!res.ok) continue;
+      const data = await res.json() as { events?: Array<{ segs?: Array<{ utf8: string }>; tStartMs?: number; dDurationMs?: number }> };
+      if (!data.events) continue;
+      const segments = parseTimedEvents(data);
+      if (segments.length > 0) return { segments, reason: "direct_timedtext" };
+    } catch { continue; }
+  }
+
+  return { segments: null, reason: diagReason };
 }
 
 export async function POST(req: NextRequest) {
@@ -126,10 +148,10 @@ export async function POST(req: NextRequest) {
     const videoId = ep.youtubeVideoId!;
 
     try {
-      const rawSegments = await fetchTranscriptInnertube(videoId);
+      const { segments: rawSegments, reason } = await fetchTranscriptInnertube(videoId);
 
       if (!rawSegments || rawSegments.length === 0) {
-        results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "no_transcript" });
+        results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "no_transcript", reason });
       } else {
         await prisma.transcriptSegment.createMany({
           data: rawSegments.map((seg) => {
