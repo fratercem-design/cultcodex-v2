@@ -32,14 +32,13 @@ import type { Metadata } from "next";
 // ── Lore Summary renderer ─────────────────────────────────────────────────────
 // Handles two formats:
 //   1. Flat prose — render as paragraphs (legacy)
-//   2. Sectioned markdown with ## headers — render each section with a heading
-//      (produced by enrich-nightmares-people.ts character profiles)
+//   2. Sectioned markdown with ## headers — unified codex-entry card
 function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
   const hasSections = /^##\s+\S/m.test(loreSummary);
 
   if (!hasSections) {
     return (
-      <SectionCard title="Lore Summary">
+      <SectionCard title="Codex Entry">
         {loreSummary.split(/\n{2,}/).map((para, i) => (
           <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
             {editorialFrame(para.trim())}
@@ -49,7 +48,6 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
     );
   }
 
-  // Split on ## headers, keeping the header text
   const sections: Array<{ heading: string; body: string }> = [];
   const parts = loreSummary.split(/^##\s+/m).filter(Boolean);
   for (const part of parts) {
@@ -59,48 +57,67 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
     sections.push({ heading, body });
   }
 
-  const SECTION_ICONS: Record<string, string> = {
-    overview: "📖",
-    storylines: "🎭",
+  const SECTION_SIGILS: Record<string, string> = {
+    overview: "◈",
+    storylines: "⬡",
     controversies: "⚡",
-    "key relationships": "🔗",
+    "key relationships": "◉",
   };
 
-  return (
-    <>
-      {sections.map(({ heading, body }) => {
-        const icon = SECTION_ICONS[heading.toLowerCase()] ?? "📄";
+  function renderBody(body: string) {
+    return body.split(/\n{2,}|\n(?=[-•*])/).map((para, i) => {
+      const trimmed = para.trim();
+      if (!trimmed) return null;
+      if (/^[-•*]\s/.test(trimmed)) {
+        const bullets = trimmed.split(/\n/).filter((l) => l.trim()).map((l) => l.replace(/^[-•*]\s*/, "").trim());
         return (
-          <SectionCard key={heading} title={`${icon} ${heading}`}>
-            {body.split(/\n{2,}|\n(?=[-•*])/).map((para, i) => {
-              const trimmed = para.trim();
-              if (!trimmed) return null;
-              // Render bullet points
-              if (/^[-•*]\s/.test(trimmed)) {
-                const bullets = trimmed
-                  .split(/\n/)
-                  .filter((l) => l.trim())
-                  .map((l) => l.replace(/^[-•*]\s*/, "").trim());
-                return (
-                  <ul key={i} className="list-disc list-inside space-y-1 mb-3 last:mb-0">
-                    {bullets.map((b, j) => (
-                      <li key={j} className="text-sm text-text-primary leading-relaxed">
-                        {editorialFrame(b)}
-                      </li>
-                    ))}
-                  </ul>
-                );
-              }
-              return (
-                <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
-                  {editorialFrame(trimmed)}
-                </p>
-              );
-            })}
-          </SectionCard>
+          <ul key={i} className="space-y-1 mb-3 last:mb-0">
+            {bullets.map((b, j) => (
+              <li key={j} className="flex gap-2 text-sm text-text-primary leading-relaxed">
+                <span className="text-accent-gold/60 flex-shrink-0 mt-0.5">·</span>
+                <span>{editorialFrame(b)}</span>
+              </li>
+            ))}
+          </ul>
         );
-      })}
-    </>
+      }
+      return (
+        <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
+          {editorialFrame(trimmed)}
+        </p>
+      );
+    });
+  }
+
+  return (
+    <div className="rounded-lg border border-border bg-surface overflow-hidden">
+      {/* Codex entry header */}
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
+        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold">/// codex_entry</p>
+        <p className="font-mono text-[9px] text-text-muted/50 tracking-widest">AI · ARCHIVAL</p>
+      </div>
+
+      {/* Sections */}
+      <div className="divide-y divide-border/60">
+        {sections.map(({ heading, body }) => {
+          const sigil = SECTION_SIGILS[heading.toLowerCase()] ?? "◇";
+          const isControversy = heading.toLowerCase() === "controversies";
+          return (
+            <div key={heading} className={`px-4 py-4 ${isControversy ? "bg-red-950/10" : ""}`}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className={`font-mono text-xs ${isControversy ? "text-red-400" : "text-accent-gold"}`}>
+                  {sigil}
+                </span>
+                <h4 className={`font-mono text-[10px] uppercase tracking-[0.3em] font-semibold ${isControversy ? "text-red-400/80" : "text-text-muted"}`}>
+                  {heading}
+                </h4>
+              </div>
+              {renderBody(body)}
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
@@ -312,9 +329,22 @@ export default async function PersonDetailPage({ params }: PageProps) {
         />
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            {/* Bio / Lore Summary — renders flat text or ## sectioned profiles */}
-            {person.loreSummary && (
+            {/* Codex profile — AI-generated character entry */}
+            {person.loreSummary ? (
               <LoreSummaryCard loreSummary={person.loreSummary} />
+            ) : person.guestAppearances.length >= 2 && (
+              <div className="rounded-lg border border-border bg-surface overflow-hidden">
+                <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">/// codex_entry</p>
+                  <p className="font-mono text-[9px] text-text-muted/40 tracking-widest">PENDING</p>
+                </div>
+                <div className="px-4 py-5 flex items-center gap-3">
+                  <span className="font-mono text-sm text-text-muted/30">◈</span>
+                  <p className="font-mono text-[10px] text-text-muted/50 uppercase tracking-widest">
+                    Awaiting archival — profile not yet generated
+                  </p>
+                </div>
+              </div>
             )}
 
             {/* Archetype Evolution */}
