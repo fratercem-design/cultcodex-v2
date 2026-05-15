@@ -1,0 +1,712 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ───────────────────────────────────────────
+
+enum ContentStatus {
+  draft
+  published
+  archived
+  unavailable
+}
+
+enum PersonType {
+  guest
+  host
+  mentioned
+  recurring
+}
+
+enum CanonStatus {
+  canonical
+  speculative
+  community_myth
+  disputed
+  humorous
+}
+
+enum SeriesType {
+  music_video
+  panel
+  tarot
+  story
+  documentary
+  other
+}
+
+enum MediaType {
+  video
+  audio
+  article
+}
+
+enum ContentType {
+  livestream
+  original
+  short
+  clip
+}
+
+// ─── Core Models ─────────────────────────────────────
+
+model Episode {
+  id              String        @id @default(cuid())
+  title           String
+  slug            String        @unique
+  episodeNumber   Int?          @unique
+  airDate         DateTime?
+  duration        String?
+  youtubeVideoId  String?
+  rumbleVideoId   String?
+  thumbnailUrl    String?
+  summaryShort    String?
+  summaryLong     String?
+  cutOfPsyche     String?
+  transcriptRaw   String?
+  transcriptHtml  String?
+  transcriptJson  Json?
+  decodeData      Json?
+  searchText      String?
+  status          ContentStatus @default(draft)
+  contentType     ContentType   @default(original)
+  seriesId        String?
+  series          Series?       @relation(fields: [seriesId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  segments           TranscriptSegment[]
+  quotes             Quote[]
+  guests             EpisodeGuest[]
+  mentionedPeople    EpisodeMentionedPerson[]
+  loreEntries        EpisodeLore[]
+  topics             EpisodeTopic[]
+  relatedFrom        RelatedEpisode[]  @relation("relatedFrom")
+  relatedTo          RelatedEpisode[]  @relation("relatedTo")
+  firstAppearanceOf  Person[]          @relation("firstAppearance")
+  firstMentionOf     LoreEntry[]       @relation("firstMention")
+  reactions          EpisodeReaction[]
+  comments           CodexComment[]
+  favorites          Favorite[]
+  psychenomiconChapter PsychenomiconChapter?
+
+  @@index([airDate])
+  @@index([status])
+  @@index([episodeNumber])
+  @@index([seriesId])
+}
+
+model Series {
+  id            String        @id @default(cuid())
+  title         String
+  slug          String        @unique
+  description   String?
+  type          SeriesType    @default(other)
+  coverImageUrl String?
+  sortOrder     Int           @default(0)
+  status        ContentStatus @default(draft)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  episodes   Episode[]
+  mediaItems MediaItem[]
+}
+
+model Person {
+  id                       String     @id @default(cuid())
+  displayName              String
+  slug                     String     @unique
+  altNames                 String[]
+  shortBio                 String?
+  loreSummary              String?
+  avatarUrl                String?
+  personType               PersonType @default(guest)
+  searchText               String?
+  firstAppearanceEpisodeId String?
+  firstAppearanceEpisode   Episode?   @relation("firstAppearance", fields: [firstAppearanceEpisodeId], references: [id])
+  createdAt                DateTime   @default(now())
+  updatedAt                DateTime   @updatedAt
+
+  // Relations
+  quotes             Quote[]
+  guestAppearances   EpisodeGuest[]
+  mentions           EpisodeMentionedPerson[]
+  topics             PersonTopic[]
+  loreConnections    PersonLore[]
+  relatedFrom        RelatedPerson[] @relation("relatedPersonFrom")
+  relatedTo          RelatedPerson[] @relation("relatedPersonTo")
+
+  @@index([personType])
+}
+
+model LoreEntry {
+  id                    String      @id @default(cuid())
+  title                 String
+  slug                  String      @unique
+  category              String?
+  summary               String?
+  fullEntry             String?
+  canonStatus           CanonStatus @default(speculative)
+  searchText            String?
+  firstMentionEpisodeId String?
+  firstMentionEpisode   Episode?    @relation("firstMention", fields: [firstMentionEpisodeId], references: [id])
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  // Relations
+  episodes        EpisodeLore[]
+  people          PersonLore[]
+  topics          LoreTopic[]
+  relatedFrom     RelatedLore[] @relation("relatedLoreFrom")
+  relatedTo       RelatedLore[] @relation("relatedLoreTo")
+
+  @@index([canonStatus])
+}
+
+model Topic {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  episodes  EpisodeTopic[]
+  people    PersonTopic[]
+  lore      LoreTopic[]
+  savedBy   SavedTopic[]
+}
+
+model Quote {
+  id                   String             @id @default(cuid())
+  text                 String
+  speakerPersonId      String?
+  speaker              Person?            @relation(fields: [speakerPersonId], references: [id])
+  episodeId            String?
+  episode              Episode?           @relation(fields: [episodeId], references: [id])
+  transcriptSegmentId  String?
+  transcriptSegment    TranscriptSegment? @relation(fields: [transcriptSegmentId], references: [id])
+  timestampSeconds     Int?
+  context              String?
+  significance         String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  savedBy              SavedQuote[]
+
+  @@index([speakerPersonId])
+  @@index([episodeId])
+}
+
+model TranscriptSegment {
+  id           String   @id @default(cuid())
+  episodeId    String
+  episode      Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  startSeconds Int
+  endSeconds   Int
+  speakerLabel String?
+  text         String
+  searchText   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  quotes Quote[]
+
+  @@index([episodeId])
+  @@index([startSeconds])
+}
+
+model MediaItem {
+  id              String        @id @default(cuid())
+  title           String
+  slug            String        @unique
+  type            MediaType     @default(video)
+  youtubeVideoId  String?
+  transcriptRaw   String?
+  summary         String?
+  seriesId        String?
+  series          Series?       @relation(fields: [seriesId], references: [id])
+  releaseDate     DateTime?
+  durationSeconds Int?
+  status          ContentStatus @default(draft)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([seriesId])
+}
+
+// ─── Join Tables ─────────────────────────────────────
+
+model EpisodeGuest {
+  episodeId String
+  personId  String
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  person    Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@id([episodeId, personId])
+}
+
+model EpisodeMentionedPerson {
+  episodeId String
+  personId  String
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  person    Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@id([episodeId, personId])
+}
+
+model EpisodeLore {
+  episodeId   String
+  loreEntryId String
+  episode     Episode   @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  loreEntry   LoreEntry @relation(fields: [loreEntryId], references: [id], onDelete: Cascade)
+
+  @@id([episodeId, loreEntryId])
+}
+
+model EpisodeTopic {
+  episodeId String
+  topicId   String
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  topic     Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([episodeId, topicId])
+}
+
+model PersonTopic {
+  personId String
+  topicId  String
+  person   Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+  topic    Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([personId, topicId])
+}
+
+model PersonLore {
+  personId    String
+  loreEntryId String
+  person      Person    @relation(fields: [personId], references: [id], onDelete: Cascade)
+  loreEntry   LoreEntry @relation(fields: [loreEntryId], references: [id], onDelete: Cascade)
+
+  @@id([personId, loreEntryId])
+}
+
+model LoreTopic {
+  loreEntryId String
+  topicId     String
+  loreEntry   LoreEntry @relation(fields: [loreEntryId], references: [id], onDelete: Cascade)
+  topic       Topic     @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([loreEntryId, topicId])
+}
+
+model RelatedEpisode {
+  episodeAId String
+  episodeBId String
+  episodeA   Episode @relation("relatedFrom", fields: [episodeAId], references: [id], onDelete: Cascade)
+  episodeB   Episode @relation("relatedTo", fields: [episodeBId], references: [id], onDelete: Cascade)
+
+  @@id([episodeAId, episodeBId])
+}
+
+model RelatedPerson {
+  personAId String
+  personBId String
+  personA   Person @relation("relatedPersonFrom", fields: [personAId], references: [id], onDelete: Cascade)
+  personB   Person @relation("relatedPersonTo", fields: [personBId], references: [id], onDelete: Cascade)
+
+  @@id([personAId, personBId])
+}
+
+model RelatedLore {
+  loreAId String
+  loreBId String
+  loreA   LoreEntry @relation("relatedLoreFrom", fields: [loreAId], references: [id], onDelete: Cascade)
+  loreB   LoreEntry @relation("relatedLoreTo", fields: [loreBId], references: [id], onDelete: Cascade)
+
+  @@id([loreAId, loreBId])
+}
+
+// ─── Live Stream ────────────────────────────────────
+
+model LiveStatus {
+  id        String    @id @default("singleton")
+  isLive    Boolean   @default(false)
+  videoId   String?
+  title     String?
+  startedAt DateTime?
+  endedAt   DateTime?
+  updatedAt DateTime  @updatedAt
+}
+
+model Subscriber {
+  id               String   @id @default(cuid())
+  email            String?  @unique
+  pushSubscription Json?
+  verified         Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  @@index([email])
+}
+
+// ─── Auth & Community ──────────────────────────────
+
+enum CodexUserRole {
+  user
+  moderator
+  admin
+}
+
+enum ReactionType {
+  fire
+  eye
+  moon
+  skull
+  wildcard
+}
+
+model CodexUser {
+  id          String        @id @default(cuid())
+  email       String        @unique
+  displayName String
+  avatarUrl   String?
+  provider    String
+  role        CodexUserRole @default(user)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  stripeCustomerId        String?   @unique
+  subscriptionId          String?   @unique
+  subscriptionStatus      String?   // "active", "past_due", "canceled", "unpaid"
+  subscriptionTier        String?   // "access" | "system"
+  currentPeriodEnd        DateTime?
+
+  // Member identity
+  memberTitle             String?   // chosen flair title e.g. "Oracle", "Acolyte"
+  isPublicMember          Boolean   @default(false) // opt-in to public Member Roll
+
+  // Personal codex page (system tier)
+  bio                     String?
+  codexSlug               String?   @unique
+  codexPagePublic         Boolean   @default(true)
+
+  reactions               EpisodeReaction[]
+  comments                CodexComment[]
+  reports                 CommentReport[]
+  sessions                CodexSession[]
+  accounts                CodexAccount[]
+  chatMessages            ChatMessage[]
+  notificationPreference  NotificationPreference?
+  favorites               Favorite[]
+  savedTopics             SavedTopic[]
+  savedQuotes             SavedQuote[]
+}
+
+model CodexSession {
+  id           String    @id @default(cuid())
+  sessionToken String    @unique
+  userId       String
+  user         CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      DateTime
+}
+
+model CodexAccount {
+  id                String    @id @default(cuid())
+  userId            String
+  user              CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              String
+  provider          String
+  providerAccountId String
+  access_token      String?
+  refresh_token     String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+
+  @@unique([provider, providerAccountId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model EpisodeReaction {
+  userId       String
+  episodeId    String
+  reactionType ReactionType
+  user         CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  episode      Episode   @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+
+  @@id([userId, episodeId, reactionType])
+  @@index([episodeId])
+}
+
+model CodexComment {
+  id            String         @id @default(cuid())
+  content       String
+  userId        String
+  user          CodexUser      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  episodeId     String
+  episode       Episode        @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  parentId      String?
+  parent        CodexComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies       CodexComment[] @relation("CommentReplies")
+  flagged       Boolean        @default(false)
+  flaggedReason String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  reports       CommentReport[]
+
+  @@index([episodeId])
+  @@index([userId])
+  @@index([parentId])
+}
+
+model CommentReport {
+  id        String       @id @default(cuid())
+  commentId String
+  comment   CodexComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId    String
+  user      CodexUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reason    String
+  createdAt DateTime     @default(now())
+
+  @@unique([commentId, userId])
+}
+
+// ─── Chat & Notifications ─────────────────────────
+
+model ChatMessage {
+  id          String    @id @default(cuid())
+  userId      String
+  user        CodexUser @relation(fields: [userId], references: [id])
+  displayName String
+  avatarUrl   String?
+  content     String
+  createdAt   DateTime  @default(now())
+
+  @@index([createdAt])
+}
+
+model NotificationPreference {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  user            CodexUser @relation(fields: [userId], references: [id])
+  emailNewEpisode Boolean   @default(false)
+  emailGoLive     Boolean   @default(false)
+  pushGoLive      Boolean   @default(false)
+  updatedAt       DateTime  @updatedAt
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      CodexUser @relation(fields: [userId], references: [id])
+  episodeId String
+  episode   Episode  @relation(fields: [episodeId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, episodeId])
+  @@index([userId])
+}
+
+// ─── Personal /codex layer ────────────────────────
+//
+// SavedTopic and SavedQuote are the signed-in user's personal pins of
+// signals and moments. Episode saves continue to live on Favorite for
+// back-compat with /favorites and the existing FavoriteButton API.
+//
+// Together these three tables back the /codex dashboard and the
+// per-entity "Save" buttons (topics, quotes, episodes).
+
+model SavedTopic {
+  id        String    @id @default(cuid())
+  userId    String
+  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topicId   String
+  topic     Topic     @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@unique([userId, topicId])
+  @@index([userId])
+  @@index([topicId])
+}
+
+model SavedQuote {
+  id        String    @id @default(cuid())
+  userId    String
+  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quoteId   String
+  quote     Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@unique([userId, quoteId])
+  @@index([userId])
+  @@index([quoteId])
+}
+
+// ─── Psychenomicon ────────────────────────────────
+
+model PsychenomiconChapter {
+  id             String   @id @default(cuid())
+  chapterNumber  Int      @unique
+  title          String
+  slug           String   @unique
+  episodeId      String?  @unique
+  episode        Episode? @relation(fields: [episodeId], references: [id])
+
+  canonText          String  @db.Text
+  interpretationText String  @db.Text
+  mythicText         String  @db.Text
+  emergingSignals    String[]
+
+  // JSON blobs for archetypes, entity snapshots, and thread refs
+  archetypesData Json?
+  threadRefs     Json?
+  isMajorEvent   Boolean @default(false)
+  status         String  @default("stable") // stable | contested | evolving
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  entityAppearances PsychenomiconEntityAppearance[]
+  threadChapters    PsychenomiconThreadChapter[]
+  archetypeEvents   ArchetypeEvent[]
+
+  @@index([chapterNumber])
+}
+
+model PsychenomiconEntity {
+  id         String  @id @default(cuid())
+  name       String
+  slug       String  @unique
+  personSlug String? // soft link to Person (no FK — person may not be in DB yet)
+
+  primaryArchetype  String?
+  archetypeHistory  Json?    // [{archetype, chapterNumber, reason}]
+  radarData         Json?    // {influence, volatility, manipulation, control, emotionalIntensity} 0-10
+  behaviorPatterns  String[]
+  archetypeState    Json?    // current weighted state: {[archetype]: 0-1}
+  status            String   @default("active") // active | dormant | evolved
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appearances      PsychenomiconEntityAppearance[]
+  archetypeEvents  ArchetypeEvent[]
+
+  @@index([status])
+}
+
+model ArchetypeEvent {
+  id                  String  @id @default(cuid())
+  entityId            String
+  entity              PsychenomiconEntity  @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  chapterId           String?
+  chapter             PsychenomiconChapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  chapterNumber       Int
+  primaryArchetype    String
+  secondaryArchetypes String[]
+  confidenceScore     Float   @default(1.0)
+  triggerEvent        String? @db.Text
+
+  createdAt DateTime @default(now())
+
+  @@index([entityId])
+  @@index([chapterNumber])
+}
+
+model PsychenomiconThread {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  description String? @db.Text
+  status      String  @default("active") // active | resolved | emerging
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chapterLinks PsychenomiconThreadChapter[]
+
+  @@index([status])
+}
+
+model PsychenomiconEntityAppearance {
+  id          String              @id @default(cuid())
+  chapterId   String
+  entityId    String
+  chapter     PsychenomiconChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  entity      PsychenomiconEntity  @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  archetypeAt String?
+  significance String?
+
+  @@unique([chapterId, entityId])
+  @@index([chapterId])
+  @@index([entityId])
+}
+
+model PsychenomiconThreadChapter {
+  chapterId String
+  threadId  String
+  chapter   PsychenomiconChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  thread    PsychenomiconThread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@id([chapterId, threadId])
+}
+
+// ─── Person Media (external content per person) ───────────────────────────────
+
+model PersonMedia {
+  id            String    @id @default(cuid())
+  personSlug    String
+  source        String    // "youtube" | "wiki" | "other"
+  sourceId      String?
+  sourceUrl     String
+  title         String
+  description   String?   @db.Text
+  thumbnailUrl  String?
+  publishedAt   DateTime?
+  durationStr   String?
+  viewCount     Int?
+  rawContent    String?   @db.Text
+  channelHandle String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([source, sourceId])
+  @@index([personSlug, source])
+  @@index([publishedAt])
+}
+
+// ─── Community Posts ───────────────────────────────────────────────────────────
+
+model CommunityPost {
+  id            String    @id @default(cuid())
+  youtubePostId String    @unique
+  text          String    @db.Text
+  imageUrls     String[]
+  likeCount     Int?
+  commentCount  Int?
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([publishedAt])
+}

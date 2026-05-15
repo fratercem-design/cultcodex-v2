@@ -1,0 +1,274 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ═══════════════════════════════════════════════════════
+   SACRED TERMINAL — CultCodex Design System
+   ═══════════════════════════════════════════════════════
+   Fonts:  Space Grotesk (display) + Inter (body) + IBM Plex Mono (system/meta)
+   Palette: Obsidian / Parchment / Gold / Violet / Cyan / Crimson
+   Rule: 80% obsidian+parchment, gold = prestige, violet = mystical,
+         cyan = system only, crimson = warnings only
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Design Tokens (Tailwind v4 @theme) ───────────── */
+
+@theme inline {
+  /* Backgrounds */
+  --color-void: #0A0A0F;
+  --color-surface: #12131A;
+  --color-elevated: #1A1C24;
+
+  /* Text */
+  --color-text-primary: #F3EEDF;
+  --color-text-muted: #B6AE9B;
+
+  /* Borders */
+  --color-border: #2A2D36;
+
+  /* Accents — use with discipline */
+  --color-accent-gold: #C8A96B;
+  --color-accent-gold-dim: rgba(200, 169, 107, 0.15);
+  --color-accent-violet: #6E4BAE;
+  --color-accent-violet-dim: rgba(110, 75, 174, 0.13);
+  --color-accent-cyan: #5DB7D8;
+  --color-accent-cyan-dim: rgba(93, 183, 216, 0.15);
+  --color-accent-crimson: #A94A4A;
+
+  /* Legacy aliases for existing components */
+  --color-accent-green: #C8A96B;
+  --color-accent-green-dim: rgba(200, 169, 107, 0.15);
+  --color-accent-purple: #6E4BAE;
+  --color-accent-purple-dim: rgba(110, 75, 174, 0.13);
+
+  /* shadcn/ui mappings */
+  --color-background: var(--bg-void);
+  --color-foreground: var(--text-primary);
+
+  /* Typography — 4-font system */
+  --font-sans: var(--font-body), "Inter", system-ui, sans-serif;
+  --font-mono: var(--font-mono), "IBM Plex Mono", monospace;
+  --font-display: var(--font-display), "Space Grotesk", sans-serif;
+  --font-serif: var(--font-serif), "Playfair Display", Georgia, serif;
+
+  /* shadcn/ui token passthrough */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ─── CSS Custom Properties ────────────────────────── */
+
+:root {
+  /* Sacred Terminal palette */
+  --bg-void: #0A0A0F;
+  --bg-surface: #12131A;
+  --bg-elevated: #1A1C24;
+  --border: #2A2D36;
+  --text-primary: #F3EEDF;
+  --text-muted: #B6AE9B;
+  --accent-gold: #C8A96B;
+  --accent-gold-dim: rgba(200, 169, 107, 0.15);
+  --accent-violet: #6E4BAE;
+  --accent-violet-dim: rgba(110, 75, 174, 0.13);
+  --accent-cyan: #5DB7D8;
+  --accent-cyan-dim: rgba(93, 183, 216, 0.15);
+  --accent-crimson: #A94A4A;
+
+  /* Legacy aliases */
+  --accent-green: #C8A96B;
+  --accent-green-dim: rgba(200, 169, 107, 0.15);
+  --accent-purple: #6E4BAE;
+  --accent-purple-dim: rgba(110, 75, 174, 0.13);
+
+  /* shadcn/ui base (light fallback, overridden by .dark) */
+  --background: #0A0A0F;
+  --foreground: #F3EEDF;
+  --card: #12131A;
+  --card-foreground: #F3EEDF;
+  --popover: #1A1C24;
+  --popover-foreground: #F3EEDF;
+  --primary: #C8A96B;
+  --primary-foreground: #0A0A0F;
+  --secondary: #1A1C24;
+  --secondary-foreground: #F3EEDF;
+  --muted: #1A1C24;
+  --muted-foreground: #B6AE9B;
+  --accent: #6E4BAE;
+  --accent-foreground: #F3EEDF;
+  --destructive: #A94A4A;
+  --input: #2A2D36;
+  --ring: rgba(200, 169, 107, 0.3);
+  --chart-1: #C8A96B;
+  --chart-2: #6E4BAE;
+  --chart-3: #5DB7D8;
+  --chart-4: #A94A4A;
+  --chart-5: #B6AE9B;
+  --radius: 0.625rem;
+  --sidebar: #12131A;
+  --sidebar-foreground: #F3EEDF;
+  --sidebar-primary: #C8A96B;
+  --sidebar-primary-foreground: #0A0A0F;
+  --sidebar-accent: #1A1C24;
+  --sidebar-accent-foreground: #F3EEDF;
+  --sidebar-border: #2A2D36;
+  --sidebar-ring: rgba(200, 169, 107, 0.3);
+}
+
+/* ─── Base Styles ──────────────────────────────────── */
+
+body {
+  background-color: var(--bg-void);
+  color: var(--text-primary);
+  font-feature-settings: "rlig" 1, "calt" 1;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Display headings — Space Grotesk */
+h1, h2, h3 {
+  font-family: var(--font-display), "Space Grotesk", sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Selection — gold accent */
+::selection {
+  background-color: var(--accent-gold-dim);
+  color: var(--accent-gold);
+}
+
+/* ─── Utility Classes ──────────────────────────────── */
+
+@utility glow-gold {
+  box-shadow: 0 0 8px rgba(200, 169, 107, 0.3), 0 0 24px rgba(200, 169, 107, 0.1);
+}
+
+@utility glow-violet {
+  box-shadow: 0 0 8px rgba(110, 75, 174, 0.3), 0 0 24px rgba(110, 75, 174, 0.1);
+}
+
+@utility glow-cyan {
+  box-shadow: 0 0 8px rgba(93, 183, 216, 0.3), 0 0 24px rgba(93, 183, 216, 0.1);
+}
+
+/* Legacy aliases for existing components */
+@utility glow-green {
+  box-shadow: 0 0 8px rgba(200, 169, 107, 0.3), 0 0 24px rgba(200, 169, 107, 0.1);
+}
+
+@utility glow-purple {
+  box-shadow: 0 0 8px rgba(110, 75, 174, 0.3), 0 0 24px rgba(110, 75, 174, 0.1);
+}
+
+@utility border-glow-green {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 4px rgba(200, 169, 107, 0.2);
+}
+
+@utility bg-scanline {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(200, 169, 107, 0.02) 2px,
+    rgba(200, 169, 107, 0.02) 4px
+  );
+}
+
+/* ─── Dark mode (always active — .dark on <html>) ── */
+
+.dark {
+  --background: #0A0A0F;
+  --foreground: #F3EEDF;
+  --card: #12131A;
+  --card-foreground: #F3EEDF;
+  --popover: #1A1C24;
+  --popover-foreground: #F3EEDF;
+  --primary: #C8A96B;
+  --primary-foreground: #0A0A0F;
+  --secondary: #1A1C24;
+  --secondary-foreground: #F3EEDF;
+  --muted: #1A1C24;
+  --muted-foreground: #B6AE9B;
+  --accent: #6E4BAE;
+  --accent-foreground: #F3EEDF;
+  --destructive: #A94A4A;
+  --border: #2A2D36;
+  --input: #2A2D36;
+  --ring: rgba(200, 169, 107, 0.3);
+  --chart-1: #C8A96B;
+  --chart-2: #6E4BAE;
+  --chart-3: #5DB7D8;
+  --chart-4: #A94A4A;
+  --chart-5: #B6AE9B;
+  --sidebar: #12131A;
+  --sidebar-foreground: #F3EEDF;
+  --sidebar-primary: #C8A96B;
+  --sidebar-primary-foreground: #0A0A0F;
+  --sidebar-accent: #1A1C24;
+  --sidebar-accent-foreground: #F3EEDF;
+  --sidebar-border: #2A2D36;
+  --sidebar-ring: rgba(200, 169, 107, 0.3);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Accessible focus rings */
+@layer utilities {
+  .focus-ring {
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-green;
+  }
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-accent-green);
+  outline-offset: 2px;
+}

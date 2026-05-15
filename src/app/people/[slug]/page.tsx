@@ -1,0 +1,541 @@
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
+import { prisma } from "@/lib/db";
+import { Prisma } from "@/generated/prisma/client";
+import { buildMetadata } from "@/lib/seo";
+import { EntityHero } from "@/components/ui/entity-hero";
+import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
+import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
+import { SectionCard } from "@/components/ui/section-card";
+import { MetaRow } from "@/components/ui/meta-row";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { ShareButtons } from "@/components/ui/share-buttons";
+import { EntityChipList } from "@/components/archive/entity-chip-list";
+import { EpisodeListItem } from "@/components/archive/episode-list-item";
+import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
+import { formatDate } from "@/lib/format/date";
+import { fixThumbnailUrl } from "@/lib/format/thumbnail";
+import { editorialFrame } from "@/lib/format/editorial-frame";
+import { getExternalLinks } from "@/lib/format/external-links";
+import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
+import { ArchiveNotice } from "@/components/notices/archive-notice";
+import { SuggestCorrection } from "@/components/ui/suggest-correction";
+import { ColorLegend } from "@/components/ui/color-legend";
+import { PersonSigil } from "@/components/ui/person-sigil";
+import { ArchetypeTimeline } from "@/components/people/archetype-timeline";
+import { PersonMediaSection, type PersonMediaItem } from "@/components/people/person-media-section";
+import type { Metadata } from "next";
+
+// ── Lore Summary renderer ─────────────────────────────────────────────────────
+// Handles two formats:
+//   1. Flat prose — render as paragraphs (legacy)
+//   2. Sectioned markdown with ## headers — render each section with a heading
+//      (produced by enrich-nightmares-people.ts character profiles)
+function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
+  const hasSections = /^##\s+\S/m.test(loreSummary);
+
+  if (!hasSections) {
+    return (
+      <SectionCard title="Lore Summary">
+        {loreSummary.split(/\n{2,}/).map((para, i) => (
+          <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
+            {editorialFrame(para.trim())}
+          </p>
+        ))}
+      </SectionCard>
+    );
+  }
+
+  // Split on ## headers, keeping the header text
+  const sections: Array<{ heading: string; body: string }> = [];
+  const parts = loreSummary.split(/^##\s+/m).filter(Boolean);
+  for (const part of parts) {
+    const newline = part.indexOf("\n");
+    const heading = newline === -1 ? part.trim() : part.slice(0, newline).trim();
+    const body = newline === -1 ? "" : part.slice(newline + 1).trim();
+    sections.push({ heading, body });
+  }
+
+  const SECTION_ICONS: Record<string, string> = {
+    overview: "📖",
+    storylines: "🎭",
+    controversies: "⚡",
+    "key relationships": "🔗",
+  };
+
+  return (
+    <>
+      {sections.map(({ heading, body }) => {
+        const icon = SECTION_ICONS[heading.toLowerCase()] ?? "📄";
+        return (
+          <SectionCard key={heading} title={`${icon} ${heading}`}>
+            {body.split(/\n{2,}|\n(?=[-•*])/).map((para, i) => {
+              const trimmed = para.trim();
+              if (!trimmed) return null;
+              // Render bullet points
+              if (/^[-•*]\s/.test(trimmed)) {
+                const bullets = trimmed
+                  .split(/\n/)
+                  .filter((l) => l.trim())
+                  .map((l) => l.replace(/^[-•*]\s*/, "").trim());
+                return (
+                  <ul key={i} className="list-disc list-inside space-y-1 mb-3 last:mb-0">
+                    {bullets.map((b, j) => (
+                      <li key={j} className="text-sm text-text-primary leading-relaxed">
+                        {editorialFrame(b)}
+                      </li>
+                    ))}
+                  </ul>
+                );
+              }
+              return (
+                <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
+                  {editorialFrame(trimmed)}
+                </p>
+              );
+            })}
+          </SectionCard>
+        );
+      })}
+    </>
+  );
+}
+
+export const revalidate = 600;
+
+export async function generateStaticParams() {
+  const people = await prisma.person.findMany({
+    select: { slug: true },
+    take: 300,
+    orderBy: { updatedAt: "desc" },
+  });
+  return people.map((p) => ({ slug: p.slug }));
+}
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const person = await getPersonBySlug(slug);
+
+  if (!person) {
+    return buildMetadata({
+      title: "Person Not Found",
+      description: "This person could not be found.",
+      path: `/people/${slug}`,
+    });
+  }
+
+  // Noindex for "mentioned" people — they were only name-dropped, never appeared as guests.
+  // This reduces SEO risk for people who didn't actively participate.
+  const shouldNoIndex = person.personType === "mentioned";
+
+  return {
+    ...buildMetadata({
+      title: person.displayName,
+      description: person.shortBio || person.searchText || null,
+      path: `/people/${person.slug}`,
+    }),
+    ...(shouldNoIndex ? { robots: { index: false, follow: true } } : {}),
+  };
+}
+
+const PERSON_TYPE_LABELS: Record<string, string> = {
+  host: "Host",
+  recurring: "Recurring",
+  guest: "Guest",
+  mentioned: "Mentioned",
+};
+
+const PERSON_TYPE_VARIANTS: Record<string, "green" | "purple" | "gold" | "muted"> = {
+  host: "gold",
+  recurring: "purple",
+  guest: "green",
+  mentioned: "muted",
+};
+
+export default async function PersonDetailPage({ params }: PageProps) {
+  const { slug } = await params;
+  const person = await getPersonBySlug(slug);
+
+  if (!person) notFound();
+
+  const allEpisodes = [
+    ...person.guestAppearances.map((g) => g.episode),
+    ...person.mentions.map((m) => m.episode),
+  ];
+
+  // Deduplicate by id and sort newest first
+  const uniqueEpisodes = Array.from(
+    new Map(allEpisodes.map((e) => [e.id, e])).values()
+  ).sort((a, b) => (b.airDate?.getTime() ?? 0) - (a.airDate?.getTime() ?? 0));
+
+  const coAppearances = person.guestAppearances.length >= 2
+    ? await getCoAppearances(person.id, 6).catch(() => [])
+    : [];
+
+  // Archetype evolution — query guest appearance episodes with decodeData (not null)
+  const archetypeEpisodes = person.guestAppearances.length > 0
+    ? await prisma.episode.findMany({
+        where: {
+          guests: { some: { personId: person.id } },
+          NOT: { decodeData: { equals: Prisma.AnyNull } },
+        },
+        select: {
+          slug: true,
+          title: true,
+          episodeNumber: true,
+          airDate: true,
+          decodeData: true,
+        },
+        orderBy: { airDate: "asc" },
+        take: 30,
+      }).catch(() => [])
+    : [];
+
+  type ArchetypeEntry = {
+    episodeSlug: string;
+    episodeTitle: string;
+    episodeNumber: number | null;
+    airDate: Date | null;
+    archetype: string;
+    supporting: string;
+  };
+
+  const archetypeEntries: ArchetypeEntry[] = archetypeEpisodes.flatMap((ep) => {
+    const data = ep.decodeData as Record<string, unknown> | null;
+    if (!data) return [];
+    const archetypes = data.archetypes as Array<{ speaker: string; archetype: string; supporting: string }> | undefined;
+    if (!archetypes) return [];
+
+    // Match by name similarity — person.displayName or altNames
+    const names = [person.displayName, ...person.altNames].map((n) => n.toLowerCase());
+    const match = archetypes.find((a) =>
+      names.some((n) => a.speaker.toLowerCase().includes(n) || n.includes(a.speaker.toLowerCase()))
+    );
+    if (!match) return [];
+
+    return [{
+      episodeSlug: ep.slug,
+      episodeTitle: ep.title,
+      episodeNumber: ep.episodeNumber,
+      airDate: ep.airDate,
+      archetype: match.archetype,
+      supporting: match.supporting,
+    }];
+  });
+
+  // External media (videos + wiki) — only loaded for people who have it
+  const personMediaRaw = await prisma.personMedia.findMany({
+    where: { personSlug: slug },
+    orderBy: { publishedAt: "desc" },
+    select: {
+      id: true,
+      source: true,
+      sourceId: true,
+      sourceUrl: true,
+      title: true,
+      description: true,
+      thumbnailUrl: true,
+      publishedAt: true,
+      durationStr: true,
+      viewCount: true,
+      rawContent: true,
+      channelHandle: true,
+    },
+  }).catch(() => []);
+
+  // Serialize Date → string before crossing the server/client boundary
+  const personMediaSerialized: PersonMediaItem[] = personMediaRaw.map((m) => ({
+    ...m,
+    publishedAt: m.publishedAt ? m.publishedAt.toISOString() : null,
+  }));
+  const personMediaVideos = personMediaSerialized.filter((m) => m.source === "youtube");
+  const personMediaWiki = personMediaSerialized.find((m) => m.source === "wiki") ?? null;
+  const hasPersonMedia = personMediaRaw.length > 0;
+
+  const typeLabel = PERSON_TYPE_LABELS[person.personType] ?? person.personType;
+  const typeVariant = PERSON_TYPE_VARIANTS[person.personType] ?? "muted";
+
+  const glanceItems = [
+    { icon: "\uD83C\uDFAD", label: typeLabel },
+    ...(uniqueEpisodes.length > 0
+      ? [{ icon: "\uD83C\uDFAC", label: `${uniqueEpisodes.length} appearance${uniqueEpisodes.length !== 1 ? "s" : ""}` }]
+      : []),
+    ...(person.quotes.length > 0
+      ? [{ icon: "\uD83D\uDCAC", label: `${person.quotes.length} quote${person.quotes.length !== 1 ? "s" : ""}` }]
+      : []),
+    ...(person.firstAppearanceEpisode?.airDate
+      ? [{ icon: "\uD83D\uDCC5", label: `First seen ${formatDate(person.firstAppearanceEpisode.airDate)}` }]
+      : []),
+    ...(person.topics.length > 0
+      ? [{ icon: "\uD83C\uDFF7\uFE0F", label: `${person.topics.length} topic${person.topics.length !== 1 ? "s" : ""}` }]
+      : []),
+  ];
+
+  return (
+    <>
+      <EntityHero
+        title={person.displayName}
+        subtitle={person.shortBio ?? undefined}
+        backgroundImage="/wiki-page-header.jpg"
+        avatarUrl={person.avatarUrl}
+        fallbackAvatar={
+          <PersonSigil
+            slug={person.slug}
+            name={person.displayName}
+            personType={person.personType}
+            size={80}
+            decorative
+            className="h-14 w-14 sm:h-20 sm:w-20 rounded-full border-2 border-accent-gold/40 shadow-lg"
+          />
+        }
+        badges={[{ label: typeLabel, variant: typeVariant }]}
+        neonTitle={person.slug === "alexandra-mayers"}
+      />
+      <Breadcrumbs items={[
+        { label: "Home", href: "/" },
+        { label: "People", href: "/people" },
+        { label: person.displayName },
+      ]} />
+      <EntityGlanceBar items={glanceItems} />
+      <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+        <ArchiveNotice
+          entityType="person"
+          entityName={person.displayName}
+          className="mb-6"
+        />
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-6">
+            {/* Bio / Lore Summary — renders flat text or ## sectioned profiles */}
+            {person.loreSummary && (
+              <LoreSummaryCard loreSummary={person.loreSummary} />
+            )}
+
+            {/* Archetype Evolution */}
+            {archetypeEntries.length > 0 && (
+              <SectionCard title="Archetype Evolution">
+                <ArchetypeTimeline
+                  entries={archetypeEntries}
+                  personName={person.displayName}
+                />
+              </SectionCard>
+            )}
+
+            {/* Color legend */}
+            <ColorLegend />
+
+            {/* Appearances */}
+            <SectionCard title={`Appearances (${uniqueEpisodes.length})`}>
+              {uniqueEpisodes.length > 0 ? (
+                <div className="grid gap-3">
+                  {uniqueEpisodes.map((ep) => (
+                    <EpisodeListItem
+                      key={ep.id}
+                      slug={ep.slug}
+                      title={ep.title}
+                      episodeNumber={ep.episodeNumber}
+                      airDate={ep.airDate}
+                      summaryShort={ep.summaryShort}
+                      thumbnailUrl={fixThumbnailUrl(ep.thumbnailUrl)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-text-muted">No appearances recorded</p>
+              )}
+            </SectionCard>
+
+            {/* Quotes */}
+            {person.quotes.length > 0 && (
+              <SectionCard title={`Quotes (${person.quotes.length})`}>
+                <div className="space-y-4">
+                  {person.quotes.map((q) => (
+                    <QuoteHighlightCard
+                      key={q.id}
+                      id={q.id}
+                      text={q.text}
+                      speakerName={person.displayName}
+                      speakerAvatarUrl={person.avatarUrl}
+                      speakerSlug={person.slug}
+                      speakerType={person.personType}
+                      timestampSeconds={q.timestampSeconds}
+                    />
+                  ))}
+                </div>
+              </SectionCard>
+            )}
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            <EntityStatsPanel
+              stats={[
+                { icon: "\uD83C\uDFA4", label: "Appearances", value: person.guestAppearances.length },
+                { icon: "\uD83D\uDCE2", label: "Mentions", value: person.mentions.length },
+                { icon: "\uD83D\uDCAC", label: "Quotes", value: person.quotes.length },
+                { icon: "\uD83C\uDFF7\uFE0F", label: "Topics", value: person.topics.length },
+                { icon: "\uD83D\uDD17", label: "Lore Links", value: person.loreConnections.length },
+              ]}
+            />
+
+            {coAppearances.length > 0 && (
+              <SectionCard title="Frequently Appears With">
+                <div className="grid grid-cols-3 gap-3">
+                  {coAppearances.map((coGuest) => (
+                    <Link
+                      key={coGuest.id}
+                      href={`/people/${coGuest.slug}`}
+                      className="group flex flex-col items-center gap-1.5 text-center"
+                    >
+                      {coGuest.avatarUrl ? (
+                        <Image
+                          src={coGuest.avatarUrl}
+                          alt=""
+                          width={40}
+                          height={40}
+                          className="h-10 w-10 rounded-full object-cover border border-border group-hover:border-accent-gold/50 transition-colors"
+                        />
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-gold/15 font-mono text-sm font-bold text-accent-gold border border-border group-hover:border-accent-gold/50 transition-colors">
+                          {coGuest.displayName[0]?.toUpperCase() ?? "?"}
+                        </div>
+                      )}
+                      <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-gold transition-colors line-clamp-1">
+                        {coGuest.displayName}
+                      </span>
+                      <span className="font-mono text-[9px] text-text-muted">
+                        {coGuest.sharedEpisodes} shared
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </SectionCard>
+            )}
+
+            <ShareButtons
+              url={`/people/${person.slug}`}
+              title={person.displayName}
+              type="person"
+            />
+
+            <SectionCard title="Dossier">
+              <MetaRow
+                label="Type"
+                value={<StatusBadge label={typeLabel} variant={typeVariant} />}
+              />
+              {person.firstAppearanceEpisode && (
+                <MetaRow
+                  label="First Seen"
+                  value={formatDate(person.firstAppearanceEpisode.airDate)}
+                />
+              )}
+              {person.altNames.length > 0 && (
+                <MetaRow label="Also Known As" value={person.altNames.join(", ")} />
+              )}
+            </SectionCard>
+
+            {/* External Links */}
+            {(() => {
+              const links = getExternalLinks(person.slug);
+              if (links.length === 0) return null;
+              const isYt = (url: string) => url.includes("youtube.com") || url.includes("youtu.be");
+              return (
+                <SectionCard title="External Links">
+                  <ul className="space-y-2">
+                    {links.map((link) => (
+                      <li key={link.url}>
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`group flex items-center gap-2 rounded-md border px-3 py-2 transition-colors ${
+                            isYt(link.url)
+                              ? "border-red-800/50 bg-red-950/30 hover:border-red-500/60 hover:bg-red-900/30"
+                              : "border-border bg-surface hover:border-accent-cyan/40 hover:bg-elevated"
+                          }`}
+                        >
+                          <span className="text-sm">
+                            {isYt(link.url) ? "▶" : (link.icon ?? "🔗")}
+                          </span>
+                          <span className={`font-mono text-xs group-hover:underline ${isYt(link.url) ? "text-red-400" : "text-accent-cyan"}`}>
+                            {link.label}
+                          </span>
+                          {isYt(link.url) && (
+                            <span className="ml-1 rounded-sm bg-red-600 px-1 py-0.5 text-[9px] font-bold uppercase text-white tracking-wide">
+                              YouTube
+                            </span>
+                          )}
+                          <span className="ml-auto font-mono text-[10px] text-text-muted">↗</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </SectionCard>
+              );
+            })()}
+
+            <SectionCard>
+              <EntityChipList
+                title="Topics"
+                entities={person.topics.map((t) => ({
+                  label: t.topic.title,
+                  slug: t.topic.slug,
+                  type: "topic",
+                }))}
+              />
+            </SectionCard>
+
+            <SectionCard>
+              <EntityChipList
+                title="Lore Connections"
+                entities={person.loreConnections.map((l) => ({
+                  label: l.loreEntry.title,
+                  slug: l.loreEntry.slug,
+                  type: "lore",
+                }))}
+              />
+            </SectionCard>
+          {/* Alexandra Mayers external content section */}
+          {hasPersonMedia && (
+            <PersonMediaSection
+              personName={person.displayName}
+              videos={personMediaVideos}
+              wiki={personMediaWiki}
+            />
+          )}
+          </div>
+        </div>
+
+        <SuggestCorrection
+          entityType="person"
+          entityTitle={person.displayName}
+          className="mt-8"
+        />
+      </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            name: person.displayName,
+            ...(person.shortBio ? { description: person.shortBio } : {}),
+            ...(person.avatarUrl ? { image: person.avatarUrl } : {}),
+            url: `https://cultcodex.me/people/${person.slug}`,
+            ...(person.firstAppearanceEpisode?.airDate
+              ? { firstAppearance: person.firstAppearanceEpisode.airDate.toISOString().slice(0, 10) }
+              : {}),
+            numberOfAppearances: uniqueEpisodes.length,
+          }),
+        }}
+      />
+    </>
+  );
+}

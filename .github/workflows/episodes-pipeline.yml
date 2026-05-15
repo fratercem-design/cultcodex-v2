@@ -1,0 +1,70 @@
+name: CultofPsyche Transcript Import
+
+on:
+  workflow_dispatch:
+    inputs:
+      content_type:
+        description: 'Content type to import'
+        required: false
+        default: 'original'
+        type: choice
+        options:
+          - original
+          - short
+          - clip
+      max_transcripts:
+        description: 'Max transcripts to fetch (0 = all)'
+        required: false
+        default: '0'
+      delay_ms:
+        description: 'Delay between transcript fetches (ms)'
+        required: false
+        default: '1500'
+
+jobs:
+  import:
+    name: Import via Vercel endpoint
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install yt-dlp
+        run: pip install -q yt-dlp
+
+      - name: Write YouTube cookies
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+        run: |
+          if [ -n "$YOUTUBE_COOKIES" ]; then
+            printf '%s' "$YOUTUBE_COOKIES" > /tmp/yt-cookies.txt
+            echo "Cookies written."
+          else
+            echo "No YOUTUBE_COOKIES secret — transcript fetch will likely fail."
+          fi
+
+      - name: Import transcripts
+        env:
+          ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
+          VERCEL_URL: https://cultcodex.me
+          YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
+        run: |
+          npx tsx scripts/import-episodes-ytdlp.ts \
+            --content-type "${{ github.event.inputs.content_type || 'original' }}" \
+            --delay "${{ github.event.inputs.delay_ms || '1500' }}" \
+            --max "${{ github.event.inputs.max_transcripts || '0' }}" \
+            | tee /tmp/import-output.txt
+          echo "## Transcript Import Summary" >> $GITHUB_STEP_SUMMARY
+          grep -E "Total episodes:|Have transcripts:|Missing:|Done —|Nothing to do" /tmp/import-output.txt >> $GITHUB_STEP_SUMMARY || true
+          # emit counts as annotations so they're readable via API
+          SUMMARY=$(grep -E "Total episodes:|Have transcripts:|Missing:|Done —|Nothing to do" /tmp/import-output.txt | tr '\n' ' ')
+          echo "::notice title=Transcript counts::$SUMMARY"

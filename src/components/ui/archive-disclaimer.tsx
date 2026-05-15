@@ -1,0 +1,56 @@
+import Link from "next/link";
+import { IconScroll } from "@/components/graphics/codex-icons";
+
+interface ArchiveDisclaimerProps {
+  variant?: "full" | "compact";
+  className?: string;
+}
+
+export function ArchiveDisclaimer({ variant = "compact", className }: ArchiveDisclaimerProps) {
+  if (variant === "full") {
+    return (
+      <aside className={`rounded-lg border border-border bg-surface/50 p-5 text-xs text-text-muted leading-relaxed space-y-2 ${className ?? ""}`}>
+        <div className="flex items-center gap-2 text-accent-gold font-mono text-[10px] uppercase tracking-wider font-bold">
+          <IconScroll size={14} />
+          About This Archive
+        </div>
+        <p>
+          The Cult Codex is a community-maintained archive of the Cult of Psyche.
+          Episode summaries, guest identifications, topic tags, and lore entries are
+          generated using a combination of AI analysis and human curation.
+        </p>
+        <p>
+          Descriptions aim for neutral, factual language. If you believe any content
+          is inaccurate, misattributed, or needs correction, please{" "}
+          <Link href="/corrections" className="text-accent-gold hover:underline">
+            submit a correction
+          </Link>.
+        </p>
+        <p className="text-text-muted/60">
+          This archive does not represent the views of any individual mentioned.
+          All content is sourced from publicly available streams and recordings.
+        </p>
+        <div className="flex items-center gap-3 pt-1">
+          <Link href="/methodology" className="font-mono text-[10px] text-accent-gold/60 hover:text-accent-gold hover:underline">
+            Methodology
+          </Link>
+          <Link href="/content-policy" className="font-mono text-[10px] text-accent-gold/60 hover:text-accent-gold hover:underline">
+            Content Policy
+          </Link>
+          <Link href="/corrections" className="font-mono text-[10px] text-accent-gold/60 hover:text-accent-gold hover:underline">
+            Corrections
+          </Link>
+        </div>
+      </aside>
+    );
+  }
+
+  return (
+    <p className={`text-[10px] text-text-muted/50 font-mono leading-relaxed ${className ?? ""}`}>
+      Content is AI-assisted and community-curated. Details may be approximate.{" "}
+      <Link href="/corrections" className="text-accent-gold/40 hover:text-accent-gold hover:underline">
+        Suggest corrections →
+      </Link>
+    </p>
+  );
+}

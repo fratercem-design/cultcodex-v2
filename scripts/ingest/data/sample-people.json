@@ -1,0 +1,5 @@
+[
+  { "displayName": "Psyche", "personType": "host", "shortBio": "Host of the Cult of Psyche." },
+  { "displayName": "Dr. Arcana", "altNames": ["The Doctor", "Arcana"], "personType": "recurring", "shortBio": "Occult scholar." },
+  { "displayName": "Luna Veil", "personType": "guest", "shortBio": "Tarot reader and consciousness researcher." }
+]

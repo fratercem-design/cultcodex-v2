@@ -1,0 +1,144 @@
+import { prisma } from "@/lib/db";
+import type { ArchiveStats } from "@/types";
+
+/**
+ * Canonical archive stats — single source of truth for all counts site-wide.
+ * Used by: homepage, stats page, admin, and any future consumer.
+ * DO NOT create a second stats function elsewhere.
+ */
+export async function getArchiveStats(): Promise<ArchiveStats> {
+  const [
+    episodes,
+    people,
+    loreEntries,
+    quotes,
+    series,
+    topics,
+    segments,
+    comments,
+    reactions,
+    durationData,
+  ] = await Promise.all([
+    prisma.episode.count(),
+    prisma.person.count(),
+    prisma.loreEntry.count(),
+    prisma.quote.count(),
+    prisma.series.count(),
+    prisma.topic.count(),
+    prisma.transcriptSegment.count(),
+    prisma.codexComment.count(),
+    prisma.episodeReaction.count(),
+    prisma.episode.findMany({
+      where: { duration: { not: null } },
+      select: { duration: true },
+    }),
+  ]);
+
+  // Parse duration strings (format: "HH:MM:SS" or "MM:SS") into total hours
+  let totalSeconds = 0;
+  for (const ep of durationData) {
+    if (ep.duration) {
+      const parts = ep.duration.split(":").map(Number);
+      if (parts.length === 3) {
+        totalSeconds += parts[0] * 3600 + parts[1] * 60 + parts[2];
+      } else if (parts.length === 2) {
+        totalSeconds += parts[0] * 60 + parts[1];
+      }
+    }
+  }
+  const totalHours = Math.round(totalSeconds / 3600);
+
+  return {
+    episodes,
+    people,
+    loreEntries,
+    quotes,
+    series,
+    topics,
+    segments,
+    totalHours,
+    comments,
+    reactions,
+  };
+}
+
+export async function getEpisodeAggregates() {
+  const [total, earliest, latest, guestCount] = await Promise.all([
+    prisma.episode.count(),
+    prisma.episode.findFirst({
+      where: { airDate: { not: null } },
+      orderBy: { airDate: "asc" },
+      select: { airDate: true },
+    }),
+    prisma.episode.findFirst({
+      where: { airDate: { not: null } },
+      orderBy: { airDate: "desc" },
+      select: { airDate: true },
+    }),
+    prisma.episodeGuest.count(),
+  ]);
+
+  return {
+    total,
+    earliestDate: earliest?.airDate ?? null,
+    latestDate: latest?.airDate ?? null,
+    totalGuests: guestCount,
+  };
+}
+
+export async function getPeopleAggregates() {
+  const [total, hosts, recurring, guests] = await Promise.all([
+    prisma.person.count(),
+    prisma.person.count({ where: { personType: "host" } }),
+    prisma.person.count({ where: { personType: "recurring" } }),
+    prisma.person.count({ where: { personType: "guest" } }),
+  ]);
+
+  return { total, hosts, recurring, guests };
+}
+
+export async function getLoreAggregates() {
+  const [total, canonical, speculative, communityMyth] = await Promise.all([
+    prisma.loreEntry.count(),
+    prisma.loreEntry.count({ where: { canonStatus: "canonical" } }),
+    prisma.loreEntry.count({ where: { canonStatus: "speculative" } }),
+    prisma.loreEntry.count({ where: { canonStatus: "community_myth" } }),
+  ]);
+
+  return { total, canonical, speculative, communityMyth };
+}
+
+export async function getTopicAggregates() {
+  const [total, linkedEpisodes] = await Promise.all([
+    prisma.topic.count(),
+    prisma.episodeTopic.count(),
+  ]);
+
+  return { total, linkedEpisodes };
+}
+
+export async function getSeriesAggregates() {
+  const [total, totalEpisodes] = await Promise.all([
+    prisma.series.count(),
+    prisma.episode.count({ where: { seriesId: { not: null } } }),
+  ]);
+
+  return { total, totalEpisodes };
+}
+
+/** Most recent updatedAt across core archive tables */
+export async function getArchiveLastUpdated(): Promise<Date | null> {
+  const [ep, person, quote, topic, lore] = await Promise.all([
+    prisma.episode.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
+    prisma.person.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
+    prisma.quote.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
+    prisma.topic.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
+    prisma.loreEntry.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
+  ]);
+
+  const dates = [ep?.updatedAt, person?.updatedAt, quote?.updatedAt, topic?.updatedAt, lore?.updatedAt]
+    .filter((d): d is Date => d != null);
+
+  if (dates.length === 0) return null;
+  return dates.reduce((latest, d) => (d > latest ? d : latest));
+}

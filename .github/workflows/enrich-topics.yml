@@ -1,0 +1,93 @@
+name: Enrich Topic Descriptions
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: 'Topics to process per round'
+        required: false
+        default: '100'
+      min_episodes:
+        description: 'Minimum episode count to qualify'
+        required: false
+        default: '2'
+      max_rounds:
+        description: 'Maximum rounds to run (safety cap)'
+        required: false
+        default: '60'
+
+jobs:
+  enrich:
+    name: Generate AI topic descriptions
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ENRICHMENT_MODEL: claude-haiku-4-5-20251001
+      ENRICHMENT_BATCH_SIZE: ${{ github.event.inputs.batch || '100' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run enrichment loop
+        run: |
+          BATCH=${{ github.event.inputs.batch || '100' }}
+          MIN_EP=${{ github.event.inputs.min_episodes || '2' }}
+          MAX_ROUNDS=${{ github.event.inputs.max_rounds || '60' }}
+          SUCCESS=0
+          FAILURES=0
+
+          for ROUND in $(seq 1 $MAX_ROUNDS); do
+            echo ""
+            echo "═══ Round $ROUND / $MAX_ROUNDS ═══"
+            OUTPUT=$(npx tsx scripts/enrich/enrich-topics.ts \
+              --batch "$BATCH" \
+              --min-episodes "$MIN_EP" 2>&1)
+            echo "$OUTPUT"
+
+            # Extract remaining count
+            REMAINING=$(echo "$OUTPUT" | grep -oP 'Total remaining: \K[0-9]+' | tail -1)
+            DONE_COUNT=$(echo "$OUTPUT" | grep -oP 'success: \K[0-9]+' | tail -1)
+            FAIL_COUNT=$(echo "$OUTPUT" | grep -oP 'failures: \K[0-9]+' | tail -1)
+
+            SUCCESS=$((SUCCESS + ${DONE_COUNT:-0}))
+            FAILURES=$((FAILURES + ${FAIL_COUNT:-0}))
+
+            echo "→ This round: +${DONE_COUNT:-0} enriched, ${FAIL_COUNT:-0} failed"
+            echo "→ Total remaining: ${REMAINING:-unknown}"
+
+            # Capture first round failure samples for diagnosis
+            if [ "$ROUND" = "1" ]; then
+              SAMPLE_FAILURES=$(echo "$OUTPUT" | grep "✗ FAILED" | head -5 | tr '\n' ' | ')
+              echo "::notice title=Sample failures (round 1)::$SAMPLE_FAILURES"
+            fi
+
+            # Stop when nothing left
+            if [ "${REMAINING:-1}" = "0" ]; then
+              echo ""
+              echo "✅ All topics enriched!"
+              break
+            fi
+
+            # Brief pause between rounds to respect rate limits
+            sleep 2
+          done
+
+          echo ""
+          echo "═══ Final Summary ═══"
+          echo "Total enriched: $SUCCESS"
+          echo "Total failures: $FAILURES"
+          echo "::notice title=Topics enriched::Total enriched: $SUCCESS, failures: $FAILURES, remaining: ${REMAINING:-unknown}"
