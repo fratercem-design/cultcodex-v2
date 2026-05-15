@@ -10,6 +10,8 @@ export interface NetworkNode {
   primaryArchetype: string | null;
   status: string;
   appearanceCount: number;
+  avatarUrl?: string | null;
+  personSlug?: string | null;
 }
 
 export interface NetworkEdge {
@@ -72,6 +74,9 @@ export function EntityNetworkGraph({ nodes, edges, width = 600, height = 400 }: 
 
   const maxStrength = Math.max(...edges.map((e) => e.strength), 1);
 
+  // Unique clipPath id per node to avoid SVG id collisions
+  const clipId = (id: string) => `avatar-clip-${id}`;
+
   return (
     <div className="relative w-full overflow-hidden rounded-lg border border-border bg-surface">
       <p className="absolute top-3 left-4 font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted z-10">
@@ -82,6 +87,16 @@ export function EntityNetworkGraph({ nodes, edges, width = 600, height = 400 }: 
         className="w-full"
         style={{ aspectRatio: `${width} / ${height}` }}
       >
+        <defs>
+          {positioned.map((node) =>
+            node.avatarUrl ? (
+              <clipPath key={node.id} id={clipId(node.id)}>
+                <circle cx={node.x} cy={node.y} r={node.r} />
+              </clipPath>
+            ) : null
+          )}
+        </defs>
+
         {/* Edges */}
         {edges.map((edge, i) => {
           const src = posMap[edge.sourceId];
@@ -125,16 +140,30 @@ export function EntityNetworkGraph({ nodes, edges, width = 600, height = 400 }: 
                   strokeOpacity={0.4}
                 />
               )}
+              {/* Base circle (always shown; behind avatar if present) */}
               <circle
                 cx={node.x} cy={node.y}
                 r={node.r}
                 fill={node.color}
-                fillOpacity={isActive ? 0.9 : 0.6}
+                fillOpacity={node.avatarUrl ? 0.3 : (isActive ? 0.9 : 0.6)}
                 stroke={node.color}
-                strokeWidth={1}
+                strokeWidth={isActive ? 1.5 : 1}
                 strokeOpacity={0.8}
                 style={{ transition: "all 0.15s ease" }}
               />
+              {/* Avatar image clipped to circle */}
+              {node.avatarUrl && (
+                <image
+                  href={node.avatarUrl}
+                  x={node.x - node.r}
+                  y={node.y - node.r}
+                  width={node.r * 2}
+                  height={node.r * 2}
+                  clipPath={`url(#${clipId(node.id)})`}
+                  preserveAspectRatio="xMidYMid slice"
+                  style={{ opacity: isActive ? 1 : 0.75, transition: "opacity 0.15s" }}
+                />
+              )}
               {/* Label */}
               <text
                 x={node.x}
@@ -178,18 +207,26 @@ export function EntityNetworkGraph({ nodes, edges, width = 600, height = 400 }: 
         <span className="font-mono text-[8px] text-text-muted/50">edge weight = shared chapters</span>
       </div>
 
-      {/* Hovered entity quick-link */}
+      {/* Hovered entity quick-link — shows archive profile link if person is linked */}
       {hovered && (() => {
         const node = posMap[hovered];
         if (!node) return null;
         return (
-          <div className="absolute bottom-3 left-3">
+          <div className="absolute bottom-3 left-3 flex items-center gap-2">
             <Link
               href={`/psychenomicon/entities/${node.slug}`}
               className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-void/90 px-3 py-1.5 font-mono text-[10px] text-accent-violet hover:bg-accent-violet/10 transition-colors"
             >
               {node.name} <span className="opacity-60">→</span>
             </Link>
+            {node.personSlug && (
+              <Link
+                href={`/people/${node.personSlug}`}
+                className="inline-flex items-center gap-1 rounded border border-accent-gold/30 bg-void/90 px-2 py-1.5 font-mono text-[9px] text-accent-gold hover:bg-accent-gold/10 transition-colors"
+              >
+                archive ↗
+              </Link>
+            )}
           </div>
         );
       })()}

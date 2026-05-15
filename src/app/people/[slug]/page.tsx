@@ -247,6 +247,12 @@ export default async function PersonDetailPage({ params }: PageProps) {
     }];
   });
 
+  // Psychenomicon entity cross-link — soft join via personSlug
+  const psychenomiconEntity = await prisma.psychenomiconEntity.findFirst({
+    where: { personSlug: slug },
+    select: { slug: true, name: true, primaryArchetype: true, status: true },
+  }).catch(() => null);
+
   // External media (videos + wiki) — only loaded for people who have it
   const personMediaRaw = await prisma.personMedia.findMany({
     where: { personSlug: slug },
@@ -413,6 +419,25 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 { icon: "🔗", label: "Lore Links", value: person.loreConnections.length },
               ]}
             />
+
+            {/* Psychenomicon entity cross-link */}
+            {psychenomiconEntity && (
+              <Link
+                href={`/psychenomicon/entities/${psychenomiconEntity.slug}`}
+                className="group block rounded-lg border border-accent-violet/20 bg-accent-violet/5 p-4 hover:border-accent-violet/40 hover:bg-accent-violet/10 transition-all"
+              >
+                <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60 mb-2">ψ psychenomicon_entity</p>
+                <p className="font-mono text-xs font-bold text-text-primary group-hover:text-accent-violet transition-colors">
+                  {psychenomiconEntity.name}
+                </p>
+                {psychenomiconEntity.primaryArchetype && (
+                  <p className="font-mono text-[9px] text-accent-violet/70 mt-0.5">{psychenomiconEntity.primaryArchetype}</p>
+                )}
+                <p className="font-mono text-[9px] text-text-muted mt-2">
+                  View archetype evolution →
+                </p>
+              </Link>
+            )}
 
             {coAppearances.length > 0 && (
               <SectionCard title="Frequently Appears With">
