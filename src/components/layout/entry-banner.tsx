@@ -37,13 +37,13 @@ export function EntryBanner() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
         <p className="font-mono text-[11px] text-text-muted leading-relaxed">
           <span className="text-accent-gold font-bold">///</span>{" "}
-          You&apos;re already part of this.{" "}
-          <span className="text-text-primary">You just haven&apos;t entered yet.</span>{" "}
+          First time here?{" "}
+          <span className="text-text-primary">Pick a doorway — five ways into 1,500+ episodes.</span>{" "}
           <Link
             href="/start-here"
             className="text-accent-gold underline underline-offset-2 hover:text-accent-gold/80 transition-colors"
           >
-            Begin here →
+            Start here →
           </Link>
         </p>
         <button

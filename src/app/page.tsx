@@ -76,23 +76,27 @@ export default async function HomePage() {
             className="rounded-full border-2 border-accent-gold/60 shadow-xl shadow-accent-gold/20 opacity-90"
           />
           <div className="space-y-3">
-            <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-cyan/80">
-              ✦ &nbsp; CultCodex &nbsp; ✦
-            </p>
+            <div className="space-y-1">
+              <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-cyan/80">
+                ✦ &nbsp; CultCodex &nbsp; ✦
+              </p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
+                The Cult of Psyche intelligence archive
+              </p>
+            </div>
             <h1
               className="font-display text-3xl sm:text-5xl font-bold leading-tight text-white"
               style={{ textShadow: "0 0 60px rgba(212,175,55,0.3)" }}
             >
-              This isn&rsquo;t a content library.
+              Every word. Every soul.
               <br />
               <span className="text-accent-gold" style={{ textShadow: "0 0 40px rgba(212,175,55,0.6)" }}>
-                It&rsquo;s a system for seeing
-                <br className="hidden sm:block" /> what others miss.
+                Every pattern — decoded.
               </span>
             </h1>
             <p className="font-mono text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
-              {stats.episodes.toLocaleString()}+ conversations. Patterns decoded.
-              Behavior mapped. Reality, organized.
+              {stats.episodes.toLocaleString()}+ Cult of Psyche conversations. Full transcripts,
+              AI psychological breakdowns, and behavioral maps — all searchable.
             </p>
           </div>
 
