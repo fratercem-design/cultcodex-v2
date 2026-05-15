@@ -272,3 +272,22 @@ textarea:focus-visible {
   outline: 2px solid var(--color-accent-green);
   outline-offset: 2px;
 }
+
+/* Oracle animations */
+@keyframes waveform {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.6; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-waveform {
+  animation: waveform 0.8s ease-in-out infinite;
+}
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+.animation-delay-150 {
+  animation-delay: 150ms;
+}
