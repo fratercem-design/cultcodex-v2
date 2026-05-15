@@ -12,48 +12,64 @@ export const metadata: Metadata = {
 export default async function SyncPage() {
   await requireAdmin();
 
-  const [totalEpisodes, withTranscript, withoutTranscript, withYoutubeId, withoutProfile] = await Promise.all([
+  const [
+    totalEpisodes,
+    withTranscript,
+    withoutTranscript,
+    withYoutubeId,
+    unenrichedEpisodes,
+    unenrichedPeople,
+    totalPeople,
+  ] = await Promise.all([
     prisma.episode.count({ where: { status: "published" } }),
     prisma.episode.count({
-      where: {
-        status: "published",
-        youtubeVideoId: { not: null },
-        segments: { some: {} },
-      },
+      where: { status: "published", youtubeVideoId: { not: null }, segments: { some: {} } },
     }),
     prisma.episode.count({
-      where: {
-        status: "published",
-        youtubeVideoId: { not: null },
-        segments: { none: {} },
-      },
+      where: { status: "published", youtubeVideoId: { not: null }, segments: { none: {} } },
     }),
     prisma.episode.count({ where: { youtubeVideoId: { not: null } } }),
-    prisma.person.count({
+    prisma.episode.count({
       where: {
-        personType: { in: ["guest", "host", "recurring"] },
-        guestAppearances: { some: {} },
-        OR: [{ loreSummary: null }, { loreSummary: { equals: "" } }],
+        segments: { some: {} },
+        OR: [{ summaryLong: null }, { summaryLong: "" }],
       },
     }),
+    prisma.person.count({
+      where: {
+        guestAppearances: { some: {} },
+        OR: [{ loreSummary: null }, { loreSummary: "" }],
+      },
+    }),
+    prisma.person.count({ where: { guestAppearances: { some: {} } } }),
   ]);
+
+  const enrichSecret = process.env.ENRICH_SECRET ?? "";
 
   return (
     <main id="main-content" className="p-8 max-w-5xl">
       <div className="mb-8">
-        <h1 className="font-display text-2xl font-bold text-accent-gold">Sync & Ingest</h1>
+        <h1 className="font-display text-2xl font-bold text-accent-gold">Sync & Enrich</h1>
         <p className="font-mono text-xs text-text-muted mt-1">
-          Import all YouTube episodes and fetch transcripts for the Codex.
+          Import episodes, fetch transcripts, and run AI enrichment to build the archive.
         </p>
       </div>
 
-      {/* Stats */}
+      {/* Stats grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
         {[
           { label: "Total episodes", value: totalEpisodes, color: "text-text-primary" },
-          { label: "With YouTube ID", value: withYoutubeId, color: "text-accent-cyan" },
           { label: "Have transcript", value: withTranscript, color: "text-accent-violet" },
-          { label: "Need transcript", value: withoutTranscript, color: "text-accent-gold" },
+          { label: "Need transcript", value: withoutTranscript, color: "text-accent-cyan" },
+          { label: "Need enrichment", value: unenrichedEpisodes, color: "text-accent-gold" },
+          { label: "With YouTube ID", value: withYoutubeId, color: "text-text-muted" },
+          { label: "Total people", value: totalPeople, color: "text-text-muted" },
+          { label: "Need profiles", value: unenrichedPeople, color: "text-accent-crimson" },
+          {
+            label: "Profiles done",
+            value: totalPeople - unenrichedPeople,
+            color: "text-accent-gold",
+          },
         ].map((s) => (
           <div key={s.label} className="rounded-lg border border-border bg-surface p-4 text-center">
             <p className={`font-display text-3xl font-bold ${s.color}`}>{s.value.toLocaleString()}</p>
@@ -62,7 +78,12 @@ export default async function SyncPage() {
         ))}
       </div>
 
-      <SyncPanel withoutTranscript={withoutTranscript} withoutProfile={withoutProfile} />
+      <SyncPanel
+        withoutTranscript={withoutTranscript}
+        unenrichedEpisodes={unenrichedEpisodes}
+        unenrichedPeople={unenrichedPeople}
+        enrichSecret={enrichSecret}
+      />
     </main>
   );
 }

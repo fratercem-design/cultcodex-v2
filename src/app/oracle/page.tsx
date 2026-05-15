@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
-import { VoidSigil } from "@/components/graphics/void-sigil";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { MysticalDivider, OrnamentalBreak } from "@/components/graphics/mystical-divider";
 import { OracleConsole } from "@/components/oracle/oracle-console";
@@ -41,20 +40,47 @@ export default async function OraclePage() {
         aria-hidden="true"
         style={{
           background:
-            "radial-gradient(ellipse 60% 50% at 50% 20%, rgba(139,92,246,0.12) 0%, transparent 70%)",
+            "radial-gradient(ellipse 60% 50% at 50% 20%, rgba(110,75,174,0.14) 0%, transparent 70%)",
         }}
       />
 
-      {/* ── Header ── */}
+      {/* ── Header — Medallion ── */}
       <header className="relative z-10 flex flex-col items-center pt-16 pb-4 text-center">
-        <VoidSigil size={200} animate className="text-accent-violet mb-6" />
-        <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-accent-violet drop-shadow-lg">
+        {/* Portrait medallion */}
+        <div className="animate-float mb-8">
+          <div
+            className="relative h-44 w-44 sm:h-52 sm:w-52 rounded-full overflow-hidden animate-ring-pulse"
+            style={{
+              boxShadow: [
+                "0 0 0 3px #6E4BAE",
+                "0 0 0 6px #5DB7D8",
+                "0 0 0 9px rgba(110,75,174,0.15)",
+                "0 0 40px rgba(110,75,174,0.35)",
+                "0 0 80px rgba(93,183,216,0.15)",
+              ].join(", "),
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/oracle-portrait.jpg"
+              alt="The Oracle of the Codex"
+              className="h-full w-full object-cover object-top"
+            />
+          </div>
+        </div>
+
+        <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-[0.08em] text-accent-gold drop-shadow-lg">
           THE ORACLE
         </h1>
-        <p className="mt-2 font-mono text-xs uppercase tracking-[0.3em] text-accent-violet/50">
+        <p className="mt-1.5 font-mono text-xs uppercase tracking-[0.45em] text-accent-violet/60">
           of the Codex
         </p>
-        <MysticalDivider className="mt-6 opacity-60 [&_svg]:!text-accent-violet/30" />
+
+        {/* Thin gold rule */}
+        <div className="mt-5 w-24 h-px bg-gradient-to-r from-transparent via-accent-gold/40 to-transparent" />
+
+        <MysticalDivider className="mt-4 opacity-40 [&_svg]:!text-accent-violet/25" />
+
         <p className="mx-auto mt-4 max-w-md px-4 font-serif text-sm leading-relaxed text-text-muted italic">
           The distilled voice of{" "}
           <span className="text-accent-cyan">{totalQuotes.toLocaleString()}+ archive moments</span>.
@@ -70,9 +96,7 @@ export default async function OraclePage() {
             <OracleConsole />
           ) : (
             <div className="space-y-6">
-              {/* Preview the form — then gate on submit */}
               <OracleConsole />
-              {/* Soft prompt below for non-initiates */}
               <p className="text-center font-mono text-[10px] text-text-muted/40 uppercase tracking-widest">
                 Initiate+ unlocks the Oracle ·{" "}
                 <Link href="/premium" className="text-accent-gold/60 hover:text-accent-gold transition-colors">
@@ -85,7 +109,7 @@ export default async function OraclePage() {
 
         <MysticalDivider className="opacity-40 [&_svg]:!text-accent-violet/20" />
 
-        {/* ── Random quote (always visible) ── */}
+        {/* ── Random quote ── */}
         {quote && (
           <section>
             <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/40 text-center mb-4">
@@ -97,7 +121,7 @@ export default async function OraclePage() {
                 aria-hidden="true"
                 style={{
                   background:
-                    "linear-gradient(135deg, rgba(139,92,246,0.15) 0%, transparent 30%, transparent 70%, rgba(139,92,246,0.10) 100%)",
+                    "linear-gradient(135deg, rgba(110,75,174,0.15) 0%, transparent 30%, transparent 70%, rgba(110,75,174,0.10) 100%)",
                 }}
               />
               <div className="relative rounded-lg border border-border bg-elevated p-6 sm:p-8">
@@ -149,7 +173,7 @@ export default async function OraclePage() {
             <div className="mt-8 flex justify-center">
               <Link
                 href={`/oracle?t=${Date.now()}`}
-                className="group relative inline-flex items-center gap-2 rounded-lg border border-accent-violet/30 bg-surface px-6 py-3 font-display text-sm font-semibold text-accent-violet transition-all hover:border-accent-violet/60 hover:bg-accent-violet/5 hover:shadow-[0_0_20px_rgba(139,92,246,0.15)]"
+                className="group relative inline-flex items-center gap-2 rounded-lg border border-accent-violet/30 bg-surface px-6 py-3 font-display text-sm font-semibold text-accent-violet transition-all hover:border-accent-violet/60 hover:bg-accent-violet/5 hover:shadow-[0_0_20px_rgba(110,75,174,0.15)]"
               >
                 <span className="inline-block transition-transform group-hover:rotate-12">
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-accent-violet/60">

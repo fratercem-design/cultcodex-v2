@@ -36,7 +36,6 @@ export interface OracleResponse {
   error?: string;
 }
 
-// Stop words for keyword extraction
 const STOP = new Set([
   "what", "who", "why", "how", "when", "where", "does", "did", "do",
   "is", "are", "was", "were", "the", "a", "an", "and", "or", "but",
@@ -53,7 +52,6 @@ function extractTerms(question: string): string {
     .replace(/[?.,!'"]/g, "")
     .split(/\s+/)
     .filter((w) => w.length > 3 && !STOP.has(w));
-  // Use top 3 terms; fall back to first 40 chars of question
   return words.slice(0, 3).join(" ") || question.slice(0, 40);
 }
 
@@ -157,9 +155,7 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
   if (data.people.length > 0) {
     parts.push("\n=== RELEVANT PEOPLE ===");
     for (const p of data.people) {
-      const bio = p.loreSummary
-        ? p.loreSummary.slice(0, 400)
-        : p.shortBio ?? "";
+      const bio = p.loreSummary ? p.loreSummary.slice(0, 400) : p.shortBio ?? "";
       parts.push(`${p.displayName}${bio ? `: ${bio}` : ""}`);
       citations.push({ type: "person", label: p.displayName, href: `/people/${p.slug}` });
     }
@@ -175,7 +171,6 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
 }
 
 export async function POST(req: NextRequest) {
-  // Auth check
   const user = await getCurrentUser();
   const canAccess = user
     ? user.role === "admin" || (await isSubscribed(user.id))
@@ -206,11 +201,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Search the archive
   const archiveData = await searchArchive(question);
   const { contextText, citations } = buildContext(archiveData);
 
-  // Synthesize with Claude
   const client = new Anthropic({ apiKey: anthropicKey });
   const claudeRes = await client.messages.create({
     model: process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001",
@@ -234,7 +227,6 @@ export async function POST(req: NextRequest) {
 
   const answer = textBlock.text.trim();
 
-  // ElevenLabs TTS (optional — graceful fallback if not configured)
   let audioBase64: string | null = null;
   const elKey = process.env.ELEVENLABS_API_KEY;
   const elVoice = process.env.ELEVENLABS_VOICE_ID ?? "21m00Tcm4TlvDq8ikWAM";
@@ -254,9 +246,9 @@ export async function POST(req: NextRequest) {
             text: answer,
             model_id: "eleven_multilingual_v2",
             voice_settings: {
-              stability: 0.55,
-              similarity_boost: 0.8,
-              style: 0.2,
+              stability: 0.60,
+              similarity_boost: 0.80,
+              style: 0.15,
               use_speaker_boost: true,
             },
           }),
@@ -268,7 +260,7 @@ export async function POST(req: NextRequest) {
         audioBase64 = Buffer.from(buf).toString("base64");
       }
     } catch {
-      // Voice unavailable — text-only fallback, no error surfaced to user
+      // Voice unavailable — text-only fallback
     }
   }
 

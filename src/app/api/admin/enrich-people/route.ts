@@ -1,191 +1,200 @@
 /**
  * POST /api/admin/enrich-people
  *
- * Generates AI character profiles (loreSummary) for people with multiple appearances.
- * Runs on Vercel where DB is reachable. Processes one batch per call.
+ * Generates loreSummary (sectioned psychological profile) and fills shortBio
+ * for people who have guest appearances but no loreSummary yet.
  *
- * Auth: admin session via requireAdmin().
+ * Auth: X-Enrich-Secret header must match ENRICH_SECRET env var.
  *
- * Body (JSON):
- *   batch           number of people to process (default 5, max 20)
- *   minAppearances  minimum guest appearances required (default 1)
- *   force           re-generate even if loreSummary already exists (default false)
- *
- * Returns:
- *   { ok, summary: { processed, ok, errors, remaining }, results: [...] }
+ * Body: { batch?: number (default 5, max 10), minAppearances?: number (default 1) }
+ * Returns: { processed, remaining, done, results }
  */
+
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/db";
-import { requireAdmin } from "@/lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
-const DELAY_MS = 600;
-function sleep(ms: number) { return new Promise((r) => setTimeout(r, ms)); }
+const SYSTEM_PROMPT = `You are a behavioral analyst and psychological profiler for the Cult of Psyche archive — a show covering consciousness, mythology, cult dynamics, tarot, and occult philosophy.
 
-const SYSTEM_PROMPT = `You are an expert archivist for CultCodex.me — the living archive of the "Cult of Psyche" show. You write character profiles for the wiki/codex — think of this as a TV wiki page for a recurring character, but for a live-streaming show.
+Your task: produce a structured character dossier for a person who has appeared in the archive.
 
-The show is hosted by "Psyche" (also called "Trix") on @CultofPsyche and @PsychesNightmares. Content includes tarot, consciousness exploration, occult topics, panel discussions, and live community events.
+VOICE: Analytical but vivid. Write as if this is an intelligence file in a sacred archive. Name behavioral patterns, recurring dynamics, what this person represents in the broader tapestry of the show. Do not be a fan — be an observer.
 
-Write a structured character profile based on the data provided.
-
-IMPORTANT: Write for an audience of show fans. Be specific about storylines and controversies only if they are clearly documented in the provided data — do not speculate or hallucinate.
-
-Use these EXACT sections (## headers):
+OUTPUT FORMAT — use these exact section headers (## followed by the title):
 
 ## Overview
-2-3 sentences: who this person is, their role on the show, their energy. Include their relationship to the host and community.
+1–2 sentences: who this person is and why they are in the archive. Their role, domain, and basic presence.
 
 ## Storylines
-Bullet points or short paragraphs describing main narrative arcs or recurring themes across their appearances. Reference specific episode topics if available. If no clear storylines, write "No major storylines identified yet."
+2–3 paragraphs on the patterns of their appearances. What themes recur when they show up? What do they consistently bring — intellectually, emotionally, energetically? How do they interact with the host and other guests?
 
 ## Controversies
-(Only include if controversies are clearly documented in the data)
-Describe contentious situations, feuds, callouts, or drama as discussed on-stream. Preface with "As discussed on stream:". OMIT this section entirely if nothing controversial.
+1–2 paragraphs on any tension, conflict, polarizing views, or notable friction. If none exist in the record, write: "The archive records no notable controversies for this figure."
 
 ## Key Relationships
-Who this person frequently appears with, their dynamic with the host, notable bonds or rivalries.
+1–2 paragraphs on their recurring relationships with other figures in the archive — hosts, co-guests, ideas. Name names where the record supports it.
 
-Return ONLY the profile text — no JSON, no extra commentary.`;
+RULES:
+- Use only what is in the provided archive evidence. Do not hallucinate details.
+- If data is sparse (1–2 appearances), write shorter sections but still use all four headers.
+- No bullet points inside sections — prose only.
+- Return ONLY the four sections. No preamble, no closing note, no JSON.
 
-interface ProfileResult {
-  id: string;
-  displayName: string;
-  slug: string;
-  appearances: number;
-  status: "ok" | "error";
-  error?: string;
-}
+ALSO: On the very first line before any ## header, write a one-sentence shortBio (plain text, no label, no formatting) — maximum 15 words. This will be extracted separately.`;
 
 export async function POST(req: NextRequest) {
-  await requireAdmin();
-
-  const body = await req.json().catch(() => ({})) as Record<string, unknown>;
-  const batch = Math.min(Number(body.batch) || 5, 20);
-  const minAppearances = Math.max(Number(body.minAppearances) || 1, 1);
-  const force = Boolean(body.force);
-
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json({ ok: false, error: "ANTHROPIC_API_KEY not configured" }, { status: 500 });
+  const secret = req.headers.get("x-enrich-secret");
+  if (!secret || secret !== process.env.ENRICH_SECRET) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const model = process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
-  const client = new Anthropic({ apiKey });
 
-  // Count remaining before this batch
-  const remaining = await prisma.person.count({
-    where: {
-      personType: { in: ["guest", "host", "recurring"] },
-      guestAppearances: { some: {} },
-      ...(force ? {} : {
-        OR: [{ loreSummary: null }, { loreSummary: { equals: "" } }],
-      }),
-    },
-  });
+  const apiKey = process.env.ANTHROPIC_API_KEY ?? "";
+  if (!apiKey) {
+    return NextResponse.json({ error: "No Anthropic API key configured" }, { status: 500 });
+  }
+
+  const body = await req.json().catch(() => ({})) as { batch?: number; minAppearances?: number };
+  const batchSize = Math.min(Number(body.batch) || 5, 10);
+  const minAppearances = Math.max(Number(body.minAppearances) || 1, 1);
+
+  const whereClause = {
+    OR: [{ loreSummary: null }, { loreSummary: "" }],
+    guestAppearances: { some: {} },
+  };
+
+  const totalRemaining = await prisma.person.count({ where: whereClause });
+
+  if (totalRemaining === 0) {
+    return NextResponse.json({ processed: 0, remaining: 0, done: true, results: [] });
+  }
 
   const people = await prisma.person.findMany({
-    where: {
-      personType: { in: ["guest", "host", "recurring"] },
-      guestAppearances: { some: {} },
-      ...(force ? {} : {
-        OR: [{ loreSummary: null }, { loreSummary: { equals: "" } }],
-      }),
-    },
-    include: {
+    where: whereClause,
+    select: {
+      id: true,
+      displayName: true,
+      slug: true,
+      personType: true,
+      shortBio: true,
+      quotes: {
+        select: { text: true, context: true, significance: true },
+        take: 10,
+      },
       guestAppearances: {
-        include: {
+        select: {
           episode: {
-            select: { id: true, title: true, summaryShort: true },
+            select: {
+              title: true,
+              slug: true,
+              episodeNumber: true,
+              summaryShort: true,
+              airDate: true,
+              segments: {
+                where: { speakerLabel: { not: null } },
+                select: { speakerLabel: true, text: true, startSeconds: true },
+                take: 20,
+              },
+            },
           },
         },
+        take: 10,
       },
-      quotes: { select: { text: true, context: true }, take: 10 },
     },
-    orderBy: { guestAppearances: { _count: "desc" } },
+    orderBy: { displayName: "asc" },
+    take: batchSize,
   });
 
-  const eligible = people
-    .filter((p) => p.guestAppearances.length >= minAppearances)
-    .slice(0, batch);
+  const filtered = people.filter((p) => p.guestAppearances.length >= minAppearances);
 
-  const results: ProfileResult[] = [];
+  const client = new Anthropic({ apiKey });
+  const results: { slug: string; name: string; ok: boolean; error?: string }[] = [];
 
-  for (const person of eligible) {
+  for (const person of filtered) {
     try {
-      // Top co-guests
-      const coGuestCounts = new Map<string, number>();
-      for (const g of person.guestAppearances) {
-        const others = await prisma.episodeGuest.findMany({
-          where: { episodeId: g.episode.id, personId: { not: person.id } },
-          include: { person: { select: { displayName: true } } },
-        });
-        for (const o of others) {
-          coGuestCounts.set(o.person.displayName, (coGuestCounts.get(o.person.displayName) ?? 0) + 1);
-        }
-      }
-      const topCoGuests = Array.from(coGuestCounts.entries())
-        .sort((a, b) => b[1] - a[1]).slice(0, 5).map(([name]) => name);
+      const appearanceCount = person.guestAppearances.length;
 
-      const recentEpisodes = person.guestAppearances.slice(-10);
-      const userMsg = [
-        `Person: "${person.displayName}" (${person.personType})`,
-        person.shortBio ? `Bio: ${person.shortBio}` : "",
-        `Total appearances: ${person.guestAppearances.length}`,
-        topCoGuests.length ? `Frequent co-guests: ${topCoGuests.join(", ")}` : "",
-        "",
-        `Recent episodes:`,
-        ...recentEpisodes.map((g) =>
-          `- ${g.episode.title}${g.episode.summaryShort ? `: ${g.episode.summaryShort}` : ""}`
-        ),
-        person.quotes.length
-          ? `\nNotable quotes:\n${person.quotes.slice(0, 5).map((q) => `- "${q.text}"${q.context ? ` [${q.context}]` : ""}`).join("\n")}`
-          : "",
-      ].filter(Boolean).join("\n");
+      const episodeList = person.guestAppearances
+        .map((a) => {
+          const ep = a.episode;
+          const epLabel = ep.episodeNumber
+            ? `EP.${String(ep.episodeNumber).padStart(3, "0")} — "${ep.title}"`
+            : `"${ep.title}"`;
+          const summary = ep.summaryShort ? `\n  Summary: ${ep.summaryShort}` : "";
+          const firstName = person.displayName.split(" ")[0].toLowerCase();
+          const relevantSegments = ep.segments
+            .filter((s) => s.speakerLabel?.toLowerCase().includes(firstName))
+            .slice(0, 5);
+          const segmentText = relevantSegments.length > 0
+            ? `\n  Transcript excerpts:\n` + relevantSegments.map((s) => `    "${s.text}"`).join("\n")
+            : "";
+          return `${epLabel}${summary}${segmentText}`;
+        })
+        .join("\n\n");
+
+      const quoteList = person.quotes.length > 0
+        ? "\nNotable quotes:\n" + person.quotes
+            .map((q) => `- "${q.text}"${q.context ? ` (${q.context})` : ""}`)
+            .join("\n")
+        : "";
+
+      const userMessage = `Person: ${person.displayName}
+Type: ${person.personType}
+${person.shortBio ? `Current bio: ${person.shortBio}` : "(no bio yet)"}
+Total appearances: ${appearanceCount}
+${quoteList}
+
+Episode appearances:
+${episodeList}
+
+Write the dossier for ${person.displayName}.`;
 
       const response = await client.messages.create({
-        model,
-        max_tokens: 1024,
+        model: process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001",
+        max_tokens: 900,
         system: SYSTEM_PROMPT,
-        messages: [{ role: "user", content: userMsg }],
+        messages: [{ role: "user", content: userMessage }],
       });
 
       const textBlock = response.content.find((b) => b.type === "text");
-      if (!textBlock || textBlock.type !== "text") throw new Error("No text in response");
+      if (!textBlock || textBlock.type !== "text") throw new Error("No text response");
+
+      const fullText = textBlock.text.trim();
+
+      // Extract shortBio from the first line (before the first ## header)
+      const firstHashIndex = fullText.indexOf("##");
+      const shortBioLine = firstHashIndex > 0
+        ? fullText.slice(0, firstHashIndex).trim()
+        : null;
+      const loreSummary = firstHashIndex > 0
+        ? fullText.slice(firstHashIndex).trim()
+        : fullText;
 
       await prisma.person.update({
         where: { id: person.id },
-        data: { loreSummary: textBlock.text.trim() },
+        data: {
+          loreSummary,
+          // Only set shortBio if it's currently empty
+          ...(!person.shortBio && shortBioLine ? { shortBio: shortBioLine } : {}),
+        },
       });
 
-      results.push({ id: person.id, displayName: person.displayName, slug: person.slug, appearances: person.guestAppearances.length, status: "ok" });
-    } catch (err: unknown) {
+      results.push({ slug: person.slug, name: person.displayName, ok: true });
+    } catch (err) {
       results.push({
-        id: person.id,
-        displayName: person.displayName,
         slug: person.slug,
-        appearances: person.guestAppearances.length,
-        status: "error",
+        name: person.displayName,
+        ok: false,
         error: err instanceof Error ? err.message : String(err),
       });
     }
-    await sleep(DELAY_MS);
   }
 
-  const okCount = results.filter((r) => r.status === "ok").length;
-  const errCount = results.filter((r) => r.status === "error").length;
-  const afterRemaining = Math.max(0, remaining - okCount);
+  const processed = results.filter((r) => r.ok).length;
+  const remaining = totalRemaining - processed;
 
-  return NextResponse.json({
-    ok: true,
-    summary: {
-      processed: results.length,
-      ok: okCount,
-      errors: errCount,
-      remaining: afterRemaining,
-    },
-    results,
-  });
+  return NextResponse.json({ processed, remaining, done: remaining <= 0, results });
 }

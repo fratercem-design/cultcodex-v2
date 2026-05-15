@@ -6,6 +6,29 @@ import type { OracleCitation, OracleResponse } from "@/app/api/oracle/ask/route"
 
 type ConsoleState = "idle" | "loading" | "answered" | "error";
 
+function formatTime(seconds: number): string {
+  if (!isFinite(seconds) || seconds < 0) return "0:00";
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+// Interpolate violet (#6E4BAE) → cyan (#5DB7D8) across 32 bars
+function barColor(index: number, total: number): string {
+  const t = index / (total - 1);
+  const r = Math.round(110 + (93 - 110) * t);
+  const g = Math.round(75 + (183 - 75) * t);
+  const b = Math.round(174 + (216 - 174) * t);
+  return `rgb(${r},${g},${b})`;
+}
+
+const BAR_COUNT = 32;
+const BAR_HEIGHTS = Array.from({ length: BAR_COUNT }, (_, i) => {
+  // Pseudo-random heights that look like a waveform
+  const base = Math.sin(i * 0.7) * 0.4 + Math.sin(i * 1.3) * 0.3 + 0.5;
+  return Math.max(0.15, Math.min(1, base));
+});
+
 export function OracleConsole() {
   const [question, setQuestion] = useState("");
   const [state, setState] = useState<ConsoleState>("idle");
@@ -16,26 +39,28 @@ export function OracleConsole() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [gated, setGated] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const answerRef = useRef<HTMLDivElement | null>(null);
 
-  // Auto-play audio when received
   useEffect(() => {
     if (audioBase64 && state === "answered") {
       const src = `data:audio/mpeg;base64,${audioBase64}`;
       const audio = new Audio(src);
       audioRef.current = audio;
+
       audio.onplay = () => setIsPlaying(true);
-      audio.onended = () => setIsPlaying(false);
+      audio.onended = () => { setIsPlaying(false); setCurrentTime(0); };
       audio.onpause = () => setIsPlaying(false);
-      audio.play().catch(() => {
-        // Autoplay blocked — user can click Play manually
-      });
+      audio.ontimeupdate = () => setCurrentTime(audio.currentTime);
+      audio.onloadedmetadata = () => setDuration(audio.duration);
+
+      audio.play().catch(() => {});
     }
   }, [audioBase64, state]);
 
-  // Scroll to answer
   useEffect(() => {
     if (state === "answered" && answerRef.current) {
       answerRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -53,8 +78,9 @@ export function OracleConsole() {
     setHasVoice(false);
     setGated(false);
     setErrorMsg("");
+    setCurrentTime(0);
+    setDuration(0);
 
-    // Stop any playing audio
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
@@ -111,6 +137,8 @@ export function OracleConsole() {
     setCitations([]);
     setAudioBase64(null);
     setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
   }
 
   return (
@@ -197,63 +225,108 @@ export function OracleConsole() {
         </div>
       )}
 
-      {/* ── Answer ── */}
+      {/* ── Answer — Speaking Avatar Card ── */}
       {state === "answered" && (
         <div ref={answerRef} className="space-y-4 animate-fadeIn">
-          {/* The Oracle's response */}
+          {/* Oracle response card */}
           <div className="relative rounded-xl border border-accent-violet/20 bg-surface/80 backdrop-blur-sm p-1">
             <div
               className="pointer-events-none absolute -inset-px rounded-xl"
               aria-hidden="true"
               style={{
                 background:
-                  "linear-gradient(135deg, rgba(139,92,246,0.12) 0%, transparent 40%, transparent 60%, rgba(139,92,246,0.08) 100%)",
+                  "linear-gradient(135deg, rgba(110,75,174,0.12) 0%, transparent 40%, transparent 60%, rgba(93,183,216,0.08) 100%)",
               }}
             />
-            <div className="relative rounded-lg border border-border bg-elevated p-6 sm:p-8 space-y-4">
-              {/* Voice controls */}
-              {hasVoice && audioBase64 && (
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={handlePlayPause}
-                    className="flex items-center gap-1.5 rounded border border-accent-violet/30 bg-accent-violet/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-accent-violet hover:bg-accent-violet/20 transition-colors"
+            <div className="relative rounded-lg border border-border bg-elevated p-5 sm:p-6">
+              {/* Avatar + content row */}
+              <div className="flex gap-4 sm:gap-5">
+                {/* Oracle portrait */}
+                <div className="shrink-0">
+                  <div
+                    className="relative h-24 w-24 sm:h-28 sm:w-28 rounded-lg overflow-hidden"
+                    style={{
+                      boxShadow: isPlaying
+                        ? "0 0 0 2px #6E4BAE, 0 0 0 4px #5DB7D8, 0 0 20px rgba(110,75,174,0.5), 0 0 40px rgba(93,183,216,0.2)"
+                        : "0 0 0 2px rgba(110,75,174,0.6), 0 0 12px rgba(110,75,174,0.25)",
+                      transition: "box-shadow 0.4s ease",
+                    }}
                   >
-                    {isPlaying ? (
-                      <>
-                        <PauseIcon /> Pause
-                      </>
-                    ) : (
-                      <>
-                        <PlayIcon /> Hear the Oracle
-                      </>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/oracle-portrait.jpg"
+                      alt="The Oracle"
+                      className="h-full w-full object-cover object-top"
+                    />
+                    {/* Active state indicator */}
+                    {isPlaying && (
+                      <div
+                        className="absolute bottom-1.5 right-1.5 h-2.5 w-2.5 rounded-full bg-accent-cyan animate-pulse"
+                        style={{ boxShadow: "0 0 6px #5DB7D8, 0 0 12px rgba(93,183,216,0.5)" }}
+                      />
                     )}
-                  </button>
-                  {isPlaying && (
-                    <div className="flex items-center gap-0.5">
-                      {[1, 2, 3, 4].map((i) => (
-                        <div
-                          key={i}
-                          className="w-0.5 bg-accent-violet/60 rounded-full animate-waveform"
-                          style={{
-                            height: `${8 + i * 3}px`,
-                            animationDelay: `${i * 0.1}s`,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
+                  </div>
+                </div>
+
+                {/* Text content */}
+                <div className="flex-1 min-w-0 space-y-2">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-cyan/70">
+                    The Oracle Responds
+                  </p>
+                  <blockquote className="font-serif text-base sm:text-lg leading-relaxed text-text-primary">
+                    {answer}
+                  </blockquote>
+                  <p className="font-mono text-[9px] text-text-muted/40 uppercase tracking-widest pt-1 border-t border-border">
+                    Re: &ldquo;{question}&rdquo;
+                  </p>
+                </div>
+              </div>
+
+              {/* Waveform + controls */}
+              {hasVoice && audioBase64 && (
+                <div className="mt-5 space-y-2">
+                  {/* Gradient waveform bars */}
+                  <div
+                    className="flex items-end gap-px h-10 cursor-pointer"
+                    onClick={handlePlayPause}
+                    title={isPlaying ? "Pause" : "Play"}
+                  >
+                    {BAR_HEIGHTS.map((h, i) => (
+                      <div
+                        key={i}
+                        className={isPlaying ? "animate-waveform" : ""}
+                        style={{
+                          flex: 1,
+                          height: `${Math.round(h * 40)}px`,
+                          minHeight: "4px",
+                          borderRadius: "2px",
+                          backgroundColor: barColor(i, BAR_COUNT),
+                          opacity: isPlaying ? 0.85 : 0.3,
+                          animationDelay: `${(i % 8) * 0.1}s`,
+                          transition: "opacity 0.3s ease",
+                        }}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Controls row */}
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={handlePlayPause}
+                      className="flex items-center gap-1.5 rounded border border-accent-violet/30 bg-accent-violet/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-accent-violet hover:bg-accent-violet/20 transition-colors"
+                    >
+                      {isPlaying ? (
+                        <><PauseIcon /> Pause</>
+                      ) : (
+                        <><PlayIcon /> Hear the Oracle</>
+                      )}
+                    </button>
+                    <p className="font-mono text-[9px] text-text-muted/50">
+                      {isPlaying ? "Audio playing" : "Audio ready"} · {formatTime(currentTime)} / {formatTime(duration)}
+                    </p>
+                  </div>
                 </div>
               )}
-
-              {/* Oracle text */}
-              <blockquote className="font-serif text-base sm:text-lg leading-relaxed text-text-primary">
-                {answer}
-              </blockquote>
-
-              {/* Question echo */}
-              <p className="font-mono text-[9px] text-text-muted/40 uppercase tracking-widest border-t border-border pt-3">
-                In response to: &ldquo;{question}&rdquo;
-              </p>
             </div>
           </div>
 
