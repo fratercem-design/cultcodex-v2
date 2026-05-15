@@ -332,7 +332,7 @@ export function SyncPanel({ withoutTranscript, withoutProfile }: { withoutTransc
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">/// full_pipeline</p>
         <ol className="space-y-2 font-mono text-xs text-text-muted list-decimal list-inside">
           <li>Click <strong className="text-text-primary">Sync All Episodes</strong> — imports every YouTube video as an Episode row.</li>
-          <li>Click <strong className="text-text-primary">Fetch Next 100 Transcripts</strong> repeatedly until "remaining" hits 0. Each batch takes ~100 seconds.</li>
+          <li>Click <strong className="text-text-primary">Fetch Next 100 Transcripts</strong> repeatedly until &quot;remaining&quot; hits 0. Each batch takes ~100 seconds.</li>
           <li>Click <strong className="text-text-primary">Generate Next 10 Profiles</strong> repeatedly to build character profiles for all recurring guests.</li>
           <li>Go to <strong className="text-text-primary">Psychenomicon → Generate</strong> and batch-generate chapters from episodes with transcripts.</li>
         </ol>
