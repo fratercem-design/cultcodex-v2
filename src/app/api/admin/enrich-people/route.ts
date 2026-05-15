@@ -8,7 +8,7 @@
  *
  * Body (JSON):
  *   batch           number of people to process (default 5, max 20)
- *   minAppearances  minimum guest appearances required (default 2)
+ *   minAppearances  minimum guest appearances required (default 1)
  *   force           re-generate even if loreSummary already exists (default false)
  *
  * Returns:
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json().catch(() => ({})) as Record<string, unknown>;
   const batch = Math.min(Number(body.batch) || 5, 20);
-  const minAppearances = Math.max(Number(body.minAppearances) || 2, 1);
+  const minAppearances = Math.max(Number(body.minAppearances) || 1, 1);
   const force = Boolean(body.force);
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -89,6 +89,7 @@ export async function POST(req: NextRequest) {
   const people = await prisma.person.findMany({
     where: {
       personType: { in: ["guest", "host", "recurring"] },
+      guestAppearances: { some: {} },
       ...(force ? {} : {
         OR: [{ loreSummary: null }, { loreSummary: { equals: "" } }],
       }),
