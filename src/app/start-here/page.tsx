@@ -10,9 +10,6 @@
 import Link from "next/link";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import {
-  IconScroll,
-  IconTopic,
-  IconCanonical,
   IconCrystalBall,
   IconTransmission,
   IconTarot,
