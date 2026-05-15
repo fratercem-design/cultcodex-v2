@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function SyncPage() {
   await requireAdmin();
 
-  const [totalEpisodes, withTranscript, withoutTranscript, withYoutubeId] = await Promise.all([
+  const [totalEpisodes, withTranscript, withoutTranscript, withYoutubeId, withoutProfile] = await Promise.all([
     prisma.episode.count({ where: { status: "published" } }),
     prisma.episode.count({
       where: {
@@ -29,6 +29,13 @@ export default async function SyncPage() {
       },
     }),
     prisma.episode.count({ where: { youtubeVideoId: { not: null } } }),
+    prisma.person.count({
+      where: {
+        personType: { in: ["guest", "host", "recurring"] },
+        guestAppearances: { some: {} },
+        OR: [{ loreSummary: null }, { loreSummary: { equals: "" } }],
+      },
+    }),
   ]);
 
   return (
@@ -55,7 +62,7 @@ export default async function SyncPage() {
         ))}
       </div>
 
-      <SyncPanel withoutTranscript={withoutTranscript} />
+      <SyncPanel withoutTranscript={withoutTranscript} withoutProfile={withoutProfile} />
     </main>
   );
 }
