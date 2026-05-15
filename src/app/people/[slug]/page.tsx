@@ -280,18 +280,18 @@ export default async function PersonDetailPage({ params }: PageProps) {
   const typeVariant = PERSON_TYPE_VARIANTS[person.personType] ?? "muted";
 
   const glanceItems = [
-    { icon: "\uD83C\uDFAD", label: typeLabel },
+    { icon: "🎭", label: typeLabel },
     ...(uniqueEpisodes.length > 0
-      ? [{ icon: "\uD83C\uDFAC", label: `${uniqueEpisodes.length} appearance${uniqueEpisodes.length !== 1 ? "s" : ""}` }]
+      ? [{ icon: "🎬", label: `${uniqueEpisodes.length} appearance${uniqueEpisodes.length !== 1 ? "s" : ""}` }]
       : []),
     ...(person.quotes.length > 0
-      ? [{ icon: "\uD83D\uDCAC", label: `${person.quotes.length} quote${person.quotes.length !== 1 ? "s" : ""}` }]
+      ? [{ icon: "💬", label: `${person.quotes.length} quote${person.quotes.length !== 1 ? "s" : ""}` }]
       : []),
     ...(person.firstAppearanceEpisode?.airDate
-      ? [{ icon: "\uD83D\uDCC5", label: `First seen ${formatDate(person.firstAppearanceEpisode.airDate)}` }]
+      ? [{ icon: "📅", label: `First seen ${formatDate(person.firstAppearanceEpisode.airDate)}` }]
       : []),
     ...(person.topics.length > 0
-      ? [{ icon: "\uD83C\uDFF7\uFE0F", label: `${person.topics.length} topic${person.topics.length !== 1 ? "s" : ""}` }]
+      ? [{ icon: "🏷️", label: `${person.topics.length} topic${person.topics.length !== 1 ? "s" : ""}` }]
       : []),
   ];
 
@@ -406,11 +406,11 @@ export default async function PersonDetailPage({ params }: PageProps) {
           <div className="space-y-6">
             <EntityStatsPanel
               stats={[
-                { icon: "\uD83C\uDFA4", label: "Appearances", value: person.guestAppearances.length },
-                { icon: "\uD83D\uDCE2", label: "Mentions", value: person.mentions.length },
-                { icon: "\uD83D\uDCAC", label: "Quotes", value: person.quotes.length },
-                { icon: "\uD83C\uDFF7\uFE0F", label: "Topics", value: person.topics.length },
-                { icon: "\uD83D\uDD17", label: "Lore Links", value: person.loreConnections.length },
+                { icon: "🎤", label: "Appearances", value: person.guestAppearances.length },
+                { icon: "📢", label: "Mentions", value: person.mentions.length },
+                { icon: "💬", label: "Quotes", value: person.quotes.length },
+                { icon: "🏷️", label: "Topics", value: person.topics.length },
+                { icon: "🔗", label: "Lore Links", value: person.loreConnections.length },
               ]}
             />
 
