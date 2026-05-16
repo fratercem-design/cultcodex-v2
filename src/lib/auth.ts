@@ -39,7 +39,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true },
         });
         if (codexUser) {
-          (session as SessionWithCodex).codexUser = codexUser;
+          const adminEmails = (process.env.ADMIN_EMAILS ?? "")
+            .split(",")
+            .map((e) => e.trim().toLowerCase())
+            .filter(Boolean);
+          const isEnvAdmin = adminEmails.includes(session.user.email.toLowerCase());
+          (session as SessionWithCodex).codexUser = {
+            ...codexUser,
+            role: isEnvAdmin ? "admin" : codexUser.role,
+          };
         }
       }
       return session;
