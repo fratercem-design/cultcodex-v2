@@ -208,15 +208,15 @@ async function generateChapter(req: NextRequest) {
     activeThreads
   );
 
-  // Build transcript text — cap at ~30k chars to leave room for output tokens
+  // Build transcript text — cap at ~20k chars to stay well within context limits
   let transcriptText: string;
   if (episode.segments.length > 0) {
     transcriptText = episode.segments
       .map((s) => (s.speakerLabel ? `${s.speakerLabel}: ${s.text}` : s.text))
       .join("\n")
-      .slice(0, 30000);
+      .slice(0, 20000);
   } else {
-    transcriptText = episode.transcriptRaw!.slice(0, 30000);
+    transcriptText = episode.transcriptRaw!.slice(0, 20000);
   }
 
   const guestList = episode.guests
@@ -253,7 +253,7 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
 
   const message = await callAnthropicWithRetry({
     model: "claude-sonnet-4-6",
-    max_tokens: 16000,
+    max_tokens: 8000,
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: userPrompt }],
   });
