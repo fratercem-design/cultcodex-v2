@@ -60,9 +60,9 @@ function buildEraWhere(eraId?: string): Prisma.EpisodeWhereInput {
   const era = getEraById(eraId);
   if (!era) return {};
   return {
-    episodeNumber: {
-      gte: era.episodeStart,
-      ...(era.episodeEnd !== null ? { lte: era.episodeEnd } : {}),
+    airDate: {
+      gte: new Date(era.dateStart),
+      ...(era.dateEnd !== null ? { lte: new Date(`${era.dateEnd}T23:59:59.999Z`) } : {}),
     },
   };
 }

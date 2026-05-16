@@ -80,12 +80,12 @@ async function searchArchive(question: string, ctx?: OracleSearchContext) {
   const primaryQuery = augmentedTerms.slice(0, 3).join(" ") || fullQuery;
   const fallbackQuery = augmentedTerms[0] ?? fullQuery;
 
-  // Episode number filter applied when a source era is present.
+  // Air-date filter applied when a source era is present.
   const eraEpisodeFilter = era
     ? {
-        episodeNumber: {
-          gte: era.episodeStart,
-          ...(era.episodeEnd !== null ? { lte: era.episodeEnd } : {}),
+        airDate: {
+          gte: new Date(era.dateStart),
+          ...(era.dateEnd !== null ? { lte: new Date(`${era.dateEnd}T23:59:59.999Z`) } : {}),
         },
       }
     : {};

@@ -48,13 +48,13 @@ const ERA_SIGIL_BG: Record<string, string> = {
 
 async function getEraCounts(): Promise<Map<string, number>> {
   const rows = await prisma.episode.findMany({
-    where: { status: "published", episodeNumber: { not: null } },
-    select: { episodeNumber: true },
+    where: { status: "published", airDate: { not: null } },
+    select: { airDate: true },
   });
 
   const counts = new Map<string, number>();
   for (const row of rows) {
-    const era = getEraForEpisode(row.episodeNumber);
+    const era = getEraForEpisode(row.airDate);
     if (era) {
       counts.set(era.id, (counts.get(era.id) ?? 0) + 1);
     }
@@ -85,9 +85,13 @@ export default async function ErasPage() {
         {/* Era cards */}
         {ERAS.map((era, index) => {
           const count = counts.get(era.id) ?? 0;
-          const rangeLabel = era.episodeEnd !== null
-            ? `EP.${String(era.episodeStart).padStart(3, "0")} — EP.${String(era.episodeEnd).padStart(3, "0")}`
-            : `EP.${String(era.episodeStart).padStart(3, "0")} — ongoing`;
+          const startYear = era.dateStart.slice(0, 4);
+          const endYear = era.dateEnd ? era.dateEnd.slice(0, 4) : null;
+          const rangeLabel = endYear && endYear !== startYear
+            ? `${startYear} — ${endYear}`
+            : endYear === startYear
+            ? startYear
+            : `${startYear} — ongoing`;
 
           return (
             <div

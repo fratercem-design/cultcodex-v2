@@ -15,7 +15,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
   const epNum = episode.episodeNumber
     ? `EP.${String(episode.episodeNumber).padStart(3, "0")}`
     : null;
-  const era = getEraForEpisode(episode.episodeNumber);
+  const era = getEraForEpisode(episode.airDate);
 
   return (
     <Link

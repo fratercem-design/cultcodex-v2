@@ -1,7 +1,8 @@
 // ── Era System ────────────────────────────────────────────────────────────────
-// Edit ERAS below to match your actual episode numbering.
-// episodeEnd: null = open-ended (current era).
-// Only this file needs to change to update all era surfaces site-wide.
+// Eras are defined by date ranges derived from key channel events.
+// Edit the dates below to match your actual channel history.
+// dateEnd: null = open-ended (current era).
+// All era surfaces derive from this file — change here, change everywhere.
 
 export type EraColor = "gold" | "violet" | "cyan" | "crimson" | "muted";
 
@@ -10,12 +11,13 @@ export interface Era {
   label: string;
   subtitle: string;
   description: string;
-  episodeStart: number;
-  episodeEnd: number | null;
+  dateStart: string;       // ISO date string, inclusive (YYYY-MM-DD)
+  dateEnd: string | null;  // ISO date string, inclusive; null = current era
   color: EraColor;
   sigil: string;
 }
 
+// ── Edit these dates to match your actual channel history ─────────────────────
 export const ERAS: readonly Era[] = [
   {
     id: "origin",
@@ -23,8 +25,8 @@ export const ERAS: readonly Era[] = [
     subtitle: "Where it began",
     description:
       "The archive opens. Raw transmission, unpolished, finding the frequency. Every archetype that would define the Cult was seeded here — the voice before it had an audience.",
-    episodeStart: 1,
-    episodeEnd: 100,
+    dateStart: "2019-01-01",  // ← set to channel launch date
+    dateEnd:   "2020-06-30",  // ← set to end of founding period
     color: "gold",
     sigil: "◈",
   },
@@ -33,22 +35,11 @@ export const ERAS: readonly Era[] = [
     label: "The Descent",
     subtitle: "Going underground",
     description:
-      "The show finds its shadow. Consciousness, manipulation, the occult — the conversations get stranger and more honest. The audience starts paying attention. Something shifts.",
-    episodeStart: 101,
-    episodeEnd: 400,
+      "The show finds its shadow. Consciousness, manipulation, the occult — conversations get stranger and more honest. The audience starts paying attention. Something shifts.",
+    dateStart: "2020-07-01",  // ← set to start of second phase
+    dateEnd:   "2022-03-31",  // ← set to end of second phase
     color: "violet",
     sigil: "↓",
-  },
-  {
-    id: "expansion",
-    label: "The Expansion",
-    subtitle: "New voices, new vectors",
-    description:
-      "The circle widens. More guests, more chaos, more territory. The archive grows faster than any single thread can contain it. The community becomes part of the signal.",
-    episodeStart: 401,
-    episodeEnd: 900,
-    color: "cyan",
-    sigil: "◎",
   },
   {
     id: "dark-arc",
@@ -56,8 +47,8 @@ export const ERAS: readonly Era[] = [
     subtitle: "Peak intensity",
     description:
       "Everything is on the table. Nothing is sacred. Psychological pressure hits a peak and the transmissions start bleeding into each other. The most referenced era in the Psychenomicon.",
-    episodeStart: 901,
-    episodeEnd: 1400,
+    dateStart: "2022-04-01",  // ← set to start of dark arc
+    dateEnd:   "2023-12-31",  // ← set to end of dark arc
     color: "crimson",
     sigil: "⬡",
   },
@@ -66,21 +57,22 @@ export const ERAS: readonly Era[] = [
     label: "The Current",
     subtitle: "Now. Ongoing.",
     description:
-      "The signal doesn't stop. The current era is still being written — every new transmission adds to the archive in real time. Patterns from the first four eras resurface in new forms.",
-    episodeStart: 1401,
-    episodeEnd: null,
-    color: "gold",
+      "The signal doesn't stop. The current era is still being written — every new transmission adds to the archive in real time. Patterns from every prior era resurface in new forms.",
+    dateStart: "2024-01-01",  // ← set to start of current era
+    dateEnd:   null,
+    color: "cyan",
     sigil: "∞",
   },
 ] as const;
 
-export function getEraForEpisode(episodeNumber: number | null): Era | null {
-  if (episodeNumber === null) return null;
+export function getEraForEpisode(airDate: Date | null): Era | null {
+  if (!airDate) return null;
+  const d = airDate.toISOString().slice(0, 10); // "YYYY-MM-DD"
   return (
     ERAS.find(
       (era) =>
-        episodeNumber >= era.episodeStart &&
-        (era.episodeEnd === null || episodeNumber <= era.episodeEnd)
+        d >= era.dateStart &&
+        (era.dateEnd === null || d <= era.dateEnd)
     ) ?? null
   );
 }
