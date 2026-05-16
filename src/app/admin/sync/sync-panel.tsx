@@ -74,6 +74,7 @@ export function SyncPanel({
   // ── Episode enrichment ──
   const [enrichEpBatch, setEnrichEpBatch] = useState(3);
   const [enrichEpLoading, setEnrichEpLoading] = useState(false);
+  const [enrichEpProgress, setEnrichEpProgress] = useState<{ done: number; remaining: number } | null>(null);
   const [enrichEpResult, setEnrichEpResult] = useState<{
     ok: boolean;
     processed?: number;
@@ -133,25 +134,39 @@ export function SyncPanel({
     }
   }
 
-  async function handleEnrichEpisodes() {
+  async function handleEnrichEpisodes(loop = false) {
     setEnrichEpLoading(true);
     setEnrichEpResult(null);
+    setEnrichEpProgress(null);
+    let totalDone = 0;
+
     try {
-      const res = await fetch("/api/admin/enrich-episodes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-enrich-secret": enrichSecret,
-        },
-        body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly: true }),
-      });
-      const data = await res.json() as typeof enrichEpResult;
-      setEnrichEpResult({ ok: res.ok, ...data });
+      while (true) {
+        const res = await fetch("/api/admin/enrich-episodes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-enrich-secret": enrichSecret },
+          body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly: true }),
+        });
+        const data = await res.json() as typeof enrichEpResult & { remaining?: number; done?: boolean };
+        if (!res.ok || !data?.ok) {
+          setEnrichEpResult({ ok: false, error: data?.error ?? "Request failed." });
+          break;
+        }
+        totalDone += data.processed ?? 0;
+        setEnrichEpProgress({ done: totalDone, remaining: data.remaining ?? 0 });
+        if (!loop || data.done || data.remaining === 0) {
+          setEnrichEpResult({ ...data, ok: true });
+          break;
+        }
+        // Small pause between batches to avoid overwhelming the API
+        await new Promise((r) => setTimeout(r, 1500));
+      }
       router.refresh();
     } catch {
       setEnrichEpResult({ ok: false, error: "Network error." });
     } finally {
       setEnrichEpLoading(false);
+      setEnrichEpProgress(null);
     }
   }
 
@@ -339,17 +354,28 @@ export function SyncPanel({
               ))}
             </select>
           </div>
-          <button
-            onClick={handleEnrichEpisodes}
-            disabled={enrichEpLoading || unenrichedEpisodes === 0}
-            className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {enrichEpLoading
-              ? <><Spinner /> Enriching {enrichEpBatch} episode{enrichEpBatch !== 1 ? "s" : ""}…</>
-              : unenrichedEpisodes === 0
-              ? "All episodes enriched ✓"
-              : `Enrich Next ${enrichEpBatch} Episode${enrichEpBatch !== 1 ? "s" : ""} →`}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleEnrichEpisodes(false)}
+              disabled={enrichEpLoading || unenrichedEpisodes === 0}
+              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {enrichEpLoading && !enrichEpProgress
+                ? <><Spinner /> Enriching…</>
+                : unenrichedEpisodes === 0
+                ? "All enriched ✓"
+                : `Enrich Next ${enrichEpBatch} →`}
+            </button>
+            <button
+              onClick={() => handleEnrichEpisodes(true)}
+              disabled={enrichEpLoading || unenrichedEpisodes === 0}
+              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-gold bg-accent-gold/20 hover:bg-accent-gold/30 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {enrichEpLoading && enrichEpProgress
+                ? <><Spinner /> {enrichEpProgress.done} done, {enrichEpProgress.remaining} left…</>
+                : "Run All →→"}
+            </button>
+          </div>
           {enrichEpResult && (
             <div className={`rounded border px-4 py-3 space-y-2 ${enrichEpResult.ok ? "border-accent-gold/30 bg-accent-gold/5" : "border-red-500/30 bg-red-500/5"}`}>
               {enrichEpResult.ok ? (
