@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EpisodeCard } from "@/components/archive/episode-card";
@@ -8,12 +9,14 @@ import { ViewToggle } from "@/components/archive/view-toggle";
 import { RandomEpisodeButton } from "@/components/archive/random-episode-button";
 import { TimelineView } from "@/components/archive/timeline-view";
 import { PaginationControls } from "@/components/ui/pagination-controls";
+import { EraTag } from "@/components/ui/era-tag";
 import {
   getEpisodes,
   formatEpisodeForCard,
   getEpisodeCount,
 } from "@/lib/queries/episodes";
 import { getEpisodeAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
+import { getEraById, ERAS } from "@/lib/eras";
 import {
   DEFAULT_PAGE_SIZE,
   parsePage,
@@ -43,7 +46,7 @@ const FILTER_OPTIONS = [
 ];
 
 interface EpisodesPageProps {
-  searchParams: Promise<{ sort?: string; page?: string; filter?: string; view?: string }>;
+  searchParams: Promise<{ sort?: string; page?: string; filter?: string; view?: string; era?: string }>;
 }
 
 function resolveSort(sort?: string): {
@@ -68,17 +71,19 @@ export default async function EpisodesPage({
   const currentSort = params.sort ?? "newest";
   const currentView = params.view ?? "card";
   const { orderBy, order } = resolveSort(currentSort);
+  const activeEraId = params.era && getEraById(params.era) ? params.era : undefined;
+  const activeEra = activeEraId ? getEraById(activeEraId) : null;
 
   const [aggregates, totalCount, lastUpdated] = await Promise.all([
     getEpisodeAggregates(),
-    getEpisodeCount(),
+    getEpisodeCount(undefined, activeEraId),
     getArchiveLastUpdated(),
   ]);
 
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
-  const episodes = await getEpisodes({ take, skip, orderBy, order });
+  const episodes = await getEpisodes({ take, skip, orderBy, order, eraId: activeEraId });
   const cards = episodes.map(formatEpisodeForCard);
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
@@ -105,6 +110,20 @@ export default async function EpisodesPage({
     />
     <EntityGlanceBar items={glanceItems} />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+      {activeEra && (
+        <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-border bg-elevated px-4 py-3">
+          <div className="flex items-center gap-3">
+            <EraTag era={activeEra} size="sm" />
+            <p className="font-mono text-xs text-text-muted">{activeEra.subtitle} · {totalCount} episode{totalCount !== 1 ? "s" : ""}</p>
+          </div>
+          <Link
+            href="/episodes"
+            className="font-mono text-[10px] text-text-muted hover:text-text-primary transition-colors"
+          >
+            Clear ×
+          </Link>
+        </div>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <SortFilterBar
           basePath="/episodes"
@@ -115,6 +134,14 @@ export default async function EpisodesPage({
           currentFilter={params.filter}
         />
         <div className="flex items-center gap-2">
+          {!activeEra && (
+            <Link
+              href="/eras"
+              className="font-mono text-[10px] text-text-muted border border-border rounded px-2.5 py-1.5 hover:border-accent-gold/40 hover:text-accent-gold transition-colors"
+            >
+              Browse by Era
+            </Link>
+          )}
           <RandomEpisodeButton />
           <ViewToggle basePath="/episodes" currentView={currentView} />
         </div>

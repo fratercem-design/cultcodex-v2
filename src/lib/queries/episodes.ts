@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { cleanTitle } from "@/lib/format/text";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
+import { getEraById } from "@/lib/eras";
 import type { Prisma, ContentStatus, ContentType } from "@/generated/prisma/client";
 
 // Type for episode with all relations loaded
@@ -54,12 +55,25 @@ export function formatEpisodeForCard(episode: EpisodeWithRelations): EpisodeCard
   };
 }
 
+function buildEraWhere(eraId?: string): Prisma.EpisodeWhereInput {
+  if (!eraId) return {};
+  const era = getEraById(eraId);
+  if (!era) return {};
+  return {
+    episodeNumber: {
+      gte: era.episodeStart,
+      ...(era.episodeEnd !== null ? { lte: era.episodeEnd } : {}),
+    },
+  };
+}
+
 export async function getEpisodes(options?: {
   status?: ContentStatus;
   take?: number;
   skip?: number;
   orderBy?: "airDate" | "episodeNumber" | "title";
   order?: "asc" | "desc";
+  eraId?: string;
 }) {
   const {
     status,
@@ -67,6 +81,7 @@ export async function getEpisodes(options?: {
     skip = 0,
     orderBy = "episodeNumber",
     order = "desc",
+    eraId,
   } = options ?? {};
 
   // When sorting by airDate, use episodeNumber as tiebreaker so null-airDate
@@ -76,8 +91,13 @@ export async function getEpisodes(options?: {
       ? [{ airDate: { sort: order, nulls: "last" as const } }, { episodeNumber: order }]
       : { [orderBy]: order };
 
+  const where: Prisma.EpisodeWhereInput = {
+    ...(status ? { status } : {}),
+    ...buildEraWhere(eraId),
+  };
+
   return prisma.episode.findMany({
-    where: status ? { status } : undefined,
+    where: Object.keys(where).length > 0 ? where : undefined,
     include: buildEpisodeInclude(),
     orderBy: orderByClause,
     take,
@@ -92,9 +112,13 @@ export async function getEpisodeBySlug(slug: string) {
   });
 }
 
-export async function getEpisodeCount(status?: ContentStatus) {
+export async function getEpisodeCount(status?: ContentStatus, eraId?: string) {
+  const where: Prisma.EpisodeWhereInput = {
+    ...(status ? { status } : {}),
+    ...buildEraWhere(eraId),
+  };
   return prisma.episode.count({
-    where: status ? { status } : undefined,
+    where: Object.keys(where).length > 0 ? where : undefined,
   });
 }
 
