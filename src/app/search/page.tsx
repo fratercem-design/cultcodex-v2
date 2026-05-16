@@ -65,8 +65,22 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
       {/* Search input */}
-      <div className="mb-8">
+      <div className="mb-6">
         <SearchInput defaultValue={query} />
+      </div>
+
+      {/* Oracle crosslink */}
+      <div className="mb-8 flex items-center justify-between gap-4 rounded-lg border border-accent-violet/20 bg-accent-violet/5 px-4 py-3">
+        <p className="font-mono text-[11px] text-text-muted leading-snug">
+          <span className="text-accent-violet font-bold">Want a synthesized answer?</span>{" "}
+          The Oracle is AI trained on the full archive — ask a question, get an answer with citations.
+        </p>
+        <Link
+          href="/oracle"
+          className="shrink-0 inline-flex items-center gap-1 rounded border border-accent-violet/40 bg-surface px-3 py-1.5 font-mono text-[10px] font-bold text-accent-violet transition-colors hover:bg-accent-violet/10 whitespace-nowrap"
+        >
+          Ask Oracle →
+        </Link>
       </div>
 
       {/* Filter bar */}

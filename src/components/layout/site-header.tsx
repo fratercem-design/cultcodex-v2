@@ -22,11 +22,11 @@ import { SearchTrigger } from "@/components/search/search-trigger";
  */
 const PRIMARY_NAV = [
   { label: "Archive", href: "/episodes" },
+  { label: "Ask Oracle", href: "/oracle", accent: "cyan" },
   { label: "Signals", href: "/topics" },
   { label: "Collections", href: "/collections" },
-  { label: "Posts", href: "/posts" },
   { label: "Psychenomicon", href: "/psychenomicon", accent: "violet" },
-  { label: "Initiation", href: "/premium", accent: "gold" },
+  { label: "Initiate+", href: "/premium", accent: "gold" },
 ] as const;
 
 export async function SiteHeader() {
@@ -66,7 +66,9 @@ export async function SiteHeader() {
               key={item.href}
               href={item.href}
               className={
-                "accent" in item && item.accent === "violet"
+                "accent" in item && item.accent === "cyan"
+                  ? "font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded text-accent-cyan border border-accent-cyan/30 hover:bg-accent-cyan/10 hover:border-accent-cyan/60 transition-colors"
+                  : "accent" in item && item.accent === "violet"
                   ? "font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded text-accent-violet border border-accent-violet/30 hover:bg-accent-violet/10 hover:border-accent-violet/60 transition-colors"
                   : "accent" in item && item.accent === "gold"
                   ? "font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded text-accent-gold border border-accent-gold/30 hover:bg-accent-gold/10 hover:border-accent-gold/60 transition-colors"

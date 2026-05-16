@@ -307,7 +307,7 @@ export default async function StartHerePage() {
               {" "}· $10/month
             </p>
             <Link
-              href="/psychenomicon"
+              href="/oracle"
               className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-5 py-2 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25"
             >
               Open the Oracle →
@@ -397,6 +397,7 @@ export default async function StartHerePage() {
             label: "Intelligence Layer",
             color: "violet" as const,
             items: [
+              { href: "/oracle", label: "Oracle — Ask AI", desc: "Ask anything · AI answers from the full archive" },
               { href: "/psychenomicon", label: "Psychenomicon", desc: "Living myth-engine — chapters, entities, threads" },
               { href: "/psychenomicon/entities", label: "Entities", desc: "Tracked archetypes across the archive" },
               { href: "/lexicon", label: "Lexicon", desc: "Panelverse terms defined" },

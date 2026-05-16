@@ -9,9 +9,9 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "The Oracle — CULT CODEX",
+  title: "Ask the Oracle — AI Search — CULT CODEX",
   description:
-    "Consult the Oracle. Ask anything about the Cult of Psyche archive — 1,500+ episodes answered.",
+    "Ask anything about the Cult of Psyche archive. The Oracle is an AI trained on 2,500+ transmissions — it synthesizes answers from actual transcripts, lore entries, and behavioral profiles, with citations.",
 };
 
 export default async function OraclePage() {
@@ -73,7 +73,7 @@ export default async function OraclePage() {
           THE ORACLE
         </h1>
         <p className="mt-1.5 font-mono text-xs uppercase tracking-[0.45em] text-accent-violet/60">
-          of the Codex
+          AI search of the complete archive
         </p>
 
         {/* Thin gold rule */}
@@ -82,9 +82,9 @@ export default async function OraclePage() {
         <MysticalDivider className="mt-4 opacity-40 [&_svg]:!text-accent-violet/25" />
 
         <p className="mx-auto mt-4 max-w-md px-4 font-serif text-sm leading-relaxed text-text-muted italic">
-          The distilled voice of{" "}
-          <span className="text-accent-cyan">{totalQuotes.toLocaleString()}+ archive moments</span>.
-          Ask what you need to know.
+          Ask anything.{" "}
+          <span className="text-accent-cyan">{totalQuotes.toLocaleString()}+ archive moments</span>{" "}
+          synthesized in real time — with citations back to the source.
         </p>
       </header>
 

@@ -163,6 +163,45 @@ export default async function HomePage() {
             ))}
           </div>
 
+          {/* ── ORACLE — AI SEARCH ───────────────────────────────────── */}
+          <div className="rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface px-6 py-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="space-y-1.5">
+                <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">/// ai_oracle</p>
+                <h2 className="font-display text-lg font-bold text-white">Ask the archive anything.</h2>
+                <p className="font-mono text-[11px] text-text-muted leading-relaxed max-w-lg">
+                  AI trained on every transcript, lore entry, and behavioral profile. Ask a question —
+                  get an answer grounded in actual archive content, with citations.
+                </p>
+              </div>
+              <Link
+                href="/oracle"
+                className="shrink-0 self-start inline-flex items-center gap-1.5 rounded-lg border border-accent-violet bg-accent-violet/15 px-4 py-2.5 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25 whitespace-nowrap"
+              >
+                Ask the Oracle →
+              </Link>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {[
+                "What are Beetle's recurring patterns?",
+                "Who challenged the host and won?",
+                "What does the archive say about manipulation?",
+                "How has Tracy-X evolved over time?",
+              ].map((q) => (
+                <Link
+                  key={q}
+                  href="/oracle"
+                  className="rounded-full border border-accent-violet/20 bg-surface px-3 py-1.5 font-mono text-[10px] text-text-muted hover:border-accent-violet/50 hover:text-accent-violet transition-colors"
+                >
+                  {q}
+                </Link>
+              ))}
+            </div>
+            <p className="font-mono text-[9px] text-text-muted/40 uppercase tracking-widest">
+              Initiate+ · $10/mo · Answers cite actual episodes, transcripts, and lore
+            </p>
+          </div>
+
           {/* ── FEATURED EPISODE ─────────────────────────────────────── */}
           {featured && (
             <div className="space-y-3">
@@ -294,8 +333,8 @@ export default async function HomePage() {
           {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
           <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">/// unlock_the_archive</p>
-            <p className="font-display text-xl font-bold text-white">Full transcripts. The Psychenomicon. Your cult identity.</p>
-            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ unlocks everything for $10/mo. No contracts.</p>
+            <p className="font-display text-xl font-bold text-white">Full transcripts. AI Oracle. The Psychenomicon.</p>
+            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
                 href="/subscribe"
