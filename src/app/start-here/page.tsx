@@ -262,6 +262,7 @@ export default async function StartHerePage() {
               { href: "/quotes", label: "Quotes", desc: `${stats.quotes.toLocaleString()} memorable moments` },
               { href: "/lore", label: "Lore", desc: "Deep mythology entries" },
               { href: "/members", label: "Members", desc: "The cult community" },
+              { href: "/timeline", label: "Timeline", desc: "All episodes, chronological" },
             ],
           },
           {

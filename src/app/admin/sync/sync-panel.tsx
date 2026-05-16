@@ -87,6 +87,7 @@ export function SyncPanel({
   // ── People enrichment ──
   const [enrichPeopleBatch, setEnrichPeopleBatch] = useState(5);
   const [enrichPeopleLoading, setEnrichPeopleLoading] = useState(false);
+  const [enrichPeopleProgress, setEnrichPeopleProgress] = useState<{ done: number; remaining: number } | null>(null);
   const [enrichPeopleResult, setEnrichPeopleResult] = useState<{
     ok: boolean;
     processed?: number;
@@ -170,25 +171,41 @@ export function SyncPanel({
     }
   }
 
-  async function handleEnrichPeople() {
+  async function handleEnrichPeople(loop = false) {
     setEnrichPeopleLoading(true);
     setEnrichPeopleResult(null);
+    setEnrichPeopleProgress(null);
+    let totalDone = 0;
+
     try {
-      const res = await fetch("/api/admin/enrich-people", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-enrich-secret": enrichSecret,
-        },
-        body: JSON.stringify({ batch: enrichPeopleBatch }),
-      });
-      const data = await res.json() as typeof enrichPeopleResult;
-      setEnrichPeopleResult({ ok: res.ok, ...data });
+      while (true) {
+        const res = await fetch("/api/admin/enrich-people", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-enrich-secret": enrichSecret,
+          },
+          body: JSON.stringify({ batch: enrichPeopleBatch }),
+        });
+        const data = await res.json() as typeof enrichPeopleResult & { remaining?: number; done?: boolean };
+        if (!res.ok || !data?.ok) {
+          setEnrichPeopleResult({ ok: false, error: data?.error ?? "Request failed." });
+          break;
+        }
+        totalDone += data.processed ?? 0;
+        setEnrichPeopleProgress({ done: totalDone, remaining: data.remaining ?? 0 });
+        if (!loop || data.done || data.remaining === 0) {
+          setEnrichPeopleResult({ ...data, ok: true });
+          break;
+        }
+        await new Promise((r) => setTimeout(r, 1500));
+      }
       router.refresh();
     } catch {
       setEnrichPeopleResult({ ok: false, error: "Network error." });
     } finally {
       setEnrichPeopleLoading(false);
+      setEnrichPeopleProgress(null);
     }
   }
 
@@ -432,17 +449,28 @@ export function SyncPanel({
               ))}
             </select>
           </div>
-          <button
-            onClick={handleEnrichPeople}
-            disabled={enrichPeopleLoading || unenrichedPeople === 0}
-            className="w-full flex items-center justify-center gap-2 rounded border border-accent-crimson/50 bg-accent-crimson/10 hover:bg-accent-crimson/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-crimson transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {enrichPeopleLoading
-              ? <><Spinner /> Profiling {enrichPeopleBatch} people…</>
-              : unenrichedPeople === 0
-              ? "All profiles generated ✓"
-              : `Generate Next ${enrichPeopleBatch} Profile${enrichPeopleBatch !== 1 ? "s" : ""} →`}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleEnrichPeople(false)}
+              disabled={enrichPeopleLoading || unenrichedPeople === 0}
+              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-crimson/50 bg-accent-crimson/10 hover:bg-accent-crimson/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-crimson transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {enrichPeopleLoading && !enrichPeopleProgress
+                ? <><Spinner /> Profiling…</>
+                : unenrichedPeople === 0
+                ? "All profiles generated ✓"
+                : `Profile Next ${enrichPeopleBatch} →`}
+            </button>
+            <button
+              onClick={() => handleEnrichPeople(true)}
+              disabled={enrichPeopleLoading || unenrichedPeople === 0}
+              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-crimson bg-accent-crimson/20 hover:bg-accent-crimson/30 px-4 py-2.5 font-mono text-xs font-bold text-accent-crimson transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {enrichPeopleLoading && enrichPeopleProgress
+                ? <><Spinner /> {enrichPeopleProgress.done} done, {enrichPeopleProgress.remaining} left…</>
+                : "Run All →→"}
+            </button>
+          </div>
           {enrichPeopleResult && (
             <div className={`rounded border px-4 py-3 space-y-2 ${enrichPeopleResult.ok ? "border-accent-crimson/30 bg-accent-crimson/5" : "border-red-500/30 bg-red-500/5"}`}>
               {enrichPeopleResult.ok ? (
