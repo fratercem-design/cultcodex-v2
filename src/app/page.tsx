@@ -142,12 +142,13 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-10 space-y-12">
 
           {/* ── SECTION NAV ──────────────────────────────────────────── */}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {([
-              { href: "/episodes", icon: "📺", label: "Episodes", count: stats.episodes.toLocaleString(), accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
-              { href: "/people",   icon: "👁",  label: "People",   count: stats.people.toLocaleString(),   accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5 group-hover:text-accent-cyan" },
-              { href: "/topics",   icon: "🕸️", label: "Topics",   count: stats.topics.toLocaleString(),   accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
-              { href: "/lore",     icon: "📜",  label: "Lore",     count: stats.loreEntries.toLocaleString(), accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
+              { href: "/episodes", icon: "📺", label: "Episodes",    count: stats.episodes.toLocaleString(),    accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
+              { href: "/people",   icon: "👁",  label: "People",      count: stats.people.toLocaleString(),      accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5 group-hover:text-accent-cyan" },
+              { href: "/graph",    icon: "🕸️", label: "Network Map", count: "relationship graph",               accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
+              { href: "/topics",   icon: "◈",  label: "Signals",     count: stats.topics.toLocaleString(),      accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
+              { href: "/lore",     icon: "📜",  label: "Lore",        count: stats.loreEntries.toLocaleString(), accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
             ] as const).map((item) => (
               <Link
                 key={item.href}
@@ -157,7 +158,7 @@ export default async function HomePage() {
                 <span className="text-xl flex-shrink-0">{item.icon}</span>
                 <div className="min-w-0">
                   <p className="font-mono text-xs font-bold text-text-primary truncate">{item.label}</p>
-                  <p className="font-mono text-[10px] text-text-muted">{item.count}</p>
+                  <p className="font-mono text-[10px] text-text-muted truncate">{item.count}</p>
                 </div>
               </Link>
             ))}

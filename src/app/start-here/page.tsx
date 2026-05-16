@@ -388,6 +388,7 @@ export default async function StartHerePage() {
             color: "cyan" as const,
             items: [
               { href: "/search", label: "Search", desc: "Full-text across the archive" },
+              { href: "/graph", label: "Relationship Map", desc: "Who appeared with whom — as a live network" },
               { href: "/topics", label: "Signals", desc: "Every theme and concept" },
               { href: "/collections", label: "Collections", desc: "Curated groupings" },
               { href: "/episodes", label: "Episodes", desc: `${stats.episodes.toLocaleString()} transmissions` },
