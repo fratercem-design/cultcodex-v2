@@ -43,30 +43,31 @@ interface SupadataJobId {
 
 async function fetchTranscriptSupadata(
   videoId: string,
-  apiKey: string,
-  mode: "auto" | "generate" = "generate"
+  apiKey: string
 ): Promise<{ chunks: SupadataChunk[] | null; reason: string }> {
-  const url = `https://www.youtube.com/watch?v=${videoId}`;
-
-  const res = await fetch(`${SUPADATA_BASE}/transcript`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-    },
-    // mode: "generate" forces Supadata to run ASR (Whisper) on the audio
-    // when YouTube has no native captions — required for livestream archives.
-    body: JSON.stringify({ url, lang: "en", mode }),
+  // Try YouTube-specific GET endpoint first (works for both native captions and ASR)
+  const params = new URLSearchParams({ videoId, lang: "en" });
+  let res = await fetch(`${SUPADATA_BASE}/youtube/transcript?${params}`, {
+    headers: { "x-api-key": apiKey },
   });
+
+  // Fall back to general POST endpoint
+  if (!res.ok && res.status === 404) {
+    res = await fetch(`${SUPADATA_BASE}/transcript`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-api-key": apiKey },
+      body: JSON.stringify({ url: `https://www.youtube.com/watch?v=${videoId}`, lang: "en" }),
+    });
+  }
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    return { chunks: null, reason: `supadata_${res.status}: ${body.slice(0, 100)}` };
+    return { chunks: null, reason: `supadata_${res.status}: ${body.slice(0, 200)}` };
   }
 
   const data = (await res.json()) as SupadataTranscript | SupadataJobId;
 
-  // Async job — poll up to 12 times (1 min) at 5s intervals for ASR generation
+  // Async job — poll up to 12 times (1 min) at 5s intervals
   if ("jobId" in data) {
     for (let attempt = 0; attempt < 12; attempt++) {
       await sleep(5000);
@@ -80,12 +81,11 @@ async function fetchTranscriptSupadata(
         if (typeof content === "string" || !Array.isArray(content) || content.length === 0) {
           return { chunks: null, reason: "supadata_empty_job" };
         }
-        return { chunks: content, reason: `supadata_${mode}_async` };
+        return { chunks: content, reason: "supadata_async" };
       }
       if (jobData.status === "failed" || jobData.status === "error") {
         return { chunks: null, reason: `supadata_job_${jobData.status}` };
       }
-      // still queued/processing — keep polling
     }
     return { chunks: null, reason: "supadata_job_timeout" };
   }
@@ -94,7 +94,7 @@ async function fetchTranscriptSupadata(
   if (typeof content === "string" || !Array.isArray(content) || content.length === 0) {
     return { chunks: null, reason: "supadata_empty" };
   }
-  return { chunks: content, reason: `supadata_${mode}` };
+  return { chunks: content, reason: "supadata" };
 }
 
 export async function POST(req: NextRequest) {
