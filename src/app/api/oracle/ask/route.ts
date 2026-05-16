@@ -40,37 +40,53 @@ const STOP = new Set([
   "what", "who", "why", "how", "when", "where", "does", "did", "do",
   "is", "are", "was", "were", "the", "a", "an", "and", "or", "but",
   "in", "on", "at", "to", "for", "of", "with", "about", "that", "this",
-  "it", "he", "she", "they", "psyche", "cult", "show", "say", "says",
+  "it", "he", "she", "they", "show", "say", "says",
   "said", "talk", "talks", "talked", "think", "thinks", "thought",
   "have", "has", "had", "will", "would", "could", "should", "can",
   "ever", "never", "always", "often", "usually", "generally",
 ]);
 
-function extractTerms(question: string): string {
-  const words = question
-    .toLowerCase()
-    .replace(/[?.,!'"]/g, "")
-    .split(/\s+/)
-    .filter((w) => w.length > 3 && !STOP.has(w));
-  return words.slice(0, 3).join(" ") || question.slice(0, 40);
+/** Returns top meaningful terms and the full cleaned query for broader searches. */
+function extractTerms(question: string): { terms: string[]; fullQuery: string } {
+  const cleaned = question.toLowerCase().replace(/[?.,!'"]/g, "");
+  const words = cleaned.split(/\s+/).filter((w) => w.length > 2 && !STOP.has(w));
+  return {
+    terms: words.slice(0, 5),
+    fullQuery: words.join(" ") || cleaned.slice(0, 60),
+  };
 }
 
 async function searchArchive(question: string) {
-  const query = extractTerms(question);
+  const { terms, fullQuery } = extractTerms(question);
+  // Primary: multi-term joined query. Fallback: first individual term.
+  const primaryQuery = terms.slice(0, 3).join(" ") || fullQuery;
+  const fallbackQuery = terms[0] ?? fullQuery;
 
-  const [quotes, transcripts, episodes, people] = await Promise.all([
+  const [quotes, transcripts, episodes, people, lore] = await Promise.all([
+    // Quotes: try combined terms, widen with individual terms
     prisma.quote.findMany({
-      where: { text: { contains: query, mode: "insensitive" } },
+      where: {
+        OR: [
+          { text: { contains: primaryQuery, mode: "insensitive" } },
+          ...(terms.slice(0, 2).map((t) => ({ text: { contains: t, mode: "insensitive" as const } }))),
+        ],
+      },
       select: {
         id: true,
         text: true,
         speaker: { select: { displayName: true, slug: true } },
         episode: { select: { title: true, slug: true } },
       },
-      take: 5,
+      take: 6,
     }),
+    // Transcripts: cast wider net — 12 segments across episodes
     prisma.transcriptSegment.findMany({
-      where: { text: { contains: query, mode: "insensitive" } },
+      where: {
+        OR: [
+          { text: { contains: primaryQuery, mode: "insensitive" } },
+          { text: { contains: fallbackQuery, mode: "insensitive" } },
+        ],
+      },
       select: {
         id: true,
         text: true,
@@ -78,34 +94,61 @@ async function searchArchive(question: string) {
         startSeconds: true,
         episode: { select: { title: true, slug: true, episodeNumber: true } },
       },
-      take: 8,
+      take: 12,
     }),
+    // Episodes: search title, summaryShort AND summaryLong
     prisma.episode.findMany({
       where: {
         status: "published",
         OR: [
-          { title: { contains: query, mode: "insensitive" } },
-          { summaryShort: { contains: query, mode: "insensitive" } },
+          { title: { contains: primaryQuery, mode: "insensitive" } },
+          { summaryShort: { contains: primaryQuery, mode: "insensitive" } },
+          { summaryLong: { contains: primaryQuery, mode: "insensitive" } },
+          { searchText: { contains: primaryQuery, mode: "insensitive" } },
+          { title: { contains: fallbackQuery, mode: "insensitive" } },
+          { summaryShort: { contains: fallbackQuery, mode: "insensitive" } },
         ],
       },
-      select: { id: true, title: true, slug: true, summaryShort: true, episodeNumber: true },
+      select: {
+        id: true, title: true, slug: true,
+        summaryShort: true, summaryLong: true, episodeNumber: true,
+      },
       orderBy: { airDate: "desc" },
-      take: 3,
+      take: 4,
     }),
+    // People: include searchText
     prisma.person.findMany({
       where: {
         OR: [
-          { displayName: { contains: query, mode: "insensitive" } },
-          { shortBio: { contains: query, mode: "insensitive" } },
-          { loreSummary: { contains: query, mode: "insensitive" } },
+          { displayName: { contains: primaryQuery, mode: "insensitive" } },
+          { shortBio: { contains: primaryQuery, mode: "insensitive" } },
+          { loreSummary: { contains: primaryQuery, mode: "insensitive" } },
+          { searchText: { contains: primaryQuery, mode: "insensitive" } },
+          { displayName: { contains: fallbackQuery, mode: "insensitive" } },
         ],
       },
-      select: { id: true, displayName: true, slug: true, shortBio: true, loreSummary: true },
-      take: 2,
+      select: {
+        id: true, displayName: true, slug: true,
+        shortBio: true, loreSummary: true,
+      },
+      take: 3,
+    }),
+    // Lore entries — new signal source
+    prisma.loreEntry.findMany({
+      where: {
+        OR: [
+          { title: { contains: primaryQuery, mode: "insensitive" } },
+          { summary: { contains: primaryQuery, mode: "insensitive" } },
+          { searchText: { contains: primaryQuery, mode: "insensitive" } },
+          { title: { contains: fallbackQuery, mode: "insensitive" } },
+        ],
+      },
+      select: { id: true, title: true, slug: true, summary: true },
+      take: 3,
     }),
   ]);
 
-  return { quotes, transcripts, episodes, people, query };
+  return { quotes, transcripts, episodes, people, lore, query: primaryQuery };
 }
 
 function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
@@ -115,6 +158,7 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
   const parts: string[] = [];
   const citations: OracleCitation[] = [];
   const seenEpisodes = new Set<string>();
+  const seenSlugs = new Set<string>();
 
   if (data.quotes.length > 0) {
     parts.push("=== QUOTES FROM THE ARCHIVE ===");
@@ -128,12 +172,17 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
   }
 
   if (data.transcripts.length > 0) {
+    // Deduplicate by episode — show at most 2 segments per episode
+    const perEpisode = new Map<string, number>();
     parts.push("\n=== TRANSCRIPT EXCERPTS ===");
     for (const t of data.transcripts) {
+      const count = perEpisode.get(t.episode.slug) ?? 0;
+      if (count >= 2) continue;
+      perEpisode.set(t.episode.slug, count + 1);
       const epLabel = t.episode.episodeNumber
         ? `EP.${String(t.episode.episodeNumber).padStart(3, "0")} — ${t.episode.title}`
         : t.episode.title;
-      parts.push(`[${t.speakerLabel ?? "Speaker"}]: "${t.text.slice(0, 200)}" — ${epLabel}`);
+      parts.push(`[${t.speakerLabel ?? "Speaker"}]: "${t.text.slice(0, 250)}" — ${epLabel}`);
       if (!seenEpisodes.has(t.episode.slug)) {
         seenEpisodes.add(t.episode.slug);
         citations.push({ type: "transcript", label: t.episode.title, href: `/episodes/${t.episode.slug}` });
@@ -144,20 +193,34 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
   if (data.episodes.length > 0) {
     parts.push("\n=== RELEVANT EPISODES ===");
     for (const ep of data.episodes) {
-      parts.push(`${ep.title}${ep.summaryShort ? `: ${ep.summaryShort}` : ""}`);
-      if (!seenEpisodes.has(ep.slug)) {
-        seenEpisodes.add(ep.slug);
-        citations.push({ type: "episode", label: ep.title, href: `/episodes/${ep.slug}` });
-      }
+      if (seenEpisodes.has(ep.slug)) continue;
+      // Prefer summaryLong for richer context; fall back to summaryShort
+      const summary = ep.summaryLong
+        ? ep.summaryLong.slice(0, 500)
+        : ep.summaryShort ?? "";
+      parts.push(`${ep.title}${summary ? `: ${summary}` : ""}`);
+      seenEpisodes.add(ep.slug);
+      citations.push({ type: "episode", label: ep.title, href: `/episodes/${ep.slug}` });
     }
   }
 
   if (data.people.length > 0) {
     parts.push("\n=== RELEVANT PEOPLE ===");
     for (const p of data.people) {
-      const bio = p.loreSummary ? p.loreSummary.slice(0, 400) : p.shortBio ?? "";
+      if (seenSlugs.has(p.slug)) continue;
+      seenSlugs.add(p.slug);
+      const bio = p.loreSummary ? p.loreSummary.slice(0, 500) : (p.shortBio ?? "");
       parts.push(`${p.displayName}${bio ? `: ${bio}` : ""}`);
       citations.push({ type: "person", label: p.displayName, href: `/people/${p.slug}` });
+    }
+  }
+
+  if (data.lore.length > 0) {
+    parts.push("\n=== LORE ENTRIES ===");
+    for (const l of data.lore) {
+      if (seenSlugs.has(l.slug)) continue;
+      seenSlugs.add(l.slug);
+      parts.push(`${l.title}${l.summary ? `: ${l.summary.slice(0, 300)}` : ""}`);
     }
   }
 
@@ -166,7 +229,7 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
       parts.length > 0
         ? parts.join("\n")
         : "No directly relevant archive content found for this query.",
-    citations: citations.slice(0, 6),
+    citations: citations.slice(0, 8),
   };
 }
 
@@ -206,8 +269,8 @@ export async function POST(req: NextRequest) {
 
   const client = new Anthropic({ apiKey: anthropicKey });
   const claudeRes = await client.messages.create({
-    model: process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001",
-    max_tokens: 350,
+    model: process.env.ORACLE_MODEL ?? "claude-haiku-4-5-20251001",
+    max_tokens: 400,
     system: ORACLE_SYSTEM,
     messages: [
       {
