@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
+import { getEraById } from "@/lib/eras";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -36,6 +37,15 @@ export interface OracleResponse {
   error?: string;
 }
 
+// Optional structured intent carriers — all fields optional, all additive.
+// When provided, biases archive retrieval toward the relevant era/person/archetype.
+// Callers that omit this get identical behavior to the current API.
+export interface OracleSearchContext {
+  sourceEra?: string;       // era id (e.g. "dark-arc") — filters to that era's episode range
+  sourcePerson?: string;    // person slug — adds slug words to the search term pool
+  sourceArchetype?: string; // archetype name — frames the Oracle's answer through that lens
+}
+
 const STOP = new Set([
   "what", "who", "why", "how", "when", "where", "does", "did", "do",
   "is", "are", "was", "were", "the", "a", "an", "and", "or", "but",
@@ -56,11 +66,29 @@ function extractTerms(question: string): { terms: string[]; fullQuery: string } 
   };
 }
 
-async function searchArchive(question: string) {
+async function searchArchive(question: string, ctx?: OracleSearchContext) {
+  const era = ctx?.sourceEra ? getEraById(ctx.sourceEra) : null;
+
+  // Merge person slug words into the term pool so person-context queries
+  // surface that person's quotes and transcript moments.
+  const personTerms = ctx?.sourcePerson
+    ? ctx.sourcePerson.replace(/-/g, " ").split(" ").filter((w) => w.length > 2)
+    : [];
+
   const { terms, fullQuery } = extractTerms(question);
-  // Primary: multi-term joined query. Fallback: first individual term.
-  const primaryQuery = terms.slice(0, 3).join(" ") || fullQuery;
-  const fallbackQuery = terms[0] ?? fullQuery;
+  const augmentedTerms = [...new Set([...terms, ...personTerms])];
+  const primaryQuery = augmentedTerms.slice(0, 3).join(" ") || fullQuery;
+  const fallbackQuery = augmentedTerms[0] ?? fullQuery;
+
+  // Episode number filter applied when a source era is present.
+  const eraEpisodeFilter = era
+    ? {
+        episodeNumber: {
+          gte: era.episodeStart,
+          ...(era.episodeEnd !== null ? { lte: era.episodeEnd } : {}),
+        },
+      }
+    : {};
 
   const [quotes, transcripts, episodes, people, lore] = await Promise.all([
     // Quotes: try combined terms, widen with individual terms
@@ -68,7 +96,7 @@ async function searchArchive(question: string) {
       where: {
         OR: [
           { text: { contains: primaryQuery, mode: "insensitive" } },
-          ...(terms.slice(0, 2).map((t) => ({ text: { contains: t, mode: "insensitive" as const } }))),
+          ...(augmentedTerms.slice(0, 2).map((t) => ({ text: { contains: t, mode: "insensitive" as const } }))),
         ],
       },
       select: {
@@ -79,9 +107,10 @@ async function searchArchive(question: string) {
       },
       take: 6,
     }),
-    // Transcripts: cast wider net — 12 segments across episodes
+    // Transcripts: cast wider net — 12 segments; scoped to era when present
     prisma.transcriptSegment.findMany({
       where: {
+        ...(era ? { episode: { ...eraEpisodeFilter } } : {}),
         OR: [
           { text: { contains: primaryQuery, mode: "insensitive" } },
           { text: { contains: fallbackQuery, mode: "insensitive" } },
@@ -96,10 +125,11 @@ async function searchArchive(question: string) {
       },
       take: 12,
     }),
-    // Episodes: search title, summaryShort AND summaryLong
+    // Episodes: search title, summaryShort AND summaryLong; scoped to era when present
     prisma.episode.findMany({
       where: {
         status: "published",
+        ...eraEpisodeFilter,
         OR: [
           { title: { contains: primaryQuery, mode: "insensitive" } },
           { summaryShort: { contains: primaryQuery, mode: "insensitive" } },
@@ -133,7 +163,7 @@ async function searchArchive(question: string) {
       },
       take: 3,
     }),
-    // Lore entries — new signal source
+    // Lore entries
     prisma.loreEntry.findMany({
       where: {
         OR: [
@@ -256,6 +286,22 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const rawCtx = body.searchContext;
+  const searchContext: OracleSearchContext | undefined =
+    rawCtx && typeof rawCtx === "object" && !Array.isArray(rawCtx)
+      ? {
+          sourceEra: typeof (rawCtx as Record<string, unknown>).sourceEra === "string"
+            ? String((rawCtx as Record<string, unknown>).sourceEra).slice(0, 40)
+            : undefined,
+          sourcePerson: typeof (rawCtx as Record<string, unknown>).sourcePerson === "string"
+            ? String((rawCtx as Record<string, unknown>).sourcePerson).slice(0, 80)
+            : undefined,
+          sourceArchetype: typeof (rawCtx as Record<string, unknown>).sourceArchetype === "string"
+            ? String((rawCtx as Record<string, unknown>).sourceArchetype).slice(0, 80)
+            : undefined,
+        }
+      : undefined;
+
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
   if (!anthropicKey) {
     return NextResponse.json(
@@ -264,8 +310,26 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const archiveData = await searchArchive(question);
+  const archiveData = await searchArchive(question, searchContext);
   const { contextText, citations } = buildContext(archiveData);
+
+  // Build optional context preamble for the Claude prompt.
+  // Keeps the Oracle's answer anchored to the caller's intent.
+  const contextLines: string[] = [];
+  if (searchContext?.sourceArchetype) {
+    contextLines.push(`Archetype lens: ${searchContext.sourceArchetype}`);
+  }
+  if (searchContext?.sourceEra) {
+    const era = getEraById(searchContext.sourceEra);
+    if (era) contextLines.push(`Era context: ${era.label} — ${era.subtitle}`);
+  }
+  if (searchContext?.sourcePerson) {
+    const name = searchContext.sourcePerson.replace(/-/g, " ");
+    contextLines.push(`Subject focus: ${name}`);
+  }
+  const contextPreamble = contextLines.length > 0
+    ? `Context frame: ${contextLines.join(" | ")}\n\n`
+    : "";
 
   const client = new Anthropic({ apiKey: anthropicKey });
   const claudeRes = await client.messages.create({
@@ -275,7 +339,7 @@ export async function POST(req: NextRequest) {
     messages: [
       {
         role: "user",
-        content: `Archive context:\n${contextText}\n\nQuestion: ${question}`,
+        content: `Archive context:\n${contextText}\n\n${contextPreamble}Question: ${question}`,
       },
     ],
   });
