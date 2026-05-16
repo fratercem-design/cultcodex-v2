@@ -113,14 +113,16 @@ export async function POST(req: NextRequest) {
   }
 }
 
+import type { Message } from "@anthropic-ai/sdk/resources/messages";
+
 async function callAnthropicWithRetry(
   params: Parameters<typeof anthropic.messages.create>[0],
   maxAttempts = 3
-): Promise<Awaited<ReturnType<typeof anthropic.messages.create>>> {
+): Promise<Message> {
   let lastErr: unknown;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
-      return await anthropic.messages.create(params);
+      return await anthropic.messages.create(params) as Message;
     } catch (err) {
       lastErr = err;
       const status = (err as { status?: number }).status;
