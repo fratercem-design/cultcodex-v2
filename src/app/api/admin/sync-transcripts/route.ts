@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 export const maxDuration = 300;
 export const dynamic = "force-dynamic";
 
-const DELAY_MS = 800;
+const DELAY_MS = 3000;
 const SUPADATA_BASE = "https://api.supadata.ai/v1";
 
 function sleep(ms: number) {
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json().catch(() => ({})) as { limit?: number };
-  const limit = Math.min(Math.max(1, body.limit ?? 20), 100);
+  const limit = Math.min(Math.max(1, body.limit ?? 10), 50);
 
   const episodesWithTranscripts = await prisma.transcriptSegment.groupBy({
     by: ["episodeId"],
@@ -112,8 +112,14 @@ export async function POST(req: NextRequest) {
   });
   const hasTranscript = new Set(episodesWithTranscripts.map((e) => e.episodeId));
 
+  // "no_captions" sentinel written to transcriptRaw means we already confirmed
+  // this video has no available transcript — skip it on future runs.
   const episodes = await prisma.episode.findMany({
-    where: { youtubeVideoId: { not: null }, status: "published" },
+    where: {
+      youtubeVideoId: { not: null },
+      status: "published",
+      transcriptRaw: { not: "no_captions" },
+    },
     select: { id: true, slug: true, youtubeVideoId: true },
     orderBy: { airDate: "asc" },
   });
@@ -131,6 +137,13 @@ export async function POST(req: NextRequest) {
       const { chunks, reason } = await fetchTranscriptSupadata(videoId, supadataKey);
 
       if (!chunks) {
+        // 404 = confirmed no captions on YouTube; mark so we never retry
+        if (reason.startsWith("supadata_404")) {
+          await prisma.episode.update({
+            where: { id: ep.id },
+            data: { transcriptRaw: "no_captions" },
+          });
+        }
         results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "no_transcript", reason });
       } else {
         await prisma.transcriptSegment.createMany({
