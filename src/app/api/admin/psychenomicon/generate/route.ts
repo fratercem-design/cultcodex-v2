@@ -113,6 +113,27 @@ export async function POST(req: NextRequest) {
   }
 }
 
+async function callAnthropicWithRetry(
+  params: Parameters<typeof anthropic.messages.create>[0],
+  maxAttempts = 3
+): Promise<Awaited<ReturnType<typeof anthropic.messages.create>>> {
+  let lastErr: unknown;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await anthropic.messages.create(params);
+    } catch (err) {
+      lastErr = err;
+      const status = (err as { status?: number }).status;
+      // Only retry on 500/529 (overloaded) — not 400/401/403
+      if (status !== 500 && status !== 529) throw err;
+      if (attempt < maxAttempts) {
+        await new Promise((r) => setTimeout(r, 2000 * attempt));
+      }
+    }
+  }
+  throw lastErr;
+}
+
 async function generateChapter(req: NextRequest) {
   const body = await req.json() as { episodeId?: string };
   const { episodeId } = body;
@@ -228,7 +249,7 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
   "threads": [{"title": "thread title", "description": "what this thread tracks", "status": "active|emerging|resolved"}]
 }`;
 
-  const message = await anthropic.messages.create({
+  const message = await callAnthropicWithRetry({
     model: "claude-sonnet-4-6",
     max_tokens: 16000,
     system: SYSTEM_PROMPT,
