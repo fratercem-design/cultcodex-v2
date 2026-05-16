@@ -114,14 +114,14 @@ export function SyncPanel({
     }
   }
 
-  async function handleTranscriptSync() {
+  async function handleTranscriptSync(retry = false) {
     setTranscriptLoading(true);
     setTranscriptResult(null);
     try {
       const res = await fetch("/api/admin/sync-transcripts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ limit: transcriptLimit }),
+        body: JSON.stringify({ limit: transcriptLimit, retry }),
       });
       const data = await res.json() as typeof transcriptResult;
       setTranscriptResult(data);
@@ -252,7 +252,7 @@ export function SyncPanel({
             </select>
           </div>
           <button
-            onClick={handleTranscriptSync}
+            onClick={() => handleTranscriptSync(false)}
             disabled={transcriptLoading || withoutTranscript === 0}
             className="w-full flex items-center justify-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 hover:bg-accent-violet/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-violet transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -261,6 +261,14 @@ export function SyncPanel({
               : withoutTranscript === 0
               ? "All transcripts fetched ✓"
               : `Fetch Next ${transcriptLimit} Transcripts →`}
+          </button>
+          <button
+            onClick={() => handleTranscriptSync(true)}
+            disabled={transcriptLoading}
+            className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/40 bg-accent-gold/5 hover:bg-accent-gold/10 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-accent-gold/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Re-try episodes previously marked as having no captions, using Whisper ASR generation."
+          >
+            ↻ Retry no-caption episodes (forces ASR)
           </button>
           {transcriptResult && (
             <div className={`rounded border px-4 py-3 space-y-2 ${transcriptResult.ok ? "border-accent-violet/30 bg-accent-violet/5" : "border-red-500/30 bg-red-500/5"}`}>

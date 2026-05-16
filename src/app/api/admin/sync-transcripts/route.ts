@@ -43,7 +43,8 @@ interface SupadataJobId {
 
 async function fetchTranscriptSupadata(
   videoId: string,
-  apiKey: string
+  apiKey: string,
+  mode: "auto" | "generate" = "generate"
 ): Promise<{ chunks: SupadataChunk[] | null; reason: string }> {
   const url = `https://www.youtube.com/watch?v=${videoId}`;
 
@@ -53,7 +54,9 @@ async function fetchTranscriptSupadata(
       "Content-Type": "application/json",
       "x-api-key": apiKey,
     },
-    body: JSON.stringify({ url, lang: "en" }),
+    // mode: "generate" forces Supadata to run ASR (Whisper) on the audio
+    // when YouTube has no native captions — required for livestream archives.
+    body: JSON.stringify({ url, lang: "en", mode }),
   });
 
   if (!res.ok) {
@@ -63,29 +66,35 @@ async function fetchTranscriptSupadata(
 
   const data = (await res.json()) as SupadataTranscript | SupadataJobId;
 
-  // Async job — poll once after 5 seconds
+  // Async job — poll up to 12 times (1 min) at 5s intervals for ASR generation
   if ("jobId" in data) {
-    await sleep(5000);
-    const jobRes = await fetch(`${SUPADATA_BASE}/transcript/${data.jobId}`, {
-      headers: { "x-api-key": apiKey },
-    });
-    if (!jobRes.ok) return { chunks: null, reason: `supadata_job_${jobRes.status}` };
-    const jobData = (await jobRes.json()) as { status: string; result?: SupadataTranscript };
-    if (jobData.status !== "done" || !jobData.result) {
-      return { chunks: null, reason: `supadata_job_${jobData.status}` };
+    for (let attempt = 0; attempt < 12; attempt++) {
+      await sleep(5000);
+      const jobRes = await fetch(`${SUPADATA_BASE}/transcript/${data.jobId}`, {
+        headers: { "x-api-key": apiKey },
+      });
+      if (!jobRes.ok) return { chunks: null, reason: `supadata_job_${jobRes.status}` };
+      const jobData = (await jobRes.json()) as { status: string; result?: SupadataTranscript };
+      if (jobData.status === "done" && jobData.result) {
+        const content = jobData.result.content;
+        if (typeof content === "string" || !Array.isArray(content) || content.length === 0) {
+          return { chunks: null, reason: "supadata_empty_job" };
+        }
+        return { chunks: content, reason: `supadata_${mode}_async` };
+      }
+      if (jobData.status === "failed" || jobData.status === "error") {
+        return { chunks: null, reason: `supadata_job_${jobData.status}` };
+      }
+      // still queued/processing — keep polling
     }
-    const content = jobData.result.content;
-    if (typeof content === "string" || !Array.isArray(content) || content.length === 0) {
-      return { chunks: null, reason: "supadata_empty_job" };
-    }
-    return { chunks: content, reason: "supadata_async" };
+    return { chunks: null, reason: "supadata_job_timeout" };
   }
 
   const content = (data as SupadataTranscript).content;
   if (typeof content === "string" || !Array.isArray(content) || content.length === 0) {
     return { chunks: null, reason: "supadata_empty" };
   }
-  return { chunks: content, reason: "supadata" };
+  return { chunks: content, reason: `supadata_${mode}` };
 }
 
 export async function POST(req: NextRequest) {
@@ -103,8 +112,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const body = await req.json().catch(() => ({})) as { limit?: number };
+  const body = await req.json().catch(() => ({})) as { limit?: number; retry?: boolean };
   const limit = Math.min(Math.max(1, body.limit ?? 10), 50);
+  const retry = body.retry === true;
 
   const episodesWithTranscripts = await prisma.transcriptSegment.groupBy({
     by: ["episodeId"],
@@ -112,13 +122,13 @@ export async function POST(req: NextRequest) {
   });
   const hasTranscript = new Set(episodesWithTranscripts.map((e) => e.episodeId));
 
-  // "no_captions" sentinel written to transcriptRaw means we already confirmed
-  // this video has no available transcript — skip it on future runs.
+  // "no_captions" sentinel = previously confirmed unavailable.
+  // retry: true ignores the sentinel so we can re-try with mode: "generate".
   const episodes = await prisma.episode.findMany({
     where: {
       youtubeVideoId: { not: null },
       status: "published",
-      transcriptRaw: { not: "no_captions" },
+      ...(retry ? {} : { transcriptRaw: { not: "no_captions" } }),
     },
     select: { id: true, slug: true, youtubeVideoId: true },
     orderBy: { airDate: "asc" },
