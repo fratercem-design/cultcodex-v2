@@ -151,7 +151,8 @@ export function TerminalSidebar() {
                 marginBottom: 6,
               }}
             >
-              // {group.title}
+              {"// "}
+              {group.title}
             </div>
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {group.items.map((item) => {
