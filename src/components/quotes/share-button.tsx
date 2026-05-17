@@ -12,11 +12,13 @@ export function QuoteShareButton({ quoteId, quoteText }: ShareButtonProps) {
 
   const handleShare = useCallback(async () => {
     const siteUrl = window.location.origin;
-    const cardUrl = `${siteUrl}/quotes/${quoteId}/og`;
+    // Share the permalink page — its OG meta auto-unfurls the poster
+    // image on Discord, Twitter, iMessage, etc.
+    const permalink = `${siteUrl}/quotes/${quoteId}`;
 
     if (navigator.share) {
       try {
-        await navigator.share({ text: quoteText, url: cardUrl });
+        await navigator.share({ text: quoteText, url: permalink });
         return;
       } catch {
         // User cancelled or not supported
@@ -24,11 +26,11 @@ export function QuoteShareButton({ quoteId, quoteText }: ShareButtonProps) {
     }
 
     try {
-      await navigator.clipboard.writeText(cardUrl);
+      await navigator.clipboard.writeText(permalink);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      prompt("Copy this URL:", cardUrl);
+      prompt("Copy this URL:", permalink);
     }
   }, [quoteId, quoteText]);
 
