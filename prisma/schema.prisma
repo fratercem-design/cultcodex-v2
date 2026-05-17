@@ -209,16 +209,17 @@ model Quote {
 }
 
 model TranscriptSegment {
-  id           String   @id @default(cuid())
+  id           String                    @id @default(cuid())
   episodeId    String
-  episode      Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  episode      Episode                   @relation(fields: [episodeId], references: [id], onDelete: Cascade)
   startSeconds Int
   endSeconds   Int
   speakerLabel String?
   text         String
   searchText   String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  embedding    Unsupported("vector(1536)")?
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @updatedAt
 
   quotes Quote[]
 
