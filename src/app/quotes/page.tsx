@@ -9,6 +9,7 @@ import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { getQuotes, getQuoteCount, getTopSpeakers } from "@/lib/queries/quotes";
 import { getArchiveLastUpdated } from "@/lib/queries/stats";
 import { getSavedQuoteIds } from "@/lib/queries/codex";
+import { getQuoteReactionCountsBatch } from "@/lib/queries/quote-reactions";
 import { getCurrentUser } from "@/lib/auth";
 import { SaveQuoteButton } from "@/components/codex/save-quote-button";
 import { formatRelativeDate } from "@/lib/format/date";
@@ -54,10 +55,11 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
 
   // /codex save state — mark which quotes the current user has already saved.
   const user = await getCurrentUser();
-  const savedIds = await getSavedQuoteIds(
-    user?.id ?? null,
-    quotes.map((q) => q.id)
-  );
+  const quoteIds = quotes.map((q) => q.id);
+  const [savedIds, reactionMap] = await Promise.all([
+    getSavedQuoteIds(user?.id ?? null, quoteIds),
+    getQuoteReactionCountsBatch(quoteIds, user?.id),
+  ]);
 
   const allQuoteCount = search || speakerFilter
     ? await getQuoteCount()
@@ -172,6 +174,8 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
                         speakerSlug={quote.speaker?.slug}
                         speakerType={quote.speaker?.personType}
                         timestampSeconds={quote.timestampSeconds}
+                        reactions={reactionMap.get(quote.id)}
+                        isAuthenticated={Boolean(user)}
                       />
                       {/* Episode context link + save button */}
                       <div className="mt-1 ml-4 flex items-center justify-between gap-2">

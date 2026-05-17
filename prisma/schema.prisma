@@ -203,9 +203,22 @@ model Quote {
   updatedAt            DateTime           @updatedAt
 
   savedBy              SavedQuote[]
+  reactions            QuoteReaction[]
 
   @@index([speakerPersonId])
   @@index([episodeId])
+}
+
+model QuoteReaction {
+  userId       String
+  quoteId      String
+  reactionType ReactionType
+  user         CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quote        Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+
+  @@id([userId, quoteId, reactionType])
+  @@index([quoteId])
 }
 
 model TranscriptSegment {
@@ -402,6 +415,7 @@ model CodexUser {
   codexPagePublic         Boolean   @default(true)
 
   reactions               EpisodeReaction[]
+  quoteReactions          QuoteReaction[]
   comments                CodexComment[]
   reports                 CommentReport[]
   sessions                CodexSession[]

@@ -10,6 +10,8 @@ import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
 import { DailyTransmission } from "@/components/home/daily-transmission";
+import { getQuoteReactionCounts } from "@/lib/queries/quote-reactions";
+import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
@@ -38,14 +40,19 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser] = await Promise.all([
     getArchiveStats(),
     getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }),
     getQuotes({ take: 2 }),
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }),
     getTopTopicsByEpisodes(10),
     getDailyTransmission(),
+    getCurrentUser(),
   ]);
+
+  const dailyQuoteReactions = dailyTransmission.quote
+    ? await getQuoteReactionCounts(dailyTransmission.quote.id, currentUser?.id)
+    : undefined;
 
   const recentCards = recentEpisodes.map(formatEpisodeForCard);
   const featured = recentEpisodes[0];
@@ -168,7 +175,11 @@ export default async function HomePage() {
           </div>
 
           {/* ── DAILY TRANSMISSION ───────────────────────────────────── */}
-          <DailyTransmission data={dailyTransmission} />
+          <DailyTransmission
+            data={dailyTransmission}
+            quoteReactions={dailyQuoteReactions}
+            isAuthenticated={Boolean(currentUser)}
+          />
 
           {/* ── ORACLE — AI SEARCH ───────────────────────────────────── */}
           <div className="rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface px-6 py-6 space-y-4">

@@ -3,9 +3,15 @@ import Image from "next/image";
 import type { DailyTransmission as DailyTransmissionData } from "@/lib/queries/daily";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { formatDate } from "@/lib/format/date";
+import {
+  QuoteReactionBar,
+  type QuoteReactionInitial,
+} from "@/components/quotes/quote-reaction-bar";
 
 interface Props {
   data: DailyTransmissionData;
+  quoteReactions?: QuoteReactionInitial;
+  isAuthenticated?: boolean;
 }
 
 function formatDateHuman(ymd: string): string {
@@ -19,7 +25,11 @@ function formatDateHuman(ymd: string): string {
   });
 }
 
-export function DailyTransmission({ data }: Props) {
+export function DailyTransmission({
+  data,
+  quoteReactions,
+  isAuthenticated = false,
+}: Props) {
   const { date, quote, spotlightEpisode, pulse } = data;
   const hasAnything = quote || spotlightEpisode || pulse.newEpisodes > 0;
   if (!hasAnything) return null;
@@ -103,6 +113,16 @@ export function DailyTransmission({ data }: Props) {
               {quote.episode.title}
             </Link>
           </div>
+          {quoteReactions && (
+            <div className="pl-5">
+              <QuoteReactionBar
+                quoteId={quote.id}
+                initial={quoteReactions}
+                isAuthenticated={isAuthenticated}
+                variant="full"
+              />
+            </div>
+          )}
         </div>
       )}
 

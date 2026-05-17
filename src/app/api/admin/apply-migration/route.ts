@@ -76,6 +76,28 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       name: "index SavedSearch by user+kind",
       sql: `CREATE INDEX IF NOT EXISTS "SavedSearch_userId_kind_idx" ON "SavedSearch"("userId", "kind")`,
     },
+    {
+      name: "create QuoteReaction table",
+      sql: `CREATE TABLE IF NOT EXISTS "QuoteReaction" (
+        "userId" TEXT NOT NULL,
+        "quoteId" TEXT NOT NULL,
+        "reactionType" "ReactionType" NOT NULL,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT "QuoteReaction_pkey" PRIMARY KEY ("userId", "quoteId", "reactionType")
+      )`,
+    },
+    {
+      name: "add QuoteReaction user fk",
+      sql: `DO $$ BEGIN ALTER TABLE "QuoteReaction" ADD CONSTRAINT "QuoteReaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "CodexUser"("id") ON DELETE CASCADE ON UPDATE CASCADE; EXCEPTION WHEN duplicate_object THEN null; END $$`,
+    },
+    {
+      name: "add QuoteReaction quote fk",
+      sql: `DO $$ BEGIN ALTER TABLE "QuoteReaction" ADD CONSTRAINT "QuoteReaction_quoteId_fkey" FOREIGN KEY ("quoteId") REFERENCES "Quote"("id") ON DELETE CASCADE ON UPDATE CASCADE; EXCEPTION WHEN duplicate_object THEN null; END $$`,
+    },
+    {
+      name: "index QuoteReaction by quote",
+      sql: `CREATE INDEX IF NOT EXISTS "QuoteReaction_quoteId_idx" ON "QuoteReaction"("quoteId")`,
+    },
   ];
 
   for (const stmt of statements) {
