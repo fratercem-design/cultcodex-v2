@@ -81,6 +81,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: episode.title,
     description: episode.summaryShort || episode.searchText || null,
     path: `/episodes/${episode.slug}`,
+    image: episode.thumbnailUrl ?? null,
   });
 }
 

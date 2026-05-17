@@ -239,7 +239,15 @@ export default async function HomePage() {
                 className="group flex flex-col sm:flex-row items-start gap-4 rounded-xl border border-border bg-surface p-4 transition-all hover:border-accent-gold/30 hover:bg-elevated"
               >
                 {featured.thumbnailUrl ? (
-                  <img src={fixThumbnailUrl(featured.thumbnailUrl)!} alt="" className="w-full sm:w-48 h-32 rounded-lg object-cover flex-shrink-0" />
+                  <div className="relative w-full sm:w-48 h-32 rounded-lg overflow-hidden flex-shrink-0">
+                    <Image
+                      src={fixThumbnailUrl(featured.thumbnailUrl)!}
+                      alt={featured.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 192px"
+                      className="object-cover"
+                    />
+                  </div>
                 ) : (
                   <div className="w-full sm:w-48 h-32 rounded-lg bg-gradient-to-br from-accent-gold/10 to-accent-violet/10 flex-shrink-0" />
                 )}

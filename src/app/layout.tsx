@@ -65,23 +65,30 @@ const vt323 = VT323({
   display: "swap",
 });
 
+const SITE_DESCRIPTION =
+  "The complete archive of the Cult of Psyche: 2,500+ transmissions, searchable transcripts, lore entries, guest profiles, relationship maps, and AI-powered exploration of every word ever spoken in the stream.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me"
   ),
   title: "CultCodex — The Living Archive",
-  description: "The living archive of the Cult of Psyche.",
+  description: SITE_DESCRIPTION,
   icons: {
     icon: "/favicon.jpg",
     apple: "/favicon.jpg",
   },
   openGraph: {
     title: "CultCodex — The Living Archive",
-    description: "The living archive of the Cult of Psyche.",
+    description: SITE_DESCRIPTION,
     images: [{ url: "/social-share.jpg", width: 1200, height: 630 }],
+    siteName: "CultCodex",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
+    title: "CultCodex — The Living Archive",
+    description: SITE_DESCRIPTION,
     images: ["/social-share.jpg"],
   },
 };
