@@ -463,6 +463,12 @@ export default async function PersonDetailPage({ params }: PageProps) {
                     </Link>
                   ))}
                 </div>
+                <Link
+                  href={`/graph/path?from=${person.slug}`}
+                  className="mt-4 block w-full rounded border border-accent-violet/30 bg-accent-violet/5 px-3 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-accent-violet hover:bg-accent-violet/10 transition-colors"
+                >
+                  Find a path to anyone →
+                </Link>
               </SectionCard>
             )}
 

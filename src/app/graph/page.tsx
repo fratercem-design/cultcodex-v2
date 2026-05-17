@@ -130,6 +130,12 @@ export default async function GraphPage({
         </p>
         <div className="flex gap-2 shrink-0">
           <Link
+            href="/graph/path"
+            className="inline-flex items-center gap-1 rounded border border-accent-violet/30 px-3 py-1.5 font-mono text-[10px] text-accent-violet hover:bg-accent-violet/10 transition-colors"
+          >
+            Find a path →
+          </Link>
+          <Link
             href="/people"
             className="inline-flex items-center gap-1 rounded border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted hover:text-accent-gold hover:border-accent-gold/30 transition-colors"
           >
