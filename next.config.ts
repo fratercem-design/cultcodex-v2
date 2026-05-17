@@ -34,6 +34,8 @@ const nextConfig: NextConfig = {
     {
       source: "/:path*",
       headers: [
+        // Enforce HTTPS for 2 years; include subdomains; eligible for browser preload lists.
+        { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
         { key: "X-Frame-Options", value: "SAMEORIGIN" },
         { key: "X-Content-Type-Options", value: "nosniff" },
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -41,6 +43,34 @@ const nextConfig: NextConfig = {
         {
           key: "Permissions-Policy",
           value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()",
+        },
+        {
+          key: "Content-Security-Policy",
+          value: [
+            // Default: only same-origin resources.
+            "default-src 'self'",
+            // Scripts: self + inline (required for Next.js hydration and JSON-LD) + Vercel Analytics.
+            // TODO: replace 'unsafe-inline' with per-request nonces once Next.js middleware is wired.
+            "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
+            // Styles: self + inline (Tailwind) + Google Fonts CSS.
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+            // Fonts: self + Google Fonts files.
+            "font-src 'self' https://fonts.gstatic.com",
+            // Images: self + inline data URIs + blob + any HTTPS (YouTube thumbnails, Google avatars, imgur).
+            "img-src 'self' data: blob: https:",
+            // Frames: YouTube privacy-enhanced embeds only.
+            "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
+            // Fetch/XHR: self + Vercel Analytics beacon + Speed Insights beacon.
+            "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com",
+            // No plugins (Flash, etc.).
+            "object-src 'none'",
+            // Prevent base-tag hijacking.
+            "base-uri 'self'",
+            // Allow forms to submit to self or Stripe Checkout.
+            "form-action 'self' https://checkout.stripe.com https://billing.stripe.com",
+            // Prevent this site from being embedded in foreign iframes.
+            "frame-ancestors 'self'",
+          ].join("; "),
         },
       ],
     },
