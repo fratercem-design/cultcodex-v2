@@ -80,7 +80,7 @@ export function SaveSearchButton({ buildPayload, defaultLabel = "", variant = "g
   const btnClass =
     variant === "filled"
       ? "rounded-lg bg-violet-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-violet-700"
-      : "rounded-lg border border-zinc-800 bg-zinc-900/50 px-3 py-1.5 text-xs text-zinc-400 hover:text-zinc-200 hover:border-zinc-700";
+      : "rounded-lg border px-3 py-1.5 text-xs text-text-muted hover:text-text-primary hover:border-accent-violet/40";
 
   return (
     <>
@@ -94,18 +94,19 @@ export function SaveSearchButton({ buildPayload, defaultLabel = "", variant = "g
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-2xl space-y-4"
+            className="w-full max-w-md rounded-2xl border p-6 shadow-2xl space-y-4"
+            style={{ backgroundColor: "var(--term-panel)", borderColor: "var(--term-line)" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div>
-              <h2 className="text-lg font-semibold text-zinc-100">Save this search</h2>
-              <p className="mt-1 text-xs text-zinc-500">
+              <h2 className="text-lg font-semibold text-text-primary">Save this search</h2>
+              <p className="mt-1 text-xs text-text-muted">
                 Re-run it any time from <span className="text-violet-300">My Codex</span>.
               </p>
             </div>
 
             <label className="block space-y-1.5">
-              <span className="block text-xs uppercase tracking-widest text-zinc-500">Label</span>
+              <span className="block text-xs uppercase tracking-widest text-text-muted">Label</span>
               <input
                 type="text"
                 value={label}
@@ -114,7 +115,8 @@ export function SaveSearchButton({ buildPayload, defaultLabel = "", variant = "g
                 placeholder="e.g. Betrayal × Wanda"
                 autoFocus
                 maxLength={120}
-                className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 focus:border-violet-700 focus:outline-none"
+                className="w-full rounded-lg border px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:border-accent-violet/60 focus:outline-none"
+                style={{ backgroundColor: "var(--term-bg)", borderColor: "var(--term-line-2)" }}
               />
             </label>
 
@@ -130,7 +132,7 @@ export function SaveSearchButton({ buildPayload, defaultLabel = "", variant = "g
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-3 py-2 text-sm text-zinc-400 hover:text-zinc-200"
+                className="rounded-lg px-3 py-2 text-sm text-text-muted hover:text-text-primary"
               >
                 Cancel
               </button>

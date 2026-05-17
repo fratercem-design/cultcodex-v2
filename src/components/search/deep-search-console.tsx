@@ -19,7 +19,7 @@ function formatTime(seconds: number): string {
 function ScoreBar({ score }: { score: number }) {
   const pct = Math.round(score * 100);
   return (
-    <span className="inline-flex items-center gap-1 text-xs text-zinc-500">
+    <span className="inline-flex items-center gap-1 text-xs text-text-muted">
       <span
         className="inline-block h-1.5 rounded-full bg-violet-500"
         style={{ width: `${Math.max(4, pct * 0.6)}px` }}
@@ -125,11 +125,12 @@ export function DeepSearchConsole() {
     <div className="space-y-8">
       {/* Concept chip input */}
       <div className="space-y-3">
-        <label className="block text-xs font-medium uppercase tracking-widest text-zinc-500">
+        <label className="block text-xs font-medium uppercase tracking-widest text-text-muted">
           Concepts — up to 5
         </label>
         <div
-          className="flex flex-wrap gap-2 rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2.5 focus-within:border-violet-700 cursor-text min-h-[48px]"
+          className="flex flex-wrap gap-2 rounded-xl border px-3 py-2.5 cursor-text min-h-[48px] focus-within:border-accent-violet/60"
+          style={{ borderColor: "var(--term-line-2)", backgroundColor: "var(--term-panel)" }}
           onClick={() => inputRef.current?.focus()}
         >
           {chips.map((chip) => (
@@ -157,17 +158,17 @@ export function DeepSearchConsole() {
               onKeyDown={handleKeyDown}
               onBlur={() => draft.trim() && addChip(draft)}
               placeholder={chips.length === 0 ? "betrayal, astrology, Wanda…" : "add concept…"}
-              className="flex-1 min-w-[120px] bg-transparent text-sm text-zinc-100 placeholder-zinc-600 outline-none"
+              className="flex-1 min-w-[120px] bg-transparent text-sm text-text-primary placeholder-text-muted outline-none"
             />
           )}
         </div>
-        <p className="text-xs text-zinc-600">Press Enter or comma to add each concept. Only episodes matching ALL concepts will surface.</p>
+        <p className="text-xs text-text-muted/60">Press Enter or comma to add each concept. Only episodes matching ALL concepts will surface.</p>
       </div>
 
       {/* Threshold + Era filters */}
       <div className="flex flex-wrap gap-6 items-start">
         <div className="space-y-2">
-          <label className="block text-xs font-medium uppercase tracking-widest text-zinc-500">
+          <label className="block text-xs font-medium uppercase tracking-widest text-text-muted">
             Match sensitivity
           </label>
           <div className="flex gap-2">
@@ -179,7 +180,7 @@ export function DeepSearchConsole() {
                 className={`rounded-lg px-3 py-1.5 text-xs transition-colors ${
                   threshold === p.value
                     ? "bg-violet-800 text-violet-100 border border-violet-600"
-                    : "bg-zinc-900 text-zinc-400 border border-zinc-800 hover:border-zinc-600"
+                    : "border text-text-muted hover:border-accent-violet/40"
                 }`}
               >
                 {p.label}
@@ -189,13 +190,14 @@ export function DeepSearchConsole() {
         </div>
 
         <div className="space-y-2">
-          <label className="block text-xs font-medium uppercase tracking-widest text-zinc-500">
+          <label className="block text-xs font-medium uppercase tracking-widest text-text-muted">
             Filter by era
           </label>
           <select
             value={eraId}
             onChange={(e) => setEraId(e.target.value)}
-            className="rounded-lg bg-zinc-900 border border-zinc-800 px-3 py-1.5 text-sm text-zinc-300 focus:border-violet-700 focus:outline-none"
+            className="rounded-lg px-3 py-1.5 text-sm text-text-primary border focus:border-accent-violet/60 focus:outline-none"
+            style={{ backgroundColor: "var(--term-panel)", borderColor: "var(--term-line-2)" }}
           >
             <option value="">All eras</option>
             {ERAS.map((era) => (
@@ -252,7 +254,7 @@ export function DeepSearchConsole() {
       {gated && (
         <div className="rounded-xl border border-violet-900/50 bg-violet-950/30 p-6 text-center space-y-3">
           <p className="text-violet-200 font-medium">Deep Search is a subscriber feature.</p>
-          <p className="text-sm text-zinc-500">Subscribe to unlock multi-concept intersection search across the full transcript archive.</p>
+          <p className="text-sm text-text-muted">Subscribe to unlock multi-concept intersection search across the full transcript archive.</p>
           <Link
             href="/subscribe"
             className="inline-block rounded-lg bg-violet-700 px-5 py-2 text-sm font-semibold text-white hover:bg-violet-600 transition-colors"
@@ -270,14 +272,15 @@ export function DeepSearchConsole() {
       {/* Results */}
       {state === "done" && (
         <div className="space-y-4">
-          <p className="text-xs text-zinc-500 uppercase tracking-widest">
+          <p className="text-xs text-text-muted uppercase tracking-widest">
             {results.length === 0 ? "No matches found — try broader concepts or lower sensitivity." : `${results.length} segment${results.length !== 1 ? "s" : ""} matched all concepts`}
           </p>
 
           {results.map((r) => (
             <article
               key={r.segmentId}
-              className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 space-y-3 hover:border-zinc-700 transition-colors"
+              className="rounded-xl border p-5 space-y-3 transition-colors hover:border-accent-violet/30"
+              style={{ borderColor: "var(--term-line)", backgroundColor: "var(--term-panel)" }}
             >
               <div className="flex items-start justify-between gap-3">
                 <Link
@@ -286,30 +289,30 @@ export function DeepSearchConsole() {
                 >
                   {r.episodeTitle}
                   {r.episodeNumber && (
-                    <span className="ml-2 text-xs text-zinc-600">#{r.episodeNumber}</span>
+                    <span className="ml-2 text-xs text-text-muted/50">#{r.episodeNumber}</span>
                   )}
                 </Link>
                 <Link
                   href={`/episodes/${r.episodeSlug}?t=${r.startSeconds}`}
-                  className="shrink-0 text-xs text-zinc-500 hover:text-zinc-300 transition-colors font-mono"
+                  className="shrink-0 text-xs text-text-muted hover:text-text-primary transition-colors font-mono"
                 >
                   {formatTime(r.startSeconds)}–{formatTime(r.endSeconds)}
                 </Link>
               </div>
 
               {r.speakerLabel && (
-                <p className="text-xs text-zinc-600 uppercase tracking-wide">{r.speakerLabel}</p>
+                <p className="text-xs text-text-muted/60 uppercase tracking-wide">{r.speakerLabel}</p>
               )}
 
-              <blockquote className="text-sm text-zinc-300 leading-relaxed border-l-2 border-violet-800/60 pl-3">
+              <blockquote className="text-sm text-text-primary leading-relaxed border-l-2 border-accent-violet/40 pl-3">
                 {r.text}
               </blockquote>
 
               {/* Per-concept scores */}
               <div className="flex flex-wrap gap-3 pt-1">
                 {Object.entries(r.conceptScores).map(([concept, score]) => (
-                  <div key={concept} className="flex items-center gap-1.5 text-xs text-zinc-500">
-                    <span className="text-zinc-600">{concept}</span>
+                  <div key={concept} className="flex items-center gap-1.5 text-xs text-text-muted">
+                    <span className="text-text-muted/60">{concept}</span>
                     <ScoreBar score={score} />
                   </div>
                 ))}
