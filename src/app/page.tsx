@@ -8,6 +8,8 @@ import { getEpisodes, formatEpisodeForCard } from "@/lib/queries/episodes";
 import { getArchiveStats } from "@/lib/queries/stats";
 import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
+import { getDailyTransmission } from "@/lib/queries/daily";
+import { DailyTransmission } from "@/components/home/daily-transmission";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
@@ -36,12 +38,13 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission] = await Promise.all([
     getArchiveStats(),
     getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }),
     getQuotes({ take: 2 }),
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }),
     getTopTopicsByEpisodes(10),
+    getDailyTransmission(),
   ]);
 
   const recentCards = recentEpisodes.map(formatEpisodeForCard);
@@ -163,6 +166,9 @@ export default async function HomePage() {
               </Link>
             ))}
           </div>
+
+          {/* ── DAILY TRANSMISSION ───────────────────────────────────── */}
+          <DailyTransmission data={dailyTransmission} />
 
           {/* ── ORACLE — AI SEARCH ───────────────────────────────────── */}
           <div className="rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface px-6 py-6 space-y-4">
