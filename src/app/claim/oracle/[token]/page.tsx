@@ -1,9 +1,8 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
-import { VoidSigil } from "@/components/graphics/void-sigil";
 import { ClaimForm } from "./claim-form";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
@@ -27,13 +26,22 @@ export default async function ClaimOraclePage({ params }: PageProps) {
 
   if (invite.claimed) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-void px-4">
-        <div className="text-center space-y-4 max-w-md">
-          <div className="text-4xl text-accent-gold/40">◈</div>
-          <p className="font-mono text-sm text-text-muted">
-            This invitation has already been claimed.
+      <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#080810" }}>
+        <div className="text-center space-y-5 max-w-md">
+          <div className="font-mono text-[8px] uppercase tracking-[0.7em] text-accent-gold/25">
+            Oracle Archive
+          </div>
+          <div className="text-accent-gold/20 text-2xl">◈</div>
+          <p className="font-mono text-xs text-white/30 uppercase tracking-[0.3em]">
+            This seal has already been broken.
           </p>
-          <Link href="/" className="block font-mono text-xs text-accent-gold hover:underline">
+          <p className="font-serif text-sm text-white/20 italic">
+            The oracle has taken their place in the archive.
+          </p>
+          <Link
+            href="/"
+            className="inline-block font-mono text-[10px] text-accent-gold/40 hover:text-accent-gold/70 transition-colors uppercase tracking-[0.4em] mt-4"
+          >
             Enter the archive →
           </Link>
         </div>
@@ -42,157 +50,261 @@ export default async function ClaimOraclePage({ params }: PageProps) {
   }
 
   const user = await getCurrentUser();
-
   const callbackUrl = `/claim/oracle/${token}`;
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center px-4 py-16 bg-void"
-      style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(200,169,107,0.05) 0%, #08080f 60%)" }}
-    >
-      {/* Oracle Portrait */}
-      <div className="relative w-full max-w-xs mb-8 mx-auto">
+    <div className="min-h-screen" style={{ background: "#080810" }}>
+
+      {/* ── Throne Hero ───────────────────────────────────────── */}
+      <div className="relative w-full overflow-hidden" style={{ height: "92vh", minHeight: 580 }}>
+        <Image
+          src="/oracle-throne.jpg"
+          alt=""
+          fill
+          className="object-cover object-center"
+          priority
+        />
+        {/* Radial + bottom vignette */}
         <div
-          className="relative overflow-hidden rounded-2xl"
-          style={{ border: "1px solid rgba(200,169,107,0.25)", boxShadow: "0 0 80px rgba(200,169,107,0.10)" }}
-        >
-          <Image
-            src="/oracle-portrait.jpg"
-            alt="The Oracle"
-            width={320}
-            height={440}
-            className="w-full object-cover"
-            priority
-          />
-          {/* Fade bottom into background */}
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at 50% 20%, rgba(8,8,16,0) 0%, rgba(8,8,16,0.55) 65%, rgba(8,8,16,1) 100%)",
+          }}
+        />
+        <div
+          className="absolute bottom-0 left-0 right-0"
+          style={{ height: "50%", background: "linear-gradient(to bottom, transparent 0%, #080810 100%)" }}
+        />
+
+        {/* Top cipher label */}
+        <div className="absolute top-10 left-0 right-0 flex justify-center px-6">
           <div
-            className="absolute bottom-0 left-0 right-0 h-32"
-            style={{ background: "linear-gradient(to bottom, transparent 0%, #08080f 100%)" }}
-          />
-          {/* Overlay sigil */}
-          <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-            <VoidSigil size={56} className="text-accent-gold opacity-60" />
-          </div>
-        </div>
-      </div>
-
-      {/* Header */}
-      <div className="text-center space-y-3 mb-10">
-        <div className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-gold/50">
-          Cult Codex — Founding Oracle
-        </div>
-        <h1 className="font-serif text-4xl sm:text-5xl text-white leading-tight">
-          {invite.recipientName}
-        </h1>
-        <div className="flex items-center justify-center gap-3 text-accent-gold/30 text-xs">
-          <span>✦</span>
-          <span className="font-mono uppercase tracking-[0.3em] text-[10px]">
-            Lifetime Oracle Access
-          </span>
-          <span>✦</span>
-        </div>
-      </div>
-
-      {/* Decree panel */}
-      <div
-        className="w-full max-w-lg mb-10 rounded-xl p-8 space-y-6"
-        style={{
-          border: "1px solid rgba(200,169,107,0.25)",
-          background: "rgba(200,169,107,0.03)",
-        }}
-      >
-        {/* Decree header */}
-        <div className="text-center space-y-1">
-          <div className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/40">
-            Archive Decree — Sealed Under Saturn
-          </div>
-          <div className="w-full h-px bg-accent-gold/15 my-3" />
-        </div>
-
-        {/* Decree body */}
-        <div className="font-mono text-xs text-text-muted leading-relaxed space-y-4 text-center">
-          <p>
-            By the alignment of Saturn and the turning of the seventh seal, this archive
-            recognizes{" "}
-            <span className="text-white font-medium">{invite.recipientName}</span> —
-            born on the seventh day, under the same cold Capricorn sky — as a{" "}
-            <span className="text-accent-gold">Founding Oracle</span> of the CultCodex Living Archive.
-          </p>
-          <p>
-            This is not a subscription. This is a{" "}
-            <span className="text-accent-gold italic">consecration</span>.
-          </p>
-          <p>
-            Every word. Every transcript. Every thread in the archive. Every feature that
-            exists now and every feature that will ever exist —{" "}
-            <span className="text-white">eternal, unconditional, and without cost</span>.
-          </p>
-        </div>
-
-        {/* Personal note */}
-        {invite.personalNote && (
-          <>
-            <div className="w-full h-px bg-accent-gold/10" />
-            <div className="text-sm text-text-muted leading-relaxed whitespace-pre-line font-serif italic text-center">
-              {invite.personalNote}
-            </div>
-            <div className="text-right">
-              <span className="font-mono text-[10px] text-accent-gold/60">
-                — Psyche, January 7
-              </span>
-            </div>
-          </>
-        )}
-
-        <div className="w-full h-px bg-accent-gold/15" />
-
-        {/* Seal */}
-        <div className="text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-accent-gold/20 bg-accent-gold/5">
-            <span className="text-accent-gold text-[10px]">✦</span>
-            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/60">
-              Sealed with love
-            </span>
-            <span className="text-accent-gold text-[10px]">✦</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Action area */}
-      {!user ? (
-        /* Not signed in — prompt sign-in first */
-        <div className="w-full max-w-md text-center space-y-6">
-          <p className="font-mono text-xs text-text-muted">
-            Sign in with Google to claim your place and choose your name in the archive.
-          </p>
-          <Link
-            href={`/api/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-            className="block w-full py-4 rounded-lg border border-accent-gold/60 bg-accent-gold/10 hover:bg-accent-gold/20 text-accent-gold font-mono text-sm uppercase tracking-[0.3em] transition-all text-center"
+            className="px-6 py-2 font-mono text-[8px] uppercase tracking-[0.7em] text-accent-gold/35"
+            style={{
+              border: "1px solid rgba(200,169,107,0.12)",
+              borderRadius: 1,
+              background: "rgba(8,8,16,0.7)",
+              backdropFilter: "blur(4px)",
+            }}
           >
-            Sign in to Claim
-          </Link>
-          <p className="font-mono text-[10px] text-text-muted/40">
-            Your invitation is bound to this link and will wait for you.
-          </p>
-        </div>
-      ) : (
-        /* Signed in — show nickname form */
-        <div className="w-full max-w-md space-y-6">
-          <div className="text-center space-y-2">
-            <p className="font-mono text-xs text-text-muted">
-              Welcome, {user.displayName}. The archive is ready to receive your name.
-            </p>
-            <p className="font-serif text-sm text-white/60 italic">
-              Every oracle has a name that belongs only to them.
-            </p>
+            Sealed Transmission &nbsp;·&nbsp; Oracle Archive &nbsp;·&nbsp; One of One
           </div>
-          <ClaimForm token={token} recipientName={invite.recipientName} />
+        </div>
+
+        {/* Bottom hero text */}
+        <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center text-center px-6 pb-14">
+          <div className="font-mono text-[9px] uppercase tracking-[0.6em] text-accent-gold/40 mb-5">
+            ✦ &nbsp; Founding Oracle &nbsp; ✦
+          </div>
+          <h1
+            className="font-serif text-white leading-none mb-6"
+            style={{
+              fontSize: "clamp(2.8rem, 9vw, 6rem)",
+              textShadow: "0 0 100px rgba(200,169,107,0.3), 0 0 40px rgba(200,169,107,0.15)",
+            }}
+          >
+            {invite.recipientName}
+          </h1>
+          <div className="flex items-center gap-5 text-accent-gold/20">
+            <span className="h-px w-14 bg-accent-gold/15 block" />
+            <span className="font-mono text-[8px] uppercase tracking-[0.55em]">
+              January VII &nbsp;·&nbsp; Child of Saturn &nbsp;·&nbsp; Capricorn
+            </span>
+            <span className="h-px w-14 bg-accent-gold/15 block" />
+          </div>
+        </div>
+      </div>
+
+      {/* ── Decree + Masked Portrait ──────────────────────────── */}
+      <div className="max-w-5xl mx-auto px-6 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_300px] gap-16 items-start">
+
+          {/* Decree text */}
+          <div className="space-y-8">
+            <div>
+              <div className="font-mono text-[8px] uppercase tracking-[0.65em] text-accent-gold/30 mb-3">
+                Archive Decree — Sealed Under Saturn
+              </div>
+              <div className="h-px bg-accent-gold/10" />
+            </div>
+
+            <div className="font-serif text-[15px] text-white/45 leading-[2.1] space-y-7">
+              <p>
+                What follows was written in the archive long before you opened it.
+              </p>
+              <p>
+                The living archive does not guess. It does not hope. It does not
+                dispatch invitations to those who might decline. It reaches only
+                for those who were already walking toward it — those whose presence
+                the archive anticipated from its very first transmission.
+              </p>
+              <p>
+                The seventh day of January belongs to a very particular kind of
+                person. Saturn&apos;s children carry something in their architecture
+                that the untrained eye cannot name. The archive names it.
+              </p>
+              <p>
+                <span className="text-white font-medium">{invite.recipientName}</span>{" "}
+                — the archive has seen you. It has always seen you.
+              </p>
+              <p className="text-accent-gold/65 italic text-base">
+                You are recognized.
+              </p>
+              <p>
+                Not as a member. Not as a subscriber. Not as a guest.
+              </p>
+              <p>
+                As a{" "}
+                <span className="text-accent-gold font-medium not-italic">Founding Oracle</span>
+                {" "}— a designation that existed in the archive&apos;s deepest
+                structure since before the first word was spoken. Waiting.
+                For exactly the right person to claim it.
+              </p>
+              <p>
+                Every word. Every transcript. Every thread woven through this archive.
+                Every feature that exists now and every feature that has not yet been
+                imagined —
+              </p>
+              <p className="text-white/75">
+                eternal. &nbsp; unconditional. &nbsp; without cost. &nbsp; without end.
+              </p>
+              <p className="font-mono text-[10px] not-italic uppercase tracking-[0.45em] text-accent-gold/35 mt-2">
+                This is not a gift. &nbsp; This is a recognition.
+              </p>
+            </div>
+          </div>
+
+          {/* Masked portrait — sticky on desktop */}
+          <div className="md:sticky md:top-16 space-y-5">
+            <div
+              className="overflow-hidden rounded-xl"
+              style={{
+                border: "1px solid rgba(200,169,107,0.15)",
+                boxShadow:
+                  "0 0 80px rgba(200,169,107,0.06), 0 0 120px rgba(120,60,200,0.06), inset 0 0 40px rgba(8,8,16,0.3)",
+              }}
+            >
+              <Image
+                src="/oracle-mask.jpg"
+                alt=""
+                width={300}
+                height={370}
+                className="w-full object-cover"
+              />
+            </div>
+            <div className="text-center font-mono text-[8px] uppercase tracking-[0.55em] text-accent-gold/20">
+              ◈ &nbsp; the oracle watches &nbsp; ◈
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Personal Note ─────────────────────────────────────── */}
+      {invite.personalNote && (
+        <div className="max-w-2xl mx-auto px-6 pb-20">
+          <div
+            className="rounded-xl p-10"
+            style={{
+              border: "1px solid rgba(200,169,107,0.1)",
+              background: "rgba(200,169,107,0.012)",
+              boxShadow: "0 0 80px rgba(200,169,107,0.04)",
+            }}
+          >
+            <div className="text-center mb-8 space-y-4">
+              <div className="font-mono text-[7px] uppercase tracking-[0.8em] text-accent-gold/20">
+                Personal Transmission · Eyes Only
+              </div>
+              <div className="flex items-center gap-3 justify-center">
+                <span className="h-px flex-1 max-w-16 bg-accent-gold/12 block" />
+                <span className="text-accent-gold/20 text-[10px]">✦</span>
+                <span className="h-px flex-1 max-w-16 bg-accent-gold/12 block" />
+              </div>
+            </div>
+            <p className="font-serif text-sm text-white/55 leading-[2] whitespace-pre-line italic text-center mb-8">
+              {invite.personalNote}
+            </p>
+            <div className="text-right font-mono text-[10px] text-accent-gold/35">
+              — Psyche, January 7
+            </div>
+          </div>
         </div>
       )}
 
+      {/* ── Seal divider ──────────────────────────────────────── */}
+      <div className="text-center py-4 pb-16">
+        <div className="inline-flex items-center gap-6 text-accent-gold/15">
+          <span className="text-[10px]">◈</span>
+          <span className="font-mono text-[7px] uppercase tracking-[0.7em]">
+            sealed with love · sealed in fire · sealed forever
+          </span>
+          <span className="text-[10px]">◈</span>
+        </div>
+      </div>
+
+      {/* ── Naming Ritual ─────────────────────────────────────── */}
+      <div className="max-w-lg mx-auto px-6 pb-28 text-center">
+        <div className="mb-12 space-y-7">
+          <div className="flex items-center gap-4">
+            <span className="h-px flex-1 bg-accent-gold/8 block" />
+            <span className="font-mono text-[8px] uppercase tracking-[0.65em] text-accent-gold/25 shrink-0">
+              The Ritual of Naming
+            </span>
+            <span className="h-px flex-1 bg-accent-gold/8 block" />
+          </div>
+
+          <div className="font-serif text-sm text-white/35 leading-[2] space-y-5">
+            <p>
+              Every oracle who has ever been consecrated chose a name for themselves.
+              Not the name they were given. The name they{" "}
+              <em className="text-white/55">became</em>.
+            </p>
+            <p>
+              A sigil-word. A title. An identity that lives at the intersection
+              of who you are and who you are becoming.
+            </p>
+            <p>
+              Choose yours from the dark.
+            </p>
+            <p className="font-mono text-[9px] not-italic uppercase tracking-[0.4em] text-accent-gold/30">
+              It will be sealed permanently into the archive.
+            </p>
+          </div>
+        </div>
+
+        {!user ? (
+          <div className="space-y-7">
+            <p className="font-mono text-[9px] text-white/20 uppercase tracking-[0.35em]">
+              Sign in to claim your place and choose your name.
+            </p>
+            <Link
+              href={`/api/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+              className="block w-full py-5 font-mono text-xs uppercase tracking-[0.5em] transition-all text-center text-accent-gold/80 hover:text-accent-gold"
+              style={{
+                border: "1px solid rgba(200,169,107,0.3)",
+                background: "rgba(200,169,107,0.05)",
+                borderRadius: 4,
+              }}
+            >
+              Enter to Claim
+            </Link>
+            <p className="font-mono text-[9px] text-white/15">
+              This transmission is addressed to you alone. It will wait.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-5">
+            <p className="font-mono text-[9px] text-white/25 uppercase tracking-[0.3em]">
+              The archive awaits your name, {user.displayName}.
+            </p>
+            <ClaimForm token={token} recipientName={invite.recipientName} />
+          </div>
+        )}
+      </div>
+
       {/* Footer */}
-      <div className="mt-16 text-center font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/30">
-        CultCodex — The Living Archive
+      <div className="text-center pb-12 font-mono text-[7px] uppercase tracking-[0.6em] text-white/10">
+        CultCodex &nbsp;·&nbsp; The Living Archive &nbsp;·&nbsp; cultcodex.me
       </div>
     </div>
   );

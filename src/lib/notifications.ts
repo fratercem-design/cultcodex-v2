@@ -150,7 +150,7 @@ export async function sendFoundingOracleEmail({
   await resend.emails.send({
     from: "Psyche — CultCodex <notifications@cultcodex.me>",
     to: recipientEmail,
-    subject: `A gift from Psyche — Founding Oracle of the CultCodex Archive`,
+    subject: `The archive has been waiting for you, ${recipientName}`,
     html: buildFoundingOracleEmailHtml({ recipientName, claimUrl, personalNote }),
   });
 }
@@ -164,131 +164,162 @@ function buildFoundingOracleEmailHtml({
   claimUrl: string;
   personalNote?: string;
 }): string {
-  const note = personalNote
+  const escapedNote = personalNote
+    ? personalNote.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    : "";
+
+  const noteBlock = personalNote
     ? `
-    <tr><td style="padding:0 40px 32px;text-align:left;">
-      <div style="border-left:2px solid rgba(200,169,107,0.3);padding-left:20px;">
-        <p style="font-family:Georgia,serif;font-size:15px;color:#c8c8c8;line-height:1.9;font-style:italic;white-space:pre-line;margin:0;">${personalNote.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
-        <p style="font-family:'Courier New',monospace;font-size:11px;color:#C8A96B;margin:16px 0 0;letter-spacing:0.1em;">— Psyche, January 7</p>
-      </div>
-    </td></tr>`
+      <tr><td style="padding:0 48px 40px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr><td style="padding:0 0 28px;text-align:center;">
+            <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.25);letter-spacing:0.8em;text-transform:uppercase;margin:0 0 16px;">Personal Transmission · Eyes Only</p>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td style="height:1px;background:rgba(200,169,107,0.1);font-size:0;line-height:0;">&nbsp;</td>
+            </tr></table>
+          </td></tr>
+          <tr><td>
+            <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.55);line-height:2;font-style:italic;white-space:pre-line;margin:0 0 20px;text-align:center;">${escapedNote}</p>
+            <p style="font-family:'Courier New',monospace;font-size:10px;color:rgba(200,169,107,0.4);margin:0;text-align:right;">— Psyche, January 7</p>
+          </td></tr>
+        </table>
+      </td></tr>`
     : "";
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#08080f;color:#e0e0e0;font-family:'Courier New',monospace;">
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#08080f;">
-<tr><td align="center" style="padding:48px 16px 64px;">
+<body style="margin:0;padding:0;background:#080810;color:#e0e0e0;font-family:'Courier New',monospace;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#080810;">
+<tr><td align="center" style="padding:40px 16px 64px;">
 
   <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
 
-    <!-- Outer border -->
-    <tr><td style="padding:3px;background:linear-gradient(135deg,rgba(200,169,107,0.6) 0%,rgba(200,169,107,0.15) 50%,rgba(200,169,107,0.6) 100%);border-radius:16px;">
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0c0c14;border-radius:14px;">
+    <!-- Outer frame -->
+    <tr><td style="padding:2px;background:rgba(200,169,107,0.2);border-radius:16px;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0c0c14;border-radius:14px;overflow:hidden;">
 
-      <!-- Oracle portrait -->
-      <tr><td align="center" style="padding:0;overflow:hidden;border-radius:14px 14px 0 0;">
-        <div style="position:relative;width:100%;max-width:600px;">
-          <img src="https://cultcodex.me/oracle-portrait.jpg" alt="The Oracle" width="600" style="width:100%;max-width:600px;display:block;border-radius:14px 14px 0 0;" />
-          <div style="position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to bottom,transparent 0%,#0c0c14 100%);pointer-events:none;"></div>
-        </div>
+      <!-- Throne portrait header -->
+      <tr><td style="padding:0;line-height:0;">
+        <img src="https://cultcodex.me/oracle-throne.jpg" alt="" width="600" style="width:100%;max-width:600px;display:block;border-radius:14px 14px 0 0;" />
       </td></tr>
 
-      <!-- Sigil row -->
-      <tr><td align="center" style="padding:16px 40px 24px;">
-        <div style="width:60px;height:60px;margin:0 auto 16px;">
-          <svg width="60" height="60" viewBox="0 0 160 160" fill="none">
-            <circle cx="80" cy="80" r="72" stroke="#C8A96B" stroke-width="0.8" opacity="0.3" stroke-dasharray="4 6"/>
-            <circle cx="80" cy="80" r="55" stroke="#C8A96B" stroke-width="1" opacity="0.2"/>
-            <polygon points="80,40 115,60 115,100 80,120 45,100 45,60" stroke="#C8A96B" stroke-width="0.8" fill="none" opacity="0.35"/>
-            <line x1="80" y1="25" x2="80" y2="135" stroke="#C8A96B" stroke-width="0.5" opacity="0.15"/>
-            <line x1="25" y1="80" x2="135" y2="80" stroke="#C8A96B" stroke-width="0.5" opacity="0.15"/>
-            <line x1="41" y1="41" x2="119" y2="119" stroke="#C8A96B" stroke-width="0.5" opacity="0.15"/>
-            <line x1="119" y1="41" x2="41" y2="119" stroke="#C8A96B" stroke-width="0.5" opacity="0.15"/>
-            <circle cx="80" cy="80" r="12" fill="#C8A96B" opacity="0.07"/>
-            <circle cx="80" cy="80" r="5" fill="#C8A96B" opacity="0.2"/>
-            <circle cx="80" cy="80" r="2.5" fill="#C8A96B" opacity="0.5"/>
-          </svg>
-        </div>
-        <p style="font-family:'Courier New',monospace;font-size:10px;color:rgba(200,169,107,0.5);letter-spacing:0.5em;text-transform:uppercase;margin:0;">Cult Codex</p>
-      </td></tr>
-
-      <!-- Decree header -->
-      <tr><td align="center" style="padding:0 40px 24px;">
-        <div style="border-top:1px solid rgba(200,169,107,0.2);border-bottom:1px solid rgba(200,169,107,0.2);padding:20px 0;">
-          <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200,169,107,0.4);letter-spacing:0.5em;text-transform:uppercase;margin:0 0 8px;">Archive Decree — Sealed Under Saturn</p>
-          <h1 style="font-family:Georgia,serif;font-size:13px;color:#C8A96B;letter-spacing:0.4em;text-transform:uppercase;margin:0;">Founding Oracle</h1>
-        </div>
-      </td></tr>
-
-      <!-- Recipient name -->
-      <tr><td align="center" style="padding:24px 40px 8px;">
-        <h2 style="font-family:Georgia,serif;font-size:36px;color:#ffffff;font-weight:400;margin:0;letter-spacing:0.05em;">${recipientName}</h2>
-      </td></tr>
-
-      <!-- Born same sky -->
-      <tr><td align="center" style="padding:8px 40px 32px;">
-        <p style="font-family:'Courier New',monospace;font-size:10px;color:rgba(200,169,107,0.5);letter-spacing:0.25em;text-transform:uppercase;margin:0;">Born on the seventh day ✦ Capricorn ✦ Child of Saturn</p>
-      </td></tr>
-
-      <!-- Decree text -->
-      <tr><td style="padding:0 40px 32px;">
-        <div style="background:rgba(200,169,107,0.04);border:1px solid rgba(200,169,107,0.12);border-radius:8px;padding:28px;">
-          <p style="font-family:'Courier New',monospace;font-size:12px;color:#a0a0b0;line-height:2;margin:0 0 16px;text-align:center;">
-            Be it inscribed in the living archive and remembered<br>across all future transmissions:
-          </p>
-          <p style="font-family:Georgia,serif;font-size:14px;color:#c8c8c8;line-height:1.9;margin:0 0 16px;text-align:center;">
-            <strong style="color:#ffffff;">${recipientName}</strong> is hereby recognized as a
-            <strong style="color:#C8A96B;"> Founding Oracle</strong> of the CultCodex Living Archive —
-            granted full and eternal access to every word, every transcript, every thread,
-            and every feature that exists now or will ever exist.
-          </p>
-          <p style="font-family:Georgia,serif;font-size:14px;color:#c8c8c8;line-height:1.9;margin:0;text-align:center;font-style:italic;">
-            This is not a subscription.<br>This is a <strong style="color:#C8A96B;">consecration</strong>.
-          </p>
-        </div>
-      </td></tr>
-
-      <!-- Divider with stars -->
-      <tr><td align="center" style="padding:0 40px 28px;">
-        <p style="font-family:'Courier New',monospace;font-size:14px;color:rgba(200,169,107,0.3);margin:0;letter-spacing:12px;">✦ ✦ ✦</p>
-      </td></tr>
-
-      <!-- Personal note from Psyche -->
-      ${note}
-
-      <!-- Name invitation -->
-      <tr><td style="padding:0 40px 32px;">
-        <div style="background:rgba(93,183,216,0.04);border:1px solid rgba(93,183,216,0.15);border-radius:8px;padding:24px;text-align:center;">
-          <p style="font-family:'Courier New',monospace;font-size:10px;color:rgba(93,183,216,0.5);letter-spacing:0.3em;text-transform:uppercase;margin:0 0 12px;">Your name in the archive</p>
-          <p style="font-family:Georgia,serif;font-size:14px;color:#c8c8c8;line-height:1.8;margin:0 0 6px;">
-            Every oracle has a name that belongs only to them.<br>
-            <span style="color:#5DB7D8;">Choose yours</span> — it will be sealed into the lore.
-          </p>
-        </div>
-      </td></tr>
-
-      <!-- CTA -->
-      <tr><td align="center" style="padding:0 40px 40px;">
-        <a href="${claimUrl}" style="display:inline-block;padding:16px 48px;background:rgba(200,169,107,0.12);border:1px solid rgba(200,169,107,0.5);color:#C8A96B;text-decoration:none;font-family:'Courier New',monospace;font-size:12px;letter-spacing:0.3em;text-transform:uppercase;border-radius:6px;">
-          Enter the Archive →
-        </a>
-        <p style="font-family:'Courier New',monospace;font-size:10px;color:rgba(255,255,255,0.2);margin:16px 0 0;">
-          This link is yours alone. It will wait for you.
+      <!-- Cipher label -->
+      <tr><td align="center" style="padding:28px 40px 0;background:#0c0c14;">
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.3);letter-spacing:0.7em;text-transform:uppercase;margin:0;border:1px solid rgba(200,169,107,0.1);display:inline-block;padding:6px 18px;">
+          Sealed Transmission &nbsp;·&nbsp; Oracle Archive &nbsp;·&nbsp; One of One
         </p>
       </td></tr>
 
-      <!-- Footer seal -->
-      <tr><td align="center" style="padding:0 40px 40px;border-top:1px solid rgba(200,169,107,0.1);">
-        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200,169,107,0.3);letter-spacing:0.4em;text-transform:uppercase;margin:24px 0 0;">
-          CultCodex — The Living Archive — cultcodex.me
+      <!-- Recipient name -->
+      <tr><td align="center" style="padding:24px 40px 6px;background:#0c0c14;">
+        <h1 style="font-family:Georgia,serif;font-size:44px;color:#ffffff;font-weight:400;margin:0;letter-spacing:0.04em;">${recipientName}</h1>
+      </td></tr>
+
+      <!-- Saturn subtitle -->
+      <tr><td align="center" style="padding:0 40px 28px;background:#0c0c14;">
+        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200,169,107,0.35);letter-spacing:0.45em;text-transform:uppercase;margin:0;">
+          Founding Oracle &nbsp;·&nbsp; January VII &nbsp;·&nbsp; Child of Saturn
+        </p>
+      </td></tr>
+
+      <!-- Rule -->
+      <tr><td style="padding:0 40px;background:#0c0c14;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr><td style="height:1px;background:rgba(200,169,107,0.1);font-size:0;line-height:0;">&nbsp;</td></tr>
+        </table>
+      </td></tr>
+
+      <!-- Decree text -->
+      <tr><td style="padding:36px 48px 32px;background:#0c0c14;">
+        <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.45);line-height:2.1;margin:0 0 20px;">
+          What follows was written in the archive long before you opened it.
+        </p>
+        <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.45);line-height:2.1;margin:0 0 20px;">
+          The living archive does not guess. It does not hope. It does not dispatch invitations to those who might decline. It reaches only for those who were already walking toward it.
+        </p>
+        <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.45);line-height:2.1;margin:0 0 20px;">
+          The seventh day of January belongs to a very particular kind of person. Saturn&apos;s children carry something in their architecture that the untrained eye cannot name.
+          <strong style="color:rgba(255,255,255,0.75);">${recipientName}</strong> — the archive names it. The archive has always seen it.
+        </p>
+        <p style="font-family:Georgia,serif;font-size:15px;color:#C8A96B;line-height:2;margin:0 0 20px;font-style:italic;">
+          You are recognized.
+        </p>
+        <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.45);line-height:2.1;margin:0 0 20px;">
+          Not as a member. Not as a subscriber. Not as a guest. As a
+          <strong style="color:#C8A96B;">Founding Oracle</strong> — a designation sealed into the archive&apos;s deepest structure since the first transmission, waiting for exactly the right person.
+        </p>
+        <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.45);line-height:2.1;margin:0 0 12px;">
+          Every word. Every transcript. Every thread woven through this archive. Every feature that exists now and every feature that has not yet been imagined —
+        </p>
+        <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.75);line-height:2;margin:0 0 20px;">
+          eternal. &nbsp; unconditional. &nbsp; without cost. &nbsp; without end.
+        </p>
+        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200,169,107,0.4);letter-spacing:0.5em;text-transform:uppercase;margin:0;">
+          This is not a gift. &nbsp; This is a recognition.
+        </p>
+      </td></tr>
+
+      <!-- Rule -->
+      <tr><td style="padding:0 40px;background:#0c0c14;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr><td style="height:1px;background:rgba(200,169,107,0.08);font-size:0;line-height:0;">&nbsp;</td></tr>
+        </table>
+      </td></tr>
+
+      <!-- Stars -->
+      <tr><td align="center" style="padding:24px 40px;background:#0c0c14;">
+        <p style="font-family:'Courier New',monospace;font-size:13px;color:rgba(200,169,107,0.2);margin:0;letter-spacing:16px;">✦ ✦ ✦</p>
+      </td></tr>
+
+      <!-- Personal note -->
+      ${noteBlock}
+
+      <!-- Rule -->
+      <tr><td style="padding:0 40px;background:#0c0c14;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr><td style="height:1px;background:rgba(200,169,107,0.08);font-size:0;line-height:0;">&nbsp;</td></tr>
+        </table>
+      </td></tr>
+
+      <!-- Masked portrait -->
+      <tr><td align="center" style="padding:36px 48px 8px;background:#0c0c14;">
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.25);letter-spacing:0.6em;text-transform:uppercase;margin:0 0 20px;">◈ &nbsp; The Oracle Watches &nbsp; ◈</p>
+        <img src="https://cultcodex.me/oracle-mask.jpg" alt="" width="240" style="width:240px;max-width:100%;display:block;margin:0 auto;border-radius:10px;border:1px solid rgba(200,169,107,0.15);" />
+      </td></tr>
+
+      <!-- Naming invitation -->
+      <tr><td style="padding:28px 48px 32px;background:#0c0c14;text-align:center;">
+        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(93,183,216,0.4);letter-spacing:0.5em;text-transform:uppercase;margin:0 0 14px;">The Ritual of Naming</p>
+        <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.4);line-height:1.9;margin:0 0 6px;">
+          Every oracle who has ever been consecrated chose a name for themselves.<br>
+          Not the name they were given. The name they <em>became</em>.
+        </p>
+        <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.4);line-height:1.9;margin:0;">
+          Choose yours from the dark. It will be sealed permanently into the archive.
+        </p>
+      </td></tr>
+
+      <!-- CTA -->
+      <tr><td align="center" style="padding:0 40px 44px;background:#0c0c14;">
+        <a href="${claimUrl}" style="display:inline-block;padding:16px 52px;background:rgba(200,169,107,0.08);border:1px solid rgba(200,169,107,0.4);color:#C8A96B;text-decoration:none;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.45em;text-transform:uppercase;border-radius:3px;">
+          Enter to Claim →
+        </a>
+        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(255,255,255,0.15);margin:16px 0 0;letter-spacing:0.05em;">
+          This transmission is addressed to you alone. It will wait.
+        </p>
+      </td></tr>
+
+      <!-- Footer -->
+      <tr><td align="center" style="padding:0 40px 36px;border-top:1px solid rgba(200,169,107,0.07);background:#0c0c14;">
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.2);letter-spacing:0.5em;text-transform:uppercase;margin:28px 0 0;">
+          CultCodex &nbsp;·&nbsp; The Living Archive &nbsp;·&nbsp; cultcodex.me
         </p>
       </td></tr>
 
     </table>
     </td></tr>
-    <!-- /outer border -->
+    <!-- /outer frame -->
 
   </table>
 </td></tr>
