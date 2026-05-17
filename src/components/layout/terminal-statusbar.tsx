@@ -13,7 +13,9 @@ import { useEffect, useState, type CSSProperties } from "react";
  * matches the first client render (avoids hydration mismatch).
  */
 
-const BUILD_VERSION = "v2.4.1-codex";
+const BUILD_VERSION = process.env.NEXT_PUBLIC_APP_VERSION
+  ? `v${process.env.NEXT_PUBLIC_APP_VERSION}-codex`
+  : "v2.4.1-codex";
 
 function formatUtc(date: Date): string {
   const hh = String(date.getUTCHours()).padStart(2, "0");

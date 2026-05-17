@@ -8,6 +8,7 @@ interface PersonCardProps {
     displayName: string;
     slug: string;
     shortBio: string | null;
+    loreSummary?: string | null;
     avatarUrl?: string | null;
     personType: PersonType;
     appearanceCount: number;
@@ -22,6 +23,9 @@ const typeVariant: Record<PersonType, "green" | "purple" | "gold" | "muted"> = {
 };
 
 export function PersonCard({ person }: PersonCardProps) {
+  const isProfileComplete =
+    Boolean(person.loreSummary) && Boolean(person.shortBio) && Boolean(person.avatarUrl);
+
   return (
     <Link
       href={`/people/${person.slug}`}
@@ -56,9 +60,19 @@ export function PersonCard({ person }: PersonCardProps) {
             {person.shortBio}
           </p>
         )}
-        <p className="mt-1.5 font-mono text-[10px] text-text-muted">
-          {person.appearanceCount} appearance{person.appearanceCount !== 1 ? "s" : ""}
-        </p>
+        <div className="mt-1.5 flex items-center gap-2">
+          <span className="font-mono text-[10px] text-text-muted">
+            {person.appearanceCount} appearance{person.appearanceCount !== 1 ? "s" : ""}
+          </span>
+          {isProfileComplete && (
+            <span
+              className="font-mono text-[9px] text-accent-violet border border-accent-violet/30 rounded px-1 py-px leading-none"
+              title="Full profile — bio, lore summary, and photo all present"
+            >
+              PROFILE
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );

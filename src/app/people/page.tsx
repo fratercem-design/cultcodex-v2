@@ -129,6 +129,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
                   displayName: person.displayName,
                   slug: person.slug,
                   shortBio: person.shortBio,
+                  loreSummary: person.loreSummary,
                   avatarUrl: person.avatarUrl,
                   personType: person.personType,
                   appearanceCount:

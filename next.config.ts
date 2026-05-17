@@ -1,4 +1,8 @@
 import type { NextConfig } from "next";
+import { readFileSync } from "fs";
+import { join } from "path";
+
+const { version } = JSON.parse(readFileSync(join(process.cwd(), "package.json"), "utf-8")) as { version: string };
 
 // Pin Turbopack's workspace root to this project. Stray package-lock.json
 // files in parent dirs (C:\Users\John Bates\ and C:\Users\John Bates\Projects\)
@@ -7,6 +11,9 @@ import type { NextConfig } from "next";
 // `process.cwd()` works because `next dev` is always launched from the
 // project root; matches the launch.json cwd setup.
 const nextConfig: NextConfig = {
+  env: {
+    NEXT_PUBLIC_APP_VERSION: version,
+  },
   turbopack: {
     root: process.cwd(),
   },

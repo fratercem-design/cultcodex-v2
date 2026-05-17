@@ -54,20 +54,49 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
     const hasAccess = userId ? await isSubscribed(userId) : false;
 
     if (!hasAccess) {
+      // Count results without returning any content — used to tease the paywall
+      const { totalCount: teasedCount } = await searchWithinTranscripts(query, { take: 0, skip: 0 });
+
       return (
         <>
           <PageHero
             title="TRANSCRIPTS"
             subtitle="Full-text transcript search is a subscriber feature"
             backgroundImage="/search-database-background.jpg"
-          label="transcripts"
+            label="transcripts"
           />
           <EntityGlanceBar items={glanceItems} />
           <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
-            <div className="mx-auto max-w-lg py-12">
+            {/* Teased result count */}
+            <div className="mb-8 rounded-lg border border-accent-cyan/20 bg-accent-cyan/5 p-5 text-center">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60 mb-2">
+                // search_results for "{query}"
+              </p>
+              <div className="relative inline-block">
+                <span
+                  className="font-display text-5xl font-bold text-accent-cyan"
+                  style={{ filter: "blur(6px)", userSelect: "none" }}
+                  aria-hidden="true"
+                >
+                  {teasedCount.toLocaleString()}
+                </span>
+                <span className="sr-only">{teasedCount} results found — subscribe to view</span>
+              </div>
+              <p className="mt-2 font-mono text-sm text-text-muted">
+                {teasedCount === 0
+                  ? "No matches found."
+                  : teasedCount === 1
+                  ? "1 transcript segment matches."
+                  : `${teasedCount.toLocaleString()} transcript segments match.`}
+              </p>
+              <p className="mt-1 font-mono text-[10px] text-text-muted/60">
+                Subscribe to unlock full results with timestamps and episode links.
+              </p>
+            </div>
+            <div className="mx-auto max-w-lg">
               <SubscriptionCTA />
               <p className="mt-4 text-center font-mono text-xs text-text-muted">
-                Browse the episode directory below, or subscribe to search across all transcripts.
+                Or browse the episode directory below for free.
               </p>
             </div>
           </main>
