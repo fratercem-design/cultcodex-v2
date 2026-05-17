@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef, KeyboardEvent } from "react";
+import { useState, useRef, useEffect, KeyboardEvent } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ERAS } from "@/lib/eras";
 import type { SemanticResult } from "@/lib/queries/semantic";
+import { SaveSearchButton, type SaveSearchPayload } from "@/components/search/save-search-button";
 
 type SearchState = "idle" | "loading" | "done" | "error";
 
@@ -43,6 +45,19 @@ export function DeepSearchConsole() {
   const [errorMsg, setErrorMsg] = useState("");
   const [gated, setGated] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const searchParams = useSearchParams();
+
+  // Hydrate from URL params (e.g. when re-running a saved search)
+  useEffect(() => {
+    const concepts = searchParams.getAll("concept");
+    if (concepts.length > 0) {
+      setChips(concepts.slice(0, 5));
+    }
+    const era = searchParams.get("era");
+    if (era) setEraId(era);
+    // Only run on mount — saved searches won't change URL after load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function addChip(value: string) {
     const trimmed = value.trim();
@@ -192,15 +207,31 @@ export function DeepSearchConsole() {
         </div>
       </div>
 
-      {/* Run button */}
-      <button
-        type="button"
-        onClick={runSearch}
-        disabled={!isRunnable}
-        className="w-full rounded-xl bg-violet-800 py-3 text-sm font-semibold text-white hover:bg-violet-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-      >
-        {state === "loading" ? "Searching…" : "Search the archive"}
-      </button>
+      {/* Run + Save */}
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={runSearch}
+          disabled={!isRunnable}
+          className="flex-1 rounded-xl bg-violet-800 py-3 text-sm font-semibold text-white hover:bg-violet-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          {state === "loading" ? "Searching…" : "Search the archive"}
+        </button>
+        {chips.length > 0 && (
+          <SaveSearchButton
+            variant="ghost"
+            buildPayload={(): SaveSearchPayload | null => {
+              if (chips.length === 0) return null;
+              return {
+                kind: "deep",
+                concepts: chips,
+                thresholds: chips.map(() => threshold),
+                eraId: eraId || null,
+              };
+            }}
+          />
+        )}
+      </div>
 
       {/* Loading pulse */}
       {state === "loading" && (

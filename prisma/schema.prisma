@@ -411,6 +411,41 @@ model CodexUser {
   favorites               Favorite[]
   savedTopics             SavedTopic[]
   savedQuotes             SavedQuote[]
+  savedSearches           SavedSearch[]
+}
+
+enum SearchKind {
+  simple
+  deep
+  oracle
+}
+
+model SavedSearch {
+  id          String     @id @default(cuid())
+  userId      String
+  user        CodexUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label       String
+  kind        SearchKind
+  /// Free text query for `simple` kind; question text for `oracle` kind
+  query       String     @default("")
+  /// Concept strings for `deep` kind (parallel to thresholds)
+  concepts    String[]   @default([])
+  /// Per-concept similarity thresholds (parallel to concepts)
+  thresholds  Float[]    @default([])
+  /// Optional era filter (era id from src/lib/eras.ts)
+  eraId       String?
+  /// Optional person slug — for oracle searchContext.sourcePerson
+  personSlug  String?
+  /// Optional archetype — for oracle searchContext.sourceArchetype
+  archetype   String?
+  pinned      Boolean    @default(false)
+  lastRunAt   DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([userId, pinned])
+  @@index([userId, kind])
 }
 
 model CodexSession {

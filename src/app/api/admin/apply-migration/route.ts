@@ -36,6 +36,46 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       name: "create HNSW index on embedding",
       sql: `CREATE INDEX IF NOT EXISTS "TranscriptSegment_embedding_hnsw_idx" ON "TranscriptSegment" USING hnsw ("embedding" vector_cosine_ops) WITH (m = 16, ef_construction = 64)`,
     },
+    {
+      name: "create SearchKind enum",
+      sql: `DO $$ BEGIN CREATE TYPE "SearchKind" AS ENUM ('simple', 'deep', 'oracle'); EXCEPTION WHEN duplicate_object THEN null; END $$`,
+    },
+    {
+      name: "create SavedSearch table",
+      sql: `CREATE TABLE IF NOT EXISTS "SavedSearch" (
+        "id" TEXT NOT NULL,
+        "userId" TEXT NOT NULL,
+        "label" TEXT NOT NULL,
+        "kind" "SearchKind" NOT NULL,
+        "query" TEXT NOT NULL DEFAULT '',
+        "concepts" TEXT[] DEFAULT ARRAY[]::TEXT[],
+        "thresholds" DOUBLE PRECISION[] DEFAULT ARRAY[]::DOUBLE PRECISION[],
+        "eraId" TEXT,
+        "personSlug" TEXT,
+        "archetype" TEXT,
+        "pinned" BOOLEAN NOT NULL DEFAULT false,
+        "lastRunAt" TIMESTAMP(3),
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL,
+        CONSTRAINT "SavedSearch_pkey" PRIMARY KEY ("id")
+      )`,
+    },
+    {
+      name: "add SavedSearch user fk",
+      sql: `DO $$ BEGIN ALTER TABLE "SavedSearch" ADD CONSTRAINT "SavedSearch_userId_fkey" FOREIGN KEY ("userId") REFERENCES "CodexUser"("id") ON DELETE CASCADE ON UPDATE CASCADE; EXCEPTION WHEN duplicate_object THEN null; END $$`,
+    },
+    {
+      name: "index SavedSearch by user",
+      sql: `CREATE INDEX IF NOT EXISTS "SavedSearch_userId_idx" ON "SavedSearch"("userId")`,
+    },
+    {
+      name: "index SavedSearch by user+pinned",
+      sql: `CREATE INDEX IF NOT EXISTS "SavedSearch_userId_pinned_idx" ON "SavedSearch"("userId", "pinned")`,
+    },
+    {
+      name: "index SavedSearch by user+kind",
+      sql: `CREATE INDEX IF NOT EXISTS "SavedSearch_userId_kind_idx" ON "SavedSearch"("userId", "kind")`,
+    },
   ];
 
   for (const stmt of statements) {
