@@ -5,10 +5,11 @@ const MODEL = "text-embedding-3-small";
 let _client: OpenAI | null = null;
 function client(): OpenAI {
   if (!_client) {
-    if (!process.env.OPENAI_API_KEY) {
-      throw new Error("OPENAI_API_KEY environment variable is not set");
+    const apiKey = process.env.OPENAI_API_KEY ?? process.env.OPENAI_KEY;
+    if (!apiKey) {
+      throw new Error("OPENAI_API_KEY (or OPENAI_KEY) environment variable is not set");
     }
-    _client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    _client = new OpenAI({ apiKey });
   }
   return _client;
 }
