@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { VoidSigil } from "@/components/graphics/void-sigil";
@@ -49,13 +50,30 @@ export default async function ClaimOraclePage({ params }: PageProps) {
       className="min-h-screen flex flex-col items-center justify-center px-4 py-16 bg-void"
       style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(200,169,107,0.05) 0%, #08080f 60%)" }}
     >
-      {/* Sigil */}
-      <div className="mb-8 relative">
-        <VoidSigil size={120} className="text-accent-gold" />
+      {/* Oracle Portrait */}
+      <div className="relative w-full max-w-xs mb-8 mx-auto">
         <div
-          className="absolute inset-0 rounded-full"
-          style={{ boxShadow: "0 0 60px rgba(200,169,107,0.12)", pointerEvents: "none" }}
-        />
+          className="relative overflow-hidden rounded-2xl"
+          style={{ border: "1px solid rgba(200,169,107,0.25)", boxShadow: "0 0 80px rgba(200,169,107,0.10)" }}
+        >
+          <Image
+            src="/oracle-portrait.jpg"
+            alt="The Oracle"
+            width={320}
+            height={440}
+            className="w-full object-cover"
+            priority
+          />
+          {/* Fade bottom into background */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-32"
+            style={{ background: "linear-gradient(to bottom, transparent 0%, #08080f 100%)" }}
+          />
+          {/* Overlay sigil */}
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+            <VoidSigil size={56} className="text-accent-gold opacity-60" />
+          </div>
+        </div>
       </div>
 
       {/* Header */}

@@ -187,10 +187,18 @@ function buildFoundingOracleEmailHtml({
     <tr><td style="padding:3px;background:linear-gradient(135deg,rgba(200,169,107,0.6) 0%,rgba(200,169,107,0.15) 50%,rgba(200,169,107,0.6) 100%);border-radius:16px;">
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0c0c14;border-radius:14px;">
 
+      <!-- Oracle portrait -->
+      <tr><td align="center" style="padding:0;overflow:hidden;border-radius:14px 14px 0 0;">
+        <div style="position:relative;width:100%;max-width:600px;">
+          <img src="https://cultcodex.me/oracle-portrait.jpg" alt="The Oracle" width="600" style="width:100%;max-width:600px;display:block;border-radius:14px 14px 0 0;" />
+          <div style="position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to bottom,transparent 0%,#0c0c14 100%);pointer-events:none;"></div>
+        </div>
+      </td></tr>
+
       <!-- Sigil row -->
-      <tr><td align="center" style="padding:48px 40px 24px;">
-        <div style="width:80px;height:80px;margin:0 auto 24px;">
-          <svg width="80" height="80" viewBox="0 0 160 160" fill="none">
+      <tr><td align="center" style="padding:16px 40px 24px;">
+        <div style="width:60px;height:60px;margin:0 auto 16px;">
+          <svg width="60" height="60" viewBox="0 0 160 160" fill="none">
             <circle cx="80" cy="80" r="72" stroke="#C8A96B" stroke-width="0.8" opacity="0.3" stroke-dasharray="4 6"/>
             <circle cx="80" cy="80" r="55" stroke="#C8A96B" stroke-width="1" opacity="0.2"/>
             <polygon points="80,40 115,60 115,100 80,120 45,100 45,60" stroke="#C8A96B" stroke-width="0.8" fill="none" opacity="0.35"/>
