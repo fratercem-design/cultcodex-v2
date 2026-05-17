@@ -114,7 +114,15 @@ export default async function EntitiesPage() {
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-5xl space-y-2">
           <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">ψ PSYCHENOMICON · ENTITIES ψ</p>
-          <h1 className="font-display text-2xl font-bold text-text-primary">Entity Network</h1>
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <h1 className="font-display text-2xl font-bold text-text-primary">Entity Network</h1>
+            <Link
+              href="/psychenomicon/archetypes"
+              className="font-mono text-[10px] uppercase tracking-widest text-accent-violet/70 hover:text-accent-violet transition-colors"
+            >
+              Archetype atlas →
+            </Link>
+          </div>
           <p className="text-xs text-text-muted">
             {nodes.length > 0
               ? `${nodes.length} entities tracked · ${edges.length} relationship edges`

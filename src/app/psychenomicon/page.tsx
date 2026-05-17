@@ -175,6 +175,9 @@ export default async function PsychenomiconPage() {
               <Link href="/psychenomicon/entities" className="block rounded border border-border bg-surface px-3 py-2 font-mono text-[10px] text-text-muted hover:text-accent-violet hover:border-accent-violet/30 transition-all">
                 Entity network →
               </Link>
+              <Link href="/psychenomicon/archetypes" className="block rounded border border-border bg-surface px-3 py-2 font-mono text-[10px] text-text-muted hover:text-accent-violet hover:border-accent-violet/30 transition-all">
+                Archetype atlas →
+              </Link>
             </div>
           </div>
         </aside>
