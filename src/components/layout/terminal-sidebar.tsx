@@ -3,15 +3,17 @@
 import { useEffect, useMemo, type CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import type { ArchiveCounts } from "@/lib/queries/stats";
 
 type AccentKey = "neon" | "neon-4";
+type CountKey = keyof Pick<ArchiveCounts, "episodes" | "topics" | "people">;
 
 interface NavItem {
   readonly href: string;
   readonly label: string;
   readonly glyph: string;
   readonly key?: string;
-  readonly badge?: string;
+  readonly countKey?: CountKey;
   readonly accent?: AccentKey;
 }
 
@@ -25,10 +27,10 @@ const NAV_GROUPS: readonly NavGroup[] = [
     title: "MAIN",
     items: [
       { href: "/", label: "OVERVIEW", glyph: "▢", key: "1" },
-      { href: "/episodes", label: "ARCHIVE", glyph: "▦", key: "2", badge: "2594" },
+      { href: "/episodes", label: "ARCHIVE", glyph: "▦", key: "2", countKey: "episodes" },
       { href: "/oracle", label: "ORACLE", glyph: "◉", key: "3" },
-      { href: "/topics", label: "SIGNALS", glyph: "◈", key: "4", badge: "3776" },
-      { href: "/people", label: "VOICES", glyph: "◐", key: "5", badge: "669" },
+      { href: "/topics", label: "SIGNALS", glyph: "◈", key: "4", countKey: "topics" },
+      { href: "/people", label: "VOICES", glyph: "◐", key: "5", countKey: "people" },
       { href: "/graph", label: "NETWORK MAP", glyph: "✦", key: "6" },
       { href: "/psychenomicon", label: "PSYCHENOMICON", glyph: "▲", key: "7" },
       { href: "/collections", label: "COLLECTIONS", glyph: "▣", key: "8" },
@@ -50,42 +52,52 @@ const NAV_GROUPS: readonly NavGroup[] = [
   },
 ];
 
-/**
- * Determine whether a nav item is "active" for the current pathname.
- *
- * - "/" matches only when the pathname is exactly "/" so it never wins for
- *   deeper routes.
- * - All other hrefs match exact or `${href}/...` prefix.
- */
 function isActive(href: string, pathname: string | null): boolean {
-  if (!pathname) {
-    return false;
-  }
-  if (href === "/") {
-    return pathname === "/";
-  }
+  if (!pathname) return false;
+  if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 function accentColor(accent: AccentKey | undefined): string {
-  if (accent === "neon-4") {
-    return "var(--neon-4)";
-  }
-  return "var(--term-fg-dim)";
+  return accent === "neon-4" ? "var(--neon-4)" : "var(--term-fg-dim)";
 }
 
-export function TerminalSidebar() {
+const badgeStyle: CSSProperties = {
+  fontSize: 9,
+  color: "var(--term-fg-faint)",
+  border: "1px solid var(--term-line-2)",
+  borderRadius: 2,
+  padding: "1px 4px",
+  letterSpacing: "0.04em",
+};
+
+const keyStyle: CSSProperties = {
+  fontSize: 9,
+  color: "var(--term-fg-faint)",
+  border: "1px solid var(--term-line-2)",
+  borderRadius: 2,
+  padding: "1px 4px",
+  minWidth: 14,
+  textAlign: "center",
+};
+
+interface TerminalSidebarProps {
+  counts: ArchiveCounts;
+}
+
+export function TerminalSidebar({ counts }: TerminalSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Build a stable key→href map for the keyboard shortcuts.
+  const integrityPct = counts.episodes > 0
+    ? Math.round((counts.transcribedEpisodes / counts.episodes) * 100)
+    : 0;
+
   const keyMap = useMemo<ReadonlyMap<string, string>>(() => {
     const map = new Map<string, string>();
     for (const group of NAV_GROUPS) {
       for (const item of group.items) {
-        if (item.key) {
-          map.set(item.key, item.href);
-        }
+        if (item.key) map.set(item.key, item.href);
       }
     }
     return map;
@@ -93,22 +105,11 @@ export function TerminalSidebar() {
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent): void {
-      // Ignore when the user is typing in an input/textarea/contentEditable
-      // or when modifier keys are held (let browser/system shortcuts win).
-      if (event.metaKey || event.ctrlKey || event.altKey) {
-        return;
-      }
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
       const target = event.target as HTMLElement | null;
       if (target) {
         const tag = target.tagName;
-        if (
-          tag === "INPUT" ||
-          tag === "TEXTAREA" ||
-          tag === "SELECT" ||
-          target.isContentEditable
-        ) {
-          return;
-        }
+        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || target.isContentEditable) return;
       }
       const href = keyMap.get(event.key);
       if (href) {
@@ -116,11 +117,8 @@ export function TerminalSidebar() {
         router.push(href);
       }
     }
-
     window.addEventListener("keydown", onKeyDown);
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-    };
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [keyMap, router]);
 
   return (
@@ -133,8 +131,7 @@ export function TerminalSidebar() {
         overflowY: "auto",
         display: "flex",
         flexDirection: "column",
-        fontFamily:
-          "var(--font-mono), 'JetBrains Mono', 'IBM Plex Mono', monospace",
+        fontFamily: "var(--font-mono), 'JetBrains Mono', 'IBM Plex Mono', monospace",
       }}
       aria-label="Primary"
     >
@@ -157,20 +154,21 @@ export function TerminalSidebar() {
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {group.items.map((item) => {
                 const active = isActive(item.href, pathname);
-                const baseColor = accentColor(item.accent);
                 const itemStyle: CSSProperties = {
                   display: "flex",
                   alignItems: "center",
                   gap: 10,
                   padding: "5px 14px 5px 12px",
                   borderLeft: "2px solid transparent",
-                  color: active ? "var(--neon)" : baseColor,
+                  color: active ? "var(--neon)" : accentColor(item.accent),
                   fontSize: 12,
                   letterSpacing: "0.06em",
                   textDecoration: "none",
-                  transition:
-                    "color 120ms linear, background 120ms linear, border-color 120ms linear",
+                  transition: "color 120ms linear, background 120ms linear, border-color 120ms linear",
                 };
+                const badgeText = item.countKey
+                  ? counts[item.countKey].toLocaleString()
+                  : null;
                 return (
                   <li key={item.href}>
                     <Link
@@ -180,43 +178,16 @@ export function TerminalSidebar() {
                       data-key={item.key}
                       aria-current={active ? "page" : undefined}
                     >
-                      <span
-                        aria-hidden="true"
-                        style={{ width: 14, display: "inline-block" }}
-                      >
+                      <span aria-hidden="true" style={{ width: 14, display: "inline-block" }}>
                         {item.glyph}
                       </span>
                       <span style={{ flex: 1 }}>{item.label}</span>
-                      {item.badge ? (
-                        <span
-                          style={{
-                            fontSize: 9,
-                            color: "var(--term-fg-faint)",
-                            border: "1px solid var(--term-line-2)",
-                            borderRadius: 2,
-                            padding: "1px 4px",
-                            letterSpacing: "0.04em",
-                          }}
-                        >
-                          {item.badge}
-                        </span>
-                      ) : null}
-                      {item.key ? (
-                        <span
-                          aria-hidden="true"
-                          style={{
-                            fontSize: 9,
-                            color: "var(--term-fg-faint)",
-                            border: "1px solid var(--term-line-2)",
-                            borderRadius: 2,
-                            padding: "1px 4px",
-                            minWidth: 14,
-                            textAlign: "center",
-                          }}
-                        >
-                          {item.key}
-                        </span>
-                      ) : null}
+                      {badgeText && (
+                        <span style={badgeStyle}>{badgeText}</span>
+                      )}
+                      {item.key && (
+                        <span aria-hidden="true" style={keyStyle}>{item.key}</span>
+                      )}
                     </Link>
                   </li>
                 );
@@ -236,15 +207,9 @@ export function TerminalSidebar() {
           letterSpacing: "0.08em",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: 4,
-          }}
-        >
-          <span>ARCHIVE</span>
-          <span style={{ color: "var(--neon)" }}>47%</span>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+          <span>TRANSCRIBED</span>
+          <span style={{ color: "var(--neon)" }}>{integrityPct}%</span>
         </div>
         <div
           style={{
@@ -254,21 +219,24 @@ export function TerminalSidebar() {
             overflow: "hidden",
           }}
           role="progressbar"
-          aria-label="Archive integrity"
-          aria-valuenow={47}
+          aria-label="Transcript coverage"
+          aria-valuenow={integrityPct}
           aria-valuemin={0}
           aria-valuemax={100}
         >
           <div
             style={{
-              width: "47%",
+              width: `${integrityPct}%`,
               height: "100%",
               backgroundColor: "var(--neon)",
               boxShadow: "var(--glow-neon)",
+              transition: "width 600ms ease",
             }}
           />
         </div>
-        <div style={{ marginTop: 6 }}>INTEGRITY: NOMINAL</div>
+        <div style={{ marginTop: 6 }}>
+          {counts.transcribedEpisodes.toLocaleString()} / {counts.episodes.toLocaleString()} eps
+        </div>
       </div>
     </aside>
   );

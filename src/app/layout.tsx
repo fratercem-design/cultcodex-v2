@@ -12,6 +12,7 @@ import { EntryBanner } from "@/components/layout/entry-banner";
 import { TerminalTopBar } from "@/components/layout/terminal-topbar";
 import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
 import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
+import { getArchiveCounts } from "@/lib/queries/stats";
 import { SkipLink } from "@/components/ui/skip-link";
 import { KonamiEasterEgg } from "@/components/ui/konami-easter-egg";
 import { CommandPalette } from "@/components/search/command-palette";
@@ -85,11 +86,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const counts = await getArchiveCounts();
+
   const fontVariables = [
     spaceGrotesk.variable,
     inter.variable,
@@ -110,7 +113,7 @@ export default function RootLayout({
         <EntryBanner />
         <div className="terminal-grid">
           <TerminalTopBar />
-          <TerminalSidebar />
+          <TerminalSidebar counts={counts} />
           <div
             id="main-content"
             className="terminal-main"
@@ -118,7 +121,7 @@ export default function RootLayout({
           >
             {children}
           </div>
-          <TerminalStatusBar />
+          <TerminalStatusBar feedCount={counts.episodes} />
         </div>
         <KonamiEasterEgg />
         <CommandPalette />

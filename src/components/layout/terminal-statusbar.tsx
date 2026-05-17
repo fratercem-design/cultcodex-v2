@@ -13,7 +13,6 @@ import { useEffect, useState, type CSSProperties } from "react";
  * matches the first client render (avoids hydration mismatch).
  */
 
-const FEED_COUNT = "2,594";
 const BUILD_VERSION = "v2.4.1-codex";
 
 function formatUtc(date: Date): string {
@@ -44,7 +43,11 @@ const cellStyleLeftBorder: CSSProperties = {
   borderLeft: "1px solid var(--term-line)",
 };
 
-export function TerminalStatusBar() {
+interface TerminalStatusBarProps {
+  feedCount: number;
+}
+
+export function TerminalStatusBar({ feedCount }: TerminalStatusBarProps) {
   const [utc, setUtc] = useState<string>("");
 
   useEffect(() => {
@@ -89,7 +92,7 @@ export function TerminalStatusBar() {
           <span style={{ color: "var(--neon)" }}>SIGNAL_OK</span>
         </span>
         <span style={cellStyle}>CONN: TLS/1.3</span>
-        <span style={cellStyle}>FEED: {FEED_COUNT}</span>
+        <span style={cellStyle}>FEED: {feedCount.toLocaleString()}</span>
       </div>
 
       <div style={{ display: "flex", alignItems: "stretch" }}>
