@@ -1,8 +1,17 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 const MODEL = "text-embedding-3-small";
+
+let _client: OpenAI | null = null;
+function client(): OpenAI {
+  if (!_client) {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY environment variable is not set");
+    }
+    _client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return _client;
+}
 const DIMENSIONS = 1536;
 // OpenAI max inputs per batch call
 const BATCH_SIZE = 2048;
@@ -14,7 +23,7 @@ export function segmentToEmbedText(speakerLabel: string | null, text: string): s
 
 /** Embed a single string. Returns a 1536-dim float array. */
 export async function embedOne(text: string): Promise<number[]> {
-  const res = await openai.embeddings.create({
+  const res = await client().embeddings.create({
     model: MODEL,
     input: text,
     dimensions: DIMENSIONS,
@@ -28,7 +37,7 @@ export async function embedBatch(texts: string[]): Promise<number[][]> {
   if (texts.length > BATCH_SIZE) {
     throw new Error(`embedBatch: max ${BATCH_SIZE} inputs, got ${texts.length}`);
   }
-  const res = await openai.embeddings.create({
+  const res = await client().embeddings.create({
     model: MODEL,
     input: texts,
     dimensions: DIMENSIONS,
