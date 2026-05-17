@@ -109,6 +109,7 @@ export default async function SeriesDetailPage({ params, searchParams }: PagePro
           { label: typeLabel.toUpperCase(), variant: "green" },
           { label: series.status.toUpperCase(), variant: series.status === "published" ? "green" : "muted" },
         ]}
+      label="series"
       />
       <Breadcrumbs items={[
         { label: "Home", href: "/" },

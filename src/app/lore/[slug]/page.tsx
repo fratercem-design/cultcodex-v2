@@ -100,6 +100,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
         subtitle={entry.category ?? undefined}
         backgroundImage="/lore-header.jpg"
         badges={[{ label: canonLabel.toUpperCase(), variant: canonVariant }]}
+      label="lore_entry"
       />
       <Breadcrumbs items={[
         { label: "Home", href: "/" },

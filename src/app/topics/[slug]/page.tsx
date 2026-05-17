@@ -107,6 +107,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
         title={topic.title}
         subtitle={descBase ?? "Topic"}
         backgroundImage="/wiki-page-header.jpg"
+      label="signal"
       />
       <Breadcrumbs items={[
         { label: "Home", href: "/" },

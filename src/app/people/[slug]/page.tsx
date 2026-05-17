@@ -376,6 +376,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
         }
         badges={[{ label: typeLabel, variant: typeVariant }]}
         neonTitle={person.slug === "alexandra-mayers"}
+        label="voice"
       />
       <Breadcrumbs items={[
         { label: "Home", href: "/" },

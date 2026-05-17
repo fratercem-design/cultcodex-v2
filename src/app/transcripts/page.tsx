@@ -60,6 +60,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
             title="TRANSCRIPTS"
             subtitle="Full-text transcript search is a subscriber feature"
             backgroundImage="/search-database-background.jpg"
+          label="transcripts"
           />
           <EntityGlanceBar items={glanceItems} />
           <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
@@ -86,6 +87,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
           title="TRANSCRIPTS"
           subtitle={`${results.totalCount.toLocaleString()} result${results.totalCount !== 1 ? "s" : ""} for "${query}"`}
           backgroundImage="/search-database-background.jpg"
+        label="transcripts"
         />
         <EntityGlanceBar items={glanceItems} />
         <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
@@ -159,6 +161,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
         title="TRANSCRIPTS"
         subtitle="Search every word spoken across the archive"
         backgroundImage="/search-database-background.jpg"
+      label="transcripts"
       />
       <EntityGlanceBar items={glanceItems} />
       <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
