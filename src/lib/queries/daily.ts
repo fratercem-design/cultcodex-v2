@@ -134,9 +134,9 @@ async function getWeeklyPulse(): Promise<WeeklyPulse> {
       prisma.quote.count({
         where: { createdAt: { gte: weekAgo } },
       }),
-      prisma.psychenomiconThread.count({
-        where: { status: { in: ["active", "emerging", "evolving", "contested"] } },
-      }),
+      prisma.psychenomiconThread
+        .count({ where: { status: { in: ["active", "emerging", "evolving", "contested"] } } })
+        .catch(() => 0),
     ]);
 
   return { newEpisodes, newLoreEntries, newQuotes, activeThreads };

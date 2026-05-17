@@ -46,12 +46,17 @@ export default async function HomePage() {
     getQuotes({ take: 2 }),
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }),
     getTopTopicsByEpisodes(10),
-    getDailyTransmission(),
+    getDailyTransmission().catch(() => ({
+      date: new Date().toISOString().slice(0, 10),
+      quote: null,
+      spotlightEpisode: null,
+      pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
+    })),
     getCurrentUser(),
   ]);
 
   const dailyQuoteReactions = dailyTransmission.quote
-    ? await getQuoteReactionCounts(dailyTransmission.quote.id, currentUser?.id)
+    ? await getQuoteReactionCounts(dailyTransmission.quote.id, currentUser?.id).catch(() => undefined)
     : undefined;
 
   const recentCards = recentEpisodes.map(formatEpisodeForCard);
