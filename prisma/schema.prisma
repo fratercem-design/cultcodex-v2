@@ -426,6 +426,14 @@ model CodexUser {
   savedTopics             SavedTopic[]
   savedQuotes             SavedQuote[]
   savedSearches           SavedSearch[]
+
+  // ─── Trading Card System ───────────────────────
+  ownedCards              OwnedCard[]
+  wallet                  UserWallet?
+  creditTransactions      CreditTransaction[]
+  packPurchases           PackPurchase[]
+  tradesInitiated         CardTrade[]           @relation("TradeInitiator")
+  tradesReceived          CardTrade[]           @relation("TradeReceiver")
 }
 
 enum SearchKind {
@@ -759,4 +767,214 @@ model CommunityPost {
   updatedAt     DateTime  @updatedAt
 
   @@index([publishedAt])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ─── Trading Card System ───────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════════
+
+enum CardType {
+  VOICE        // Person
+  TRANSMISSION // Episode
+  LORE         // LoreEntry
+  SIGNAL       // Topic
+  ORACLE       // Quote highlight
+  CIPHER       // Achievement / special
+}
+
+enum Rarity {
+  STATIC       // Common     — muted border, no glow
+  SIGNAL       // Uncommon   — green (#00ff9c)
+  TRANSMISSION // Rare       — amber (#ffb800)
+  ANOMALY      // Epic       — magenta (#ff2bd6)
+  ORACLE       // Legendary  — crimson (#ff3860) + foil shimmer
+}
+
+enum TradeStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  CANCELLED
+}
+
+// ─── Master card definition (one per unique card) ────────────────────────────
+
+model Card {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  cardType      CardType
+  rarity        Rarity
+
+  // Soft links to source entities (at most one will be set)
+  personSlug    String?
+  episodeNumber Int?
+  loreSlug      String?
+  topicSlug     String?
+  quoteId       String?
+
+  // Display
+  title         String
+  subtitle      String?
+  flavourText   String?  // italic text at the bottom — lore/atmosphere
+  artUrl        String?  // custom card art (overrides entity thumbnail)
+
+  // Thematic stats — computed at seed time, stored as plain numbers
+  statA         Int      @default(0)  // SIGNAL STRENGTH
+  statB         Int      @default(0)  // RESONANCE
+  statC         Int      @default(0)  // CLARITY
+
+  // Abilities (1-2 thematic phrases, not gameplay-affecting)
+  abilities     String[]
+
+  // Availability
+  totalMinted   Int      @default(0)
+  maxSupply     Int?     // null = unlimited
+  isLimited     Boolean  @default(false)
+  releaseDate   DateTime?
+  isActive      Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  ownedCards    OwnedCard[]
+  packCards     PackCard[]
+
+  @@index([cardType, rarity])
+  @@index([personSlug])
+  @@index([episodeNumber])
+  @@index([loreSlug])
+  @@index([topicSlug])
+}
+
+// ─── User's card instances ───────────────────────────────────────────────────
+
+model OwnedCard {
+  id          String   @id @default(cuid())
+  userId      String
+  cardId      String
+  isFoil      Boolean  @default(false)  // 5% chance on TRANSMISSION+ pulls
+  isNew       Boolean  @default(true)   // cleared when user views it
+  quantity    Int      @default(1)      // allows duplicates for trading
+  obtainedVia String                    // "pack", "daily", "achievement", "trade", "gift", "seed"
+  obtainedAt  DateTime @default(now())
+
+  user        CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card        Card      @relation(fields: [cardId], references: [id])
+
+  @@unique([userId, cardId])
+  @@index([userId])
+  @@index([cardId])
+}
+
+// ─── Pack definitions ────────────────────────────────────────────────────────
+
+model CardPack {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title          String
+  subtitle       String?
+  description    String?
+  flavourText    String?
+  cost           Int      // signal credits
+  cardCount      Int      // cards per pack
+  accentColor    String   @default("neon")  // "neon" | "amber" | "magenta" | "crimson" | "cyan"
+  artUrl         String?
+
+  // Rarity weights (must sum to 100)
+  weightStatic       Int @default(60)
+  weightSignal       Int @default(25)
+  weightTransmission Int @default(12)
+  weightAnomaly      Int @default(2)
+  weightOracle       Int @default(1)
+
+  // Filters applied when drawing from this pack
+  filterCardType  CardType?
+  filterRarity    Rarity?
+  filterSeriesTag String?    // e.g. "Season 1"
+
+  isAvailable    Boolean  @default(true)
+  limitedUntil   DateTime?
+  sortOrder      Int      @default(0)
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  packCards      PackCard[]
+  purchases      PackPurchase[]
+}
+
+model PackCard {
+  packId  String
+  cardId  String
+  weight  Int    @default(1)
+
+  pack    CardPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+  card    Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@id([packId, cardId])
+  @@index([packId])
+}
+
+model PackPurchase {
+  id          String   @id @default(cuid())
+  userId      String
+  packId      String
+  cardsDrawn  String[]    // ordered list of Card.id values
+  creditsCost Int
+  purchasedAt DateTime @default(now())
+
+  user        CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pack        CardPack  @relation(fields: [packId], references: [id])
+
+  @@index([userId])
+  @@index([packId])
+}
+
+// ─── Credit economy ──────────────────────────────────────────────────────────
+
+model UserWallet {
+  userId           String   @id
+  balance          Int      @default(0)   // current signal credits
+  totalEarned      Int      @default(0)
+  totalSpent       Int      @default(0)
+  lastDailyClaimAt DateTime?              // for daily reward gate
+
+  user             CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CreditTransaction {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Int      // positive = earned, negative = spent
+  reason    String   // "daily_login" | "episode_read" | "pack_purchase" | "achievement" | "trade"
+  metadata  Json?    // { episodeNumber, packSlug, achievementId, ... }
+  createdAt DateTime @default(now())
+
+  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// ─── Card trading ────────────────────────────────────────────────────────────
+
+model CardTrade {
+  id              String      @id @default(cuid())
+  initiatorId     String
+  receiverId      String
+  offeredCardId   String      // initiator gives this
+  wantedCardId    String      // initiator wants this from receiver
+  status          TradeStatus @default(PENDING)
+  message         String?
+  expiresAt       DateTime
+  resolvedAt      DateTime?
+  createdAt       DateTime    @default(now())
+
+  initiator       CodexUser @relation("TradeInitiator", fields: [initiatorId], references: [id], onDelete: Cascade)
+  receiver        CodexUser @relation("TradeReceiver",  fields: [receiverId],  references: [id], onDelete: Cascade)
+
+  @@index([initiatorId])
+  @@index([receiverId])
+  @@index([status])
 }

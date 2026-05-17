@@ -489,6 +489,28 @@ body {
   animation: term-flicker 4s infinite;
 }
 
+/* ─── Trading Card Animations ──────────────────── */
+@keyframes foilShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes pulseRing {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.03); }
+}
+@keyframes packShake {
+  0%, 100% { transform: rotate(-1deg) translateX(-1px); }
+  50%       { transform: rotate(1deg) translateX(1px); }
+}
+@keyframes termBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(24px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);   }
+}
+
 /* Terminal nav active item */
 .term-nav-active {
   color: var(--neon) !important;
