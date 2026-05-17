@@ -136,15 +136,24 @@ export default async function ErasPage() {
                           ? `${count} episode${count !== 1 ? "s" : ""} in the archive`
                           : "Episodes being catalogued"}
                       </span>
-                      {count > 0 && (
+                      <div className="flex items-center gap-3">
+                        {count > 0 && (
+                          <Link
+                            href={`/episodes?era=${era.id}`}
+                            className={`inline-flex items-center gap-1.5 font-mono text-[10px] ${ERA_TEXT[era.color]} hover:opacity-80 transition-opacity`}
+                          >
+                            Browse episodes
+                            <span aria-hidden="true">→</span>
+                          </Link>
+                        )}
                         <Link
-                          href={`/episodes?era=${era.id}`}
+                          href={`/eras/${era.id}`}
                           className={`inline-flex items-center gap-1.5 font-mono text-[10px] ${ERA_TEXT[era.color]} hover:opacity-80 transition-opacity`}
                         >
-                          Browse this era
-                          <span aria-hidden="true">→</span>
+                          Era overview
+                          <span aria-hidden="true">↗</span>
                         </Link>
-                      )}
+                      </div>
                     </div>
                   </div>
                 </div>

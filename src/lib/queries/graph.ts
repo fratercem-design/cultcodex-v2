@@ -22,14 +22,30 @@ export interface GraphData {
   totalEpisodes: number;
 }
 
-export async function fetchRelationshipGraph(minCoAppearances = 2): Promise<GraphData> {
+export async function fetchRelationshipGraph(
+  minCoAppearances = 2,
+  options?: { eraDateStart?: Date; eraDateEnd?: Date }
+): Promise<GraphData> {
+  const episodeWhere = {
+    status: "published" as const,
+    ...(options?.eraDateStart
+      ? {
+          airDate: {
+            not: null,
+            gte: options.eraDateStart,
+            ...(options.eraDateEnd ? { lte: options.eraDateEnd } : {}),
+          },
+        }
+      : {}),
+  };
+
   const [guestRows, episodeCount, entities] = await Promise.all([
-    // All guest appearances in published episodes
+    // Guest appearances filtered by era when provided
     prisma.episodeGuest.findMany({
-      where: { episode: { status: "published" } },
+      where: { episode: episodeWhere },
       select: { episodeId: true, personId: true },
     }),
-    prisma.episode.count({ where: { status: "published" } }),
+    prisma.episode.count({ where: episodeWhere }),
     // Psychenomicon archetypes (soft-linked by personSlug)
     prisma.psychenomiconEntity.findMany({
       where: { personSlug: { not: null }, primaryArchetype: { not: null } },
