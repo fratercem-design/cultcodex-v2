@@ -182,6 +182,7 @@ interface Props {
   status: string;
   radarData: unknown;
   behaviorPatterns: string[];
+  archetypeAtlasSlug?: string | null;
 }
 
 export function ArchetypeCard({
@@ -190,6 +191,7 @@ export function ArchetypeCard({
   status,
   radarData,
   behaviorPatterns,
+  archetypeAtlasSlug,
 }: Props) {
   const theme = getTheme(primaryArchetype);
   const radar = parseRadar(radarData);
@@ -275,14 +277,25 @@ export function ArchetypeCard({
           </div>
         )}
 
-        {/* Link */}
-        <Link
-          href={`/psychenomicon/entities/${entitySlug}`}
-          className={`inline-flex items-center gap-1.5 font-mono text-[10px] ${theme.text} hover:opacity-80 transition-opacity`}
-        >
-          Full Psychenomicon entry
-          <span aria-hidden>→</span>
-        </Link>
+        {/* Links */}
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+          <Link
+            href={`/psychenomicon/entities/${entitySlug}`}
+            className={`inline-flex items-center gap-1.5 font-mono text-[10px] ${theme.text} hover:opacity-80 transition-opacity`}
+          >
+            Full Psychenomicon entry
+            <span aria-hidden>→</span>
+          </Link>
+          {archetypeAtlasSlug && (
+            <Link
+              href={`/psychenomicon/archetypes/${archetypeAtlasSlug}`}
+              className="inline-flex items-center gap-1.5 font-mono text-[10px] text-text-muted/60 hover:text-text-muted transition-colors"
+            >
+              Archetype atlas
+              <span aria-hidden>↗</span>
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );

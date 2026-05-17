@@ -5,6 +5,8 @@ import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
 import { buildMetadata } from "@/lib/seo";
+import { ERAS, getEraForEpisode } from "@/lib/eras";
+import { archetypeToSlug, splitArchetypes } from "@/lib/queries/archetypes";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
@@ -283,6 +285,57 @@ export default async function PersonDetailPage({ params }: PageProps) {
   const personMediaWiki = personMediaSerialized.find((m) => m.source === "wiki") ?? null;
   const hasPersonMedia = personMediaRaw.length > 0;
 
+  // Era presence — bucket uniqueEpisodes by era (client-side, no extra DB query)
+  const ERA_BAR_COLOR: Record<string, string> = {
+    gold:    "bg-accent-gold",
+    violet:  "bg-accent-violet",
+    cyan:    "bg-accent-cyan",
+    crimson: "bg-accent-crimson",
+    muted:   "bg-text-muted",
+  };
+  const ERA_TEXT_COLOR: Record<string, string> = {
+    gold:    "text-accent-gold",
+    violet:  "text-accent-violet",
+    cyan:    "text-accent-cyan",
+    crimson: "text-accent-crimson",
+    muted:   "text-text-muted",
+  };
+  const eraPresence = ERAS.map((era) => {
+    const count = uniqueEpisodes.filter((ep) => {
+      if (!ep.airDate) return false;
+      return getEraForEpisode(ep.airDate)?.id === era.id;
+    }).length;
+    return { era, count };
+  }).filter((e) => e.count > 0);
+  const maxEraCount = Math.max(...eraPresence.map((e) => e.count), 1);
+
+  // Archetype atlas slug for backlink
+  const atlasArchetypeSlug = psychenomiconEntity?.primaryArchetype
+    ? archetypeToSlug(splitArchetypes(psychenomiconEntity.primaryArchetype)[0])
+    : null;
+
+  // Episodes grouped by era for the appearances section
+  type EpisodeCard = (typeof uniqueEpisodes)[number];
+  type EraGroup = { eraId: string; eraLabel: string; eraSigil: string; eraColor: string; episodes: EpisodeCard[] };
+  const episodesByEra: EraGroup[] = [];
+  const unclassified: EpisodeCard[] = [];
+  for (const ep of uniqueEpisodes) {
+    const era = ep.airDate ? getEraForEpisode(ep.airDate) : null;
+    if (era) {
+      let group = episodesByEra.find((g) => g.eraId === era.id);
+      if (!group) {
+        group = { eraId: era.id, eraLabel: era.label, eraSigil: era.sigil, eraColor: era.color, episodes: [] };
+        episodesByEra.push(group);
+      }
+      group.episodes.push(ep);
+    } else {
+      unclassified.push(ep);
+    }
+  }
+  // Sort era groups in reverse chronological order (newest era first, matching uniqueEpisodes sort)
+  const ERA_ORDER = ERAS.map((e) => e.id);
+  episodesByEra.sort((a, b) => ERA_ORDER.indexOf(b.eraId) - ERA_ORDER.indexOf(a.eraId));
+
   const typeLabel = PERSON_TYPE_LABELS[person.personType] ?? person.personType;
   const typeVariant = PERSON_TYPE_VARIANTS[person.personType] ?? "muted";
 
@@ -370,18 +423,59 @@ export default async function PersonDetailPage({ params }: PageProps) {
             {/* Appearances */}
             <SectionCard title={`Appearances (${uniqueEpisodes.length})`}>
               {uniqueEpisodes.length > 0 ? (
-                <div className="grid gap-3">
-                  {uniqueEpisodes.map((ep) => (
-                    <EpisodeListItem
-                      key={ep.id}
-                      slug={ep.slug}
-                      title={ep.title}
-                      episodeNumber={ep.episodeNumber}
-                      airDate={ep.airDate}
-                      summaryShort={ep.summaryShort}
-                      thumbnailUrl={fixThumbnailUrl(ep.thumbnailUrl)}
-                    />
+                <div className="space-y-6">
+                  {episodesByEra.map((group) => (
+                    <div key={group.eraId}>
+                      <Link
+                        href={`/eras/${group.eraId}`}
+                        className={`group mb-3 flex items-center gap-2 ${ERA_TEXT_COLOR[group.eraColor] ?? "text-text-muted"}`}
+                      >
+                        <span className="font-mono text-[11px]">{group.eraSigil}</span>
+                        <span className="font-mono text-[10px] uppercase tracking-widest opacity-70 group-hover:opacity-100 transition-opacity">
+                          {group.eraLabel}
+                        </span>
+                        <span className="font-mono text-[9px] text-text-muted/50">
+                          {group.episodes.length} ep{group.episodes.length !== 1 ? "s" : ""}
+                        </span>
+                        <span className="ml-auto font-mono text-[9px] text-text-muted/40 group-hover:text-text-muted transition-colors">
+                          era →
+                        </span>
+                      </Link>
+                      <div className="grid gap-3">
+                        {group.episodes.map((ep) => (
+                          <EpisodeListItem
+                            key={ep.id}
+                            slug={ep.slug}
+                            title={ep.title}
+                            episodeNumber={ep.episodeNumber}
+                            airDate={ep.airDate}
+                            summaryShort={ep.summaryShort}
+                            thumbnailUrl={fixThumbnailUrl(ep.thumbnailUrl)}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   ))}
+                  {unclassified.length > 0 && (
+                    <div>
+                      <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-text-muted/40">
+                        Unclassified
+                      </p>
+                      <div className="grid gap-3">
+                        {unclassified.map((ep) => (
+                          <EpisodeListItem
+                            key={ep.id}
+                            slug={ep.slug}
+                            title={ep.title}
+                            episodeNumber={ep.episodeNumber}
+                            airDate={ep.airDate}
+                            summaryShort={ep.summaryShort}
+                            thumbnailUrl={fixThumbnailUrl(ep.thumbnailUrl)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <p className="text-xs text-text-muted">No appearances recorded</p>
@@ -421,6 +515,56 @@ export default async function PersonDetailPage({ params }: PageProps) {
               ]}
             />
 
+            {/* Era Presence */}
+            {eraPresence.length > 0 && (
+              <div className="rounded-lg border border-border bg-surface overflow-hidden">
+                <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/70">
+                    Era Presence
+                  </p>
+                  <p className="font-mono text-[9px] text-text-muted/40">
+                    {eraPresence.length} era{eraPresence.length !== 1 ? "s" : ""}
+                  </p>
+                </div>
+                <div className="px-4 py-3 space-y-2.5">
+                  {eraPresence.map(({ era, count }) => {
+                    const barColor = ERA_BAR_COLOR[era.color] ?? "bg-text-muted";
+                    const textColor = ERA_TEXT_COLOR[era.color] ?? "text-text-muted";
+                    const pct = Math.round((count / maxEraCount) * 100);
+                    return (
+                      <Link
+                        key={era.id}
+                        href={`/eras/${era.id}`}
+                        className="group block"
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className={`font-mono text-[10px] ${textColor} group-hover:opacity-80 transition-opacity`}>
+                            {era.sigil} {era.label}
+                          </span>
+                          <span className="font-mono text-[9px] text-text-muted/50 tabular-nums">
+                            {count}
+                          </span>
+                        </div>
+                        <div className="h-1 rounded-full bg-border overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${barColor} opacity-60 group-hover:opacity-80 transition-opacity`}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+                {eraPresence.length === ERAS.length && (
+                  <div className="border-t border-border/60 px-4 py-2">
+                    <p className="font-mono text-[9px] text-accent-gold/60 uppercase tracking-widest">
+                      ◈ Spans all eras
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Psychenomicon archetype intelligence card */}
             {psychenomiconEntity && (
               <ArchetypeCard
@@ -429,6 +573,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 status={psychenomiconEntity.status}
                 radarData={psychenomiconEntity.radarData}
                 behaviorPatterns={psychenomiconEntity.behaviorPatterns}
+                archetypeAtlasSlug={atlasArchetypeSlug}
               />
             )}
 

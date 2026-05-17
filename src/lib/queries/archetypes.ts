@@ -39,7 +39,7 @@ export interface ArchetypeDetail {
 // "Mirror & Gravity", "Mirror — Gravity", or "Mirror, Gravity".
 const ARCHETYPE_SEPARATORS = /\s*[/&,|]\s*|\s+—\s+|\s+and\s+/i;
 
-function splitArchetypes(value: string | null): string[] {
+export function splitArchetypes(value: string | null): string[] {
   if (!value) return [];
   return value
     .split(ARCHETYPE_SEPARATORS)
