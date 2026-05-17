@@ -89,6 +89,8 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
       title="PEOPLE"
       subtitle="Guests, hosts, and figures of the archive"
       backgroundImage="/wiki-page-header.jpg"
+    
+      label="voices"
     />
     <EntityGlanceBar items={glanceItems} />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">

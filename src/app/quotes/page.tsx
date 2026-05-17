@@ -98,7 +98,9 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
         title="QUOTES"
         subtitle={subtitle}
         backgroundImage="/long-form-background.jpg"
-      />
+      
+      label="transmissions"
+    />
       <EntityGlanceBar items={glanceItems} />
       <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-4">

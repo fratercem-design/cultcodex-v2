@@ -1996,7 +1996,9 @@ export default function LexiconPage() {
         title="PANELVERSE LEXICON"
         subtitle={`${LEXICON.length} terms from the Cult of Psyche and the wider Panelverse`}
         backgroundImage="/wiki-page-header.jpg"
-      />
+      
+      label="lexicon"
+    />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
 
         {/* Color legend */}

@@ -111,13 +111,13 @@ export default function RootLayout({
         <div className="terminal-grid">
           <TerminalTopBar />
           <TerminalSidebar />
-          <main
+          <div
             id="main-content"
             className="terminal-main"
             style={{ backgroundColor: "var(--term-bg)" }}
           >
             {children}
-          </main>
+          </div>
           <TerminalStatusBar />
         </div>
         <KonamiEasterEgg />

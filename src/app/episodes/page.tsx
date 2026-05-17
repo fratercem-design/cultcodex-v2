@@ -107,6 +107,8 @@ export default async function EpisodesPage({
       title="EPISODES"
       subtitle={`${totalCount} transmissions in the archive`}
       backgroundImage="/articles-bacgkground.jpg"
+    
+      label="archive"
     />
     <EntityGlanceBar items={glanceItems} />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">

@@ -62,6 +62,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       title="SEARCH"
       subtitle="Query the archive"
       backgroundImage="/search-database-background.jpg"
+    
+      label="search"
     />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
       {/* Search input */}

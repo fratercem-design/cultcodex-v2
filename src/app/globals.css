@@ -373,6 +373,16 @@ body::after {
   );
 }
 
+/* Terminal shell — body is the full-height flex container so banners above
+   the grid don't push content off-screen. The grid itself fills the remaining
+   flex space and is the only thing that scrolls internally. */
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh; /* dynamic viewport height — accounts for mobile chrome */
+  overflow: hidden;
+}
+
 /* Terminal shell grid */
 .terminal-grid {
   display: grid;
@@ -382,8 +392,10 @@ body::after {
     "statusbar statusbar";
   grid-template-columns: 220px 1fr;
   grid-template-rows: 36px 1fr 24px;
-  min-height: 100vh;
+  flex: 1;           /* fill remaining body height after banners */
+  min-height: 0;     /* override flex default so 1fr rows can shrink */
   max-width: 1600px;
+  width: 100%;
   margin: 0 auto;
   border-left: 1px solid var(--term-line);
   border-right: 1px solid var(--term-line);
@@ -394,11 +406,14 @@ body::after {
 }
 .terminal-sidebar {
   grid-area: sidebar;
+  overflow-y: auto;
+  min-height: 0;
 }
 .terminal-main {
   grid-area: main;
   overflow-y: auto;
   min-width: 0;
+  min-height: 0;
 }
 .terminal-statusbar {
   grid-area: statusbar;
