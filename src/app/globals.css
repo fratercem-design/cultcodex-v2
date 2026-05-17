@@ -16,17 +16,17 @@
 /* ─── Design Tokens (Tailwind v4 @theme) ───────────── */
 
 @theme inline {
-  /* Backgrounds */
+  /* Backgrounds — aligned to terminal palette */
   --color-void: #0A0A0F;
-  --color-surface: #12131A;
-  --color-elevated: #1A1C24;
+  --color-surface: #0a0e15;   /* was #12131A — now matches --term-panel */
+  --color-elevated: #0b0f18;  /* was #1A1C24 — now matches --term-bg-2  */
 
   /* Text */
   --color-text-primary: #F3EEDF;
   --color-text-muted: #B6AE9B;
 
-  /* Borders */
-  --color-border: #2A2D36;
+  /* Borders — aligned to terminal palette */
+  --color-border: #182135;    /* was #2A2D36 — now matches --term-line  */
 
   /* Accents — use with discipline */
   --color-accent-gold: #C8A96B;
@@ -94,11 +94,11 @@
 /* ─── CSS Custom Properties ────────────────────────── */
 
 :root {
-  /* Sacred Terminal palette */
+  /* Sacred Terminal palette — bg-surface/elevated/border aligned to terminal */
   --bg-void: #0A0A0F;
-  --bg-surface: #12131A;
-  --bg-elevated: #1A1C24;
-  --border: #2A2D36;
+  --bg-surface: #0a0e15;
+  --bg-elevated: #0b0f18;
+  --border: #182135;
   --text-primary: #F3EEDF;
   --text-muted: #B6AE9B;
   --accent-gold: #C8A96B;
@@ -118,20 +118,20 @@
   /* shadcn/ui base (light fallback, overridden by .dark) */
   --background: #0A0A0F;
   --foreground: #F3EEDF;
-  --card: #12131A;
+  --card: #0a0e15;
   --card-foreground: #F3EEDF;
-  --popover: #1A1C24;
+  --popover: #0b0f18;
   --popover-foreground: #F3EEDF;
   --primary: #C8A96B;
   --primary-foreground: #0A0A0F;
-  --secondary: #1A1C24;
+  --secondary: #0b0f18;
   --secondary-foreground: #F3EEDF;
-  --muted: #1A1C24;
+  --muted: #0b0f18;
   --muted-foreground: #B6AE9B;
   --accent: #6E4BAE;
   --accent-foreground: #F3EEDF;
   --destructive: #A94A4A;
-  --input: #2A2D36;
+  --input: #182135;
   --ring: rgba(200, 169, 107, 0.3);
   --chart-1: #C8A96B;
   --chart-2: #6E4BAE;
@@ -139,13 +139,13 @@
   --chart-4: #A94A4A;
   --chart-5: #B6AE9B;
   --radius: 0.625rem;
-  --sidebar: #12131A;
+  --sidebar: #07090f;
   --sidebar-foreground: #F3EEDF;
   --sidebar-primary: #C8A96B;
   --sidebar-primary-foreground: #0A0A0F;
-  --sidebar-accent: #1A1C24;
+  --sidebar-accent: #0b0f18;
   --sidebar-accent-foreground: #F3EEDF;
-  --sidebar-border: #2A2D36;
+  --sidebar-border: #182135;
   --sidebar-ring: rgba(200, 169, 107, 0.3);
 }
 
@@ -214,34 +214,34 @@ h1, h2, h3 {
 .dark {
   --background: #0A0A0F;
   --foreground: #F3EEDF;
-  --card: #12131A;
+  --card: #0a0e15;
   --card-foreground: #F3EEDF;
-  --popover: #1A1C24;
+  --popover: #0b0f18;
   --popover-foreground: #F3EEDF;
   --primary: #C8A96B;
   --primary-foreground: #0A0A0F;
-  --secondary: #1A1C24;
+  --secondary: #0b0f18;
   --secondary-foreground: #F3EEDF;
-  --muted: #1A1C24;
+  --muted: #0b0f18;
   --muted-foreground: #B6AE9B;
   --accent: #6E4BAE;
   --accent-foreground: #F3EEDF;
   --destructive: #A94A4A;
-  --border: #2A2D36;
-  --input: #2A2D36;
+  --border: #182135;
+  --input: #182135;
   --ring: rgba(200, 169, 107, 0.3);
   --chart-1: #C8A96B;
   --chart-2: #6E4BAE;
   --chart-3: #5DB7D8;
   --chart-4: #A94A4A;
   --chart-5: #B6AE9B;
-  --sidebar: #12131A;
+  --sidebar: #07090f;
   --sidebar-foreground: #F3EEDF;
   --sidebar-primary: #C8A96B;
   --sidebar-primary-foreground: #0A0A0F;
-  --sidebar-accent: #1A1C24;
+  --sidebar-accent: #0b0f18;
   --sidebar-accent-foreground: #F3EEDF;
-  --sidebar-border: #2A2D36;
+  --sidebar-border: #182135;
   --sidebar-ring: rgba(200, 169, 107, 0.3);
 }
 
