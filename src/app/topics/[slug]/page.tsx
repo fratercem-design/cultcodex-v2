@@ -140,7 +140,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
               </div>
             )}
 
-            <SectionCard title={`Episodes (${topic.episodes.length})`}>
+            <SectionCard title={`Episodes (${topic.episodes.length})`} accent="gold">
               {sortedEpisodes.length > 0 ? (
                 <div className="grid gap-3">
                   {sortedEpisodes.map((e) => (
@@ -161,7 +161,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
             </SectionCard>
 
             {relatedTopics.length > 0 && (
-              <SectionCard title="🐇 Rabbit Hole">
+              <SectionCard title="🐇 Rabbit Hole" accent="cyan">
                 <p className="text-xs text-text-muted mb-4">
                   Topics that frequently appear alongside{" "}
                   <strong className="text-text-primary">{topic.title}</strong>

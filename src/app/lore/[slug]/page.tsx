@@ -111,7 +111,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             {entry.summary && (
-              <SectionCard title="Summary">
+              <SectionCard title="Summary" accent="violet">
                 <p className="text-sm text-text-primary leading-relaxed">
                   {editorialFrame(entry.summary)}
                 </p>
@@ -119,7 +119,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
             )}
 
             {entry.fullEntry && (
-              <SectionCard title="Full Entry">
+              <SectionCard title="Full Entry" accent="violet">
                 <div className="prose prose-invert prose-sm max-w-none text-text-primary">
                   {editorialFrame(entry.fullEntry)}
                 </div>
@@ -128,7 +128,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
 
             {/* Episode appearances */}
             {entry.episodes.length > 0 && (
-              <SectionCard title={`Episodes (${entry.episodes.length})`}>
+              <SectionCard title={`Episodes (${entry.episodes.length})`} accent="gold">
                 <div className="grid gap-3">
                   {entry.episodes.map((e) => (
                     <EpisodeListItem
@@ -147,7 +147,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
 
             {/* Related lore */}
             {relatedLore.length > 0 && (
-              <SectionCard title={`Related Lore (${relatedLore.length})`}>
+              <SectionCard title={`Related Lore (${relatedLore.length})`} accent="violet">
                 <div className="grid gap-3 sm:grid-cols-2">
                   {relatedLore.map((lore) => (
                     <Link

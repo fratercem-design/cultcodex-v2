@@ -158,7 +158,7 @@ export default async function HomePage() {
               { href: "/people",   icon: "👁",  label: "People",      count: stats.people.toLocaleString(),      accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5 group-hover:text-accent-cyan" },
               { href: "/graph",    icon: "🕸️", label: "Network Map", count: "relationship graph",               accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
               { href: "/topics",   icon: "◈",  label: "Signals",     count: stats.topics.toLocaleString(),      accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
-              { href: "/lore",     icon: "📜",  label: "Lore",        count: stats.loreEntries.toLocaleString(), accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
+              { href: "/lore",     icon: "📜",  label: "Lore",        count: stats.loreEntries.toLocaleString(), accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
             ] as const).map((item) => (
               <Link
                 key={item.href}
@@ -256,6 +256,7 @@ export default async function HomePage() {
                     <p className="mt-2 text-sm text-text-muted line-clamp-2">{featured.summaryShort}</p>
                   )}
                   <GuestGrid
+                    bare
                     guests={featured.guests
                       .filter((g) => g.person.personType !== "host")
                       .map((g) => ({
@@ -324,7 +325,7 @@ export default async function HomePage() {
             <div className="space-y-3">
               <Link
                 href="/quotes"
-                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50 hover:text-text-muted transition-colors"
+                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-red-400/60 hover:text-red-400 transition-colors"
               >
                 /// notable_moments <span className="opacity-50 ml-1">→</span>
               </Link>
@@ -342,7 +343,7 @@ export default async function HomePage() {
                   />
                 ))}
               </div>
-              <Link href="/quotes" className="font-mono text-xs text-text-muted hover:underline">
+              <Link href="/quotes" className="font-mono text-xs text-red-400/70 hover:text-red-400 hover:underline">
                 Explore all quotes →
               </Link>
             </div>

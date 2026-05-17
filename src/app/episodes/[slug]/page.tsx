@@ -335,7 +335,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
                     {/* Guests (inline for mobile) — hosts filtered out */}
                     {actualGuests.length > 0 && (
-                      <SectionCard title={`Guests (${actualGuests.length})`}>
+                      <SectionCard title={`Guests (${actualGuests.length})`} accent="gold">
                         <div className="flex flex-wrap gap-1.5">
                           {actualGuests.map((g) => (
                             <Link
@@ -352,7 +352,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
                     {/* Topics (inline for mobile) */}
                     {episode.topics.length > 0 && (
-                      <SectionCard title={`Topics (${episode.topics.length})`}>
+                      <SectionCard title={`Topics (${episode.topics.length})`} accent="cyan">
                         <div className="flex flex-wrap gap-1.5">
                           {episode.topics.map((t) => (
                             <Link

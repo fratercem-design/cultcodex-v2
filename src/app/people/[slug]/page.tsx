@@ -421,7 +421,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             <ColorLegend />
 
             {/* Appearances */}
-            <SectionCard title={`Appearances (${uniqueEpisodes.length})`}>
+            <SectionCard title={`Appearances (${uniqueEpisodes.length})`} accent="gold">
               {uniqueEpisodes.length > 0 ? (
                 <div className="space-y-6">
                   {episodesByEra.map((group) => (
@@ -484,7 +484,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
             {/* Quotes */}
             {person.quotes.length > 0 && (
-              <SectionCard title={`Quotes (${person.quotes.length})`}>
+              <SectionCard title={`Quotes (${person.quotes.length})`} accent="red">
                 <div className="space-y-4">
                   {person.quotes.map((q) => (
                     <QuoteHighlightCard
@@ -578,7 +578,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             )}
 
             {coAppearances.length > 0 && (
-              <SectionCard title="Frequently Appears With">
+              <SectionCard title="Frequently Appears With" accent="gold">
                 <div className="grid grid-cols-3 gap-3">
                   {coAppearances.map((coGuest) => (
                     <Link
