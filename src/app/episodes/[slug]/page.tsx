@@ -37,6 +37,7 @@ import { formatDuration } from "@/lib/format/duration";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { DecodeModePanel } from "@/components/episodes/decode-mode-panel";
 import { WhatYouMissed } from "@/components/episodes/what-you-missed";
+import { EpisodeCrossRef } from "@/components/episodes/episode-cross-ref";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { RandomEpisodeButton } from "@/components/archive/random-episode-button";
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
@@ -644,6 +645,21 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               previous={eraNeighbors.previous}
               next={eraNeighbors.next}
             />
+          )}
+
+          {/* Semantic cross-references — related moments from other episodes */}
+          {(episode.summaryShort || episode.topics.length > 0) && (
+            <Suspense fallback={null}>
+              <EpisodeCrossRef
+                episodeId={episode.id}
+                concept={
+                  episode.summaryShort ||
+                  [episode.title, episode.topics[0]?.topic.title]
+                    .filter(Boolean)
+                    .join(" — ")
+                }
+              />
+            </Suspense>
           )}
 
           {/* Lore */}

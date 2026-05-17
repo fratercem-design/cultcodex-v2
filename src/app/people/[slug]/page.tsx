@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,6 +31,7 @@ import { PersonSigil } from "@/components/ui/person-sigil";
 import { ArchetypeTimeline } from "@/components/people/archetype-timeline";
 import { ArchetypeCard } from "@/components/people/archetype-card";
 import { PersonMediaSection, type PersonMediaItem } from "@/components/people/person-media-section";
+import { PersonCrossRef } from "@/components/people/person-cross-ref";
 import type { Metadata } from "next";
 
 // ── Lore Summary renderer ─────────────────────────────────────────────────────
@@ -700,6 +702,15 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 }))}
               />
             </SectionCard>
+
+            {/* Semantic cross-reference — moments across the archive about this person */}
+            <Suspense fallback={null}>
+              <PersonCrossRef
+                personName={person.displayName}
+                shortBio={person.shortBio ?? undefined}
+              />
+            </Suspense>
+
           {/* Alexandra Mayers external content section */}
           {hasPersonMedia && (
             <PersonMediaSection

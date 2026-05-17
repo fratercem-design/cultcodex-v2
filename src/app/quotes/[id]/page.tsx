@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,6 +16,7 @@ import { formatSeconds } from "@/lib/format/duration";
 import { formatDate } from "@/lib/format/date";
 import { getEraForEpisode } from "@/lib/eras";
 import { buildMetadata } from "@/lib/seo";
+import { QuoteCrossRef } from "@/components/quotes/quote-cross-ref";
 
 export const revalidate = 300;
 
@@ -412,6 +414,14 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
           </div>
         </section>
       )}
+
+      {/* ── Resonant moments — semantic cross-reference ─────────── */}
+      <Suspense fallback={null}>
+        <QuoteCrossRef
+          quoteText={quote.text}
+          excludeEpisodeId={quote.episodeId ?? undefined}
+        />
+      </Suspense>
 
       {/* ── Footer ───────────────────────────────────────────────── */}
       <div className="pt-6 border-t border-border flex flex-wrap items-center justify-between gap-3">
