@@ -8,6 +8,7 @@ export default function SignInPage() {
         title="SIGN IN"
         subtitle="Join the Codex"
         backgroundImage="/wiki-page-header.jpg"
+      label="access"
       />
       <main className="mx-auto max-w-md px-4 py-12">
         <div className="rounded-lg border border-border bg-surface p-8 space-y-6">

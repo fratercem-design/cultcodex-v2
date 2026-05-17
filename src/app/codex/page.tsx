@@ -57,6 +57,7 @@ export default async function CodexPage() {
             : "Your personal archive — still a blank page."
         }
         backgroundImage="/hero-bg.jpg"
+      label="my_codex"
       />
 
       <main

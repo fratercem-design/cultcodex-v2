@@ -139,6 +139,7 @@ export default function GuidedPathPage() {
         title="THE GUIDED PATH"
         subtitle="Five doorways. Pick what's pulling you."
         backgroundImage="/hero-bg.jpg"
+      label="guided_path"
       />
 
       <main

@@ -50,6 +50,7 @@ export default async function PremiumPage() {
         title="CHOOSE YOUR ROLE"
         subtitle="Most people sense there's more here than they're seeing. There is."
         backgroundImage="/hero-bg.jpg"
+      label="access_tiers"
       />
 
       <main id="main-content" className="mx-auto max-w-6xl px-4 py-12 space-y-16">

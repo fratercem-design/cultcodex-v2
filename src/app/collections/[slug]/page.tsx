@@ -140,6 +140,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
         title={collection.title.toUpperCase()}
         subtitle={collection.subtitle}
         backgroundImage="/hero-bg.jpg"
+      label="collection"
       />
 
       <main

@@ -23,6 +23,7 @@ export default async function NotificationsPage() {
         title="NOTIFICATIONS"
         subtitle="Manage your notification preferences"
         backgroundImage="/wiki-page-header.jpg"
+      label="notifications"
       />
       <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">
         <SectionCard title="Email Notifications">

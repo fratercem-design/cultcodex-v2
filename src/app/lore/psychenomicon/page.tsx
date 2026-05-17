@@ -119,6 +119,7 @@ export default async function PsychenomiconPage() {
         title="THE PSYCHENOMICON"
         subtitle="The Forbidden Chronicle of the Cult of Psyche"
         backgroundImage="/search-database-background.jpg"
+      label="psychenomicon"
       />
 
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8">
