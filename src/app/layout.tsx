@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, IBM_Plex_Mono, Playfair_Display } from "next/font/google";
-import { SiteHeader } from "@/components/layout/site-header";
+import {
+  Space_Grotesk,
+  Inter,
+  IBM_Plex_Mono,
+  Playfair_Display,
+  JetBrains_Mono,
+  VT323,
+} from "next/font/google";
 import { LiveBanner } from "@/components/layout/live-banner";
 import { EntryBanner } from "@/components/layout/entry-banner";
-import { SiteFooter } from "@/components/layout/site-footer";
+import { TerminalTopBar } from "@/components/layout/terminal-topbar";
+import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
+import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
 import { SkipLink } from "@/components/ui/skip-link";
 import { KonamiEasterEgg } from "@/components/ui/konami-easter-egg";
 import { CommandPalette } from "@/components/search/command-palette";
@@ -24,7 +32,7 @@ const inter = Inter({
 });
 
 const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-mono",
+  variable: "--font-mono-fallback",
   weight: ["400", "500", "600"],
   subsets: ["latin"],
   display: "swap",
@@ -37,8 +45,29 @@ const playfairDisplay = Playfair_Display({
   weight: ["400", "700", "900"],
 });
 
+// JetBrains Mono — primary monospace for the neon-terminal aesthetic.
+// Overrides --font-mono so all existing `font-mono` consumers pick it up
+// without per-component changes.
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// VT323 — CRT large-number font, exposed as --font-crt for opt-in use
+// (large stat counters, retro headers). Single weight is all VT323 ships.
+const vt323 = VT323({
+  variable: "--font-crt",
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me"
+  ),
   title: "CultCodex — The Living Archive",
   description: "The living archive of the Cult of Psyche.",
   icons: {
@@ -61,17 +90,36 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const fontVariables = [
+    spaceGrotesk.variable,
+    inter.variable,
+    ibmPlexMono.variable,
+    playfairDisplay.variable,
+    jetbrainsMono.variable,
+    vt323.variable,
+  ].join(" ");
+
   return (
     <html lang="en" className="dark">
       <body
-        className={`${spaceGrotesk.variable} ${inter.variable} ${ibmPlexMono.variable} ${playfairDisplay.variable} font-sans antialiased bg-void text-text-primary min-h-screen flex flex-col`}
+        className={`${fontVariables} font-mono antialiased bg-void text-text-primary`}
+        style={{ backgroundColor: "var(--term-bg)" }}
       >
         <SkipLink />
         <LiveBanner />
         <EntryBanner />
-        <SiteHeader />
-        <div id="main-content" className="flex-1">{children}</div>
-        <SiteFooter />
+        <div className="terminal-grid">
+          <TerminalTopBar />
+          <TerminalSidebar />
+          <main
+            id="main-content"
+            className="terminal-main"
+            style={{ backgroundColor: "var(--term-bg)" }}
+          >
+            {children}
+          </main>
+          <TerminalStatusBar />
+        </div>
         <KonamiEasterEgg />
         <CommandPalette />
         <Analytics />
