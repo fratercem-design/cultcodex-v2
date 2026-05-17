@@ -11,15 +11,14 @@ export async function isSubscribed(userId: string): Promise<boolean> {
       role: true,
       subscriptionStatus: true,
       currentPeriodEnd: true,
+      isLifetimeMember: true,
     },
   });
 
   if (!user) return false;
-
-  // Admins bypass paywall
   if (user.role === "admin") return true;
+  if (user.isLifetimeMember) return true;
 
-  // Check active subscription with valid period
   if (
     user.subscriptionStatus === "active" &&
     user.currentPeriodEnd &&
@@ -38,10 +37,11 @@ export async function isSubscribed(userId: string): Promise<boolean> {
 export async function hasSystemTier(userId: string): Promise<boolean> {
   const user = await prisma.codexUser.findUnique({
     where: { id: userId },
-    select: { role: true, subscriptionStatus: true, subscriptionTier: true, currentPeriodEnd: true },
+    select: { role: true, subscriptionStatus: true, subscriptionTier: true, currentPeriodEnd: true, isLifetimeMember: true },
   });
   if (!user) return false;
   if (user.role === "admin") return true;
+  if (user.isLifetimeMember) return true;
   return (
     user.subscriptionStatus === "active" &&
     user.subscriptionTier === "system" &&
