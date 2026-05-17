@@ -1,9 +1,15 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getEpisodeBySlug, getRelatedEpisodes } from "@/lib/queries/episodes";
+import {
+  getEpisodeBySlug,
+  getRelatedEpisodes,
+  getEpisodeNeighborsInEra,
+} from "@/lib/queries/episodes";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getReactionCounts } from "@/lib/queries/reactions";
+import { getEraForEpisode } from "@/lib/eras";
+import { EraNeighbors } from "@/components/episodes/era-neighbors";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
 import { buildMetadata } from "@/lib/seo";
@@ -124,6 +130,39 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     (g) => g.person.personType === "host"
   );
 
+  // Era resolution — derived from airDate via static era config.
+  const era = getEraForEpisode(episode.airDate);
+
+  // Era neighbors (prev/next published episode within the same date range).
+  const eraNeighbors =
+    era && episode.airDate
+      ? await getEpisodeNeighborsInEra({
+          episodeId: episode.id,
+          airDate: episode.airDate,
+          eraDateStart: new Date(era.dateStart),
+          eraDateEnd: era.dateEnd ? new Date(era.dateEnd) : null,
+        })
+      : { previous: null, next: null };
+
+  // Guest archetypes — soft-linked via personSlug on PsychenomiconEntity.
+  // Used to annotate each guest in the grid with their primary archetype.
+  const guestSlugs = actualGuests.map((g) => g.person.slug);
+  const guestArchetypes = new Map<string, string>();
+  if (guestSlugs.length > 0) {
+    const entities = await prisma.psychenomiconEntity.findMany({
+      where: { personSlug: { in: guestSlugs }, primaryArchetype: { not: null } },
+      select: { personSlug: true, primaryArchetype: true },
+    });
+    for (const e of entities) {
+      if (e.personSlug && e.primaryArchetype) {
+        // Keep only the first canonical token of compound archetypes
+        // (e.g. "Mirror/Gravity" → "Mirror") so the chip stays short.
+        const firstToken = e.primaryArchetype.split(/[/&,|]| — |\s+and\s+/i)[0].trim();
+        guestArchetypes.set(e.personSlug, firstToken || e.primaryArchetype);
+      }
+    }
+  }
+
   const tabs = [
     { id: "overview", label: "Overview" },
     ...(hasTranscript
@@ -169,6 +208,11 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
       airDate={episode.airDate}
       duration={episode.duration}
       guestCount={actualGuests.length}
+      era={
+        era
+          ? { id: era.id, label: era.label, sigil: era.sigil, color: era.color }
+          : null
+      }
     />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
       <div className="grid gap-6 lg:grid-cols-3">
@@ -576,6 +620,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               avatarUrl: g.person.avatarUrl,
               personType: g.person.personType,
             }))}
+            archetypes={guestArchetypes}
           />
 
           {/* Topics */}
@@ -590,6 +635,15 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 }))}
               />
             </SectionCard>
+          )}
+
+          {/* Era neighbors — prev/next published episode within the same era */}
+          {era && (eraNeighbors.previous || eraNeighbors.next) && (
+            <EraNeighbors
+              era={{ id: era.id, label: era.label, sigil: era.sigil, color: era.color }}
+              previous={eraNeighbors.previous}
+              next={eraNeighbors.next}
+            />
           )}
 
           {/* Lore */}

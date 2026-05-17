@@ -246,3 +246,58 @@ export async function getRelatedEpisodes(episodeId: string, options?: {
 
   return explicitEps;
 }
+
+export interface EraNeighborEpisode {
+  slug: string;
+  title: string;
+  episodeNumber: number | null;
+  airDate: Date | null;
+  thumbnailUrl: string | null;
+}
+
+/**
+ * Finds the previous and next published episodes within the same era,
+ * by airDate. Returns null on either side if the current episode is at
+ * the edge of the era's date range.
+ */
+export async function getEpisodeNeighborsInEra(options: {
+  episodeId: string;
+  airDate: Date;
+  eraDateStart: Date;
+  eraDateEnd: Date | null;
+}): Promise<{ previous: EraNeighborEpisode | null; next: EraNeighborEpisode | null }> {
+  const { episodeId, airDate, eraDateStart, eraDateEnd } = options;
+
+  const eraUpperBound = eraDateEnd ?? new Date("9999-12-31");
+
+  const selectShape = {
+    slug: true,
+    title: true,
+    episodeNumber: true,
+    airDate: true,
+    thumbnailUrl: true,
+  } as const;
+
+  const [previous, next] = await Promise.all([
+    prisma.episode.findFirst({
+      where: {
+        status: "published",
+        id: { not: episodeId },
+        airDate: { gte: eraDateStart, lt: airDate },
+      },
+      orderBy: { airDate: "desc" },
+      select: selectShape,
+    }),
+    prisma.episode.findFirst({
+      where: {
+        status: "published",
+        id: { not: episodeId },
+        airDate: { gt: airDate, lte: eraUpperBound },
+      },
+      orderBy: { airDate: "asc" },
+      select: selectShape,
+    }),
+  ]);
+
+  return { previous, next };
+}
