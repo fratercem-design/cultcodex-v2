@@ -829,6 +829,7 @@ model Card {
   statLabelB   String?
   statLabelC   String?
   flavorText   String?
+  abilities   String[]
   isActive     Boolean  @default(true)
   weightStatic       Float @default(40)
   weightSignal       Float @default(30)
