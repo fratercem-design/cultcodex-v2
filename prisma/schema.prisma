@@ -4,7 +4,7 @@
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
-}
+}h
 
 datasource db {
   provider = "postgresql"
@@ -390,6 +390,7 @@ model CodexUser {
   subscriptionStatus      String?   // "active", "past_due", "canceled", "unpaid"
   subscriptionTier        String?   // "access" | "system"
   currentPeriodEnd        DateTime?
+  isLifetimeMember    Boolean   @default(false)
 
   // Member identity
   memberTitle             String?   // chosen flair title e.g. "Oracle", "Acolyte"
