@@ -741,3 +741,15 @@ model OracleChunk {
   @@index([sourceId])
   @@index([contentHash])
 }
+
+model OracleInvite {
+  id             String    @id @default(cuid())
+  token          String    @unique @default(cuid())
+  recipientName  String
+  recipientEmail String?
+  personalNote   String?   @db.Text
+  claimed        Boolean   @default(false)
+  claimedAt      DateTime?
+  claimedBy      String?
+  createdAt      DateTime  @default(now())
+}
