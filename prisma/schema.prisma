@@ -410,6 +410,7 @@ model CodexUser {
   favorites               Favorite[]
   savedTopics             SavedTopic[]
   savedQuotes             SavedQuote[]
+  savedSearches           SavedSearch[]
 }
 
 model CodexSession {
@@ -709,4 +710,32 @@ model CommunityPost {
   updatedAt     DateTime  @updatedAt
 
   @@index([publishedAt])
+}
+
+// ─── Saved Searches ───────────────────────────────────────────────────────────
+
+enum SearchKind {
+  simple
+  deep
+  oracle
+}
+
+model SavedSearch {
+  id          String     @id @default(cuid())
+  userId      String
+  user        CodexUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label       String
+  kind        SearchKind
+  query       String     @default("")
+  concepts    String[]
+  thresholds  Float[]
+  eraId       String?
+  personSlug  String?
+  archetype   String?
+  pinned      Boolean    @default(false)
+  lastRunAt   DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([userId])
 }
