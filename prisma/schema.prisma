@@ -202,7 +202,8 @@ model Quote {
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
 
-  savedBy              SavedQuote[]
+  savedBy        SavedQuote[]
+  quoteReactions QuoteReaction[]
 
   @@index([speakerPersonId])
   @@index([episodeId])
@@ -412,9 +413,11 @@ model CodexUser {
   savedTopics             SavedTopic[]
   savedQuotes             SavedQuote[]
   savedSearches           SavedSearch[]
-  ownedCards                     OwnedCard[]
-  wallet                         UserWallet?
-  packPurchases                  PackPurchase[]
+  ownedCards              OwnedCard[]
+  wallet                  UserWallet?
+  creditTransactions      CreditTransaction[]
+  packPurchases           PackPurchase[]
+  quoteReactions          QuoteReaction[]
 }
 
 model CodexSession {
@@ -787,10 +790,24 @@ model SavedSearch {
   @@index([userId])
 }
 
+// ─── Quote Reactions ──────────────────────────────────────────────────────────
 
+model QuoteReaction {
+  id           String       @id @default(cuid())
+  userId       String
+  quoteId      String
+  reactionType ReactionType
+  createdAt    DateTime     @default(now())
 
-// ─── Trading Card System ──────────────────────────────────────────────────────
+  user  CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quote Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, quoteId, reactionType])
+  @@index([quoteId])
+  @@index([userId])
+}
+
+// ─── Trading Cards ────────────────────────────────────────────────────────────
 
 enum Rarity {
   STATIC
@@ -799,7 +816,6 @@ enum Rarity {
   ANOMALY
   ORACLE
 }
-
 
 enum CardType {
   VOICE
@@ -810,126 +826,115 @@ enum CardType {
   CIPHER
 }
 
-
 model Card {
-  id           String   @id @default(cuid())
-  slug         String   @unique
-  title        String
-  subtitle     String?
-  cardType     CardType
-  rarity       Rarity
-  entitySlug   String?
-  entityType   String?  // "person" | "episode" | "lore" | "topic"
-  imageUrl     String?
-  foilImageUrl String?
-  statA        Int      @default(50)
-  statB        Int      @default(50)
-  statC        Int      @default(50)
-  statLabelA   String?
-  statLabelB   String?
-  statLabelC   String?
-  flavorText   String?
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  cardType    CardType
+  rarity      Rarity
+  title       String
+  subtitle    String?
+  flavourText String?
+  artUrl      String?
+  statA       Int       @default(50)
+  statB       Int       @default(50)
+  statC       Int       @default(50)
   abilities   String[]
-  isActive     Boolean  @default(true)
-  weightStatic       Float @default(40)
-  weightSignal       Float @default(30)
-  weightTransmission Float @default(20)
-  weightAnomaly      Float @default(8)
-  weightOracle       Float @default(2)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  totalMinted Int       @default(0)
+  maxSupply   Int?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  ownedCards  OwnedCard[]
-  packCards   PackCard[]
+  packCards  PackCard[]
+  ownedCards OwnedCard[]
 
-  @@index([cardType])
   @@index([rarity])
-  @@index([entitySlug])
+  @@index([cardType])
 }
-
-
-model OwnedCard {
-  id         String   @id @default(cuid())
-  userId     String
-  user       CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
-  cardId     String
-  card       Card      @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  isFoil     Boolean  @default(false)
-  isNew      Boolean  @default(true)
-  quantity   Int      @default(1)
-  obtainedAt DateTime @default(now())
-
-  @@unique([userId, cardId, isFoil])
-  @@index([userId])
-  @@index([cardId])
-}
-
 
 model CardPack {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  name        String
-  description String?
-  imageUrl    String?
-  price       Int      // in signal credits
-  cardCount   Int      @default(5)
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  slug               String   @unique
+  name               String
+  description        String?
+  cost               Int      @default(100)
+  cardCount          Int      @default(5)
+  isAvailable        Boolean  @default(true)
+  sortOrder          Int      @default(0)
+  weightStatic       Float    @default(50)
+  weightSignal       Float    @default(30)
+  weightTransmission Float    @default(14)
+  weightAnomaly      Float    @default(5)
+  weightOracle       Float    @default(1)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
-  packCards    PackCard[]
-  purchases    PackPurchase[]
+  packCards     PackCard[]
+  packPurchases PackPurchase[]
 }
-
 
 model PackCard {
-  id       String   @id @default(cuid())
-  packId   String
-  pack     CardPack @relation(fields: [packId], references: [id], onDelete: Cascade)
-  cardId   String
-  card     Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  weight   Float    @default(1.0)
+  packId String
+  cardId String
+  pack   CardPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+  card   Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
 
-  @@unique([packId, cardId])
-  @@index([packId])
+  @@id([packId, cardId])
 }
 
+model OwnedCard {
+  id          String   @id @default(cuid())
+  userId      String
+  cardId      String
+  quantity    Int      @default(1)
+  isNew       Boolean  @default(true)
+  isFoil      Boolean  @default(false)
+  obtainedVia String   @default("pack")
+  obtainedAt  DateTime @default(now())
+
+  user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card Card      @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cardId])
+  @@index([userId])
+}
 
 model UserWallet {
-  id             String   @id @default(cuid())
-  userId         String   @unique
-  user           CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
-  signalCredits  Int      @default(0)
+  userId           String    @id
+  balance          Int       @default(0)
+  totalEarned      Int       @default(0)
+  totalSpent       Int       @default(0)
   lastDailyClaimAt DateTime?
-  updatedAt      DateTime @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
-  transactions CreditTransaction[]
+  user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
-
 
 model CreditTransaction {
-  id          String   @id @default(cuid())
-  walletId    String
-  wallet      UserWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
-  amount      Int      // positive = credit, negative = debit
-  reason      String   // "daily_claim" | "pack_purchase" | "admin_grant" | etc.
-  referenceId String?
-  createdAt   DateTime @default(now())
-
-  @@index([walletId])
-  @@index([createdAt])
-}
-
-
-model PackPurchase {
   id        String   @id @default(cuid())
   userId    String
-  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
-  packId    String
-  pack      CardPack  @relation(fields: [packId], references: [id], onDelete: Cascade)
-  creditsSpent Int
+  amount    Int
+  reason    String
+  metadata  Json     @default("{}")
   createdAt DateTime @default(now())
 
+  user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
-  @@index([packId])
+  @@index([userId, reason, createdAt])
+}
+
+model PackPurchase {
+  id          String   @id @default(cuid())
+  userId      String
+  packId      String
+  cardsDrawn  String[]
+  creditsCost Int
+  createdAt   DateTime @default(now())
+
+  user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pack CardPack  @relation(fields: [packId], references: [id])
+
+  @@index([userId])
 }
