@@ -62,7 +62,7 @@ export default async function OraclePage() {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/oracle-portrait.jpg"
+              src="/oracle-throne.jpg"
               alt="The Oracle of the Codex"
               className="h-full w-full object-cover object-top"
             />
