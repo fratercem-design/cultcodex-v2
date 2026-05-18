@@ -412,6 +412,9 @@ model CodexUser {
   savedTopics             SavedTopic[]
   savedQuotes             SavedQuote[]
   savedSearches           SavedSearch[]
+  ownedCards                     OwnedCard[]
+  wallet                         UserWallet?
+  packPurchases                  PackPurchase[]
 }
 
 model CodexSession {
@@ -782,4 +785,150 @@ model SavedSearch {
   updatedAt  DateTime   @updatedAt
 
   @@index([userId])
+}
+
+
+
+// ─── Trading Card System ──────────────────────────────────────────────────────
+
+
+enum Rarity {
+  STATIC
+  SIGNAL
+  TRANSMISSION
+  ANOMALY
+  ORACLE
+}
+
+
+enum CardType {
+  VOICE
+  TRANSMISSION
+  LORE
+  SIGNAL
+  ORACLE
+  CIPHER
+}
+
+
+model Card {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  title        String
+  subtitle     String?
+  cardType     CardType
+  rarity       Rarity
+  entitySlug   String?
+  entityType   String?  // "person" | "episode" | "lore" | "topic"
+  imageUrl     String?
+  foilImageUrl String?
+  statA        Int      @default(50)
+  statB        Int      @default(50)
+  statC        Int      @default(50)
+  statLabelA   String?
+  statLabelB   String?
+  statLabelC   String?
+  flavorText   String?
+  isActive     Boolean  @default(true)
+  weightStatic       Float @default(40)
+  weightSignal       Float @default(30)
+  weightTransmission Float @default(20)
+  weightAnomaly      Float @default(8)
+  weightOracle       Float @default(2)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  ownedCards  OwnedCard[]
+  packCards   PackCard[]
+
+  @@index([cardType])
+  @@index([rarity])
+  @@index([entitySlug])
+}
+
+
+model OwnedCard {
+  id         String   @id @default(cuid())
+  userId     String
+  user       CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cardId     String
+  card       Card      @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  isFoil     Boolean  @default(false)
+  isNew      Boolean  @default(true)
+  quantity   Int      @default(1)
+  obtainedAt DateTime @default(now())
+
+  @@unique([userId, cardId, isFoil])
+  @@index([userId])
+  @@index([cardId])
+}
+
+
+model CardPack {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  imageUrl    String?
+  price       Int      // in signal credits
+  cardCount   Int      @default(5)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  packCards    PackCard[]
+  purchases    PackPurchase[]
+}
+
+
+model PackCard {
+  id       String   @id @default(cuid())
+  packId   String
+  pack     CardPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+  cardId   String
+  card     Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  weight   Float    @default(1.0)
+
+  @@unique([packId, cardId])
+  @@index([packId])
+}
+
+
+model UserWallet {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  signalCredits  Int      @default(0)
+  lastDailyClaimAt DateTime?
+  updatedAt      DateTime @updatedAt
+
+  transactions CreditTransaction[]
+}
+
+
+model CreditTransaction {
+  id          String   @id @default(cuid())
+  walletId    String
+  wallet      UserWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  amount      Int      // positive = credit, negative = debit
+  reason      String   // "daily_claim" | "pack_purchase" | "admin_grant" | etc.
+  referenceId String?
+  createdAt   DateTime @default(now())
+
+  @@index([walletId])
+  @@index([createdAt])
+}
+
+
+model PackPurchase {
+  id        String   @id @default(cuid())
+  userId    String
+  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packId    String
+  pack      CardPack  @relation(fields: [packId], references: [id], onDelete: Cascade)
+  creditsSpent Int
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([packId])
 }
