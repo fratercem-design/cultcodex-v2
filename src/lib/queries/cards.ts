@@ -107,7 +107,7 @@ export async function openPack(userId: string, packSlug: string) {
     }),
     ...drawn.map(({ cardId, isFoil }) =>
       prisma.ownedCard.upsert({
-        where: { userId_cardId: { userId, cardId } },
+        where: { userId_cardId_isFoil: { userId, cardId, isFoil } },
         update: { quantity: { increment: 1 }, isNew: true },
         create: { userId, cardId, isFoil, obtainedVia: "pack" },
       })

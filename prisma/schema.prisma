@@ -415,7 +415,6 @@ model CodexUser {
   savedSearches           SavedSearch[]
   ownedCards              OwnedCard[]
   wallet                  UserWallet?
-  creditTransactions      CreditTransaction[]
   packPurchases           PackPurchase[]
   quoteReactions          QuoteReaction[]
 }
@@ -874,12 +873,15 @@ model CardPack {
 }
 
 model PackCard {
+  id     String   @id @default(cuid())
   packId String
   cardId String
+  weight Float    @default(1.0)
   pack   CardPack @relation(fields: [packId], references: [id], onDelete: Cascade)
   card   Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
 
-  @@id([packId, cardId])
+  @@unique([packId, cardId])
+  @@index([packId])
 }
 
 model OwnedCard {
@@ -895,12 +897,15 @@ model OwnedCard {
   user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
   card Card      @relation(fields: [cardId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, cardId])
+  @@unique([userId, cardId, isFoil])
   @@index([userId])
+  @@index([cardId])
 }
 
 model UserWallet {
-  userId           String    @id
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  signalCredits    Int       @default(0)
   balance          Int       @default(0)
   totalEarned      Int       @default(0)
   totalSpent       Int       @default(0)
@@ -908,33 +913,38 @@ model UserWallet {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         CodexUser          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions CreditTransaction[]
 }
 
 model CreditTransaction {
-  id        String   @id @default(cuid())
-  userId    String
-  amount    Int
-  reason    String
-  metadata  Json     @default("{}")
-  createdAt DateTime @default(now())
+  id          String    @id @default(cuid())
+  walletId    String?
+  userId      String?
+  amount      Int
+  reason      String
+  referenceId String?
+  metadata    Json      @default("{}")
+  createdAt   DateTime  @default(now())
 
-  user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wallet UserWallet? @relation(fields: [walletId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([userId, reason, createdAt])
 }
 
 model PackPurchase {
-  id          String   @id @default(cuid())
-  userId      String
-  packId      String
-  cardsDrawn  String[]
-  creditsCost Int
-  createdAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  userId       String
+  packId       String
+  cardsDrawn   String[]
+  creditsCost  Int      @default(0)
+  creditsSpent Int      @default(0)
+  createdAt    DateTime @default(now())
 
   user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pack CardPack  @relation(fields: [packId], references: [id])
+  pack CardPack  @relation(fields: [packId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([packId])
 }
