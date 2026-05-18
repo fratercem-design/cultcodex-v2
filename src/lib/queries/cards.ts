@@ -25,7 +25,7 @@ export async function getUserCollectionStats(userId: string) {
     ownedCount: owned,
     totalCards: total,
     completionPct: total > 0 ? Math.round((owned / total) * 100) : 0,
-    signalCredits: wallet?.balance ?? 0,
+    signalCredits: wallet?.signalCredits ?? 0,
     lastDailyClaimAt: wallet?.lastDailyClaimAt ?? null,
   };
 }
@@ -34,7 +34,7 @@ export async function getUserCollectionStats(userId: string) {
 
 export async function getActivePacks() {
   return prisma.cardPack.findMany({
-    where: { isAvailable: true },
+    where: { isActive: true },
     orderBy: { sortOrder: "asc" },
     include: { _count: { select: { packCards: true } } },
   });
@@ -55,10 +55,10 @@ export async function openPack(userId: string, packSlug: string) {
     include: { packCards: { include: { card: true } } },
   });
   if (!pack) throw new Error("Pack not found");
-  if (!pack.isAvailable) throw new Error("Pack not available");
+  if (!pack.isActive) throw new Error("Pack not available");
 
   const wallet = await prisma.userWallet.findUnique({ where: { userId } });
-  const balance = wallet?.balance ?? 0;
+  const balance = wallet?.signalCredits ?? 0;
   if (balance < pack.cost) throw new Error(`Insufficient credits (need ${pack.cost}, have ${balance})`);
 
   // Group available cards by rarity
