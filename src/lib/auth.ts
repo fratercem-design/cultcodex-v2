@@ -18,18 +18,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({ user, account }) {
       if (!user.email) return false;
 
-      await prisma.codexUser.upsert({
-        where: { email: user.email },
-        update: {
-          avatarUrl: user.image ?? undefined,
-        },
-        create: {
-          email: user.email,
-          displayName: user.name ?? user.email.split("@")[0],
-          avatarUrl: user.image ?? undefined,
-          provider: account?.provider ?? "unknown",
-        },
-      });
+      try {
+        await prisma.codexUser.upsert({
+          where: { email: user.email },
+          update: {
+            avatarUrl: user.image ?? undefined,
+          },
+          create: {
+            email: user.email,
+            displayName: user.name ?? user.email.split("@")[0],
+            avatarUrl: user.image ?? undefined,
+            provider: account?.provider ?? "unknown",
+          },
+        });
+      } catch (err) {
+        console.error("[auth] signIn upsert failed:", err);
+        // Still allow sign-in even if DB write fails
+      }
 
       return true;
     },
