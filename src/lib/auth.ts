@@ -106,8 +106,13 @@ export interface SessionWithCodex {
 }
 
 export async function getCurrentUser(): Promise<CodexSessionUser | null> {
-  const session = (await auth()) as SessionWithCodex | null;
-  return session?.codexUser ?? null;
+  try {
+    const session = (await auth()) as SessionWithCodex | null;
+    return session?.codexUser ?? null;
+  } catch {
+    // JWTSessionError or other auth failures — treat as unauthenticated
+    return null;
+  }
 }
 
 export async function requireAuth(): Promise<CodexSessionUser> {

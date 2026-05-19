@@ -93,32 +93,35 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
   const { slug } = await params;
   const sp = await searchParams;
   const initialTimestamp = sp.t ? parseInt(sp.t, 10) : undefined;
-  const episode = await getEpisodeBySlug(slug);
+  const episode = await getEpisodeBySlug(slug).catch(() => null);
 
   if (!episode) notFound();
 
-  const relatedEpisodes = await getRelatedEpisodes(episode.id, { limit: 6 });
-
-  const user = await getCurrentUser();
+  const [relatedEpisodes, user] = await Promise.all([
+    getRelatedEpisodes(episode.id, { limit: 6 }).catch(() => []),
+    getCurrentUser(),
+  ]);
 
   const favoriteData = user
     ? await prisma.favorite.findUnique({
         where: { userId_episodeId: { userId: user.id, episodeId: episode.id } },
-      })
+      }).catch(() => null)
     : null;
   const favoriteCount = await prisma.favorite.count({
     where: { episodeId: episode.id },
-  });
+  }).catch(() => 0);
 
-  const reactionCounts = await getReactionCounts(episode.id, user?.id);
-  const commentsData = await getCommentsForEpisode(episode.id, { take: 20 });
+  const [reactionCounts, commentsData] = await Promise.all([
+    getReactionCounts(episode.id, user?.id).catch(() => ({ fire: 0, eye: 0, moon: 0, skull: 0, wildcard: 0, userReaction: null })),
+    getCommentsForEpisode(episode.id, { take: 20 }).catch(() => ({ comments: [], totalCount: 0 })),
+  ]);
 
   const epNum = episode.episodeNumber
     ? `EP.${String(episode.episodeNumber).padStart(3, "0")}`
     : null;
 
   const hasTranscript = episode.segments.length > 0;
-  const hasTranscriptAccess = user ? await isSubscribed(user.id) : false;
+  const hasTranscriptAccess = user ? await isSubscribed(user.id).catch(() => false) : false;
   const hasDecodeAccess = hasTranscriptAccess; // same tier — Initiate+
   const hasDecodeData = !!episode.decodeData;
 
@@ -147,7 +150,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           airDate: episode.airDate,
           eraDateStart: new Date(era.dateStart),
           eraDateEnd: era.dateEnd ? new Date(era.dateEnd) : null,
-        })
+        }).catch(() => ({ previous: null, next: null }))
       : { previous: null, next: null };
 
   // Guest archetypes — soft-linked via personSlug on PsychenomiconEntity.
@@ -158,7 +161,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     const entities = await prisma.psychenomiconEntity.findMany({
       where: { personSlug: { in: guestSlugs }, primaryArchetype: { not: null } },
       select: { personSlug: true, primaryArchetype: true },
-    });
+    }).catch(() => []);
     for (const e of entities) {
       if (e.personSlug && e.primaryArchetype) {
         // Keep only the first canonical token of compound archetypes
