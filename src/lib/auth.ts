@@ -38,22 +38,44 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return true;
     },
-    async session({ session }) {
+    async session({ session, token }) {
       if (session.user?.email) {
-        const codexUser = await prisma.codexUser.findUnique({
-          where: { email: session.user.email },
-          select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true },
-        });
-        if (codexUser) {
-          const adminEmails = (process.env.ADMIN_EMAILS ?? "")
-            .split(",")
-            .map((e) => e.trim().toLowerCase())
-            .filter(Boolean);
-          const isEnvAdmin = adminEmails.includes(session.user.email.toLowerCase());
-          (session as SessionWithCodex).codexUser = {
-            ...codexUser,
-            role: isEnvAdmin ? "admin" : codexUser.role,
-          };
+        try {
+          let codexUser = await prisma.codexUser.findUnique({
+            where: { email: session.user.email },
+            select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true },
+          });
+
+          // If no DB record exists (e.g. signIn upsert failed when DB was down),
+          // create the user now so they can actually log in.
+          if (!codexUser) {
+            codexUser = await prisma.codexUser.upsert({
+              where: { email: session.user.email },
+              update: { avatarUrl: session.user.image ?? undefined },
+              create: {
+                email: session.user.email,
+                displayName: session.user.name ?? session.user.email.split("@")[0],
+                avatarUrl: session.user.image ?? undefined,
+                provider: (token as { provider?: string })?.provider ?? "google",
+              },
+              select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true },
+            });
+          }
+
+          if (codexUser) {
+            const adminEmails = (process.env.ADMIN_EMAILS ?? "")
+              .split(",")
+              .map((e) => e.trim().toLowerCase())
+              .filter(Boolean);
+            const isEnvAdmin = adminEmails.includes(session.user.email.toLowerCase());
+            (session as SessionWithCodex).codexUser = {
+              ...codexUser,
+              role: isEnvAdmin ? "admin" : codexUser.role,
+            };
+          }
+        } catch (err) {
+          console.error("[auth] session callback DB error:", err);
+          // Return session without codexUser — user is OAuth-authenticated but DB unavailable
         }
       }
       return session;

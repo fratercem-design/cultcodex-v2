@@ -98,7 +98,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const counts = await getArchiveCounts();
+  const counts = await getArchiveCounts().catch(() => ({
+    episodes: 0,
+    topics: 0,
+    people: 0,
+    transcribedEpisodes: 0,
+  }));
 
   const fontVariables = [
     spaceGrotesk.variable,

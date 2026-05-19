@@ -41,7 +41,11 @@ export const metadata = {
 
 export default async function HomePage() {
   const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser] = await Promise.all([
-    getArchiveStats(),
+    getArchiveStats().catch(() => ({
+      episodes: 0, people: 0, loreEntries: 0, quotes: 0,
+      series: 0, topics: 0, segments: 0, totalHours: 0,
+      comments: 0, reactions: 0,
+    })),
     getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }),
     getQuotes({ take: 2 }),
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }),
