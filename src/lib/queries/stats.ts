@@ -17,13 +17,18 @@ export interface ArchiveCounts {
  */
 export const getArchiveCounts = unstable_cache(
   async (): Promise<ArchiveCounts> => {
-    const [episodes, topics, people, transcribedEpisodes] = await Promise.all([
-      prisma.episode.count(),
-      prisma.topic.count(),
-      prisma.person.count(),
-      prisma.episode.count({ where: { segments: { some: {} } } }),
-    ]);
-    return { episodes, topics, people, transcribedEpisodes };
+    try {
+      const [episodes, topics, people, transcribedEpisodes] = await Promise.all([
+        prisma.episode.count(),
+        prisma.topic.count(),
+        prisma.person.count(),
+        prisma.episode.count({ where: { segments: { some: {} } } }),
+      ]);
+      return { episodes, topics, people, transcribedEpisodes };
+    } catch (err) {
+      console.error("[stats] getArchiveCounts failed, returning zeros:", err);
+      return { episodes: 0, topics: 0, people: 0, transcribedEpisodes: 0 };
+    }
   },
   ["archive-counts"],
   { revalidate: 600, tags: ["archive-counts"] }
