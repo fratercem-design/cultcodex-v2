@@ -89,32 +89,34 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
         },
       },
     },
-  });
+  }).catch(() => null);
 
   if (!quote) notFound();
 
   const user = await getCurrentUser();
-  const canReadTranscript = user ? await isSubscribed(user.id) : false;
+  const canReadTranscript = user ? await isSubscribed(user.id).catch(() => false) : false;
 
   // Surrounding transcript context — ± up to 2 segments around the quoted one,
   // bounded by the same episode and ordered by startSeconds. Gated by sub.
   const surroundingContext = await getSurroundingContext({
     segment: quote.transcriptSegment,
     enabled: Boolean(quote.transcriptSegment && canReadTranscript),
-  });
+  }).catch(() => []);
 
   // Reactions
-  const reactionCounts = await getQuoteReactionCounts(quote.id, user?.id);
+  const reactionCounts = await getQuoteReactionCounts(quote.id, user?.id).catch(() => ({
+    fire: 0, heart: 0, mind_blown: 0, eye: 0, userReaction: null,
+  }));
 
   // Saved state for this user
   const savedRow = user
     ? await prisma.savedQuote.findUnique({
         where: { userId_quoteId: { userId: user.id, quoteId: quote.id } },
-      })
+      }).catch(() => null)
     : null;
   const savedCount = await prisma.savedQuote.count({
     where: { quoteId: quote.id },
-  });
+  }).catch(() => 0);
 
   // More from this episode / speaker
   const [moreFromEpisode, moreFromSpeaker] = await Promise.all([
@@ -126,7 +128,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
           },
           orderBy: { createdAt: "desc" },
           take: 4,
-        })
+        }).catch(() => [])
       : Promise.resolve([]),
     quote.speakerPersonId
       ? prisma.quote.findMany({
@@ -141,7 +143,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
           },
           orderBy: { createdAt: "desc" },
           take: 4,
-        })
+        }).catch(() => [])
       : Promise.resolve([]),
   ]);
 

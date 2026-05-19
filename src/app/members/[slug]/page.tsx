@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function MemberProfilePage({ params }: Props) {
   const { slug } = await params;
   const [member, currentUser] = await Promise.all([
-    getMember(slug),
+    getMember(slug).catch(() => null),
     getCurrentUser(),
   ]);
 

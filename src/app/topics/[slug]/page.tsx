@@ -66,7 +66,7 @@ function splitDescription(description: string): { base: string; psycheverse: str
 export default async function TopicDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const topic = await getTopicBySlug(slug);
+  const topic = await getTopicBySlug(slug).catch(() => null);
   if (!topic) notFound();
 
   const user = await getCurrentUser();
@@ -77,9 +77,10 @@ export default async function TopicDetailPage({ params }: PageProps) {
             where: { userId_topicId: { userId: user.id, topicId: topic.id } },
           })
           .then((row) => !!row)
+          .catch(() => false)
       : Promise.resolve(false),
-    prisma.savedTopic.count({ where: { topicId: topic.id } }),
-    getRelatedTopics(topic.id, 8),
+    prisma.savedTopic.count({ where: { topicId: topic.id } }).catch(() => 0),
+    getRelatedTopics(topic.id, 8).catch(() => []),
   ]);
 
   const { base: descBase, psycheverse: descPsycheverse } = topic.description
