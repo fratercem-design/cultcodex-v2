@@ -19,6 +19,7 @@ import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { EmailCapture } from "@/components/marketing/email-capture";
+import { jsonLdScript } from "@/lib/seo";
 
 export const revalidate = 300;
 
@@ -398,7 +399,7 @@ export default async function HomePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             "@context": "https://schema.org",
             "@type": "WebSite",
             name: "Cult Codex",

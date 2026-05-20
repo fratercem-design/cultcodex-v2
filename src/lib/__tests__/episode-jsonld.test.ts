@@ -1,5 +1,25 @@
 import { describe, it, expect } from "vitest";
-import { episodeJsonLd } from "../seo";
+import { episodeJsonLd, jsonLdScript } from "../seo";
+
+describe("jsonLdScript", () => {
+  it("escapes </script> so it cannot break out of the script block", () => {
+    const out = jsonLdScript(
+      episodeJsonLd({ title: "Evil </script><script>alert(1)</script>", slug: "x" })
+    );
+    expect(out).not.toContain("</script>");
+    expect(out).not.toContain("<script>");
+    expect(out).toContain("\\u003c");
+    // Still valid JSON after escaping.
+    expect(() => JSON.parse(out)).not.toThrow();
+    expect(JSON.parse(out).name).toBe("Evil </script><script>alert(1)</script>");
+  });
+
+  it("escapes ampersands and angle brackets", () => {
+    const out = jsonLdScript({ a: "1 < 2 & 3 > 0" });
+    expect(out).not.toMatch(/[<>&]/);
+    expect(JSON.parse(out).a).toBe("1 < 2 & 3 > 0");
+  });
+});
 
 describe("episodeJsonLd", () => {
   it("produces a VideoObject with embed/content URLs from a youtube id", () => {

@@ -12,7 +12,7 @@ import { getEraForEpisode } from "@/lib/eras";
 import { EraNeighbors } from "@/components/episodes/era-neighbors";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
-import { buildMetadata, episodeJsonLd } from "@/lib/seo";
+import { buildMetadata, episodeJsonLd, jsonLdScript } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EpisodeHero } from "@/components/episodes/episode-hero";
 import { EpisodeGlanceBar } from "@/components/episodes/episode-glance-bar";
@@ -190,7 +190,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(
+        __html: jsonLdScript(
           episodeJsonLd({
             title: cleanTitle(episode.title),
             slug: episode.slug,

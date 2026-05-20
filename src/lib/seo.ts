@@ -4,6 +4,22 @@ const SITE_NAME = "CultCodex";
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
 
+/**
+ * Serialize an object for embedding in a <script type="application/ld+json">.
+ * Escapes `<`, `>` and `&` to their \uXXXX forms so a value containing
+ * `</script>` (or other HTML) cannot break out of the script block — plain
+ * JSON.stringify does NOT do this, which would be an XSS vector for any
+ * user/CMS-sourced field. The escapes remain valid JSON.
+ */
+export function jsonLdScript(obj: Record<string, unknown>): string {
+  return JSON.stringify(obj)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
 /** Convert a "HH:MM:SS" / "MM:SS" duration string to ISO-8601 (e.g. PT1H2M3S). */
 function toIso8601Duration(raw: string | null | undefined): string | undefined {
   if (!raw) return undefined;
