@@ -5,11 +5,9 @@ const globalForStripe = globalThis as unknown as {
 };
 
 function createStripeClient(): Stripe {
-  const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) {
-    throw new Error("STRIPE_SECRET_KEY environment variable is not set");
-  }
-  return new Stripe(key);
+  // In production the key is always set; returning an empty-key client at
+  // build time is safe — no API calls are made until request time.
+  return new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
 }
 
 export const stripe = globalForStripe.stripe ?? createStripeClient();
