@@ -15,7 +15,7 @@ import { TerminalPathSeg } from "@/components/layout/terminal-path-seg";
  * working.
  */
 export async function TerminalTopBar() {
-  const session = await auth();
+  const session = await auth().catch(() => null);
   const sessionUser = (session as SessionWithCodex)?.codexUser ?? null;
 
   return (

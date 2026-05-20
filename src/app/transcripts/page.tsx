@@ -49,9 +49,9 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
 
   if (isSearch) {
     // Transcript search requires an active subscription
-    const session = await auth();
+    const session = await auth().catch(() => null);
     const userId = (session?.user as { id?: string } | undefined)?.id;
-    const hasAccess = userId ? await isSubscribed(userId) : false;
+    const hasAccess = userId ? await isSubscribed(userId).catch(() => false) : false;
 
     if (!hasAccess) {
       // Count results without returning any content — used to tease the paywall

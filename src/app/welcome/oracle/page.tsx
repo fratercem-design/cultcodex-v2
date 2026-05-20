@@ -54,7 +54,7 @@ const ORACLE_BENEFITS = [
 ];
 
 export default async function WelcomeOraclePage() {
-  const session = await auth();
+  const session = await auth().catch(() => null);
   const firstName = session?.user?.name?.split(" ")[0] ?? "Oracle";
 
   return (
