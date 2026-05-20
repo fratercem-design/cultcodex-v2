@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { getEraById } from "@/lib/eras";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cache";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -323,6 +324,19 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Cache check — skip expensive Claude + ElevenLabs if we've seen this exact query.
+  const cacheKey = oracleCacheKey(question, searchContext);
+  const cached = oracleCacheGet(cacheKey);
+  if (cached) {
+    return NextResponse.json({
+      ok: true,
+      answer: cached.answer,
+      citations: cached.citations,
+      audioBase64: cached.audioBase64,
+      hasVoice: !!cached.audioBase64,
+    } satisfies OracleResponse);
+  }
+
   const archiveData = await searchArchive(question, searchContext);
   const { contextText, citations } = buildContext(archiveData);
 
@@ -403,6 +417,8 @@ export async function POST(req: NextRequest) {
       // Voice unavailable — text-only fallback
     }
   }
+
+  oracleCacheSet(cacheKey, { answer, citations, audioBase64 });
 
   return NextResponse.json({
     ok: true,
