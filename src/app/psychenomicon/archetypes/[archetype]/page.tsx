@@ -44,7 +44,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
   const { archetype: archetypeSlug } = await params;
 
   const user = await getCurrentUser();
-  const canRead = user ? await isSubscribed(user.id) : false;
+  const canRead = user ? await isSubscribed(user.id).catch(() => false) : false;
 
   if (!canRead) {
     return (

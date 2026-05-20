@@ -15,7 +15,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const entity = await prisma.psychenomiconEntity.findUnique({ where: { slug }, select: { name: true, primaryArchetype: true } });
+  const entity = await prisma.psychenomiconEntity.findUnique({ where: { slug }, select: { name: true, primaryArchetype: true } }).catch(() => null);
   if (!entity) return { title: "Entity Not Found" };
   return { title: `${entity.name} — ${entity.primaryArchetype ?? "Entity"} — Psychenomicon` };
 }

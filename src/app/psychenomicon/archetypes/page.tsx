@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default async function ArchetypesIndexPage() {
   const user = await getCurrentUser();
-  const canRead = user ? await isSubscribed(user.id) : false;
+  const canRead = user ? await isSubscribed(user.id).catch(() => false) : false;
 
   if (!canRead) {
     return (

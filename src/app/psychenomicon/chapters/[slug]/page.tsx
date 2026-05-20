@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const chapter = await prisma.psychenomiconChapter.findUnique({
     where: { slug },
     select: { title: true, chapterNumber: true },
-  });
+  }).catch(() => null);
   if (!chapter) return { title: "Chapter Not Found — CULT CODEX" };
   return {
     title: `CH.${String(chapter.chapterNumber).padStart(3, "0")} ${chapter.title} — Psychenomicon`,

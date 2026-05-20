@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const thread = await prisma.psychenomiconThread.findUnique({
     where: { slug },
     select: { title: true, description: true },
-  });
+  }).catch(() => null);
   if (!thread) return { title: "Thread Not Found — CULT CODEX" };
   return {
     title: `${thread.title} — Thread — Psychenomicon`,
