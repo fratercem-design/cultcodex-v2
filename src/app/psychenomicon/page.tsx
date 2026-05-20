@@ -47,7 +47,7 @@ const ARCS = [
 
 export default async function PsychenomiconPage() {
   const user = await getCurrentUser();
-  const canRead = user ? await isSubscribed(user.id) : false;
+  const canRead = user ? await isSubscribed(user.id).catch(() => false) : false;
   const isAdmin = user?.role === "admin";
 
   if (!canRead) {
@@ -63,19 +63,19 @@ export default async function PsychenomiconPage() {
         status: true,
         episode: { select: { episodeNumber: true, airDate: true, title: true } },
       },
-    }),
+    }).catch(() => []),
     prisma.psychenomiconEntity.findMany({
       where: { status: { not: "dormant" } },
       orderBy: { updatedAt: "desc" },
       take: 12,
       select: { slug: true, name: true, primaryArchetype: true, status: true },
-    }),
+    }).catch(() => []),
     prisma.psychenomiconThread.findMany({
       where: { status: { in: ["active", "emerging"] } },
       orderBy: { updatedAt: "desc" },
       take: 8,
       select: { slug: true, title: true, description: true, status: true },
-    }),
+    }).catch(() => []),
   ]);
 
   const latest = chapters[chapters.length - 1] ?? null;
