@@ -814,6 +814,9 @@ enum Rarity {
   TRANSMISSION
   ANOMALY
   ORACLE
+  LEGENDARY
+  MYTHIC
+  FORBIDDEN
 }
 
 enum CardType {
@@ -823,6 +826,14 @@ enum CardType {
   SIGNAL
   ORACLE
   CIPHER
+  RELIC
+  ENTITY
+  PROPHECY
+  MEMBER
+  GLITCH
+  MAHAVIDYA
+  AVATAR
+  INCIDENT
 }
 
 model Card {
@@ -838,6 +849,7 @@ model Card {
   statB       Int       @default(50)
   statC       Int       @default(50)
   abilities   String[]
+  personality String?
   totalMinted Int       @default(0)
   maxSupply   Int?
   isActive    Boolean   @default(true)
@@ -865,6 +877,10 @@ model CardPack {
   weightTransmission Float    @default(14)
   weightAnomaly      Float    @default(5)
   weightOracle       Float    @default(1)
+  weightLegendary    Float    @default(0.5)
+  weightMythic       Float    @default(0.1)
+  weightForbidden    Float    @default(0.0)
+  artTheme           String?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
