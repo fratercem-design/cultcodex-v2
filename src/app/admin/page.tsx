@@ -171,6 +171,12 @@ export default async function AdminDashboard() {
               >
                 <span>🔴</span> Live Stream Controls
               </Link>
+              <Link
+                href="/admin/digest"
+                className="flex items-center gap-2 rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary hover:border-accent-gold/30 transition-colors"
+              >
+                <span>📰</span> Weekly Digest
+              </Link>
             </div>
           </SectionCard>
         </div>

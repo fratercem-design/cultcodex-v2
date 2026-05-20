@@ -267,7 +267,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
                 initialCount={savedCount}
                 isAuthenticated={Boolean(user)}
               />
-              <QuoteShareButton quoteId={quote.id} quoteText={quote.text} />
+              <QuoteShareButton quoteId={quote.id} quoteText={quote.text} speakerName={quote.speaker?.displayName ?? undefined} />
             </div>
           </div>
         </div>

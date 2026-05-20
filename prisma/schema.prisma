@@ -997,3 +997,22 @@ model PackPurchase {
   @@index([userId])
   @@index([packId])
 }
+
+// ─── Weekly Digest ────────────────────────────────────
+// Admin-curated "This week in the archive" selections.
+// quoteIds / episodeIds / personIds are arrays of DB IDs
+// that the public /this-week page resolves at render time.
+model WeeklyDigest {
+  id         String   @id @default(cuid())
+  weekOf     DateTime @unique
+  title      String
+  blurb      String?
+  published  Boolean  @default(false)
+  quoteIds   String[]
+  episodeIds String[]
+  personIds  String[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([weekOf])
+}
