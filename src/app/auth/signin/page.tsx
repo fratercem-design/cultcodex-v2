@@ -1,14 +1,42 @@
-import { signIn } from "@/lib/auth";
+import { headers } from "next/headers";
 import { PageHero } from "@/components/ui/page-hero";
 
-export default function SignInPage() {
+export const dynamic = "force-dynamic";
+
+async function getCsrfToken(): Promise<string> {
+  try {
+    const hdrs = await headers();
+    const host = hdrs.get("x-forwarded-host") ?? hdrs.get("host") ?? "cultcodex.me";
+    const proto = hdrs.get("x-forwarded-proto") ?? "https";
+    const baseUrl = `${proto}://${host}`;
+    const res = await fetch(`${baseUrl}/api/auth/csrf`, {
+      headers: { cookie: hdrs.get("cookie") ?? "" },
+      cache: "no-store",
+    });
+    if (!res.ok) return "";
+    const data = await res.json() as { csrfToken?: string };
+    return data.csrfToken ?? "";
+  } catch {
+    return "";
+  }
+}
+
+interface PageProps {
+  searchParams: Promise<{ callbackUrl?: string }>;
+}
+
+export default async function SignInPage({ searchParams }: PageProps) {
+  const { callbackUrl } = await searchParams;
+  const csrfToken = await getCsrfToken();
+  const redirectTo = callbackUrl ?? "/";
+
   return (
     <>
       <PageHero
         title="SIGN IN"
         subtitle="Join the Codex"
         backgroundImage="/wiki-page-header.jpg"
-      label="access"
+        label="access"
       />
       <main className="mx-auto max-w-md px-4 py-12">
         <div className="rounded-lg border border-border bg-surface p-8 space-y-6">
@@ -21,12 +49,9 @@ export default function SignInPage() {
             </p>
           </div>
 
-          <form
-            action={async () => {
-              "use server";
-              await signIn("google", { redirectTo: "/" });
-            }}
-          >
+          <form method="POST" action="/api/auth/signin/google">
+            <input type="hidden" name="csrfToken" value={csrfToken} />
+            <input type="hidden" name="callbackUrl" value={redirectTo} />
             <button
               type="submit"
               className="flex w-full items-center justify-center gap-3 rounded-lg border border-border bg-elevated px-4 py-3 font-mono text-sm text-text-primary transition-colors hover:border-accent-gold/50 hover:bg-surface"
