@@ -52,6 +52,9 @@ const STAT_BAR_COLOR: Record<Rarity, string> = {
   TRANSMISSION: "var(--neon-4)",
   ANOMALY:      "var(--neon-3)",
   ORACLE:       "var(--neon-5)",
+  LEGENDARY:    "#FFD700",
+  MYTHIC:       "#E040FB",
+  FORBIDDEN:    "#FF1744",
 };
 
 export function TradingCard({ card, size = "md", onClick, faceDown = false, noTilt = false }: TradingCardProps) {
@@ -424,6 +427,14 @@ function PlaceholderArt({ cardType, rarity, color, glyph }: { cardType: CardType
     SIGNAL:       "radial-gradient(circle at 50% 50%, rgba(179,136,255,0.1) 0%, transparent 70%)",
     ORACLE:       "radial-gradient(circle at 50% 50%, rgba(255,56,96,0.12) 0%, transparent 70%)",
     CIPHER:       "radial-gradient(circle at 50% 50%, rgba(255,43,214,0.1) 0%, transparent 70%)",
+    RELIC:        "radial-gradient(circle at 50% 50%, rgba(255,215,0,0.10) 0%, transparent 70%)",
+    ENTITY:       "radial-gradient(circle at 50% 50%, rgba(206,147,216,0.12) 0%, transparent 70%)",
+    PROPHECY:     "radial-gradient(circle at 50% 40%, rgba(255,128,171,0.12) 0%, transparent 70%)",
+    MEMBER:       "radial-gradient(circle at 50% 60%, rgba(128,222,234,0.10) 0%, transparent 70%)",
+    GLITCH:       "radial-gradient(circle at 50% 50%, rgba(255,109,0,0.12) 0%, transparent 70%)",
+    MAHAVIDYA:    "radial-gradient(circle at 50% 40%, rgba(255,152,0,0.15) 0%, transparent 70%)",
+    AVATAR:       "radial-gradient(circle at 50% 60%, rgba(179,157,219,0.12) 0%, transparent 70%)",
+    INCIDENT:     "radial-gradient(circle at 50% 50%, rgba(239,83,80,0.12) 0%, transparent 70%)",
   };
 
   return (

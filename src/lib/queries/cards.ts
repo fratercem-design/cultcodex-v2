@@ -81,11 +81,24 @@ export async function openPack(userId: string, packSlug: string) {
   const drawn: { cardId: string; isFoil: boolean }[] = [];
 
   for (let i = 0; i < pack.cardCount; i++) {
-    const rarity = rollRarity(pack);
-    // Try pack-specific pool, fall back to global pool
-    const pool = (byRarity.get(rarity) ?? []).length > 0
-      ? byRarity.get(rarity)!
-      : (allByRarity.get(rarity) ?? allByRarity.get("STATIC") ?? []);
+    const rarity = rollRarity({
+      weightStatic:       pack.weightStatic,
+      weightSignal:       pack.weightSignal,
+      weightTransmission: pack.weightTransmission,
+      weightAnomaly:      pack.weightAnomaly,
+      weightOracle:       pack.weightOracle,
+      weightLegendary:    pack.weightLegendary,
+      weightMythic:       pack.weightMythic,
+      weightForbidden:    pack.weightForbidden,
+    });
+    // Try pack-specific pool, fall back to global pool, then lower rarity
+    const packPool = byRarity.get(rarity) ?? [];
+    const globalPool = allByRarity.get(rarity) ?? [];
+    const pool = packPool.length > 0
+      ? packPool
+      : globalPool.length > 0
+      ? globalPool
+      : (allByRarity.get("STATIC") ?? []);
 
     if (pool.length === 0) continue;
 

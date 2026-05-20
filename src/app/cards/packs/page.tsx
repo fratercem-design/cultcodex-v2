@@ -7,18 +7,20 @@ import { PackOpener } from "@/components/cards/pack-opener";
 interface Pack {
   id: string;
   slug: string;
-  title: string;
-  subtitle: string | null;
+  name: string;
   description: string | null;
   flavourText: string | null;
   cost: number;
   cardCount: number;
-  accentColor: string;
+  artTheme: string | null;
   weightStatic: number;
   weightSignal: number;
   weightTransmission: number;
   weightAnomaly: number;
   weightOracle: number;
+  weightLegendary: number;
+  weightMythic: number;
+  weightForbidden: number;
   _count: { packCards: number };
 }
 
@@ -28,11 +30,17 @@ interface WalletData {
 }
 
 const ACCENT_VAR: Record<string, string> = {
+  // legacy keys
   neon:     "var(--neon)",
   amber:    "var(--neon-4)",
   magenta:  "var(--neon-3)",
   crimson:  "var(--neon-5)",
   cyan:     "var(--neon-2)",
+  // artTheme keys from seed
+  terminal: "var(--neon)",
+  occult:   "var(--neon-3)",
+  chaos:    "var(--neon-5)",
+  sacred:   "var(--neon-4)",
 };
 
 export default function PackStorePage() {
@@ -262,8 +270,8 @@ export default function PackStorePage() {
       {activePack && (
         <PackOpener
           packSlug={activePack.slug}
-          packTitle={activePack.title}
-          packAccentColor={activePack.accentColor}
+          packTitle={activePack.name}
+          packAccentColor={ACCENT_VAR[activePack.artTheme ?? "terminal"] ?? "var(--neon)"}
           onClose={() => {
             setActivePack(null);
             // Refresh wallet
@@ -276,9 +284,12 @@ export default function PackStorePage() {
 }
 
 function PackCard({ pack, canAfford, onOpen }: { pack: Pack; canAfford: boolean; onOpen: () => void }) {
-  const accent = ACCENT_VAR[pack.accentColor] ?? "var(--neon)";
+  const accent = ACCENT_VAR[pack.artTheme ?? "terminal"] ?? "var(--neon)";
 
   const rarityPreview = [
+    pack.weightForbidden > 0 && { label: "FORBIDDEN",   pct: pack.weightForbidden,    color: "#FF1744" },
+    pack.weightMythic > 0    && { label: "MYTHIC",       pct: pack.weightMythic,       color: "#E040FB" },
+    pack.weightLegendary > 0 && { label: "LEGENDARY",   pct: pack.weightLegendary,    color: "#FFD700" },
     pack.weightOracle > 0    && { label: "ORACLE",       pct: pack.weightOracle,       color: "var(--neon-5)" },
     pack.weightAnomaly > 0   && { label: "ANOMALY",      pct: pack.weightAnomaly,      color: "var(--neon-3)" },
     pack.weightTransmission > 0 && { label: "RARE",      pct: pack.weightTransmission, color: "var(--neon-4)" },
@@ -328,11 +339,11 @@ function PackCard({ pack, canAfford, onOpen }: { pack: Pack; canAfford: boolean;
           letterSpacing: "0.04em",
           marginBottom: 4,
         }}>
-          {pack.title}
+          {pack.name}
         </div>
-        {pack.subtitle && (
+        {pack.artTheme && (
           <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: "var(--term-fg-dim)", letterSpacing: "0.08em" }}>
-            {pack.subtitle}
+            // {pack.artTheme.toUpperCase()} SERIES
           </div>
         )}
       </div>
