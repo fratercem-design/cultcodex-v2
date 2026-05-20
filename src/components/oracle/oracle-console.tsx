@@ -39,6 +39,9 @@ export function OracleConsole() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [gated, setGated] = useState(false);
+  const [trialUsed, setTrialUsed] = useState(false);
+  const [captureEmail, setCaptureEmail] = useState("");
+  const [captureState, setCaptureState] = useState<"idle" | "saving" | "done">("idle");
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -110,6 +113,7 @@ export function OracleConsole() {
       setCitations(data.citations ?? []);
       setAudioBase64(data.audioBase64 ?? null);
       setHasVoice(data.hasVoice ?? false);
+      setTrialUsed(data.trialUsed ?? false);
       setState("answered");
     } catch {
       setErrorMsg("A disturbance in the archive. Try again.");
@@ -139,6 +143,9 @@ export function OracleConsole() {
     setIsPlaying(false);
     setCurrentTime(0);
     setDuration(0);
+    setTrialUsed(false);
+    setCaptureState("idle");
+    setCaptureEmail("");
   }
 
   return (
@@ -348,6 +355,73 @@ export function OracleConsole() {
                   </Link>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Email capture after free trial */}
+          {trialUsed && captureState !== "done" && (
+            <div className="rounded-xl border border-accent-gold/30 bg-accent-gold/5 p-5 space-y-3">
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/60">
+                /// that was your free question
+              </p>
+              <p className="font-display text-sm font-bold text-text-primary">
+                The Oracle has more to say.
+              </p>
+              <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+                Initiate+ opens unlimited Oracle access — plus transcripts, behavioral profiles,
+                and the full intelligence layer. Drop your email and we&apos;ll send you in.
+              </p>
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!captureEmail.trim() || captureState === "saving") return;
+                  setCaptureState("saving");
+                  try {
+                    await fetch("/api/subscribe", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email: captureEmail.trim() }),
+                    });
+                  } finally {
+                    setCaptureState("done");
+                  }
+                }}
+                className="flex gap-2"
+              >
+                <input
+                  type="email"
+                  required
+                  placeholder="your@email.com"
+                  value={captureEmail}
+                  onChange={(e) => setCaptureEmail(e.target.value)}
+                  className="flex-1 rounded border border-accent-gold/30 bg-void px-3 py-2 font-mono text-xs text-text-primary placeholder-text-muted/40 focus:border-accent-gold/60 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  disabled={captureState === "saving"}
+                  className="rounded border border-accent-gold bg-accent-gold/15 px-4 py-2 font-mono text-[11px] font-bold text-accent-gold transition-all hover:bg-accent-gold/25 disabled:opacity-50"
+                >
+                  {captureState === "saving" ? "…" : "Send me in →"}
+                </button>
+              </form>
+              <p className="font-mono text-[10px] text-text-muted/50">
+                Or{" "}
+                <Link href="/premium" className="text-accent-gold underline hover:text-accent-gold/80">
+                  subscribe now →
+                </Link>
+              </p>
+            </div>
+          )}
+
+          {trialUsed && captureState === "done" && (
+            <div className="rounded-xl border border-accent-gold/30 bg-accent-gold/5 px-5 py-4 text-center space-y-1">
+              <p className="font-mono text-xs font-bold text-accent-gold">Received.</p>
+              <p className="font-mono text-[11px] text-text-muted">
+                Check your inbox.{" "}
+                <Link href="/premium" className="text-accent-gold underline">
+                  Subscribe now →
+                </Link>
+              </p>
             </div>
           )}
 

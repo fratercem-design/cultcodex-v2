@@ -37,6 +37,8 @@ export interface OracleResponse {
   audioBase64?: string | null;
   hasVoice?: boolean;
   error?: string;
+  /** True when this was the user's one free trial question — show email capture after. */
+  trialUsed?: boolean;
 }
 
 // Optional structured intent carriers — all fields optional, all additive.
@@ -265,13 +267,20 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
   };
 }
 
+const TRIAL_COOKIE = "oracle_trial";
+
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
   const canAccess = user
     ? user.role === "admin" || (await isSubscribed(user.id))
     : false;
 
-  if (!canAccess) {
+  // Allow one free question per device (tracked by cookie).
+  // After the trial is consumed the next attempt returns initiate_required.
+  const trialAlreadyUsed = req.cookies.get(TRIAL_COOKIE)?.value === "used";
+  const isFreeTrialRequest = !canAccess && !trialAlreadyUsed;
+
+  if (!canAccess && trialAlreadyUsed) {
     return NextResponse.json(
       { ok: false, error: "initiate_required" } satisfies OracleResponse,
       { status: 403 }
@@ -328,13 +337,23 @@ export async function POST(req: NextRequest) {
   const cacheKey = oracleCacheKey(question, searchContext);
   const cached = oracleCacheGet(cacheKey);
   if (cached) {
-    return NextResponse.json({
+    const res = NextResponse.json({
       ok: true,
       answer: cached.answer,
       citations: cached.citations,
       audioBase64: cached.audioBase64,
       hasVoice: !!cached.audioBase64,
+      trialUsed: isFreeTrialRequest,
     } satisfies OracleResponse);
+    if (isFreeTrialRequest) {
+      res.cookies.set(TRIAL_COOKIE, "used", {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+        sameSite: "lax",
+        path: "/",
+      });
+    }
+    return res;
   }
 
   const archiveData = await searchArchive(question, searchContext);
@@ -420,11 +439,23 @@ export async function POST(req: NextRequest) {
 
   oracleCacheSet(cacheKey, { answer, citations, audioBase64 });
 
-  return NextResponse.json({
+  const finalRes = NextResponse.json({
     ok: true,
     answer,
     citations,
     audioBase64,
     hasVoice: !!audioBase64,
+    trialUsed: isFreeTrialRequest,
   } satisfies OracleResponse);
+
+  if (isFreeTrialRequest) {
+    finalRes.cookies.set(TRIAL_COOKIE, "used", {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 30,
+      sameSite: "lax",
+      path: "/",
+    });
+  }
+
+  return finalRes;
 }
