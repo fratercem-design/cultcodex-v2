@@ -112,7 +112,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
   }).catch(() => 0);
 
   const [reactionCounts, commentsData] = await Promise.all([
-    getReactionCounts(episode.id, user?.id).catch(() => ({ fire: 0, eye: 0, moon: 0, skull: 0, wildcard: 0, userReaction: null })),
+    getReactionCounts(episode.id, user?.id).catch(() => ({ fire: 0, eye: 0, moon: 0, skull: 0, wildcard: 0, userReactions: [] as string[] })),
     getCommentsForEpisode(episode.id, { take: 20 }).catch(() => ({ comments: [], totalCount: 0 })),
   ]);
 

@@ -105,7 +105,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
 
   // Reactions
   const reactionCounts = await getQuoteReactionCounts(quote.id, user?.id).catch(() => ({
-    fire: 0, heart: 0, mind_blown: 0, eye: 0, userReaction: null,
+    fire: 0, eye: 0, moon: 0, skull: 0, wildcard: 0, userReactions: [] as string[],
   }));
 
   // Saved state for this user
