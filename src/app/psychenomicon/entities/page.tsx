@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 export default async function EntitiesPage() {
   const user = await getCurrentUser();
-  const canRead = user ? await isSubscribed(user.id) : false;
+  const canRead = user ? await isSubscribed(user.id).catch(() => false) : false;
   const isAdmin = user?.role === "admin";
 
   if (!canRead) {
@@ -55,7 +55,7 @@ export default async function EntitiesPage() {
         select: { primaryArchetype: true, chapterNumber: true },
       },
     },
-  });
+  }).catch(() => []);
 
   // Batch-fetch person avatars for entities with a linked person
   const personSlugs = entities.map((e) => e.personSlug).filter(Boolean) as string[];
@@ -63,7 +63,7 @@ export default async function EntitiesPage() {
     ? await prisma.person.findMany({
         where: { slug: { in: personSlugs } },
         select: { slug: true, avatarUrl: true },
-      })
+      }).catch(() => [])
     : [];
   const avatarMap = Object.fromEntries(personAvatars.map((p) => [p.slug, p.avatarUrl]));
 

@@ -36,7 +36,7 @@ const STATUS_META = {
 
 export default async function ThreadsIndexPage() {
   const user = await getCurrentUser();
-  const canRead = user ? await isSubscribed(user.id) : false;
+  const canRead = user ? await isSubscribed(user.id).catch(() => false) : false;
 
   if (!canRead) {
     return (
@@ -67,7 +67,7 @@ export default async function ThreadsIndexPage() {
         orderBy: { chapter: { chapterNumber: "asc" } },
       },
     },
-  });
+  }).catch(() => []);
 
   const byStatus = Object.fromEntries(
     STATUS_ORDER.map((s) => [s, threads.filter((t) => t.status === s)])
