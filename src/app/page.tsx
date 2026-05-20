@@ -18,6 +18,7 @@ import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
+import { EmailCapture } from "@/components/marketing/email-capture";
 
 export const revalidate = 300;
 
@@ -365,6 +366,9 @@ export default async function HomePage() {
               </Link>
             </div>
           )}
+
+          {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}
+          <EmailCapture source="homepage" />
 
           {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
           <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">

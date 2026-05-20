@@ -4,6 +4,63 @@ const SITE_NAME = "CultCodex";
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
 
+/** Convert a "HH:MM:SS" / "MM:SS" duration string to ISO-8601 (e.g. PT1H2M3S). */
+function toIso8601Duration(raw: string | null | undefined): string | undefined {
+  if (!raw) return undefined;
+  const parts = raw.trim().split(":").map((p) => parseInt(p, 10));
+  if (parts.some((n) => Number.isNaN(n))) return undefined;
+  let h = 0, m = 0, s = 0;
+  if (parts.length === 3) [h, m, s] = parts;
+  else if (parts.length === 2) [m, s] = parts;
+  else if (parts.length === 1) [s] = parts;
+  else return undefined;
+  if (h === 0 && m === 0 && s === 0) return undefined;
+  return `PT${h ? `${h}H` : ""}${m ? `${m}M` : ""}${s ? `${s}S` : ""}`;
+}
+
+export interface EpisodeJsonLdInput {
+  title: string;
+  slug: string;
+  description?: string | null;
+  airDate?: Date | null;
+  thumbnailUrl?: string | null;
+  youtubeVideoId?: string | null;
+  duration?: string | null;
+}
+
+/**
+ * Build a schema.org VideoObject for an episode page. Surfaced to Google so
+ * episodes can appear in video search results and rich snippets.
+ * Returns a plain object intended for a <script type="application/ld+json">.
+ */
+export function episodeJsonLd(ep: EpisodeJsonLdInput): Record<string, unknown> {
+  const url = `${SITE_URL}/episodes/${ep.slug}`;
+  const isoDuration = toIso8601Duration(ep.duration);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: ep.title,
+    description:
+      ep.description?.trim() || `An episode from the Cult of Psyche archive: ${ep.title}.`,
+    ...(ep.thumbnailUrl ? { thumbnailUrl: [ep.thumbnailUrl] } : {}),
+    ...(ep.airDate ? { uploadDate: ep.airDate.toISOString() } : {}),
+    ...(isoDuration ? { duration: isoDuration } : {}),
+    ...(ep.youtubeVideoId
+      ? {
+          embedUrl: `https://www.youtube.com/embed/${ep.youtubeVideoId}`,
+          contentUrl: `https://www.youtube.com/watch?v=${ep.youtubeVideoId}`,
+        }
+      : {}),
+    url,
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+  };
+}
+
 type BuildMetadataInput = {
   title: string;
   description?: string | null;

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { getEraById } from "@/lib/eras";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -273,6 +274,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { ok: false, error: "initiate_required" } satisfies OracleResponse,
       { status: 403 }
+    );
+  }
+
+  // Guard the expensive Claude + ElevenLabs path against rapid-fire calls.
+  const rl = rateLimit(`oracle:${clientKey(req, user?.id)}`, {
+    limit: 15,
+    windowMs: 60_000,
+  });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { ok: false, error: "The Oracle needs a moment. Try again shortly." } satisfies OracleResponse,
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
     );
   }
 
