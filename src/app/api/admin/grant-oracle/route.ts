@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-export async function POST() {
+export async function GET() {
   const user = await getCurrentUser();
   if (!user || user.role !== "admin") {
     return NextResponse.json({ error: "Admin only" }, { status: 403 });
