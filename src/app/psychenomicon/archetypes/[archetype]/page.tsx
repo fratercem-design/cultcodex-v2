@@ -67,7 +67,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
     );
   }
 
-  const detail = await getArchetypeDetail(archetypeSlug);
+  const detail = await getArchetypeDetail(archetypeSlug).catch(() => null);
   if (!detail) notFound();
 
   const hex = archetypeHex(detail.name);

@@ -39,7 +39,7 @@ export default async function ArchetypesIndexPage() {
     );
   }
 
-  const archetypes = await listArchetypes();
+  const archetypes = await listArchetypes().catch(() => []);
   const totalEntities = archetypes.reduce((sum, a) => sum + a.entityCount, 0);
 
   return (
