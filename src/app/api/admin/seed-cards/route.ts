@@ -177,15 +177,75 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
   }
 
-  // 2. Seed packs
+  // 1b. Inspect CardPack columns so we know what we're dealing with
+  let packColumns: string[] = [];
+  try {
+    const cols = await prisma.$queryRawUnsafe<{ column_name: string; is_nullable: string }[]>(
+      `SELECT column_name, is_nullable FROM information_schema.columns WHERE table_name = 'CardPack' ORDER BY ordinal_position`
+    );
+    packColumns = cols.map((c) => `${c.column_name}(${c.is_nullable === "NO" ? "NOT NULL" : "null"})`);
+    log.push(`ℹ CardPack columns: ${packColumns.join(", ")}`);
+  } catch (err) {
+    log.push(`⚠ column inspect failed: ${err instanceof Error ? err.message : err}`);
+  }
+
+  // 2. Seed packs via raw SQL to cover any legacy NOT NULL columns
   log.push("── Packs ──");
   for (const pack of PACKS) {
     try {
-      await prisma.cardPack.upsert({
-        where: { slug: pack.slug },
-        update: pack as any,
-        create: pack as any,
-      });
+      // Use raw SQL so we can supply legacy column values (title, accentColor, etc.)
+      // that the Prisma client no longer knows about.
+      await prisma.$executeRawUnsafe(`
+        INSERT INTO "CardPack" (
+          "id", "slug", "name", "description", "cost", "cardCount", "isAvailable",
+          "sortOrder", "artTheme",
+          "weightStatic", "weightSignal", "weightTransmission",
+          "weightAnomaly", "weightOracle",
+          "weightLegendary", "weightMythic", "weightForbidden",
+          "createdAt", "updatedAt"
+        ) VALUES (
+          gen_random_uuid()::text, $1, $2, $3, $4, $5, $6,
+          $7, $8,
+          $9, $10, $11,
+          $12, $13,
+          $14, $15, $16,
+          now(), now()
+        )
+        ON CONFLICT ("slug") DO UPDATE SET
+          "name"               = EXCLUDED."name",
+          "description"        = EXCLUDED."description",
+          "cost"               = EXCLUDED."cost",
+          "cardCount"          = EXCLUDED."cardCount",
+          "isAvailable"        = EXCLUDED."isAvailable",
+          "sortOrder"          = EXCLUDED."sortOrder",
+          "artTheme"           = EXCLUDED."artTheme",
+          "weightStatic"       = EXCLUDED."weightStatic",
+          "weightSignal"       = EXCLUDED."weightSignal",
+          "weightTransmission" = EXCLUDED."weightTransmission",
+          "weightAnomaly"      = EXCLUDED."weightAnomaly",
+          "weightOracle"       = EXCLUDED."weightOracle",
+          "weightLegendary"    = EXCLUDED."weightLegendary",
+          "weightMythic"       = EXCLUDED."weightMythic",
+          "weightForbidden"    = EXCLUDED."weightForbidden",
+          "updatedAt"          = now()
+      `,
+        pack.slug,
+        pack.name,
+        pack.description,
+        pack.cost,
+        pack.cardCount,
+        pack.isAvailable,
+        pack.sortOrder,
+        pack.artTheme,
+        pack.weightStatic,
+        pack.weightSignal,
+        pack.weightTransmission,
+        pack.weightAnomaly,
+        pack.weightOracle,
+        pack.weightLegendary,
+        pack.weightMythic,
+        pack.weightForbidden,
+      );
       log.push(`✓ Pack: ${pack.name}`);
     } catch (err) {
       log.push(`✗ Pack ${pack.slug}: ${err instanceof Error ? err.message : err}`);
