@@ -52,9 +52,9 @@ const STAT_BAR_COLOR: Record<Rarity, string> = {
   TRANSMISSION: "var(--neon-4)",
   ANOMALY:      "var(--neon-3)",
   ORACLE:       "var(--neon-5)",
-  LEGENDARY:    "#FFD700",
-  MYTHIC:       "#E040FB",
-  FORBIDDEN:    "#FF1744",
+  FORBIDDEN:    "#FFD700",
+  GLITCHED:     "#E040FB",
+  LIVING:       "#00FF9C",
 };
 
 export function TradingCard({ card, size = "md", onClick, faceDown = false, noTilt = false }: TradingCardProps) {
