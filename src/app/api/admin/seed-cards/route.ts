@@ -17,6 +17,10 @@ export const maxDuration = 120;
 // ─── Migration SQL ────────────────────────────────────────────────────────────
 
 const MIGRATION_STEPS = [
+  // Nullify legacy NOT NULL columns that the current Prisma schema dropped
+  { name: "nullable CardPack.title",       sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='title' AND is_nullable='NO') THEN ALTER TABLE "CardPack" ALTER COLUMN "title" DROP NOT NULL; END IF; END $$` },
+  { name: "nullable CardPack.accentColor", sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='accentColor' AND is_nullable='NO') THEN ALTER TABLE "CardPack" ALTER COLUMN "accentColor" DROP NOT NULL; END IF; END $$` },
+  { name: "nullable CardPack.subtitle",    sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='subtitle' AND is_nullable='NO') THEN ALTER TABLE "CardPack" ALTER COLUMN "subtitle" DROP NOT NULL; END IF; END $$` },
   { name: "add LEGENDARY rarity",   sql: `ALTER TYPE "Rarity" ADD VALUE IF NOT EXISTS 'LEGENDARY'` },
   { name: "add MYTHIC rarity",      sql: `ALTER TYPE "Rarity" ADD VALUE IF NOT EXISTS 'MYTHIC'` },
   { name: "add FORBIDDEN rarity",   sql: `ALTER TYPE "Rarity" ADD VALUE IF NOT EXISTS 'FORBIDDEN'` },
