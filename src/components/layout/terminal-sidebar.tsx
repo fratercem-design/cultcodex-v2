@@ -54,6 +54,7 @@ const NAV_GROUPS: readonly NavGroup[] = [
     title: "ACCESS",
     items: [
       { href: "/premium", label: "INITIATE+", glyph: "✦", accent: "neon-4" },
+      { href: "/salon", label: "THE SALON", glyph: "◈" },
       { href: "/start-here", label: "START HERE", glyph: "↳" },
     ],
   },

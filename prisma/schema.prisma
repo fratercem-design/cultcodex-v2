@@ -417,6 +417,7 @@ model CodexUser {
   wallet                  UserWallet?
   packPurchases           PackPurchase[]
   quoteReactions          QuoteReaction[]
+  salonPosts              SalonPost[]
 }
 
 model CodexSession {
@@ -496,6 +497,38 @@ model CommentReport {
   createdAt DateTime     @default(now())
 
   @@unique([commentId, userId])
+}
+
+// ─── Salon (Oracle-tier members space) ─────────────
+
+/// A discussion prompt/topic in the Salon. Authored by staff (admin).
+model SalonThread {
+  id        String      @id @default(cuid())
+  title     String
+  prompt    String      @db.Text
+  pinned    Boolean     @default(false)
+  closed    Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  posts     SalonPost[]
+
+  @@index([pinned, createdAt])
+}
+
+/// A member contribution within a Salon thread.
+model SalonPost {
+  id            String      @id @default(cuid())
+  threadId      String
+  thread        SalonThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  userId        String
+  user          CodexUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content       String      @db.Text
+  flagged       Boolean     @default(false)
+  flaggedReason String?
+  createdAt     DateTime    @default(now())
+
+  @@index([threadId, createdAt])
+  @@index([userId])
 }
 
 // ─── Chat & Notifications ─────────────────────────
