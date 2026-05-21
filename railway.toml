@@ -4,7 +4,7 @@ buildCommand = "npm run build"
 [deploy]
 # Resolve any previously-failed migration before deploying so P3009 can't
 # block a redeploy. The `|| true` makes this a no-op on clean databases.
-startCommand = "(npx prisma migrate resolve --rolled-back 20260521000000_fix_typos_seed_packs 2>/dev/null || true) && npx prisma migrate deploy && npm run start"
+startCommand = "npx prisma migrate resolve --rolled-back 20260521000000_fix_typos_seed_packs || true; npx prisma migrate deploy && npm run start"
 healthcheckPath = "/"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
