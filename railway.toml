@@ -1,0 +1,9 @@
+[deploy]
+healthcheckPath = "/"
+healthcheckTimeout = 300
+
+[[services]]
+name = "web"
+
+[services.settings]
+internalPort = 8080
