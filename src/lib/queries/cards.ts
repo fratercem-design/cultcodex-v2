@@ -245,3 +245,48 @@ export async function grantStarterCard(userId: string, cardType: string) {
 
   return target;
 }
+
+// ─── Card burning ────────────────────────────────────────────────────────────
+
+const BURN_CREDITS: Record<Rarity, number> = {
+  STATIC:       5,
+  SIGNAL:       10,
+  TRANSMISSION: 20,
+  ANOMALY:      30,
+  ORACLE:       50,
+  LEGENDARY:    80,
+  MYTHIC:       100,
+  FORBIDDEN:    0, // cannot burn
+};
+
+export async function burnCard(userId: string, ownedCardId: string) {
+  const owned = await prisma.ownedCard.findFirst({
+    where: { id: ownedCardId, userId },
+    include: { card: { select: { id: true, rarity: true, title: true } } },
+  });
+  if (!owned) throw new Error("Card not found in your collection");
+  if (owned.card.rarity === "FORBIDDEN") throw new Error("Forbidden cards cannot be burned");
+
+  const credits = BURN_CREDITS[owned.card.rarity as Rarity] ?? 5;
+
+  await prisma.$transaction([
+    // Remove one copy (delete if last)
+    owned.quantity > 1
+      ? prisma.ownedCard.update({
+          where: { id: ownedCardId },
+          data: { quantity: { decrement: 1 } },
+        })
+      : prisma.ownedCard.delete({ where: { id: ownedCardId } }),
+    // Credit the wallet
+    prisma.userWallet.upsert({
+      where: { userId },
+      update: { balance: { increment: credits }, totalEarned: { increment: credits } },
+      create: { userId, balance: credits, totalEarned: credits },
+    }),
+    prisma.creditTransaction.create({
+      data: { userId, amount: credits, reason: "card_burn", metadata: { cardId: owned.card.id, rarity: owned.card.rarity } },
+    }),
+  ]);
+
+  return { credits, cardTitle: owned.card.title, rarity: owned.card.rarity };
+}
