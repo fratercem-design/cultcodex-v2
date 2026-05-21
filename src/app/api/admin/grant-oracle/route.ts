@@ -20,6 +20,7 @@ export async function GET() {
         subscriptionTier: "system",
         currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
       },
+      select: { id: true },
     });
     return NextResponse.json({ ok: true, message: "Oracle granted.", userId: user.id });
   } catch (err) {
