@@ -433,7 +433,7 @@ export default async function HomePage() {
             "@type": "WebSite",
             name: "Cult Codex",
             url: "https://cultcodex.me",
-            description: "A pattern intelligence system. 1,500+ conversations. Every word. Every soul. Every connection.",
+            description: "A pattern intelligence system. 2,600+ conversations. Every soul. Every pattern — decoded.",
             potentialAction: {
               "@type": "SearchAction",
               target: { "@type": "EntryPoint", urlTemplate: "https://cultcodex.me/search?q={search_term_string}" },
