@@ -48,7 +48,7 @@ export default async function HomePage() {
     })),
     getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }),
     getQuotes({ take: 2 }),
-    prisma.liveStatus.findUnique({ where: { id: "singleton" } }),
+    prisma.liveStatus.findUnique({ where: { id: "singleton" } }).catch(() => null),
     getTopTopicsByEpisodes(10),
     getDailyTransmission().catch(() => ({
       date: new Date().toISOString().slice(0, 10),
