@@ -5,17 +5,25 @@ import { prisma } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const user = await getCurrentUser();
-  if (!user || user.role !== "admin") {
-    return NextResponse.json({ error: "Admin only" }, { status: 403 });
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Not authenticated", user: null }, { status: 403 });
+    }
+    if (user.role !== "admin") {
+      return NextResponse.json({ error: "Admin only", role: user.role }, { status: 403 });
+    }
+    await prisma.codexUser.update({
+      where: { id: user.id },
+      data: {
+        subscriptionStatus: "active",
+        subscriptionTier: "system",
+        currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      },
+    });
+    return NextResponse.json({ ok: true, message: "Oracle granted.", userId: user.id });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
-  await prisma.codexUser.update({
-    where: { id: user.id },
-    data: {
-      subscriptionStatus: "active",
-      subscriptionTier: "system",
-      currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-    },
-  });
-  return NextResponse.json({ ok: true, message: "Oracle granted." });
 }
