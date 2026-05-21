@@ -40,7 +40,6 @@ const NAV_GROUPS: readonly NavGroup[] = [
     title: "COLLECT",
     items: [
       { href: "/cards", label: "CARD COLLECTION", glyph: "◈", key: "9" },
-      { href: "/cards/packs", label: "PACK STORE", glyph: "▣" },
     ],
   },
   {
