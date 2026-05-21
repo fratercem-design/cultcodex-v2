@@ -45,7 +45,7 @@ export default async function ThreadsIndexPage() {
           <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">/// initiate_only</p>
           <p className="font-display text-xl font-bold text-text-primary">The thread registry is sealed.</p>
           <Link
-            href="/subscribe"
+            href="/premium"
             className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors"
           >
             Become Initiate+ →

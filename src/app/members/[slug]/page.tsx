@@ -160,7 +160,7 @@ export default async function MemberProfilePage({ params }: Props) {
           <Link href="/members" className="font-mono text-[11px] text-text-muted hover:text-accent-gold transition-colors">
             ← Member Roll
           </Link>
-          <Link href="/subscribe" className="font-mono text-[11px] text-text-muted hover:text-accent-gold transition-colors">
+          <Link href="/premium" className="font-mono text-[11px] text-text-muted hover:text-accent-gold transition-colors">
             Get Full System →
           </Link>
         </div>

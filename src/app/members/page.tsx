@@ -143,7 +143,7 @@ export default async function MembersPage() {
           <p className="font-mono text-xs text-text-muted">
             Not yet initiated?{" "}
             <Link
-              href="/subscribe"
+              href="/premium"
               className="font-bold text-accent-gold hover:underline"
             >
               Join the archive for $10/month →

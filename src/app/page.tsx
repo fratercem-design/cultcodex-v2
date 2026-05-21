@@ -24,20 +24,20 @@ import { jsonLdScript } from "@/lib/seo";
 export const revalidate = 300;
 
 export const metadata = {
-  title: "CultCodex — Decode Cult of Psyche | 1,500+ Episodes Archived",
+  title: "CultCodex — Decode Cult of Psyche | 2,600+ Episodes Archived",
   description:
-    "The definitive archive of Cult of Psyche. 1,500+ episodes with full transcripts, AI psychological breakdowns, guest profiles, topic signals, and behavioral pattern maps.",
+    "The definitive archive of Cult of Psyche. 2,600+ transmissions with AI psychological breakdowns, guest profiles, topic signals, behavioral pattern maps, and growing transcript coverage.",
   openGraph: {
     title: "CultCodex — Decode Cult of Psyche",
     description:
-      "1,500+ conversations decoded. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
+      "2,600+ conversations indexed. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
     type: "website" as const,
   },
   twitter: {
     card: "summary_large_image" as const,
     title: "CultCodex — Decode Cult of Psyche",
     description:
-      "Full transcripts, AI breakdowns, guest profiles, and pattern maps for every Cult of Psyche episode.",
+      "AI breakdowns, guest profiles, behavioral maps, and growing transcript coverage for every Cult of Psyche episode.",
   },
 };
 
@@ -110,10 +110,10 @@ export default async function HomePage() {
               className="font-display text-3xl sm:text-5xl font-bold leading-tight text-white"
               style={{ textShadow: "0 0 60px rgba(212,175,55,0.3)" }}
             >
-              Every word. Every soul.
+              2,600+ transmissions.
               <br />
               <span className="text-accent-gold" style={{ textShadow: "0 0 40px rgba(212,175,55,0.6)" }}>
-                Every pattern — decoded.
+                Every pattern — still decoding.
               </span>
             </h1>
             <p className="font-mono text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
@@ -130,7 +130,7 @@ export default async function HomePage() {
               Enter the Codex →
             </Link>
             <Link
-              href="/subscribe"
+              href="/premium"
               className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/60 px-6 py-3.5 font-mono text-sm text-text-muted transition-all hover:border-accent-gold/30 hover:text-accent-gold"
             >
               Unlock full access
@@ -407,7 +407,7 @@ export default async function HomePage() {
             <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
-                href="/subscribe"
+                href="/premium"
                 className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
               >
                 Become Initiate+ — $10/mo →

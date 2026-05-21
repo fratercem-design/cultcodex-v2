@@ -26,18 +26,11 @@ export const metadata: Metadata = buildMetadata({
   path: "/premium",
 });
 
-async function getMemberCount() {
-  return prisma.codexUser.count({
-    where: { OR: [{ role: "admin" }, { subscriptionStatus: "active" }] },
-  });
-}
-
 export default async function PremiumPage() {
   const user = await getCurrentUser();
-  const [subStatus, stats, memberCount] = await Promise.all([
+  const [subStatus, stats] = await Promise.all([
     user ? getSubscriptionStatus(user.id) : Promise.resolve(null),
     getArchiveStats(),
-    getMemberCount(),
   ]);
 
   const isActive = subStatus?.isAdmin || subStatus?.status === "active";
@@ -278,8 +271,9 @@ export default async function PremiumPage() {
             ))}
           </div>
           <p className="font-mono text-xs text-text-muted">
-            {stats.totalHours.toLocaleString()}+ hours of recorded transmissions ·{" "}
-            <span className="text-accent-gold font-bold">{memberCount} members</span> already initiated
+            {stats.totalHours.toLocaleString()}+ hours decoded ·{" "}
+            {stats.segments.toLocaleString()} transcript segments ·{" "}
+            <span className="text-accent-gold font-bold">{stats.loreEntries.toLocaleString()} lore entries</span> extracted
           </p>
         </section>
 
