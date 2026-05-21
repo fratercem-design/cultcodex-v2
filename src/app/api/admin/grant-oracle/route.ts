@@ -16,7 +16,6 @@ export async function GET() {
         subscriptionStatus: "active",
         subscriptionTier: "system",
         currentPeriodEnd: new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000),
-        isLifetimeMember: true,
       },
       select: { id: true, displayName: true, email: true },
     });
