@@ -18,6 +18,7 @@ import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
+import { MusicVideoPlayer } from "@/components/home/music-video-player";
 
 export const revalidate = 300;
 
@@ -139,6 +140,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── MUSIC VIDEO PLAYER ───────────────────────────────────────── */}
+      <MusicVideoPlayer />
 
       <main id="main-content" className="space-y-0">
 
