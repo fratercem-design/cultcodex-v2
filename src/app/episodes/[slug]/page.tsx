@@ -12,7 +12,7 @@ import { getEraForEpisode } from "@/lib/eras";
 import { EraNeighbors } from "@/components/episodes/era-neighbors";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, episodeJsonLd, jsonLdScript } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EpisodeHero } from "@/components/episodes/episode-hero";
 import { EpisodeGlanceBar } from "@/components/episodes/episode-glance-bar";
@@ -187,6 +187,22 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
   return (
     <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: jsonLdScript(
+          episodeJsonLd({
+            title: cleanTitle(episode.title),
+            slug: episode.slug,
+            description: episode.summaryShort ?? episode.summaryLong ?? null,
+            airDate: episode.airDate,
+            thumbnailUrl: episode.thumbnailUrl,
+            youtubeVideoId: episode.youtubeVideoId,
+            duration: episode.duration,
+          })
+        ),
+      }}
+    />
     {episode.series && (
       <nav className="mx-auto max-w-7xl px-4 pt-4">
         <ol className="flex items-center gap-2 font-mono text-xs text-text-muted">

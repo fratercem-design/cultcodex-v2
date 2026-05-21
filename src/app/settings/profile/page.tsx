@@ -75,7 +75,7 @@ export default async function ProfilePage() {
             </p>
             <div className="mt-5">
               <Link
-                href="/subscribe"
+                href="/premium"
                 className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
               >
                 Unlock Premium — $10/month

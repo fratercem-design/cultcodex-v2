@@ -120,6 +120,36 @@ export default async function StartHerePage() {
   return (
     <main id="main-content" className="mx-auto max-w-5xl px-4 py-12 space-y-20">
 
+      {/* ── 0. Personalized path CTA ── */}
+      <section className="max-w-2xl mx-auto">
+        <div className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface overflow-hidden">
+          <div className="p-7 space-y-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
+              /// not sure where to start?
+            </p>
+            <h2 className="font-display text-xl font-bold text-text-primary">
+              Let the archive find you.
+            </h2>
+            <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+              Three questions. The archive calibrates around your answers and
+              gives you five episodes, three people, and two Oracle prompts
+              tailored to where you are right now.
+            </p>
+          </div>
+          <div className="border-t border-accent-violet/20 bg-accent-violet/5 px-7 py-4 flex items-center justify-between gap-3">
+            <p className="font-mono text-[10px] text-text-muted">Takes 30 seconds.</p>
+            <Link
+              href="/start-here/quiz"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-5 py-2 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25"
+            >
+              Find your path →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <MysticalDivider />
+
       {/* ── 1. What is this? ── */}
       <section className="max-w-3xl mx-auto space-y-8 text-center">
         <div className="space-y-2">

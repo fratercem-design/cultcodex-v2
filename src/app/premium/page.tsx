@@ -26,18 +26,11 @@ export const metadata: Metadata = buildMetadata({
   path: "/premium",
 });
 
-async function getMemberCount() {
-  return prisma.codexUser.count({
-    where: { OR: [{ role: "admin" }, { subscriptionStatus: "active" }] },
-  });
-}
-
 export default async function PremiumPage() {
   const user = await getCurrentUser();
-  const [subStatus, stats, memberCount] = await Promise.all([
+  const [subStatus, stats] = await Promise.all([
     user ? getSubscriptionStatus(user.id) : Promise.resolve(null),
     getArchiveStats(),
-    getMemberCount(),
   ]);
 
   // hasAccess: gates what the user can SEE (admin + paying subscribers)
@@ -215,6 +208,9 @@ export default async function PremiumPage() {
                     <span className={`font-display text-5xl font-bold ${accentText}`}>${t.priceMonthly}</span>
                     <span className="font-mono text-sm text-text-muted">/month</span>
                   </div>
+                  <p className="mt-1 font-mono text-[10px] text-text-muted/70">
+                    or ${t.priceAnnual}/yr — save ${t.priceMonthly * 12 - t.priceAnnual}
+                  </p>
                   <p className={`mt-1 font-mono text-[10px] ${accentText}/60`}>{t.tagline}</p>
 
                   <ul className="mt-6 space-y-2.5 flex-1">
@@ -230,11 +226,9 @@ export default async function PremiumPage() {
                     <div className="mt-7">
                       <TierCheckoutButton
                         tier={t.slug}
-                        label={
-                          notSignedIn
-                            ? `Sign in to become ${t.role} — $${t.priceMonthly}/mo`
-                            : `Become ${t.role} — $${t.priceMonthly}/mo`
-                        }
+                        role={t.role}
+                        priceMonthly={t.priceMonthly}
+                        priceAnnual={t.priceAnnual}
                         accent={t.accent}
                         requireSignIn={notSignedIn}
                       />
@@ -247,9 +241,12 @@ export default async function PremiumPage() {
                     <div className="mt-7">
                       <TierCheckoutButton
                         tier={t.slug}
-                        label={`Upgrade to Oracle — $${t.priceMonthly}/mo`}
+                        role={t.role}
+                        priceMonthly={t.priceMonthly}
+                        priceAnnual={t.priceAnnual}
                         accent={t.accent}
                         requireSignIn={false}
+                        verb="Upgrade to"
                       />
                     </div>
                   )}
@@ -278,8 +275,9 @@ export default async function PremiumPage() {
             ))}
           </div>
           <p className="font-mono text-xs text-text-muted">
-            {stats.totalHours.toLocaleString()}+ hours of recorded transmissions ·{" "}
-            <span className="text-accent-gold font-bold">{memberCount} members</span> already initiated
+            {stats.totalHours.toLocaleString()}+ hours decoded ·{" "}
+            {stats.segments.toLocaleString()} transcript segments ·{" "}
+            <span className="text-accent-gold font-bold">{stats.loreEntries.toLocaleString()} lore entries</span> extracted
           </p>
         </section>
 
@@ -377,13 +375,17 @@ export default async function PremiumPage() {
               <div className="flex flex-wrap justify-center gap-4 pt-2">
                 <TierCheckoutButton
                   tier="access"
-                  label={notSignedIn ? "Sign in to become Initiate+ — $10/mo" : "Become Initiate+ — $10/mo"}
+                  role="Initiate+"
+                  priceMonthly={10}
+                  priceAnnual={96}
                   accent="gold"
                   requireSignIn={notSignedIn}
                 />
                 <TierCheckoutButton
                   tier="system"
-                  label={notSignedIn ? "Sign in to become Oracle — $25/mo" : "Become Oracle — $25/mo"}
+                  role="Oracle"
+                  priceMonthly={25}
+                  priceAnnual={240}
                   accent="violet"
                   requireSignIn={notSignedIn}
                 />

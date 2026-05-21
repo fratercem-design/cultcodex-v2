@@ -30,6 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/collections`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/timeline`, changeFrequency: "weekly", priority: 0.6 },
     { url: `${baseUrl}/start-here`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/this-week`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/stats`, changeFrequency: "weekly", priority: 0.5 },
     { url: `${baseUrl}/lexicon`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/mythic-map`, changeFrequency: "monthly", priority: 0.7 },
@@ -40,6 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/privacy`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${baseUrl}/terms`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${baseUrl}/live`, changeFrequency: "daily", priority: 0.6 },
+    { url: `${baseUrl}/tarot`, changeFrequency: "monthly", priority: 0.7 },
   ];
 
   const dynamicPages: MetadataRoute.Sitemap = [

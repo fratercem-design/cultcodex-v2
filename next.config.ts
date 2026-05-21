@@ -11,6 +11,7 @@ const { version } = JSON.parse(readFileSync(join(process.cwd(), "package.json"),
 // `process.cwd()` works because `next dev` is always launched from the
 // project root; matches the launch.json cwd setup.
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   env: {
     NEXT_PUBLIC_APP_VERSION: version,
   },

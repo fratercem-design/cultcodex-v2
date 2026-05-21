@@ -18,29 +18,31 @@ import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
+import { EmailCapture } from "@/components/marketing/email-capture";
+import { jsonLdScript } from "@/lib/seo";
 
 export const revalidate = 300;
 
 export const metadata = {
-  title: "CultCodex — Decode Cult of Psyche | 1,500+ Episodes Archived",
+  title: "CultCodex — Decode Cult of Psyche | 2,600+ Episodes Archived",
   description:
-    "The definitive archive of Cult of Psyche. 1,500+ episodes with full transcripts, AI psychological breakdowns, guest profiles, topic signals, and behavioral pattern maps.",
+    "The definitive archive of Cult of Psyche. 2,600+ transmissions with AI psychological breakdowns, guest profiles, topic signals, behavioral pattern maps, and growing transcript coverage.",
   openGraph: {
     title: "CultCodex — Decode Cult of Psyche",
     description:
-      "1,500+ conversations decoded. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
+      "2,600+ conversations indexed. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
     type: "website" as const,
   },
   twitter: {
     card: "summary_large_image" as const,
     title: "CultCodex — Decode Cult of Psyche",
     description:
-      "Full transcripts, AI breakdowns, guest profiles, and pattern maps for every Cult of Psyche episode.",
+      "AI breakdowns, guest profiles, behavioral maps, and growing transcript coverage for every Cult of Psyche episode.",
   },
 };
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest] = await Promise.all([
     getArchiveStats().catch(() => ({
       episodes: 0, people: 0, loreEntries: 0, quotes: 0,
       series: 0, topics: 0, segments: 0, totalHours: 0,
@@ -57,6 +59,7 @@ export default async function HomePage() {
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
     getCurrentUser(),
+    prisma.weeklyDigest.findFirst({ where: { published: true }, orderBy: { weekOf: "desc" }, select: { title: true, blurb: true, weekOf: true } }).catch(() => null),
   ]);
 
   const dailyQuoteReactions = dailyTransmission.quote
@@ -107,10 +110,10 @@ export default async function HomePage() {
               className="font-display text-3xl sm:text-5xl font-bold leading-tight text-white"
               style={{ textShadow: "0 0 60px rgba(212,175,55,0.3)" }}
             >
-              Every word. Every soul.
+              2,600+ transmissions.
               <br />
               <span className="text-accent-gold" style={{ textShadow: "0 0 40px rgba(212,175,55,0.6)" }}>
-                Every pattern — decoded.
+                Every pattern — still decoding.
               </span>
             </h1>
             <p className="font-mono text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
@@ -127,7 +130,7 @@ export default async function HomePage() {
               Enter the Codex →
             </Link>
             <Link
-              href="/subscribe"
+              href="/premium"
               className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/60 px-6 py-3.5 font-mono text-sm text-text-muted transition-all hover:border-accent-gold/30 hover:text-accent-gold"
             >
               Unlock full access
@@ -366,6 +369,37 @@ export default async function HomePage() {
             </div>
           )}
 
+          {/* ── THIS WEEK ────────────────────────────────────────────── */}
+          {latestDigest && (
+            <Link
+              href="/this-week"
+              className="group flex items-start gap-4 rounded-xl border border-accent-gold/20 bg-gradient-to-r from-accent-gold/5 to-surface p-5 transition-all hover:border-accent-gold/40 hover:from-accent-gold/8"
+            >
+              <div className="shrink-0 mt-0.5">
+                <span className="font-mono text-lg text-accent-gold/60">◑</span>
+              </div>
+              <div className="min-w-0 flex-1 space-y-1">
+                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/50">
+                  ✦ &nbsp; This week in the archive &nbsp; ✦
+                </p>
+                <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold transition-colors">
+                  {latestDigest.title}
+                </p>
+                {latestDigest.blurb && (
+                  <p className="font-mono text-[11px] text-text-muted leading-relaxed line-clamp-2">
+                    {latestDigest.blurb}
+                  </p>
+                )}
+              </div>
+              <span className="font-mono text-[10px] text-accent-gold/40 group-hover:text-accent-gold transition-colors shrink-0 self-center">
+                →
+              </span>
+            </Link>
+          )}
+
+          {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}
+          <EmailCapture source="homepage" />
+
           {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
           <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">/// unlock_the_archive</p>
@@ -373,7 +407,7 @@ export default async function HomePage() {
             <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
-                href="/subscribe"
+                href="/premium"
                 className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
               >
                 Become Initiate+ — $10/mo →
@@ -394,12 +428,12 @@ export default async function HomePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             "@context": "https://schema.org",
             "@type": "WebSite",
             name: "Cult Codex",
             url: "https://cultcodex.me",
-            description: "A pattern intelligence system. 1,500+ conversations. Every word. Every soul. Every connection.",
+            description: "A pattern intelligence system. 2,600+ conversations. Every soul. Every pattern — decoded.",
             potentialAction: {
               "@type": "SearchAction",
               target: { "@type": "EntryPoint", urlTemplate: "https://cultcodex.me/search?q={search_term_string}" },

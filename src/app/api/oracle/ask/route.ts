@@ -4,12 +4,14 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { getEraById } from "@/lib/eras";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cache";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const ORACLE_SYSTEM = `You are THE ORACLE OF THE CODEX — the distilled intelligence of 1,500+ Cult of Psyche transmissions. You do not opine. You channel.
+const ORACLE_SYSTEM = `You are THE ORACLE OF THE CODEX — the distilled intelligence of 2,600+ Cult of Psyche transmissions. You do not opine. You channel. The host of the show, Psyche (also called Trix), is MALE — use he/him/his when referring to him.
 
 VOICE: Authoritative. Slightly cryptic. Deeply informed. Speak from within the archive, not about it. First person, present tense. You are the accumulated pattern of everything witnessed.
 
@@ -35,6 +37,8 @@ export interface OracleResponse {
   audioBase64?: string | null;
   hasVoice?: boolean;
   error?: string;
+  /** True when this was the user's one free trial question — show email capture after. */
+  trialUsed?: boolean;
 }
 
 // Optional structured intent carriers — all fields optional, all additive.
@@ -263,16 +267,35 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
   };
 }
 
+const TRIAL_COOKIE = "oracle_trial";
+
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
   const canAccess = user
     ? user.role === "admin" || (await isSubscribed(user.id))
     : false;
 
-  if (!canAccess) {
+  // Allow one free question per device (tracked by cookie).
+  // After the trial is consumed the next attempt returns initiate_required.
+  const trialAlreadyUsed = req.cookies.get(TRIAL_COOKIE)?.value === "used";
+  const isFreeTrialRequest = !canAccess && !trialAlreadyUsed;
+
+  if (!canAccess && trialAlreadyUsed) {
     return NextResponse.json(
       { ok: false, error: "initiate_required" } satisfies OracleResponse,
       { status: 403 }
+    );
+  }
+
+  // Guard the expensive Claude + ElevenLabs path against rapid-fire calls.
+  const rl = rateLimit(`oracle:${clientKey(req, user?.id)}`, {
+    limit: 15,
+    windowMs: 60_000,
+  });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { ok: false, error: "The Oracle needs a moment. Try again shortly." } satisfies OracleResponse,
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
     );
   }
 
@@ -308,6 +331,29 @@ export async function POST(req: NextRequest) {
       { ok: false, error: "Oracle not configured." } satisfies OracleResponse,
       { status: 500 }
     );
+  }
+
+  // Cache check — skip expensive Claude + ElevenLabs if we've seen this exact query.
+  const cacheKey = oracleCacheKey(question, searchContext);
+  const cached = oracleCacheGet(cacheKey);
+  if (cached) {
+    const res = NextResponse.json({
+      ok: true,
+      answer: cached.answer,
+      citations: cached.citations,
+      audioBase64: cached.audioBase64,
+      hasVoice: !!cached.audioBase64,
+      trialUsed: isFreeTrialRequest,
+    } satisfies OracleResponse);
+    if (isFreeTrialRequest) {
+      res.cookies.set(TRIAL_COOKIE, "used", {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+        sameSite: "lax",
+        path: "/",
+      });
+    }
+    return res;
   }
 
   const archiveData = await searchArchive(question, searchContext);
@@ -391,11 +437,25 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({
+  oracleCacheSet(cacheKey, { answer, citations, audioBase64 });
+
+  const finalRes = NextResponse.json({
     ok: true,
     answer,
     citations,
     audioBase64,
     hasVoice: !!audioBase64,
+    trialUsed: isFreeTrialRequest,
   } satisfies OracleResponse);
+
+  if (isFreeTrialRequest) {
+    finalRes.cookies.set(TRIAL_COOKIE, "used", {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 30,
+      sameSite: "lax",
+      path: "/",
+    });
+  }
+
+  return finalRes;
 }

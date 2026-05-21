@@ -60,7 +60,9 @@ GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET
 ANTHROPIC_API_KEY
 OPENAI_API_KEY        # for embeddings
 STRIPE_SECRET_KEY / STRIPE_WEBHOOK_SECRET
-STRIPE_PRICE_ACCESS_ID / STRIPE_PRICE_SYSTEM_ID
+STRIPE_PRICE_ACCESS_ID / STRIPE_PRICE_SYSTEM_ID                # monthly price ids
+STRIPE_PRICE_ACCESS_ANNUAL_ID / STRIPE_PRICE_SYSTEM_ANNUAL_ID  # annual price ids
+RESEND_API_KEY        # transactional + lead-capture email (Subscriber list)
 ADMIN_EMAILS          # comma-separated, grants admin role without DB write
 ENRICH_SECRET         # protects all /api/admin/* routes
 ```

@@ -980,7 +980,7 @@ const LEXICON: Term[] = [
   {
     word: "Biscuitgate",
     definition:
-      "The months-long feud between Psyche and streamer Beta/VA that began when she tormented him over 'biscuits' and escalated into diss tracks, panel raids, and tattoo revisions. The first great saga of the modern Psycheverse.",
+      "The months-long feud between Psyche and streamer Beta/VA that began when Psyche tormented him over 'biscuits' and escalated into diss tracks, panel raids, and tattoo revisions. The first great saga of the modern Psycheverse.",
     usage: "\"Biscuitgate is how the BKG was born — and how it almost ended.\"",
     origin: "Cult of Psyche — Beta vs Psyche feud arc",
     category: "psycheverse",
