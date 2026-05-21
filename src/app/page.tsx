@@ -42,7 +42,7 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest] = await Promise.all([
     getArchiveStats().catch(() => ({
       episodes: 0, people: 0, loreEntries: 0, quotes: 0,
       series: 0, topics: 0, segments: 0, totalHours: 0,
@@ -59,6 +59,7 @@ export default async function HomePage() {
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
     getCurrentUser(),
+    prisma.weeklyDigest.findFirst({ where: { published: true }, orderBy: { weekOf: "desc" }, select: { title: true, blurb: true, weekOf: true } }).catch(() => null),
   ]);
 
   const dailyQuoteReactions = dailyTransmission.quote
@@ -366,6 +367,34 @@ export default async function HomePage() {
                 Explore all quotes →
               </Link>
             </div>
+          )}
+
+          {/* ── THIS WEEK ────────────────────────────────────────────── */}
+          {latestDigest && (
+            <Link
+              href="/this-week"
+              className="group flex items-start gap-4 rounded-xl border border-accent-gold/20 bg-gradient-to-r from-accent-gold/5 to-surface p-5 transition-all hover:border-accent-gold/40 hover:from-accent-gold/8"
+            >
+              <div className="shrink-0 mt-0.5">
+                <span className="font-mono text-lg text-accent-gold/60">◑</span>
+              </div>
+              <div className="min-w-0 flex-1 space-y-1">
+                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/50">
+                  ✦ &nbsp; This week in the archive &nbsp; ✦
+                </p>
+                <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold transition-colors">
+                  {latestDigest.title}
+                </p>
+                {latestDigest.blurb && (
+                  <p className="font-mono text-[11px] text-text-muted leading-relaxed line-clamp-2">
+                    {latestDigest.blurb}
+                  </p>
+                )}
+              </div>
+              <span className="font-mono text-[10px] text-accent-gold/40 group-hover:text-accent-gold transition-colors shrink-0 self-center">
+                →
+              </span>
+            </Link>
           )}
 
           {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}

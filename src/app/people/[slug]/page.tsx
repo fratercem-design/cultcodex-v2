@@ -161,11 +161,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   // This reduces SEO risk for people who didn't actively participate.
   const shouldNoIndex = person.personType === "mentioned";
 
+  const appearanceCount = person.guestAppearances.length;
+  const typeLabel =
+    person.personType === "host" ? "host" :
+    person.personType === "recurring" ? "recurring figure" : "guest";
+  const countPhrase = appearanceCount > 0
+    ? `${appearanceCount} appearance${appearanceCount !== 1 ? "s" : ""} in the Cult of Psyche archive`
+    : "Featured in the Cult of Psyche archive";
+  const bioSnippet = person.shortBio
+    ? ` · ${person.shortBio.slice(0, 120)}${person.shortBio.length > 120 ? "…" : ""}`
+    : "";
+  const description = `${countPhrase} · ${typeLabel}${bioSnippet}`;
+
   return {
     ...buildMetadata({
       title: person.displayName,
-      description: person.shortBio || person.searchText || null,
+      description,
       path: `/people/${person.slug}`,
+      image: person.avatarUrl ?? null,
     }),
     ...(shouldNoIndex ? { robots: { index: false, follow: true } } : {}),
   };

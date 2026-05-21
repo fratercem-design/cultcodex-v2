@@ -28,6 +28,7 @@ const SORT_OPTIONS = [
   { label: "A → Z", value: "az" },
   { label: "Z → A", value: "za" },
   { label: "Most Appearances", value: "most" },
+  { label: "Most Lore", value: "lore" },
 ];
 
 const FILTER_OPTIONS = [
@@ -69,6 +70,9 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
       const aCount = a.guestAppearances.length + a.mentions.length;
       const bCount = b.guestAppearances.length + b.mentions.length;
       return bCount - aCount;
+    }
+    if (currentSort === "lore") {
+      return b.loreConnections.length - a.loreConnections.length;
     }
     return a.displayName.localeCompare(b.displayName);
   });
