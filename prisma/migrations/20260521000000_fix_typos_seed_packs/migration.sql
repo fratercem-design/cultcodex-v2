@@ -17,9 +17,11 @@ WHERE title ~ '  +';
 -- ─── Seed initial card packs ─────────────────────────────────────────────────
 -- ON CONFLICT DO NOTHING makes this idempotent; re-running is safe.
 
+-- "price" is a legacy INTEGER NOT NULL column from the original CardPack schema
+-- predating the signal-credits "cost" column. Mirror cost value for consistency.
 INSERT INTO "CardPack" (
   id, slug, name, description,
-  cost, "cardCount", "isAvailable", "sortOrder",
+  price, cost, "cardCount", "isAvailable", "sortOrder",
   "weightStatic", "weightSignal", "weightTransmission", "weightAnomaly",
   "weightOracle", "weightLegendary", "weightMythic", "weightForbidden",
   "artTheme", "createdAt", "updatedAt"
@@ -29,7 +31,7 @@ INSERT INTO "CardPack" (
     'static-transmission',
     'Static Transmission',
     'Low-noise entry pack. Mostly foundational Signal and Static cards — the bedrock of the archive.',
-    75, 3, true, 10,
+    75, 75, 3, true, 10,
     55, 30, 10, 4,
     1, 0, 0, 0,
     'terminal',
@@ -40,7 +42,7 @@ INSERT INTO "CardPack" (
     'occult-signal',
     'Occult Signal',
     'Deeper into the archive. Higher Signal and Transmission weight — rare patterns begin to surface.',
-    150, 3, true, 20,
+    150, 150, 3, true, 20,
     35, 35, 20, 7,
     2.5, 0.5, 0, 0,
     'occult',
@@ -51,7 +53,7 @@ INSERT INTO "CardPack" (
     'oracles-cache',
     'Oracle''s Cache',
     'From the deepest strata. Anomaly and Oracle cards emerge. Foil probability tripled.',
-    400, 5, true, 30,
+    400, 400, 5, true, 30,
     20, 28, 22, 16,
     8, 3.5, 2, 0.5,
     'chaos',
