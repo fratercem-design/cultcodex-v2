@@ -11,13 +11,11 @@ export async function isSubscribed(userId: string): Promise<boolean> {
       role: true,
       subscriptionStatus: true,
       currentPeriodEnd: true,
-      isLifetimeMember: true,
     },
   });
 
   if (!user) return false;
   if (user.role === "admin") return true;
-  if (user.isLifetimeMember) return true;
 
   if (
     user.subscriptionStatus === "active" &&
@@ -37,11 +35,10 @@ export async function isSubscribed(userId: string): Promise<boolean> {
 export async function hasSystemTier(userId: string): Promise<boolean> {
   const user = await prisma.codexUser.findUnique({
     where: { id: userId },
-    select: { role: true, subscriptionStatus: true, subscriptionTier: true, currentPeriodEnd: true, isLifetimeMember: true },
+    select: { role: true, subscriptionStatus: true, subscriptionTier: true, currentPeriodEnd: true },
   });
   if (!user) return false;
   if (user.role === "admin") return true;
-  if (user.isLifetimeMember) return true;
   return (
     user.subscriptionStatus === "active" &&
     user.subscriptionTier === "system" &&
