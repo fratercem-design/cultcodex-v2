@@ -3,6 +3,8 @@ import Image from "next/image";
 import { formatDate } from "@/lib/format/date";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
+import { EraTag } from "@/components/ui/era-tag";
+import { getEraForEpisode } from "@/lib/eras";
 import type { EpisodeCardData } from "@/lib/queries/episodes";
 
 interface EpisodeCardProps {
@@ -13,6 +15,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
   const epNum = episode.episodeNumber
     ? `EP.${String(episode.episodeNumber).padStart(3, "0")}`
     : null;
+  const era = getEraForEpisode(episode.airDate);
 
   return (
     <Link
@@ -56,6 +59,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
           </p>
         )}
         <div className="mt-2 flex flex-wrap gap-1.5">
+          {era && <EraTag era={era} />}
           {episode.status === "unavailable" && (
             <StatusBadge label="Unavailable" variant="muted" />
           )}

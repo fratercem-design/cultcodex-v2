@@ -82,6 +82,8 @@ export default async function LorePage({ searchParams }: LorePageProps) {
       title="LORE ARCHIVE"
       subtitle="Concepts, doctrines, myths, and memes"
       backgroundImage="/lore-header.jpg"
+    
+      label="lore_archive"
     />
     <EntityGlanceBar items={glanceItems} />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { resolvePriceId, type TierSlug } from "@/lib/subscription-tiers";
 
 /**
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     // Get or create Stripe customer
     let customerId = codexUser.stripeCustomerId;
     if (!customerId) {
-      const customer = await stripe.customers.create({
+      const customer = await getStripe().customers.create({
         email: codexUser.email,
         metadata: { codexUserId: user.id },
       });
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
       : "/episodes?subscribed=true";
     const cancelPath = tier ? "/premium" : "/subscribe";
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       customer: customerId,
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],

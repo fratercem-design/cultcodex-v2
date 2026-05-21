@@ -72,6 +72,8 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
       title="TOPICS"
       subtitle="Key themes and recurring subjects"
       backgroundImage="/long-form-background.jpg"
+    
+      label="signals"
     />
     <EntityGlanceBar items={glanceItems} />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">

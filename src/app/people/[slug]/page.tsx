@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,6 +6,8 @@ import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
 import { buildMetadata } from "@/lib/seo";
+import { ERAS, getEraForEpisode } from "@/lib/eras";
+import { archetypeToSlug, splitArchetypes } from "@/lib/queries/archetypes";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
@@ -26,20 +29,21 @@ import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import { ColorLegend } from "@/components/ui/color-legend";
 import { PersonSigil } from "@/components/ui/person-sigil";
 import { ArchetypeTimeline } from "@/components/people/archetype-timeline";
+import { ArchetypeCard } from "@/components/people/archetype-card";
 import { PersonMediaSection, type PersonMediaItem } from "@/components/people/person-media-section";
+import { PersonCrossRef } from "@/components/people/person-cross-ref";
 import type { Metadata } from "next";
 
 // ── Lore Summary renderer ─────────────────────────────────────────────────────
 // Handles two formats:
 //   1. Flat prose — render as paragraphs (legacy)
-//   2. Sectioned markdown with ## headers — render each section with a heading
-//      (produced by enrich-nightmares-people.ts character profiles)
+//   2. Sectioned markdown with ## headers — unified codex-entry card
 function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
   const hasSections = /^##\s+\S/m.test(loreSummary);
 
   if (!hasSections) {
     return (
-      <SectionCard title="Lore Summary">
+      <SectionCard title="Codex Entry">
         {loreSummary.split(/\n{2,}/).map((para, i) => (
           <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
             {editorialFrame(para.trim())}
@@ -49,7 +53,6 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
     );
   }
 
-  // Split on ## headers, keeping the header text
   const sections: Array<{ heading: string; body: string }> = [];
   const parts = loreSummary.split(/^##\s+/m).filter(Boolean);
   for (const part of parts) {
@@ -59,60 +62,83 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
     sections.push({ heading, body });
   }
 
-  const SECTION_ICONS: Record<string, string> = {
-    overview: "📖",
-    storylines: "🎭",
+  const SECTION_SIGILS: Record<string, string> = {
+    overview: "◈",
+    storylines: "⬡",
     controversies: "⚡",
-    "key relationships": "🔗",
+    "key relationships": "◉",
   };
 
-  return (
-    <>
-      {sections.map(({ heading, body }) => {
-        const icon = SECTION_ICONS[heading.toLowerCase()] ?? "📄";
+  function renderBody(body: string) {
+    return body.split(/\n{2,}|\n(?=[-•*])/).map((para, i) => {
+      const trimmed = para.trim();
+      if (!trimmed) return null;
+      if (/^[-•*]\s/.test(trimmed)) {
+        const bullets = trimmed.split(/\n/).filter((l) => l.trim()).map((l) => l.replace(/^[-•*]\s*/, "").trim());
         return (
-          <SectionCard key={heading} title={`${icon} ${heading}`}>
-            {body.split(/\n{2,}|\n(?=[-•*])/).map((para, i) => {
-              const trimmed = para.trim();
-              if (!trimmed) return null;
-              // Render bullet points
-              if (/^[-•*]\s/.test(trimmed)) {
-                const bullets = trimmed
-                  .split(/\n/)
-                  .filter((l) => l.trim())
-                  .map((l) => l.replace(/^[-•*]\s*/, "").trim());
-                return (
-                  <ul key={i} className="list-disc list-inside space-y-1 mb-3 last:mb-0">
-                    {bullets.map((b, j) => (
-                      <li key={j} className="text-sm text-text-primary leading-relaxed">
-                        {editorialFrame(b)}
-                      </li>
-                    ))}
-                  </ul>
-                );
-              }
-              return (
-                <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
-                  {editorialFrame(trimmed)}
-                </p>
-              );
-            })}
-          </SectionCard>
+          <ul key={i} className="space-y-1 mb-3 last:mb-0">
+            {bullets.map((b, j) => (
+              <li key={j} className="flex gap-2 text-sm text-text-primary leading-relaxed">
+                <span className="text-accent-gold/60 flex-shrink-0 mt-0.5">·</span>
+                <span>{editorialFrame(b)}</span>
+              </li>
+            ))}
+          </ul>
         );
-      })}
-    </>
+      }
+      return (
+        <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
+          {editorialFrame(trimmed)}
+        </p>
+      );
+    });
+  }
+
+  return (
+    <div className="rounded-lg border border-border bg-surface overflow-hidden">
+      {/* Codex entry header */}
+      <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
+        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold">/// codex_entry</p>
+        <p className="font-mono text-[9px] text-text-muted/50 tracking-widest">AI · ARCHIVAL</p>
+      </div>
+
+      {/* Sections */}
+      <div className="divide-y divide-border/60">
+        {sections.map(({ heading, body }) => {
+          const sigil = SECTION_SIGILS[heading.toLowerCase()] ?? "◇";
+          const isControversy = heading.toLowerCase() === "controversies";
+          return (
+            <div key={heading} className={`px-4 py-4 ${isControversy ? "bg-red-950/10" : ""}`}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className={`font-mono text-xs ${isControversy ? "text-red-400" : "text-accent-gold"}`}>
+                  {sigil}
+                </span>
+                <h4 className={`font-mono text-[10px] uppercase tracking-[0.3em] font-semibold ${isControversy ? "text-red-400/80" : "text-text-muted"}`}>
+                  {heading}
+                </h4>
+              </div>
+              {renderBody(body)}
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
 export const revalidate = 600;
 
 export async function generateStaticParams() {
-  const people = await prisma.person.findMany({
-    select: { slug: true },
-    take: 300,
-    orderBy: { updatedAt: "desc" },
-  });
-  return people.map((p) => ({ slug: p.slug }));
+  try {
+    const people = await prisma.person.findMany({
+      select: { slug: true },
+      take: 300,
+      orderBy: { updatedAt: "desc" },
+    });
+    return people.map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
 }
 
 interface PageProps {
@@ -230,6 +256,12 @@ export default async function PersonDetailPage({ params }: PageProps) {
     }];
   });
 
+  // Psychenomicon entity cross-link — soft join via personSlug
+  const psychenomiconEntity = await prisma.psychenomiconEntity.findFirst({
+    where: { personSlug: slug },
+    select: { slug: true, name: true, primaryArchetype: true, status: true, radarData: true, behaviorPatterns: true },
+  }).catch(() => null);
+
   // External media (videos + wiki) — only loaded for people who have it
   const personMediaRaw = await prisma.personMedia.findMany({
     where: { personSlug: slug },
@@ -259,22 +291,73 @@ export default async function PersonDetailPage({ params }: PageProps) {
   const personMediaWiki = personMediaSerialized.find((m) => m.source === "wiki") ?? null;
   const hasPersonMedia = personMediaRaw.length > 0;
 
+  // Era presence — bucket uniqueEpisodes by era (client-side, no extra DB query)
+  const ERA_BAR_COLOR: Record<string, string> = {
+    gold:    "bg-accent-gold",
+    violet:  "bg-accent-violet",
+    cyan:    "bg-accent-cyan",
+    crimson: "bg-accent-crimson",
+    muted:   "bg-text-muted",
+  };
+  const ERA_TEXT_COLOR: Record<string, string> = {
+    gold:    "text-accent-gold",
+    violet:  "text-accent-violet",
+    cyan:    "text-accent-cyan",
+    crimson: "text-accent-crimson",
+    muted:   "text-text-muted",
+  };
+  const eraPresence = ERAS.map((era) => {
+    const count = uniqueEpisodes.filter((ep) => {
+      if (!ep.airDate) return false;
+      return getEraForEpisode(ep.airDate)?.id === era.id;
+    }).length;
+    return { era, count };
+  }).filter((e) => e.count > 0);
+  const maxEraCount = Math.max(...eraPresence.map((e) => e.count), 1);
+
+  // Archetype atlas slug for backlink
+  const atlasArchetypeSlug = psychenomiconEntity?.primaryArchetype
+    ? archetypeToSlug(splitArchetypes(psychenomiconEntity.primaryArchetype)[0])
+    : null;
+
+  // Episodes grouped by era for the appearances section
+  type EpisodeCard = (typeof uniqueEpisodes)[number];
+  type EraGroup = { eraId: string; eraLabel: string; eraSigil: string; eraColor: string; episodes: EpisodeCard[] };
+  const episodesByEra: EraGroup[] = [];
+  const unclassified: EpisodeCard[] = [];
+  for (const ep of uniqueEpisodes) {
+    const era = ep.airDate ? getEraForEpisode(ep.airDate) : null;
+    if (era) {
+      let group = episodesByEra.find((g) => g.eraId === era.id);
+      if (!group) {
+        group = { eraId: era.id, eraLabel: era.label, eraSigil: era.sigil, eraColor: era.color, episodes: [] };
+        episodesByEra.push(group);
+      }
+      group.episodes.push(ep);
+    } else {
+      unclassified.push(ep);
+    }
+  }
+  // Sort era groups in reverse chronological order (newest era first, matching uniqueEpisodes sort)
+  const ERA_ORDER = ERAS.map((e) => e.id);
+  episodesByEra.sort((a, b) => ERA_ORDER.indexOf(b.eraId) - ERA_ORDER.indexOf(a.eraId));
+
   const typeLabel = PERSON_TYPE_LABELS[person.personType] ?? person.personType;
   const typeVariant = PERSON_TYPE_VARIANTS[person.personType] ?? "muted";
 
   const glanceItems = [
-    { icon: "\uD83C\uDFAD", label: typeLabel },
+    { icon: "🎭", label: typeLabel },
     ...(uniqueEpisodes.length > 0
-      ? [{ icon: "\uD83C\uDFAC", label: `${uniqueEpisodes.length} appearance${uniqueEpisodes.length !== 1 ? "s" : ""}` }]
+      ? [{ icon: "🎬", label: `${uniqueEpisodes.length} appearance${uniqueEpisodes.length !== 1 ? "s" : ""}` }]
       : []),
     ...(person.quotes.length > 0
-      ? [{ icon: "\uD83D\uDCAC", label: `${person.quotes.length} quote${person.quotes.length !== 1 ? "s" : ""}` }]
+      ? [{ icon: "💬", label: `${person.quotes.length} quote${person.quotes.length !== 1 ? "s" : ""}` }]
       : []),
     ...(person.firstAppearanceEpisode?.airDate
-      ? [{ icon: "\uD83D\uDCC5", label: `First seen ${formatDate(person.firstAppearanceEpisode.airDate)}` }]
+      ? [{ icon: "📅", label: `First seen ${formatDate(person.firstAppearanceEpisode.airDate)}` }]
       : []),
     ...(person.topics.length > 0
-      ? [{ icon: "\uD83C\uDFF7\uFE0F", label: `${person.topics.length} topic${person.topics.length !== 1 ? "s" : ""}` }]
+      ? [{ icon: "🏷️", label: `${person.topics.length} topic${person.topics.length !== 1 ? "s" : ""}` }]
       : []),
   ];
 
@@ -297,6 +380,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
         }
         badges={[{ label: typeLabel, variant: typeVariant }]}
         neonTitle={person.slug === "alexandra-mayers"}
+        label="voice"
       />
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
@@ -312,9 +396,22 @@ export default async function PersonDetailPage({ params }: PageProps) {
         />
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            {/* Bio / Lore Summary — renders flat text or ## sectioned profiles */}
-            {person.loreSummary && (
+            {/* Codex profile — AI-generated character entry */}
+            {person.loreSummary ? (
               <LoreSummaryCard loreSummary={person.loreSummary} />
+            ) : person.guestAppearances.length >= 2 && (
+              <div className="rounded-lg border border-border bg-surface overflow-hidden">
+                <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">/// codex_entry</p>
+                  <p className="font-mono text-[9px] text-text-muted/40 tracking-widest">PENDING</p>
+                </div>
+                <div className="px-4 py-5 flex items-center gap-3">
+                  <span className="font-mono text-sm text-text-muted/30">◈</span>
+                  <p className="font-mono text-[10px] text-text-muted/50 uppercase tracking-widest">
+                    Awaiting archival — profile not yet generated
+                  </p>
+                </div>
+              </div>
             )}
 
             {/* Archetype Evolution */}
@@ -331,20 +428,61 @@ export default async function PersonDetailPage({ params }: PageProps) {
             <ColorLegend />
 
             {/* Appearances */}
-            <SectionCard title={`Appearances (${uniqueEpisodes.length})`}>
+            <SectionCard title={`Appearances (${uniqueEpisodes.length})`} accent="gold">
               {uniqueEpisodes.length > 0 ? (
-                <div className="grid gap-3">
-                  {uniqueEpisodes.map((ep) => (
-                    <EpisodeListItem
-                      key={ep.id}
-                      slug={ep.slug}
-                      title={ep.title}
-                      episodeNumber={ep.episodeNumber}
-                      airDate={ep.airDate}
-                      summaryShort={ep.summaryShort}
-                      thumbnailUrl={fixThumbnailUrl(ep.thumbnailUrl)}
-                    />
+                <div className="space-y-6">
+                  {episodesByEra.map((group) => (
+                    <div key={group.eraId}>
+                      <Link
+                        href={`/eras/${group.eraId}`}
+                        className={`group mb-3 flex items-center gap-2 ${ERA_TEXT_COLOR[group.eraColor] ?? "text-text-muted"}`}
+                      >
+                        <span className="font-mono text-[11px]">{group.eraSigil}</span>
+                        <span className="font-mono text-[10px] uppercase tracking-widest opacity-70 group-hover:opacity-100 transition-opacity">
+                          {group.eraLabel}
+                        </span>
+                        <span className="font-mono text-[9px] text-text-muted/50">
+                          {group.episodes.length} ep{group.episodes.length !== 1 ? "s" : ""}
+                        </span>
+                        <span className="ml-auto font-mono text-[9px] text-text-muted/40 group-hover:text-text-muted transition-colors">
+                          era →
+                        </span>
+                      </Link>
+                      <div className="grid gap-3">
+                        {group.episodes.map((ep) => (
+                          <EpisodeListItem
+                            key={ep.id}
+                            slug={ep.slug}
+                            title={ep.title}
+                            episodeNumber={ep.episodeNumber}
+                            airDate={ep.airDate}
+                            summaryShort={ep.summaryShort}
+                            thumbnailUrl={fixThumbnailUrl(ep.thumbnailUrl)}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   ))}
+                  {unclassified.length > 0 && (
+                    <div>
+                      <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-text-muted/40">
+                        Unclassified
+                      </p>
+                      <div className="grid gap-3">
+                        {unclassified.map((ep) => (
+                          <EpisodeListItem
+                            key={ep.id}
+                            slug={ep.slug}
+                            title={ep.title}
+                            episodeNumber={ep.episodeNumber}
+                            airDate={ep.airDate}
+                            summaryShort={ep.summaryShort}
+                            thumbnailUrl={fixThumbnailUrl(ep.thumbnailUrl)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <p className="text-xs text-text-muted">No appearances recorded</p>
@@ -353,7 +491,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
             {/* Quotes */}
             {person.quotes.length > 0 && (
-              <SectionCard title={`Quotes (${person.quotes.length})`}>
+              <SectionCard title={`Quotes (${person.quotes.length})`} accent="red">
                 <div className="space-y-4">
                   {person.quotes.map((q) => (
                     <QuoteHighlightCard
@@ -376,16 +514,78 @@ export default async function PersonDetailPage({ params }: PageProps) {
           <div className="space-y-6">
             <EntityStatsPanel
               stats={[
-                { icon: "\uD83C\uDFA4", label: "Appearances", value: person.guestAppearances.length },
-                { icon: "\uD83D\uDCE2", label: "Mentions", value: person.mentions.length },
-                { icon: "\uD83D\uDCAC", label: "Quotes", value: person.quotes.length },
-                { icon: "\uD83C\uDFF7\uFE0F", label: "Topics", value: person.topics.length },
-                { icon: "\uD83D\uDD17", label: "Lore Links", value: person.loreConnections.length },
+                { icon: "🎤", label: "Appearances", value: person.guestAppearances.length },
+                { icon: "📢", label: "Mentions", value: person.mentions.length },
+                { icon: "💬", label: "Quotes", value: person.quotes.length },
+                { icon: "🏷️", label: "Topics", value: person.topics.length },
+                { icon: "🔗", label: "Lore Links", value: person.loreConnections.length },
               ]}
             />
 
+            {/* Era Presence */}
+            {eraPresence.length > 0 && (
+              <div className="rounded-lg border border-border bg-surface overflow-hidden">
+                <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/70">
+                    Era Presence
+                  </p>
+                  <p className="font-mono text-[9px] text-text-muted/40">
+                    {eraPresence.length} era{eraPresence.length !== 1 ? "s" : ""}
+                  </p>
+                </div>
+                <div className="px-4 py-3 space-y-2.5">
+                  {eraPresence.map(({ era, count }) => {
+                    const barColor = ERA_BAR_COLOR[era.color] ?? "bg-text-muted";
+                    const textColor = ERA_TEXT_COLOR[era.color] ?? "text-text-muted";
+                    const pct = Math.round((count / maxEraCount) * 100);
+                    return (
+                      <Link
+                        key={era.id}
+                        href={`/eras/${era.id}`}
+                        className="group block"
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className={`font-mono text-[10px] ${textColor} group-hover:opacity-80 transition-opacity`}>
+                            {era.sigil} {era.label}
+                          </span>
+                          <span className="font-mono text-[9px] text-text-muted/50 tabular-nums">
+                            {count}
+                          </span>
+                        </div>
+                        <div className="h-1 rounded-full bg-border overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${barColor} opacity-60 group-hover:opacity-80 transition-opacity`}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+                {eraPresence.length === ERAS.length && (
+                  <div className="border-t border-border/60 px-4 py-2">
+                    <p className="font-mono text-[9px] text-accent-gold/60 uppercase tracking-widest">
+                      ◈ Spans all eras
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Psychenomicon archetype intelligence card */}
+            {psychenomiconEntity && (
+              <ArchetypeCard
+                entitySlug={psychenomiconEntity.slug}
+                primaryArchetype={psychenomiconEntity.primaryArchetype}
+                status={psychenomiconEntity.status}
+                radarData={psychenomiconEntity.radarData}
+                behaviorPatterns={psychenomiconEntity.behaviorPatterns}
+                archetypeAtlasSlug={atlasArchetypeSlug}
+              />
+            )}
+
             {coAppearances.length > 0 && (
-              <SectionCard title="Frequently Appears With">
+              <SectionCard title="Frequently Appears With" accent="gold">
                 <div className="grid grid-cols-3 gap-3">
                   {coAppearances.map((coGuest) => (
                     <Link
@@ -415,6 +615,12 @@ export default async function PersonDetailPage({ params }: PageProps) {
                     </Link>
                   ))}
                 </div>
+                <Link
+                  href={`/graph/path?from=${person.slug}`}
+                  className="mt-4 block w-full rounded border border-accent-violet/30 bg-accent-violet/5 px-3 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-accent-violet hover:bg-accent-violet/10 transition-colors"
+                >
+                  Find a path to anyone →
+                </Link>
               </SectionCard>
             )}
 
@@ -501,6 +707,15 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 }))}
               />
             </SectionCard>
+
+            {/* Semantic cross-reference — moments across the archive about this person */}
+            <Suspense fallback={null}>
+              <PersonCrossRef
+                personName={person.displayName}
+                shortBio={person.shortBio ?? undefined}
+              />
+            </Suspense>
+
           {/* Alexandra Mayers external content section */}
           {hasPersonMedia && (
             <PersonMediaSection

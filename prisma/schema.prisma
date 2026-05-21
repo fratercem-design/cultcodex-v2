@@ -202,7 +202,8 @@ model Quote {
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
 
-  savedBy              SavedQuote[]
+  savedBy        SavedQuote[]
+  quoteReactions QuoteReaction[]
 
   @@index([speakerPersonId])
   @@index([episodeId])
@@ -390,6 +391,7 @@ model CodexUser {
   subscriptionStatus      String?   // "active", "past_due", "canceled", "unpaid"
   subscriptionTier        String?   // "access" | "system"
   currentPeriodEnd        DateTime?
+  isLifetimeMember    Boolean   @default(false)
 
   // Member identity
   memberTitle             String?   // chosen flair title e.g. "Oracle", "Acolyte"
@@ -410,6 +412,11 @@ model CodexUser {
   favorites               Favorite[]
   savedTopics             SavedTopic[]
   savedQuotes             SavedQuote[]
+  savedSearches           SavedSearch[]
+  ownedCards              OwnedCard[]
+  wallet                  UserWallet?
+  packPurchases           PackPurchase[]
+  quoteReactions          QuoteReaction[]
 }
 
 model CodexSession {
@@ -709,4 +716,251 @@ model CommunityPost {
   updatedAt     DateTime  @updatedAt
 
   @@index([publishedAt])
+}
+
+// ─── Oracle / RAG index ───────────────────────────────────────────────────────
+
+enum OracleChunkSource {
+  transcript
+  episode_summary
+  quote
+  lore
+  topic
+  person
+  psy_chapter
+  psy_thread
+  psy_entity
+}
+
+model OracleChunk {
+  id           String              @id @default(cuid())
+  sourceType   OracleChunkSource
+  sourceId     String
+  content      String              @db.Text
+  searchText   String              @db.Text
+  embedding    Unsupported("vector(1024)")
+  metadata     Json
+  contentHash  String
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([sourceType])
+  @@index([sourceId])
+  @@index([contentHash])
+}
+
+model OracleInvite {
+  id             String    @id @default(cuid())
+  token          String    @unique @default(cuid())
+  recipientName  String
+  recipientEmail String?
+  personalNote   String?   @db.Text
+  claimed        Boolean   @default(false)
+  claimedAt      DateTime?
+  claimedBy      String?
+  createdAt      DateTime  @default(now())
+}
+
+// ─── Saved Searches ───────────────────────────────────────────────────────────
+
+enum SearchKind {
+  simple
+  deep
+  oracle
+}
+
+model SavedSearch {
+  id         String     @id @default(cuid())
+  userId     String
+  user       CodexUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label      String
+  kind       SearchKind
+  query      String     @default("")
+  concepts   String[]
+  thresholds Float[]
+  eraId      String?
+  personSlug String?
+  archetype  String?
+  pinned     Boolean    @default(false)
+  lastRunAt  DateTime?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@index([userId])
+}
+
+// ─── Quote Reactions ──────────────────────────────────────────────────────────
+
+model QuoteReaction {
+  id           String       @id @default(cuid())
+  userId       String
+  quoteId      String
+  reactionType ReactionType
+  createdAt    DateTime     @default(now())
+
+  user  CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quote Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, quoteId, reactionType])
+  @@index([quoteId])
+  @@index([userId])
+}
+
+// ─── Trading Cards ────────────────────────────────────────────────────────────
+
+enum Rarity {
+  STATIC
+  SIGNAL
+  TRANSMISSION
+  ANOMALY
+  ORACLE
+  LEGENDARY
+  MYTHIC
+  FORBIDDEN
+}
+
+enum CardType {
+  VOICE
+  TRANSMISSION
+  LORE
+  SIGNAL
+  ORACLE
+  CIPHER
+  RELIC
+  ENTITY
+  PROPHECY
+  MEMBER
+  GLITCH
+  MAHAVIDYA
+  AVATAR
+  INCIDENT
+}
+
+model Card {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  cardType    CardType
+  rarity      Rarity
+  title       String
+  subtitle    String?
+  flavourText String?
+  artUrl      String?
+  statA       Int       @default(50)
+  statB       Int       @default(50)
+  statC       Int       @default(50)
+  abilities   String[]
+  personality String?
+  totalMinted Int       @default(0)
+  maxSupply   Int?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  packCards  PackCard[]
+  ownedCards OwnedCard[]
+
+  @@index([rarity])
+  @@index([cardType])
+}
+
+model CardPack {
+  id                 String   @id @default(cuid())
+  slug               String   @unique
+  name               String
+  description        String?
+  cost               Int      @default(100)
+  cardCount          Int      @default(5)
+  isAvailable        Boolean  @default(true)
+  sortOrder          Int      @default(0)
+  weightStatic       Float    @default(50)
+  weightSignal       Float    @default(30)
+  weightTransmission Float    @default(14)
+  weightAnomaly      Float    @default(5)
+  weightOracle       Float    @default(1)
+  weightLegendary    Float    @default(0.5)
+  weightMythic       Float    @default(0.1)
+  weightForbidden    Float    @default(0.0)
+  artTheme           String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  packCards     PackCard[]
+  packPurchases PackPurchase[]
+}
+
+model PackCard {
+  id     String   @id @default(cuid())
+  packId String
+  cardId String
+  weight Float    @default(1.0)
+  pack   CardPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+  card   Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([packId, cardId])
+  @@index([packId])
+}
+
+model OwnedCard {
+  id          String   @id @default(cuid())
+  userId      String
+  cardId      String
+  quantity    Int      @default(1)
+  isNew       Boolean  @default(true)
+  isFoil      Boolean  @default(false)
+  obtainedVia String   @default("pack")
+  obtainedAt  DateTime @default(now())
+
+  user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card Card      @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cardId, isFoil])
+  @@index([userId])
+  @@index([cardId])
+}
+
+model UserWallet {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  signalCredits    Int       @default(0)
+  balance          Int       @default(0)
+  totalEarned      Int       @default(0)
+  totalSpent       Int       @default(0)
+  lastDailyClaimAt DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  user         CodexUser          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions CreditTransaction[]
+}
+
+model CreditTransaction {
+  id          String    @id @default(cuid())
+  walletId    String?
+  userId      String?
+  amount      Int
+  reason      String
+  referenceId String?
+  metadata    Json      @default("{}")
+  createdAt   DateTime  @default(now())
+
+  wallet UserWallet? @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, reason, createdAt])
+}
+
+model PackPurchase {
+  id           String   @id @default(cuid())
+  userId       String
+  packId       String
+  cardsDrawn   String[]
+  creditsCost  Int      @default(0)
+  creditsSpent Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pack CardPack  @relation(fields: [packId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([packId])
 }

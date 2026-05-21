@@ -410,6 +410,9 @@ async function countQuotes(query: string): Promise<number> {
 }
 
 // ── Transcript search ──────────────────────────────────────────────
+// Fetches a larger pool then deduplicated by episode — shows the best
+// snippet per episode so results span multiple episodes rather than
+// returning 20 lines from the same video.
 
 async function searchTranscripts(query: string): Promise<SearchResultTranscript[]> {
   const segments = await prisma.transcriptSegment.findMany({
@@ -422,10 +425,17 @@ async function searchTranscripts(query: string): Promise<SearchResultTranscript[
       episode: { select: { title: true, slug: true, episodeNumber: true, status: true } },
     },
     orderBy: { startSeconds: "asc" },
-    take: SEARCH_LIMIT,
+    take: SEARCH_LIMIT * 10, // wide pool to pick the best per episode
   });
-  return segments
-    .map((s) => ({
+
+  // Keep at most 2 results per episode (different positions), up to SEARCH_LIMIT total
+  const perEpisode = new Map<string, number>();
+  const results: SearchResultTranscript[] = [];
+  for (const s of segments) {
+    const count = perEpisode.get(s.episode.slug) ?? 0;
+    if (count >= 2) continue;
+    perEpisode.set(s.episode.slug, count + 1);
+    results.push({
       id: s.id,
       text: s.text,
       speakerLabel: s.speakerLabel,
@@ -433,7 +443,10 @@ async function searchTranscripts(query: string): Promise<SearchResultTranscript[
       episodeTitle: s.episode.title,
       episodeSlug: s.episode.slug,
       episodeNumber: s.episode.episodeNumber,
-    }));
+    });
+    if (results.length >= SEARCH_LIMIT) break;
+  }
+  return results;
 }
 
 async function countTranscripts(query: string): Promise<number> {

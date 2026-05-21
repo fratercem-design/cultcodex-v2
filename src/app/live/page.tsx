@@ -45,6 +45,7 @@ export default async function LivePage() {
         title={isLive ? "🔴 LIVE NOW" : "LIVE STREAM"}
         subtitle={isLive ? title : "Next stream coming soon..."}
         backgroundImage="/hero-bg.jpg"
+      label="live_feed"
       />
 
       <main id="main-content" className="mx-auto max-w-7xl px-4 py-6">

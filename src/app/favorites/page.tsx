@@ -43,6 +43,7 @@ export default async function FavoritesPage() {
         title="MY FAVORITES"
         subtitle={`${publishedFavorites.length} saved episode${publishedFavorites.length !== 1 ? "s" : ""}`}
         backgroundImage="/wiki-page-header.jpg"
+      label="saved"
       />
       <div className="mx-auto max-w-7xl px-4 py-8">
         {publishedFavorites.length === 0 ? (

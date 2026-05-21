@@ -22,7 +22,7 @@ export const revalidate = 300;
 export const metadata: Metadata = buildMetadata({
   title: "Join the Archive — Choose Your Role",
   description:
-    "Observer. Initiate. Oracle. Three roles in the system. Initiate+ ($10/mo) unlocks the archive. Oracle ($25/mo) puts you inside it.",
+    "Most people sense there's more here than they're seeing. There is. Initiate+ ($10/mo) unlocks the intelligence layer. Oracle ($25/mo) puts you inside it.",
   path: "/premium",
 });
 
@@ -40,7 +40,11 @@ export default async function PremiumPage() {
     getMemberCount(),
   ]);
 
-  const isActive = subStatus?.isAdmin || subStatus?.status === "active";
+  // hasAccess: gates what the user can SEE (admin + paying subscribers)
+  // isPaying:  gates checkout button visibility (only paying subscribers, not admins)
+  const hasAccess = subStatus?.isAdmin || subStatus?.status === "active";
+  const isPaying = subStatus?.status === "active" && subStatus?.hasSubscription;
+  const isActive = isPaying; // hide checkout buttons only for paying users
   const currentTier = subStatus?.tier;
   const notSignedIn = !user;
 
@@ -48,14 +52,15 @@ export default async function PremiumPage() {
     <>
       <PageHero
         title="CHOOSE YOUR ROLE"
-        subtitle="Three positions in the system. Pick the depth you're ready for."
+        subtitle="Most people sense there's more here than they're seeing. There is."
         backgroundImage="/hero-bg.jpg"
+      label="access_tiers"
       />
 
       <main id="main-content" className="mx-auto max-w-6xl px-4 py-12 space-y-16">
 
         {/* ── Already subscribed ── */}
-        {isActive && subStatus && (
+        {isPaying && subStatus && (
           <section className="max-w-3xl mx-auto">
             <ManageSubscription
               status={subStatus.status}
@@ -84,17 +89,17 @@ export default async function PremiumPage() {
               {
                 role: "Observer",
                 price: "Free",
-                hook: "I can see something is here… but I don't fully understand it yet.",
+                hook: "I can tell there's a structure here. I just can't see all of it yet.",
                 color: "text-text-muted",
                 bg: "bg-surface",
                 border: "",
                 bullets: [
-                  "Browse all episodes + summaries",
-                  "Guest profiles and bios",
-                  "Quotes, topics, lore browsing",
-                  "Basic lexicon and search",
+                  "See the full scope of the archive",
+                  "Meet every recurring figure — who they are, what they do",
+                  "The vocabulary of the system — visible but not yet decoded",
+                  "Search the surface — enough to know you're missing the depth",
                 ],
-                active: !isActive,
+                active: !hasAccess,
               },
               {
                 role: "Initiate",
@@ -104,14 +109,14 @@ export default async function PremiumPage() {
                 bg: "bg-surface",
                 border: "border-t-2 border-t-accent-gold",
                 bullets: [
-                  "Full transcripts + click-to-seek",
-                  "Decode Mode — AI panel breakdowns",
-                  "Advanced search by archetype",
-                  "Personal Codex (save + annotate)",
-                  "Key Moments timeline per episode",
-                  "Members-only curated playlists",
+                  "Read every word said — jump to any moment instantly",
+                  "AI-extracted behavioral patterns from every panel",
+                  "Search by what's happening — not just what was said",
+                  "Build your own intelligence file alongside the archive",
+                  "Find the exact moment a dynamic shifted",
+                  "Entry points chosen by people who've already gone deep",
                 ],
-                active: isActive && currentTier === "access",
+                active: hasAccess && currentTier === "access",
               },
               {
                 role: "Oracle",
@@ -121,14 +126,14 @@ export default async function PremiumPage() {
                 bg: "bg-surface",
                 border: "border-t-2 border-t-accent-violet",
                 bullets: [
-                  "Everything in Initiate+",
-                  "Personal codex page on the archive",
-                  "Vote on guests + topics",
-                  "Red Room Sessions + raw footage",
-                  "Relationship Map of the Psycheverse",
-                  "Named Oracle role + contributor credit",
+                  "Full Initiate+ access",
+                  "Your own page woven permanently into the archive",
+                  "Your signal shapes what gets investigated next",
+                  "Unfiltered transmissions — what didn't make the stream",
+                  "See the full power structure — who connects to whom",
+                  "A permanent named role in the record",
                 ],
-                active: isActive && currentTier === "system",
+                active: hasAccess && currentTier === "system",
               },
             ].map((tier) => (
               <div key={tier.role} className={`${tier.bg} ${tier.border} p-7 space-y-4`}>
@@ -238,7 +243,7 @@ export default async function PremiumPage() {
                       </p>
                     </div>
                   )}
-                  {isActive && currentTier !== t.slug && t.slug === "system" && (
+                  {isPaying && currentTier !== t.slug && t.slug === "system" && (
                     <div className="mt-7">
                       <TierCheckoutButton
                         tier={t.slug}
@@ -262,7 +267,7 @@ export default async function PremiumPage() {
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
             {[
               { n: stats.episodes.toLocaleString(), label: "Transmissions", color: "text-accent-gold" },
-              { n: stats.segments.toLocaleString(), label: "Transcript Lines", color: "text-accent-cyan" },
+              { n: stats.segments.toLocaleString(), label: "Moments Indexed", color: "text-accent-cyan" },
               { n: stats.people.toLocaleString(), label: "Profiled Souls", color: "text-accent-gold" },
               { n: stats.loreEntries.toLocaleString(), label: "Lore Entries", color: "text-accent-cyan" },
             ].map((s) => (
@@ -314,20 +319,20 @@ export default async function PremiumPage() {
           {[
             {
               icon: "🔍",
-              title: "The archive has patterns you can't see yet.",
-              body: "1,500+ episodes. Recurring guests. Evolving dynamics. The Initiate layer surfaces the structure underneath.",
+              title: "Recurring behavioral patterns are invisible from the outside.",
+              body: "The same dynamics repeat across hundreds of streams — different guests, same structures. Initiate+ maps what keeps happening and why.",
               color: "border-accent-gold/20",
             },
             {
               icon: "🧠",
-              title: "Every guest has a profile. Not just a bio.",
-              body: "Behavior patterns. Recurring tactics. Psychological signatures. The Oracle layer builds intelligence files — not just summaries.",
+              title: "Every recurring figure has a behavioral signature. Not just a bio.",
+              body: "Tactics. Escalation triggers. What they do under pressure. Oracle builds deep intelligence files on everyone who keeps showing up.",
               color: "border-accent-violet/20",
             },
             {
               icon: "👁",
-              title: "The system responds to Oracles.",
-              body: "Vote on what gets investigated next. Submit deep-dive requests. Your signal shapes what gets analyzed.",
+              title: "Oracle-tier members don't just observe the archive — they direct it.",
+              body: "Vote on investigations. Propose what gets analyzed. Name what gets examined next. The archive is shaped by the people most invested in it.",
               color: "border-accent-violet/20",
             },
           ].map((c) => (
@@ -351,7 +356,7 @@ export default async function PremiumPage() {
         </section>
 
         {/* ── Final CTA ── */}
-        {!isActive && (
+        {!isPaying && (
           <section className="relative overflow-hidden rounded-2xl border border-accent-gold/40 bg-gradient-to-b from-[#1a0033] via-[#0d001a] to-[#0d001a] p-10 text-center shadow-2xl shadow-accent-gold/10 max-w-3xl mx-auto">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute -top-16 left-1/2 h-48 w-96 -translate-x-1/2 rounded-full bg-accent-gold/10 blur-3xl" />
@@ -366,8 +371,8 @@ export default async function PremiumPage() {
                 <span className="text-white">Start Initiating.</span>
               </h3>
               <p className="font-mono text-xs text-text-muted max-w-sm mx-auto">
-                Initiate+ opens for $10/month. Oracle opens for $25/month.<br />
-                Both include instant access. Cancel any time.
+                Initiate+ for $10/month. Oracle for $25/month.<br />
+                Both open immediately. Cancel any time. Nothing is ever deleted.
               </p>
               <div className="flex flex-wrap justify-center gap-4 pt-2">
                 <TierCheckoutButton
@@ -404,45 +409,49 @@ export default async function PremiumPage() {
 }
 
 const COMPARISON_ROWS: [string, boolean, boolean, boolean][] = [
-  ["Browse episodes, guests, lore", true, true, true],
-  ["Basic search + quotes + topics", true, true, true],
-  ["Full episode transcripts", false, true, true],
-  ["Click-to-seek timestamps", false, true, true],
-  ["Decode Mode (AI panel breakdowns)", false, true, true],
-  ["Advanced search by archetype + behavior", false, true, true],
-  ["Key Moments timeline per episode", false, true, true],
-  ["Personal Codex — save signals, episodes, quotes", false, true, true],
-  ["Members-only curated playlists", false, true, true],
-  ["Custom Initiate badge", false, true, true],
-  ["Personal codex page on the archive", false, false, true],
-  ["Vote on guests, topics, experiments", false, false, true],
-  ["Submit investigations", false, false, true],
-  ["Red Room Sessions + raw segments", false, false, true],
-  ["Relationship Map of the Psycheverse", false, false, true],
-  ["Guest Intelligence Files", false, false, true],
-  ["Named Oracle role + contributor credit", false, false, true],
+  ["See the full archive — episodes, guests, lore", true, true, true],
+  ["Browse surface-level intelligence — quotes, topics, lexicon", true, true, true],
+  ["Read every word ever spoken — full transcripts", false, true, true],
+  ["Jump to any moment instantly — click-to-seek", false, true, true],
+  ["AI behavioral pattern extraction per episode", false, true, true],
+  ["Search by what's actually happening — archetype + behavior", false, true, true],
+  ["Find the moment a dynamic shifted — Key Moments timeline", false, true, true],
+  ["Build your own intelligence file — Personal Codex", false, true, true],
+  ["Entry points from people who've gone deep — curated playlists", false, true, true],
+  ["Initiate role — visible across the archive", false, true, true],
+  ["Your own page woven permanently into the archive", false, false, true],
+  ["Influence what gets investigated — vote on topics + guests", false, false, true],
+  ["Propose what gets analyzed — submit investigations", false, false, true],
+  ["Access unfiltered transmissions — Red Room + raw segments", false, false, true],
+  ["See the full power structure — Relationship Map", false, false, true],
+  ["Deep behavioral profiles on every recurring figure", false, false, true],
+  ["Permanent named role in the record — Oracle, Architect, or Watcher", false, false, true],
 ];
 
 const FAQ: { q: string; a: string }[] = [
   {
-    q: "What's the difference between Observer, Initiate+, and Oracle?",
-    a: "Observer is free — you can see the whole archive but can't go deep. Initiate+ ($10/mo) unlocks transcripts, Decode Mode, personal Codex, and the intelligence layer. Oracle ($25/mo) puts you inside the system — you influence what gets investigated, access raw footage, and hold a named role.",
+    q: "Is this for fans, or for people trying to understand online community dynamics?",
+    a: "Both. Fans use it to trace specific moments and guests they already care about. Researchers, creators, and people fascinated by group psychology use it to study patterns that aren't visible anywhere else. The archive doesn't ask you to declare an identity — it gives you tools.",
+  },
+  {
+    q: "What does Initiate+ actually change about how I use the archive?",
+    a: "The archive shifts from something you browse to something you can work with. Full transcripts let you read exactly what was said. AI behavioral extraction shows you what repeats across hundreds of streams. The Personal Codex lets you build your own layer on top of the existing one.",
+  },
+  {
+    q: "What does Oracle access add beyond Initiate+?",
+    a: "Oracle puts you inside the production of the archive itself. You influence what gets investigated, access unfiltered transmissions, see the full relationship map, and hold a permanent named role. Some Oracle features are live now; others are rolling out over the next phase — subscribers shape what gets built first.",
   },
   {
     q: "Can I upgrade from Initiate+ to Oracle later?",
-    a: "Yes. Upgrade any time from your account settings. Stripe handles the proration automatically — you only pay the difference.",
-  },
-  {
-    q: "When does Oracle content (votes, investigations, Red Room) go live?",
-    a: "Some features are live now; others roll out over the next phase. Oracle subscribers shape what's built and get first access as each surface opens.",
+    a: "Yes, any time. Stripe handles the proration — you only pay the difference for the remainder of your billing period.",
   },
   {
     q: "What happens if I cancel?",
-    a: "Nothing is deleted. You keep Observer access forever. Your saved Codex content stays — it just becomes read-only until you resubscribe.",
+    a: "Nothing is deleted. You keep Observer access permanently. Your saved Codex content stays — it becomes read-only until you resubscribe.",
   },
   {
-    q: "Do I need to sign in before subscribing?",
-    a: "Yes — sign in with Google first so we can attach your subscription to your account. The buttons above will route you through sign-in if you're not in.",
+    q: "Do I need to sign in first?",
+    a: "Yes — sign in with Google so we can attach your subscription to your account. The buttons above route you through sign-in if you're not already in.",
   },
 ];
 

@@ -1,0 +1,1256 @@
+/* ============================================================
+   CULTCODEX // VISUAL AUDIT DOSSIER — scoped to .dossier-root
+   ============================================================ */
+
+.dossier-root {
+  /* ── palette ─────────────────────────────────────────────── */
+  --void:        #07060a;
+  --ink:         #0c0b11;
+  --pane:        #11101a;
+  --pane-edge:   #1d1b29;
+  --bone:        #ebe3d2;
+  --parchment:   #d8cfb9;
+  --bone-dim:    #9a907d;
+  --bone-deep:   #6a614f;
+  --shadow:      #3c362c;
+  --ember:       #c8392e;
+  --ember-deep:  #7a1d18;
+  --sulphur:     #d6a017;
+  --sulphur-dim: #8a6912;
+  --phosphor:    #62e4c8;
+  --phosphor-dim:#2a7766;
+  --bruise:      #4a2d6e;
+
+  /* ── typography ──────────────────────────────────────────── */
+  --f-display:   var(--dossier-font-display), "Bodoni Moda", "Didot", "Times New Roman", serif;
+  --f-body:      var(--dossier-font-body), "Cormorant Garamond", "EB Garamond", "Times New Roman", serif;
+  --f-sigil:     var(--dossier-font-sigil), "Cinzel", "Trajan Pro", "Cormorant Garamond", serif;
+  --f-mono:      var(--font-mono), "JetBrains Mono", ui-monospace, "Courier New", monospace;
+
+  /* ── ornament ────────────────────────────────────────────── */
+  --rule-thin:   1px solid rgba(235, 227, 210, 0.12);
+  --rule-bone:   1px solid rgba(235, 227, 210, 0.28);
+  --rule-ember:  1px solid var(--ember);
+  --rule-sulphur:1px solid var(--sulphur);
+
+  /* ── spacing ─────────────────────────────────────────────── */
+  --gutter:      clamp(20px, 4vw, 64px);
+
+  /* ── base styles ─────────────────────────────────────────── */
+  background: var(--void);
+  color: var(--bone);
+  font-family: var(--f-body);
+  font-size: 19px;
+  line-height: 1.55;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100%;
+  padding-bottom: 8rem;
+  box-sizing: border-box;
+}
+
+.dossier-root * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.dossier-root *::selection {
+  background: var(--ember);
+  color: var(--void);
+}
+
+/* ── atmosphere overlays ───────────────────────────────────── */
+.dossier-root::before {
+  /* film grain */
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.dossier-root::after {
+  /* scanlines + vignette */
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 201;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      rgba(0,0,0,0.18) 3px,
+      transparent 4px
+    ),
+    radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.55) 100%);
+  mix-blend-mode: multiply;
+}
+
+/* ── typography primitives ─────────────────────────────────── */
+.dossier-root .sigil {
+  font-family: var(--f-sigil);
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-weight: 500;
+  color: var(--bone-dim);
+  font-size: 0.72rem;
+}
+.dossier-root .mono {
+  font-family: var(--f-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--bone-dim);
+}
+.dossier-root .display {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  line-height: 0.96;
+  color: var(--bone);
+}
+.dossier-root .lede {
+  font-family: var(--f-body);
+  font-size: 1.5rem;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--parchment);
+  max-width: 38ch;
+}
+.dossier-root .ember { color: var(--ember); }
+.dossier-root .sulphur { color: var(--sulphur); }
+.dossier-root .phosphor { color: var(--phosphor); }
+.dossier-root .dim { color: var(--bone-dim); }
+
+.dossier-root p { max-width: 64ch; margin-bottom: 1em; }
+.dossier-root a { color: var(--sulphur); text-decoration: none; border-bottom: 1px dotted var(--sulphur-dim); }
+.dossier-root a:hover { color: var(--ember); border-color: var(--ember); }
+
+/* ============================================================
+   COVER / THRESHOLD
+   ============================================================ */
+.dossier-root .cover {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 2.5rem var(--gutter) 2rem;
+  position: relative;
+  border-bottom: var(--rule-thin);
+}
+
+.dossier-root .cover__band {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: var(--rule-thin);
+  padding-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.dossier-root .cover__band > * { white-space: nowrap; }
+
+.dossier-root .cover__center {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  padding: clamp(2rem, 6vw, 6rem) 0;
+}
+.dossier-root .cover__sigil {
+  font-family: var(--f-sigil);
+  font-size: clamp(8rem, 22vw, 16rem);
+  line-height: 0.85;
+  color: var(--bone);
+  text-shadow:
+    0 0 24px rgba(200,57,46, 0.5),
+    0 0 1px var(--bone);
+  position: relative;
+  text-align: center;
+}
+.dossier-root .cover__sigil-ring {
+  position: absolute;
+  inset: -8%;
+  border: 1px solid rgba(214, 160, 23, 0.4);
+  border-radius: 50%;
+}
+.dossier-root .cover__sigil-ring--inner {
+  inset: 8%;
+  border-color: rgba(200, 57, 46, 0.5);
+  border-style: dashed;
+}
+
+.dossier-root .cover__title {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.6rem, 5.5vw, 5rem);
+  line-height: 0.96;
+  color: var(--bone);
+  text-align: right;
+}
+.dossier-root .cover__title em {
+  font-style: normal;
+  font-family: var(--f-sigil);
+  font-size: 0.42em;
+  letter-spacing: 0.4em;
+  display: block;
+  color: var(--bone-dim);
+  margin-bottom: 0.6em;
+}
+
+.dossier-root .cover__subject { text-align: left; }
+.dossier-root .cover__subject dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1.2rem;
+  margin-top: 1.5rem;
+}
+.dossier-root .cover__subject dt {
+  font-family: var(--f-sigil);
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--bone-deep);
+  align-self: center;
+}
+.dossier-root .cover__subject dd {
+  font-family: var(--f-mono);
+  font-size: 0.8rem;
+  color: var(--parchment);
+  align-self: center;
+}
+
+.dossier-root .cover__foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: flex-end;
+  border-top: var(--rule-thin);
+  padding-top: 1rem;
+  flex-wrap: wrap;
+}
+.dossier-root .cover__warning {
+  max-width: 52ch;
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--parchment);
+  line-height: 1.5;
+}
+.dossier-root .cover__warning::first-letter {
+  font-family: var(--f-display);
+  font-size: 3.4em;
+  float: left;
+  line-height: 0.85;
+  padding: 0.1em 0.15em 0 0;
+  color: var(--ember);
+}
+
+/* status pip */
+.dossier-root .pip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--bone-dim);
+}
+.dossier-root .pip::before {
+  content: "●";
+  color: var(--phosphor);
+  font-size: 0.9em;
+  animation: dossier-pulse 2s ease-in-out infinite;
+}
+.dossier-root .pip--ember::before { color: var(--ember); }
+.dossier-root .pip--sulphur::before { color: var(--sulphur); }
+@keyframes dossier-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* ============================================================
+   CODEX / TOC
+   ============================================================ */
+.dossier-root .codex {
+  padding: 5rem var(--gutter);
+  border-bottom: var(--rule-thin);
+}
+.dossier-root .codex__title {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  margin-bottom: 3rem;
+  color: var(--bone);
+}
+.dossier-root .codex__list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0;
+  border-top: var(--rule-thin);
+}
+.dossier-root .codex__item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 1.1rem 0;
+  border-bottom: var(--rule-thin);
+  position: relative;
+}
+.dossier-root .codex__item:hover { background: rgba(200,57,46,0.04); }
+.dossier-root .codex__num {
+  font-family: var(--f-sigil);
+  font-size: 0.74rem;
+  letter-spacing: 0.3em;
+  color: var(--ember);
+  width: 4ch;
+}
+.dossier-root .codex__chapter {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 1.4rem;
+  color: var(--bone);
+}
+.dossier-root .codex__pages {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  color: var(--bone-deep);
+  letter-spacing: 0.1em;
+}
+
+/* ============================================================
+   SECTION SCAFFOLD
+   ============================================================ */
+.dossier-root .chapter {
+  padding: 6rem var(--gutter) 5rem;
+  border-bottom: var(--rule-thin);
+  position: relative;
+}
+.dossier-root .chapter__head {
+  display: grid;
+  grid-template-columns: minmax(160px, 14%) minmax(0, 1fr);
+  gap: clamp(1rem, 4vw, 4rem);
+  margin-bottom: 4rem;
+  align-items: end;
+  border-bottom: var(--rule-thin);
+  padding-bottom: 2rem;
+}
+.dossier-root .chapter__roman {
+  font-family: var(--f-sigil);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  letter-spacing: 0.18em;
+  color: var(--ember);
+  line-height: 1;
+}
+.dossier-root .chapter__roman small {
+  display: block;
+  font-size: 0.32em;
+  letter-spacing: 0.4em;
+  color: var(--bone-deep);
+  margin-top: 0.5em;
+}
+.dossier-root .chapter__title {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.2rem, 5.4vw, 4.8rem);
+  color: var(--bone);
+  line-height: 0.98;
+}
+.dossier-root .chapter__kicker {
+  font-family: var(--f-sigil);
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-size: 0.74rem;
+  color: var(--bone-dim);
+  margin-bottom: 0.8rem;
+}
+
+.dossier-root .chapter__body {
+  display: grid;
+  grid-template-columns: minmax(160px, 14%) minmax(0, 1fr);
+  gap: clamp(1rem, 4vw, 4rem);
+  align-items: start;
+}
+.dossier-root .chapter__margin {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  color: var(--bone-deep);
+  letter-spacing: 0.08em;
+  line-height: 1.7;
+  position: sticky;
+  top: 1rem;
+}
+.dossier-root .chapter__margin strong {
+  display: block;
+  font-family: var(--f-sigil);
+  letter-spacing: 0.25em;
+  color: var(--sulphur);
+  font-weight: 500;
+  margin-bottom: 0.7rem;
+}
+.dossier-root .chapter__main { font-size: 1.05rem; color: var(--parchment); }
+.dossier-root .chapter__main h3 {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.7rem;
+  color: var(--bone);
+  margin: 2.6rem 0 1rem;
+}
+.dossier-root .chapter__main h4 {
+  font-family: var(--f-sigil);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 0.76rem;
+  color: var(--sulphur);
+  margin: 2.2rem 0 0.8rem;
+  font-weight: 500;
+}
+.dossier-root .chapter__main ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.4rem;
+}
+.dossier-root .chapter__main li {
+  padding: 0.45rem 0 0.45rem 1.6rem;
+  position: relative;
+  border-bottom: 1px dotted rgba(235,227,210,0.08);
+}
+.dossier-root .chapter__main li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--ember);
+  font-family: var(--f-mono);
+}
+.dossier-root .chapter__main li:last-child { border-bottom: none; }
+
+/* pull quote */
+.dossier-root .pull {
+  border-left: 2px solid var(--ember);
+  padding: 0.3rem 0 0.3rem 1.6rem;
+  margin: 2rem 0;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 1.55rem;
+  line-height: 1.3;
+  color: var(--bone);
+  max-width: 38ch;
+}
+
+/* small caps label */
+.dossier-root .tag {
+  display: inline-block;
+  font-family: var(--f-sigil);
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--bone-deep);
+  color: var(--parchment);
+  background: rgba(0,0,0,0.3);
+}
+.dossier-root .tag--ember { color: var(--ember); border-color: var(--ember); }
+.dossier-root .tag--sulphur { color: var(--sulphur); border-color: var(--sulphur); }
+.dossier-root .tag--phosphor { color: var(--phosphor); border-color: var(--phosphor-dim); }
+
+/* ============================================================
+   SCORE BLOCK (§I)
+   ============================================================ */
+.dossier-root .scoreboard {
+  margin: 3rem 0;
+  border: var(--rule-thin);
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), transparent);
+  padding: 1.5rem 0 0.5rem;
+}
+.dossier-root .score {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, 220px) auto auto;
+  gap: clamp(0.6rem, 2vw, 2rem);
+  align-items: center;
+  padding: 0.7rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px dotted rgba(235,227,210,0.08);
+}
+.dossier-root .score:last-child { border-bottom: none; }
+.dossier-root .score__label {
+  font-family: var(--f-sigil);
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bone);
+}
+.dossier-root .score__bar {
+  display: flex;
+  gap: 3px;
+}
+.dossier-root .score__pip {
+  flex: 1;
+  height: 14px;
+  background: rgba(235,227,210,0.06);
+  border: 1px solid rgba(235,227,210,0.08);
+}
+.dossier-root .score__pip--on {
+  background: var(--ember);
+  border-color: var(--ember);
+  box-shadow: 0 0 8px rgba(200,57,46,0.6);
+}
+.dossier-root .score__pip--half {
+  background: linear-gradient(90deg, var(--ember) 50%, rgba(235,227,210,0.06) 50%);
+  border-color: var(--ember);
+}
+.dossier-root .score__num {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 1.7rem;
+  color: var(--bone);
+  min-width: 3ch;
+  text-align: right;
+}
+.dossier-root .score__note {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  color: var(--bone-dim);
+  min-width: 22ch;
+}
+
+/* ============================================================
+   HOMEPAGE BLUEPRINT (§II)
+   ============================================================ */
+.dossier-root .blueprint {
+  margin: 3rem 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 2rem;
+  background: rgba(0,0,0,0.4);
+  border: var(--rule-thin);
+}
+@media (max-width: 800px) {
+  .dossier-root .blueprint { grid-template-columns: 1fr; }
+}
+.dossier-root .blueprint__frame {
+  background:
+    linear-gradient(rgba(214,160,23,0.05) 1px, transparent 1px) 0 0 / 100% 24px,
+    linear-gradient(90deg, rgba(214,160,23,0.05) 1px, transparent 1px) 0 0 / 24px 100%,
+    var(--ink);
+  padding: 1.5rem;
+  border-right: var(--rule-thin);
+  position: relative;
+}
+.dossier-root .blueprint__title {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  color: var(--sulphur);
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  border-bottom: 1px dotted var(--sulphur-dim);
+  padding-bottom: 0.5rem;
+}
+.dossier-root .bp-section {
+  border: 1px solid rgba(214,160,23,0.4);
+  background: rgba(0,0,0,0.3);
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.8rem;
+  align-items: center;
+}
+.dossier-root .bp-section--threshold {
+  border-color: var(--ember);
+  background: linear-gradient(135deg, rgba(200,57,46,0.18), rgba(0,0,0,0.4));
+  min-height: 76px;
+}
+.dossier-root .bp-section--signal {
+  background: linear-gradient(90deg, rgba(214,160,23,0.12), rgba(0,0,0,0.4));
+}
+.dossier-root .bp-section--oracle {
+  background: linear-gradient(90deg, rgba(98,228,200,0.08), rgba(0,0,0,0.4));
+  border-color: var(--phosphor-dim);
+}
+.dossier-root .bp-section__num {
+  font-family: var(--f-sigil);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  color: var(--sulphur);
+  min-width: 2ch;
+}
+.dossier-root .bp-section__name {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--bone);
+}
+.dossier-root .bp-section__name small {
+  display: block;
+  font-family: var(--f-mono);
+  font-style: normal;
+  font-size: 0.7rem;
+  color: var(--bone-dim);
+  margin-top: 2px;
+}
+.dossier-root .bp-section__sigil {
+  font-family: var(--f-sigil);
+  color: var(--bone-deep);
+  font-size: 1.4rem;
+}
+.dossier-root .blueprint__legend {
+  padding: 1.5rem;
+  font-size: 0.95rem;
+}
+.dossier-root .blueprint__legend h5 {
+  font-family: var(--f-sigil);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: var(--sulphur);
+  margin: 1rem 0 0.4rem;
+}
+.dossier-root .blueprint__legend h5:first-child { margin-top: 0; }
+.dossier-root .blueprint__legend p {
+  font-size: 0.92rem;
+  color: var(--parchment);
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   IDENTITY (§III)
+   ============================================================ */
+.dossier-root .swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0;
+  margin: 2rem 0;
+  border: var(--rule-thin);
+}
+.dossier-root .swatch {
+  aspect-ratio: 3/4;
+  position: relative;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: var(--rule-thin);
+  font-family: var(--f-mono);
+}
+.dossier-root .swatch:last-child { border-right: none; }
+.dossier-root .swatch__name {
+  font-family: var(--f-sigil);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.dossier-root .swatch__hex { font-size: 0.7rem; opacity: 0.7; }
+.dossier-root .swatch--void  { background: var(--void); color: var(--bone); }
+.dossier-root .swatch--ink   { background: var(--ink); color: var(--bone); }
+.dossier-root .swatch--bone  { background: var(--bone); color: var(--void); }
+.dossier-root .swatch--ember { background: var(--ember); color: var(--bone); }
+.dossier-root .swatch--sulphur { background: var(--sulphur); color: var(--void); }
+.dossier-root .swatch--phosphor { background: var(--phosphor); color: var(--void); }
+.dossier-root .swatch--bruise { background: var(--bruise); color: var(--bone); }
+
+.dossier-root .type-specimen {
+  border: var(--rule-thin);
+  padding: 2rem;
+  margin: 2rem 0;
+  display: grid;
+  gap: 1.4rem;
+}
+.dossier-root .specimen-row {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 1.5rem;
+  align-items: baseline;
+  border-bottom: 1px dotted rgba(235,227,210,0.08);
+  padding-bottom: 1rem;
+}
+.dossier-root .specimen-row:last-child { border-bottom: none; padding-bottom: 0; }
+.dossier-root .specimen-row__meta {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  color: var(--bone-deep);
+  letter-spacing: 0.06em;
+}
+.dossier-root .specimen-row__sample { color: var(--bone); }
+.dossier-root .specimen-display { font-family: var(--f-display); font-style: italic; font-size: 2.4rem; line-height: 1; }
+.dossier-root .specimen-body    { font-family: var(--f-body); font-style: italic; font-size: 1.3rem; }
+.dossier-root .specimen-sigil   { font-family: var(--f-sigil); font-size: 1rem; letter-spacing: 0.32em; text-transform: uppercase; }
+.dossier-root .specimen-mono    { font-family: var(--f-mono); font-size: 0.95rem; }
+
+/* ============================================================
+   CARDS (§VI)
+   ============================================================ */
+.dossier-root .cards-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
+  perspective: 1400px;
+}
+.dossier-root .tcard {
+  aspect-ratio: 5/7;
+  position: relative;
+  background: var(--ink);
+  border: 1px solid var(--bone-deep);
+  padding: 12px;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 8px;
+  font-family: var(--f-sigil);
+  color: var(--bone);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(.2,.7,.2,1), box-shadow 0.6s;
+  cursor: grab;
+}
+.dossier-root .tcard:hover {
+  transform: rotateY(-8deg) rotateX(4deg) translateY(-6px);
+  box-shadow: 0 30px 40px -20px rgba(0,0,0,0.8);
+}
+.dossier-root .tcard__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+}
+.dossier-root .tcard__rarity {
+  padding: 2px 6px;
+  border: 1px solid currentColor;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+}
+.dossier-root .tcard__art {
+  position: relative;
+  border: 1px solid rgba(235,227,210,0.2);
+  background: radial-gradient(circle at 50% 40%, rgba(255,255,255,0.05), transparent 70%), var(--void);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+.dossier-root .tcard__sigil {
+  font-size: 5rem;
+  line-height: 1;
+  font-family: var(--f-sigil);
+  filter: drop-shadow(0 0 12px rgba(255,255,255,0.3));
+}
+.dossier-root .tcard__name {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 1.1rem;
+  letter-spacing: 0;
+  text-transform: none;
+  text-align: center;
+  line-height: 1.05;
+}
+.dossier-root .tcard__name small {
+  display: block;
+  font-family: var(--f-sigil);
+  font-style: normal;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: var(--bone-dim);
+  margin-top: 4px;
+}
+.dossier-root .tcard__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  color: var(--bone-dim);
+  letter-spacing: 0.05em;
+  border-top: 1px solid rgba(235,227,210,0.15);
+  padding-top: 6px;
+}
+.dossier-root .tcard__stats b { color: var(--bone); font-weight: 400; }
+
+/* rarity treatments */
+.dossier-root .tcard--mythic {
+  border-color: var(--ember);
+  box-shadow: inset 0 0 30px rgba(200,57,46,0.3);
+}
+.dossier-root .tcard--mythic .tcard__rarity { color: var(--ember); }
+.dossier-root .tcard--mythic::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    conic-gradient(from 0deg,
+      rgba(200,57,46,0.0),
+      rgba(214,160,23,0.18),
+      rgba(200,57,46,0.0) 60%,
+      rgba(214,160,23,0.0) 100%);
+  mix-blend-mode: screen;
+  animation: dossier-shimmer 8s linear infinite;
+}
+.dossier-root .tcard--rare {
+  border-color: var(--sulphur);
+  box-shadow: inset 0 0 22px rgba(214,160,23,0.18);
+}
+.dossier-root .tcard--rare .tcard__rarity { color: var(--sulphur); }
+.dossier-root .tcard--common { border-color: var(--bone-deep); }
+.dossier-root .tcard--common .tcard__rarity { color: var(--parchment); }
+.dossier-root .tcard--hidden {
+  border-color: var(--phosphor-dim);
+  background:
+    repeating-linear-gradient(45deg, rgba(98,228,200,0.04) 0 6px, transparent 6px 12px),
+    var(--ink);
+}
+.dossier-root .tcard--hidden .tcard__rarity { color: var(--phosphor); }
+.dossier-root .tcard--hidden .tcard__sigil { color: var(--phosphor); filter: drop-shadow(0 0 18px rgba(98,228,200,0.5)); }
+
+@keyframes dossier-shimmer {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.dossier-root .rarity-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 2rem 0;
+  font-size: 0.95rem;
+}
+.dossier-root .rarity-table th, .dossier-root .rarity-table td {
+  text-align: left;
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px dotted rgba(235,227,210,0.1);
+}
+.dossier-root .rarity-table th {
+  font-family: var(--f-sigil);
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sulphur);
+  border-bottom: var(--rule-bone);
+}
+.dossier-root .rarity-table td { font-family: var(--f-mono); font-size: 0.78rem; color: var(--parchment); }
+.dossier-root .rarity-table td:first-child { font-family: var(--f-sigil); letter-spacing: 0.16em; text-transform: uppercase; color: var(--bone); }
+
+/* ============================================================
+   MOBILE MOCKUP (§V)
+   ============================================================ */
+.dossier-root .mobile-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+  align-items: start;
+}
+.dossier-root .phone {
+  aspect-ratio: 9/19;
+  background: var(--void);
+  border: 8px solid #181621;
+  border-radius: 32px;
+  position: relative;
+  box-shadow:
+    0 30px 60px -20px rgba(0,0,0,0.7),
+    inset 0 0 0 1px rgba(235,227,210,0.06);
+  overflow: hidden;
+  max-width: 280px;
+  margin: 0 auto;
+}
+.dossier-root .phone::before {
+  content: "";
+  position: absolute;
+  top: 8px; left: 50%; transform: translateX(-50%);
+  width: 80px; height: 18px;
+  background: #0c0a14;
+  border-radius: 10px;
+  z-index: 3;
+}
+.dossier-root .phone__screen {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(200,57,46,0.18), transparent 60%),
+    var(--void);
+  padding: 38px 14px 70px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+.dossier-root .phone__bar {
+  font-family: var(--f-mono);
+  font-size: 0.5rem;
+  color: var(--bone-dim);
+  letter-spacing: 0.08em;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+.dossier-root .phone__hero {
+  text-align: center;
+  margin-top: 8px;
+}
+.dossier-root .phone__hero-sigil {
+  font-family: var(--f-sigil);
+  font-size: 2.4rem;
+  color: var(--bone);
+  filter: drop-shadow(0 0 8px rgba(200,57,46,0.5));
+}
+.dossier-root .phone__hero-title {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  color: var(--bone);
+}
+.dossier-root .phone__hero-sub {
+  font-family: var(--f-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.18em;
+  color: var(--sulphur);
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+.dossier-root .phone__card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.4));
+  border: 1px solid rgba(214,160,23,0.3);
+  padding: 8px 10px;
+  font-family: var(--f-mono);
+  font-size: 0.55rem;
+  color: var(--parchment);
+  letter-spacing: 0.05em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dossier-root .phone__card b {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--bone);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.dossier-root .phone__nav {
+  position: absolute;
+  bottom: 14px; left: 50%; transform: translateX(-50%);
+  width: 92%;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  background: rgba(7,6,10, 0.85);
+  border: 1px solid rgba(235,227,210,0.12);
+  backdrop-filter: blur(8px);
+  border-radius: 24px;
+}
+.dossier-root .phone__nav span {
+  font-family: var(--f-sigil);
+  font-size: 0.9rem;
+  color: var(--bone-dim);
+}
+.dossier-root .phone__nav span.active {
+  color: var(--ember);
+  filter: drop-shadow(0 0 8px rgba(200,57,46,0.7));
+}
+
+/* radial dial overlay */
+.dossier-root .phone--dial .phone__screen { filter: blur(2px) brightness(0.6); }
+.dossier-root .phone__dial {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at center, rgba(0,0,0,0.6), rgba(0,0,0,0.92));
+  z-index: 5;
+}
+.dossier-root .phone__dial-disc {
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(214,160,23,0.5);
+  position: relative;
+  display: grid;
+  place-items: center;
+  animation: dossier-rotate 60s linear infinite;
+}
+.dossier-root .phone__dial-disc::before {
+  content: "";
+  position: absolute; inset: 12%;
+  border: 1px dashed rgba(200,57,46,0.5);
+  border-radius: 50%;
+}
+.dossier-root .phone__dial-disc::after {
+  content: "";
+  position: absolute; inset: 28%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ember), transparent 70%);
+  opacity: 0.4;
+}
+.dossier-root .phone__dial-disc > span {
+  position: absolute;
+  font-family: var(--f-sigil);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  color: var(--bone);
+}
+.dossier-root .dial-pos-1 { top: 6%;   left: 50%; transform: translateX(-50%); }
+.dossier-root .dial-pos-2 { top: 28%;  right: 6%; }
+.dossier-root .dial-pos-3 { bottom: 28%; right: 6%; }
+.dossier-root .dial-pos-4 { bottom: 6%; left: 50%; transform: translateX(-50%); }
+.dossier-root .dial-pos-5 { bottom: 28%; left: 6%; }
+.dossier-root .dial-pos-6 { top: 28%;  left: 6%; }
+.dossier-root .dial-center {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  font-family: var(--f-display); font-style: italic; font-size: 1.2rem; color: var(--bone);
+}
+@keyframes dossier-rotate {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
+}
+
+.dossier-root .phone-cap {
+  font-family: var(--f-sigil);
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--sulphur);
+  text-align: center;
+  margin-top: 1rem;
+}
+.dossier-root .phone-cap small {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  color: var(--bone-dim);
+  letter-spacing: 0.05em;
+  text-transform: none;
+  margin-top: 0.4rem;
+}
+
+/* ============================================================
+   TIER LADDER (§VIII)
+   ============================================================ */
+.dossier-root .ladder {
+  margin: 3rem 0;
+  display: grid;
+  gap: 0;
+  border: var(--rule-thin);
+}
+.dossier-root .tier {
+  display: grid;
+  grid-template-columns: 4rem 1fr 1fr auto;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.4rem clamp(1rem, 3vw, 2rem);
+  border-bottom: var(--rule-thin);
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.3));
+}
+.dossier-root .tier:last-child { border-bottom: none; }
+.dossier-root .tier__num {
+  font-family: var(--f-sigil);
+  font-size: 1.4rem;
+  letter-spacing: 0.18em;
+  color: var(--ember);
+}
+.dossier-root .tier__name {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 1.5rem;
+  color: var(--bone);
+}
+.dossier-root .tier__name small {
+  display: block;
+  font-family: var(--f-sigil);
+  font-style: normal;
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  color: var(--bone-deep);
+  margin-top: 4px;
+}
+.dossier-root .tier__perks {
+  font-family: var(--f-body);
+  font-style: italic;
+  color: var(--parchment);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+.dossier-root .tier__price {
+  font-family: var(--f-mono);
+  font-size: 0.85rem;
+  color: var(--sulphur);
+  white-space: nowrap;
+}
+.dossier-root .tier--magus .tier__num { color: var(--sulphur); }
+.dossier-root .tier--hierophant .tier__num { color: var(--phosphor); }
+
+@media (max-width: 700px) {
+  .dossier-root .tier {
+    grid-template-columns: 3rem 1fr;
+    gap: 1rem;
+  }
+  .dossier-root .tier__perks, .dossier-root .tier__price { grid-column: 2; }
+}
+
+/* ============================================================
+   COMPETITIVE (§X)
+   ============================================================ */
+.dossier-root .compare {
+  margin: 2rem 0;
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+.dossier-root .compare th, .dossier-root .compare td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px dotted rgba(235,227,210,0.1);
+  text-align: left;
+}
+.dossier-root .compare th {
+  font-family: var(--f-sigil);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  color: var(--sulphur);
+  border-bottom: var(--rule-bone);
+}
+.dossier-root .compare td {
+  font-family: var(--f-body);
+  font-style: italic;
+  color: var(--parchment);
+}
+.dossier-root .compare td:first-child {
+  font-family: var(--f-display);
+  font-style: italic;
+  color: var(--bone);
+  font-size: 1.05rem;
+}
+.dossier-root .compare .yes { color: var(--phosphor); font-family: var(--f-mono); font-style: normal; }
+.dossier-root .compare .no  { color: var(--ember); font-family: var(--f-mono); font-style: normal; }
+
+/* ============================================================
+   VISION (§XI) — full bleed
+   ============================================================ */
+.dossier-root .vision {
+  padding: 8rem var(--gutter);
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(200,57,46,0.18), transparent 60%),
+    radial-gradient(ellipse at 50% 80%, rgba(214,160,23,0.08), transparent 60%),
+    var(--void);
+  border-bottom: var(--rule-thin);
+  position: relative;
+}
+.dossier-root .vision__sigil {
+  font-family: var(--f-sigil);
+  font-size: clamp(4rem, 10vw, 8rem);
+  color: var(--bone);
+  text-shadow: 0 0 30px rgba(200,57,46,0.6);
+  line-height: 1;
+}
+.dossier-root .vision__display {
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: clamp(2.4rem, 7vw, 6rem);
+  line-height: 1;
+  color: var(--bone);
+  max-width: 22ch;
+  margin: 2rem auto;
+}
+.dossier-root .vision__body {
+  font-family: var(--f-body);
+  font-style: italic;
+  font-size: clamp(1.1rem, 1.7vw, 1.5rem);
+  color: var(--parchment);
+  max-width: 50ch;
+  margin: 0 auto 2rem;
+  line-height: 1.5;
+}
+.dossier-root .vision__creed {
+  font-family: var(--f-sigil);
+  font-size: 0.8rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--sulphur);
+  margin: 3rem auto 0;
+  max-width: 60ch;
+  line-height: 2.2;
+}
+
+/* ============================================================
+   SEAL / FOOT
+   ============================================================ */
+.dossier-root .seal {
+  padding: 5rem var(--gutter);
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+  gap: 3rem;
+  align-items: center;
+}
+.dossier-root .seal__sigil {
+  font-family: var(--f-sigil);
+  font-size: 4rem;
+  color: var(--ember);
+  text-align: center;
+  text-shadow: 0 0 20px rgba(200,57,46,0.6);
+}
+.dossier-root .seal__col {
+  font-family: var(--f-mono);
+  font-size: 0.72rem;
+  color: var(--bone-dim);
+  letter-spacing: 0.08em;
+  line-height: 1.8;
+}
+.dossier-root .seal__col:first-child { text-align: right; }
+.dossier-root .seal__col strong {
+  font-family: var(--f-sigil);
+  letter-spacing: 0.28em;
+  color: var(--bone);
+  font-weight: 500;
+}
+@media (max-width: 700px) {
+  .dossier-root .seal { grid-template-columns: 1fr; text-align: center; }
+  .dossier-root .seal__col:first-child { text-align: center; }
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+.dossier-root .row-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+.dossier-root .box {
+  border: var(--rule-thin);
+  padding: 1.5rem;
+  background: rgba(0,0,0,0.25);
+}
+.dossier-root .box h5 {
+  font-family: var(--f-sigil);
+  font-size: 0.7rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--sulphur);
+  margin-bottom: 0.6rem;
+  font-weight: 500;
+}
+.dossier-root .box p { font-size: 0.95rem; margin: 0; }
+
+.dossier-root .divider {
+  text-align: center;
+  margin: 3rem 0;
+  font-family: var(--f-sigil);
+  letter-spacing: 0.6em;
+  color: var(--bone-deep);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 700px) {
+  .dossier-root { font-size: 17px; }
+  .dossier-root .chapter__head, .dossier-root .chapter__body { grid-template-columns: 1fr; }
+  .dossier-root .chapter__margin { position: static; }
+  .dossier-root .cover__center { grid-template-columns: 1fr; text-align: center; }
+  .dossier-root .cover__title, .dossier-root .cover__subject { text-align: center; }
+}

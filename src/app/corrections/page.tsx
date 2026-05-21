@@ -15,6 +15,7 @@ export default function CorrectionsPage() {
         title="CORRECTIONS"
         subtitle="Help us maintain an accurate archive"
         backgroundImage="/wiki-page-header.jpg"
+      label="corrections"
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
         <SectionCard title="Report an Error">

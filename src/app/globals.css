@@ -16,17 +16,17 @@
 /* ─── Design Tokens (Tailwind v4 @theme) ───────────── */
 
 @theme inline {
-  /* Backgrounds */
+  /* Backgrounds — aligned to terminal palette */
   --color-void: #0A0A0F;
-  --color-surface: #12131A;
-  --color-elevated: #1A1C24;
+  --color-surface: #0a0e15;   /* was #12131A — now matches --term-panel */
+  --color-elevated: #0b0f18;  /* was #1A1C24 — now matches --term-bg-2  */
 
   /* Text */
   --color-text-primary: #F3EEDF;
   --color-text-muted: #B6AE9B;
 
-  /* Borders */
-  --color-border: #2A2D36;
+  /* Borders — aligned to terminal palette */
+  --color-border: #182135;    /* was #2A2D36 — now matches --term-line  */
 
   /* Accents — use with discipline */
   --color-accent-gold: #C8A96B;
@@ -94,11 +94,11 @@
 /* ─── CSS Custom Properties ────────────────────────── */
 
 :root {
-  /* Sacred Terminal palette */
+  /* Sacred Terminal palette — bg-surface/elevated/border aligned to terminal */
   --bg-void: #0A0A0F;
-  --bg-surface: #12131A;
-  --bg-elevated: #1A1C24;
-  --border: #2A2D36;
+  --bg-surface: #0a0e15;
+  --bg-elevated: #0b0f18;
+  --border: #182135;
   --text-primary: #F3EEDF;
   --text-muted: #B6AE9B;
   --accent-gold: #C8A96B;
@@ -118,20 +118,20 @@
   /* shadcn/ui base (light fallback, overridden by .dark) */
   --background: #0A0A0F;
   --foreground: #F3EEDF;
-  --card: #12131A;
+  --card: #0a0e15;
   --card-foreground: #F3EEDF;
-  --popover: #1A1C24;
+  --popover: #0b0f18;
   --popover-foreground: #F3EEDF;
   --primary: #C8A96B;
   --primary-foreground: #0A0A0F;
-  --secondary: #1A1C24;
+  --secondary: #0b0f18;
   --secondary-foreground: #F3EEDF;
-  --muted: #1A1C24;
+  --muted: #0b0f18;
   --muted-foreground: #B6AE9B;
   --accent: #6E4BAE;
   --accent-foreground: #F3EEDF;
   --destructive: #A94A4A;
-  --input: #2A2D36;
+  --input: #182135;
   --ring: rgba(200, 169, 107, 0.3);
   --chart-1: #C8A96B;
   --chart-2: #6E4BAE;
@@ -139,13 +139,13 @@
   --chart-4: #A94A4A;
   --chart-5: #B6AE9B;
   --radius: 0.625rem;
-  --sidebar: #12131A;
+  --sidebar: #07090f;
   --sidebar-foreground: #F3EEDF;
   --sidebar-primary: #C8A96B;
   --sidebar-primary-foreground: #0A0A0F;
-  --sidebar-accent: #1A1C24;
+  --sidebar-accent: #0b0f18;
   --sidebar-accent-foreground: #F3EEDF;
-  --sidebar-border: #2A2D36;
+  --sidebar-border: #182135;
   --sidebar-ring: rgba(200, 169, 107, 0.3);
 }
 
@@ -214,34 +214,34 @@ h1, h2, h3 {
 .dark {
   --background: #0A0A0F;
   --foreground: #F3EEDF;
-  --card: #12131A;
+  --card: #0a0e15;
   --card-foreground: #F3EEDF;
-  --popover: #1A1C24;
+  --popover: #0b0f18;
   --popover-foreground: #F3EEDF;
   --primary: #C8A96B;
   --primary-foreground: #0A0A0F;
-  --secondary: #1A1C24;
+  --secondary: #0b0f18;
   --secondary-foreground: #F3EEDF;
-  --muted: #1A1C24;
+  --muted: #0b0f18;
   --muted-foreground: #B6AE9B;
   --accent: #6E4BAE;
   --accent-foreground: #F3EEDF;
   --destructive: #A94A4A;
-  --border: #2A2D36;
-  --input: #2A2D36;
+  --border: #182135;
+  --input: #182135;
   --ring: rgba(200, 169, 107, 0.3);
   --chart-1: #C8A96B;
   --chart-2: #6E4BAE;
   --chart-3: #5DB7D8;
   --chart-4: #A94A4A;
   --chart-5: #B6AE9B;
-  --sidebar: #12131A;
+  --sidebar: #07090f;
   --sidebar-foreground: #F3EEDF;
   --sidebar-primary: #C8A96B;
   --sidebar-primary-foreground: #0A0A0F;
-  --sidebar-accent: #1A1C24;
+  --sidebar-accent: #0b0f18;
   --sidebar-accent-foreground: #F3EEDF;
-  --sidebar-border: #2A2D36;
+  --sidebar-border: #182135;
   --sidebar-ring: rgba(200, 169, 107, 0.3);
 }
 
@@ -271,4 +271,254 @@ select:focus-visible,
 textarea:focus-visible {
   outline: 2px solid var(--color-accent-green);
   outline-offset: 2px;
+}
+
+/* Oracle animations */
+@keyframes waveform {
+  0%, 100% { transform: scaleY(0.3); opacity: 0.5; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes ringPulse {
+  0%, 100% { opacity: 0.75; }
+  50% { opacity: 1; }
+}
+.animate-waveform {
+  animation: waveform 0.8s ease-in-out infinite;
+}
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+.animate-ring-pulse {
+  animation: ringPulse 3s ease-in-out infinite;
+}
+.animation-delay-150 {
+  animation-delay: 150ms;
+}
+
+/* ═══════════════════════════════════════════════════════
+   NEON TERMINAL — CRT/Hacker aesthetic overlay
+   ═══════════════════════════════════════════════════════
+   These tokens live alongside the Sacred Terminal palette
+   above. They are namespaced with `--term-*` / `--neon-*`
+   so they never collide with the gold/violet/cyan system.
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Neon Terminal Tokens ─────────────────────────── */
+:root {
+  --neon: #00ff9c;
+  --neon-2: #00e5ff;
+  --neon-3: #ff2bd6;
+  --neon-4: #ffb800;
+  --neon-5: #ff3860;
+  --neon-6: #b388ff;
+  --term-bg: #04060a;
+  --term-bg-1: #07090f;
+  --term-bg-2: #0b0f18;
+  --term-panel: #0a0e15;
+  --term-line: #182135;
+  --term-line-2: #243151;
+  --term-line-hot: #2c3a5e;
+  --term-fg: #d4f5e8;
+  --term-fg-dim: #7a948c;
+  --term-fg-faint: #3d524a;
+  --term-fg-mute: #2a3833;
+  --glow-neon: 0 0 6px rgba(0, 255, 156, 0.6), 0 0 18px rgba(0, 255, 156, 0.25);
+  --glow-cyan: 0 0 6px rgba(0, 229, 255, 0.6), 0 0 18px rgba(0, 229, 255, 0.25);
+  --glow-magenta: 0 0 6px rgba(255, 43, 214, 0.55), 0 0 22px rgba(255, 43, 214, 0.22);
+  --glow-amber: 0 0 6px rgba(255, 184, 0, 0.6), 0 0 18px rgba(255, 184, 0, 0.22);
+  --font-crt: var(--font-crt), "VT323", "IBM Plex Mono", monospace;
+  --font-display-term: "Major Mono Display", "VT323", monospace;
+}
+
+/* CRT scanlines overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 255, 156, 0.018) 0px,
+    rgba(0, 255, 156, 0.018) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: screen;
+  opacity: 0.7;
+}
+
+/* CRT vignette */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9997;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+}
+
+/* Terminal shell — body is the full-height flex container so banners above
+   the grid don't push content off-screen. The grid itself fills the remaining
+   flex space and is the only thing that scrolls internally. */
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh; /* dynamic viewport height — accounts for mobile chrome */
+  overflow: hidden;
+}
+
+/* Terminal shell grid */
+.terminal-grid {
+  display: grid;
+  grid-template-areas:
+    "topbar topbar"
+    "sidebar main"
+    "statusbar statusbar";
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: 36px 1fr 24px;
+  flex: 1;           /* fill remaining body height after banners */
+  min-height: 0;     /* override flex default so 1fr rows can shrink */
+  max-width: 1600px;
+  width: 100%;
+  margin: 0 auto;
+  border-left: 1px solid var(--term-line);
+  border-right: 1px solid var(--term-line);
+  background-color: var(--term-bg);
+}
+.terminal-topbar {
+  grid-area: topbar;
+}
+.terminal-sidebar {
+  grid-area: sidebar;
+  overflow-y: auto;
+  min-height: 0;
+}
+.terminal-main {
+  grid-area: main;
+  overflow-y: auto;
+  min-width: 0;
+  min-height: 0;
+}
+.terminal-statusbar {
+  grid-area: statusbar;
+}
+
+@media (max-width: 900px) {
+  .terminal-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "topbar"
+      "main"
+      "statusbar";
+    grid-template-rows: 36px 1fr 24px;
+  }
+  .terminal-sidebar {
+    display: none;
+  }
+}
+
+/* Terminal blink cursor */
+@keyframes term-blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+.term-blink {
+  animation: term-blink 1s steps(1) infinite;
+}
+
+/* Terminal pulse dot */
+@keyframes term-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+}
+.term-pulse {
+  animation: term-pulse 1.6s ease-in-out infinite;
+}
+
+/* Terminal flicker */
+@keyframes term-flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  43% {
+    opacity: 1;
+  }
+  44% {
+    opacity: 0.65;
+  }
+  45% {
+    opacity: 1;
+  }
+  93% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 0.8;
+  }
+  95% {
+    opacity: 1;
+  }
+}
+.term-flicker {
+  animation: term-flicker 4s infinite;
+}
+
+/* ─── Trading Card Animations ──────────────────── */
+@keyframes foilShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes pulseRing {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.03); }
+}
+@keyframes packShake {
+  0%, 100% { transform: rotate(-1deg) translateX(-1px); }
+  50%       { transform: rotate(1deg) translateX(1px); }
+}
+@keyframes termBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(24px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);   }
+}
+
+/* Terminal nav active item */
+.term-nav-active {
+  color: var(--neon) !important;
+  border-left-color: var(--neon) !important;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 255, 156, 0.08),
+    transparent 80%
+  ) !important;
+  text-shadow: var(--glow-neon);
 }

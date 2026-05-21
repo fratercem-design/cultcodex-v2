@@ -26,6 +26,7 @@ import {
 import { PageHero } from "@/components/ui/page-hero";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { formatDate } from "@/lib/format/date";
+import { SavedSearchesBlock } from "@/components/codex/saved-searches-block";
 
 export const metadata: Metadata = {
   title: "My Codex — CULT CODEX",
@@ -56,6 +57,7 @@ export default async function CodexPage() {
             : "Your personal archive — still a blank page."
         }
         backgroundImage="/hero-bg.jpg"
+      label="my_codex"
       />
 
       <main
@@ -208,6 +210,10 @@ export default async function CodexPage() {
             </div>
           )}
         </CodexSection>
+
+        <MysticalDivider />
+
+        <SavedSearchesBlock userId={user.id} />
       </main>
     </div>
   );

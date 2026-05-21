@@ -19,12 +19,16 @@ import type { Metadata } from "next";
 export const revalidate = 600;
 
 export async function generateStaticParams() {
-  const topics = await prisma.topic.findMany({
-    select: { slug: true },
-    take: 300,
-    orderBy: { updatedAt: "desc" },
-  });
-  return topics.map((t) => ({ slug: t.slug }));
+  try {
+    const topics = await prisma.topic.findMany({
+      select: { slug: true },
+      take: 300,
+      orderBy: { updatedAt: "desc" },
+    });
+    return topics.map((t) => ({ slug: t.slug }));
+  } catch {
+    return [];
+  }
 }
 
 interface PageProps {
@@ -62,7 +66,7 @@ function splitDescription(description: string): { base: string; psycheverse: str
 export default async function TopicDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const topic = await getTopicBySlug(slug);
+  const topic = await getTopicBySlug(slug).catch(() => null);
   if (!topic) notFound();
 
   const user = await getCurrentUser();
@@ -73,9 +77,10 @@ export default async function TopicDetailPage({ params }: PageProps) {
             where: { userId_topicId: { userId: user.id, topicId: topic.id } },
           })
           .then((row) => !!row)
+          .catch(() => false)
       : Promise.resolve(false),
-    prisma.savedTopic.count({ where: { topicId: topic.id } }),
-    getRelatedTopics(topic.id, 8),
+    prisma.savedTopic.count({ where: { topicId: topic.id } }).catch(() => 0),
+    getRelatedTopics(topic.id, 8).catch(() => []),
   ]);
 
   const { base: descBase, psycheverse: descPsycheverse } = topic.description
@@ -107,6 +112,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
         title={topic.title}
         subtitle={descBase ?? "Topic"}
         backgroundImage="/wiki-page-header.jpg"
+      label="signal"
       />
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
@@ -140,7 +146,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
               </div>
             )}
 
-            <SectionCard title={`Episodes (${topic.episodes.length})`}>
+            <SectionCard title={`Episodes (${topic.episodes.length})`} accent="gold">
               {sortedEpisodes.length > 0 ? (
                 <div className="grid gap-3">
                   {sortedEpisodes.map((e) => (
@@ -161,7 +167,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
             </SectionCard>
 
             {relatedTopics.length > 0 && (
-              <SectionCard title="🐇 Rabbit Hole">
+              <SectionCard title="🐇 Rabbit Hole" accent="cyan">
                 <p className="text-xs text-text-muted mb-4">
                   Topics that frequently appear alongside{" "}
                   <strong className="text-text-primary">{topic.title}</strong>

@@ -8,6 +8,7 @@ import { getPeople, getPersonCount } from "@/lib/queries/people";
 import { getPeopleAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
 import { formatRelativeDate } from "@/lib/format/date";
 import { IconPerson, IconMicrophone, IconRecurring, IconMask } from "@/components/graphics/codex-icons";
+import Link from "next/link";
 import {
   DEFAULT_PAGE_SIZE,
   parsePage,
@@ -88,9 +89,25 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
       title="PEOPLE"
       subtitle="Guests, hosts, and figures of the archive"
       backgroundImage="/wiki-page-header.jpg"
+    
+      label="voices"
     />
     <EntityGlanceBar items={glanceItems} />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+      {/* Graph teaser */}
+      <div className="mb-5 flex items-center justify-between gap-4 rounded-lg border border-accent-violet/20 bg-accent-violet/5 px-4 py-3">
+        <p className="font-mono text-[11px] text-text-muted">
+          <span className="text-accent-violet font-bold">Relationship Map</span>
+          {" "}— see who appeared with whom across the entire archive, as a live network graph.
+        </p>
+        <Link
+          href="/graph"
+          className="shrink-0 inline-flex items-center gap-1 rounded border border-accent-violet/40 bg-surface px-3 py-1.5 font-mono text-[10px] font-bold text-accent-violet hover:bg-accent-violet/10 transition-colors whitespace-nowrap"
+        >
+          View map →
+        </Link>
+      </div>
+
       <SortFilterBar
         basePath="/people"
         sortOptions={SORT_OPTIONS}
@@ -112,6 +129,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
                   displayName: person.displayName,
                   slug: person.slug,
                   shortBio: person.shortBio,
+                  loreSummary: person.loreSummary,
                   avatarUrl: person.avatarUrl,
                   personType: person.personType,
                   appearanceCount:

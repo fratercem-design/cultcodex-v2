@@ -10,6 +10,7 @@ interface HeroBadge {
 interface EntityHeroProps {
   title: string;
   subtitle?: string;
+  label?: string;
   backgroundImage: string;
   avatarUrl?: string | null;
   fallbackAvatar?: ReactNode;
@@ -20,6 +21,7 @@ interface EntityHeroProps {
 export function EntityHero({
   title,
   subtitle,
+  label,
   backgroundImage,
   avatarUrl,
   fallbackAvatar,
@@ -62,6 +64,14 @@ export function EntityHero({
             fallbackAvatar
           )}
           <div>
+            {label && (
+              <p
+                className="mb-1 font-mono text-[10px] uppercase tracking-[0.4em]"
+                style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}
+              >
+                {"// "}{label}
+              </p>
+            )}
             {neonTitle ? (
               <h1
                 className="font-serif text-2xl sm:text-3xl font-black tracking-tight drop-shadow-md"

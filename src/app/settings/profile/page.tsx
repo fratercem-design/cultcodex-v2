@@ -44,6 +44,7 @@ export default async function ProfilePage() {
         title="MEMBER PROFILE"
         subtitle="Your identity in the Psycheverse"
         backgroundImage="/wiki-page-header.jpg"
+      label="identity"
       />
       <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">
         {subscribed ? (

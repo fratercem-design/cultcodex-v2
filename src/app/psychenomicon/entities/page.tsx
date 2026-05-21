@@ -6,6 +6,7 @@ import {
   type NetworkNode,
   type NetworkEdge,
 } from "@/components/psychenomicon/entity-network-graph";
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 
 export default async function EntitiesPage() {
   const user = await getCurrentUser();
-  const canRead = user ? await isSubscribed(user.id) : false;
+  const canRead = user ? await isSubscribed(user.id).catch(() => false) : false;
   const isAdmin = user?.role === "admin";
 
   if (!canRead) {
@@ -43,6 +44,7 @@ export default async function EntitiesPage() {
       name: true,
       primaryArchetype: true,
       status: true,
+      personSlug: true,
       behaviorPatterns: true,
       appearances: {
         select: { chapterId: true },
@@ -53,7 +55,17 @@ export default async function EntitiesPage() {
         select: { primaryArchetype: true, chapterNumber: true },
       },
     },
-  });
+  }).catch(() => []);
+
+  // Batch-fetch person avatars for entities with a linked person
+  const personSlugs = entities.map((e) => e.personSlug).filter(Boolean) as string[];
+  const personAvatars = personSlugs.length > 0
+    ? await prisma.person.findMany({
+        where: { slug: { in: personSlugs } },
+        select: { slug: true, avatarUrl: true },
+      }).catch(() => [])
+    : [];
+  const avatarMap = Object.fromEntries(personAvatars.map((p) => [p.slug, p.avatarUrl]));
 
   // Build network graph data
   const nodes: NetworkNode[] = entities.map((e) => ({
@@ -63,6 +75,8 @@ export default async function EntitiesPage() {
     primaryArchetype: e.primaryArchetype,
     status: e.status,
     appearanceCount: e.appearances.length,
+    personSlug: e.personSlug,
+    avatarUrl: e.personSlug ? avatarMap[e.personSlug] : null,
   }));
 
   // Compute co-appearance edges: two entities connected if they share chapters
@@ -100,7 +114,15 @@ export default async function EntitiesPage() {
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-5xl space-y-2">
           <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">ψ PSYCHENOMICON · ENTITIES ψ</p>
-          <h1 className="font-display text-2xl font-bold text-text-primary">Entity Network</h1>
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <h1 className="font-display text-2xl font-bold text-text-primary">Entity Network</h1>
+            <Link
+              href="/psychenomicon/archetypes"
+              className="font-mono text-[10px] uppercase tracking-widest text-accent-violet/70 hover:text-accent-violet transition-colors"
+            >
+              Archetype atlas →
+            </Link>
+          </div>
           <p className="text-xs text-text-muted">
             {nodes.length > 0
               ? `${nodes.length} entities tracked · ${edges.length} relationship edges`
@@ -148,6 +170,7 @@ export default async function EntitiesPage() {
             {entities.map((e) => {
               const latestEvent = e.archetypeEvents[0];
               const statusStyle = STATUS_STYLES[e.status] ?? STATUS_STYLES.active;
+              const avatar = e.personSlug ? avatarMap[e.personSlug] : null;
               return (
                 <Link
                   key={e.slug}
@@ -155,13 +178,28 @@ export default async function EntitiesPage() {
                   className="group rounded-lg border border-border bg-surface p-4 hover:border-accent-violet/40 hover:bg-accent-violet/5 transition-all space-y-3"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="font-mono text-xs font-bold text-text-primary group-hover:text-accent-violet transition-colors truncate">
-                        {e.name}
-                      </p>
-                      {e.primaryArchetype && (
-                        <p className="font-mono text-[9px] text-accent-violet/70 mt-0.5">{e.primaryArchetype}</p>
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      {avatar ? (
+                        <Image
+                          src={avatar}
+                          alt=""
+                          width={28}
+                          height={28}
+                          className="h-7 w-7 rounded-full object-cover flex-shrink-0 border border-border group-hover:border-accent-violet/40 transition-colors"
+                        />
+                      ) : (
+                        <div className="h-7 w-7 rounded-full flex-shrink-0 border border-border bg-accent-violet/10 flex items-center justify-center">
+                          <span className="font-mono text-[9px] text-accent-violet/60">ψ</span>
+                        </div>
                       )}
+                      <div className="min-w-0">
+                        <p className="font-mono text-xs font-bold text-text-primary group-hover:text-accent-violet transition-colors truncate">
+                          {e.name}
+                        </p>
+                        {e.primaryArchetype && (
+                          <p className="font-mono text-[9px] text-accent-violet/70 mt-0.5">{e.primaryArchetype}</p>
+                        )}
+                      </div>
                     </div>
                     <span className={`flex-shrink-0 font-mono text-[8px] uppercase px-1.5 py-0.5 rounded border ${statusStyle}`}>
                       {e.status}
@@ -185,6 +223,13 @@ export default async function EntitiesPage() {
                         </span>
                       ))}
                     </div>
+                  )}
+
+                  {/* Archive profile cross-link */}
+                  {e.personSlug && (
+                    <p className="font-mono text-[8px] text-accent-gold/50 group-hover:text-accent-gold/70 transition-colors">
+                      ◈ archive profile →
+                    </p>
                   )}
                 </Link>
               );

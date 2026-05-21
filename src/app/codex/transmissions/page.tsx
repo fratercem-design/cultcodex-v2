@@ -37,6 +37,7 @@ export default async function CodexTransmissionsPage() {
             : `${rows.length} transmission${rows.length === 1 ? "" : "s"} in your codex`
         }
         backgroundImage="/hero-bg.jpg"
+      label="saved_transmissions"
       />
 
       <main

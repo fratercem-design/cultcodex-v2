@@ -79,7 +79,9 @@ export default async function TimelinePage() {
         title="TIMELINE"
         subtitle={`${episodes.length} episodes across ${years.length} years`}
         backgroundImage="/articles-bacgkground.jpg"
-      />
+      
+      label="timeline"
+    />
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8">
         {/* Year navigation */}
         <nav className="mb-8 flex flex-wrap gap-2">

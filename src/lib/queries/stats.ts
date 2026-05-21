@@ -1,5 +1,36 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db";
 import type { ArchiveStats } from "@/types";
+
+export interface ArchiveCounts {
+  episodes: number;
+  topics: number;
+  people: number;
+  transcribedEpisodes: number;
+}
+
+/**
+ * Lightweight cached count query used by the terminal chrome (sidebar badges,
+ * statusbar feed count, integrity meter). Revalidates every 10 minutes.
+ * Kept separate from getArchiveStats() to avoid the expensive duration query
+ * on every layout render.
+ */
+export const getArchiveCounts = unstable_cache(
+  async (): Promise<ArchiveCounts> => {
+    // Note: intentionally no try-catch here — let errors propagate so
+    // unstable_cache does NOT cache the failed result. The caller (layout)
+    // handles the error with a fallback.
+    const [episodes, topics, people, transcribedEpisodes] = await Promise.all([
+      prisma.episode.count(),
+      prisma.topic.count(),
+      prisma.person.count(),
+      prisma.episode.count({ where: { segments: { some: {} } } }),
+    ]);
+    return { episodes, topics, people, transcribedEpisodes };
+  },
+  ["archive-counts"],
+  { revalidate: 600, tags: ["archive-counts"] }
+);
 
 /**
  * Canonical archive stats — single source of truth for all counts site-wide.

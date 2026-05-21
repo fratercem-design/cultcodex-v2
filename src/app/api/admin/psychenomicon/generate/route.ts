@@ -3,6 +3,9 @@ import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import Anthropic from "@anthropic-ai/sdk";
 
+export const runtime = "nodejs";
+export const maxDuration = 300;
+
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const SYSTEM_PROMPT = `You are the Archivist of the Psychenomicon.
@@ -101,6 +104,39 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Admin access required" }, { status: 403 });
   }
 
+  try {
+    return await generateChapter(req);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("[psychenomicon/generate] unhandled error:", msg);
+    return NextResponse.json({ error: msg.slice(0, 500) }, { status: 500 });
+  }
+}
+
+import type { Message } from "@anthropic-ai/sdk/resources/messages";
+
+async function callAnthropicWithRetry(
+  params: Parameters<typeof anthropic.messages.create>[0],
+  maxAttempts = 3
+): Promise<Message> {
+  let lastErr: unknown;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await anthropic.messages.create(params) as Message;
+    } catch (err) {
+      lastErr = err;
+      const status = (err as { status?: number }).status;
+      // Only retry on 500/529 (overloaded) — not 400/401/403
+      if (status !== 500 && status !== 529) throw err;
+      if (attempt < maxAttempts) {
+        await new Promise((r) => setTimeout(r, 2000 * attempt));
+      }
+    }
+  }
+  throw lastErr;
+}
+
+async function generateChapter(req: NextRequest) {
   const body = await req.json() as { episodeId?: string };
   const { episodeId } = body;
 
@@ -172,14 +208,15 @@ export async function POST(req: NextRequest) {
     activeThreads
   );
 
-  // Build transcript text
+  // Build transcript text — cap at ~20k chars to stay well within context limits
   let transcriptText: string;
   if (episode.segments.length > 0) {
     transcriptText = episode.segments
       .map((s) => (s.speakerLabel ? `${s.speakerLabel}: ${s.text}` : s.text))
-      .join("\n");
+      .join("\n")
+      .slice(0, 20000);
   } else {
-    transcriptText = episode.transcriptRaw!.slice(0, 40000);
+    transcriptText = episode.transcriptRaw!.slice(0, 20000);
   }
 
   const guestList = episode.guests
@@ -214,9 +251,9 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
   "threads": [{"title": "thread title", "description": "what this thread tracks", "status": "active|emerging|resolved"}]
 }`;
 
-  const message = await anthropic.messages.create({
+  const message = await callAnthropicWithRetry({
     model: "claude-sonnet-4-6",
-    max_tokens: 4096,
+    max_tokens: 8000,
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: userPrompt }],
   });
@@ -228,9 +265,15 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
 
   let generated: GeneratedChapter;
   try {
-    generated = JSON.parse(rawText) as GeneratedChapter;
+    // Strip markdown fences if model wrapped the JSON
+    const cleaned = rawText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+    generated = JSON.parse(cleaned) as GeneratedChapter;
   } catch {
-    return NextResponse.json({ error: "Model returned invalid JSON", raw: rawText.slice(0, 1000) }, { status: 502 });
+    const stopReason = message.stop_reason;
+    return NextResponse.json(
+      { error: `Model returned invalid JSON (stop_reason: ${stopReason})`, raw: rawText.slice(0, 2000) },
+      { status: 502 }
+    );
   }
 
   // Upsert entities

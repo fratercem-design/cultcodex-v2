@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { getTierByPriceId } from "@/lib/subscription-tiers";
 import type Stripe from "stripe";
 
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(
+    event = getStripe().webhooks.constructEvent(
       body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET ?? ""
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
           const subId = typeof session.subscription === "string"
             ? session.subscription
             : session.subscription.id;
-          const subscription = await stripe.subscriptions.retrieve(subId, {
+          const subscription = await getStripe().subscriptions.retrieve(subId, {
             expand: ["items.data.price"],
           });
           // Resolve tier from: checkout metadata → subscription metadata → price ID
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
         const invoice = event.data.object as Stripe.Invoice;
         const subscriptionId = getInvoiceSubscriptionId(invoice);
         if (subscriptionId && invoice.customer) {
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          const subscription = await getStripe().subscriptions.retrieve(subscriptionId);
           await prisma.codexUser.updateMany({
             where: { stripeCustomerId: invoice.customer as string },
             data: {

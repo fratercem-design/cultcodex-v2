@@ -67,3 +67,6 @@ scripts/enrich/run-log.txt
 
 # Claude Code local config
 .claude/
+
+# Brainstorming visual companion (superpowers skill)
+.superpowers/

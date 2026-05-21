@@ -57,6 +57,12 @@ export function EpisodeHero({
 
       {/* Title area */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-6">
+        <p
+          className="mb-1 font-mono text-[10px] uppercase tracking-[0.4em]"
+          style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}
+        >
+          {"// transmission"}
+        </p>
         <h1 className="font-display text-2xl font-bold tracking-tight text-accent-gold drop-shadow-md">
           {title}
         </h1>

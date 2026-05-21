@@ -29,12 +29,16 @@ import type { Metadata } from "next";
 export const revalidate = 600;
 
 export async function generateStaticParams() {
-  const series = await prisma.series.findMany({
-    select: { slug: true },
-    take: 50,
-    orderBy: { updatedAt: "desc" },
-  });
-  return series.map((s) => ({ slug: s.slug }));
+  try {
+    const series = await prisma.series.findMany({
+      select: { slug: true },
+      take: 50,
+      orderBy: { updatedAt: "desc" },
+    });
+    return series.map((s) => ({ slug: s.slug }));
+  } catch {
+    return [];
+  }
 }
 
 interface PageProps {
@@ -109,6 +113,7 @@ export default async function SeriesDetailPage({ params, searchParams }: PagePro
           { label: typeLabel.toUpperCase(), variant: "green" },
           { label: series.status.toUpperCase(), variant: series.status === "published" ? "green" : "muted" },
         ]}
+      label="series"
       />
       <Breadcrumbs items={[
         { label: "Home", href: "/" },

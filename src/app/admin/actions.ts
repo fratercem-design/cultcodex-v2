@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { notifyNewEpisode } from "@/lib/notifications";
+import { notifyNewEpisode, sendFoundingOracleEmail } from "@/lib/notifications";
 import type {
   ContentStatus,
   ContentType,
@@ -300,4 +300,42 @@ export async function toggleLiveStream(formData: FormData) {
 
   revalidatePath("/admin/live");
   revalidatePath("/live");
+}
+
+// ── Founding Oracle Gift ──────────────────────────────────
+
+export async function grantFoundingOracle({
+  recipientName,
+  recipientEmail,
+  personalNote,
+  sendEmail = true,
+}: {
+  recipientName: string;
+  recipientEmail: string;
+  personalNote?: string;
+  sendEmail?: boolean;
+}): Promise<{ claimUrl: string }> {
+  await requireAdmin();
+
+  const invite = await prisma.oracleInvite.create({
+    data: {
+      recipientName,
+      recipientEmail: recipientEmail.toLowerCase(),
+      personalNote: personalNote ?? null,
+    },
+  });
+
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me";
+  const claimUrl = `${baseUrl}/claim/oracle/${invite.token}`;
+
+  if (sendEmail) {
+    await sendFoundingOracleEmail({
+      recipientEmail,
+      recipientName,
+      claimUrl,
+      personalNote,
+    });
+  }
+
+  return { claimUrl };
 }

@@ -69,7 +69,9 @@ export default async function StatsPage() {
         title="ARCHIVE STATS"
         subtitle="The Cult of Psyche by the numbers"
         backgroundImage="/wiki-page-header.jpg"
-      />
+      
+      label="system_stats"
+    />
 
       <div className="mx-auto max-w-7xl px-4 py-8 space-y-10">
         {/* Stats Grid */}

@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const thread = await prisma.psychenomiconThread.findUnique({
     where: { slug },
     select: { title: true, description: true },
-  });
+  }).catch(() => null);
   if (!thread) return { title: "Thread Not Found — CULT CODEX" };
   return {
     title: `${thread.title} — Thread — Psychenomicon`,
@@ -34,7 +34,7 @@ export default async function ThreadPage({ params }: PageProps) {
   const { slug } = await params;
 
   const user = await getCurrentUser();
-  const canRead = user ? await isSubscribed(user.id) : false;
+  const canRead = user ? await isSubscribed(user.id).catch(() => false) : false;
 
   if (!canRead) {
     return (
@@ -72,7 +72,7 @@ export default async function ThreadPage({ params }: PageProps) {
         orderBy: { chapter: { chapterNumber: "asc" } },
       },
     },
-  });
+  }).catch(() => null);
 
   if (!thread) notFound();
 

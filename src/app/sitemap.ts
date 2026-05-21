@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db";
 
+// Force dynamic so this never runs at build time — generated on first request
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me";
 
@@ -34,6 +37,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/methodology`, changeFrequency: "monthly", priority: 0.3 },
     { url: `${baseUrl}/corrections`, changeFrequency: "monthly", priority: 0.3 },
     { url: `${baseUrl}/content-policy`, changeFrequency: "monthly", priority: 0.3 },
+    { url: `${baseUrl}/privacy`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${baseUrl}/terms`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${baseUrl}/live`, changeFrequency: "daily", priority: 0.6 },
   ];
 

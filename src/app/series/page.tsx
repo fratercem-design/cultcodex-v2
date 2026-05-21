@@ -36,6 +36,7 @@ export default async function SeriesPage() {
           : "Series and collections"
       }
       backgroundImage="/wiki-page-header.jpg"
+      label="series"
     />
     <EntityGlanceBar items={glanceItems} />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">

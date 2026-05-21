@@ -15,6 +15,7 @@ export default function ContentPolicyPage() {
         title="CONTENT POLICY"
         subtitle="Sourcing, attribution, and privacy"
         backgroundImage="/wiki-page-header.jpg"
+      label="policy"
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
         <SectionCard title="Content Sources">
@@ -94,13 +95,21 @@ export default function ContentPolicyPage() {
           </div>
         </SectionCard>
 
-        <div className="flex items-center justify-center gap-4 text-xs">
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
           <Link href="/methodology" className="font-mono text-accent-gold hover:underline">
             Methodology
           </Link>
           <span className="text-text-muted">|</span>
           <Link href="/corrections" className="font-mono text-accent-gold hover:underline">
             Corrections
+          </Link>
+          <span className="text-text-muted">|</span>
+          <Link href="/privacy" className="font-mono text-accent-gold hover:underline">
+            Privacy Policy
+          </Link>
+          <span className="text-text-muted">|</span>
+          <Link href="/terms" className="font-mono text-accent-gold hover:underline">
+            Terms of Service
           </Link>
         </div>
       </main>

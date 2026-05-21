@@ -15,7 +15,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const entity = await prisma.psychenomiconEntity.findUnique({ where: { slug }, select: { name: true, primaryArchetype: true } });
+  const entity = await prisma.psychenomiconEntity.findUnique({ where: { slug }, select: { name: true, primaryArchetype: true } }).catch(() => null);
   if (!entity) return { title: "Entity Not Found" };
   return { title: `${entity.name} — ${entity.primaryArchetype ?? "Entity"} — Psychenomicon` };
 }
@@ -38,7 +38,7 @@ export default async function EntityPage({ params }: PageProps) {
   const { slug } = await params;
 
   const user = await getCurrentUser();
-  const canRead = user ? await isSubscribed(user.id) : false;
+  const canRead = user ? await isSubscribed(user.id).catch(() => false) : false;
 
   if (!canRead) {
     return (
@@ -66,7 +66,7 @@ export default async function EntityPage({ params }: PageProps) {
         select: { chapterNumber: true, primaryArchetype: true, secondaryArchetypes: true, confidenceScore: true, triggerEvent: true },
       },
     },
-  });
+  }).catch(() => null);
 
   if (!entity) notFound();
 

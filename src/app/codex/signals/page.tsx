@@ -35,6 +35,7 @@ export default async function CodexSignalsPage() {
             : `${rows.length} signal${rows.length === 1 ? "" : "s"} in your codex`
         }
         backgroundImage="/hero-bg.jpg"
+      label="saved_signals"
       />
 
       <main
