@@ -214,3 +214,34 @@ export async function earnCreditsForActivity(userId: string, reason: EarnReason,
 
   return { granted: amount };
 }
+
+// ─── Onboarding starter card ─────────────────────────────────────────────────
+
+export async function grantStarterCard(userId: string, cardType: string) {
+  // Prefer a card of the requested type; fall back to any STATIC card
+  const target =
+    (await prisma.card.findFirst({
+      where: { isActive: true, cardType: cardType as CardType },
+      orderBy: [{ rarity: "asc" }, { createdAt: "asc" }],
+    })) ??
+    (await prisma.card.findFirst({
+      where: { isActive: true },
+      orderBy: [{ rarity: "asc" }, { createdAt: "asc" }],
+    }));
+
+  if (!target) return null;
+
+  await prisma.$transaction([
+    prisma.ownedCard.upsert({
+      where: { userId_cardId_isFoil: { userId, cardId: target.id, isFoil: false } },
+      update: { isNew: true },
+      create: { userId, cardId: target.id, isFoil: false, obtainedVia: "starter" },
+    }),
+    prisma.card.update({
+      where: { id: target.id },
+      data: { totalMinted: { increment: 1 } },
+    }),
+  ]);
+
+  return target;
+}

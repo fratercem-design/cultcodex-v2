@@ -19,7 +19,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (!user.email) return false;
 
       try {
-        await prisma.codexUser.upsert({
+        const dbUser = await prisma.codexUser.upsert({
           where: { email: user.email },
           update: {
             avatarUrl: user.image ?? undefined,
@@ -30,7 +30,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             avatarUrl: user.image ?? undefined,
             provider: account?.provider ?? "unknown",
           },
+          select: { onboardingCompleted: true },
         });
+        if (!dbUser.onboardingCompleted) return "/onboarding";
       } catch (err) {
         console.error("[auth] signIn upsert failed:", err);
         // Still allow sign-in even if DB write fails
