@@ -50,9 +50,9 @@ const nextConfig: NextConfig = {
           value: [
             // Default: only same-origin resources.
             "default-src 'self'",
-            // Scripts: self + inline (required for Next.js hydration and JSON-LD) + Vercel Analytics.
+            // Scripts: self + inline (required for Next.js hydration and JSON-LD) + Vercel Analytics + YouTube IFrame API.
             // TODO: replace 'unsafe-inline' with per-request nonces once Next.js middleware is wired.
-            "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
+            "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://www.youtube.com https://s.ytimg.com",
             // Styles: self + inline (Tailwind) + Google Fonts CSS.
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             // Fonts: self + Google Fonts files.
