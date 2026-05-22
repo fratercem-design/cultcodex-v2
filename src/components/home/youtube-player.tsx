@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useRef, useState } from "react";
+
+const PLAYLIST_SIZE = 25;
 
 interface YouTubePlayerProps {
   videoId: string;
@@ -10,49 +11,40 @@ interface YouTubePlayerProps {
 }
 
 export function YouTubePlayer({ videoId, playlistId, title = "Play" }: YouTubePlayerProps) {
-  const [active, setActive] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [muted, setMuted] = useState(true);
+  const [startIndex] = useState(() => Math.floor(Math.random() * PLAYLIST_SIZE));
 
-  const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-  const embedUrl = `https://www.youtube.com/embed/${videoId}?list=${playlistId}&autoplay=1&rel=0&modestbranding=1`;
+  const embedUrl = `https://www.youtube.com/embed/${videoId}?list=${playlistId}&index=${startIndex}&autoplay=1&mute=1&enablejsapi=1&rel=0&modestbranding=1`;
 
-  if (active) {
-    return (
-      <div className="relative w-full overflow-hidden rounded-xl" style={{ paddingBottom: "56.25%" }}>
-        <iframe
-          src={embedUrl}
-          title={title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="absolute inset-0 h-full w-full border-0"
-        />
-      </div>
-    );
+  function unmute() {
+    const win = iframeRef.current?.contentWindow;
+    if (win) {
+      win.postMessage(JSON.stringify({ event: "command", func: "unMute", args: [] }), "https://www.youtube.com");
+      win.postMessage(JSON.stringify({ event: "command", func: "setVolume", args: [100] }), "https://www.youtube.com");
+    }
+    setMuted(false);
   }
 
   return (
-    <button
-      onClick={() => setActive(true)}
-      className="group relative w-full overflow-hidden rounded-xl bg-void border border-border hover:border-accent-gold/40 transition-colors"
-      style={{ paddingBottom: "56.25%" }}
-      aria-label={`Play ${title}`}
-    >
-      <Image
-        src={thumbnailUrl}
-        alt={title}
-        fill
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
-        className="object-cover opacity-60 group-hover:opacity-75 transition-opacity"
+    <div className="relative w-full overflow-hidden rounded-xl" style={{ paddingBottom: "56.25%" }}>
+      <iframe
+        ref={iframeRef}
+        src={embedUrl}
+        title={title}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        className="absolute inset-0 h-full w-full border-0"
       />
-      {/* dark gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-void/80 via-transparent to-transparent" />
-      {/* play button */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-gold/90 shadow-xl shadow-accent-gold/30 group-hover:bg-accent-gold transition-colors group-hover:scale-110 transform duration-150">
-          <svg className="h-7 w-7 text-void ml-1" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        </div>
-      </div>
-    </button>
+      {muted && (
+        <button
+          onClick={unmute}
+          className="absolute bottom-4 right-4 z-10 flex items-center gap-2 rounded-lg bg-accent-gold px-4 py-2.5 font-mono text-sm font-bold text-void shadow-xl hover:bg-accent-gold/90 transition-colors"
+        >
+          <span>🔇</span>
+          <span>UNMUTE</span>
+        </button>
+      )}
+    </div>
   );
 }

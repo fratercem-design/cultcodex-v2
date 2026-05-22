@@ -243,6 +243,27 @@ export default async function HomePage() {
             </p>
           </div>
 
+          {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
+          <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">/// unlock_the_archive</p>
+            <p className="font-display text-xl font-bold text-white">Full transcripts. AI Oracle. The Psychenomicon.</p>
+            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.</p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link
+                href="/premium"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
+              >
+                Become Initiate+ — $10/mo →
+              </Link>
+              <Link
+                href="/premium"
+                className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-3 font-mono text-xs text-text-muted transition-all hover:border-accent-gold/30 hover:text-text-primary"
+              >
+                Compare tiers
+              </Link>
+            </div>
+          </div>
+
           {/* ── FEATURED EPISODE ─────────────────────────────────────── */}
           {featured && (
             <div className="space-y-3">
@@ -410,27 +431,6 @@ export default async function HomePage() {
 
           {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}
           <EmailCapture source="homepage" />
-
-          {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
-          <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">/// unlock_the_archive</p>
-            <p className="font-display text-xl font-bold text-white">Full transcripts. AI Oracle. The Psychenomicon.</p>
-            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.</p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link
-                href="/premium"
-                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
-              >
-                Become Initiate+ — $10/mo →
-              </Link>
-              <Link
-                href="/premium"
-                className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-3 font-mono text-xs text-text-muted transition-all hover:border-accent-gold/30 hover:text-text-primary"
-              >
-                Compare tiers
-              </Link>
-            </div>
-          </div>
 
           <ArchiveDisclaimer variant="full" />
         </div>
