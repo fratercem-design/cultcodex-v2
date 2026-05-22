@@ -44,6 +44,12 @@ const NAV_GROUPS: readonly NavGroup[] = [
     ],
   },
   {
+    title: "LIVE",
+    items: [
+      { href: "/irl-newstime", label: "IRL NEWSTIME", glyph: "▶" },
+    ],
+  },
+  {
     title: "TOOLS",
     items: [
       { href: "/lexicon", label: "LEXICON", glyph: "≣" },
