@@ -66,47 +66,55 @@ export async function POST(req: NextRequest) {
     guestAppearances: { some: {} },
   };
 
-  const totalRemaining = await prisma.person.count({ where: whereClause });
+  let totalRemaining: number;
+  let people: Awaited<ReturnType<typeof prisma.person.findMany>>;
 
-  if (totalRemaining === 0) {
-    return NextResponse.json({ processed: 0, remaining: 0, done: true, results: [] });
-  }
-
-  const people = await prisma.person.findMany({
-    where: whereClause,
-    select: {
-      id: true,
-      displayName: true,
-      slug: true,
-      personType: true,
-      shortBio: true,
-      quotes: {
-        select: { text: true, context: true, significance: true },
-        take: 10,
-      },
-      guestAppearances: {
-        select: {
-          episode: {
-            select: {
-              title: true,
-              slug: true,
-              episodeNumber: true,
-              summaryShort: true,
-              airDate: true,
-              segments: {
-                where: { speakerLabel: { not: null } },
-                select: { speakerLabel: true, text: true, startSeconds: true },
-                take: 20,
+  try {
+    totalRemaining = await prisma.person.count({ where: whereClause });
+    if (totalRemaining === 0) {
+      return NextResponse.json({ ok: true, processed: 0, remaining: 0, done: true, results: [] });
+    }
+    people = await prisma.person.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        displayName: true,
+        slug: true,
+        personType: true,
+        shortBio: true,
+        quotes: {
+          select: { text: true, context: true, significance: true },
+          take: 10,
+        },
+        guestAppearances: {
+          select: {
+            episode: {
+              select: {
+                title: true,
+                slug: true,
+                episodeNumber: true,
+                summaryShort: true,
+                airDate: true,
+                segments: {
+                  where: { speakerLabel: { not: null } },
+                  select: { speakerLabel: true, text: true, startSeconds: true },
+                  take: 20,
+                },
               },
             },
           },
+          take: 10,
         },
-        take: 10,
       },
-    },
-    orderBy: { displayName: "asc" },
-    take: batchSize,
-  });
+      orderBy: { displayName: "asc" },
+      take: batchSize,
+    });
+  } catch (err) {
+    return NextResponse.json(
+      { error: `Database error: ${err instanceof Error ? err.message : String(err)}` },
+      { status: 500 },
+    );
+  }
 
   const filtered = people.filter((p) => p.guestAppearances.length >= minAppearances);
 
@@ -153,8 +161,8 @@ ${episodeList}
 Write the dossier for ${person.displayName}.`;
 
       const response = await client.messages.create({
-        model: process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001",
-        max_tokens: 900,
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 1500,
         system: SYSTEM_PROMPT,
         messages: [{ role: "user", content: userMessage }],
       });
@@ -196,5 +204,5 @@ Write the dossier for ${person.displayName}.`;
   const processed = results.filter((r) => r.ok).length;
   const remaining = totalRemaining - processed;
 
-  return NextResponse.json({ processed, remaining, done: remaining <= 0, results });
+  return NextResponse.json({ ok: true, processed, remaining, done: remaining <= 0, results });
 }
