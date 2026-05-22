@@ -882,7 +882,7 @@ model Card {
   statA       Int       @default(50)
   statB       Int       @default(50)
   statC       Int       @default(50)
-  abilities   String[]
+  abilities   String[]  @default([])
   personality String?
   totalMinted Int       @default(0)
   maxSupply   Int?

@@ -298,7 +298,7 @@ export function TradingCard({ card, size = "md", onClick, faceDown = false, noTi
         </div>
 
         {/* Abilities */}
-        {card.abilities.length > 0 && size !== "sm" && (
+        {(card.abilities?.length ?? 0) > 0 && size !== "sm" && (
           <div style={{
             padding: "3px 8px 4px",
             flexShrink: 0,
@@ -306,7 +306,7 @@ export function TradingCard({ card, size = "md", onClick, faceDown = false, noTi
             zIndex: 3,
             borderTop: `1px solid rgba(${hexToRgb(borderColor)},0.15)`,
           }}>
-            {card.abilities.slice(0, 2).map((ability) => (
+            {(card.abilities ?? []).slice(0, 2).map((ability) => (
               <div key={ability} style={{
                 fontFamily: "var(--font-mono), monospace",
                 fontSize: 8,
