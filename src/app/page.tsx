@@ -10,6 +10,7 @@ import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
 import { DailyTransmission } from "@/components/home/daily-transmission";
+import { YouTubePlayer } from "@/components/home/youtube-player";
 import { getQuoteReactionCounts } from "@/lib/queries/quote-reactions";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -192,6 +193,16 @@ export default async function HomePage() {
             quoteReactions={dailyQuoteReactions}
             isAuthenticated={Boolean(currentUser)}
           />
+
+          {/* ── MUSIC PLAYER ─────────────────────────────────────────── */}
+          <div className="space-y-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">/// the_signal</p>
+            <YouTubePlayer
+              videoId="xlpOB2eXM1o"
+              playlistId="PLvfZtruvrMTufahIz2Mx9GI_4SJP-ySMw"
+              title="Cult of Psyche — Signal Stream"
+            />
+          </div>
 
           {/* ── ORACLE — AI SEARCH ───────────────────────────────────── */}
           <div className="rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface px-6 py-6 space-y-4">
