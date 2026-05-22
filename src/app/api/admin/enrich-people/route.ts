@@ -67,13 +67,21 @@ export async function POST(req: NextRequest) {
   };
 
   let totalRemaining: number;
-  let people: Awaited<ReturnType<typeof prisma.person.findMany>>;
-
   try {
     totalRemaining = await prisma.person.count({ where: whereClause });
-    if (totalRemaining === 0) {
-      return NextResponse.json({ ok: true, processed: 0, remaining: 0, done: true, results: [] });
-    }
+  } catch (err) {
+    return NextResponse.json(
+      { error: `Database error: ${err instanceof Error ? err.message : String(err)}` },
+      { status: 500 },
+    );
+  }
+
+  if (totalRemaining === 0) {
+    return NextResponse.json({ ok: true, processed: 0, remaining: 0, done: true, results: [] });
+  }
+
+  let people;
+  try {
     people = await prisma.person.findMany({
       where: whereClause,
       select: {
