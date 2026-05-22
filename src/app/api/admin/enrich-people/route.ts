@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
   const totalRemaining = await prisma.person.count({ where: whereClause });
 
   if (totalRemaining === 0) {
-    return NextResponse.json({ processed: 0, remaining: 0, done: true, results: [] });
+    return NextResponse.json({ ok: true, processed: 0, remaining: 0, done: true, results: [] });
   }
 
   const people = await prisma.person.findMany({
@@ -196,5 +196,5 @@ Write the dossier for ${person.displayName}.`;
   const processed = results.filter((r) => r.ok).length;
   const remaining = totalRemaining - processed;
 
-  return NextResponse.json({ processed, remaining, done: remaining <= 0, results });
+  return NextResponse.json({ ok: true, processed, remaining, done: remaining <= 0, results });
 }

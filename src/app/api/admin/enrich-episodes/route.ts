@@ -262,7 +262,7 @@ export async function POST(req: NextRequest) {
   const totalRemaining = await prisma.episode.count({ where: whereClause });
 
   if (totalRemaining === 0) {
-    return NextResponse.json({ processed: 0, remaining: 0, done: true, results: [] });
+    return NextResponse.json({ ok: true, processed: 0, remaining: 0, done: true, results: [] });
   }
 
   const episodes = await prisma.episode.findMany({
@@ -338,6 +338,7 @@ ${transcript}`;
   const remaining = totalRemaining - processed;
 
   return NextResponse.json({
+    ok: true,
     processed,
     remaining,
     done: remaining <= 0,
