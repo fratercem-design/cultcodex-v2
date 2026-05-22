@@ -44,7 +44,7 @@ interface SupadataJobId {
 async function fetchTranscriptSupadata(
   videoId: string,
   apiKey: string
-): Promise<{ chunks: SupadataChunk[] | null; reason: string }> {
+): Promise<{ chunks: SupadataChunk[] | null; reason: string; rateLimited?: boolean }> {
   // Try YouTube-specific GET endpoint first (works for both native captions and ASR)
   const params = new URLSearchParams({ videoId, lang: "en" });
   let res = await fetch(`${SUPADATA_BASE}/youtube/transcript?${params}`, {
@@ -62,6 +62,9 @@ async function fetchTranscriptSupadata(
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
+    if (res.status === 429) {
+      return { chunks: null, reason: `supadata_429: ${body.slice(0, 200)}`, rateLimited: true };
+    }
     return { chunks: null, reason: `supadata_${res.status}: ${body.slice(0, 200)}` };
   }
 
@@ -139,12 +142,21 @@ export async function POST(req: NextRequest) {
 
   const results: TranscriptResult[] = [];
 
+  let rateLimited = false;
+
   for (let i = 0; i < pending.length; i++) {
     const ep = pending[i];
     const videoId = ep.youtubeVideoId!;
 
     try {
-      const { chunks, reason } = await fetchTranscriptSupadata(videoId, supadataKey);
+      const { chunks, reason, rateLimited: hit429 } = await fetchTranscriptSupadata(videoId, supadataKey);
+
+      if (hit429) {
+        // Plan limit exceeded — stop immediately, don't burn more quota
+        rateLimited = true;
+        results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "error", error: "Supadata plan limit exceeded", reason });
+        break;
+      }
 
       if (!chunks) {
         // 404 = confirmed no captions on YouTube; mark so we never retry
@@ -198,7 +210,12 @@ export async function POST(req: NextRequest) {
     no_transcript: results.filter((r) => r.status === "no_transcript").length,
     errors: results.filter((r) => r.status === "error").length,
     remaining: totalPending - results.length,
+    ...(rateLimited ? { rateLimited: true } : {}),
   };
+
+  if (rateLimited) {
+    return NextResponse.json({ ok: false, error: "Supadata plan limit exceeded. Upgrade your plan or wait for the quota to reset.", summary, results }, { status: 429 });
+  }
 
   return NextResponse.json({ ok: true, summary, results });
 }
