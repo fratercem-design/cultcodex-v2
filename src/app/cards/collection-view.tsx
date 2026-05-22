@@ -109,6 +109,17 @@ export function CollectionView({ collection, stats }: CollectionViewProps) {
               ▸ DAILY READY
             </Link>
           )}
+          <Link href="/cards/decks" style={{
+            fontFamily: "var(--font-mono), monospace",
+            fontSize: 10,
+            color: "var(--term-fg-dim)",
+            border: "1px solid var(--term-line)",
+            borderRadius: 4,
+            padding: "6px 12px",
+            textDecoration: "none",
+          }}>
+            ARRAYS ◈
+          </Link>
           <Link href="/cards/packs" style={{
             fontFamily: "var(--font-mono), monospace",
             fontSize: 10,

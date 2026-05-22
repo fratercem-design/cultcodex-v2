@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import type { Rarity, CardType } from "@/generated/prisma/client";
+import type { Rarity, CardType, Prisma } from "@/generated/prisma/client";
 import { rollRarity, rollFoil } from "@/lib/cards/rarity";
 
 // ─── Collection ─────────────────────────────────────────────────────────────
@@ -213,4 +213,81 @@ export async function earnCreditsForActivity(userId: string, reason: EarnReason,
   ]);
 
   return { granted: amount };
+}
+
+// ─── Deck Builder ─────────────────────────────────────────────────────────────
+
+const MAX_DECK_SIZE = 20;
+const MAX_DECKS_PER_USER = 10;
+
+export async function getUserDecks(userId: string) {
+  return prisma.deck.findMany({
+    where: { userId },
+    include: {
+      deckCards: {
+        include: { card: { select: { id: true, rarity: true, cardType: true, title: true } } },
+      },
+    },
+    orderBy: { updatedAt: "desc" },
+  });
+}
+
+export async function getDeckById(deckId: string, userId: string) {
+  return prisma.deck.findFirst({
+    where: { id: deckId, userId },
+    include: { deckCards: { include: { card: true } } },
+  });
+}
+
+export async function createDeck(userId: string, name: string, description?: string) {
+  const count = await prisma.deck.count({ where: { userId } });
+  if (count >= MAX_DECKS_PER_USER) throw new Error(`Maximum of ${MAX_DECKS_PER_USER} arrays reached`);
+  return prisma.deck.create({
+    data: { userId, name: name.trim(), description: description?.trim() || null },
+    include: { deckCards: { include: { card: true } } },
+  });
+}
+
+export async function updateDeck(
+  deckId: string,
+  userId: string,
+  data: { name?: string; description?: string | null; cardIds?: string[]; isPublic?: boolean }
+) {
+  const deck = await prisma.deck.findFirst({ where: { id: deckId, userId } });
+  if (!deck) throw new Error("Array not found");
+
+  const updates: Prisma.DeckUpdateInput = {};
+  if (data.name !== undefined) updates.name = data.name.trim();
+  if (data.description !== undefined) updates.description = data.description?.trim() || null;
+  if (data.isPublic !== undefined) updates.isPublic = data.isPublic;
+
+  if (data.cardIds !== undefined) {
+    const unique = [...new Set(data.cardIds)];
+    if (unique.length > MAX_DECK_SIZE) throw new Error(`Max ${MAX_DECK_SIZE} cards per array`);
+    if (unique.length > 0) {
+      const owned = await prisma.ownedCard.findMany({
+        where: { userId, cardId: { in: unique } },
+        select: { cardId: true },
+      });
+      const ownedSet = new Set(owned.map((o) => o.cardId));
+      const missing = unique.filter((id) => !ownedSet.has(id));
+      if (missing.length > 0) throw new Error("You don't own all specified cards");
+    }
+    updates.deckCards = {
+      deleteMany: {},
+      create: unique.map((cardId) => ({ cardId })),
+    };
+  }
+
+  return prisma.deck.update({
+    where: { id: deckId },
+    data: updates,
+    include: { deckCards: { include: { card: true } } },
+  });
+}
+
+export async function deleteDeck(deckId: string, userId: string) {
+  const deck = await prisma.deck.findFirst({ where: { id: deckId, userId } });
+  if (!deck) throw new Error("Array not found");
+  await prisma.deck.delete({ where: { id: deckId } });
 }
