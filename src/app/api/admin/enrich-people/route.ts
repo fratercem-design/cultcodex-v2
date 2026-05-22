@@ -67,7 +67,24 @@ export async function POST(req: NextRequest) {
   };
 
   let totalRemaining: number;
-  let people: Awaited<ReturnType<typeof prisma.person.findMany>>;
+  let people: {
+    id: string;
+    displayName: string;
+    slug: string;
+    personType: import("@/generated/prisma/client").PersonType;
+    shortBio: string | null;
+    quotes: { text: string; context: string | null; significance: string | null }[];
+    guestAppearances: {
+      episode: {
+        title: string;
+        slug: string;
+        episodeNumber: number | null;
+        summaryShort: string | null;
+        airDate: Date | null;
+        segments: { speakerLabel: string | null; text: string; startSeconds: number | null }[];
+      };
+    }[];
+  }[];
 
   try {
     totalRemaining = await prisma.person.count({ where: whereClause });
