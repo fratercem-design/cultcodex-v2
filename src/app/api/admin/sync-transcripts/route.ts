@@ -159,8 +159,10 @@ export async function POST(req: NextRequest) {
       }
 
       if (!chunks) {
-        // 404 = confirmed no captions on YouTube; mark so we never retry
-        if (reason.startsWith("supadata_404")) {
+        // Mark permanently unavailable episodes so we skip them on future runs.
+        // 404 = no captions; 403 = age-restricted (can't fetch); empty = no transcript data.
+        const permanent = reason.startsWith("supadata_404") || reason.startsWith("supadata_403") || reason.startsWith("supadata_empty");
+        if (permanent) {
           await prisma.episode.update({
             where: { id: ep.id },
             data: { transcriptRaw: "no_captions" },
