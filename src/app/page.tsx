@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { EpisodeCard } from "@/components/archive/episode-card";
@@ -59,6 +60,11 @@ export default async function HomePage() {
     })),
     getCurrentUser(),
   ]);
+
+  // Redirect new users to complete onboarding before they see the main app
+  if (currentUser && currentUser.onboardingCompleted === false) {
+    redirect("/onboarding");
+  }
 
   const dailyQuoteReactions = dailyTransmission.quote
     ? await getQuoteReactionCounts(dailyTransmission.quote.id, currentUser?.id).catch(() => undefined)

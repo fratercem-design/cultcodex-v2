@@ -19,7 +19,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (!user.email) return false;
 
       try {
-        const dbUser = await prisma.codexUser.upsert({
+        await prisma.codexUser.upsert({
           where: { email: user.email },
           update: {
             avatarUrl: user.image ?? undefined,
@@ -30,9 +30,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             avatarUrl: user.image ?? undefined,
             provider: account?.provider ?? "unknown",
           },
-          select: { onboardingCompleted: true },
         });
-        if (!dbUser.onboardingCompleted) return "/onboarding";
       } catch (err) {
         console.error("[auth] signIn upsert failed:", err);
         // Still allow sign-in even if DB write fails
@@ -45,7 +43,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           let codexUser = await prisma.codexUser.findUnique({
             where: { email: session.user.email },
-            select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true },
+            select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true, onboardingCompleted: true },
           });
 
           // If no DB record exists (e.g. signIn upsert failed when DB was down),
@@ -60,7 +58,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 avatarUrl: session.user.image ?? undefined,
                 provider: (token as { provider?: string })?.provider ?? "google",
               },
-              select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true },
+              select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true, onboardingCompleted: true },
             });
           }
 
@@ -96,6 +94,7 @@ export interface CodexSessionUser {
   avatarUrl: string | null;
   subscriptionStatus: string | null;
   subscriptionTier: string | null;
+  onboardingCompleted: boolean | null;
 }
 
 export interface SessionWithCodex {
