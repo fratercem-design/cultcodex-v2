@@ -119,47 +119,51 @@ export async function POST(req: NextRequest) {
   const limit = Math.min(Math.max(1, body.limit ?? 10), 50);
   const retry = body.retry === true;
 
-  // Pre-cleanup: permanently skip episodes that are confirmed to have no captions.
-  // This runs every call (idempotent) to clear the backlog from before the per-episode
-  // marking was added. Slugs sourced from repeated sync runs returning supadata_empty
-  // or supadata_403. Once marked, these are filtered out by the main query below.
-  if (!retry) {
-    const KNOWN_NO_CAPTIONS = [
-      "psyche-awakens-tarot-is-live-59",
-      "psyche-awakens-tarot-is-live-53",
-      "psyche-awakens-tarot-is-live-36",
-      "psyche-awakens-tarot-is-live-13",
-      "kitty-gang-slumber-party-open-panel-tarot-and-cats",
-      "everyone-hates-me",
-      "bidoouh-a-video-exploration",
-      "i-m-awake-im-awake",
-      "one-more-try-3",
-      "last-call-3",
-      "the-shocking-truth-about-your-favorite-youtuber",
-      "starbucks-run-on-new-ebike",
-      "is-anyone-out-there-does-anyone-care",
-      "rating-tactical-gear-in-real-time-live",
-      "live-streaming-of-psyche-awakens-tarot-3",
-      "wednesday-mcdonalds-open-panel-tarot-and-cats",
-      "hello",
-      "psyche-dancing-in-the-street",
-      "the-magician",
-      "mystical-tarot-reading-unveiling-secrets-in-a-smoky-aura",
-      "a-lot-going-on-get-in-here",
-      "tuesday-afternoon-2",
-      "psyche-awakens-daily-tarot-livestream",
-      "electric-gula-hoop",
-      "free-panelverse-troll-decoder-ebook",
-      "magus",
-      "what-your-resistance-is-actually-protecting-deeptruth-selfawareness",
-      "its-a-circus-around-here-lately-cats-funny-dreamscreenai",
-      "youtubeshow-tarotreading-openpanel-creatorsofinstagram-spiritualcommunity-liveshow",
-      "contact-me-if-you-d-like-to-schedule-an-hour-tarot-reading-for-25-for-a-very-limited-time",
-      "toomuch-2",
-      "ai-turned-me-into-an-anime-character-aimagic-trending",
-      "i-didnt-expect-my-ai-to-do-this-aifilter-viral-trending",
-      "your-authentic-power-awakens-now-transformation-strength",
-    ];
+  // Slugs confirmed to have no captions (supadata_empty or 403 age-restricted).
+  // These are excluded directly in the WHERE query — no prior DB write needed —
+  // so Neon connection pooling can't cause a read-after-write miss.
+  // Also includes two new ones seen in the latest run.
+  const KNOWN_NO_CAPTIONS = retry ? [] : [
+    "psyche-awakens-tarot-is-live-59",
+    "psyche-awakens-tarot-is-live-53",
+    "psyche-awakens-tarot-is-live-36",
+    "psyche-awakens-tarot-is-live-13",
+    "kitty-gang-slumber-party-open-panel-tarot-and-cats",
+    "everyone-hates-me",
+    "bidoouh-a-video-exploration",
+    "i-m-awake-im-awake",
+    "one-more-try-3",
+    "last-call-3",
+    "the-shocking-truth-about-your-favorite-youtuber",
+    "starbucks-run-on-new-ebike",
+    "is-anyone-out-there-does-anyone-care",
+    "rating-tactical-gear-in-real-time-live",
+    "live-streaming-of-psyche-awakens-tarot-3",
+    "wednesday-mcdonalds-open-panel-tarot-and-cats",
+    "hello",
+    "psyche-dancing-in-the-street",
+    "the-magician",
+    "mystical-tarot-reading-unveiling-secrets-in-a-smoky-aura",
+    "a-lot-going-on-get-in-here",
+    "tuesday-afternoon-2",
+    "psyche-awakens-daily-tarot-livestream",
+    "electric-gula-hoop",
+    "free-panelverse-troll-decoder-ebook",
+    "magus",
+    "what-your-resistance-is-actually-protecting-deeptruth-selfawareness",
+    "its-a-circus-around-here-lately-cats-funny-dreamscreenai",
+    "youtubeshow-tarotreading-openpanel-creatorsofinstagram-spiritualcommunity-liveshow",
+    "contact-me-if-you-d-like-to-schedule-an-hour-tarot-reading-for-25-for-a-very-limited-time",
+    "toomuch-2",
+    "ai-turned-me-into-an-anime-character-aimagic-trending",
+    "i-didnt-expect-my-ai-to-do-this-aifilter-viral-trending",
+    "your-authentic-power-awakens-now-transformation-strength",
+    "who-wants-smoke",
+    "fish-tacos-to-go-checkmate",
+  ];
+
+  // Also write the sentinel so future deploys don't need the hardcoded list.
+  if (!retry && KNOWN_NO_CAPTIONS.length > 0) {
     await prisma.episode.updateMany({
       where: { slug: { in: KNOWN_NO_CAPTIONS }, transcriptRaw: null },
       data: { transcriptRaw: "no_captions" },
@@ -174,11 +178,16 @@ export async function POST(req: NextRequest) {
 
   // "no_captions" sentinel = previously confirmed unavailable.
   // retry: true ignores the sentinel so we can re-try with mode: "generate".
+  // KNOWN_NO_CAPTIONS slugs are excluded directly here (not via prior DB write)
+  // to avoid Neon connection-pool read-after-write races.
   const episodes = await prisma.episode.findMany({
     where: {
       youtubeVideoId: { not: null },
       status: "published",
-      ...(retry ? {} : { transcriptRaw: { not: "no_captions" } }),
+      ...(retry ? {} : {
+        transcriptRaw: { not: "no_captions" },
+        ...(KNOWN_NO_CAPTIONS.length > 0 ? { slug: { notIn: KNOWN_NO_CAPTIONS } } : {}),
+      }),
     },
     select: { id: true, slug: true, youtubeVideoId: true },
     orderBy: { airDate: "asc" },
