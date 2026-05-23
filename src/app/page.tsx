@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { EpisodeCard } from "@/components/archive/episode-card";
@@ -62,6 +63,11 @@ export default async function HomePage() {
     getCurrentUser().catch(() => null),
     prisma.weeklyDigest.findFirst({ where: { published: true }, orderBy: { weekOf: "desc" }, select: { title: true, blurb: true, weekOf: true } }).catch(() => null),
   ]);
+
+  // Redirect new users to complete onboarding before they see the main app
+  if (currentUser && currentUser.onboardingCompleted === false) {
+    redirect("/onboarding");
+  }
 
   const dailyQuoteReactions = dailyTransmission.quote
     ? await getQuoteReactionCounts(dailyTransmission.quote.id, currentUser?.id).catch(() => undefined)
