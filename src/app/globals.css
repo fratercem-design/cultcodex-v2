@@ -31,8 +31,8 @@
   /* Accents — use with discipline */
   --color-accent-gold: #C8A96B;
   --color-accent-gold-dim: rgba(200, 169, 107, 0.15);
-  --color-accent-violet: #6E4BAE;
-  --color-accent-violet-dim: rgba(110, 75, 174, 0.13);
+  --color-accent-violet: #9B6ED0;
+  --color-accent-violet-dim: rgba(155, 110, 208, 0.13);
   --color-accent-cyan: #5DB7D8;
   --color-accent-cyan-dim: rgba(93, 183, 216, 0.15);
   --color-accent-crimson: #A94A4A;
@@ -40,8 +40,8 @@
   /* Legacy aliases for existing components */
   --color-accent-green: #C8A96B;
   --color-accent-green-dim: rgba(200, 169, 107, 0.15);
-  --color-accent-purple: #6E4BAE;
-  --color-accent-purple-dim: rgba(110, 75, 174, 0.13);
+  --color-accent-purple: #9B6ED0;
+  --color-accent-purple-dim: rgba(155, 110, 208, 0.13);
 
   /* shadcn/ui mappings */
   --color-background: var(--bg-void);
@@ -103,8 +103,8 @@
   --text-muted: #B6AE9B;
   --accent-gold: #C8A96B;
   --accent-gold-dim: rgba(200, 169, 107, 0.15);
-  --accent-violet: #6E4BAE;
-  --accent-violet-dim: rgba(110, 75, 174, 0.13);
+  --accent-violet: #9B6ED0;
+  --accent-violet-dim: rgba(155, 110, 208, 0.13);
   --accent-cyan: #5DB7D8;
   --accent-cyan-dim: rgba(93, 183, 216, 0.15);
   --accent-crimson: #A94A4A;
@@ -112,8 +112,8 @@
   /* Legacy aliases */
   --accent-green: #C8A96B;
   --accent-green-dim: rgba(200, 169, 107, 0.15);
-  --accent-purple: #6E4BAE;
-  --accent-purple-dim: rgba(110, 75, 174, 0.13);
+  --accent-purple: #9B6ED0;
+  --accent-purple-dim: rgba(155, 110, 208, 0.13);
 
   /* shadcn/ui base (light fallback, overridden by .dark) */
   --background: #0A0A0F;
@@ -128,13 +128,13 @@
   --secondary-foreground: #F3EEDF;
   --muted: #0b0f18;
   --muted-foreground: #B6AE9B;
-  --accent: #6E4BAE;
+  --accent: #9B6ED0;
   --accent-foreground: #F3EEDF;
   --destructive: #A94A4A;
   --input: #182135;
   --ring: rgba(200, 169, 107, 0.3);
   --chart-1: #C8A96B;
-  --chart-2: #6E4BAE;
+  --chart-2: #9B6ED0;
   --chart-3: #5DB7D8;
   --chart-4: #A94A4A;
   --chart-5: #B6AE9B;
@@ -178,7 +178,7 @@ h1, h2, h3 {
 }
 
 @utility glow-violet {
-  box-shadow: 0 0 8px rgba(110, 75, 174, 0.3), 0 0 24px rgba(110, 75, 174, 0.1);
+  box-shadow: 0 0 8px rgba(155, 110, 208, 0.3), 0 0 24px rgba(155, 110, 208, 0.1);
 }
 
 @utility glow-cyan {
@@ -191,7 +191,7 @@ h1, h2, h3 {
 }
 
 @utility glow-purple {
-  box-shadow: 0 0 8px rgba(110, 75, 174, 0.3), 0 0 24px rgba(110, 75, 174, 0.1);
+  box-shadow: 0 0 8px rgba(155, 110, 208, 0.3), 0 0 24px rgba(155, 110, 208, 0.1);
 }
 
 @utility border-glow-green {
@@ -224,14 +224,14 @@ h1, h2, h3 {
   --secondary-foreground: #F3EEDF;
   --muted: #0b0f18;
   --muted-foreground: #B6AE9B;
-  --accent: #6E4BAE;
+  --accent: #9B6ED0;
   --accent-foreground: #F3EEDF;
   --destructive: #A94A4A;
   --border: #182135;
   --input: #182135;
   --ring: rgba(200, 169, 107, 0.3);
   --chart-1: #C8A96B;
-  --chart-2: #6E4BAE;
+  --chart-2: #9B6ED0;
   --chart-3: #5DB7D8;
   --chart-4: #A94A4A;
   --chart-5: #B6AE9B;
