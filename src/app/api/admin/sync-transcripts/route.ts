@@ -257,6 +257,15 @@ export async function POST(req: NextRequest) {
     no_transcript: results.filter((r) => r.status === "no_transcript").length,
     errors: results.filter((r) => r.status === "error").length,
     remaining: totalPending - results.length,
+    // DEBUG — remove after confirming SKIP_SLUGS works
+    _debug: {
+      retryMode: retry,
+      skipSlugsSize: SKIP_SLUGS.size,
+      allEpisodesCount: allEpisodes.length,
+      episodesAfterFilter: episodes.length,
+      firstPendingSlug: pending[0]?.slug ?? null,
+      firstPendingInSkipSet: pending[0] ? SKIP_SLUGS.has(pending[0].slug) : null,
+    },
     ...(rateLimited ? { rateLimited: true } : {}),
   };
 
