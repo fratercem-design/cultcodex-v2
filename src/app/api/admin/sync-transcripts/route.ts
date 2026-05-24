@@ -119,11 +119,10 @@ export async function POST(req: NextRequest) {
   const limit = Math.min(Math.max(1, body.limit ?? 10), 50);
   const retry = body.retry === true;
 
-  // Slugs confirmed to have no captions (supadata_empty or 403 age-restricted).
-  // These are excluded directly in the WHERE query — no prior DB write needed —
-  // so Neon connection pooling can't cause a read-after-write miss.
-  // Also includes two new ones seen in the latest run.
-  const KNOWN_NO_CAPTIONS = retry ? [] : [
+  // Slugs confirmed permanently unavailable (supadata_empty / 403 age-restricted).
+  // Filtered in JS after the DB fetch — no Prisma `notIn` clause, no DB write,
+  // no Neon pooling read-after-write race. Add slugs here as they're discovered.
+  const SKIP_SLUGS = new Set(retry ? [] : [
     "psyche-awakens-tarot-is-live-59",
     "psyche-awakens-tarot-is-live-53",
     "psyche-awakens-tarot-is-live-36",
@@ -160,15 +159,7 @@ export async function POST(req: NextRequest) {
     "your-authentic-power-awakens-now-transformation-strength",
     "who-wants-smoke",
     "fish-tacos-to-go-checkmate",
-  ];
-
-  // Also write the sentinel so future deploys don't need the hardcoded list.
-  if (!retry && KNOWN_NO_CAPTIONS.length > 0) {
-    await prisma.episode.updateMany({
-      where: { slug: { in: KNOWN_NO_CAPTIONS }, transcriptRaw: null },
-      data: { transcriptRaw: "no_captions" },
-    });
-  }
+  ]);
 
   const episodesWithTranscripts = await prisma.transcriptSegment.groupBy({
     by: ["episodeId"],
@@ -176,22 +167,19 @@ export async function POST(req: NextRequest) {
   });
   const hasTranscript = new Set(episodesWithTranscripts.map((e) => e.episodeId));
 
-  // "no_captions" sentinel = previously confirmed unavailable.
-  // retry: true ignores the sentinel so we can re-try with mode: "generate".
-  // KNOWN_NO_CAPTIONS slugs are excluded directly here (not via prior DB write)
-  // to avoid Neon connection-pool read-after-write races.
-  const episodes = await prisma.episode.findMany({
+  // "no_captions" sentinel = previously confirmed unavailable (skip unless retry).
+  const allEpisodes = await prisma.episode.findMany({
     where: {
       youtubeVideoId: { not: null },
       status: "published",
-      ...(retry ? {} : {
-        transcriptRaw: { not: "no_captions" },
-        ...(KNOWN_NO_CAPTIONS.length > 0 ? { slug: { notIn: KNOWN_NO_CAPTIONS } } : {}),
-      }),
+      ...(retry ? {} : { transcriptRaw: { not: "no_captions" } }),
     },
     select: { id: true, slug: true, youtubeVideoId: true },
     orderBy: { airDate: "asc" },
   });
+
+  // Filter SKIP_SLUGS in JS — no Prisma notIn, no DB write, no pool race.
+  const episodes = allEpisodes.filter((ep) => !SKIP_SLUGS.has(ep.slug));
 
   const pending = episodes.filter((ep) => !hasTranscript.has(ep.id)).slice(0, limit);
   const totalPending = episodes.filter((ep) => !hasTranscript.has(ep.id)).length;
