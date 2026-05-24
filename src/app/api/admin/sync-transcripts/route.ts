@@ -3,10 +3,10 @@ import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 
 export const runtime = "nodejs";
-export const maxDuration = 300;
+export const maxDuration = 600; // 10 min — enough headroom for 100 episodes
 export const dynamic = "force-dynamic";
 
-const DELAY_MS = 3000;
+const DELAY_MS = 2000; // 2s between requests — still polite, fits 100 in ~600s
 const SUPADATA_BASE = "https://api.supadata.ai/v1";
 
 function sleep(ms: number) {
@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json().catch(() => ({})) as { limit?: number; retry?: boolean };
-  const limit = Math.min(Math.max(1, body.limit ?? 10), 50);
+  const limit = Math.min(Math.max(1, body.limit ?? 10), 100);
   const retry = body.retry === true;
 
   // No hardcoded skip list needed — the DB sentinel (transcriptRaw = "no_captions")
@@ -166,13 +166,20 @@ export async function POST(req: NextRequest) {
         // Mark permanently unavailable episodes so we skip them on future runs.
         // 404 = no captions; 403 = age-restricted (can't fetch); empty = no transcript data.
         const permanent = reason.startsWith("supadata_404") || reason.startsWith("supadata_403") || reason.startsWith("supadata_empty");
+        let markReason = reason;
         if (permanent) {
-          await prisma.episode.update({
-            where: { id: ep.id },
-            data: { transcriptRaw: "no_captions" },
-          });
+          try {
+            await prisma.episode.update({
+              where: { id: ep.id },
+              data: { transcriptRaw: "no_captions" },
+            });
+            markReason = `${reason} [marked]`;
+          } catch (dbErr) {
+            const dbMsg = dbErr instanceof Error ? dbErr.message : String(dbErr);
+            markReason = `${reason} [mark_failed: ${dbMsg.slice(0, 80)}]`;
+          }
         }
-        results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "no_transcript", reason });
+        results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "no_transcript", reason: markReason });
       } else {
         await prisma.transcriptSegment.createMany({
           data: chunks.map((chunk) => {
