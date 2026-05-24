@@ -157,6 +157,7 @@ export async function POST(req: NextRequest) {
     "ai-turned-me-into-an-anime-character-aimagic-trending",
     "i-didnt-expect-my-ai-to-do-this-aifilter-viral-trending",
     "your-authentic-power-awakens-now-transformation-strength",
+    "whos-bbc-was-that-open-panel-tarot-cats-and-chaos",
     "who-wants-smoke",
     "fish-tacos-to-go-checkmate",
   ]);

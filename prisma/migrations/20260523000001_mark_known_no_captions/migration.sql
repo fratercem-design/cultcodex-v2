@@ -41,7 +41,10 @@ WHERE status = 'published'
     'toomuch-2',
     'ai-turned-me-into-an-anime-character-aimagic-trending',
     'i-didnt-expect-my-ai-to-do-this-aifilter-viral-trending',
-    'your-authentic-power-awakens-now-transformation-strength'
+    'your-authentic-power-awakens-now-transformation-strength',
+    'whos-bbc-was-that-open-panel-tarot-cats-and-chaos',
+    'who-wants-smoke',
+    'fish-tacos-to-go-checkmate'
   );
 
 -- Also mark the age-restricted (403) episodes that weren't shown by slug.
