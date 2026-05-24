@@ -1,8 +1,5 @@
 [build]
-# Run migrations at build time so failures show up as build errors (visible),
-# not as silent start-command failures that cause Railway to fall back to old code.
-# The `|| true` resolve calls clear any P3009-blocked migrations before deploying.
-buildCommand = "npx prisma migrate resolve --rolled-back 20260521000000_fix_typos_seed_packs || true; npx prisma migrate resolve --rolled-back 20260522000000_add_deck_builder || true; npx prisma migrate resolve --rolled-back 20260522000001_card_abilities_default || true; npx prisma migrate resolve --rolled-back 20260523000000_fix_wallet_balance_and_credit_tx || true; npx prisma migrate resolve --rolled-back 20260523000001_mark_known_no_captions || true; npm run build:migrate"
+buildCommand = "npm run build"
 
 [deploy]
 startCommand = "npm run start"
