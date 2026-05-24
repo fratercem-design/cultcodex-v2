@@ -522,7 +522,7 @@ function hexToRgb(cssVar: string): string {
     "var(--neon-3)":      "255,43,214",
     "var(--neon-4)":      "255,184,0",
     "var(--neon-5)":      "255,56,96",
-    "var(--term-fg-dim)": "120,140,160",
+    "var(--term-fg-dim)": "156,188,179",
   };
   return map[cssVar] ?? "120,140,160";
 }

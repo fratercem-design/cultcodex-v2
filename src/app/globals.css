@@ -330,9 +330,9 @@ textarea:focus-visible {
   --term-line-2: #243151;
   --term-line-hot: #2c3a5e;
   --term-fg: #d4f5e8;
-  --term-fg-dim: #7a948c;
-  --term-fg-faint: #3d524a;
-  --term-fg-mute: #2a3833;
+  --term-fg-dim: #9cbcb3;    /* was #7a948c — lifted to ~10:1 contrast */
+  --term-fg-faint: #6b9589;  /* was #3d524a — lifted to ~6.5:1 contrast */
+  --term-fg-mute: #527a6e;   /* was #2a3833 — lifted to ~4.7:1 contrast */
   --glow-neon: 0 0 6px rgba(0, 255, 156, 0.6), 0 0 18px rgba(0, 255, 156, 0.25);
   --glow-cyan: 0 0 6px rgba(0, 229, 255, 0.6), 0 0 18px rgba(0, 229, 255, 0.25);
   --glow-magenta: 0 0 6px rgba(255, 43, 214, 0.55), 0 0 22px rgba(255, 43, 214, 0.22);
