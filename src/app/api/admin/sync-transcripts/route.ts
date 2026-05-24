@@ -179,8 +179,19 @@ export async function POST(req: NextRequest) {
     orderBy: { airDate: "asc" },
   });
 
+  // Find the first allEpisodes slug that "looks like" a skip slug to expose encoding differences
+  const firstSuspect = allEpisodes.find(ep =>
+    ep.slug.includes("psyche-awakens-tarot-is-live") ||
+    ep.slug.includes("everyone-hates") ||
+    ep.slug.includes("magus")
+  );
+  const suspectCharCodes = firstSuspect
+    ? Array.from(firstSuspect.slug).map(c => c.charCodeAt(0))
+    : null;
+
   // Filter SKIP_SLUGS in JS — no Prisma notIn, no DB write, no pool race.
-  const episodes = allEpisodes.filter((ep) => !SKIP_SLUGS.has(ep.slug));
+  // Use trimmed comparison in case DB slugs have whitespace.
+  const episodes = allEpisodes.filter((ep) => !SKIP_SLUGS.has(ep.slug.trim()));
 
   const pending = episodes.filter((ep) => !hasTranscript.has(ep.id)).slice(0, limit);
   const totalPending = episodes.filter((ep) => !hasTranscript.has(ep.id)).length;
@@ -264,7 +275,13 @@ export async function POST(req: NextRequest) {
       allEpisodesCount: allEpisodes.length,
       episodesAfterFilter: episodes.length,
       firstPendingSlug: pending[0]?.slug ?? null,
-      firstPendingInSkipSet: pending[0] ? SKIP_SLUGS.has(pending[0].slug) : null,
+      firstPendingInSkipSet: pending[0] ? SKIP_SLUGS.has(pending[0].slug.trim()) : null,
+      // Encoding probe: char codes of first suspect slug
+      suspectSlug: firstSuspect?.slug ?? null,
+      suspectCharCodes,
+      // Direct has-check with exact string from DB
+      directHasCheck: firstSuspect ? SKIP_SLUGS.has(firstSuspect.slug) : null,
+      directHasTrimmed: firstSuspect ? SKIP_SLUGS.has(firstSuspect.slug.trim()) : null,
     },
     ...(rateLimited ? { rateLimited: true } : {}),
   };
