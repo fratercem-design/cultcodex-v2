@@ -33,7 +33,11 @@ export default async function PremiumPage() {
     getArchiveStats(),
   ]);
 
-  const isActive = subStatus?.isAdmin || subStatus?.status === "active";
+  // hasAccess: gates what the user can SEE (admin + paying subscribers)
+  // isPaying:  gates checkout button visibility (only paying subscribers, not admins)
+  const hasAccess = subStatus?.isAdmin || subStatus?.status === "active";
+  const isPaying = subStatus?.status === "active" && subStatus?.hasSubscription;
+  const isActive = isPaying; // hide checkout buttons only for paying users
   const currentTier = subStatus?.tier;
   const notSignedIn = !user;
 
@@ -49,7 +53,7 @@ export default async function PremiumPage() {
       <main id="main-content" className="mx-auto max-w-6xl px-4 py-12 space-y-16">
 
         {/* ── Already subscribed ── */}
-        {isActive && subStatus && (
+        {isPaying && subStatus && (
           <section className="max-w-3xl mx-auto">
             <ManageSubscription
               status={subStatus.status}
@@ -88,7 +92,7 @@ export default async function PremiumPage() {
                   "The vocabulary of the system — visible but not yet decoded",
                   "Search the surface — enough to know you're missing the depth",
                 ],
-                active: !isActive,
+                active: !hasAccess,
               },
               {
                 role: "Initiate",
@@ -105,7 +109,7 @@ export default async function PremiumPage() {
                   "Find the exact moment a dynamic shifted",
                   "Entry points chosen by people who've already gone deep",
                 ],
-                active: isActive && currentTier === "access",
+                active: hasAccess && currentTier === "access",
               },
               {
                 role: "Oracle",
@@ -122,7 +126,7 @@ export default async function PremiumPage() {
                   "See the full power structure — who connects to whom",
                   "A permanent named role in the record",
                 ],
-                active: isActive && currentTier === "system",
+                active: hasAccess && currentTier === "system",
               },
             ].map((tier) => (
               <div key={tier.role} className={`${tier.bg} ${tier.border} p-7 space-y-4`}>
@@ -233,7 +237,7 @@ export default async function PremiumPage() {
                       </p>
                     </div>
                   )}
-                  {isActive && currentTier !== t.slug && t.slug === "system" && (
+                  {isPaying && currentTier !== t.slug && t.slug === "system" && (
                     <div className="mt-7">
                       <TierCheckoutButton
                         tier={t.slug}
@@ -350,7 +354,7 @@ export default async function PremiumPage() {
         </section>
 
         {/* ── Final CTA ── */}
-        {!isActive && (
+        {!isPaying && (
           <section className="relative overflow-hidden rounded-2xl border border-accent-gold/40 bg-gradient-to-b from-[#1a0033] via-[#0d001a] to-[#0d001a] p-10 text-center shadow-2xl shadow-accent-gold/10 max-w-3xl mx-auto">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute -top-16 left-1/2 h-48 w-96 -translate-x-1/2 rounded-full bg-accent-gold/10 blur-3xl" />
