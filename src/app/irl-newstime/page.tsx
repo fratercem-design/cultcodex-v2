@@ -7,13 +7,21 @@ export const revalidate = 120; // re-check live status every 2 min
 
 export const metadata: Metadata = {
   title: "IRL Newstime — CultCodex",
-  description: "Latest videos and live streams from IRL Newstime and IP2Wiki.",
+  description: "Latest videos and live streams from IRL Newstime, IP2Wiki, and Alexandra Mayers.",
 };
 
 const CHANNELS = [
-  { handle: "@IRLnewsTime", label: "IRL Newstime" },
-  { handle: "@ip2wikiinfo",  label: "IP2Wiki"      },
+  { handle: "@IRLnewsTime",     label: "IRL Newstime"    },
+  { handle: "@ip2wikiinfo",     label: "IP2Wiki"          },
+  { handle: "@alexandramayers", label: "Alexandra Mayers" },
 ];
+
+/** One colour per channel — extend as channels are added */
+const CHANNEL_COLORS = [
+  "text-accent-gold",
+  "text-accent-cyan",
+  "text-accent-violet",
+] as const;
 
 interface VideoItem {
   videoId: string;
@@ -139,18 +147,16 @@ export default async function IRLNewstimePage() {
 
   const yt = google.youtube({ version: "v3", auth: apiKey });
 
-  const [ch1Videos, ch2Videos] = await Promise.allSettled([
-    fetchChannelVideos(yt, CHANNELS[0].handle, CHANNELS[0].label),
-    fetchChannelVideos(yt, CHANNELS[1].handle, CHANNELS[1].label),
-  ]);
+  // Fetch all channels in parallel; failures don't block the others
+  const results = await Promise.allSettled(
+    CHANNELS.map((ch) => fetchChannelVideos(yt, ch.handle, ch.label))
+  );
+  const channelVideos = results.map((r) => (r.status === "fulfilled" ? r.value : []));
 
-  const ch1 = ch1Videos.status === "fulfilled" ? ch1Videos.value : [];
-  const ch2 = ch2Videos.status === "fulfilled" ? ch2Videos.value : [];
-
-  const allVideos = [
-    ...ch1.map((v) => ({ ...v, channelIdx: 0 })),
-    ...ch2.map((v) => ({ ...v, channelIdx: 1 })),
-  ];
+  // Flatten with channel index for colour coding
+  const allVideos = channelVideos.flatMap((videos, idx) =>
+    videos.map((v) => ({ ...v, channelIdx: idx }))
+  );
 
   // Live streams first, then sorted by date
   allVideos.sort((a, b) => {
@@ -175,7 +181,7 @@ export default async function IRLNewstimePage() {
             </span>
           )}
         </div>
-        <div className="flex gap-3 font-mono text-xs text-text-muted">
+        <div className="flex flex-wrap gap-3 font-mono text-xs text-text-muted">
           {CHANNELS.map((ch) => (
             <a
               key={ch.handle}
@@ -194,17 +200,14 @@ export default async function IRLNewstimePage() {
         <p className="font-mono text-sm text-text-muted">No videos found. Check YOUTUBE_API_KEY and channel handles.</p>
       )}
 
-      {/* Channel tabs / legend */}
-      <div className="flex gap-3">
-        {CHANNELS.map((ch, i) => {
-          const count = i === 0 ? ch1.length : ch2.length;
-          return (
-            <span key={ch.handle} className="rounded border border-border bg-surface px-3 py-1 font-mono text-[10px] text-text-muted">
-              <span className={i === 0 ? "text-accent-gold" : "text-accent-cyan"}>{ch.label}</span>
-              {" · "}{count} videos
-            </span>
-          );
-        })}
+      {/* Channel legend */}
+      <div className="flex flex-wrap gap-3">
+        {CHANNELS.map((ch, i) => (
+          <span key={ch.handle} className="rounded border border-border bg-surface px-3 py-1 font-mono text-[10px] text-text-muted">
+            <span className={CHANNEL_COLORS[i] ?? "text-text-muted"}>{ch.label}</span>
+            {" · "}{channelVideos[i].length} videos
+          </span>
+        ))}
       </div>
 
       {/* Video grid */}
@@ -212,7 +215,7 @@ export default async function IRLNewstimePage() {
         {allVideos.map((v) => {
           const dur = formatDuration(v.duration);
           const views = formatViews(v.viewCount);
-          const channelColor = v.channelIdx === 0 ? "text-accent-gold" : "text-accent-cyan";
+          const channelColor = CHANNEL_COLORS[v.channelIdx] ?? "text-text-muted";
           return (
             <a
               key={v.videoId}
