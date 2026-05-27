@@ -1,5 +1,5 @@
 [build]
-buildCommand = "npm run build"
+buildCommand = "npm run build:migrate"
 
 [deploy]
 startCommand = "npm run start"
