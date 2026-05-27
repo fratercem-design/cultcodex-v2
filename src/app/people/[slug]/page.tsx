@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
-import { buildMetadata, jsonLdScript } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
 import { AiNotice } from "@/components/ui/ai-notice";
 import { ERAS, getEraForEpisode } from "@/lib/eras";
 import { archetypeToSlug, splitArchetypes } from "@/lib/queries/archetypes";
@@ -768,7 +768,29 @@ export default async function PersonDetailPage({ params }: PageProps) {
               ? { firstAppearance: person.firstAppearanceEpisode.airDate.toISOString().slice(0, 10) }
               : {}),
             numberOfAppearances: uniqueEpisodes.length,
+            // Topics this person discusses — knowledge-graph edges
+            ...(person.topics.length > 0
+              ? {
+                  knowsAbout: person.topics.slice(0, 8).map((t) => ({
+                    "@type": "DefinedTerm",
+                    name: t.topic.title,
+                    url: `https://cultcodex.me/topics/${t.topic.slug}`,
+                  })),
+                }
+              : {}),
           }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbListJsonLd([
+              { name: "CultCodex", url: "https://cultcodex.me" },
+              { name: "Voices", url: "https://cultcodex.me/people" },
+              { name: person.displayName, url: `https://cultcodex.me/people/${person.slug}` },
+            ])
+          ),
         }}
       />
     </>

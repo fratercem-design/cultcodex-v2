@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
+import { jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
 import { ArchetypeTimelineChart } from "@/components/psychenomicon/archetype-timeline-chart";
 import { ArchetypeRadarChart } from "@/components/psychenomicon/archetype-radar-chart";
 import Link from "next/link";
@@ -358,6 +359,35 @@ export default async function EntityPage({ params }: PageProps) {
           </Link>
         </aside>
       </div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript({
+            "@context": "https://schema.org",
+            "@type": entity.personSlug ? "Person" : "Thing",
+            name: entity.name,
+            ...(entity.primaryArchetype ? { description: `${entity.primaryArchetype} — Psychenomicon entity` } : {}),
+            url: `https://cultcodex.me/psychenomicon/entities/${entity.slug}`,
+            ...(entity.personSlug
+              ? { sameAs: `https://cultcodex.me/people/${entity.personSlug}` }
+              : {}),
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbListJsonLd([
+              { name: "CultCodex", url: "https://cultcodex.me" },
+              { name: "Psychenomicon", url: "https://cultcodex.me/psychenomicon" },
+              { name: "Entities", url: "https://cultcodex.me/psychenomicon/entities" },
+              { name: entity.name, url: `https://cultcodex.me/psychenomicon/entities/${entity.slug}` },
+            ])
+          ),
+        }}
+      />
     </main>
   );
 }
