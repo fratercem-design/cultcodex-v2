@@ -25,6 +25,7 @@ import { getPrisma, disconnect } from "../ingest/lib";
 import { analyzeChapter } from "./analyze";
 import { buildPrompts } from "./prompts";
 import { generateImages } from "./images";
+import { uploadChapterArt } from "./upload";
 import type { ChapterArtOutput } from "./types";
 
 // ─── Output directories ────────────────────────────────────────────────────
@@ -59,16 +60,18 @@ function parseArgs() {
   let force = false;
   let dryRun = false;
   let skipImages = false;
+  let skipUpload = false;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--chapter" && args[i + 1]) { chapterSlug = args[++i]; }
     if (args[i] === "--batch"   && args[i + 1]) { batch = parseInt(args[++i], 10); }
-    if (args[i] === "--force")    { force = true; }
-    if (args[i] === "--dry-run")  { dryRun = true; skipImages = true; }
+    if (args[i] === "--force")       { force = true; }
+    if (args[i] === "--dry-run")     { dryRun = true; skipImages = true; }
     if (args[i] === "--skip-images") { skipImages = true; }
+    if (args[i] === "--skip-upload") { skipUpload = true; }
   }
 
-  return { chapterSlug, batch, force, dryRun, skipImages };
+  return { chapterSlug, batch, force, dryRun, skipImages, skipUpload };
 }
 
 // ─── Helper: check if chapter already has output ─────────────────────────
@@ -88,16 +91,17 @@ function sleep(ms: number) {
 // ─── Main ─────────────────────────────────────────────────────────────────
 
 async function main() {
-  const { chapterSlug, batch, force, dryRun, skipImages } = parseArgs();
+  const { chapterSlug, batch, force, dryRun, skipImages, skipUpload } = parseArgs();
 
   // Ensure output directories exist
   fs.mkdirSync(PROMPTS_DIR, { recursive: true });
   fs.mkdirSync(IMAGES_DIR,  { recursive: true });
 
   log("━━━ Psychenomicon Art Pipeline ━━━");
-  if (dryRun)      log("  Mode: dry-run (no images generated)");
-  if (skipImages)  log("  Mode: skip-images (prompts only)");
-  if (force)       log("  Mode: force (re-process existing outputs)");
+  if (dryRun)       log("  Mode: dry-run (no images generated)");
+  if (skipImages)   log("  Mode: skip-images (prompts only)");
+  if (skipUpload)   log("  Mode: skip-upload (no Supabase upload)");
+  if (force)        log("  Mode: force (re-process existing outputs)");
   if (chapterSlug) log(`  Filter: chapter slug = ${chapterSlug}`);
   if (batch)       log(`  Batch limit: ${batch}`);
 
@@ -203,7 +207,7 @@ async function main() {
           dryRun,
         });
 
-        // Update the saved JSON with image paths
+        // Update the saved JSON with local image paths
         const fullOutput: ChapterArtOutput = {
           ...(output as ChapterArtOutput),
           imagePaths: {
@@ -215,6 +219,33 @@ async function main() {
         };
         fs.writeFileSync(promptsPath, JSON.stringify(fullOutput, null, 2));
         log(`     Images saved to ${path.relative(process.cwd(), chapterImagesDir)}/`);
+
+        // ── Step 4: Upload to Supabase Storage + write URLs to DB ─────────
+        if (!skipUpload) {
+          log("  [4/4] Uploading to Supabase Storage…");
+          const artUrls = await uploadChapterArt(
+            chapter.slug,
+            {
+              cover:    imagePaths.cover,
+              scene_01: imagePaths.scene_01,
+              scene_02: imagePaths.scene_02,
+              scene_03: imagePaths.scene_03,
+            },
+            { dryRun }
+          );
+
+          // Persist URLs into the DB so the Next.js app can read them
+          await prisma.psychenomiconChapter.update({
+            where: { slug: chapter.slug },
+            data: {
+              artImageUrls:   artUrls,
+              artGeneratedAt: new Date(),
+            },
+          });
+          log(`  ✓  Art URLs saved to DB for ${chapter.slug}`);
+        } else {
+          log("  [4/4] Skipping upload (--skip-upload)");
+        }
       } else {
         log("  [3/3] Skipping image generation (--skip-images or --dry-run)");
       }
