@@ -107,10 +107,24 @@ export default async function EditEpisodePage({ params }: PageProps) {
         />
 
         <AdminFormField
-          label="Long Summary"
+          label="Long Summary (legacy)"
           name="summaryLong"
           type="textarea"
           defaultValue={episode.summaryLong}
+        />
+
+        <AdminFormField
+          label="Facts Summary (What Happened)"
+          name="summaryFacts"
+          type="textarea"
+          defaultValue={episode.summaryFacts}
+        />
+
+        <AdminFormField
+          label="Interpretive Layer (Themes)"
+          name="summaryThemes"
+          type="textarea"
+          defaultValue={episode.summaryThemes}
         />
 
         <div className="grid gap-4 sm:grid-cols-2">

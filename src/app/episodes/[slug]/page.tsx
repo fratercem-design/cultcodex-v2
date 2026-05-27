@@ -17,6 +17,7 @@ import { AiNotice } from "@/components/ui/ai-notice";
 import { getConfidenceTier } from "@/lib/format/confidence-tier";
 import { renderWithTimestamps } from "@/lib/format/render-timestamps";
 import { HumanReviewBadge } from "@/components/ui/human-review-badge";
+import { SplitSummaryCard } from "@/components/episodes/split-summary";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EpisodeHero } from "@/components/episodes/episode-hero";
 import { EpisodeGlanceBar } from "@/components/episodes/episode-glance-bar";
@@ -354,8 +355,17 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               {{
                 overview: (
                   <div className="space-y-6">
-                    {/* Summary */}
-                    {episode.summaryLong && (
+                    {/* Summary — split view (new) or legacy single-blob (old) */}
+                    {episode.summaryFacts ? (
+                      <SplitSummaryCard
+                        summaryFacts={episode.summaryFacts}
+                        summaryThemes={episode.summaryThemes}
+                        youtubeVideoId={episode.youtubeVideoId}
+                        confidenceTier={confidenceTier}
+                        isHumanReviewed={episode.isHumanReviewed}
+                        humanReviewedAt={episode.humanReviewedAt}
+                      />
+                    ) : episode.summaryLong ? (
                       <SectionCard title="Summary">
                         <p className="text-sm text-text-primary leading-relaxed">
                           {renderWithTimestamps(episode.summaryLong, episode.youtubeVideoId)}
@@ -367,7 +377,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                           <AiNotice tier={confidenceTier} />
                         </div>
                       </SectionCard>
-                    )}
+                    ) : null}
 
                     {/* Guests (inline for mobile) — hosts filtered out */}
                     {actualGuests.length > 0 && (

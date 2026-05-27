@@ -70,6 +70,10 @@ model Episode {
   thumbnailUrl    String?
   summaryShort    String?
   summaryLong     String?
+  /** Transcript-grounded recap: what happened, who appeared, notable moments with timestamps */
+  summaryFacts    String?
+  /** AI interpretive layer: recurring patterns, thematic significance, arc context */
+  summaryThemes   String?
   cutOfPsyche     String?
   transcriptRaw   String?
   transcriptHtml  String?

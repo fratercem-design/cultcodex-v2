@@ -50,7 +50,12 @@ const LoreSchema = z.object({
 
 const EnrichmentSchema = z.object({
   summaryShort: z.string().default(""),
-  summaryLong: z.string().default(""),
+  // Legacy — kept so old-format responses don't break parsing.
+  summaryLong: z.string().optional().default(""),
+  /** Transcript-grounded recap */
+  summaryFacts: z.string().optional().default(""),
+  /** Interpretive layer */
+  summaryThemes: z.string().optional().default(""),
   cutOfPsyche: z.string().nullable().optional().default(""),
   guests: z.array(GuestSchema).default([]),
   quotes: z.array(QuoteSchema).default([]),
@@ -69,7 +74,8 @@ Your task: analyze the provided episode transcript and extract structured data. 
 Return a JSON object with this exact structure:
 {
   "summaryShort": "1-2 sentence summary of the episode",
-  "summaryLong": "2-3 paragraph comprehensive summary covering main topics, key moments, and themes. Where you reference a specific moment from the transcript, embed its timestamp as [MM:SS] or [H:MM:SS]. Use only timestamps that appear in the provided transcript. Aim for 2–5 timestamp references total.",
+  "summaryFacts": "WHAT HAPPENED — 2-3 paragraphs, transcript-grounded. Cover who appeared, what was discussed, key events and exchanges, in the order they occurred. Embed [MM:SS] or [H:MM:SS] timestamps when referencing specific moments. Use only timestamps from the provided transcript. Aim for 3–6 timestamp references. Write like a TV recap — clear, specific, no interpretation.",
+  "summaryThemes": "INTERPRETIVE LAYER — 1-2 paragraphs. Identify recurring patterns, thematic threads, and what this episode represents in the context of the show. Explicitly frame everything as interpretation: 'appears to', 'suggests', 'continues the pattern of'. Do NOT repeat facts from summaryFacts — only add the layer of meaning. Keep it grounded; avoid mythology (that belongs to the Psychenomicon).",
   "cutOfPsyche": "A characteristic or memorable quote/moment from this episode (verbatim from transcript if possible)",
   "guests": [
     {
@@ -101,7 +107,8 @@ Return a JSON object with this exact structure:
 Guidelines:
 - For guests: include the host as personType "host". Panel participants are "guest". People discussed but not present are "mentioned".
 - For quotes: extract the 3-5 most notable, interesting, or representative quotes. Include timestamp in seconds if identifiable.
-- For summaryLong: embed [MM:SS] or [H:MM:SS] timestamp references when citing specific moments. Use only timestamps visible in the transcript. If no transcript is provided, omit timestamps entirely.
+- For summaryFacts: embed [MM:SS] or [H:MM:SS] timestamps for specific moments. Use only timestamps from the transcript. Omit timestamps if no transcript is available.
+- For summaryThemes: frame everything as interpretation — use "appears to", "suggests", "continues the pattern of". Never assert facts; those go in summaryFacts.
 - For lore: identify mythology references, recurring show concepts, tarot interpretations, or spiritual/occult ideas discussed.
 - For topics: list the main subjects discussed (e.g., "tarot", "consciousness", "astrology", "Greek mythology").
 - Return ONLY valid JSON. No markdown, no code fences, no explanation.
@@ -141,12 +148,19 @@ async function importEnrichment(
   episodeId: string,
   data: EnrichmentResult
 ): Promise<void> {
-  // Update episode summary fields
+  // Update episode summary fields.
+  // New enrichments write summaryFacts + summaryThemes (split format).
+  // summaryLong is only written when the model still returns it (legacy fallback).
   await prisma.episode.update({
     where: { id: episodeId },
     data: {
       summaryShort: data.summaryShort || undefined,
-      summaryLong: data.summaryLong || undefined,
+      summaryFacts: data.summaryFacts || undefined,
+      summaryThemes: data.summaryThemes || undefined,
+      // Legacy: only preserved if model returned it and new fields are empty
+      ...(data.summaryLong && !data.summaryFacts
+        ? { summaryLong: data.summaryLong }
+        : {}),
       cutOfPsyche: data.cutOfPsyche || undefined,
     },
   });

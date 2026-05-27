@@ -31,6 +31,8 @@ export async function updateEpisode(id: string, formData: FormData) {
       status: formData.get("status") as ContentStatus,
       summaryShort: (formData.get("summaryShort") as string) || null,
       summaryLong: (formData.get("summaryLong") as string) || null,
+      summaryFacts: (formData.get("summaryFacts") as string) || null,
+      summaryThemes: (formData.get("summaryThemes") as string) || null,
       youtubeVideoId: (formData.get("youtubeVideoId") as string) || null,
       thumbnailUrl: (formData.get("thumbnailUrl") as string) || null,
       contentType: (formData.get("contentType") as ContentType) || null,

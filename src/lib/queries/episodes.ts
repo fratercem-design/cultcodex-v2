@@ -53,7 +53,10 @@ export function formatEpisodeForCard(episode: EpisodeWithRelations): EpisodeCard
     status: episode.status,
     hasVideo: !!(episode.youtubeVideoId || episode.rumbleVideoId),
     segmentCount: episode.segments.length,
-    hasSummary: !!(episode.summaryLong && episode.summaryLong.length > 0),
+    hasSummary: !!(
+      (episode.summaryFacts && episode.summaryFacts.length > 0) ||
+      (episode.summaryLong && episode.summaryLong.length > 0)
+    ),
     isHumanReviewed: episode.isHumanReviewed,
     humanReviewedAt: episode.humanReviewedAt,
     guestNames: episode.guests
