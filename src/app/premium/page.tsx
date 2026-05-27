@@ -75,7 +75,7 @@ export default async function PremiumPage() {
         {/* ── Identity ladder explainer ── */}
         <section className="max-w-4xl mx-auto">
           <p className="mb-8 text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
-            /// the_ladder_of_identity
+            {"/// the_ladder_of_identity"}
           </p>
           <div className="grid gap-px md:grid-cols-3 overflow-hidden rounded-2xl border border-border">
             {[
@@ -166,7 +166,7 @@ export default async function PremiumPage() {
         <section className="space-y-6 max-w-5xl mx-auto">
           <div className="text-center space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-              /// choose_your_depth
+              {"/// choose_your_depth"}
             </p>
             <p className="font-display text-lg text-text-primary">
               Both tiers open immediately. Cancel any time.
@@ -259,7 +259,7 @@ export default async function PremiumPage() {
         {/* ── Archive weight ── */}
         <section className="max-w-4xl mx-auto rounded-2xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-8 text-center space-y-6">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
-            /// what you&apos;re entering
+            {"/// what you're entering"}
           </p>
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
             {[
@@ -286,7 +286,7 @@ export default async function PremiumPage() {
         {/* ── Full comparison matrix ── */}
         <section className="space-y-4 max-w-4xl mx-auto">
           <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-            /// what opens at each level
+            {"/// what opens at each level"}
           </p>
           <div className="overflow-hidden rounded-2xl border border-border">
             <table className="w-full">

@@ -100,7 +100,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
       {/* Codex entry header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold">/// codex_entry</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold">{"/// codex_entry"}</p>
         <p className="font-mono text-[9px] text-text-muted/50 tracking-widest">AI · ARCHIVAL</p>
       </div>
 
@@ -422,7 +422,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             ) : person.guestAppearances.length >= 2 && (
               <div className="rounded-lg border border-border bg-surface overflow-hidden">
                 <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">/// codex_entry</p>
+                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">{"/// codex_entry"}</p>
                   <p className="font-mono text-[9px] text-text-muted/40 tracking-widest">PENDING</p>
                 </div>
                 <div className="px-4 py-5 flex items-center gap-3">

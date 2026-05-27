@@ -51,7 +51,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
           <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">
-            /// initiate_only
+            {"/// initiate_only"}
           </p>
           <p className="font-display text-xl font-bold text-text-primary">
             Archetype atlas sealed.
@@ -169,7 +169,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
           <section className="space-y-4">
             <div className="space-y-1">
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-                /// era_distribution
+                {"/// era_distribution"}
               </p>
               <h2 className="font-display text-lg font-bold text-text-primary">
                 When this archetype showed up

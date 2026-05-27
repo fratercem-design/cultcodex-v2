@@ -113,7 +113,7 @@ export default async function OraclePage() {
         {quote && (
           <section>
             <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/40 text-center mb-4">
-              /// transmission_fragment
+              {"/// transmission_fragment"}
             </p>
             <div className="relative rounded-xl border border-accent-violet/20 bg-surface/80 backdrop-blur-sm p-1">
               <div
@@ -172,7 +172,7 @@ export default async function OraclePage() {
 
             <div className="mt-8 flex justify-center">
               <Link
-                href={`/oracle?t=${Date.now()}`}
+                href="/oracle"
                 className="group relative inline-flex items-center gap-2 rounded-lg border border-accent-violet/30 bg-surface px-6 py-3 font-display text-sm font-semibold text-accent-violet transition-all hover:border-accent-violet/60 hover:bg-accent-violet/5 hover:shadow-[0_0_20px_rgba(110,75,174,0.15)]"
               >
                 <span className="inline-block transition-transform group-hover:rotate-12">
