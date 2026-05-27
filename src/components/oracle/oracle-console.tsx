@@ -197,7 +197,7 @@ export function OracleConsole() {
             <div className="absolute inset-4 rounded-full bg-accent-violet/20 animate-pulse" />
           </div>
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/50 animate-pulse">
-            /// searching_the_archive
+            {"/// searching_the_archive"}
           </p>
         </div>
       )}
@@ -205,7 +205,7 @@ export function OracleConsole() {
       {/* ── Gated ── */}
       {state === "error" && gated && (
         <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-6 text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60">/// initiate_required</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60">{"/// initiate_required"}</p>
           <p className="font-display text-base font-bold text-text-primary">The Oracle speaks only to Initiates.</p>
           <p className="font-mono text-xs text-text-muted">
             Initiate+ unlocks the Oracle, full transcripts, Decode Mode, and the Psychenomicon.
@@ -341,7 +341,7 @@ export function OracleConsole() {
           {citations.length > 0 && (
             <div className="space-y-2">
               <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">
-                /// archive_sources
+                {"/// archive_sources"}
               </p>
               <div className="flex flex-wrap gap-2">
                 {citations.map((c, i) => (
@@ -362,7 +362,7 @@ export function OracleConsole() {
           {trialUsed && captureState !== "done" && (
             <div className="rounded-xl border border-accent-gold/30 bg-accent-gold/5 p-5 space-y-3">
               <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/60">
-                /// that was your free question
+                {"/// that was your free question"}
               </p>
               <p className="font-display text-sm font-bold text-text-primary">
                 The Oracle has more to say.

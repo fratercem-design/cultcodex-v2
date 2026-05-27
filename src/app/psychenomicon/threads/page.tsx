@@ -42,7 +42,7 @@ export default async function ThreadsIndexPage() {
     return (
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">/// initiate_only</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">{"/// initiate_only"}</p>
           <p className="font-display text-xl font-bold text-text-primary">The thread registry is sealed.</p>
           <Link
             href="/premium"

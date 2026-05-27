@@ -37,7 +37,7 @@ export default async function ChapterPage({ params }: PageProps) {
     return (
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">/// initiate_only</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">{"/// initiate_only"}</p>
           <p className="font-display text-xl font-bold text-text-primary">This chapter is sealed.</p>
           <Link href="/premium#access" className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors">
             Become Initiate+ →
@@ -201,7 +201,7 @@ export default async function ChapterPage({ params }: PageProps) {
           {chapter.emergingSignals.length > 0 && (
             <ScrollReveal delay={300}>
               <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-5 space-y-3">
-                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">/// emerging_signals</p>
+                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">{"/// emerging_signals"}</p>
                 {chapter.emergingSignals.map((signal, i) => (
                   <div key={i} className="flex items-start gap-2.5">
                     <span className="text-accent-gold font-mono text-[10px] mt-0.5 flex-shrink-0">▸</span>
@@ -217,7 +217,7 @@ export default async function ChapterPage({ params }: PageProps) {
             <ScrollReveal delay={400}>
               <div className="space-y-3">
                 <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">
-                  /// visual_record
+                  {"/// visual_record"}
                 </p>
                 <div className="grid gap-3 sm:grid-cols-3">
                   {([
@@ -281,7 +281,7 @@ export default async function ChapterPage({ params }: PageProps) {
           {/* Entities in this chapter */}
           {chapter.entityAppearances.length > 0 && (
             <div className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// entities_present</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// entities_present"}</p>
               {chapter.entityAppearances.map((ea) => (
                 <Link
                   key={ea.entity.slug}
@@ -307,7 +307,7 @@ export default async function ChapterPage({ params }: PageProps) {
           {/* Active threads */}
           {chapter.threadChapters.length > 0 && (
             <div className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// thread_connections</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// thread_connections"}</p>
               {chapter.threadChapters.map((tc) => (
                 <Link
                   key={tc.thread.slug}

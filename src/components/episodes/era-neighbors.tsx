@@ -32,7 +32,7 @@ export function EraNeighbors({ era, previous, next }: Props) {
     <section className="space-y-3">
       <div className="flex items-baseline justify-between gap-2">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/60">
-          /// within {era.sigil} {era.label}
+          {"/// within "}{era.sigil}{" "}{era.label}
         </p>
         <Link
           href={`/eras/${era.id}`}

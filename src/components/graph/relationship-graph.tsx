@@ -264,7 +264,7 @@ export function RelationshipGraph({ nodes, edges }: Props) {
         }}
       >
         <p className="absolute top-3 left-4 z-10 font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/40 select-none">
-          /// relationship_map
+          {"/// relationship_map"}
           {selected && selectedNode ? ` — ${selectedNode.name}` : ""}
         </p>
 
@@ -450,7 +450,7 @@ export function RelationshipGraph({ nodes, edges }: Props) {
         <div className="rounded-lg border border-accent-violet/20 bg-surface px-5 py-4 flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-1">
             <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/60">
-              /// focused
+              {"/// focused"}
             </p>
             <p className="font-display text-base font-bold text-text-primary">
               {selectedNode.name}

@@ -99,7 +99,7 @@ export default function PackStorePage() {
           textShadow: "var(--glow-neon)",
           marginBottom: 8,
         }}>
-          // SIGNAL_PACKS
+          {"// SIGNAL_PACKS"}
         </p>
         <h1 style={{
           fontFamily: "var(--font-mono), monospace",
@@ -210,7 +210,7 @@ export default function PackStorePage() {
           cursor: "pointer",
           userSelect: "none",
         }}>
-          // HOW TO EARN SIGNAL CREDITS
+          {"// HOW TO EARN SIGNAL CREDITS"}
         </summary>
         <div style={{
           marginTop: 10,
@@ -247,7 +247,7 @@ export default function PackStorePage() {
           border: "1px solid var(--term-line)",
           borderRadius: 6,
         }}>
-          // No packs available. Check back later.
+          {"// No packs available. Check back later."}
         </div>
       ) : (
         <div style={{
@@ -274,7 +274,7 @@ export default function PackStorePage() {
           packAccentColor={ACCENT_VAR[activePack.artTheme ?? "terminal"] ?? "var(--neon)"}
           onClose={() => {
             setActivePack(null);
-            // Refresh wallet
+            {"// Refresh wallet"}
             fetch("/api/cards/stats").then((r) => r.json()).then(setWallet).catch(() => {});
           }}
         />
@@ -343,7 +343,7 @@ function PackCard({ pack, canAfford, onOpen }: { pack: Pack; canAfford: boolean;
         </div>
         {pack.artTheme && (
           <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: "var(--term-fg-dim)", letterSpacing: "0.08em" }}>
-            // {pack.artTheme.toUpperCase()} SERIES
+            {"// "}{pack.artTheme.toUpperCase()}{" SERIES"}
           </div>
         )}
       </div>

@@ -70,7 +70,7 @@ export default function TarotWaitlistPage() {
             textShadow: "var(--glow-magenta, 0 0 8px currentColor)",
             marginBottom: 12,
           }}>
-            // COMING SOON
+            {"// COMING SOON"}
           </p>
           <h1 style={{
             fontSize: 32,
@@ -135,7 +135,7 @@ export default function TarotWaitlistPage() {
         {/* Card preview grid */}
         <div style={{ marginBottom: 52 }}>
           <div style={{ fontSize: 10, color: "var(--term-fg-faint)", letterSpacing: "0.14em", marginBottom: 16 }}>
-            // PREVIEW — SELECTED CARDS
+            {"// PREVIEW — SELECTED CARDS"}
           </div>
           <div style={{
             display: "grid",
@@ -188,7 +188,7 @@ export default function TarotWaitlistPage() {
           backgroundColor: "var(--term-bg-1)",
         }}>
           <div style={{ fontSize: 10, color: "var(--neon-3)", letterSpacing: "0.3em", marginBottom: 8 }}>
-            // JOIN THE WAITLIST
+            {"// JOIN THE WAITLIST"}
           </div>
           <p style={{ fontSize: 13, color: "var(--term-fg)", margin: "0 0 20px", lineHeight: 1.6 }}>
             First to know. First access. Founding supporter pricing.

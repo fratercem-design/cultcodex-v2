@@ -80,7 +80,7 @@ export function DecksList({ decks: initialDecks }: DecksListProps) {
           textShadow: "var(--glow-neon)",
           marginBottom: 6,
         }}>
-          // SIGNAL_ARRAYS
+          {"// SIGNAL_ARRAYS"}
         </p>
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
           <h1 style={{ fontFamily: "var(--font-mono), monospace", fontSize: 22, color: "var(--term-fg)", margin: 0 }}>

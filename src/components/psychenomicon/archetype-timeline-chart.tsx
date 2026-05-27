@@ -76,7 +76,7 @@ export function ArchetypeTimelineChart({ events, entityName }: Props) {
 
   return (
     <div className="space-y-3">
-      <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// archetype_evolution — {entityName}</p>
+      <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// archetype_evolution — "}{entityName}</p>
       <div className="rounded-lg border border-border bg-surface p-4">
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={data} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>

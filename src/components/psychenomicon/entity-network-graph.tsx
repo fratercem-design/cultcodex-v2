@@ -80,7 +80,7 @@ export function EntityNetworkGraph({ nodes, edges, width = 600, height = 400 }: 
   return (
     <div className="relative w-full overflow-hidden rounded-lg border border-border bg-surface">
       <p className="absolute top-3 left-4 font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted z-10">
-        /// entity_network
+        {"/// entity_network"}
       </p>
       <svg
         viewBox={`0 0 ${width} ${height}`}

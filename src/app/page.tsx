@@ -49,17 +49,17 @@ export default async function HomePage() {
       series: 0, topics: 0, segments: 0, totalHours: 0,
       comments: 0, reactions: 0,
     })),
-    getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }),
-    getQuotes({ take: 2 }),
+    getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }).catch(() => []),
+    getQuotes({ take: 2 }).catch(() => []),
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }).catch(() => null),
-    getTopTopicsByEpisodes(10),
+    getTopTopicsByEpisodes(10).catch(() => []),
     getDailyTransmission().catch(() => ({
       date: new Date().toISOString().slice(0, 10),
       quote: null,
       spotlightEpisode: null,
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
-    getCurrentUser(),
+    getCurrentUser().catch(() => null),
     prisma.weeklyDigest.findFirst({ where: { published: true }, orderBy: { weekOf: "desc" }, select: { title: true, blurb: true, weekOf: true } }).catch(() => null),
   ]);
 
