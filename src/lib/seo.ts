@@ -85,6 +85,29 @@ type BuildMetadataInput = {
   image?: string | null;
 };
 
+/**
+ * Build a schema.org BreadcrumbList for a page.
+ * The last item should have url = the current page URL.
+ * All items except the current page should have a url.
+ */
+export interface BreadcrumbItem {
+  name: string;
+  url?: string;
+}
+
+export function breadcrumbListJsonLd(items: BreadcrumbItem[]): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      ...(item.url ? { item: item.url } : {}),
+    })),
+  };
+}
+
 export function buildMetadata({
   title,
   description,

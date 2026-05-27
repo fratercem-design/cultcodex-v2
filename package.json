@@ -29,7 +29,10 @@
     "nightmares:enrich": "npx dotenvx run -- npx tsx scripts/enrich/enrich-nightmares.ts",
     "nightmares:enrich:import": "npx dotenvx run -- npx tsx scripts/enrich/import-enriched.ts",
     "nightmares:people": "npx dotenvx run -- npx tsx scripts/enrich/enrich-nightmares-people.ts",
-    "nightmares:pipeline": "npm run nightmares:fetch && npm run nightmares:transcripts && npm run nightmares:enrich && npm run nightmares:enrich:import && npm run nightmares:people"
+    "nightmares:pipeline": "npm run nightmares:fetch && npm run nightmares:transcripts && npm run nightmares:enrich && npm run nightmares:enrich:import && npm run nightmares:people",
+    "art:psychenomicon": "npx dotenvx run -- npx tsx scripts/psychenomicon-art/run.ts",
+    "art:psychenomicon:prompts": "npx dotenvx run -- npx tsx scripts/psychenomicon-art/run.ts --skip-images",
+    "art:psychenomicon:dry": "npx dotenvx run -- npx tsx scripts/psychenomicon-art/run.ts --dry-run"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",

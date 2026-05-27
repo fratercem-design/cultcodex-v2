@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
@@ -190,6 +190,49 @@ export default async function SeriesDetailPage({ params, searchParams }: PagePro
           </div>
         </div>
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript({
+            "@context": "https://schema.org",
+            "@type": "CreativeWorkSeries",
+            name: series.title,
+            ...(series.description ? { description: series.description } : {}),
+            url: `https://cultcodex.me/series/${series.slug}`,
+            numberOfEpisodes: totalCount,
+            ...(series.status === "published" ? { creativeWorkStatus: "Published" } : {}),
+            publisher: {
+              "@type": "Organization",
+              name: "CultCodex",
+              url: "https://cultcodex.me",
+            },
+            // Surface first page of episodes as hasPart edges
+            ...(episodes.length > 0
+              ? {
+                  hasPart: episodes.slice(0, 5).map((ep) => ({
+                    "@type": "Episode",
+                    name: ep.title,
+                    url: `https://cultcodex.me/episodes/${ep.slug}`,
+                    ...(ep.airDate ? { datePublished: ep.airDate.toISOString().slice(0, 10) } : {}),
+                  })),
+                }
+              : {}),
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbListJsonLd([
+              { name: "CultCodex", url: "https://cultcodex.me" },
+              { name: "Series", url: "https://cultcodex.me/series" },
+              { name: series.title, url: `https://cultcodex.me/series/${series.slug}` },
+            ])
+          ),
+        }}
+      />
     </>
   );
 }

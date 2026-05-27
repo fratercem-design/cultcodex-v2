@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
+import { jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
 import { ArchetypeTimelineChart } from "@/components/psychenomicon/archetype-timeline-chart";
 import { ArchetypeRadarChart } from "@/components/psychenomicon/archetype-radar-chart";
 import Link from "next/link";
@@ -44,7 +45,7 @@ export default async function EntityPage({ params }: PageProps) {
     return (
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">/// initiate_only</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">{"/// initiate_only"}</p>
           <p className="font-display text-xl font-bold text-text-primary">Entity sealed.</p>
           <Link href="/premium#access" className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors">
             Become Initiate+ →
@@ -193,7 +194,7 @@ export default async function EntityPage({ params }: PageProps) {
           {/* Archetype shift alerts */}
           {shifts.length > 0 && (
             <div className="space-y-2">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">/// shift_alerts</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">{"/// shift_alerts"}</p>
               {shifts.map((s, i) => (
                 <div key={i} className="rounded border border-accent-gold/20 bg-accent-gold/5 px-4 py-3 space-y-1">
                   <div className="flex items-center gap-2">
@@ -211,7 +212,7 @@ export default async function EntityPage({ params }: PageProps) {
           {/* Pattern detection */}
           {patterns.length > 0 && (
             <div className="space-y-2">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// behavioral_patterns</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// behavioral_patterns"}</p>
               <div className="rounded-lg border border-border bg-surface p-4 space-y-2">
                 {patterns.map((p, i) => (
                   <div key={i} className="flex items-start gap-2.5">
@@ -225,7 +226,7 @@ export default async function EntityPage({ params }: PageProps) {
 
           {/* Chapter appearances timeline */}
           <section className="space-y-4">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// chapter_appearances</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// chapter_appearances"}</p>
             {entity.appearances.length > 0 ? (
               <div className="relative pl-6">
                 <div className="absolute left-[9px] top-2 bottom-2 w-px bg-border" />
@@ -281,7 +282,7 @@ export default async function EntityPage({ params }: PageProps) {
           {/* Archetype history detail */}
           {archetypeHistory.length > 1 && (
             <section className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// known_transitions</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// known_transitions"}</p>
               <div className="space-y-2">
                 {archetypeHistory.map((h, i) => (
                   <div key={i} className="flex items-start gap-3 text-xs">
@@ -304,7 +305,7 @@ export default async function EntityPage({ params }: PageProps) {
           {/* Radar chart */}
           {hasRadar && (
             <div className="rounded-lg border border-border bg-surface p-4 space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// trait_profile</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// trait_profile"}</p>
               <ArchetypeRadarChart radarData={radarData} />
               <div className="space-y-1.5 pt-1">
                 {(["influence", "volatility", "manipulation", "control", "emotionalIntensity"] as const).map((key) => {
@@ -358,6 +359,35 @@ export default async function EntityPage({ params }: PageProps) {
           </Link>
         </aside>
       </div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript({
+            "@context": "https://schema.org",
+            "@type": entity.personSlug ? "Person" : "Thing",
+            name: entity.name,
+            ...(entity.primaryArchetype ? { description: `${entity.primaryArchetype} — Psychenomicon entity` } : {}),
+            url: `https://cultcodex.me/psychenomicon/entities/${entity.slug}`,
+            ...(entity.personSlug
+              ? { sameAs: `https://cultcodex.me/people/${entity.personSlug}` }
+              : {}),
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbListJsonLd([
+              { name: "CultCodex", url: "https://cultcodex.me" },
+              { name: "Psychenomicon", url: "https://cultcodex.me/psychenomicon" },
+              { name: "Entities", url: "https://cultcodex.me/psychenomicon/entities" },
+              { name: entity.name, url: `https://cultcodex.me/psychenomicon/entities/${entity.slug}` },
+            ])
+          ),
+        }}
+      />
     </main>
   );
 }

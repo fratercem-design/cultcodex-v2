@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import {
   Space_Grotesk,
   Inter,
@@ -14,22 +13,12 @@ import { TerminalTopBar } from "@/components/layout/terminal-topbar";
 import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
 import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
 import { getArchiveCounts } from "@/lib/queries/stats";
+import { ClientOverlays } from "@/components/layout/client-overlays";
 import { SkipLink } from "@/components/ui/skip-link";
 import { jsonLdScript } from "@/lib/seo";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
-
-// Lazy-load non-critical interactive overlays — they add JS weight but are
-// never needed on first render.  ssr:false keeps them out of the server bundle.
-const KonamiEasterEgg = dynamic(
-  () => import("@/components/ui/konami-easter-egg").then((m) => m.KonamiEasterEgg),
-  { ssr: false }
-);
-const CommandPalette = dynamic(
-  () => import("@/components/search/command-palette").then((m) => m.CommandPalette),
-  { ssr: false }
-);
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
@@ -150,8 +139,7 @@ export default async function RootLayout({
           </div>
           <TerminalStatusBar feedCount={counts.episodes} />
         </div>
-        <KonamiEasterEgg />
-        <CommandPalette />
+        <ClientOverlays />
         {/* WebSite + SearchAction JSON-LD — enables sitelinks search box in Google */}
         <script
           type="application/ld+json"

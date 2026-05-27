@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
-import { buildMetadata, jsonLdScript } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
 import { AiNotice } from "@/components/ui/ai-notice";
 import { ERAS, getEraForEpisode } from "@/lib/eras";
 import { archetypeToSlug, splitArchetypes } from "@/lib/queries/archetypes";
@@ -100,7 +100,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
       {/* Codex entry header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold">/// codex_entry</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold">{"/// codex_entry"}</p>
         <p className="font-mono text-[9px] text-text-muted/50 tracking-widest">AI · ARCHIVAL</p>
       </div>
 
@@ -422,7 +422,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             ) : person.guestAppearances.length >= 2 && (
               <div className="rounded-lg border border-border bg-surface overflow-hidden">
                 <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">/// codex_entry</p>
+                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">{"/// codex_entry"}</p>
                   <p className="font-mono text-[9px] text-text-muted/40 tracking-widest">PENDING</p>
                 </div>
                 <div className="px-4 py-5 flex items-center gap-3">
@@ -768,7 +768,29 @@ export default async function PersonDetailPage({ params }: PageProps) {
               ? { firstAppearance: person.firstAppearanceEpisode.airDate.toISOString().slice(0, 10) }
               : {}),
             numberOfAppearances: uniqueEpisodes.length,
+            // Topics this person discusses — knowledge-graph edges
+            ...(person.topics.length > 0
+              ? {
+                  knowsAbout: person.topics.slice(0, 8).map((t) => ({
+                    "@type": "DefinedTerm",
+                    name: t.topic.title,
+                    url: `https://cultcodex.me/topics/${t.topic.slug}`,
+                  })),
+                }
+              : {}),
           }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbListJsonLd([
+              { name: "CultCodex", url: "https://cultcodex.me" },
+              { name: "Voices", url: "https://cultcodex.me/people" },
+              { name: person.displayName, url: `https://cultcodex.me/people/${person.slug}` },
+            ])
+          ),
         }}
       />
     </>

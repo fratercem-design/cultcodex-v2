@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTopicBySlug, getRelatedTopics } from "@/lib/queries/topics";
 import { prisma } from "@/lib/db";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
 import { getCurrentUser } from "@/lib/auth";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
@@ -234,7 +234,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             "@context": "https://schema.org",
             "@type": "DefinedTerm",
             name: topic.title,
@@ -245,7 +245,36 @@ export default async function TopicDetailPage({ params }: PageProps) {
               name: "Cult of Psyche Signal Archive",
               url: "https://cultcodex.me/topics",
             },
+            // Cross-entity mentions — knowledge-graph edges
+            ...(topic.people.length > 0 || topic.lore.length > 0
+              ? {
+                  mentions: [
+                    ...topic.people.slice(0, 5).map((tp) => ({
+                      "@type": "Person",
+                      name: tp.person.displayName,
+                      url: `https://cultcodex.me/people/${tp.person.slug}`,
+                    })),
+                    ...topic.lore.slice(0, 5).map((tl) => ({
+                      "@type": "Article",
+                      name: tl.loreEntry.title,
+                      url: `https://cultcodex.me/lore/${tl.loreEntry.slug}`,
+                    })),
+                  ],
+                }
+              : {}),
           }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbListJsonLd([
+              { name: "CultCodex", url: "https://cultcodex.me" },
+              { name: "Signals", url: "https://cultcodex.me/topics" },
+              { name: topic.title, url: `https://cultcodex.me/topics/${topic.slug}` },
+            ])
+          ),
         }}
       />
     </>
