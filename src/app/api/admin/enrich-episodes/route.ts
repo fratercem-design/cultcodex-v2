@@ -103,7 +103,12 @@ Guidelines:
 - For quotes: extract the 3-5 most notable, interesting, or representative quotes. Include timestamp in seconds if identifiable.
 - For lore: identify mythology references, recurring show concepts, tarot interpretations, or spiritual/occult ideas discussed.
 - For topics: list the main subjects discussed (e.g., "tarot", "consciousness", "astrology", "Greek mythology").
-- Return ONLY valid JSON. No markdown, no code fences, no explanation.`;
+- Return ONLY valid JSON. No markdown, no code fences, no explanation.
+
+LANGUAGE RULES — CRITICAL:
+- Use observational, on-stream descriptive language. Summaries describe what happened and was discussed on stream.
+- Never use clinical or psychiatric terminology (e.g. "paranoid," "delusional," "narcissistic," "erratic," "unstable," "psychotic," "manipulative").
+- Describe what people expressed or said — not diagnoses. E.g. "expressed suspicion about…" not "displayed paranoia about…"; "reacted with visible frustration" not "had an erratic episode."`;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
