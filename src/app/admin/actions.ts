@@ -53,6 +53,33 @@ export async function updateEpisode(id: string, formData: FormData) {
   revalidatePath("/episodes");
 }
 
+/**
+ * Toggle the human-review flag on an episode.
+ * Sets isHumanReviewed=true + humanReviewedAt=now, or clears both.
+ */
+export async function toggleHumanReview(id: string) {
+  await requireAdmin();
+
+  const episode = await prisma.episode.findUnique({
+    where: { id },
+    select: { isHumanReviewed: true },
+  });
+  if (!episode) return;
+
+  const next = !episode.isHumanReviewed;
+  await prisma.episode.update({
+    where: { id },
+    data: {
+      isHumanReviewed: next,
+      humanReviewedAt: next ? new Date() : null,
+    },
+  });
+
+  revalidatePath(`/admin/episodes/${id}/edit`);
+  revalidatePath("/episodes");
+  revalidatePath("/admin/episodes");
+}
+
 export async function bulkUpdateEpisodeStatus(
   ids: string[],
   status: ContentStatus,

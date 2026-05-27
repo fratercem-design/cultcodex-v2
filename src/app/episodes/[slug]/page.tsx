@@ -16,6 +16,7 @@ import { buildMetadata, episodeJsonLd, jsonLdScript } from "@/lib/seo";
 import { AiNotice } from "@/components/ui/ai-notice";
 import { getConfidenceTier } from "@/lib/format/confidence-tier";
 import { renderWithTimestamps } from "@/lib/format/render-timestamps";
+import { HumanReviewBadge } from "@/components/ui/human-review-badge";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EpisodeHero } from "@/components/episodes/episode-hero";
 import { EpisodeGlanceBar } from "@/components/episodes/episode-glance-bar";
@@ -359,7 +360,12 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         <p className="text-sm text-text-primary leading-relaxed">
                           {renderWithTimestamps(episode.summaryLong, episode.youtubeVideoId)}
                         </p>
-                        <AiNotice className="mt-3" tier={confidenceTier} />
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          {episode.isHumanReviewed && (
+                            <HumanReviewBadge reviewedAt={episode.humanReviewedAt} variant="full" />
+                          )}
+                          <AiNotice tier={confidenceTier} />
+                        </div>
                       </SectionCard>
                     )}
 

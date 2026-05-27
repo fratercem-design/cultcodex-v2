@@ -4,6 +4,7 @@ import { formatDate } from "@/lib/format/date";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
 import { ConfidenceBadge } from "@/components/ui/confidence-badge";
+import { HumanReviewBadge } from "@/components/ui/human-review-badge";
 import { EraTag } from "@/components/ui/era-tag";
 import { getEraForEpisode } from "@/lib/eras";
 import { getConfidenceTier } from "@/lib/format/confidence-tier";
@@ -71,6 +72,9 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
           )}
           <TranscriptBadge segmentCount={episode.segmentCount} />
           <ConfidenceBadge tier={confidenceTier} short hideNone />
+          {episode.isHumanReviewed && (
+            <HumanReviewBadge reviewedAt={episode.humanReviewedAt} variant="short" />
+          )}
           {episode.guestNames.slice(0, 3).map((name) => (
             <StatusBadge key={name} label={name} variant="gold" />
           ))}

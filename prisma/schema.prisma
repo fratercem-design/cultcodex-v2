@@ -79,6 +79,9 @@ model Episode {
   status          ContentStatus @default(draft)
   contentType     ContentType   @default(original)
   seriesId        String?
+  /** Set by an admin after manually reading and verifying the AI summary */
+  isHumanReviewed Boolean       @default(false)
+  humanReviewedAt DateTime?
   series          Series?       @relation(fields: [seriesId], references: [id])
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
