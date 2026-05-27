@@ -15,6 +15,7 @@ import { CommentSection } from "@/components/episodes/comment-section";
 import { buildMetadata, episodeJsonLd, jsonLdScript } from "@/lib/seo";
 import { AiNotice } from "@/components/ui/ai-notice";
 import { getConfidenceTier } from "@/lib/format/confidence-tier";
+import { renderWithTimestamps } from "@/lib/format/render-timestamps";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EpisodeHero } from "@/components/episodes/episode-hero";
 import { EpisodeGlanceBar } from "@/components/episodes/episode-glance-bar";
@@ -356,7 +357,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                     {episode.summaryLong && (
                       <SectionCard title="Summary">
                         <p className="text-sm text-text-primary leading-relaxed">
-                          {episode.summaryLong}
+                          {renderWithTimestamps(episode.summaryLong, episode.youtubeVideoId)}
                         </p>
                         <AiNotice className="mt-3" tier={confidenceTier} />
                       </SectionCard>

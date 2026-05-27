@@ -69,7 +69,7 @@ Your task: analyze the provided episode transcript and extract structured data. 
 Return a JSON object with this exact structure:
 {
   "summaryShort": "1-2 sentence summary of the episode",
-  "summaryLong": "2-3 paragraph comprehensive summary covering main topics, key moments, and themes",
+  "summaryLong": "2-3 paragraph comprehensive summary covering main topics, key moments, and themes. Where you reference a specific moment from the transcript, embed its timestamp as [MM:SS] or [H:MM:SS]. Use only timestamps that appear in the provided transcript. Aim for 2–5 timestamp references total.",
   "cutOfPsyche": "A characteristic or memorable quote/moment from this episode (verbatim from transcript if possible)",
   "guests": [
     {
@@ -101,6 +101,7 @@ Return a JSON object with this exact structure:
 Guidelines:
 - For guests: include the host as personType "host". Panel participants are "guest". People discussed but not present are "mentioned".
 - For quotes: extract the 3-5 most notable, interesting, or representative quotes. Include timestamp in seconds if identifiable.
+- For summaryLong: embed [MM:SS] or [H:MM:SS] timestamp references when citing specific moments. Use only timestamps visible in the transcript. If no transcript is provided, omit timestamps entirely.
 - For lore: identify mythology references, recurring show concepts, tarot interpretations, or spiritual/occult ideas discussed.
 - For topics: list the main subjects discussed (e.g., "tarot", "consciousness", "astrology", "Greek mythology").
 - Return ONLY valid JSON. No markdown, no code fences, no explanation.
