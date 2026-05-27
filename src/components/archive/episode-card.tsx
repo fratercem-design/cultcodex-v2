@@ -3,8 +3,10 @@ import Image from "next/image";
 import { formatDate } from "@/lib/format/date";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
+import { ConfidenceBadge } from "@/components/ui/confidence-badge";
 import { EraTag } from "@/components/ui/era-tag";
 import { getEraForEpisode } from "@/lib/eras";
+import { getConfidenceTier } from "@/lib/format/confidence-tier";
 import type { EpisodeCardData } from "@/lib/queries/episodes";
 
 interface EpisodeCardProps {
@@ -16,6 +18,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
     ? `EP.${String(episode.episodeNumber).padStart(3, "0")}`
     : null;
   const era = getEraForEpisode(episode.airDate);
+  const confidenceTier = getConfidenceTier(episode.segmentCount, episode.hasSummary);
 
   return (
     <Link
@@ -67,6 +70,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
             <StatusBadge label="No Video" variant="muted" />
           )}
           <TranscriptBadge segmentCount={episode.segmentCount} />
+          <ConfidenceBadge tier={confidenceTier} short hideNone />
           {episode.guestNames.slice(0, 3).map((name) => (
             <StatusBadge key={name} label={name} variant="gold" />
           ))}

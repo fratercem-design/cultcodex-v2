@@ -13,6 +13,7 @@ const mockEpisode = {
   thumbnailUrl: null,
   hasVideo: true,
   segmentCount: 42,
+  hasSummary: true,
   guestNames: ["Dr. Arcana"],
   topicNames: ["Consciousness", "Tarot"],
 };

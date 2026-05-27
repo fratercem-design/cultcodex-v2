@@ -14,6 +14,7 @@ import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
 import { buildMetadata, episodeJsonLd, jsonLdScript } from "@/lib/seo";
 import { AiNotice } from "@/components/ui/ai-notice";
+import { getConfidenceTier } from "@/lib/format/confidence-tier";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EpisodeHero } from "@/components/episodes/episode-hero";
 import { EpisodeGlanceBar } from "@/components/episodes/episode-glance-bar";
@@ -122,6 +123,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     : null;
 
   const hasTranscript = episode.segments.length > 0;
+  const confidenceTier = getConfidenceTier(episode.segments.length, !!episode.summaryLong);
   const hasTranscriptAccess = user ? await isSubscribed(user.id).catch(() => false) : false;
   const hasDecodeAccess = hasTranscriptAccess; // same tier — Initiate+
   const hasDecodeData = !!episode.decodeData;
@@ -356,7 +358,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         <p className="text-sm text-text-primary leading-relaxed">
                           {episode.summaryLong}
                         </p>
-                        <AiNotice className="mt-3" />
+                        <AiNotice className="mt-3" tier={confidenceTier} />
                       </SectionCard>
                     )}
 
