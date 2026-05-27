@@ -338,7 +338,7 @@ export function TradingCard({ card, size = "md", onClick, faceDown = false, noTi
               borderLeft: `2px solid rgba(${hexToRgb(borderColor)},0.3)`,
               paddingLeft: 5,
             }}>
-              "{card.flavourText}"
+              &quot;{card.flavourText}&quot;
             </div>
           </div>
         )}

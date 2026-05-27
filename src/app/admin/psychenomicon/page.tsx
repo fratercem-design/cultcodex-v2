@@ -94,7 +94,7 @@ export default async function AdminPsychenomiconPage() {
       <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
         {/* Left: Chapters list */}
         <section className="space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">/// chapters</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">{"/// chapters"}</p>
           {chapters.length === 0 ? (
             <p className="text-sm text-text-muted italic">No chapters generated yet. Use the panel on the right to generate the first one.</p>
           ) : (
@@ -142,7 +142,7 @@ export default async function AdminPsychenomiconPage() {
         <aside className="space-y-6">
           <div className="rounded-lg border border-accent-violet/20 bg-accent-violet/5 p-5 space-y-4">
             <div className="space-y-1">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">/// generate_chapter</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">{"/// generate_chapter"}</p>
               <p className="text-xs text-text-muted leading-relaxed">
                 Select an episode with a transcript to generate the next Psychenomicon chapter via Claude.
               </p>
@@ -159,7 +159,7 @@ export default async function AdminPsychenomiconPage() {
 
           {/* Stats */}
           <div className="rounded-lg border border-border bg-surface p-5 space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">/// system_state</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">{"/// system_state"}</p>
             <div className="grid grid-cols-3 gap-3">
               <div className="text-center">
                 <p className="font-display text-2xl font-bold text-accent-violet">{chapters.length}</p>

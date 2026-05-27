@@ -46,7 +46,7 @@ export default async function GraphPage({
       <div className="space-y-4 max-w-3xl">
         <div className="space-y-1">
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-            /// relationship_map
+            {"/// relationship_map"}
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">
             The Network

@@ -171,7 +171,7 @@ export default async function IRLNewstimePage() {
 
       {/* Header */}
       <div className="space-y-1">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">/// irl_newstime</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">{"/// irl_newstime"}</p>
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-white">IRL Newstime</h1>
           {liveCount > 0 && (

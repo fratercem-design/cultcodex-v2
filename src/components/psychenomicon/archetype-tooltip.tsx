@@ -42,7 +42,7 @@ export function ArchetypeTooltip({ entity, children }: TooltipProps) {
       {open && (
         <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 pointer-events-none">
           <span className="block w-56 rounded-lg border border-accent-violet/30 bg-void/98 backdrop-blur-sm p-3 shadow-2xl shadow-accent-violet/10 space-y-2">
-            <span className="block font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/60">/// entity</span>
+            <span className="block font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/60">{"/// entity"}</span>
             <span className="block font-mono text-xs font-bold text-text-primary">{entity.name}</span>
             {entity.primaryArchetype && (
               <span className="block font-mono text-[10px] text-accent-violet">{entity.primaryArchetype}</span>

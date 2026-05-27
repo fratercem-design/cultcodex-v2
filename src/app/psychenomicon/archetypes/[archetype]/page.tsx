@@ -221,7 +221,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
           <section className="space-y-4">
             <div className="space-y-1">
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-                /// often_paired_with
+                {"/// often_paired_with"}
               </p>
               <h2 className="font-display text-lg font-bold text-text-primary">
                 Compound currents
@@ -253,7 +253,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
         <section className="space-y-4">
           <div className="space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-              /// entities_carrying_this_archetype
+              {"/// entities_carrying_this_archetype"}
             </p>
             <h2 className="font-display text-lg font-bold text-text-primary">
               Who holds this current

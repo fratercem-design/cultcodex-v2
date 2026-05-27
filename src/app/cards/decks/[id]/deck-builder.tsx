@@ -159,7 +159,7 @@ export function DeckBuilder({ deck: initialDeck, collection }: DeckBuilderProps)
             textShadow: "var(--glow-neon)",
             marginBottom: 4,
           }}>
-            // SIGNAL_ARRAY
+            {"// SIGNAL_ARRAY"}
           </p>
           <input
             value={name}
@@ -277,7 +277,7 @@ export function DeckBuilder({ deck: initialDeck, collection }: DeckBuilderProps)
         {/* Left: collection */}
         <div>
           <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: "var(--term-fg-faint)", letterSpacing: "0.1em", marginBottom: 12 }}>
-            // YOUR COLLECTION — click to add
+            {"// YOUR COLLECTION — click to add"}
           </div>
 
           {/* Filters */}
@@ -402,7 +402,7 @@ export function DeckBuilder({ deck: initialDeck, collection }: DeckBuilderProps)
           top: 20,
         }}>
           <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: "var(--term-fg-faint)", letterSpacing: "0.1em", marginBottom: 12 }}>
-            // ARRAY CONTENTS
+            {"// ARRAY CONTENTS"}
           </div>
 
           {deckCards.length === 0 ? (

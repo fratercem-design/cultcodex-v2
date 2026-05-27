@@ -133,7 +133,7 @@ export default async function MemberProfilePage({ params }: Props) {
         {member.bio && (
           <section className="rounded-xl border border-border bg-surface p-6">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60 mb-3">
-              /// about
+              {"/// about"}
             </p>
             <p className="font-mono text-sm leading-relaxed text-text-primary whitespace-pre-wrap">
               {member.bio}

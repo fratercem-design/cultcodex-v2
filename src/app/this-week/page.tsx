@@ -32,7 +32,7 @@ export default async function ThisWeekPage() {
     return (
       <main id="main-content" className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
         <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-          /// this_week
+          {"/// this_week"}
         </p>
         <h1 className="font-display text-3xl font-bold text-text-primary">
           This Week in the Archive
@@ -126,7 +126,7 @@ export default async function ThisWeekPage() {
       {orderedQuotes.length > 0 && (
         <section className="space-y-5">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
-            /// moments_from_the_archive
+            {"/// moments_from_the_archive"}
           </p>
 
           {orderedQuotes.map((q) => {
@@ -179,7 +179,7 @@ export default async function ThisWeekPage() {
       {orderedEpisodes.length > 0 && (
         <section className="space-y-4">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60">
-            /// transmissions_this_week
+            {"/// transmissions_this_week"}
           </p>
           <div className="space-y-3">
             {orderedEpisodes.map((ep) => (
@@ -230,7 +230,7 @@ export default async function ThisWeekPage() {
       {orderedPeople.length > 0 && (
         <section className="space-y-4">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet/60">
-            /// voices_in_focus
+            {"/// voices_in_focus"}
           </p>
           <div className="grid gap-3 sm:grid-cols-3">
             {orderedPeople.map((person) => (

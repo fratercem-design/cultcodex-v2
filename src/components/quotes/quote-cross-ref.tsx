@@ -30,7 +30,7 @@ export async function QuoteCrossRef({ quoteText, excludeEpisodeId }: QuoteCrossR
   return (
     <section className="space-y-3">
       <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-        /// resonant_moments
+        {"/// resonant_moments"}
       </p>
       <p className="font-mono text-[11px] text-text-muted">
         Where this idea echoes elsewhere in the archive

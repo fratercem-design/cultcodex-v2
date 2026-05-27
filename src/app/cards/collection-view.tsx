@@ -74,7 +74,7 @@ export function CollectionView({ collection, stats }: CollectionViewProps) {
             textShadow: "var(--glow-neon)",
             marginBottom: 6,
           }}>
-            // MY_COLLECTION
+            {"// MY_COLLECTION"}
           </p>
           <h1 style={{ fontFamily: "var(--font-mono), monospace", fontSize: 22, color: "var(--term-fg)", margin: 0 }}>
             Codex Cards
