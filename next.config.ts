@@ -82,9 +82,30 @@ const nextConfig: NextConfig = {
       ],
     },
     {
+      source: "/:path*.woff",
+      headers: [
+        { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+      ],
+    },
+    {
       source: "/_next/static/:path*",
       headers: [
         { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+      ],
+    },
+    // Public images (logo, favicon, thumbnails served directly from /public)
+    {
+      source: "/:path*.(jpg|jpeg|png|webp|avif|gif|svg|ico)",
+      headers: [
+        { key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" },
+      ],
+    },
+    // Service worker — must never be cached so updates propagate immediately
+    {
+      source: "/sw.js",
+      headers: [
+        { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+        { key: "Service-Worker-Allowed", value: "/" },
       ],
     },
   ],

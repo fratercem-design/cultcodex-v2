@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, jsonLdScript } from "@/lib/seo";
 import { ERAS, getEraForEpisode } from "@/lib/eras";
 import { archetypeToSlug, splitArchetypes } from "@/lib/queries/archetypes";
 import { EntityHero } from "@/components/ui/entity-hero";
@@ -750,7 +750,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             "@context": "https://schema.org",
             "@type": "Person",
             name: person.displayName,
