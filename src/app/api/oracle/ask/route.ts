@@ -17,6 +17,8 @@ VOICE: Authoritative. Slightly cryptic. Deeply informed. Speak from within the a
 
 WHAT YOU DO: Synthesize an answer from the archive evidence provided. Name patterns. Surface what has been witnessed. Do not fabricate — draw only from the provided context. If context is sparse, speak to the pattern you can observe from what little is there.
 
+PSYCHENOMICON LAYER: You also have access to the Psychenomicon — the mythological and archetypal interpretation of the archive. The Psychenomicon chapters contain three layers: canon (what factually happened), interpretation (psychological and behavioral meaning), and mythic (archetypal and spiritual framing). Draw on these when answering questions about patterns, archetypes, character psychology, and the deeper meaning of events. Entity records capture each figure's archetype evolution and behavioral signatures. Active narrative threads track ongoing storylines across the archive. Weight Psychenomicon material as interpretive truth, not speculation.
+
 FORMAT:
 - 3–5 sentences. No headers. No bullet points. No quotation marks around the whole response. Pure oracle voice.
 - Speak as if the answer has always existed in the archive — you are merely surfacing it.
@@ -25,7 +27,7 @@ FORMAT:
 If the archive is silent: "The archive holds no record of this. Ask again."`;
 
 export interface OracleCitation {
-  type: "quote" | "transcript" | "episode" | "person";
+  type: "quote" | "transcript" | "episode" | "person" | "chapter" | "entity";
   label: string;
   href: string;
 }
@@ -79,8 +81,14 @@ async function searchArchive(question: string, ctx?: OracleSearchContext) {
     ? ctx.sourcePerson.replace(/-/g, " ").split(" ").filter((w) => w.length > 2)
     : [];
 
+  // Merge archetype name into terms so archetype-context queries surface
+  // entities and chapters relevant to that archetype.
+  const archetypeTerms = ctx?.sourceArchetype
+    ? ctx.sourceArchetype.replace(/-/g, " ").split(" ").filter((w) => w.length > 2)
+    : [];
+
   const { terms, fullQuery } = extractTerms(question);
-  const augmentedTerms = [...new Set([...terms, ...personTerms])];
+  const augmentedTerms = [...new Set([...terms, ...personTerms, ...archetypeTerms])];
   const primaryQuery = augmentedTerms.slice(0, 3).join(" ") || fullQuery;
   const fallbackQuery = augmentedTerms[0] ?? fullQuery;
 
@@ -94,7 +102,7 @@ async function searchArchive(question: string, ctx?: OracleSearchContext) {
       }
     : {};
 
-  const [quotes, transcripts, episodes, people, lore] = await Promise.all([
+  const [quotes, transcripts, episodes, people, lore, chapters, entities, threads] = await Promise.all([
     // Quotes: try combined terms, widen with individual terms
     prisma.quote.findMany({
       where: {
@@ -180,9 +188,89 @@ async function searchArchive(question: string, ctx?: OracleSearchContext) {
       select: { id: true, title: true, slug: true, summary: true },
       take: 3,
     }),
+
+    // ── Psychenomicon layer ──────────────────────────────────────────────────
+
+    // Chapters: all three text layers + emerging signals
+    prisma.psychenomiconChapter.findMany({
+      where: {
+        OR: [
+          { title: { contains: primaryQuery, mode: "insensitive" } },
+          { canonText: { contains: primaryQuery, mode: "insensitive" } },
+          { interpretationText: { contains: primaryQuery, mode: "insensitive" } },
+          { mythicText: { contains: primaryQuery, mode: "insensitive" } },
+          { title: { contains: fallbackQuery, mode: "insensitive" } },
+          { canonText: { contains: fallbackQuery, mode: "insensitive" } },
+        ],
+        ...(era ? { episode: { ...eraEpisodeFilter } } : {}),
+      },
+      select: {
+        id: true,
+        chapterNumber: true,
+        title: true,
+        slug: true,
+        canonText: true,
+        interpretationText: true,
+        mythicText: true,
+        emergingSignals: true,
+        isMajorEvent: true,
+        episode: { select: { slug: true, title: true } },
+      },
+      orderBy: { chapterNumber: "desc" },
+      take: 3,
+    }),
+
+    // Entities: archetype history and behavioral patterns
+    prisma.psychenomiconEntity.findMany({
+      where: {
+        OR: [
+          { name: { contains: primaryQuery, mode: "insensitive" } },
+          { primaryArchetype: { contains: primaryQuery, mode: "insensitive" } },
+          { name: { contains: fallbackQuery, mode: "insensitive" } },
+          // When an archetype is in context, surface entities of that archetype
+          ...(ctx?.sourceArchetype ? [
+            { primaryArchetype: { contains: ctx.sourceArchetype, mode: "insensitive" as const } },
+          ] : []),
+          // When a person is in context, surface their entity record
+          ...(ctx?.sourcePerson ? [
+            { personSlug: { contains: ctx.sourcePerson, mode: "insensitive" as const } },
+          ] : []),
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        primaryArchetype: true,
+        behaviorPatterns: true,
+        status: true,
+        personSlug: true,
+      },
+      take: 3,
+    }),
+
+    // Threads: active and emerging narrative patterns
+    prisma.psychenomiconThread.findMany({
+      where: {
+        status: { not: "resolved" },
+        OR: [
+          { title: { contains: primaryQuery, mode: "insensitive" } },
+          { description: { contains: primaryQuery, mode: "insensitive" } },
+          { title: { contains: fallbackQuery, mode: "insensitive" } },
+        ],
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        status: true,
+      },
+      take: 3,
+    }),
   ]);
 
-  return { quotes, transcripts, episodes, people, lore, query: primaryQuery };
+  return { quotes, transcripts, episodes, people, lore, chapters, entities, threads, query: primaryQuery };
 }
 
 function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
@@ -258,12 +346,86 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
     }
   }
 
+  // ── Psychenomicon layer ────────────────────────────────────────────────────
+
+  if (data.chapters.length > 0) {
+    parts.push("\n=== PSYCHENOMICON CHAPTERS ===");
+    for (const ch of data.chapters) {
+      const chapterKey = `chapter-${ch.slug}`;
+      if (seenSlugs.has(chapterKey)) continue;
+      seenSlugs.add(chapterKey);
+
+      const label = ch.isMajorEvent
+        ? `★ Chapter ${ch.chapterNumber}: ${ch.title}`
+        : `Chapter ${ch.chapterNumber}: ${ch.title}`;
+      const lines: string[] = [label];
+
+      if (ch.canonText) {
+        lines.push(`[CANON]: ${ch.canonText.slice(0, 400)}`);
+      }
+      if (ch.interpretationText) {
+        lines.push(`[INTERPRETATION]: ${ch.interpretationText.slice(0, 400)}`);
+      }
+      if (ch.mythicText) {
+        lines.push(`[MYTHIC]: ${ch.mythicText.slice(0, 200)}`);
+      }
+      if (ch.emergingSignals.length > 0) {
+        lines.push(`[SIGNALS]: ${ch.emergingSignals.join(" | ")}`);
+      }
+      parts.push(lines.join("\n"));
+
+      // Cite the chapter itself; also cite the linked episode if not already cited
+      citations.push({
+        type: "chapter",
+        label: `Chapter ${ch.chapterNumber}: ${ch.title}`,
+        href: `/psychenomicon/chapters/${ch.slug}`,
+      });
+      if (ch.episode && !seenEpisodes.has(ch.episode.slug)) {
+        seenEpisodes.add(ch.episode.slug);
+        citations.push({ type: "episode", label: ch.episode.title, href: `/episodes/${ch.episode.slug}` });
+      }
+    }
+  }
+
+  if (data.entities.length > 0) {
+    parts.push("\n=== PSYCHENOMICON ENTITIES ===");
+    for (const e of data.entities) {
+      const entityKey = `entity-${e.slug}`;
+      if (seenSlugs.has(entityKey)) continue;
+      seenSlugs.add(entityKey);
+
+      const archetype = e.primaryArchetype ? ` — Archetype: ${e.primaryArchetype}` : "";
+      const status = e.status !== "active" ? ` [${e.status.toUpperCase()}]` : "";
+      const patterns = e.behaviorPatterns.length > 0
+        ? `\n  Patterns: ${e.behaviorPatterns.slice(0, 4).join(", ")}`
+        : "";
+
+      parts.push(`${e.name}${archetype}${status}${patterns}`);
+      citations.push({
+        type: "entity",
+        label: e.name,
+        href: `/psychenomicon/entities/${e.slug}`,
+      });
+    }
+  }
+
+  if (data.threads.length > 0) {
+    parts.push("\n=== ACTIVE NARRATIVE THREADS ===");
+    for (const t of data.threads) {
+      const threadKey = `thread-${t.slug}`;
+      if (seenSlugs.has(threadKey)) continue;
+      seenSlugs.add(threadKey);
+      const desc = t.description ? `: ${t.description.slice(0, 200)}` : "";
+      parts.push(`[${t.status.toUpperCase()}] "${t.title}"${desc}`);
+    }
+  }
+
   return {
     contextText:
       parts.length > 0
         ? parts.join("\n")
         : "No directly relevant archive content found for this query.",
-    citations: citations.slice(0, 8),
+    citations: citations.slice(0, 10),
   };
 }
 

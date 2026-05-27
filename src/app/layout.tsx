@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import {
   Space_Grotesk,
   Inter,
@@ -14,11 +15,21 @@ import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
 import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
 import { getArchiveCounts } from "@/lib/queries/stats";
 import { SkipLink } from "@/components/ui/skip-link";
-import { KonamiEasterEgg } from "@/components/ui/konami-easter-egg";
-import { CommandPalette } from "@/components/search/command-palette";
+import { jsonLdScript } from "@/lib/seo";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
+
+// Lazy-load non-critical interactive overlays — they add JS weight but are
+// never needed on first render.  ssr:false keeps them out of the server bundle.
+const KonamiEasterEgg = dynamic(
+  () => import("@/components/ui/konami-easter-egg").then((m) => m.KonamiEasterEgg),
+  { ssr: false }
+);
+const CommandPalette = dynamic(
+  () => import("@/components/search/command-palette").then((m) => m.CommandPalette),
+  { ssr: false }
+);
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
@@ -68,12 +79,15 @@ const vt323 = VT323({
 const SITE_DESCRIPTION =
   "The complete archive of the Cult of Psyche: 2,500+ transmissions, searchable transcripts, lore entries, guest profiles, relationship maps, and AI-powered exploration of every word ever spoken in the stream.";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://cultcodex.me";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me"
-  ),
+  metadataBase: new URL(SITE_URL),
   title: "CultCodex — The Living Archive",
   description: SITE_DESCRIPTION,
+  alternates: {
+    canonical: SITE_URL,
+  },
   icons: {
     icon: "/favicon.jpg",
     apple: "/favicon.jpg",
@@ -84,6 +98,7 @@ export const metadata: Metadata = {
     images: [{ url: "/social-share.jpg", width: 1200, height: 630 }],
     siteName: "CultCodex",
     type: "website",
+    url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",
@@ -137,6 +152,27 @@ export default async function RootLayout({
         </div>
         <KonamiEasterEgg />
         <CommandPalette />
+        {/* WebSite + SearchAction JSON-LD — enables sitelinks search box in Google */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: jsonLdScript({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "CultCodex",
+              url: SITE_URL,
+              description: SITE_DESCRIPTION,
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+                },
+                "query-input": "required name=search_term_string",
+              },
+            }),
+          }}
+        />
         <Analytics />
         <SpeedInsights />
       </body>

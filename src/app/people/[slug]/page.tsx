@@ -5,7 +5,8 @@ import Link from "next/link";
 import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, jsonLdScript } from "@/lib/seo";
+import { AiNotice } from "@/components/ui/ai-notice";
 import { ERAS, getEraForEpisode } from "@/lib/eras";
 import { archetypeToSlug, splitArchetypes } from "@/lib/queries/archetypes";
 import { EntityHero } from "@/components/ui/entity-hero";
@@ -49,6 +50,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
             {editorialFrame(para.trim())}
           </p>
         ))}
+        <AiNotice className="mt-3" />
       </SectionCard>
     );
   }
@@ -121,6 +123,11 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
             </div>
           );
         })}
+      </div>
+
+      {/* AI-generated notice */}
+      <div className="border-t border-border/60 px-4 py-2.5">
+        <AiNotice />
       </div>
     </div>
   );
@@ -750,7 +757,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             "@context": "https://schema.org",
             "@type": "Person",
             name: person.displayName,

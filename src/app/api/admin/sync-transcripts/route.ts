@@ -3,10 +3,10 @@ import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 
 export const runtime = "nodejs";
-export const maxDuration = 300;
+export const maxDuration = 600; // 10 min — enough headroom for 100 episodes
 export const dynamic = "force-dynamic";
 
-const DELAY_MS = 3000;
+const DELAY_MS = 2000; // 2s between requests — still polite, fits 100 in ~600s
 const SUPADATA_BASE = "https://api.supadata.ai/v1";
 
 function sleep(ms: number) {
@@ -116,51 +116,13 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json().catch(() => ({})) as { limit?: number; retry?: boolean };
-  const limit = Math.min(Math.max(1, body.limit ?? 10), 50);
+  const limit = Math.min(Math.max(1, body.limit ?? 10), 100);
   const retry = body.retry === true;
 
-  // Slugs confirmed permanently unavailable (supadata_empty / 403 age-restricted).
-  // Filtered in JS after the DB fetch — no Prisma `notIn` clause, no DB write,
-  // no Neon pooling read-after-write race. Add slugs here as they're discovered.
-  const SKIP_SLUGS = new Set(retry ? [] : [
-    "psyche-awakens-tarot-is-live-59",
-    "psyche-awakens-tarot-is-live-53",
-    "psyche-awakens-tarot-is-live-36",
-    "psyche-awakens-tarot-is-live-13",
-    "kitty-gang-slumber-party-open-panel-tarot-and-cats",
-    "everyone-hates-me",
-    "bidoouh-a-video-exploration",
-    "i-m-awake-im-awake",
-    "one-more-try-3",
-    "last-call-3",
-    "the-shocking-truth-about-your-favorite-youtuber",
-    "starbucks-run-on-new-ebike",
-    "is-anyone-out-there-does-anyone-care",
-    "rating-tactical-gear-in-real-time-live",
-    "live-streaming-of-psyche-awakens-tarot-3",
-    "wednesday-mcdonalds-open-panel-tarot-and-cats",
-    "hello",
-    "psyche-dancing-in-the-street",
-    "the-magician",
-    "mystical-tarot-reading-unveiling-secrets-in-a-smoky-aura",
-    "a-lot-going-on-get-in-here",
-    "tuesday-afternoon-2",
-    "psyche-awakens-daily-tarot-livestream",
-    "electric-gula-hoop",
-    "free-panelverse-troll-decoder-ebook",
-    "magus",
-    "what-your-resistance-is-actually-protecting-deeptruth-selfawareness",
-    "its-a-circus-around-here-lately-cats-funny-dreamscreenai",
-    "youtubeshow-tarotreading-openpanel-creatorsofinstagram-spiritualcommunity-liveshow",
-    "contact-me-if-you-d-like-to-schedule-an-hour-tarot-reading-for-25-for-a-very-limited-time",
-    "toomuch-2",
-    "ai-turned-me-into-an-anime-character-aimagic-trending",
-    "i-didnt-expect-my-ai-to-do-this-aifilter-viral-trending",
-    "your-authentic-power-awakens-now-transformation-strength",
-    "whos-bbc-was-that-open-panel-tarot-cats-and-chaos",
-    "who-wants-smoke",
-    "fish-tacos-to-go-checkmate",
-  ]);
+  // No hardcoded skip list needed — the DB sentinel (transcriptRaw = "no_captions")
+  // permanently excludes episodes confirmed as empty/age-restricted.
+  // The WHERE clause below filters them out at query time.
+  // (retry=true bypasses this so you can re-attempt previously-marked episodes.)
 
   const episodesWithTranscripts = await prisma.transcriptSegment.groupBy({
     by: ["episodeId"],
@@ -169,7 +131,7 @@ export async function POST(req: NextRequest) {
   const hasTranscript = new Set(episodesWithTranscripts.map((e) => e.episodeId));
 
   // "no_captions" sentinel = previously confirmed unavailable (skip unless retry).
-  const allEpisodes = await prisma.episode.findMany({
+  const episodes = await prisma.episode.findMany({
     where: {
       youtubeVideoId: { not: null },
       status: "published",
@@ -178,9 +140,6 @@ export async function POST(req: NextRequest) {
     select: { id: true, slug: true, youtubeVideoId: true },
     orderBy: { airDate: "asc" },
   });
-
-  // Filter SKIP_SLUGS in JS — no Prisma notIn, no DB write, no pool race.
-  const episodes = allEpisodes.filter((ep) => !SKIP_SLUGS.has(ep.slug));
 
   const pending = episodes.filter((ep) => !hasTranscript.has(ep.id)).slice(0, limit);
   const totalPending = episodes.filter((ep) => !hasTranscript.has(ep.id)).length;
@@ -207,13 +166,20 @@ export async function POST(req: NextRequest) {
         // Mark permanently unavailable episodes so we skip them on future runs.
         // 404 = no captions; 403 = age-restricted (can't fetch); empty = no transcript data.
         const permanent = reason.startsWith("supadata_404") || reason.startsWith("supadata_403") || reason.startsWith("supadata_empty");
+        let markReason = reason;
         if (permanent) {
-          await prisma.episode.update({
-            where: { id: ep.id },
-            data: { transcriptRaw: "no_captions" },
-          });
+          try {
+            await prisma.episode.update({
+              where: { id: ep.id },
+              data: { transcriptRaw: "no_captions" },
+            });
+            markReason = `${reason} [marked]`;
+          } catch (dbErr) {
+            const dbMsg = dbErr instanceof Error ? dbErr.message : String(dbErr);
+            markReason = `${reason} [mark_failed: ${dbMsg.slice(0, 80)}]`;
+          }
         }
-        results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "no_transcript", reason });
+        results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "no_transcript", reason: markReason });
       } else {
         await prisma.transcriptSegment.createMany({
           data: chunks.map((chunk) => {

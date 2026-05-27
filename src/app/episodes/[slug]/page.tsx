@@ -13,6 +13,11 @@ import { EraNeighbors } from "@/components/episodes/era-neighbors";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
 import { buildMetadata, episodeJsonLd, jsonLdScript } from "@/lib/seo";
+import { AiNotice } from "@/components/ui/ai-notice";
+import { getConfidenceTier } from "@/lib/format/confidence-tier";
+import { renderWithTimestamps } from "@/lib/format/render-timestamps";
+import { HumanReviewBadge } from "@/components/ui/human-review-badge";
+import { SplitSummaryCard } from "@/components/episodes/split-summary";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EpisodeHero } from "@/components/episodes/episode-hero";
 import { EpisodeGlanceBar } from "@/components/episodes/episode-glance-bar";
@@ -121,6 +126,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     : null;
 
   const hasTranscript = episode.segments.length > 0;
+  const confidenceTier = getConfidenceTier(episode.segments.length, !!episode.summaryLong);
   const hasTranscriptAccess = user ? await isSubscribed(user.id).catch(() => false) : false;
   const hasDecodeAccess = hasTranscriptAccess; // same tier — Initiate+
   const hasDecodeData = !!episode.decodeData;
@@ -349,14 +355,29 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               {{
                 overview: (
                   <div className="space-y-6">
-                    {/* Summary */}
-                    {episode.summaryLong && (
+                    {/* Summary — split view (new) or legacy single-blob (old) */}
+                    {episode.summaryFacts ? (
+                      <SplitSummaryCard
+                        summaryFacts={episode.summaryFacts}
+                        summaryThemes={episode.summaryThemes}
+                        youtubeVideoId={episode.youtubeVideoId}
+                        confidenceTier={confidenceTier}
+                        isHumanReviewed={episode.isHumanReviewed}
+                        humanReviewedAt={episode.humanReviewedAt}
+                      />
+                    ) : episode.summaryLong ? (
                       <SectionCard title="Summary">
                         <p className="text-sm text-text-primary leading-relaxed">
-                          {episode.summaryLong}
+                          {renderWithTimestamps(episode.summaryLong, episode.youtubeVideoId)}
                         </p>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          {episode.isHumanReviewed && (
+                            <HumanReviewBadge reviewedAt={episode.humanReviewedAt} variant="full" />
+                          )}
+                          <AiNotice tier={confidenceTier} />
+                        </div>
                       </SectionCard>
-                    )}
+                    ) : null}
 
                     {/* Guests (inline for mobile) — hosts filtered out */}
                     {actualGuests.length > 0 && (
@@ -705,7 +726,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
+        __html: jsonLdScript({
           "@context": "https://schema.org",
           "@type": "VideoObject",
           name: episode.title,

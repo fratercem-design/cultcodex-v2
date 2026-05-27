@@ -31,6 +31,8 @@ export async function updateEpisode(id: string, formData: FormData) {
       status: formData.get("status") as ContentStatus,
       summaryShort: (formData.get("summaryShort") as string) || null,
       summaryLong: (formData.get("summaryLong") as string) || null,
+      summaryFacts: (formData.get("summaryFacts") as string) || null,
+      summaryThemes: (formData.get("summaryThemes") as string) || null,
       youtubeVideoId: (formData.get("youtubeVideoId") as string) || null,
       thumbnailUrl: (formData.get("thumbnailUrl") as string) || null,
       contentType: (formData.get("contentType") as ContentType) || null,
@@ -51,6 +53,33 @@ export async function updateEpisode(id: string, formData: FormData) {
 
   revalidatePath("/admin/episodes");
   revalidatePath("/episodes");
+}
+
+/**
+ * Toggle the human-review flag on an episode.
+ * Sets isHumanReviewed=true + humanReviewedAt=now, or clears both.
+ */
+export async function toggleHumanReview(id: string) {
+  await requireAdmin();
+
+  const episode = await prisma.episode.findUnique({
+    where: { id },
+    select: { isHumanReviewed: true },
+  });
+  if (!episode) return;
+
+  const next = !episode.isHumanReviewed;
+  await prisma.episode.update({
+    where: { id },
+    data: {
+      isHumanReviewed: next,
+      humanReviewedAt: next ? new Date() : null,
+    },
+  });
+
+  revalidatePath(`/admin/episodes/${id}/edit`);
+  revalidatePath("/episodes");
+  revalidatePath("/admin/episodes");
 }
 
 export async function bulkUpdateEpisodeStatus(

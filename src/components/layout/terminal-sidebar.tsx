@@ -24,6 +24,12 @@ interface NavGroup {
 
 const NAV_GROUPS: readonly NavGroup[] = [
   {
+    title: "CULT",
+    items: [
+      { href: "/cult-live", label: "CULT LIVE", glyph: "◎", accent: "neon-4" },
+    ],
+  },
+  {
     title: "MAIN",
     items: [
       { href: "/", label: "OVERVIEW", glyph: "▢", key: "1" },
@@ -54,6 +60,7 @@ const NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { href: "/lexicon", label: "LEXICON", glyph: "≣" },
       { href: "/corrections", label: "CORRECTIONS", glyph: "✕" },
+      { href: "/about/methodology", label: "METHODOLOGY", glyph: "◇" },
     ],
   },
   {

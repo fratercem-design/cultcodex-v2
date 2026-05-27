@@ -467,6 +467,8 @@ function CitationIcon({ type }: { type: OracleCitation["type"] }) {
     transcript: "◈",
     episode: "◉",
     person: "◇",
+    chapter: "▲",   // Psychenomicon chapter
+    entity: "◎",    // Psychenomicon entity
   };
   return <span className="opacity-60">{icons[type]}</span>;
 }

@@ -1,25 +1,22 @@
 import { google } from "googleapis";
 import Image from "next/image";
-import Link from "next/link";
 import type { Metadata } from "next";
 
 export const revalidate = 120; // re-check live status every 2 min
 
 export const metadata: Metadata = {
-  title: "IRL Newstime — CultCodex",
-  description: "Latest videos and live streams from IRL Newstime, IP2Wiki, and Alexandra Mayers.",
+  title: "Cult Live — CultCodex",
+  description: "Latest videos and live streams from Cult of Psyche and Psyche's Nightmares.",
 };
 
 const CHANNELS = [
-  { handle: "@IRLnewsTime",     label: "IRL Newstime"    },
-  { handle: "@ip2wikiinfo",     label: "IP2Wiki"          },
-  { handle: "@alexandramayers", label: "Alexandra Mayers" },
+  { handle: "@cultofpsyche",      label: "Cult of Psyche"      },
+  { handle: "@PsychesNightmares", label: "Psyche's Nightmares" },
 ];
 
-/** One colour per channel — extend as channels are added */
+/** One colour per channel */
 const CHANNEL_COLORS = [
   "text-accent-gold",
-  "text-accent-cyan",
   "text-accent-violet",
 ] as const;
 
@@ -40,7 +37,6 @@ async function fetchChannelVideos(
   handle: string,
   label: string,
 ): Promise<VideoItem[]> {
-  // 1. Resolve handle → channelId + uploadsPlaylistId
   const chanRes = await yt.channels.list({
     part: ["contentDetails", "snippet"],
     forHandle: handle,
@@ -52,7 +48,6 @@ async function fetchChannelVideos(
   const uploadsId = channel.contentDetails?.relatedPlaylists?.uploads;
   if (!uploadsId) return [];
 
-  // 2. Fetch up to 20 recent uploads
   const plRes = await yt.playlistItems.list({
     part: ["snippet"],
     playlistId: uploadsId,
@@ -64,13 +59,11 @@ async function fetchChannelVideos(
 
   if (videoIds.length === 0) return [];
 
-  // 3. Batch-fetch stats + liveStreamingDetails
   const vidRes = await yt.videos.list({
     part: ["snippet", "statistics", "liveStreamingDetails", "contentDetails"],
     id: videoIds,
   });
 
-  // 4. Check for active live streams via search
   const liveSearch = await yt.search.list({
     part: ["id"],
     channelId,
@@ -134,7 +127,7 @@ function timeAgo(iso: string): string {
   return "just now";
 }
 
-export default async function IRLNewstimePage() {
+export default async function CultLivePage() {
   const apiKey = process.env.YOUTUBE_API_KEY;
 
   if (!apiKey) {
@@ -147,18 +140,15 @@ export default async function IRLNewstimePage() {
 
   const yt = google.youtube({ version: "v3", auth: apiKey });
 
-  // Fetch all channels in parallel; failures don't block the others
   const results = await Promise.allSettled(
     CHANNELS.map((ch) => fetchChannelVideos(yt, ch.handle, ch.label))
   );
   const channelVideos = results.map((r) => (r.status === "fulfilled" ? r.value : []));
 
-  // Flatten with channel index for colour coding
   const allVideos = channelVideos.flatMap((videos, idx) =>
     videos.map((v) => ({ ...v, channelIdx: idx }))
   );
 
-  // Live streams first, then sorted by date
   allVideos.sort((a, b) => {
     if (a.isLive !== b.isLive) return a.isLive ? -1 : 1;
     return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
@@ -171,9 +161,9 @@ export default async function IRLNewstimePage() {
 
       {/* Header */}
       <div className="space-y-1">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">/// irl_newstime</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">/// cult_live</p>
         <div className="flex items-center gap-3">
-          <h1 className="font-display text-2xl font-bold text-white">IRL Newstime</h1>
+          <h1 className="font-display text-2xl font-bold text-white">Cult Live</h1>
           {liveCount > 0 && (
             <span className="flex items-center gap-1.5 rounded-full bg-red-600/90 px-3 py-1 font-mono text-[10px] font-bold text-white animate-pulse">
               <span className="h-1.5 w-1.5 rounded-full bg-white" />
