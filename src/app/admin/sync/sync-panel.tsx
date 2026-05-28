@@ -153,14 +153,21 @@ export function SyncPanel({
           setEnrichEpResult({ ok: false, error: data?.error ?? "Request failed." });
           break;
         }
-        totalDone += data.processed ?? 0;
+        const batchProcessed = data.processed ?? 0;
+        const batchResults = data.results ?? [];
+        // If nothing was processed but items remain, all failed (rate limit / API error) — stop looping
+        if (batchProcessed === 0 && batchResults.length > 0 && (data.remaining ?? 0) > 0) {
+          const firstError = batchResults.find((r) => !r.ok)?.error ?? "API error — try again later";
+          setEnrichEpResult({ ok: false, error: firstError });
+          break;
+        }
+        totalDone += batchProcessed;
         setEnrichEpProgress({ done: totalDone, remaining: data.remaining ?? 0 });
         if (!loop || data.done || data.remaining === 0) {
           setEnrichEpResult({ ...data, ok: true });
           break;
         }
-        // Small pause between batches to avoid overwhelming the API
-        await new Promise((r) => setTimeout(r, 1500));
+        await new Promise((r) => setTimeout(r, 3000));
       }
       router.refresh();
     } catch {
@@ -192,13 +199,21 @@ export function SyncPanel({
           setEnrichPeopleResult({ ok: false, error: data?.error ?? "Request failed." });
           break;
         }
-        totalDone += data.processed ?? 0;
+        const batchProcessed = data.processed ?? 0;
+        const batchResults = data.results ?? [];
+        // If nothing was processed but items remain, all failed (rate limit / API error) — stop looping
+        if (batchProcessed === 0 && batchResults.length > 0 && (data.remaining ?? 0) > 0) {
+          const firstError = batchResults.find((r) => !r.ok)?.error ?? "API error — try again later";
+          setEnrichPeopleResult({ ok: false, error: firstError });
+          break;
+        }
+        totalDone += batchProcessed;
         setEnrichPeopleProgress({ done: totalDone, remaining: data.remaining ?? 0 });
         if (!loop || data.done || data.remaining === 0) {
           setEnrichPeopleResult({ ...data, ok: true });
           break;
         }
-        await new Promise((r) => setTimeout(r, 1500));
+        await new Promise((r) => setTimeout(r, 3000));
       }
       router.refresh();
     } catch {
