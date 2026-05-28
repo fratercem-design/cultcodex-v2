@@ -40,6 +40,7 @@ export function OracleConsole() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [gated, setGated] = useState(false);
   const [trialUsed, setTrialUsed] = useState(false);
+  const [trialRemaining, setTrialRemaining] = useState<number | null>(null);
   const [captureEmail, setCaptureEmail] = useState("");
   const [captureState, setCaptureState] = useState<"idle" | "saving" | "done">("idle");
   const [currentTime, setCurrentTime] = useState(0);
@@ -114,6 +115,7 @@ export function OracleConsole() {
       setAudioBase64(data.audioBase64 ?? null);
       setHasVoice(data.hasVoice ?? false);
       setTrialUsed(data.trialUsed ?? false);
+      if (data.trialRemaining !== undefined) setTrialRemaining(data.trialRemaining);
       setState("answered");
     } catch {
       setErrorMsg("A disturbance in the archive. Try again.");
@@ -362,7 +364,9 @@ export function OracleConsole() {
           {trialUsed && captureState !== "done" && (
             <div className="rounded-xl border border-accent-gold/30 bg-accent-gold/5 p-5 space-y-3">
               <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/60">
-                /// that was your free question
+                {trialRemaining !== null && trialRemaining > 0
+                  ? `/// ${trialRemaining} free question${trialRemaining === 1 ? "" : "s"} remaining this month`
+                  : "/// free questions exhausted"}
               </p>
               <p className="font-display text-sm font-bold text-text-primary">
                 The Oracle has more to say.

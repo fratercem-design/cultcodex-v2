@@ -39,8 +39,10 @@ export interface OracleResponse {
   audioBase64?: string | null;
   hasVoice?: boolean;
   error?: string;
-  /** True when this was the user's one free trial question — show email capture after. */
+  /** True when this response consumed a free trial question — show email capture after. */
   trialUsed?: boolean;
+  /** How many free questions remain this month (only set for trial requests). */
+  trialRemaining?: number;
 }
 
 // Optional structured intent carriers — all fields optional, all additive.
@@ -430,6 +432,27 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
 }
 
 const TRIAL_COOKIE = "oracle_trial";
+const TRIAL_LIMIT = 3;
+
+/** Cookie value format: "{used}|{YYYY-MM}" — resets each calendar month. */
+function parseTrialCookie(raw: string | undefined): { used: number; month: string } {
+  const now = new Date();
+  const thisMonth = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
+  if (!raw) return { used: 0, month: thisMonth };
+  const [countStr, month] = raw.split("|");
+  if (month !== thisMonth) return { used: 0, month: thisMonth }; // new month — reset
+  const used = parseInt(countStr, 10);
+  return { used: isNaN(used) ? 0 : used, month: thisMonth };
+}
+
+function setTrialCookie(res: NextResponse, used: number, month: string): void {
+  res.cookies.set(TRIAL_COOKIE, `${used}|${month}`, {
+    httpOnly: true,
+    maxAge: 60 * 60 * 24 * 32, // slightly over a month so it persists through the reset
+    sameSite: "lax",
+    path: "/",
+  });
+}
 
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
@@ -437,12 +460,11 @@ export async function POST(req: NextRequest) {
     ? user.role === "admin" || (await isSubscribed(user.id))
     : false;
 
-  // Allow one free question per device (tracked by cookie).
-  // After the trial is consumed the next attempt returns initiate_required.
-  const trialAlreadyUsed = req.cookies.get(TRIAL_COOKIE)?.value === "used";
-  const isFreeTrialRequest = !canAccess && !trialAlreadyUsed;
+  // Allow TRIAL_LIMIT free questions per device per calendar month (cookie-tracked).
+  const trial = parseTrialCookie(req.cookies.get(TRIAL_COOKIE)?.value);
+  const isFreeTrialRequest = !canAccess && trial.used < TRIAL_LIMIT;
 
-  if (!canAccess && trialAlreadyUsed) {
+  if (!canAccess && trial.used >= TRIAL_LIMIT) {
     return NextResponse.json(
       { ok: false, error: "initiate_required" } satisfies OracleResponse,
       { status: 403 }
@@ -506,14 +528,10 @@ export async function POST(req: NextRequest) {
       audioBase64: cached.audioBase64,
       hasVoice: !!cached.audioBase64,
       trialUsed: isFreeTrialRequest,
+      trialRemaining: isFreeTrialRequest ? Math.max(0, TRIAL_LIMIT - trial.used - 1) : undefined,
     } satisfies OracleResponse);
     if (isFreeTrialRequest) {
-      res.cookies.set(TRIAL_COOKIE, "used", {
-        httpOnly: true,
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-        sameSite: "lax",
-        path: "/",
-      });
+      setTrialCookie(res, trial.used + 1, trial.month);
     }
     return res;
   }
@@ -608,15 +626,11 @@ export async function POST(req: NextRequest) {
     audioBase64,
     hasVoice: !!audioBase64,
     trialUsed: isFreeTrialRequest,
+    trialRemaining: isFreeTrialRequest ? Math.max(0, TRIAL_LIMIT - trial.used - 1) : undefined,
   } satisfies OracleResponse);
 
   if (isFreeTrialRequest) {
-    finalRes.cookies.set(TRIAL_COOKIE, "used", {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 30,
-      sameSite: "lax",
-      path: "/",
-    });
+    setTrialCookie(finalRes, trial.used + 1, trial.month);
   }
 
   return finalRes;
