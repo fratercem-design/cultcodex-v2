@@ -124,22 +124,26 @@ export default async function RootLayout({
         className={`${fontVariables} font-mono antialiased bg-void text-text-primary`}
         style={{ backgroundColor: "var(--term-bg)" }}
       >
-        <SkipLink />
-        <LiveBanner />
-        <EntryBanner />
-        <div className="terminal-grid">
-          <TerminalTopBar />
-          <TerminalSidebar counts={counts} />
-          <div
-            id="main-content"
-            className="terminal-main"
-            style={{ backgroundColor: "var(--term-bg)" }}
-          >
-            {children}
-          </div>
-          <TerminalStatusBar feedCount={counts.episodes} />
-        </div>
+        {/* Ambient canvas at z-index 0 — behind all UI */}
         <ClientOverlays />
+        {/* Content layer at z-index 1 — above the ambient canvas */}
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <SkipLink />
+          <LiveBanner />
+          <EntryBanner />
+          <div className="terminal-grid">
+            <TerminalTopBar />
+            <TerminalSidebar counts={counts} />
+            <div
+              id="main-content"
+              className="terminal-main"
+              style={{ backgroundColor: "var(--term-bg)" }}
+            >
+              {children}
+            </div>
+            <TerminalStatusBar feedCount={counts.episodes} />
+          </div>
+        </div>
         {/* WebSite + SearchAction JSON-LD — enables sitelinks search box in Google */}
         <script
           type="application/ld+json"

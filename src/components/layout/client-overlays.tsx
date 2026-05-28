@@ -6,6 +6,14 @@
 
 import dynamic from "next/dynamic";
 
+const AmbientVisualSystem = dynamic(
+  () =>
+    import("@/components/ambient/AmbientVisualSystem").then(
+      (m) => m.AmbientVisualSystem
+    ),
+  { ssr: false }
+);
+
 const KonamiEasterEgg = dynamic(
   () => import("@/components/ui/konami-easter-egg").then((m) => m.KonamiEasterEgg),
   { ssr: false }
@@ -19,6 +27,7 @@ const CommandPalette = dynamic(
 export function ClientOverlays() {
   return (
     <>
+      <AmbientVisualSystem />
       <KonamiEasterEgg />
       <CommandPalette />
     </>
