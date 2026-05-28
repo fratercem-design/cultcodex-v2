@@ -167,11 +167,11 @@ export default async function HomePage() {
           {/* ── SECTION NAV ──────────────────────────────────────────── */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {([
-              { href: "/episodes", icon: "📺", label: "Episodes",    count: stats.episodes.toLocaleString(),    accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
-              { href: "/people",   icon: "👁",  label: "People",      count: stats.people.toLocaleString(),      accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5 group-hover:text-accent-cyan" },
-              { href: "/graph",    icon: "🕸️", label: "Network Map", count: "relationship graph",               accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
-              { href: "/topics",   icon: "◈",  label: "Signals",     count: stats.topics.toLocaleString(),      accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
-              { href: "/lore",     icon: "📜",  label: "Lore",        count: stats.loreEntries.toLocaleString(), accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
+              { href: "/episodes",       icon: "📺", label: "Episodes",         count: stats.episodes.toLocaleString(),    accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
+              { href: "/people",         icon: "👁",  label: "People",           count: stats.people.toLocaleString(),      accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5 group-hover:text-accent-cyan" },
+              { href: "/symbols",        icon: "✦",  label: "Symbol Codex",     count: "esoteric encyclopedia",            accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
+              { href: "/archetype-quiz", icon: "◈",  label: "Archetype Quiz",   count: "discover your archetype",          accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
+              { href: "/graph",          icon: "🕸️", label: "Network Map",      count: "relationship graph",               accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
             ] as const).map((item) => (
               <Link
                 key={item.href}
@@ -432,9 +432,9 @@ export default async function HomePage() {
             <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">/// new here?</p>
             <div className="grid gap-2 sm:grid-cols-3">
               {([
-                { href: "/start-here", label: "Start Here", desc: "Guided entry points chosen by people who've gone deep", accent: "text-accent-gold border-accent-gold/30 hover:bg-accent-gold/5" },
-                { href: "/people",     label: "Meet the Voices", desc: "Every recurring figure — who they are and what orbit they hold", accent: "text-accent-cyan border-accent-cyan/30 hover:bg-accent-cyan/5" },
-                { href: "/oracle",     label: "Ask the Oracle", desc: "AI trained on 2,600+ episodes. Ask anything, get a cited answer", accent: "text-accent-violet border-accent-violet/30 hover:bg-accent-violet/5" },
+                { href: "/start-here",     label: "Start Here",       desc: "Guided entry points chosen by people who've gone deep", accent: "text-accent-gold border-accent-gold/30 hover:bg-accent-gold/5" },
+                { href: "/archetype-quiz", label: "Find Your Archetype", desc: "10 questions reveal which mythic pattern you embody", accent: "text-accent-violet border-accent-violet/30 hover:bg-accent-violet/5" },
+                { href: "/symbols",        label: "Symbol Codex",     desc: "History and occult meaning of 20+ esoteric symbols", accent: "text-accent-gold border-accent-gold/30 hover:bg-accent-gold/5" },
               ] as const).map((p) => (
                 <Link
                   key={p.href}
