@@ -170,6 +170,9 @@ export default async function HomePage() {
 
         <div className="mx-auto max-w-7xl px-4 py-10 space-y-12">
 
+          {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}
+          <EmailCapture source="homepage" />
+
           {/* ── SECTION NAV ──────────────────────────────────────────── */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {([
@@ -193,13 +196,6 @@ export default async function HomePage() {
             ))}
           </div>
 
-          {/* ── DAILY TRANSMISSION ───────────────────────────────────── */}
-          <DailyTransmission
-            data={dailyTransmission}
-            quoteReactions={dailyQuoteReactions}
-            isAuthenticated={Boolean(currentUser)}
-          />
-
           {/* ── MUSIC PLAYER ─────────────────────────────────────────── */}
           <div className="space-y-3">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">{"/// the_signal"}</p>
@@ -209,6 +205,13 @@ export default async function HomePage() {
               title="Cult of Psyche — Signal Stream"
             />
           </div>
+
+          {/* ── DAILY TRANSMISSION ───────────────────────────────────── */}
+          <DailyTransmission
+            data={dailyTransmission}
+            quoteReactions={dailyQuoteReactions}
+            isAuthenticated={Boolean(currentUser)}
+          />
 
           {/* ── ORACLE — AI SEARCH ───────────────────────────────────── */}
           <div className="rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface px-6 py-6 space-y-4">
@@ -434,9 +437,6 @@ export default async function HomePage() {
               </span>
             </Link>
           )}
-
-          {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}
-          <EmailCapture source="homepage" />
 
           <ArchiveDisclaimer variant="full" />
         </div>
