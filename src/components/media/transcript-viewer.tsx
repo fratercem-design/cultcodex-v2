@@ -86,6 +86,7 @@ export function TranscriptViewer({
         (s) => s.startSeconds <= initialTimestamp && s.endSeconds > initialTimestamp
       );
       if (idx >= 0) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setActiveIndex(idx);
         setTimeout(() => {
           segmentRefs.current.get(idx)?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -93,6 +94,16 @@ export function TranscriptViewer({
       }
     }
   }, [initialTimestamp, segments]);
+
+  function seekTo(seconds: number) {
+    const iframe = document.querySelector<HTMLIFrameElement>(
+      'iframe[src*="youtube-nocookie.com"]'
+    );
+    if (iframe) {
+      const baseUrl = iframe.src.split("?")[0];
+      iframe.src = `${baseUrl}?start=${seconds}&autoplay=1`;
+    }
+  }
 
   // Keyboard navigation
   const handleKeyDown = useCallback(
@@ -119,16 +130,6 @@ export function TranscriptViewer({
     },
     [activeIndex, filtered, hasVideoEmbed]
   );
-
-  function seekTo(seconds: number) {
-    const iframe = document.querySelector<HTMLIFrameElement>(
-      'iframe[src*="youtube-nocookie.com"]'
-    );
-    if (iframe) {
-      const baseUrl = iframe.src.split("?")[0];
-      iframe.src = `${baseUrl}?start=${seconds}&autoplay=1`;
-    }
-  }
 
   async function copySegment(seg: Segment) {
     const text = `[${formatSeconds(seg.startSeconds)}]${seg.speakerLabel ? ` ${seg.speakerLabel}:` : ""} ${seg.text}`;

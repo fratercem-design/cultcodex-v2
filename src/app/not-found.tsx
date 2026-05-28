@@ -18,6 +18,7 @@ export default function NotFound() {
   const [quote, setQuote] = useState(lostTransmissions[0]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuote(lostTransmissions[Math.floor(Math.random() * lostTransmissions.length)]);
   }, []);
 

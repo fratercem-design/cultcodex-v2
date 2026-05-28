@@ -83,6 +83,7 @@ export default function PackStorePage() {
   function dailyAvailable() {
     if (!wallet?.lastDailyClaimAt) return true;
     const last = new Date(wallet.lastDailyClaimAt);
+    // eslint-disable-next-line react-hooks/purity
     return Date.now() - last.getTime() >= 24 * 3_600_000;
   }
 

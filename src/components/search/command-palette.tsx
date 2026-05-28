@@ -76,7 +76,9 @@ export function CommandPalette() {
   useEffect(() => {
     if (debounce.current) clearTimeout(debounce.current);
     if (!query.trim() || query.length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setResults([]);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelected(0);
       return;
     }

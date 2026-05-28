@@ -21,6 +21,7 @@ export default async function OraclePage() {
     : false;
 
   const totalQuotes = await prisma.quote.count();
+  // eslint-disable-next-line react-hooks/purity
   const randomOffset = Math.floor(Math.random() * Math.max(totalQuotes - 1, 0));
   const quotes = await prisma.quote.findMany({
     take: 1,

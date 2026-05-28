@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { TradingCard, type TradingCardData } from "@/components/cards/trading-card";
 import { RARITY_LABEL, RARITY_ORDER, CARD_TYPE_LABEL } from "@/lib/cards/rarity";
@@ -58,8 +58,12 @@ export function CollectionView({ collection, stats }: CollectionViewProps) {
       }
     });
 
-  const dailyAvailable = !stats.lastDailyClaimAt ||
-    Date.now() - new Date(stats.lastDailyClaimAt as string).getTime() >= 24 * 3_600_000;
+  const dailyAvailable = useMemo(
+    () => !stats.lastDailyClaimAt ||
+      // eslint-disable-next-line react-hooks/purity
+      Date.now() - new Date(stats.lastDailyClaimAt as string).getTime() >= 24 * 3_600_000,
+    [stats.lastDailyClaimAt]
+  );
 
   return (
     <div style={{ padding: "32px 28px", maxWidth: 1100, margin: "0 auto" }}>
