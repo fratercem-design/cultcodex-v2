@@ -1,12 +1,23 @@
 import Link from "next/link";
 import { formatSeconds } from "@/lib/format/duration";
 import type { QuoteWithRelations } from "@/lib/queries/quotes";
+import {
+  QuoteReactionBar,
+  type QuoteReactionInitial,
+} from "@/components/quotes/quote-reaction-bar";
 
 interface QuoteCardProps {
   quote: QuoteWithRelations;
+  /** Optional pre-loaded reaction state. Omit to hide the reaction bar. */
+  reactions?: QuoteReactionInitial;
+  isAuthenticated?: boolean;
 }
 
-export function QuoteCard({ quote }: QuoteCardProps) {
+export function QuoteCard({
+  quote,
+  reactions,
+  isAuthenticated = false,
+}: QuoteCardProps) {
   return (
     <div className="rounded-lg border border-border bg-surface p-4">
       <blockquote className="border-l-2 border-red-400/50 pl-4">
@@ -39,6 +50,16 @@ export function QuoteCard({ quote }: QuoteCardProps) {
           </span>
         )}
       </div>
+
+      {reactions && (
+        <div className="mt-3 pt-3 border-t border-border/50">
+          <QuoteReactionBar
+            quoteId={quote.id}
+            initial={reactions}
+            isAuthenticated={isAuthenticated}
+          />
+        </div>
+      )}
     </div>
   );
 }

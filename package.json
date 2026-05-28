@@ -22,7 +22,17 @@
     "ingest:episodes": "npx tsx scripts/ingest/import-episodes.ts",
     "enrich:episodes": "npx tsx scripts/enrich/enrich-episodes.ts",
     "enrich:import": "npx tsx scripts/enrich/import-enriched.ts",
-    "enrich:pipeline": "npx dotenvx run -- npx tsx scripts/enrich/full-pipeline.ts"
+    "enrich:topics": "npx dotenvx run -- npx tsx scripts/enrich/enrich-topics.ts",
+    "enrich:pipeline": "npx dotenvx run -- npx tsx scripts/enrich/full-pipeline.ts",
+    "nightmares:fetch": "npx dotenvx run -- npx tsx scripts/_fetch-psychesnightmares.ts",
+    "nightmares:transcripts": "npx tsx scripts/scrape/fetch-transcripts-nightmares.ts",
+    "nightmares:enrich": "npx dotenvx run -- npx tsx scripts/enrich/enrich-nightmares.ts",
+    "nightmares:enrich:import": "npx dotenvx run -- npx tsx scripts/enrich/import-enriched.ts",
+    "nightmares:people": "npx dotenvx run -- npx tsx scripts/enrich/enrich-nightmares-people.ts",
+    "nightmares:pipeline": "npm run nightmares:fetch && npm run nightmares:transcripts && npm run nightmares:enrich && npm run nightmares:enrich:import && npm run nightmares:people",
+    "art:psychenomicon": "npx dotenvx run -- npx tsx scripts/psychenomicon-art/run.ts",
+    "art:psychenomicon:prompts": "npx dotenvx run -- npx tsx scripts/psychenomicon-art/run.ts --skip-images",
+    "art:psychenomicon:dry": "npx dotenvx run -- npx tsx scripts/psychenomicon-art/run.ts --dry-run"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
@@ -30,16 +40,20 @@
     "@base-ui/react": "^1.2.0",
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "googleapis": "^171.4.0",
     "lucide-react": "^0.577.0",
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",
+    "openai": "^6.38.0",
     "pg": "^8.20.0",
     "prisma": "^7.4.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "recharts": "^3.8.1",
     "resend": "^6.9.3",
     "shadcn": "^4.0.0",
     "stripe": "^22.0.1",
@@ -56,7 +70,9 @@
     "seed": "npx tsx prisma/seed.ts"
   },
   "devDependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^20.19.37",
@@ -72,6 +88,7 @@
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "ws": "^8.20.0"
   }
 }

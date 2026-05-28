@@ -1,0 +1,71 @@
+name: PsychesNightmares Import Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      step:
+        description: 'Which step to run'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - episodes
+          - transcripts
+      max_transcripts:
+        description: 'Max transcripts to fetch (0 = all)'
+        required: false
+        default: '0'
+      delay_ms:
+        description: 'Delay between transcript fetches (ms)'
+        required: false
+        default: '2000'
+
+jobs:
+  import:
+    name: Import via Vercel endpoint
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install yt-dlp
+        run: pip install -q yt-dlp
+
+      - name: Write YouTube cookies
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+        run: |
+          if [ -n "$YOUTUBE_COOKIES" ]; then
+            printf '%s' "$YOUTUBE_COOKIES" > /tmp/yt-cookies.txt
+            echo "Cookies written."
+          else
+            echo "No YOUTUBE_COOKIES secret — transcript fetch will likely fail."
+          fi
+
+      - name: Import episodes
+        if: ${{ github.event.inputs.step == 'episodes' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
+        env:
+          ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
+          VERCEL_URL: https://cultcodex.me
+        run: npx tsx scripts/import-nightmares.ts --step episodes
+
+      - name: Import transcripts
+        if: ${{ github.event.inputs.step == 'transcripts' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
+        env:
+          ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
+          VERCEL_URL: https://cultcodex.me
+          YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
+        run: |
+          npx tsx scripts/import-nightmares-ytdlp.ts \
+            --delay "${{ github.event.inputs.delay_ms || '2000' }}" \
+            --max "${{ github.event.inputs.max_transcripts || '0' }}"

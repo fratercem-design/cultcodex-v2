@@ -13,6 +13,7 @@
  */
 import Link from "next/link";
 import Image from "next/image";
+import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
@@ -25,6 +26,7 @@ import {
 import { PageHero } from "@/components/ui/page-hero";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { formatDate } from "@/lib/format/date";
+import { SavedSearchesBlock } from "@/components/codex/saved-searches-block";
 
 export const metadata: Metadata = {
   title: "My Codex — CULT CODEX",
@@ -55,6 +57,7 @@ export default async function CodexPage() {
             : "Your personal archive — still a blank page."
         }
         backgroundImage="/hero-bg.jpg"
+      label="my_codex"
       />
 
       <main
@@ -64,7 +67,7 @@ export default async function CodexPage() {
         {/* Mythic framing */}
         <section className="text-center max-w-2xl mx-auto space-y-2">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-accent-gold">
-            /// private · {user.displayName}
+            {"/// private · "}{user.displayName}
           </p>
           <p className="text-sm text-text-muted leading-relaxed">
             The archive is shared. The codex is yours. Save the signals
@@ -132,9 +135,10 @@ export default async function CodexPage() {
                   {fav.episode.thumbnailUrl && (
                     <div className="relative mb-3 aspect-video w-full overflow-hidden rounded-md">
                       <Image
-                        src={fav.episode.thumbnailUrl}
+                        src={fixThumbnailUrl(fav.episode.thumbnailUrl)!}
                         alt=""
                         fill
+                        unoptimized
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, 33vw"
                       />
@@ -206,6 +210,10 @@ export default async function CodexPage() {
             </div>
           )}
         </CodexSection>
+
+        <MysticalDivider />
+
+        <SavedSearchesBlock userId={user.id} />
       </main>
     </div>
   );

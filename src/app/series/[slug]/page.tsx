@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
@@ -23,17 +23,22 @@ import {
   buildPaginationMeta,
 } from "@/lib/pagination";
 import { formatDate } from "@/lib/format/date";
+import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
 
 export async function generateStaticParams() {
-  const series = await prisma.series.findMany({
-    select: { slug: true },
-    take: 50,
-    orderBy: { updatedAt: "desc" },
-  });
-  return series.map((s) => ({ slug: s.slug }));
+  try {
+    const series = await prisma.series.findMany({
+      select: { slug: true },
+      take: 50,
+      orderBy: { updatedAt: "desc" },
+    });
+    return series.map((s) => ({ slug: s.slug }));
+  } catch {
+    return [];
+  }
 }
 
 interface PageProps {
@@ -108,6 +113,7 @@ export default async function SeriesDetailPage({ params, searchParams }: PagePro
           { label: typeLabel.toUpperCase(), variant: "green" },
           { label: series.status.toUpperCase(), variant: series.status === "published" ? "green" : "muted" },
         ]}
+      label="series"
       />
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
@@ -132,7 +138,7 @@ export default async function SeriesDetailPage({ params, searchParams }: PagePro
                       episodeNumber={ep.episodeNumber}
                       airDate={ep.airDate}
                       summaryShort={ep.summaryShort}
-                      thumbnailUrl={ep.thumbnailUrl}
+                      thumbnailUrl={fixThumbnailUrl(ep.thumbnailUrl)}
                     />
                   ))}
                 </div>
@@ -184,6 +190,49 @@ export default async function SeriesDetailPage({ params, searchParams }: PagePro
           </div>
         </div>
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript({
+            "@context": "https://schema.org",
+            "@type": "CreativeWorkSeries",
+            name: series.title,
+            ...(series.description ? { description: series.description } : {}),
+            url: `https://cultcodex.me/series/${series.slug}`,
+            numberOfEpisodes: totalCount,
+            ...(series.status === "published" ? { creativeWorkStatus: "Published" } : {}),
+            publisher: {
+              "@type": "Organization",
+              name: "CultCodex",
+              url: "https://cultcodex.me",
+            },
+            // Surface first page of episodes as hasPart edges
+            ...(episodes.length > 0
+              ? {
+                  hasPart: episodes.slice(0, 5).map((ep) => ({
+                    "@type": "Episode",
+                    name: ep.title,
+                    url: `https://cultcodex.me/episodes/${ep.slug}`,
+                    ...(ep.airDate ? { datePublished: ep.airDate.toISOString().slice(0, 10) } : {}),
+                  })),
+                }
+              : {}),
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbListJsonLd([
+              { name: "CultCodex", url: "https://cultcodex.me" },
+              { name: "Series", url: "https://cultcodex.me/series" },
+              { name: series.title, url: `https://cultcodex.me/series/${series.slug}` },
+            ])
+          ),
+        }}
+      />
     </>
   );
 }

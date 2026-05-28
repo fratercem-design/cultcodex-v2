@@ -1,7 +1,8 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTopicBySlug } from "@/lib/queries/topics";
+import { getTopicBySlug, getRelatedTopics } from "@/lib/queries/topics";
 import { prisma } from "@/lib/db";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
 import { getCurrentUser } from "@/lib/auth";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
@@ -18,12 +19,16 @@ import type { Metadata } from "next";
 export const revalidate = 600;
 
 export async function generateStaticParams() {
-  const topics = await prisma.topic.findMany({
-    select: { slug: true },
-    take: 50,
-    orderBy: { updatedAt: "desc" },
-  });
-  return topics.map((t) => ({ slug: t.slug }));
+  try {
+    const topics = await prisma.topic.findMany({
+      select: { slug: true },
+      take: 300,
+      orderBy: { updatedAt: "desc" },
+    });
+    return topics.map((t) => ({ slug: t.slug }));
+  } catch {
+    return [];
+  }
 }
 
 interface PageProps {
@@ -49,34 +54,55 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 }
 
+// Split a description into its factual part and "In the Psycheverse:" part
+function splitDescription(description: string): { base: string; psycheverse: string | null } {
+  const match = description.match(/^([\s\S]*?)(?:\n\n?)(In the Psycheverse:[\s\S]*)$/i);
+  if (match) {
+    return { base: match[1].trim(), psycheverse: match[2].trim() };
+  }
+  return { base: description.trim(), psycheverse: null };
+}
+
 export default async function TopicDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const topic = await getTopicBySlug(slug);
 
+  const topic = await getTopicBySlug(slug).catch(() => null);
   if (!topic) notFound();
 
-  // /codex save state — is this signal already pinned by the current user?
   const user = await getCurrentUser();
-  const [initialSaved, savedCount] = await Promise.all([
+  const [initialSaved, savedCount, relatedTopics] = await Promise.all([
     user
       ? prisma.savedTopic
           .findUnique({
             where: { userId_topicId: { userId: user.id, topicId: topic.id } },
           })
           .then((row) => !!row)
+          .catch(() => false)
       : Promise.resolve(false),
-    prisma.savedTopic.count({ where: { topicId: topic.id } }),
+    prisma.savedTopic.count({ where: { topicId: topic.id } }).catch(() => 0),
+    getRelatedTopics(topic.id, 8).catch(() => []),
   ]);
+
+  const { base: descBase, psycheverse: descPsycheverse } = topic.description
+    ? splitDescription(topic.description)
+    : { base: null, psycheverse: null };
+
+  const sortedEpisodes = [...topic.episodes].sort(
+    (a, b) => (b.episode.airDate?.getTime() ?? 0) - (a.episode.airDate?.getTime() ?? 0)
+  );
 
   const glanceItems = [
     ...(topic.episodes.length > 0
-      ? [{ icon: "\uD83C\uDFAC", label: `${topic.episodes.length} episode${topic.episodes.length !== 1 ? "s" : ""}` }]
+      ? [{ icon: "🎬", label: `${topic.episodes.length} episode${topic.episodes.length !== 1 ? "s" : ""}` }]
       : []),
     ...(topic.people.length > 0
-      ? [{ icon: "\uD83D\uDC64", label: `${topic.people.length} ${topic.people.length !== 1 ? "people" : "person"}` }]
+      ? [{ icon: "👤", label: `${topic.people.length} ${topic.people.length !== 1 ? "people" : "person"}` }]
       : []),
     ...(topic.lore.length > 0
-      ? [{ icon: "\uD83D\uDCDC", label: `${topic.lore.length} lore entr${topic.lore.length !== 1 ? "ies" : "y"}` }]
+      ? [{ icon: "📜", label: `${topic.lore.length} lore entr${topic.lore.length !== 1 ? "ies" : "y"}` }]
+      : []),
+    ...(relatedTopics.length > 0
+      ? [{ icon: "🔗", label: `${relatedTopics.length} related topics` }]
       : []),
   ];
 
@@ -84,8 +110,9 @@ export default async function TopicDetailPage({ params }: PageProps) {
     <>
       <EntityHero
         title={topic.title}
-        subtitle="Topic"
+        subtitle={descBase ?? "Topic"}
         backgroundImage="/wiki-page-header.jpg"
+      label="signal"
       />
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
@@ -93,6 +120,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
         { label: topic.title },
       ]} />
       <EntityGlanceBar items={glanceItems} />
+
       <div className="mx-auto max-w-7xl px-4 pt-3 flex justify-end">
         <SaveSignalButton
           slug={topic.slug}
@@ -102,21 +130,26 @@ export default async function TopicDetailPage({ params }: PageProps) {
           size="md"
         />
       </div>
+
       <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
-            {topic.description && (
-              <SectionCard title="Description">
-                <p className="text-sm text-text-primary leading-relaxed">
-                  {topic.description}
+
+            {descPsycheverse && (
+              <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-5 py-4">
+                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold/60 mb-2">
+                  In the Psycheverse
                 </p>
-              </SectionCard>
+                <p className="text-sm text-text-primary leading-relaxed">
+                  {descPsycheverse.replace(/^In the Psycheverse:\s*/i, "")}
+                </p>
+              </div>
             )}
 
-            <SectionCard title={`Episodes (${topic.episodes.length})`}>
-              {topic.episodes.length > 0 ? (
+            <SectionCard title={`Episodes (${topic.episodes.length})`} accent="gold">
+              {sortedEpisodes.length > 0 ? (
                 <div className="grid gap-3">
-                  {topic.episodes.map((e) => (
+                  {sortedEpisodes.map((e) => (
                     <EpisodeListItem
                       key={e.episode.id}
                       slug={e.episode.slug}
@@ -132,19 +165,44 @@ export default async function TopicDetailPage({ params }: PageProps) {
                 <p className="text-xs text-text-muted">No episodes linked yet</p>
               )}
             </SectionCard>
+
+            {relatedTopics.length > 0 && (
+              <SectionCard title="🐇 Rabbit Hole" accent="cyan">
+                <p className="text-xs text-text-muted mb-4">
+                  Topics that frequently appear alongside{" "}
+                  <strong className="text-text-primary">{topic.title}</strong>
+                </p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {relatedTopics.map((rt) => (
+                    <Link
+                      key={rt.slug}
+                      href={`/topics/${rt.slug}`}
+                      className="group flex flex-col gap-1 rounded-lg border border-border bg-surface p-3 transition-colors hover:border-accent-cyan/30 hover:bg-elevated"
+                    >
+                      <span className="font-mono text-sm font-semibold text-accent-cyan group-hover:underline">
+                        {rt.title}
+                      </span>
+                      {rt.description && (
+                        <span className="text-xs text-text-muted line-clamp-2 leading-relaxed">
+                          {rt.description.split("\n\n")[0]}
+                        </span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              </SectionCard>
+            )}
           </div>
 
-          {/* Sidebar */}
           <div className="space-y-6">
             <EntityStatsPanel
               stats={[
-                { icon: "\uD83C\uDFAC", label: "Episodes", value: topic.episodes.length },
-                { icon: "\uD83D\uDC64", label: "People", value: topic.people.length },
-                { icon: "\uD83D\uDCDC", label: "Lore Entries", value: topic.lore.length },
+                { icon: "🎬", label: "Episodes", value: topic.episodes.length },
+                { icon: "👤", label: "People", value: topic.people.length },
+                { icon: "📜", label: "Lore Entries", value: topic.lore.length },
               ]}
             />
 
-            {/* People — avatar grid */}
             <GuestGrid
               guests={topic.people.map((p) => ({
                 displayName: p.person.displayName,
@@ -172,6 +230,53 @@ export default async function TopicDetailPage({ params }: PageProps) {
           </div>
         </div>
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript({
+            "@context": "https://schema.org",
+            "@type": "DefinedTerm",
+            name: topic.title,
+            ...(topic.description ? { description: topic.description.split("\n\n")[0].trim() } : {}),
+            url: `https://cultcodex.me/topics/${topic.slug}`,
+            inDefinedTermSet: {
+              "@type": "DefinedTermSet",
+              name: "Cult of Psyche Signal Archive",
+              url: "https://cultcodex.me/topics",
+            },
+            // Cross-entity mentions — knowledge-graph edges
+            ...(topic.people.length > 0 || topic.lore.length > 0
+              ? {
+                  mentions: [
+                    ...topic.people.slice(0, 5).map((tp) => ({
+                      "@type": "Person",
+                      name: tp.person.displayName,
+                      url: `https://cultcodex.me/people/${tp.person.slug}`,
+                    })),
+                    ...topic.lore.slice(0, 5).map((tl) => ({
+                      "@type": "Article",
+                      name: tl.loreEntry.title,
+                      url: `https://cultcodex.me/lore/${tl.loreEntry.slug}`,
+                    })),
+                  ],
+                }
+              : {}),
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbListJsonLd([
+              { name: "CultCodex", url: "https://cultcodex.me" },
+              { name: "Signals", url: "https://cultcodex.me/topics" },
+              { name: topic.title, url: `https://cultcodex.me/topics/${topic.slug}` },
+            ])
+          ),
+        }}
+      />
     </>
   );
 }

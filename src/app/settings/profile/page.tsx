@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { isSubscribed } from "@/lib/subscription";
+import { isSubscribed, hasSystemTier } from "@/lib/subscription";
 import { PageHero } from "@/components/ui/page-hero";
 import { ProfileForm } from "./profile-form";
 import type { Metadata } from "next";
@@ -16,8 +16,9 @@ export default async function ProfilePage() {
   const user = await getCurrentUser();
   if (!user) redirect("/auth/signin");
 
-  const [subscribed, codexUser] = await Promise.all([
+  const [subscribed, systemTier, codexUser] = await Promise.all([
     isSubscribed(user.id),
+    hasSystemTier(user.id),
     prisma.codexUser.findUnique({
       where: { id: user.id },
       select: {
@@ -26,6 +27,9 @@ export default async function ProfilePage() {
         avatarUrl: true,
         memberTitle: true,
         isPublicMember: true,
+        bio: true,
+        codexSlug: true,
+        codexPagePublic: true,
         createdAt: true,
         role: true,
       },
@@ -40,6 +44,7 @@ export default async function ProfilePage() {
         title="MEMBER PROFILE"
         subtitle="Your identity in the Psycheverse"
         backgroundImage="/wiki-page-header.jpg"
+      label="identity"
       />
       <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">
         {subscribed ? (
@@ -49,8 +54,12 @@ export default async function ProfilePage() {
             avatarUrl={codexUser.avatarUrl}
             memberTitle={codexUser.memberTitle}
             isPublicMember={codexUser.isPublicMember}
-            memberSince={codexUser.createdAt}
+            memberSince={codexUser.createdAt.toISOString()}
             isAdmin={codexUser.role === "admin"}
+            isSystemTier={systemTier}
+            bio={codexUser.bio}
+            codexSlug={codexUser.codexSlug}
+            codexPagePublic={codexUser.codexPagePublic}
           />
         ) : (
           <div className="rounded-xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-8 text-center">
@@ -66,7 +75,7 @@ export default async function ProfilePage() {
             </p>
             <div className="mt-5">
               <Link
-                href="/subscribe"
+                href="/premium"
                 className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
               >
                 Unlock Premium — $10/month

@@ -4,16 +4,19 @@ const globalForStripe = globalThis as unknown as {
   stripe: Stripe | undefined;
 };
 
-function createStripeClient(): Stripe {
+/**
+ * Returns the Stripe client, creating it on first call.
+ * Lazy initialization prevents build-time failures when STRIPE_SECRET_KEY
+ * is not available in the build environment (module is imported but no
+ * Stripe client is needed until an actual request arrives).
+ */
+export function getStripe(): Stripe {
+  if (globalForStripe.stripe) return globalForStripe.stripe;
   const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) {
-    throw new Error("STRIPE_SECRET_KEY environment variable is not set");
+  if (!key) throw new Error("STRIPE_SECRET_KEY environment variable is not set");
+  const client = new Stripe(key);
+  if (process.env.NODE_ENV !== "production") {
+    globalForStripe.stripe = client;
   }
-  return new Stripe(key);
-}
-
-export const stripe = globalForStripe.stripe ?? createStripeClient();
-
-if (process.env.NODE_ENV !== "production") {
-  globalForStripe.stripe = stripe;
+  return client;
 }

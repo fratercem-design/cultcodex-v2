@@ -13,6 +13,8 @@ const NAV_ITEMS = [
   { href: "/admin/series", label: "Series", icon: "\uD83D\uDCDA" },
   { href: "/admin/comments", label: "Comments", icon: "\uD83D\uDCAC" },
   { href: "/admin/live", label: "Live Stream", icon: "\uD83D\uDD34" },
+  { href: "/admin/psychenomicon", label: "Psychenomicon", icon: "\u03C8" },
+  { href: "/admin/sync", label: "Sync & Ingest", icon: "\u21BB" },
 ];
 
 interface AdminSidebarProps {

@@ -39,7 +39,7 @@ describe("SortFilterBar", () => {
       />,
     );
     const oldestBtn = screen.getByText("Oldest");
-    expect(oldestBtn.className).toContain("text-accent-green");
+    expect(oldestBtn.className).toContain("text-accent-gold");
   });
 
   it("renders filter options when provided", () => {

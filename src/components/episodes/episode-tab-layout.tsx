@@ -7,6 +7,7 @@ interface Tab {
   id: string;
   label: string;
   count?: number;
+  locked?: boolean;
 }
 
 interface EpisodeTabLayoutProps {
@@ -52,6 +53,7 @@ export function EpisodeTabLayout({ tabs, children }: EpisodeTabLayoutProps) {
             }`}
           >
             {tab.label}
+            {tab.locked && <span className="ml-1 text-[9px] opacity-50">🔒</span>}
             {tab.count != null && tab.count > 0 && (
               <span className="ml-1.5 text-[10px] opacity-60">({tab.count})</span>
             )}

@@ -257,7 +257,9 @@ export default function MythicMapPage() {
         title="THE MYTHIC MAP"
         subtitle="Archetypes, symbols & narrative currents of the archive"
         backgroundImage="/lore-header.jpg"
-      />
+      
+      label="mythic_map"
+    />
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },

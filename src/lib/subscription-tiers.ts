@@ -6,76 +6,102 @@
  *   - /api/stripe/webhook (map priceId back to tier)
  *   - SoftGate component (which tier a surface requires)
  *
+ * Identity ladder: Observer (free) → Initiate+ ($10) → Oracle ($25)
+ * People don't upgrade for features — they upgrade to change their role.
+ *
  * Stripe price IDs are read from env at request time so the same config
  * works across test/live environments without code changes.
  */
 
 export type TierSlug = "access" | "system";
+export type BillingInterval = "month" | "year";
 
 export interface Tier {
   slug: TierSlug;
   name: string;
+  role: string;                          // identity label shown in gates
   tagline: string;
-  priceMonthly: number;                 // USD, displayed as $N/mo
-  accent: "gold" | "violet";            // drives accent colors on /premium
-  badge?: string;                       // e.g. "Most popular"
-  priceEnvVar: string;                  // Stripe price ID env var name
-  features: string[];                   // bullet list rendered on /premium
-  unlocks: string[];                    // what this tier gates/unlocks
+  psychologyHook: string;                // the feeling it sells
+  priceMonthly: number;
+  priceAnnual: number;                   // total billed once per year
+  accent: "gold" | "violet";
+  badge?: string;
+  priceEnvVar: string;                   // monthly Stripe price id env var
+  priceEnvVarAnnual: string;             // annual Stripe price id env var
+  features: string[];
+  unlocks: string[];
 }
 
 export const TIERS: Tier[] = [
   {
     slug: "access",
-    name: "Codex Access",
-    tagline: "Everything that makes the archive readable.",
-    priceMonthly: 9,
+    name: "Initiate+",
+    role: "Initiate",
+    tagline: "The archive stops being background noise.",
+    psychologyHook: "Now I can actually understand what I'm watching.",
+    priceMonthly: 10,
+    priceAnnual: 96,
     accent: "gold",
     priceEnvVar: "STRIPE_PRICE_ACCESS_ID",
+    priceEnvVarAnnual: "STRIPE_PRICE_ACCESS_ANNUAL_ID",
     features: [
-      "Full episode transcripts (searchable, timestamped)",
-      "Click-to-seek on every line",
-      "The Psychenomicon — the full grimoire",
-      "Quote search across the whole archive",
-      "Lexicon + Lore, unlocked in depth",
-      "Member Roll listing + custom flair title",
+      "Read every word ever spoken — searchable, timestamped",
+      "Jump to any moment in any transmission, instantly",
+      "Search by what's actually happening — not just keywords",
+      "AI extracts behavioral patterns from every panel — what repeats, what shifts",
+      "Find the exact moment a dynamic changed",
+      "Trace behavioral signatures across years of appearances",
+      "Build your own intelligence file alongside the archive",
+      "Entry points curated by people who've already gone deep",
+      "Your Initiate role — visible to other members",
+      "First access as new transmissions enter the archive",
     ],
     unlocks: ["transcripts", "psychenomicon", "member-identity"],
   },
   {
     slug: "system",
-    name: "Full System",
-    tagline: "The archive, plus the tools to think with it.",
-    priceMonthly: 29,
+    name: "Oracle Tier",
+    role: "Oracle",
+    tagline: "You're not watching anymore. You're inside it.",
+    psychologyHook: "I am inside the system. Not just watching it.",
+    priceMonthly: 25,
+    priceAnnual: 240,
     accent: "violet",
     badge: "Most immersive",
     priceEnvVar: "STRIPE_PRICE_SYSTEM_ID",
+    priceEnvVarAnnual: "STRIPE_PRICE_SYSTEM_ANNUAL_ID",
     features: [
-      "Everything in Codex Access",
-      "Personal /codex — saved signals + auto-capture",
-      "Insight engine — pattern detection across your listening",
-      "Priority live-stream notifications",
-      "Private salon access (when opened)",
-      "Early access to new collections + tools",
+      "Full Initiate+ access",
+      "Your own page woven permanently into the archive",
+      "Your signal shapes what gets investigated next",
+      "Propose what gets analyzed — your questions become the work",
+      "Access unedited transmissions — what didn't make the cut",
+      "Red Room: no-filter analysis, nothing softened",
+      "See the full power structure — who connects to whom and how",
+      "Deep behavioral profiles on every recurring figure",
+      "Named role inside the system — Oracle, Architect, or Watcher",
+      "Listed as a contributor to the archive itself",
     ],
     unlocks: ["transcripts", "psychenomicon", "member-identity", "personal-codex", "insights", "salon"],
   },
 ];
 
-/** Look up a tier definition by slug. Throws if not found — callers can
- *  assume the slug comes from a closed set. */
+/** Look up a tier definition by slug. */
 export function getTier(slug: TierSlug): Tier {
   const t = TIERS.find((t) => t.slug === slug);
   if (!t) throw new Error(`Unknown subscription tier: ${slug}`);
   return t;
 }
 
-/** Look up a tier by the Stripe price id it resolves to at runtime.
- *  Used by the webhook to stamp the right tier on the user record. */
+/**
+ * Look up a tier by its Stripe price id at runtime. Used by the webhook.
+ * Matches both the monthly and annual price ids for a tier.
+ */
 export function getTierByPriceId(priceId: string | null | undefined): Tier | null {
   if (!priceId) return null;
   for (const t of TIERS) {
     if (process.env[t.priceEnvVar] === priceId) return t;
+    if (process.env[t.priceEnvVarAnnual] === priceId) return t;
   }
   return null;
 }
@@ -87,9 +113,12 @@ export function tierUnlocks(tier: TierSlug | null, feature: string): boolean {
   return t?.unlocks.includes(feature) ?? false;
 }
 
-/** Resolve the Stripe price id for a tier from env. Returns null if the
- *  env var isn't set — the checkout route should 500 with a clear error. */
-export function resolvePriceId(slug: TierSlug): string | null {
+/** Resolve the Stripe price id for a tier + billing interval from env. */
+export function resolvePriceId(
+  slug: TierSlug,
+  interval: BillingInterval = "month"
+): string | null {
   const t = getTier(slug);
-  return process.env[t.priceEnvVar] ?? null;
+  const envVar = interval === "year" ? t.priceEnvVarAnnual : t.priceEnvVar;
+  return process.env[envVar] ?? null;
 }

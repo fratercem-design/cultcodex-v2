@@ -34,6 +34,7 @@ export function EpisodeListItem({
           alt=""
           width={48}
           height={48}
+          unoptimized
           className="h-12 w-12 flex-shrink-0 rounded object-cover"
         />
       )}

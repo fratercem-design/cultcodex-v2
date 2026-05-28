@@ -5,9 +5,10 @@ interface PageHeroProps {
   title: string;
   subtitle?: string;
   backgroundImage: string;
+  label?: string;
 }
 
-export function PageHero({ title, subtitle, backgroundImage }: PageHeroProps) {
+export function PageHero({ title, subtitle, backgroundImage, label }: PageHeroProps) {
   return (
     <section className="relative flex min-h-[160px] sm:min-h-[200px] items-end overflow-hidden">
       <Image
@@ -22,7 +23,15 @@ export function PageHero({ title, subtitle, backgroundImage }: PageHeroProps) {
       <SacredGeometryOverlay />
       <FloatingParticles count={8} />
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-6">
-        <h1 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-accent-gold drop-shadow-md">
+        {label && (
+          <p
+            className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.4em]"
+            style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}
+          >
+            {"// "}{label}
+          </p>
+        )}
+        <h1 className="font-serif text-2xl sm:text-3xl font-black tracking-tight text-accent-gold drop-shadow-md">
           {title}
         </h1>
         {subtitle && (

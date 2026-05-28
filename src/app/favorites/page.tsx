@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
+import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { PageHero } from "@/components/ui/page-hero";
@@ -42,6 +43,7 @@ export default async function FavoritesPage() {
         title="MY FAVORITES"
         subtitle={`${publishedFavorites.length} saved episode${publishedFavorites.length !== 1 ? "s" : ""}`}
         backgroundImage="/wiki-page-header.jpg"
+      label="saved"
       />
       <div className="mx-auto max-w-7xl px-4 py-8">
         {publishedFavorites.length === 0 ? (
@@ -70,9 +72,10 @@ export default async function FavoritesPage() {
                 {fav.episode.thumbnailUrl && (
                   <div className="relative mb-3 aspect-video w-full overflow-hidden rounded-md">
                     <Image
-                      src={fav.episode.thumbnailUrl}
+                      src={fixThumbnailUrl(fav.episode.thumbnailUrl)!}
                       alt=""
                       fill
+                      unoptimized
                       className="object-cover"
                       sizes="(max-width: 768px) 100vw, 33vw"
                     />

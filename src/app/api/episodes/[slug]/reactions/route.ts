@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+
+export const dynamic = "force-dynamic";
 import { getReactionCounts, toggleReaction } from "@/lib/queries/reactions";
 import { ReactionType } from "@/generated/prisma/client";
 import { eventBus } from "@/lib/sse/event-bus";
