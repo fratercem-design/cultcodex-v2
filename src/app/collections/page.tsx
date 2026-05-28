@@ -147,7 +147,9 @@ export default async function CollectionsPage() {
         title="COLLECTIONS"
         subtitle={`Curated paths through ${totalCollectionEpisodes} episodes`}
         backgroundImage="/hero-bg.jpg"
-      />
+      
+      label="signal_packs"
+    />
 
       <main id="main-content" className="mx-auto max-w-6xl px-4 py-10 space-y-12">
         <p className="text-center text-sm text-text-muted max-w-2xl mx-auto">
@@ -159,7 +161,7 @@ export default async function CollectionsPage() {
         <section className="space-y-5">
           <div className="space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan">
-              /// signal_packs
+              {"/// signal_packs"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
               Themed Signal Packs
@@ -213,7 +215,7 @@ export default async function CollectionsPage() {
         <section className="space-y-5">
           <div className="space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">
-              /// series_packs
+              {"/// series_packs"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
               By Series

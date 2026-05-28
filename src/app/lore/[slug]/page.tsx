@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getLoreBySlug } from "@/lib/queries/lore";
 import { prisma } from "@/lib/db";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
@@ -22,12 +22,16 @@ import type { Metadata } from "next";
 export const revalidate = 600;
 
 export async function generateStaticParams() {
-  const entries = await prisma.loreEntry.findMany({
-    select: { slug: true },
-    take: 50,
-    orderBy: { updatedAt: "desc" },
-  });
-  return entries.map((e) => ({ slug: e.slug }));
+  try {
+    const entries = await prisma.loreEntry.findMany({
+      select: { slug: true },
+      take: 300,
+      orderBy: { updatedAt: "desc" },
+    });
+    return entries.map((e) => ({ slug: e.slug }));
+  } catch {
+    return [];
+  }
 }
 
 interface PageProps {
@@ -100,6 +104,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
         subtitle={entry.category ?? undefined}
         backgroundImage="/lore-header.jpg"
         badges={[{ label: canonLabel.toUpperCase(), variant: canonVariant }]}
+      label="lore_entry"
       />
       <Breadcrumbs items={[
         { label: "Home", href: "/" },
@@ -111,7 +116,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             {entry.summary && (
-              <SectionCard title="Summary">
+              <SectionCard title="Summary" accent="violet">
                 <p className="text-sm text-text-primary leading-relaxed">
                   {editorialFrame(entry.summary)}
                 </p>
@@ -119,7 +124,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
             )}
 
             {entry.fullEntry && (
-              <SectionCard title="Full Entry">
+              <SectionCard title="Full Entry" accent="violet">
                 <div className="prose prose-invert prose-sm max-w-none text-text-primary">
                   {editorialFrame(entry.fullEntry)}
                 </div>
@@ -128,7 +133,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
 
             {/* Episode appearances */}
             {entry.episodes.length > 0 && (
-              <SectionCard title={`Episodes (${entry.episodes.length})`}>
+              <SectionCard title={`Episodes (${entry.episodes.length})`} accent="gold">
                 <div className="grid gap-3">
                   {entry.episodes.map((e) => (
                     <EpisodeListItem
@@ -147,7 +152,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
 
             {/* Related lore */}
             {relatedLore.length > 0 && (
-              <SectionCard title={`Related Lore (${relatedLore.length})`}>
+              <SectionCard title={`Related Lore (${relatedLore.length})`} accent="violet">
                 <div className="grid gap-3 sm:grid-cols-2">
                   {relatedLore.map((lore) => (
                     <Link
@@ -230,6 +235,54 @@ export default async function LoreDetailPage({ params }: PageProps) {
           className="mt-8"
         />
       </main>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: entry.title,
+            ...(entry.summary ? { description: entry.summary.slice(0, 300) } : {}),
+            url: `https://cultcodex.me/lore/${entry.slug}`,
+            ...(entry.category ? { articleSection: entry.category } : {}),
+            publisher: {
+              "@type": "Organization",
+              name: "CultCodex",
+              url: "https://cultcodex.me",
+            },
+            // Cross-entity mentions — builds the knowledge-graph edges
+            ...(entry.people.length > 0 || entry.topics.length > 0
+              ? {
+                  mentions: [
+                    ...entry.people.slice(0, 5).map((ep) => ({
+                      "@type": "Person",
+                      name: ep.person.displayName,
+                      url: `https://cultcodex.me/people/${ep.person.slug}`,
+                    })),
+                    ...entry.topics.slice(0, 5).map((et) => ({
+                      "@type": "DefinedTerm",
+                      name: et.topic.title,
+                      url: `https://cultcodex.me/topics/${et.topic.slug}`,
+                    })),
+                  ],
+                }
+              : {}),
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbListJsonLd([
+              { name: "CultCodex", url: "https://cultcodex.me" },
+              { name: "Lore", url: "https://cultcodex.me/lore" },
+              { name: entry.title, url: `https://cultcodex.me/lore/${entry.slug}` },
+            ])
+          ),
+        }}
+      />
     </>
   );
 }

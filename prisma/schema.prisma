@@ -70,14 +70,22 @@ model Episode {
   thumbnailUrl    String?
   summaryShort    String?
   summaryLong     String?
+  /** Transcript-grounded recap: what happened, who appeared, notable moments with timestamps */
+  summaryFacts    String?
+  /** AI interpretive layer: recurring patterns, thematic significance, arc context */
+  summaryThemes   String?
   cutOfPsyche     String?
   transcriptRaw   String?
   transcriptHtml  String?
   transcriptJson  Json?
+  decodeData      Json?
   searchText      String?
   status          ContentStatus @default(draft)
   contentType     ContentType   @default(original)
   seriesId        String?
+  /** Set by an admin after manually reading and verifying the AI summary */
+  isHumanReviewed Boolean       @default(false)
+  humanReviewedAt DateTime?
   series          Series?       @relation(fields: [seriesId], references: [id])
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -96,6 +104,7 @@ model Episode {
   reactions          EpisodeReaction[]
   comments           CodexComment[]
   favorites          Favorite[]
+  psychenomiconChapter PsychenomiconChapter?
 
   @@index([airDate])
   @@index([status])
@@ -200,7 +209,8 @@ model Quote {
   createdAt            DateTime           @default(now())
   updatedAt            DateTime           @updatedAt
 
-  savedBy              SavedQuote[]
+  savedBy        SavedQuote[]
+  quoteReactions QuoteReaction[]
 
   @@index([speakerPersonId])
   @@index([episodeId])
@@ -386,11 +396,23 @@ model CodexUser {
   stripeCustomerId        String?   @unique
   subscriptionId          String?   @unique
   subscriptionStatus      String?   // "active", "past_due", "canceled", "unpaid"
+  subscriptionTier        String?   // "access" | "system"
   currentPeriodEnd        DateTime?
+  isLifetimeMember    Boolean   @default(false)
 
   // Member identity
   memberTitle             String?   // chosen flair title e.g. "Oracle", "Acolyte"
   isPublicMember          Boolean   @default(false) // opt-in to public Member Roll
+
+  // Onboarding
+  handle                  String?   @unique
+  sigilGlyph              String?
+  onboardingCompleted     Boolean   @default(false)
+
+  // Personal codex page (system tier)
+  bio                     String?
+  codexSlug               String?   @unique
+  codexPagePublic         Boolean   @default(true)
 
   reactions               EpisodeReaction[]
   comments                CodexComment[]
@@ -402,6 +424,13 @@ model CodexUser {
   favorites               Favorite[]
   savedTopics             SavedTopic[]
   savedQuotes             SavedQuote[]
+  savedSearches           SavedSearch[]
+  ownedCards              OwnedCard[]
+  wallet                  UserWallet?
+  packPurchases           PackPurchase[]
+  quoteReactions          QuoteReaction[]
+  salonPosts              SalonPost[]
+  decks                   Deck[]
 }
 
 model CodexSession {
@@ -483,6 +512,38 @@ model CommentReport {
   @@unique([commentId, userId])
 }
 
+// ─── Salon (Oracle-tier members space) ─────────────
+
+/// A discussion prompt/topic in the Salon. Authored by staff (admin).
+model SalonThread {
+  id        String      @id @default(cuid())
+  title     String
+  prompt    String      @db.Text
+  pinned    Boolean     @default(false)
+  closed    Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  posts     SalonPost[]
+
+  @@index([pinned, createdAt])
+}
+
+/// A member contribution within a Salon thread.
+model SalonPost {
+  id            String      @id @default(cuid())
+  threadId      String
+  thread        SalonThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  userId        String
+  user          CodexUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content       String      @db.Text
+  flagged       Boolean     @default(false)
+  flaggedReason String?
+  createdAt     DateTime    @default(now())
+
+  @@index([threadId, createdAt])
+  @@index([userId])
+}
+
 // ─── Chat & Notifications ─────────────────────────
 
 model ChatMessage {
@@ -552,4 +613,452 @@ model SavedQuote {
   @@unique([userId, quoteId])
   @@index([userId])
   @@index([quoteId])
+}
+
+// ─── Psychenomicon ────────────────────────────────
+
+model PsychenomiconChapter {
+  id             String   @id @default(cuid())
+  chapterNumber  Int      @unique
+  title          String
+  slug           String   @unique
+  episodeId      String?  @unique
+  episode        Episode? @relation(fields: [episodeId], references: [id])
+
+  canonText          String  @db.Text
+  interpretationText String  @db.Text
+  mythicText         String  @db.Text
+  emergingSignals    String[]
+
+  // JSON blobs for archetypes, entity snapshots, and thread refs
+  archetypesData Json?
+  threadRefs     Json?
+  isMajorEvent   Boolean @default(false)
+  status         String  @default("stable") // stable | contested | evolving
+
+  // AI-generated art — Supabase Storage public URLs, set by the art pipeline
+  // Shape: { cover, scene_01, scene_02, scene_03 }
+  artImageUrls   Json?
+  artGeneratedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  entityAppearances PsychenomiconEntityAppearance[]
+  threadChapters    PsychenomiconThreadChapter[]
+  archetypeEvents   ArchetypeEvent[]
+
+  @@index([chapterNumber])
+}
+
+model PsychenomiconEntity {
+  id         String  @id @default(cuid())
+  name       String
+  slug       String  @unique
+  personSlug String? // soft link to Person (no FK — person may not be in DB yet)
+
+  primaryArchetype  String?
+  archetypeHistory  Json?    // [{archetype, chapterNumber, reason}]
+  radarData         Json?    // {influence, volatility, manipulation, control, emotionalIntensity} 0-10
+  behaviorPatterns  String[]
+  archetypeState    Json?    // current weighted state: {[archetype]: 0-1}
+  status            String   @default("active") // active | dormant | evolved
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  appearances      PsychenomiconEntityAppearance[]
+  archetypeEvents  ArchetypeEvent[]
+
+  @@index([status])
+}
+
+model ArchetypeEvent {
+  id                  String  @id @default(cuid())
+  entityId            String
+  entity              PsychenomiconEntity  @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  chapterId           String?
+  chapter             PsychenomiconChapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  chapterNumber       Int
+  primaryArchetype    String
+  secondaryArchetypes String[]
+  confidenceScore     Float   @default(1.0)
+  triggerEvent        String? @db.Text
+
+  createdAt DateTime @default(now())
+
+  @@index([entityId])
+  @@index([chapterNumber])
+}
+
+model PsychenomiconThread {
+  id          String  @id @default(cuid())
+  title       String
+  slug        String  @unique
+  description String? @db.Text
+  status      String  @default("active") // active | resolved | emerging
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chapterLinks PsychenomiconThreadChapter[]
+
+  @@index([status])
+}
+
+model PsychenomiconEntityAppearance {
+  id          String              @id @default(cuid())
+  chapterId   String
+  entityId    String
+  chapter     PsychenomiconChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  entity      PsychenomiconEntity  @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  archetypeAt String?
+  significance String?
+
+  @@unique([chapterId, entityId])
+  @@index([chapterId])
+  @@index([entityId])
+}
+
+model PsychenomiconThreadChapter {
+  chapterId String
+  threadId  String
+  chapter   PsychenomiconChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  thread    PsychenomiconThread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@id([chapterId, threadId])
+}
+
+// ─── Person Media (external content per person) ───────────────────────────────
+
+model PersonMedia {
+  id            String    @id @default(cuid())
+  personSlug    String
+  source        String    // "youtube" | "wiki" | "other"
+  sourceId      String?
+  sourceUrl     String
+  title         String
+  description   String?   @db.Text
+  thumbnailUrl  String?
+  publishedAt   DateTime?
+  durationStr   String?
+  viewCount     Int?
+  rawContent    String?   @db.Text
+  channelHandle String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([source, sourceId])
+  @@index([personSlug, source])
+  @@index([publishedAt])
+}
+
+// ─── Community Posts ───────────────────────────────────────────────────────────
+
+model CommunityPost {
+  id            String    @id @default(cuid())
+  youtubePostId String    @unique
+  text          String    @db.Text
+  imageUrls     String[]
+  likeCount     Int?
+  commentCount  Int?
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([publishedAt])
+}
+
+// ─── Oracle / RAG index ───────────────────────────────────────────────────────
+
+enum OracleChunkSource {
+  transcript
+  episode_summary
+  quote
+  lore
+  topic
+  person
+  psy_chapter
+  psy_thread
+  psy_entity
+}
+
+model OracleChunk {
+  id           String              @id @default(cuid())
+  sourceType   OracleChunkSource
+  sourceId     String
+  content      String              @db.Text
+  searchText   String              @db.Text
+  embedding    Unsupported("vector(1024)")
+  metadata     Json
+  contentHash  String
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([sourceType])
+  @@index([sourceId])
+  @@index([contentHash])
+}
+
+model OracleInvite {
+  id             String    @id @default(cuid())
+  token          String    @unique @default(cuid())
+  recipientName  String
+  recipientEmail String?
+  personalNote   String?   @db.Text
+  claimed        Boolean   @default(false)
+  claimedAt      DateTime?
+  claimedBy      String?
+  createdAt      DateTime  @default(now())
+}
+
+// ─── Saved Searches ───────────────────────────────────────────────────────────
+
+enum SearchKind {
+  simple
+  deep
+  oracle
+}
+
+model SavedSearch {
+  id         String     @id @default(cuid())
+  userId     String
+  user       CodexUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label      String
+  kind       SearchKind
+  query      String     @default("")
+  concepts   String[]
+  thresholds Float[]
+  eraId      String?
+  personSlug String?
+  archetype  String?
+  pinned     Boolean    @default(false)
+  lastRunAt  DateTime?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@index([userId])
+}
+
+// ─── Quote Reactions ──────────────────────────────────────────────────────────
+
+model QuoteReaction {
+  id           String       @id @default(cuid())
+  userId       String
+  quoteId      String
+  reactionType ReactionType
+  createdAt    DateTime     @default(now())
+
+  user  CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quote Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, quoteId, reactionType])
+  @@index([quoteId])
+  @@index([userId])
+}
+
+// ─── Trading Cards ────────────────────────────────────────────────────────────
+
+enum Rarity {
+  STATIC
+  SIGNAL
+  TRANSMISSION
+  ANOMALY
+  ORACLE
+  LEGENDARY
+  MYTHIC
+  FORBIDDEN
+}
+
+enum CardType {
+  VOICE
+  TRANSMISSION
+  LORE
+  SIGNAL
+  ORACLE
+  CIPHER
+  RELIC
+  ENTITY
+  PROPHECY
+  MEMBER
+  GLITCH
+  MAHAVIDYA
+  AVATAR
+  INCIDENT
+}
+
+model Card {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  cardType    CardType
+  rarity      Rarity
+  title       String
+  subtitle    String?
+  flavourText String?
+  artUrl      String?
+  statA       Int       @default(50)
+  statB       Int       @default(50)
+  statC       Int       @default(50)
+  abilities   String[]  @default([])
+  personality String?
+  totalMinted Int       @default(0)
+  maxSupply   Int?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  packCards  PackCard[]
+  ownedCards OwnedCard[]
+  deckCards  DeckCard[]
+
+  @@index([rarity])
+  @@index([cardType])
+}
+
+model CardPack {
+  id                 String   @id @default(cuid())
+  slug               String   @unique
+  name               String
+  description        String?
+  cost               Int      @default(100)
+  cardCount          Int      @default(5)
+  isAvailable        Boolean  @default(true)
+  sortOrder          Int      @default(0)
+  weightStatic       Float    @default(50)
+  weightSignal       Float    @default(30)
+  weightTransmission Float    @default(14)
+  weightAnomaly      Float    @default(5)
+  weightOracle       Float    @default(1)
+  weightLegendary    Float    @default(0.5)
+  weightMythic       Float    @default(0.1)
+  weightForbidden    Float    @default(0.0)
+  artTheme           String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  packCards     PackCard[]
+  packPurchases PackPurchase[]
+}
+
+model PackCard {
+  id     String   @id @default(cuid())
+  packId String
+  cardId String
+  weight Float    @default(1.0)
+  pack   CardPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+  card   Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([packId, cardId])
+  @@index([packId])
+}
+
+model OwnedCard {
+  id          String   @id @default(cuid())
+  userId      String
+  cardId      String
+  quantity    Int      @default(1)
+  isNew       Boolean  @default(true)
+  isFoil      Boolean  @default(false)
+  obtainedVia String   @default("pack")
+  obtainedAt  DateTime @default(now())
+
+  user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  card Card      @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cardId, isFoil])
+  @@index([userId])
+  @@index([cardId])
+}
+
+model UserWallet {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  signalCredits    Int       @default(0)
+  balance          Int       @default(0)
+  totalEarned      Int       @default(0)
+  totalSpent       Int       @default(0)
+  lastDailyClaimAt DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  user         CodexUser          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions CreditTransaction[]
+}
+
+model CreditTransaction {
+  id          String    @id @default(cuid())
+  walletId    String?
+  userId      String?
+  amount      Int
+  reason      String
+  referenceId String?
+  metadata    Json      @default("{}")
+  createdAt   DateTime  @default(now())
+
+  wallet UserWallet? @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, reason, createdAt])
+}
+
+model PackPurchase {
+  id           String   @id @default(cuid())
+  userId       String
+  packId       String
+  cardsDrawn   String[]
+  creditsCost  Int      @default(0)
+  creditsSpent Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pack CardPack  @relation(fields: [packId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([packId])
+}
+
+// ─── Deck Builder ────────────────────────────────────────────────────────────
+
+model Deck {
+  id          String     @id @default(cuid())
+  userId      String
+  user        CodexUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  isPublic    Boolean    @default(false)
+  deckCards   DeckCard[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([userId])
+}
+
+model DeckCard {
+  id     String @id @default(cuid())
+  deckId String
+  deck   Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  cardId String
+  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([deckId, cardId])
+  @@index([deckId])
+}
+
+// ─── Weekly Digest ────────────────────────────────────
+// Admin-curated "This week in the archive" selections.
+// quoteIds / episodeIds / personIds are arrays of DB IDs
+// that the public /this-week page resolves at render time.
+model WeeklyDigest {
+  id         String   @id @default(cuid())
+  weekOf     DateTime @unique
+  title      String
+  blurb      String?
+  published  Boolean  @default(false)
+  quoteIds   String[]
+  episodeIds String[]
+  personIds  String[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([weekOf])
 }

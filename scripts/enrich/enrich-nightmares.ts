@@ -149,22 +149,21 @@ async function main() {
   const { batch, force } = parseArgs();
   const prisma = getPrisma();
 
-  if (!fs.existsSync(NIGHTMARES_RAW)) {
-    log("youtube-raw-psychesnightmares.json not found. Run _fetch-psychesnightmares.ts first.");
-    process.exit(1);
+  // Load optional local metadata for descriptions (may not exist in CI)
+  const videoMeta = new Map<string, RawVideo>();
+  if (fs.existsSync(NIGHTMARES_RAW)) {
+    const raw = JSON.parse(fs.readFileSync(NIGHTMARES_RAW, "utf-8")) as { videos: RawVideo[] };
+    for (const v of raw.videos) videoMeta.set(v.videoId, v);
+    log(`Loaded ${videoMeta.size} video metadata entries from local file`);
+  } else {
+    log("No local raw JSON — descriptions will be sourced from DB summaryShort");
   }
 
-  const raw = JSON.parse(fs.readFileSync(NIGHTMARES_RAW, "utf-8")) as {
-    videos: RawVideo[];
-  };
-
-  const nightmaresVideoIds = new Set(raw.videos.map((v) => v.videoId));
-  const videoMeta = new Map(raw.videos.map((v) => [v.videoId, v]));
-
-  // Find nightmares episodes in DB that need enrichment
+  // Find nightmares episodes in DB that need enrichment (contentType=livestream)
   const episodes = await prisma.episode.findMany({
     where: {
-      youtubeVideoId: { in: Array.from(nightmaresVideoIds) },
+      contentType: "livestream",
+      youtubeVideoId: { not: null },
       OR: [{ summaryLong: null }, { summaryLong: "" }],
     },
     select: {
@@ -174,6 +173,7 @@ async function main() {
       episodeNumber: true,
       airDate: true,
       youtubeVideoId: true,
+      summaryShort: true,
     },
     orderBy: { episodeNumber: "asc" },
   });
@@ -182,19 +182,26 @@ async function main() {
 
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
-  const candidates = episodes.filter((ep) => {
-    if (!ep.youtubeVideoId) return false;
-    const transcriptPath = path.join(TRANSCRIPTS_DIR, `${ep.youtubeVideoId}.json`);
-    if (!fs.existsSync(transcriptPath)) {
-      log(`  SKIP (no transcript): ${ep.slug}`);
-      return false;
-    }
-    if (!force) {
-      const enrichedPath = path.join(DATA_DIR, `${ep.slug}.json`);
-      if (fs.existsSync(enrichedPath)) return false;
-    }
-    return true;
-  });
+  const candidates = await Promise.all(
+    episodes
+      .filter((ep) => {
+        if (!ep.youtubeVideoId) return false;
+        if (!force) {
+          const enrichedPath = path.join(DATA_DIR, `${ep.slug}.json`);
+          if (fs.existsSync(enrichedPath)) return false;
+        }
+        return true;
+      })
+      .map(async (ep) => {
+        const localPath = path.join(TRANSCRIPTS_DIR, `${ep.youtubeVideoId}.json`);
+        const hasLocal = fs.existsSync(localPath);
+        if (!hasLocal) {
+          const count = await prisma.transcriptSegment.count({ where: { episodeId: ep.id } });
+          if (count === 0) { log(`  SKIP (no transcript): ${ep.slug}`); return null; }
+        }
+        return ep;
+      })
+  ).then((eps) => eps.filter(Boolean) as typeof episodes);
 
   log(`${candidates.length} candidates with transcripts (batch: ${batch})`);
 
@@ -205,8 +212,22 @@ async function main() {
   for (const ep of toProcess) {
     log(`Processing: ${ep.slug} (${ep.title})`);
     try {
-      const transcriptPath = path.join(TRANSCRIPTS_DIR, `${ep.youtubeVideoId!}.json`);
-      const segments = JSON.parse(fs.readFileSync(transcriptPath, "utf-8"));
+      const localPath = path.join(TRANSCRIPTS_DIR, `${ep.youtubeVideoId!}.json`);
+      let segments: Array<{ offset: number; duration: number; text: string }>;
+      if (fs.existsSync(localPath)) {
+        segments = JSON.parse(fs.readFileSync(localPath, "utf-8"));
+      } else {
+        const dbSegs = await prisma.transcriptSegment.findMany({
+          where: { episodeId: ep.id },
+          orderBy: { startSeconds: "asc" },
+          select: { startSeconds: true, endSeconds: true, text: true },
+        });
+        segments = dbSegs.map((s) => ({
+          offset: s.startSeconds * 1000,
+          duration: Math.max((s.endSeconds - s.startSeconds) * 1000, 1000),
+          text: s.text,
+        }));
+      }
       const transcriptText = buildTranscriptText(segments);
 
       const MAX_CHARS = 400_000;
@@ -220,7 +241,7 @@ async function main() {
         title: ep.title,
         episodeNumber: ep.episodeNumber,
         airDate: ep.airDate?.toISOString().split("T")[0] ?? "unknown",
-        description: meta?.description ?? "",
+        description: meta?.description ?? ep.summaryShort ?? "",
         transcript: truncated,
       });
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 
 export async function POST() {
   try {
@@ -24,7 +24,7 @@ export async function POST() {
 
     const baseUrl = process.env.NEXTAUTH_URL || "https://cultcodex.me";
 
-    const session = await stripe.billingPortal.sessions.create({
+    const session = await getStripe().billingPortal.sessions.create({
       customer: codexUser.stripeCustomerId,
       return_url: `${baseUrl}/subscribe`,
     });

@@ -140,6 +140,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
         title={collection.title.toUpperCase()}
         subtitle={collection.subtitle}
         backgroundImage="/hero-bg.jpg"
+      label="collection"
       />
 
       <main
@@ -286,7 +287,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
             <MysticalDivider />
             <section className="space-y-6">
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted text-center">
-                /// follow the signal further
+                {"/// follow the signal further"}
               </p>
 
               {related.length > 0 && (

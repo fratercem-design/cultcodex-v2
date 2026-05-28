@@ -1,5 +1,9 @@
 import { QuoteShareButton } from "@/components/quotes/share-button";
 import { PersonSigil } from "@/components/ui/person-sigil";
+import {
+  QuoteReactionBar,
+  type QuoteReactionInitial,
+} from "@/components/quotes/quote-reaction-bar";
 import { formatSeconds } from "@/lib/format/duration";
 import type { PersonType } from "@/generated/prisma/client";
 
@@ -11,6 +15,8 @@ interface QuoteHighlightCardProps {
   speakerSlug?: string | null;
   speakerType?: PersonType | null;
   timestampSeconds?: number | null;
+  reactions?: QuoteReactionInitial;
+  isAuthenticated?: boolean;
 }
 
 export function QuoteHighlightCard({
@@ -21,6 +27,8 @@ export function QuoteHighlightCard({
   speakerSlug,
   speakerType,
   timestampSeconds,
+  reactions,
+  isAuthenticated = false,
 }: QuoteHighlightCardProps) {
   return (
     <div className="relative rounded-lg border border-border bg-elevated p-5 border-l-[3px] border-l-red-400/50">
@@ -75,6 +83,16 @@ export function QuoteHighlightCard({
         </div>
         <QuoteShareButton quoteId={id} quoteText={text} />
       </div>
+
+      {reactions && (
+        <div className="relative z-10 mt-3 pl-4">
+          <QuoteReactionBar
+            quoteId={id}
+            initial={reactions}
+            isAuthenticated={isAuthenticated}
+          />
+        </div>
+      )}
     </div>
   );
 }

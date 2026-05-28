@@ -18,45 +18,54 @@ export const metadata: Metadata = {
 
 // ── Data fetchers ─────────────────────────────────────────────────
 async function getStats() {
-  const [episodes, people, quotes, lore, series] = await Promise.all([
-    prisma.episode.count(),
-    prisma.person.count(),
-    prisma.quote.count(),
-    prisma.loreEntry.count(),
-    prisma.series.findMany({
-      select: { title: true, description: true, _count: { select: { episodes: true } } },
-      orderBy: { episodes: { _count: "desc" } },
-    }),
-  ]);
-  return { episodes, people, quotes, lore, series };
+  try {
+    const [episodes, people, quotes, lore, series] = await Promise.all([
+      prisma.episode.count(),
+      prisma.person.count(),
+      prisma.quote.count(),
+      prisma.loreEntry.count(),
+      prisma.series.findMany({
+        select: { title: true, description: true, _count: { select: { episodes: true } } },
+        orderBy: { episodes: { _count: "desc" } },
+      }),
+    ]);
+    return { episodes, people, quotes, lore, series };
+  } catch {
+    return { episodes: 0, people: 0, quotes: 0, lore: 0, series: [] };
+  }
 }
 
 async function getTopSpeakers() {
-  const speakers = await prisma.quote.groupBy({
-    by: ["speakerPersonId"],
-    _count: { id: true },
-    orderBy: { _count: { id: "desc" } },
-    where: { speakerPersonId: { not: null } },
-    take: 25,
-  });
+  try {
+    const speakers = await prisma.quote.groupBy({
+      by: ["speakerPersonId"],
+      _count: { id: true },
+      orderBy: { _count: { id: "desc" } },
+      where: { speakerPersonId: { not: null } },
+      take: 25,
+    });
 
-  const ids = speakers.map((s) => s.speakerPersonId!);
-  const people = await prisma.person.findMany({
-    where: { id: { in: ids } },
-    select: { id: true, displayName: true, slug: true, shortBio: true },
-  });
-  const personMap = new Map(people.map((p) => [p.id, p]));
+    const ids = speakers.map((s) => s.speakerPersonId!);
+    const people = await prisma.person.findMany({
+      where: { id: { in: ids } },
+      select: { id: true, displayName: true, slug: true, shortBio: true },
+    });
+    const personMap = new Map(people.map((p) => [p.id, p]));
 
-  return speakers
-    .map((s) => ({
-      person: personMap.get(s.speakerPersonId!),
-      count: s._count.id,
-    }))
-    .filter((s) => s.person);
+    return speakers
+      .map((s) => ({
+        person: personMap.get(s.speakerPersonId!),
+        count: s._count.id,
+      }))
+      .filter((s) => s.person);
+  } catch {
+    return [];
+  }
 }
 
 async function getFeaturedQuotes() {
   // Hand-curated categories of quotes by searching for keywords
+  try {
   const results = await prisma.quote.findMany({
     where: {
       text: { not: "" },
@@ -103,13 +112,16 @@ async function getFeaturedQuotes() {
   // Shuffle and take 12
   const shuffled = interesting.sort(() => Math.random() - 0.5);
   return shuffled.slice(0, 12);
+  } catch {
+    return [];
+  }
 }
 
 // ── Page ──────────────────────────────────────────────────────────
 export default async function PsychenomiconPage() {
-  const session = await auth();
+  const session = await auth().catch(() => null);
   const userId = (session?.user as { id?: string } | undefined)?.id;
-  const hasAccess = userId ? await isSubscribed(userId) : false;
+  const hasAccess = userId ? await isSubscribed(userId).catch(() => false) : false;
 
   const stats = await getStats();
 
@@ -119,6 +131,7 @@ export default async function PsychenomiconPage() {
         title="THE PSYCHENOMICON"
         subtitle="The Forbidden Chronicle of the Cult of Psyche"
         backgroundImage="/search-database-background.jpg"
+      label="psychenomicon"
       />
 
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8">
@@ -240,8 +253,8 @@ async function PsychenomiconContent({
   stats: Awaited<ReturnType<typeof getStats>>;
 }) {
   const [speakers, quotes] = await Promise.all([
-    getTopSpeakers(),
-    getFeaturedQuotes(),
+    getTopSpeakers().catch(() => []),
+    getFeaturedQuotes().catch(() => []),
   ]);
 
   return (
@@ -591,7 +604,7 @@ async function PsychenomiconContent({
           refuses to stop generating material. The Cult of Psyche is a living
           text -- written in real time by a man and his cat and a rotating cast
           of insomniacs, mystics, addicts, prophets, trolls, and ordinary people
-          who found something they didn't know they were looking for.
+          who found something they didn&apos;t know they were looking for.
         </p>
         <p className="mt-4 font-mono text-xs text-accent-gold/60">
           This is the chronicle. This is the record. This is the Psychenomicon.

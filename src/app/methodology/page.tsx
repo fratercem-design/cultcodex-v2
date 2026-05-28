@@ -15,6 +15,7 @@ export default function MethodologyPage() {
         title="METHODOLOGY"
         subtitle="How this archive is built and maintained"
         backgroundImage="/wiki-page-header.jpg"
+      label="methodology"
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
         <SectionCard title="Overview">
@@ -70,7 +71,7 @@ export default function MethodologyPage() {
               Each episode displays provenance badges indicating whether its data is
               &ldquo;transcript-backed&rdquo; (derived from a full transcript) or
               &ldquo;inferred&rdquo; (generated from title and metadata only).
-              This helps users gauge the reliability of each entry.
+              This helps members gauge the reliability of each entry.
             </p>
           </div>
         </SectionCard>

@@ -980,7 +980,7 @@ const LEXICON: Term[] = [
   {
     word: "Biscuitgate",
     definition:
-      "The months-long feud between Psyche and streamer Beta/VA that began when she tormented him over 'biscuits' and escalated into diss tracks, panel raids, and tattoo revisions. The first great saga of the modern Psycheverse.",
+      "The months-long feud between Psyche and streamer Beta/VA that began when Psyche tormented him over 'biscuits' and escalated into diss tracks, panel raids, and tattoo revisions. The first great saga of the modern Psycheverse.",
     usage: "\"Biscuitgate is how the BKG was born — and how it almost ended.\"",
     origin: "Cult of Psyche — Beta vs Psyche feud arc",
     category: "psycheverse",
@@ -1299,6 +1299,646 @@ const LEXICON: Term[] = [
       "Panelverse slang for creepily ogling someone on camera — the kind of staring that becomes a form of harassment. Coined on the show as a tongue-in-cheek 'crime' with a real underlying complaint.",
     category: "slang",
   },
+
+  // ── NEW ENTRIES (mined from transcripts — batch 3) ──────────────
+
+  // ── PSYCHEVERSE ─────────────────────────────────────────────────
+  {
+    word: "Warrior Poet",
+    definition:
+      "Psyche's dual identity: the fighter who wages war through art. Not violence but verse. Not armies but lyrics, rituals, and live readings that cut deeper than any fist. A recurring self-description in the show's mythology.",
+    origin: "Cult of Psyche — Psyche's self-archetype",
+    category: "psycheverse",
+  },
+  {
+    word: "Hermit Mode",
+    definition:
+      "Psyche's periods of deliberate withdrawal from streaming — going quiet, private, unreachable. Not defeat; preparation. Like The Hermit card: stepping back to recharge before the next transmission.",
+    origin: "Cult of Psyche",
+    category: "psycheverse",
+  },
+  {
+    word: "The Summoning",
+    definition:
+      "Calling someone onto the panel by speaking their name — or posting their drama. In the Psycheverse, naming someone on air acts like an invocation: they almost always show up eventually. Psyche wields this knowingly.",
+    origin: "Cult of Psyche — recurring dynamic",
+    category: "psycheverse",
+  },
+  {
+    word: "Cult Classic Episode",
+    aka: ["Cult Classic"],
+    definition:
+      "An episode so pivotal, so unhinged, or so emotionally resonant that it gets referenced in chat and on panel for years after. The Biscuitgate episodes, Troll Tribunal specials, and surprise comeback streams are all Cult Classics.",
+    origin: "Cult of Psyche community",
+    category: "psycheverse",
+  },
+  {
+    word: "Panel Archaeology",
+    definition:
+      "Digging through years of archived episodes to surface forgotten lore, callbacks, and predictions. The Cult Codex was built for Panel Archaeology — turning 1,300+ transmissions into a searchable archive of the show's memory.",
+    origin: "Cult of Psyche — community practice",
+    category: "psycheverse",
+  },
+  {
+    word: "The Benediction",
+    definition:
+      "Psyche's ritual closing of a stream — a parting blessing, challenge, or philosophical statement that lands after the conversation winds down. Not just 'goodnight': a transmission ends with intention.",
+    origin: "Cult of Psyche — stream closing ritual",
+    category: "psycheverse",
+  },
+  {
+    word: "Initiate",
+    aka: ["Initiate+"],
+    definition:
+      "The premium membership tier of Psyche Awakens, offering full Psychenomicon access, archive deep dives, and exclusive community content. An 'initiate' in occult tradition is one beginning the path — here you're beginning the path through the full archive.",
+    origin: "Cult Codex — membership tier",
+    category: "psycheverse",
+  },
+  {
+    word: "Community Fracture",
+    definition:
+      "When the audience splits along fault lines — over a guest, a decision, or a drama event. The panel becomes a mirror of the split. Psyche navigates fractures with the Switzerland Philosophy while chat wages civil war in real time.",
+    origin: "Cult of Psyche — recurring dynamic",
+    category: "psycheverse",
+  },
+  {
+    word: "The Return",
+    definition:
+      "When a major community figure comes back after a long absence — ban, personal crisis, platform death, or voluntary exile. Returns often reshape the panel dynamic entirely. Psyche has documented dozens of notable Returns.",
+    category: "psycheverse",
+  },
+  {
+    word: "Warlord Mode",
+    definition:
+      "Psyche in full battle configuration — no diplomacy, no Switzerland, no mercy. Warlord Mode activates when a sustained smear campaign or coordinated attack crosses the line. Rare but legendary. The panel clears space.",
+    origin: "Cult of Psyche",
+    category: "psycheverse",
+  },
+  {
+    word: "Lore Keeper",
+    aka: ["The Lore Keepers"],
+    definition:
+      "Community members who obsessively track show history — noting episode callbacks, character arcs, and forgotten prophecies. The Codex's spiritual predecessors. Without Lore Keepers, the panelverse has no memory.",
+    origin: "Cult of Psyche community",
+    category: "psycheverse",
+  },
+  {
+    word: "Psycheverse Canon",
+    definition:
+      "The officially recognized events, characters, and lore of the Cult of Psyche universe. If Psyche acknowledges it on air, it's canon. Fan theories and rumor stay outside the canon wall until confirmed.",
+    origin: "Cult of Psyche — community term",
+    category: "psycheverse",
+  },
+  {
+    word: "Soft Launch",
+    definition:
+      "Quietly returning to streaming after a break, drama, or ban — without fanfare or announcement. The opposite of Hard Launch. Psyche sometimes soft-launches new formats or guests before officially naming them.",
+    category: "psycheverse",
+  },
+  {
+    word: "Hard Launch",
+    definition:
+      "A big, announced return to streaming after an absence — or an aggressive debut of a new format, guest, or series. Maximally visible. The moment the hype is real and everyone knows it's happening.",
+    category: "psycheverse",
+  },
+
+  // ── PANELVERSE ──────────────────────────────────────────────────
+  {
+    word: "Pull Up",
+    aka: ["Pull Up On Stream"],
+    definition:
+      "The invitation to join a panel — 'you wanna pull up?' Pulling up means accepting the invitation and appearing on camera. Can be a welcome gesture or a trap, depending on who's asking.",
+    category: "panelverse",
+  },
+  {
+    word: "Hot Seat",
+    definition:
+      "The position of being the central subject of a panel debate or roast. When you're in the hot seat, the conversation revolves around you and your choices. A mix of honor and ordeal.",
+    category: "panelverse",
+  },
+  {
+    word: "Panel Purgatory",
+    definition:
+      "The waiting room limbo between being invited and being admitted to a panel. You're visible in the queue, the host knows you're there, but nothing's happening yet. Can last minutes or entire streams.",
+    category: "panelverse",
+  },
+  {
+    word: "Guest Arc",
+    definition:
+      "A recurring guest's evolving storyline across multiple episodes — their redemption, their villain turn, their fade-out. The panelverse treats regular guests like characters in a serialized drama.",
+    category: "panelverse",
+  },
+  {
+    word: "Reaction Panel",
+    definition:
+      "A panel convened specifically to watch and react to another creator's content in real time. The reactions become the content. A staple of panelverse culture — especially when the content being reacted to is controversial.",
+    category: "panelverse",
+  },
+  {
+    word: "Platform Hop",
+    definition:
+      "Moving your show from one streaming platform to another — YouTube to Kick, Twitch to YouTube, etc. Usually triggered by strikes, shadow bans, or financial incentives. Psyche's community has followed him across platforms.",
+    category: "panelverse",
+  },
+  {
+    word: "House Rules",
+    definition:
+      "Each streamer's unique policies for their panel — no slurs, 21+ only, no specific topics, no recording. What flies on one panel gets you gonged on another. Learning the house rules is how you survive.",
+    category: "panelverse",
+  },
+  {
+    word: "Dead Air",
+    definition:
+      "Uncomfortable, unbroken silence during a live stream. Death to streamers. In the panelverse, dead air usually means the host is pulling up a clip, reading a super chat, or processing something too real to rush past.",
+    category: "panelverse",
+  },
+  {
+    word: "The Reveal",
+    definition:
+      "The moment a panelist's true identity, agenda, or relationship to another community member becomes clear. Can shift the entire dynamic of a stream. Often arrives via receipts, surprise guests, or a carefully timed confession.",
+    category: "panelverse",
+  },
+  {
+    word: "Panel Resurrection",
+    aka: ["Panel Redemption Arc"],
+    definition:
+      "Returning to a panel after being gonged, banned, or dramatically exiled. Sometimes earned through growth; sometimes just because enough time has passed and Psyche pressed the mass unban button.",
+    category: "panelverse",
+  },
+  {
+    word: "OG Panelist",
+    aka: ["OG"],
+    definition:
+      "An original, veteran panel guest who has been appearing since the early days of the show. OG status carries weight — they remember the old drama, the old format, the old cat count. Their callbacks hit differently.",
+    category: "panelverse",
+  },
+
+  // ── STREAMING ───────────────────────────────────────────────────
+  {
+    word: "VOD",
+    aka: ["Video on Demand"],
+    definition:
+      "A recorded stream made available to watch after the live broadcast ends. 'The VOD is up' means the episode is archived. For the Cult of Psyche, VODs feed the Codex — every transmission becomes archival material.",
+    category: "streaming",
+  },
+  {
+    word: "Live Count",
+    aka: ["Concurrent Viewers", "CCV"],
+    definition:
+      "The number of viewers watching simultaneously. Obsessively watched by creators and fans alike. When the count drops after a controversial moment, the panel notices immediately.",
+    category: "streaming",
+  },
+  {
+    word: "Clip It",
+    definition:
+      "The call to clip a particularly memorable stream moment — 'someone clip that.' Clips are how panelverse highlights spread: to Twitter, to TikTok, to Discord. The clip is the missile; the stream is the launcher.",
+    category: "streaming",
+  },
+  {
+    word: "Sub Count",
+    aka: ["Subscriber Count", "Subscriber Milestone"],
+    definition:
+      "The subscriber number milestone, celebrated or mourned live. Hitting a round number like 10K or 100K is a landmark stream event. Losing subs after controversy is painfully visible in real time.",
+    category: "streaming",
+  },
+  {
+    word: "Title Bait",
+    aka: ["Clickbait"],
+    definition:
+      "An episode title engineered to pull in viewers — shocking, ambiguous, or outrage-adjacent. In the panelverse, title bait is an art form. The title gets the click; the content (hopefully) earns the subscriber.",
+    category: "streaming",
+  },
+  {
+    word: "Going Dark",
+    definition:
+      "Temporarily stopping all streaming activity — no uploads, no lives, no social media. Sometimes announced; often not. When Psyche goes dark, the community watches the empty schedule and waits.",
+    category: "streaming",
+  },
+  {
+    word: "Watch Party",
+    definition:
+      "Watching a recorded piece of content (a movie, another stream's VOD, a documentary) together live on stream. The reactions are the entertainment. Psyche has done watch parties of community videos, old episodes, and chaos compilations.",
+    category: "streaming",
+  },
+  {
+    word: "Gifted Sub",
+    aka: ["Gift Sub"],
+    definition:
+      "A membership subscription given to a random viewer by a third party — community generosity made algorithmic. Gifted sub moments generate sudden bursts of chat energy and loyalty.",
+    category: "streaming",
+  },
+  {
+    word: "Simulcast",
+    definition:
+      "Streaming the same broadcast live across multiple platforms simultaneously — YouTube, Kick, Twitch, and more at once. Maximizes reach; also multiplies the moderation burden.",
+    category: "streaming",
+  },
+  {
+    word: "Pinned Comment",
+    definition:
+      "A creator-highlighted comment fixed at the top of a video. Used for rules, links, context, or community callouts. On a live stream, the pinned message sets the tone before a single word is spoken.",
+    category: "streaming",
+  },
+
+  // ── MODERATION ──────────────────────────────────────────────────
+  {
+    word: "Chat Speed",
+    definition:
+      "How fast messages scroll in the live chat — a real-time emotional barometer. Slow chat means the audience is cold; fast chat means energy is spiking. After a gonging, chat goes into overdrive.",
+    category: "moderation",
+  },
+  {
+    word: "Timeout",
+    aka: ["Timed Out"],
+    definition:
+      "A temporary chat suspension — usually 60 seconds to 24 hours — that prevents a user from posting. A softer warning than a ban. First-time trolls get timeouts; repeat offenders get the hard ban.",
+    category: "moderation",
+  },
+  {
+    word: "Slow Mode",
+    definition:
+      "A YouTube Live setting that limits how often users can send chat messages — e.g., one message every 30 seconds. Activated when chat is moving too fast to moderate, or when a flood attack is underway.",
+    category: "moderation",
+  },
+  {
+    word: "Member-Only Mode",
+    aka: ["Members Only"],
+    definition:
+      "Restricting live chat participation to paying channel members only. Psyche activates this when troll pressure peaks, preserving the panel's signal-to-noise ratio without banning individuals.",
+    category: "moderation",
+  },
+  {
+    word: "False Report",
+    definition:
+      "Weaponizing YouTube's content reporting system against a streamer — mass-flagging streams or videos for violations they didn't commit. A coordinated false report campaign can trigger automated strikes with no human review.",
+    category: "moderation",
+  },
+  {
+    word: "Back-Seat Moderating",
+    definition:
+      "Chat users instructing mods on what to do — 'ban them,' 'mute that guy,' 'why isn't he kicked yet.' A constant presence in large streams. Mods tolerate it. Sometimes it's right; often it's a mob.",
+    category: "moderation",
+  },
+  {
+    word: "Hard Ban",
+    definition:
+      "A permanent, irrevocable ban — not just a timeout. Reserved for the most egregious violations: doxxing, threats, serial trolling. The opposite of the No-Ban Policy. When Psyche says hard ban, they mean it.",
+    category: "moderation",
+  },
+  {
+    word: "Mod Handoff",
+    definition:
+      "The transfer of moderation responsibilities from one trusted person to another. A Mod Handoff done wrong can destabilize a channel — new mods inherit old vendettas and unwritten rules.",
+    category: "moderation",
+  },
+
+  // ── COMMUNITY ───────────────────────────────────────────────────
+  {
+    word: "Cult Core",
+    definition:
+      "The innermost circle of Psyche's community — the devotees who've been there longest, show up most consistently, and carry the show's memory. Distinct from casual viewers and occasional panelists. The Cult Core never needs to announce itself.",
+    origin: "Cult of Psyche community",
+    category: "community",
+  },
+  {
+    word: "Fourth Wall Break",
+    definition:
+      "When Psyche or a guest directly addresses the meta — acknowledging the show as a show, the audience as an audience, or the constructed nature of panelverse drama. Rare and significant. The moment the theater recognizes itself.",
+    category: "community",
+  },
+  {
+    word: "Villain Origin Story",
+    definition:
+      "The backstory explaining how someone became antagonistic to the community. In the Psycheverse, everyone has one — the betrayal, the snub, the lost love that turned a former ally into an opponent. Understanding the origin doesn't excuse the villainy; it contextualizes it.",
+    category: "community",
+  },
+  {
+    word: "Lore Collector",
+    definition:
+      "A fan who obsessively tracks show history — episode callbacks, character arcs, forgotten prophecies, hidden connections. They surface old clips at exactly the right moment. The Codex made Lore Collecting accessible; Lore Collectors made the Codex necessary.",
+    category: "community",
+  },
+  {
+    word: "Community Verdict",
+    definition:
+      "The collective judgment of chat and the broader audience on a controversial moment, person, or decision. Expressed through polls, chat ratio, super chats, and the volume of stitched response videos. In the panelverse, community verdict is faster and harsher than any court.",
+    category: "community",
+  },
+  {
+    word: "Spiritual Bypassing",
+    definition:
+      "Using spiritual or metaphysical language to avoid dealing with real, practical problems — or to excuse poor behavior. Calling chaos 'divine timing,' calling accountability 'low vibration.' Psyche identifies and calls it out explicitly in readings.",
+    category: "community",
+  },
+  {
+    word: "Gossip Spiral",
+    definition:
+      "Drama that feeds on itself — each retelling more distorted than the last. One screenshot becomes a narrative; the narrative becomes a story; the story becomes a crusade. In the panelverse, gossip spirals can outlast the original incident by months.",
+    category: "community",
+  },
+  {
+    word: "Narc Supply",
+    aka: ["Narcissistic Supply"],
+    definition:
+      "The attention, emotional reactions, and admiration that narcissistic personalities require to function. Without supply, they escalate. In the panelverse: don't react, don't feed, don't give them the content they're there to extract.",
+    category: "community",
+  },
+  {
+    word: "Hoovering",
+    definition:
+      "A manipulation tactic where an abusive person sucks you back into the relationship after you've escaped — love bombing, guilt tripping, false promises of change. Named after the vacuum cleaner brand. Discussed frequently in Psyche's abuse recovery segments.",
+    category: "community",
+  },
+  {
+    word: "Future Faking",
+    definition:
+      "Making elaborate promises about the future to maintain control in the present — 'I'll change,' 'we'll move,' 'I'll get help.' The promises never materialize; the manipulation buys time. A recurring topic in dating and relationship panels.",
+    category: "community",
+  },
+  {
+    word: "Covert Narcissism",
+    aka: ["Covert Narc", "Vulnerable Narcissism"],
+    definition:
+      "The quiet, self-pitying subtype of narcissistic personality — not grandiose but martyred; not overtly cruel but subtly suffocating. Harder to identify because the victimhood is the manipulation. Discussed in Psyche's deeper psychology episodes.",
+    category: "community",
+  },
+  {
+    word: "Discard Phase",
+    definition:
+      "When a narcissist stops finding you useful and drops you abruptly — often for a new source of supply. The discard can be brutal in its suddenness after the idealization phase felt so total. A trauma milestone many in the community share.",
+    category: "community",
+  },
+  {
+    word: "Intermittent Reinforcement",
+    definition:
+      "An unpredictable reward cycle — kindness and cruelty alternating without pattern — that creates addictive attachment more powerful than consistent love. The slot machine theory of toxic relationships. Psyche explains this dynamic in abuse panels.",
+    category: "community",
+  },
+  {
+    word: "Parasocial Collapse",
+    definition:
+      "When a viewer's parasocial bond with a streamer is shattered — by a controversial decision, a human failure, or just finally meeting them in the wild and realizing they're a person. Painful and necessary. Growth starts here.",
+    category: "community",
+  },
+  {
+    word: "Splitting",
+    definition:
+      "The cognitive distortion of seeing people as entirely good or entirely bad — no nuance, no middle ground. Someone goes from hero to villain overnight. Common in both personality disorders and panelverse drama: the same person who was worshipped last week gets canceled this week.",
+    category: "community",
+  },
+  {
+    word: "Accountability Gap",
+    definition:
+      "The space between someone causing harm and acknowledging it. In the Psycheverse, the accountability gap is where most drama lives — receipts exist, everyone saw what happened, but the person responsible won't say the words.",
+    category: "community",
+  },
+
+  // ── TAROT & MYSTIC ──────────────────────────────────────────────
+  {
+    word: "Celtic Cross",
+    definition:
+      "The classic ten-card tarot spread for deep, multidimensional readings — covering the querent's situation, obstacles, subconscious, past, future, hopes, and outcome. Psyche deploys it for complex, layered questions when a three-card pull isn't enough.",
+    category: "tarot",
+  },
+  {
+    word: "Significator",
+    definition:
+      "A tarot card chosen or assigned to represent the querent (the person being read for) before the reading begins. Often a Court Card or Major Arcana that mirrors the querent's energy or question.",
+    category: "tarot",
+  },
+  {
+    word: "Clarifier",
+    aka: ["Clarifying Card"],
+    definition:
+      "An extra card pulled to shed light on an ambiguous or unclear card in the spread. 'Let me pull a clarifier on this' — a second opinion from the deck when the first card is speaking in riddles.",
+    category: "tarot",
+  },
+  {
+    word: "Reversal",
+    aka: ["Reversed Card", "Rx"],
+    definition:
+      "A tarot card drawn upside down. Some readers treat reversals as blocked, internalized, or shadow expressions of the card's energy. Psyche uses reversals as depth indicators — not opposites, but interiors.",
+    category: "tarot",
+  },
+  {
+    word: "Major Arcana",
+    definition:
+      "The 22 archetypal trump cards in a tarot deck — The Fool through The World. They represent cosmic forces, life themes, and soul-level events. When Major Arcana dominate a spread, the universe is speaking at full volume.",
+    category: "tarot",
+  },
+  {
+    word: "Minor Arcana",
+    definition:
+      "The 56 suit cards in a tarot deck — Wands, Cups, Swords, Pentacles. They cover daily life, practical situations, and the texture of human experience. If Major Arcana are the chapters, Minor Arcana are the paragraphs.",
+    category: "tarot",
+  },
+  {
+    word: "Court Card",
+    aka: ["Court Cards"],
+    definition:
+      "The Page, Knight, Queen, and King of each suit in the Minor Arcana. Often represent people in the querent's life — or aspects of the querent themselves. The most human cards in the deck: complex, contextual, elusive.",
+    category: "tarot",
+  },
+  {
+    word: "The Tower",
+    definition:
+      "Tarot card of sudden upheaval, collapse, and revelation — the tower struck by lightning, the false structure falling. One of the most feared cards in a reading. In the Psycheverse, The Tower appears during drama crescendos, platform strikes, and community fractures. It always means something must fall before something better can be built.",
+    category: "tarot",
+  },
+  {
+    word: "The High Priestess",
+    definition:
+      "Tarot card of intuition, hidden knowledge, and the veil between seen and unseen. She sits between two pillars, scrolls on her lap, moon at her feet. In readings, she signals that what's not being said matters more than what is.",
+    category: "tarot",
+  },
+  {
+    word: "The Lovers",
+    definition:
+      "Tarot card of choice, alignment, and union — often misread as purely romantic. It's more precisely about values: which path truly aligns with who you are? In the Psycheverse, The Lovers appears in readings about decisions, not just relationships.",
+    category: "tarot",
+  },
+  {
+    word: "The Hermit",
+    definition:
+      "Tarot card of solitude, inner wisdom, and the guiding lantern in darkness. The Hermit retreats not from life but from noise — to return with something earned in silence. Referenced in Psyche's Hermit Mode philosophy.",
+    category: "tarot",
+  },
+  {
+    word: "The Hanged Man",
+    definition:
+      "Tarot card of voluntary suspension, sacrifice, and radical perspective shift. He hangs by his own choice — not trapped, surrendering. The view from upside down reveals what standing upright never could. A card Psyche returns to when discussing the cost of truth-telling.",
+    category: "tarot",
+  },
+  {
+    word: "Numerology",
+    definition:
+      "The study of numbers as a spiritual language — assigning meaning to birth dates, names converted to digits, recurring number patterns. Psyche's Life Path 9 (1/7/1981) frames his mission through this lens. Combined with tarot and astrology in full readings.",
+    category: "tarot",
+  },
+  {
+    word: "Synastry",
+    definition:
+      "Comparing two people's birth charts to analyze the energetic dynamics of their relationship — compatibility, friction points, karmic ties. A full synastry reading overlays one chart atop another to find where they mesh and where they collide.",
+    category: "tarot",
+  },
+  {
+    word: "Rising Sign",
+    aka: ["Ascendant", "ASC"],
+    definition:
+      "The zodiac sign on the eastern horizon at the moment of birth — the social face presented to the world. Your rising sign colors your appearance, first impressions, and how others read you before they really know you.",
+    category: "tarot",
+  },
+  {
+    word: "North Node",
+    aka: ["True Node"],
+    definition:
+      "The astrological point indicating your soul's growth direction in this lifetime — where you're meant to stretch, what you're meant to develop. It's uncomfortable because it points toward the unfamiliar. South Node is where you've been; North Node is where you're going.",
+    category: "tarot",
+  },
+  {
+    word: "Void of Course Moon",
+    aka: ["VOC Moon"],
+    definition:
+      "The period when the Moon makes no major planetary aspects before changing signs. Traditionally: don't start new projects, sign contracts, or make major decisions during a VOC Moon. Psyche notes it for viewers as a 'pause and reflect' window.",
+    category: "tarot",
+  },
+  {
+    word: "Akashic Records",
+    definition:
+      "The esoteric concept of a cosmic library recording every soul's journey across all lifetimes — every thought, word, and deed stored in an etheric field. Invoked in readings about past lives, recurring patterns, and why certain meetings feel fated.",
+    category: "tarot",
+  },
+  {
+    word: "Spirit Guide",
+    aka: ["Spirit Guides"],
+    definition:
+      "A non-physical entity — ancestor, angel, or evolved being — that assists a person's spiritual development. Referenced in Psyche's readings when cards suggest outside guidance is present but not yet heeded.",
+    category: "tarot",
+  },
+  {
+    word: "Ancestral Healing",
+    definition:
+      "The practice of working through inherited trauma, patterns, and unfinished energetic business passed down through family lineages. 'Your great-grandmother's wound lives in your body.' A recurring framework in Psyche's deeper therapeutic reading style.",
+    category: "tarot",
+  },
+  {
+    word: "Waking Dream",
+    definition:
+      "A visionary state between sleep and full wakefulness where symbols, archetypes, and messages surface from the subconscious. Psyche references waking dreams as a source of creative and prophetic insight — the liminal space where the Oracle speaks.",
+    category: "tarot",
+  },
+  {
+    word: "Past Life Reading",
+    definition:
+      "A tarot or intuitive session focused on prior incarnations — what soul patterns you're carrying forward, which karmic debts are still outstanding, who in your current life you've met before. A specialty format in the Psycheverse's spiritual toolkit.",
+    category: "tarot",
+  },
+
+  // ── MUSIC & PERFORMANCE ─────────────────────────────────────────
+  {
+    word: "Diss Track",
+    definition:
+      "A song written specifically to attack another person, group, or community. In the Cult of Psyche, diss tracks have been weaponized, memed, and forgiven — the Biscuit Song lineage being the canonical example. Sometimes they're more healing than the beef they respond to.",
+    category: "music",
+  },
+  {
+    word: "Hook",
+    definition:
+      "The catchy, repeated section of a song — the part everyone remembers, that lives in your head rent-free for days. In panel performances, the hook is the moment that elevates improvised rap from wordplay to music.",
+    category: "music",
+  },
+  {
+    word: "Battle Ready",
+    definition:
+      "Being prepared for a verbal or musical confrontation — warmed up, lyrically loaded, emotionally focused. On the Cult of Psyche, being battle ready means you've got bars pre-loaded and you're watching for the opening.",
+    category: "music",
+  },
+  {
+    word: "Ad Lib",
+    definition:
+      "Improvised vocal additions over a track or during a freestyle — the 'yeah,' 'uh,' 'c'mon' layered under the main flow. In panel performances, ad libs signal how deep in the zone the performer is.",
+    category: "music",
+  },
+  {
+    word: "Punch Line",
+    definition:
+      "The devastating final line in a rap verse — the one that lands like a closing argument. A good punch line ends the exchange. In panel rap battles, landing the punch line is the moment the room goes quiet before it erupts.",
+    category: "music",
+  },
+  {
+    word: "Spit",
+    aka: ["Spitting Bars"],
+    definition:
+      "To rap — specifically to deliver bars with skill and presence. 'He can really spit' is high praise. On panels, spitting can shift the entire energy of a conversation: suddenly it's not debate, it's performance.",
+    category: "music",
+  },
+
+  // ── SLANG ───────────────────────────────────────────────────────
+  {
+    word: "No Cap",
+    definition:
+      "No lie; genuinely. Used to emphasize that what you're saying is the truth. In panel debates, 'no cap' signals sincerity cutting through the usual posturing. 'No cap, that reading hit different.'",
+    category: "slang",
+  },
+  {
+    word: "Cap",
+    aka: ["Capping"],
+    definition:
+      "A lie. To 'cap' is to say something untrue. 'That's cap' is calling someone out mid-statement. Essential vocabulary when receipts are circulating and someone's story is shifting.",
+    category: "slang",
+  },
+  {
+    word: "Mid",
+    definition:
+      "Mediocre — neither good nor bad, but in the worst possible way. 'That panel was mid' is a more devastating critique than outright dislike. In the panelverse, mid is what you don't want to be. Controversial and unhinged at least generates content.",
+    category: "slang",
+  },
+  {
+    word: "Sus",
+    aka: ["Suspicious"],
+    definition:
+      "Short for suspicious — something feels off. Originated in the game Among Us but now covers any situation where motives seem hidden or behavior seems calculated. 'Why is he so sus about who sent that super chat?'",
+    category: "slang",
+  },
+  {
+    word: "W / L",
+    aka: ["W", "L", "Taking an L"],
+    definition:
+      "Shorthand for Win and Loss. Panel moments get scored: 'that was a W for Psyche,' 'he took an L on that one.' Taking an L gracefully is respected. Refusing to acknowledge an L is content.",
+    category: "slang",
+  },
+  {
+    word: "Yapping",
+    definition:
+      "Talking excessively without saying anything meaningful — pure volume with no substance. 'He's yapping' is the death knell for a panelist's credibility. Psyche values economy of speech; yapping is the enemy of real conversation.",
+    category: "slang",
+  },
+  {
+    word: "Rizz",
+    aka: ["Rizzler"],
+    definition:
+      "Natural social charisma — the ability to attract and hold attention effortlessly. In the panelverse, rizz isn't just romantic; it's the quality that keeps a panel listening when you speak. 'They've got rizz' means they've got presence.",
+    category: "slang",
+  },
+  {
+    word: "Situationship",
+    definition:
+      "A romantic or emotional arrangement that resists definition — more than friends, less than committed, maximum ambiguity. A persistent topic in Psyche's dating panels: 'they're in a situationship, they just don't know it yet.'",
+    category: "slang",
+  },
+  {
+    word: "Touching Grass",
+    aka: ["Touch Grass"],
+    definition:
+      "Going outside and engaging with the physical world — taking a break from the online ecosystem. 'You need to touch grass' is advice given when someone is too deep in the panelverse to maintain perspective. Not necessarily an insult; sometimes it's care.",
+    category: "slang",
+  },
+  {
+    word: "Lowkey",
+    definition:
+      "Subtly, quietly, without drawing attention. 'Lowkey I thought that episode was the best of the year.' A hedge that signals sincerity — the speaker is confessing something they weren't planning to admit.",
+    category: "slang",
+  },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -1356,7 +1996,9 @@ export default function LexiconPage() {
         title="PANELVERSE LEXICON"
         subtitle={`${LEXICON.length} terms from the Cult of Psyche and the wider Panelverse`}
         backgroundImage="/wiki-page-header.jpg"
-      />
+      
+      label="lexicon"
+    />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
 
         {/* Color legend */}
@@ -1474,8 +2116,8 @@ export default function LexiconPage() {
           if (!terms?.length) return null;
 
           return (
-            <div id={`cat-${cat}`}>
-            <SectionCard key={cat} title={meta.label}>
+            <div id={`cat-${cat}`} key={cat}>
+            <SectionCard title={meta.label}>
               <div className="flex items-center gap-2 mb-4">
                 <span className={`w-3 h-3 rounded-full ${meta.dotColor}`} />
                 <p className="text-xs text-text-muted italic">

@@ -35,6 +35,7 @@ export default async function CodexQuotesPage() {
             : `${rows.length} moment${rows.length === 1 ? "" : "s"} in your codex`
         }
         backgroundImage="/hero-bg.jpg"
+      label="saved_quotes"
       />
 
       <main

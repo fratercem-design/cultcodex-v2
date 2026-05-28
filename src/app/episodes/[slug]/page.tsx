@@ -1,12 +1,23 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getEpisodeBySlug, getRelatedEpisodes } from "@/lib/queries/episodes";
+import {
+  getEpisodeBySlug,
+  getRelatedEpisodes,
+  getEpisodeNeighborsInEra,
+} from "@/lib/queries/episodes";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getReactionCounts } from "@/lib/queries/reactions";
+import { getEraForEpisode } from "@/lib/eras";
+import { EraNeighbors } from "@/components/episodes/era-neighbors";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, episodeJsonLd, jsonLdScript } from "@/lib/seo";
+import { AiNotice } from "@/components/ui/ai-notice";
+import { getConfidenceTier } from "@/lib/format/confidence-tier";
+import { renderWithTimestamps } from "@/lib/format/render-timestamps";
+import { HumanReviewBadge } from "@/components/ui/human-review-badge";
+import { SplitSummaryCard } from "@/components/episodes/split-summary";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EpisodeHero } from "@/components/episodes/episode-hero";
 import { EpisodeGlanceBar } from "@/components/episodes/episode-glance-bar";
@@ -29,6 +40,9 @@ import { formatDate } from "@/lib/format/date";
 import { cleanTitle } from "@/lib/format/text";
 import { formatDuration } from "@/lib/format/duration";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
+import { DecodeModePanel } from "@/components/episodes/decode-mode-panel";
+import { WhatYouMissed } from "@/components/episodes/what-you-missed";
+import { EpisodeCrossRef } from "@/components/episodes/episode-cross-ref";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { RandomEpisodeButton } from "@/components/archive/random-episode-button";
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
@@ -42,13 +56,17 @@ import type { Metadata } from "next";
 export const revalidate = 300;
 
 export async function generateStaticParams() {
-  const episodes = await prisma.episode.findMany({
-    where: {},
-    select: { slug: true },
-    take: 50,
-    orderBy: { updatedAt: "desc" },
-  });
-  return episodes.map((ep) => ({ slug: ep.slug }));
+  try {
+    const episodes = await prisma.episode.findMany({
+      where: {},
+      select: { slug: true },
+      take: 500,
+      orderBy: { airDate: "desc" },
+    });
+    return episodes.map((ep) => ({ slug: ep.slug }));
+  } catch {
+    return [];
+  }
 }
 
 interface PageProps {
@@ -72,6 +90,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: episode.title,
     description: episode.summaryShort || episode.searchText || null,
     path: `/episodes/${episode.slug}`,
+    image: episode.thumbnailUrl ?? null,
   });
 }
 
@@ -79,32 +98,44 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
   const { slug } = await params;
   const sp = await searchParams;
   const initialTimestamp = sp.t ? parseInt(sp.t, 10) : undefined;
-  const episode = await getEpisodeBySlug(slug);
+  const episode = await getEpisodeBySlug(slug).catch(() => null);
 
   if (!episode) notFound();
 
-  const relatedEpisodes = await getRelatedEpisodes(episode.id, { limit: 6 });
-
-  const user = await getCurrentUser();
+  const [relatedEpisodes, user] = await Promise.all([
+    getRelatedEpisodes(episode.id, { limit: 6 }).catch(() => []),
+    getCurrentUser(),
+  ]);
 
   const favoriteData = user
     ? await prisma.favorite.findUnique({
         where: { userId_episodeId: { userId: user.id, episodeId: episode.id } },
-      })
+      }).catch(() => null)
     : null;
   const favoriteCount = await prisma.favorite.count({
     where: { episodeId: episode.id },
-  });
+  }).catch(() => 0);
 
-  const reactionCounts = await getReactionCounts(episode.id, user?.id);
-  const commentsData = await getCommentsForEpisode(episode.id, { take: 20 });
+  const [reactionCounts, commentsData] = await Promise.all([
+    getReactionCounts(episode.id, user?.id).catch(() => ({ fire: 0, eye: 0, moon: 0, skull: 0, wildcard: 0, userReactions: [] as string[] })),
+    getCommentsForEpisode(episode.id, { take: 20 }).catch(() => ({ comments: [], totalCount: 0 })),
+  ]);
 
   const epNum = episode.episodeNumber
     ? `EP.${String(episode.episodeNumber).padStart(3, "0")}`
     : null;
 
   const hasTranscript = episode.segments.length > 0;
-  const hasTranscriptAccess = user ? await isSubscribed(user.id) : false;
+  const confidenceTier = getConfidenceTier(episode.segments.length, !!episode.summaryLong);
+  const hasTranscriptAccess = user ? await isSubscribed(user.id).catch(() => false) : false;
+  const hasDecodeAccess = hasTranscriptAccess; // same tier — Initiate+
+  const hasDecodeData = !!episode.decodeData;
+
+  // Signal/Noise map — only exposed to subscribers
+  const signalMap =
+    hasTranscriptAccess && episode.decodeData
+      ? ((episode.decodeData as Record<string, unknown>).signal_noise as Record<string, "signal" | "noise" | "neutral"> | undefined)
+      : undefined;
 
   // Separate hosts from actual guests — hosts should not appear in the guest list
   const actualGuests = episode.guests.filter(
@@ -114,11 +145,45 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     (g) => g.person.personType === "host"
   );
 
+  // Era resolution — derived from airDate via static era config.
+  const era = getEraForEpisode(episode.airDate);
+
+  // Era neighbors (prev/next published episode within the same date range).
+  const eraNeighbors =
+    era && episode.airDate
+      ? await getEpisodeNeighborsInEra({
+          episodeId: episode.id,
+          airDate: episode.airDate,
+          eraDateStart: new Date(era.dateStart),
+          eraDateEnd: era.dateEnd ? new Date(era.dateEnd) : null,
+        }).catch(() => ({ previous: null, next: null }))
+      : { previous: null, next: null };
+
+  // Guest archetypes — soft-linked via personSlug on PsychenomiconEntity.
+  // Used to annotate each guest in the grid with their primary archetype.
+  const guestSlugs = actualGuests.map((g) => g.person.slug);
+  const guestArchetypes = new Map<string, string>();
+  if (guestSlugs.length > 0) {
+    const entities = await prisma.psychenomiconEntity.findMany({
+      where: { personSlug: { in: guestSlugs }, primaryArchetype: { not: null } },
+      select: { personSlug: true, primaryArchetype: true },
+    }).catch(() => []);
+    for (const e of entities) {
+      if (e.personSlug && e.primaryArchetype) {
+        // Keep only the first canonical token of compound archetypes
+        // (e.g. "Mirror/Gravity" → "Mirror") so the chip stays short.
+        const firstToken = e.primaryArchetype.split(/[/&,|]| — |\s+and\s+/i)[0].trim();
+        guestArchetypes.set(e.personSlug, firstToken || e.primaryArchetype);
+      }
+    }
+  }
+
   const tabs = [
     { id: "overview", label: "Overview" },
     ...(hasTranscript
       ? [{ id: "transcript", label: "Transcript", count: episode.segments.length }]
       : []),
+    { id: "decode", label: "Decode", locked: !hasDecodeAccess },
     { id: "quotes", label: "Quotes", count: episode.quotes.length },
     // Only show Discussion tab if there are comments or user is logged in
     ...(commentsData.totalCount > 0 || user
@@ -128,6 +193,22 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
   return (
     <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: jsonLdScript(
+          episodeJsonLd({
+            title: cleanTitle(episode.title),
+            slug: episode.slug,
+            description: episode.summaryShort ?? episode.summaryLong ?? null,
+            airDate: episode.airDate,
+            thumbnailUrl: episode.thumbnailUrl,
+            youtubeVideoId: episode.youtubeVideoId,
+            duration: episode.duration,
+          })
+        ),
+      }}
+    />
     {episode.series && (
       <nav className="mx-auto max-w-7xl px-4 pt-4">
         <ol className="flex items-center gap-2 font-mono text-xs text-text-muted">
@@ -158,6 +239,11 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
       airDate={episode.airDate}
       duration={episode.duration}
       guestCount={actualGuests.length}
+      era={
+        era
+          ? { id: era.id, label: era.label, sigil: era.sigil, color: era.color }
+          : null
+      }
     />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
       <div className="grid gap-6 lg:grid-cols-3">
@@ -190,7 +276,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
               </svg>
               <p className="font-mono text-sm text-amber-400">Video unavailable</p>
-              <p className="font-mono text-[11px] text-text-muted">This episode's video has been privatized or removed. Browse the transcript, quotes, and metadata below.</p>
+              <p className="font-mono text-[11px] text-text-muted">This episode&apos;s video has been privatized or removed. Browse the transcript, quotes, and metadata below.</p>
             </div>
           )}
 
@@ -255,24 +341,47 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
             />
           </div>
 
+          {/* What You Missed */}
+          <WhatYouMissed
+            decodeData={hasDecodeData ? (episode.decodeData as Parameters<typeof WhatYouMissed>[0]["decodeData"]) : null}
+            isUnlocked={hasDecodeAccess}
+            isAuthenticated={!!user}
+            episodeSlug={episode.slug}
+          />
+
           {/* Tab layout */}
           <Suspense fallback={<div className="h-40" />}>
             <EpisodeTabLayout tabs={tabs}>
               {{
                 overview: (
                   <div className="space-y-6">
-                    {/* Summary */}
-                    {episode.summaryLong && (
+                    {/* Summary — split view (new) or legacy single-blob (old) */}
+                    {episode.summaryFacts ? (
+                      <SplitSummaryCard
+                        summaryFacts={episode.summaryFacts}
+                        summaryThemes={episode.summaryThemes}
+                        youtubeVideoId={episode.youtubeVideoId}
+                        confidenceTier={confidenceTier}
+                        isHumanReviewed={episode.isHumanReviewed}
+                        humanReviewedAt={episode.humanReviewedAt}
+                      />
+                    ) : episode.summaryLong ? (
                       <SectionCard title="Summary">
                         <p className="text-sm text-text-primary leading-relaxed">
-                          {episode.summaryLong}
+                          {renderWithTimestamps(episode.summaryLong, episode.youtubeVideoId)}
                         </p>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          {episode.isHumanReviewed && (
+                            <HumanReviewBadge reviewedAt={episode.humanReviewedAt} variant="full" />
+                          )}
+                          <AiNotice tier={confidenceTier} />
+                        </div>
                       </SectionCard>
-                    )}
+                    ) : null}
 
                     {/* Guests (inline for mobile) — hosts filtered out */}
                     {actualGuests.length > 0 && (
-                      <SectionCard title={`Guests (${actualGuests.length})`}>
+                      <SectionCard title={`Guests (${actualGuests.length})`} accent="gold">
                         <div className="flex flex-wrap gap-1.5">
                           {actualGuests.map((g) => (
                             <Link
@@ -289,7 +398,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
                     {/* Topics (inline for mobile) */}
                     {episode.topics.length > 0 && (
-                      <SectionCard title={`Topics (${episode.topics.length})`}>
+                      <SectionCard title={`Topics (${episode.topics.length})`} accent="cyan">
                         <div className="flex flex-wrap gap-1.5">
                           {episode.topics.map((t) => (
                             <Link
@@ -392,6 +501,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         segments={episode.segments}
                         hasVideoEmbed={!!episode.youtubeVideoId}
                         initialTimestamp={initialTimestamp}
+                        signalMap={signalMap}
                       />
                     </TerminalPanel>
                   ) : (
@@ -404,6 +514,13 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                     </TerminalPanel>
                   ),
                 } : {}),
+                decode: (
+                  <DecodeModePanel
+                    decodeData={hasDecodeData ? (episode.decodeData as Parameters<typeof DecodeModePanel>[0]["decodeData"]) : null}
+                    isUnlocked={hasDecodeAccess}
+                    isAuthenticated={!!user}
+                  />
+                ),
                 quotes: (
                   <div className="space-y-4">
                     {episode.quotes.length > 0 ? (
@@ -514,6 +631,33 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           {/* Color legend */}
           <ColorLegend />
 
+          {/* Upgrade CTA — only for non-subscribers */}
+          {!hasTranscriptAccess && (
+            <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-5 space-y-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">{"/// initiate_layer"}</p>
+              <p className="font-mono text-xs font-bold text-accent-gold">Observers see the surface.</p>
+              <ul className="space-y-1.5">
+                {[
+                  "Full searchable transcript",
+                  "Decode Mode — AI analysis",
+                  "Jump to any timestamp",
+                  "Pattern search across all episodes",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2 font-mono text-[10px] text-text-muted">
+                    <span className="text-accent-gold mt-0.5">✦</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/premium"
+                className="block w-full rounded-lg border border-accent-gold bg-accent-gold/15 px-4 py-2.5 text-center font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
+              >
+                Become Initiate+ — $10/mo
+              </Link>
+            </div>
+          )}
+
           {/* Guests — hosts filtered out */}
           <GuestGrid
             guests={actualGuests.map((g) => ({
@@ -522,6 +666,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               avatarUrl: g.person.avatarUrl,
               personType: g.person.personType,
             }))}
+            archetypes={guestArchetypes}
           />
 
           {/* Topics */}
@@ -536,6 +681,30 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 }))}
               />
             </SectionCard>
+          )}
+
+          {/* Era neighbors — prev/next published episode within the same era */}
+          {era && (eraNeighbors.previous || eraNeighbors.next) && (
+            <EraNeighbors
+              era={{ id: era.id, label: era.label, sigil: era.sigil, color: era.color }}
+              previous={eraNeighbors.previous}
+              next={eraNeighbors.next}
+            />
+          )}
+
+          {/* Semantic cross-references — related moments from other episodes */}
+          {(episode.summaryShort || episode.topics.length > 0) && (
+            <Suspense fallback={null}>
+              <EpisodeCrossRef
+                episodeId={episode.id}
+                concept={
+                  episode.summaryShort ||
+                  [episode.title, episode.topics[0]?.topic.title]
+                    .filter(Boolean)
+                    .join(" — ")
+                }
+              />
+            </Suspense>
           )}
 
           {/* Lore */}
@@ -557,7 +726,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
+        __html: jsonLdScript({
           "@context": "https://schema.org",
           "@type": "VideoObject",
           name: episode.title,

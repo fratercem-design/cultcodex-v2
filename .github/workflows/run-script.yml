@@ -1,0 +1,39 @@
+name: Run DB Script
+
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: 'Script path relative to scripts/ (e.g. _merge-alexandria.ts)'
+        required: true
+
+jobs:
+  run:
+    name: Run script
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run script
+        run: |
+          echo "── Running scripts/${{ github.event.inputs.script }} ──"
+          npx tsx "scripts/${{ github.event.inputs.script }}" | tee /tmp/script-output.txt
+          SUMMARY=$(tail -5 /tmp/script-output.txt | tr '\n' ' ')
+          echo "::notice title=Script output::$SUMMARY"

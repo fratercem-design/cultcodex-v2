@@ -2,12 +2,20 @@ import Link from "next/link";
 import { formatDate } from "@/lib/format/date";
 import { formatDuration } from "@/lib/format/duration";
 
+interface EraChip {
+  id: string;
+  label: string;
+  sigil: string;
+  color: "gold" | "violet" | "cyan" | "crimson" | "muted";
+}
+
 interface EpisodeGlanceBarProps {
   contentType: string;
   series?: { title: string; slug: string } | null;
   airDate: Date | null;
   duration: string | null;
   guestCount: number;
+  era?: EraChip | null;
 }
 
 const CONTENT_TYPE_ICONS: Record<string, string> = {
@@ -17,12 +25,21 @@ const CONTENT_TYPE_ICONS: Record<string, string> = {
   clip: "\u2702\uFE0F",
 };
 
+const ERA_CHIP_STYLE: Record<string, string> = {
+  gold:    "border-accent-gold/40 bg-accent-gold/10 text-accent-gold hover:border-accent-gold/60",
+  violet:  "border-accent-violet/40 bg-accent-violet/10 text-accent-violet hover:border-accent-violet/60",
+  cyan:    "border-accent-cyan/40 bg-accent-cyan/10 text-accent-cyan hover:border-accent-cyan/60",
+  crimson: "border-accent-crimson/40 bg-accent-crimson/10 text-accent-crimson hover:border-accent-crimson/60",
+  muted:   "border-border bg-surface text-text-muted",
+};
+
 export function EpisodeGlanceBar({
   contentType,
   series,
   airDate,
   duration,
   guestCount,
+  era,
 }: EpisodeGlanceBarProps) {
   const icon = CONTENT_TYPE_ICONS[contentType] ?? "\uD83C\uDFAC";
 
@@ -62,6 +79,18 @@ export function EpisodeGlanceBar({
           <span className="inline-flex items-center rounded-full border border-border bg-surface px-2.5 py-1 font-mono text-[10px] text-text-muted">
             {guestCount} guest{guestCount !== 1 ? "s" : ""}
           </span>
+        )}
+
+        {/* Era */}
+        {era && (
+          <Link
+            href={`/eras/${era.id}`}
+            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10px] transition-colors ${ERA_CHIP_STYLE[era.color] ?? ERA_CHIP_STYLE.muted}`}
+            title={`Browse ${era.label}`}
+          >
+            <span className="text-xs leading-none">{era.sigil}</span>
+            {era.label}
+          </Link>
         )}
       </div>
     </div>

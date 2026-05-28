@@ -2,6 +2,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 /**
  * GET  — returns `{ saved: boolean, count: number }` for the current user.
  *        Safe for signed-out users.

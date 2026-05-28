@@ -1,0 +1,144 @@
+name: Channel Sweep — Sync YouTube Uploads
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_transcripts:
+        description: 'Fetch transcripts after sweep'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      transcript_delay_ms:
+        description: 'Delay between transcript fetches (ms)'
+        required: false
+        default: '2000'
+
+jobs:
+  sweep:
+    name: Sync channel uploads to DB
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run channel sweep
+        run: |
+          echo "── Channel Sweep ──"
+          npx tsx scripts/sync-youtube-channel.ts | tee /tmp/sweep-output.txt
+          echo "## Channel Sweep" >> $GITHUB_STEP_SUMMARY
+          grep -E "Total public|New videos|Created:|Skipped:|original:|short:|livestream:" /tmp/sweep-output.txt >> $GITHUB_STEP_SUMMARY || true
+          SUMMARY=$(grep -E "Created:|New videos" /tmp/sweep-output.txt | tr '\n' ' ')
+          echo "::notice title=Channel sweep::$SUMMARY"
+
+  transcripts-original:
+    name: Fetch transcripts — original
+    needs: sweep
+    if: ${{ github.event.inputs.run_transcripts == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install yt-dlp
+        run: pip install -q yt-dlp
+
+      - name: Write YouTube cookies
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+        run: |
+          if [ -n "$YOUTUBE_COOKIES" ]; then
+            printf '%s' "$YOUTUBE_COOKIES" > /tmp/yt-cookies.txt
+          else
+            echo "No YOUTUBE_COOKIES secret."
+          fi
+
+      - name: Import transcripts — original
+        env:
+          ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
+          VERCEL_URL: https://cultcodex.me
+          YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
+        run: |
+          npx tsx scripts/import-episodes-ytdlp.ts \
+            --content-type original \
+            --delay "${{ github.event.inputs.transcript_delay_ms || '2000' }}" \
+            --max 0 \
+            | tee /tmp/orig-output.txt
+          echo "## Originals Transcripts" >> $GITHUB_STEP_SUMMARY
+          grep -E "Total episodes:|Have transcripts:|Missing:|Done —|Nothing to do" /tmp/orig-output.txt >> $GITHUB_STEP_SUMMARY || true
+          SUMMARY=$(grep -E "Done —|Nothing to do" /tmp/orig-output.txt | tr '\n' ' ')
+          echo "::notice title=Originals::$SUMMARY"
+
+  transcripts-shorts:
+    name: Fetch transcripts — shorts
+    needs: sweep
+    if: ${{ github.event.inputs.run_transcripts == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install yt-dlp
+        run: pip install -q yt-dlp
+
+      - name: Write YouTube cookies
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+        run: |
+          if [ -n "$YOUTUBE_COOKIES" ]; then
+            printf '%s' "$YOUTUBE_COOKIES" > /tmp/yt-cookies.txt
+          else
+            echo "No YOUTUBE_COOKIES secret."
+          fi
+
+      - name: Import transcripts — short
+        env:
+          ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
+          VERCEL_URL: https://cultcodex.me
+          YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
+        run: |
+          npx tsx scripts/import-episodes-ytdlp.ts \
+            --content-type short \
+            --delay "${{ github.event.inputs.transcript_delay_ms || '2000' }}" \
+            --max 0 \
+            | tee /tmp/shorts-output.txt
+          echo "## Shorts Transcripts" >> $GITHUB_STEP_SUMMARY
+          grep -E "Total episodes:|Have transcripts:|Missing:|Done —|Nothing to do" /tmp/shorts-output.txt >> $GITHUB_STEP_SUMMARY || true
+          SUMMARY=$(grep -E "Done —|Nothing to do" /tmp/shorts-output.txt | tr '\n' ' ')
+          echo "::notice title=Shorts::$SUMMARY"

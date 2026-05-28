@@ -43,6 +43,7 @@ export function CollectionEpisodeCard({
           alt=""
           width={96}
           height={96}
+          unoptimized
           className="h-20 w-20 flex-shrink-0 rounded object-cover"
         />
       ) : (
@@ -57,7 +58,7 @@ export function CollectionEpisodeCard({
             <span
               className={`font-mono text-[9px] uppercase tracking-widest ${a.eyebrow}`}
             >
-              /// pinned
+              {"/// pinned"}
             </span>
           )}
           {epNum && (

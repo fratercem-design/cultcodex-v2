@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import type { CodexUserRole } from "@/generated/prisma/client";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -17,29 +18,64 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({ user, account }) {
       if (!user.email) return false;
 
-      await prisma.codexUser.upsert({
-        where: { email: user.email },
-        update: {
-          avatarUrl: user.image ?? undefined,
-        },
-        create: {
-          email: user.email,
-          displayName: user.name ?? user.email.split("@")[0],
-          avatarUrl: user.image ?? undefined,
-          provider: account?.provider ?? "unknown",
-        },
-      });
+      try {
+        await prisma.codexUser.upsert({
+          where: { email: user.email },
+          update: {
+            avatarUrl: user.image ?? undefined,
+          },
+          create: {
+            email: user.email,
+            displayName: user.name ?? user.email.split("@")[0],
+            avatarUrl: user.image ?? undefined,
+            provider: account?.provider ?? "unknown",
+          },
+        });
+      } catch (err) {
+        console.error("[auth] signIn upsert failed:", err);
+        // Still allow sign-in even if DB write fails
+      }
 
       return true;
     },
-    async session({ session }) {
+    async session({ session, token }) {
       if (session.user?.email) {
-        const codexUser = await prisma.codexUser.findUnique({
-          where: { email: session.user.email },
-          select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true },
-        });
-        if (codexUser) {
-          (session as SessionWithCodex).codexUser = codexUser;
+        try {
+          let codexUser = await prisma.codexUser.findUnique({
+            where: { email: session.user.email },
+            select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true, onboardingCompleted: true },
+          });
+
+          // If no DB record exists (e.g. signIn upsert failed when DB was down),
+          // create the user now so they can actually log in.
+          if (!codexUser) {
+            codexUser = await prisma.codexUser.upsert({
+              where: { email: session.user.email },
+              update: { avatarUrl: session.user.image ?? undefined },
+              create: {
+                email: session.user.email,
+                displayName: session.user.name ?? session.user.email.split("@")[0],
+                avatarUrl: session.user.image ?? undefined,
+                provider: (token as { provider?: string })?.provider ?? "google",
+              },
+              select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true, onboardingCompleted: true },
+            });
+          }
+
+          if (codexUser) {
+            const adminEmails = (process.env.ADMIN_EMAILS ?? "")
+              .split(",")
+              .map((e) => e.trim().toLowerCase())
+              .filter(Boolean);
+            const isEnvAdmin = adminEmails.includes(session.user.email.toLowerCase());
+            (session as SessionWithCodex).codexUser = {
+              ...codexUser,
+              role: isEnvAdmin ? "admin" : codexUser.role,
+            };
+          }
+        } catch (err) {
+          console.error("[auth] session callback DB error:", err);
+          // Return session without codexUser — user is OAuth-authenticated but DB unavailable
         }
       }
       return session;
@@ -47,6 +83,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   pages: {
     signIn: "/auth/signin",
+    error: "/auth/error",
   },
 });
 
@@ -56,6 +93,8 @@ export interface CodexSessionUser {
   role: CodexUserRole;
   avatarUrl: string | null;
   subscriptionStatus: string | null;
+  subscriptionTier: string | null;
+  onboardingCompleted: boolean | null;
 }
 
 export interface SessionWithCodex {
@@ -69,8 +108,13 @@ export interface SessionWithCodex {
 }
 
 export async function getCurrentUser(): Promise<CodexSessionUser | null> {
-  const session = (await auth()) as SessionWithCodex | null;
-  return session?.codexUser ?? null;
+  try {
+    const session = (await auth()) as SessionWithCodex | null;
+    return session?.codexUser ?? null;
+  } catch {
+    // JWTSessionError or other auth failures — treat as unauthenticated
+    return null;
+  }
 }
 
 export async function requireAuth(): Promise<CodexSessionUser> {

@@ -1,0 +1,65 @@
+name: Community Posts — Fetch & Import
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel_handle:
+        description: 'YouTube channel handle (default: @CultofPsyche)'
+        required: false
+        default: '@CultofPsyche'
+
+jobs:
+  posts:
+    name: Scrape & import community posts
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      YOUTUBE_CHANNEL_HANDLE: ${{ github.event.inputs.channel_handle || '@CultofPsyche' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Install yt-dlp
+        run: pip install -q yt-dlp
+
+      - name: Write YouTube cookies
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+        run: |
+          if [ -n "$YOUTUBE_COOKIES" ]; then
+            printf '%s' "$YOUTUBE_COOKIES" > /tmp/yt-cookies.txt
+            echo "Cookies written."
+          else
+            echo "No YOUTUBE_COOKIES secret — fetching unauthenticated."
+          fi
+
+      - name: Fetch community posts
+        env:
+          YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
+        run: |
+          echo "── Fetching community posts ──"
+          npx tsx scripts/scrape/fetch-community-posts.ts | tee /tmp/fetch-output.txt
+          echo "## Community Posts Fetch" >> $GITHUB_STEP_SUMMARY
+          grep -E "Parsed|posts$" /tmp/fetch-output.txt >> $GITHUB_STEP_SUMMARY || true
+
+      - name: Import community posts to DB
+        run: |
+          echo "── Importing to DB ──"
+          npx tsx scripts/import-community-posts.ts | tee /tmp/import-output.txt
+          echo "## Community Posts Import" >> $GITHUB_STEP_SUMMARY
+          grep -E "Created:|Updated:|Total in DB:" /tmp/import-output.txt >> $GITHUB_STEP_SUMMARY || true
+          SUMMARY=$(grep -E "Created:|Updated:|Total in DB:" /tmp/import-output.txt | tr '\n' ' ')
+          echo "::notice title=Community posts::$SUMMARY"

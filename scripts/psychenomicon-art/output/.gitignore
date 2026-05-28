@@ -1,0 +1,4 @@
+# Generated art pipeline outputs — not committed to the repo.
+# Run `npm run art:psychenomicon` to regenerate.
+images/
+prompts/

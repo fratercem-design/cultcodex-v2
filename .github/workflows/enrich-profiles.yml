@@ -1,0 +1,75 @@
+name: Enrich Profiles (People, Relationships, Storylines)
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: 'Items per step'
+        required: false
+        default: '50'
+      min_appearances:
+        description: 'Min appearances for character profiles'
+        required: false
+        default: '2'
+      step:
+        description: 'Which step(s) to run'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - people
+          - relationships
+          - storylines
+
+jobs:
+  enrich:
+    name: Profile enrichment via Claude
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ENRICHMENT_MODEL: claude-haiku-4-5-20251001
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Character profiles
+        if: ${{ github.event.inputs.step == 'people' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
+        run: |
+          BATCH="${{ github.event.inputs.batch || '50' }}"
+          MIN="${{ github.event.inputs.min_appearances || '2' }}"
+          echo "── Building character profiles (batch: $BATCH, min-appearances: $MIN) ──"
+          npx tsx scripts/enrich/enrich-people.ts --batch "$BATCH" --min-appearances "$MIN" | tee /tmp/people-output.txt
+          SUMMARY=$(grep -E "People with|Needing profiles|Done —" /tmp/people-output.txt | tr '\n' ' ')
+          echo "::notice title=Character profiles::$SUMMARY"
+
+      - name: Relationship mapping
+        if: ${{ github.event.inputs.step == 'relationships' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
+        run: |
+          echo "── Mapping relationships from co-appearances ──"
+          npx tsx scripts/enrich/enrich-relationships.ts --min-coappearances 2 | tee /tmp/rel-output.txt
+          SUMMARY=$(grep -E "Found [0-9]+ pairs|Done —|Top co" /tmp/rel-output.txt | head -5 | tr '\n' ' ')
+          echo "::notice title=Relationship map::$SUMMARY"
+
+      - name: Storyline mapping
+        if: ${{ github.event.inputs.step == 'storylines' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
+        run: |
+          BATCH="${{ github.event.inputs.batch || '50' }}"
+          echo "── Generating series storyline descriptions (batch: $BATCH) ──"
+          npx tsx scripts/enrich/enrich-storylines.ts --batch "$BATCH" | tee /tmp/storylines-output.txt
+          SUMMARY=$(grep -E "Series needing|Processing batch|Done —" /tmp/storylines-output.txt | tr '\n' ' ')
+          echo "::notice title=Storylines::$SUMMARY"

@@ -1,10 +1,13 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db";
 
+// Regenerate at most once per hour
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me";
 
-  const [episodes, people, lore, topics, series] = await Promise.all([
+  const [episodes, people, lore, topics, series, psychenomiconChapters] = await Promise.all([
     prisma.episode.findMany({
       where: { status: "published" },
       select: { slug: true, updatedAt: true },
@@ -13,28 +16,39 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     prisma.loreEntry.findMany({ select: { slug: true, updatedAt: true } }),
     prisma.topic.findMany({ select: { slug: true, updatedAt: true } }),
     prisma.series.findMany({ select: { slug: true, updatedAt: true } }),
+    prisma.psychenomiconChapter.findMany({
+      where: { status: "stable" },
+      select: { slug: true, updatedAt: true },
+    }),
   ]);
 
+  const now = new Date();
+
   const staticPages: MetadataRoute.Sitemap = [
-    { url: baseUrl, changeFrequency: "daily", priority: 1 },
-    { url: `${baseUrl}/episodes`, changeFrequency: "daily", priority: 0.9 },
-    { url: `${baseUrl}/people`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${baseUrl}/lore`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${baseUrl}/topics`, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${baseUrl}/series`, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${baseUrl}/quotes`, changeFrequency: "weekly", priority: 0.6 },
-    { url: `${baseUrl}/search`, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/collections`, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${baseUrl}/timeline`, changeFrequency: "weekly", priority: 0.6 },
-    { url: `${baseUrl}/start-here`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/stats`, changeFrequency: "weekly", priority: 0.5 },
-    { url: `${baseUrl}/lexicon`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/mythic-map`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/oracle`, changeFrequency: "always", priority: 0.6 },
-    { url: `${baseUrl}/methodology`, changeFrequency: "monthly", priority: 0.3 },
-    { url: `${baseUrl}/corrections`, changeFrequency: "monthly", priority: 0.3 },
-    { url: `${baseUrl}/content-policy`, changeFrequency: "monthly", priority: 0.3 },
-    { url: `${baseUrl}/live`, changeFrequency: "daily", priority: 0.6 },
+    { url: baseUrl,                           lastModified: now, changeFrequency: "daily",   priority: 1.0 },
+    { url: `${baseUrl}/episodes`,             lastModified: now, changeFrequency: "daily",   priority: 0.9 },
+    { url: `${baseUrl}/people`,               lastModified: now, changeFrequency: "weekly",  priority: 0.8 },
+    { url: `${baseUrl}/lore`,                 lastModified: now, changeFrequency: "weekly",  priority: 0.8 },
+    { url: `${baseUrl}/topics`,               lastModified: now, changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${baseUrl}/series`,               lastModified: now, changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${baseUrl}/psychenomicon`,        lastModified: now, changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${baseUrl}/quotes`,               lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/search`,               lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/collections`,          lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${baseUrl}/timeline`,             lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/start-here`,           lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/this-week`,            lastModified: now, changeFrequency: "weekly",  priority: 0.8 },
+    { url: `${baseUrl}/stats`,                lastModified: now, changeFrequency: "weekly",  priority: 0.5 },
+    { url: `${baseUrl}/lexicon`,              lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/mythic-map`,           lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/oracle`,               lastModified: now, changeFrequency: "always",  priority: 0.6 },
+    { url: `${baseUrl}/live`,                 lastModified: now, changeFrequency: "daily",   priority: 0.6 },
+    { url: `${baseUrl}/tarot`,                lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/about/methodology`,    lastModified: now, changeFrequency: "monthly", priority: 0.4 },
+    { url: `${baseUrl}/corrections`,          lastModified: now, changeFrequency: "monthly", priority: 0.3 },
+    { url: `${baseUrl}/content-policy`,       lastModified: now, changeFrequency: "monthly", priority: 0.3 },
+    { url: `${baseUrl}/privacy`,              lastModified: now, changeFrequency: "yearly",  priority: 0.2 },
+    { url: `${baseUrl}/terms`,                lastModified: now, changeFrequency: "yearly",  priority: 0.2 },
   ];
 
   const dynamicPages: MetadataRoute.Sitemap = [
@@ -48,7 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/people/${p.slug}`,
       lastModified: p.updatedAt,
       changeFrequency: "monthly" as const,
-      priority: 0.6,
+      priority: 0.7,
     })),
     ...lore.map((l) => ({
       url: `${baseUrl}/lore/${l.slug}`,
@@ -60,7 +74,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/topics/${t.slug}`,
       lastModified: t.updatedAt,
       changeFrequency: "monthly" as const,
-      priority: 0.5,
+      priority: 0.6,
     })),
     ...series.map((s) => ({
       url: `${baseUrl}/series/${s.slug}`,
@@ -68,7 +82,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
+    ...psychenomiconChapters.map((c) => ({
+      url: `${baseUrl}/psychenomicon/chapters/${c.slug}`,
+      lastModified: c.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
   ];
 
   return [...staticPages, ...dynamicPages];
 }
+

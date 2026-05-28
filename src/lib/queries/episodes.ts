@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db";
 import { cleanTitle } from "@/lib/format/text";
+import { fixThumbnailUrl } from "@/lib/format/thumbnail";
+import { getEraById } from "@/lib/eras";
 import type { Prisma, ContentStatus, ContentType } from "@/generated/prisma/client";
 
 // Type for episode with all relations loaded
@@ -30,6 +32,11 @@ export interface EpisodeCardData {
   status: ContentStatus;
   hasVideo: boolean;
   segmentCount: number;
+  /** True when the episode has an AI-generated long summary */
+  hasSummary: boolean;
+  /** True when an admin has manually verified the AI summary */
+  isHumanReviewed: boolean;
+  humanReviewedAt: Date | null;
   guestNames: string[];
   topicNames: string[];
 }
@@ -42,14 +49,32 @@ export function formatEpisodeForCard(episode: EpisodeWithRelations): EpisodeCard
     episodeNumber: episode.episodeNumber,
     airDate: episode.airDate,
     summaryShort: episode.summaryShort,
-    thumbnailUrl: episode.thumbnailUrl,
+    thumbnailUrl: fixThumbnailUrl(episode.thumbnailUrl),
     status: episode.status,
     hasVideo: !!(episode.youtubeVideoId || episode.rumbleVideoId),
     segmentCount: episode.segments.length,
+    hasSummary: !!(
+      (episode.summaryFacts && episode.summaryFacts.length > 0) ||
+      (episode.summaryLong && episode.summaryLong.length > 0)
+    ),
+    isHumanReviewed: episode.isHumanReviewed,
+    humanReviewedAt: episode.humanReviewedAt,
     guestNames: episode.guests
       .filter((g) => g.person.personType !== "host")
       .map((g) => g.person.displayName),
     topicNames: episode.topics.map((t) => t.topic.title),
+  };
+}
+
+function buildEraWhere(eraId?: string): Prisma.EpisodeWhereInput {
+  if (!eraId) return {};
+  const era = getEraById(eraId);
+  if (!era) return {};
+  return {
+    airDate: {
+      gte: new Date(era.dateStart),
+      ...(era.dateEnd !== null ? { lte: new Date(`${era.dateEnd}T23:59:59.999Z`) } : {}),
+    },
   };
 }
 
@@ -59,6 +84,7 @@ export async function getEpisodes(options?: {
   skip?: number;
   orderBy?: "airDate" | "episodeNumber" | "title";
   order?: "asc" | "desc";
+  eraId?: string;
 }) {
   const {
     status,
@@ -66,6 +92,7 @@ export async function getEpisodes(options?: {
     skip = 0,
     orderBy = "episodeNumber",
     order = "desc",
+    eraId,
   } = options ?? {};
 
   // When sorting by airDate, use episodeNumber as tiebreaker so null-airDate
@@ -75,8 +102,13 @@ export async function getEpisodes(options?: {
       ? [{ airDate: { sort: order, nulls: "last" as const } }, { episodeNumber: order }]
       : { [orderBy]: order };
 
+  const where: Prisma.EpisodeWhereInput = {
+    ...(status ? { status } : {}),
+    ...buildEraWhere(eraId),
+  };
+
   return prisma.episode.findMany({
-    where: status ? { status } : undefined,
+    where: Object.keys(where).length > 0 ? where : undefined,
     include: buildEpisodeInclude(),
     orderBy: orderByClause,
     take,
@@ -91,9 +123,13 @@ export async function getEpisodeBySlug(slug: string) {
   });
 }
 
-export async function getEpisodeCount(status?: ContentStatus) {
+export async function getEpisodeCount(status?: ContentStatus, eraId?: string) {
+  const where: Prisma.EpisodeWhereInput = {
+    ...(status ? { status } : {}),
+    ...buildEraWhere(eraId),
+  };
   return prisma.episode.count({
-    where: status ? { status } : undefined,
+    where: Object.keys(where).length > 0 ? where : undefined,
   });
 }
 
@@ -220,4 +256,59 @@ export async function getRelatedEpisodes(episodeId: string, options?: {
   }
 
   return explicitEps;
+}
+
+export interface EraNeighborEpisode {
+  slug: string;
+  title: string;
+  episodeNumber: number | null;
+  airDate: Date | null;
+  thumbnailUrl: string | null;
+}
+
+/**
+ * Finds the previous and next published episodes within the same era,
+ * by airDate. Returns null on either side if the current episode is at
+ * the edge of the era's date range.
+ */
+export async function getEpisodeNeighborsInEra(options: {
+  episodeId: string;
+  airDate: Date;
+  eraDateStart: Date;
+  eraDateEnd: Date | null;
+}): Promise<{ previous: EraNeighborEpisode | null; next: EraNeighborEpisode | null }> {
+  const { episodeId, airDate, eraDateStart, eraDateEnd } = options;
+
+  const eraUpperBound = eraDateEnd ?? new Date("9999-12-31");
+
+  const selectShape = {
+    slug: true,
+    title: true,
+    episodeNumber: true,
+    airDate: true,
+    thumbnailUrl: true,
+  } as const;
+
+  const [previous, next] = await Promise.all([
+    prisma.episode.findFirst({
+      where: {
+        status: "published",
+        id: { not: episodeId },
+        airDate: { gte: eraDateStart, lt: airDate },
+      },
+      orderBy: { airDate: "desc" },
+      select: selectShape,
+    }),
+    prisma.episode.findFirst({
+      where: {
+        status: "published",
+        id: { not: episodeId },
+        airDate: { gt: airDate, lte: eraUpperBound },
+      },
+      orderBy: { airDate: "asc" },
+      select: selectShape,
+    }),
+  ]);
+
+  return { previous, next };
 }

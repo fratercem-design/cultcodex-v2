@@ -41,7 +41,7 @@ export default async function StatsPage() {
 
   // Build conic gradient for canon donut
   const canonTotal = canonBreakdown.reduce((sum, c) => sum + c.count, 0);
-  let gradientParts: string[] = [];
+  const gradientParts: string[] = [];
   let currentDeg = 0;
   for (const entry of canonBreakdown) {
     const sliceDeg = canonTotal > 0 ? (entry.count / canonTotal) * 360 : 0;
@@ -69,7 +69,9 @@ export default async function StatsPage() {
         title="ARCHIVE STATS"
         subtitle="The Cult of Psyche by the numbers"
         backgroundImage="/wiki-page-header.jpg"
-      />
+      
+      label="system_stats"
+    />
 
       <div className="mx-auto max-w-7xl px-4 py-8 space-y-10">
         {/* Stats Grid */}
