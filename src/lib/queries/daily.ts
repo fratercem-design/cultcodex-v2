@@ -56,10 +56,12 @@ function todayYMD(): string {
 
 async function getDailyQuote(seed: number): Promise<DailyQuote | null> {
   // Only consider quotes that have a speaker AND an episode for a clean visual
+  // Exclude quotes that are empty or consist only of censored placeholders like "[ __ ]"
   const where = {
     speakerPersonId: { not: null },
     episodeId: { not: null },
     text: { not: "" as const },
+    NOT: { text: { contains: "[ __" } },
   };
   const total = await prisma.quote.count({ where });
   if (total === 0) return null;

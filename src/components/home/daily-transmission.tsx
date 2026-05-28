@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { DailyTransmission as DailyTransmissionData } from "@/lib/queries/daily";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { formatDate } from "@/lib/format/date";
+import { cleanTranscriptText } from "@/lib/format/text";
 import {
   QuoteReactionBar,
   type QuoteReactionInitial,
@@ -68,7 +69,7 @@ export function DailyTransmission({
             /// quote_of_the_day
           </p>
           <blockquote className="font-display text-xl sm:text-2xl leading-snug text-text-primary border-l-2 border-accent-gold/40 pl-5 italic">
-            &ldquo;{quote.text}&rdquo;
+            &ldquo;{cleanTranscriptText(quote.text)}&rdquo;
           </blockquote>
           <div className="flex flex-wrap items-center gap-3 pl-5">
             {quote.speaker && (

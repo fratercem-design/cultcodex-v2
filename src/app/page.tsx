@@ -304,9 +304,7 @@ export default async function HomePage() {
                   <h3 className="text-lg font-medium text-text-primary group-hover:text-accent-gold transition-colors">
                     {featured.title}
                   </h3>
-                  {featured.summaryShort && (
-                    <p className="mt-2 text-sm text-text-muted line-clamp-2">{featured.summaryShort}</p>
-                  )}
+                  {/* summaryShort intentionally omitted — AI summaries read as filler in this context */}
                   <GuestGrid
                     bare
                     guests={featured.guests
@@ -334,7 +332,7 @@ export default async function HomePage() {
               </Link>
               <div className="grid gap-3">
                 {recentCards.slice(1).map((ep) => (
-                  <EpisodeCard key={ep.id} episode={ep} />
+                  <EpisodeCard key={ep.id} episode={ep} hideDescription />
                 ))}
               </div>
               <Link href="/episodes" className="font-mono text-xs text-accent-gold hover:underline">
