@@ -524,7 +524,7 @@ export async function POST(req: NextRequest) {
     archiveData = await searchArchive(question, searchContext);
   } catch (err) {
     console.error("[oracle] archive search failed:", err);
-    archiveData = { quotes: [], transcripts: [], episodes: [], people: [], lore: [], query: question };
+    archiveData = { quotes: [], transcripts: [], episodes: [], people: [], lore: [], chapters: [], entities: [], threads: [], query: question };
   }
   const { contextText, citations } = buildContext(archiveData);
 
