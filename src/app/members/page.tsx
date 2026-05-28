@@ -98,23 +98,25 @@ export default async function MembersPage() {
             <span className="italic text-text-primary">yes</span>.
           </p>
 
-          {/* Count bar */}
-          <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-accent-gold/20 bg-accent-gold/5 px-5 py-2">
-            <span
-              className="font-display text-2xl font-bold text-accent-gold"
-              style={{ textShadow: "0 0 20px rgba(212,175,55,0.5)" }}
-            >
-              {totalCount}
-            </span>
-            <span className="font-mono text-xs text-text-muted">
-              souls initiated
-              {privateCount > 0 && (
-                <span className="ml-1 text-text-muted/50">
-                  · {privateCount} prefer anonymity
-                </span>
-              )}
-            </span>
-          </div>
+          {/* Count bar — only shown once the roster reaches a meaningful size */}
+          {totalCount >= 20 && (
+            <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-accent-gold/20 bg-accent-gold/5 px-5 py-2">
+              <span
+                className="font-display text-2xl font-bold text-accent-gold"
+                style={{ textShadow: "0 0 20px rgba(212,175,55,0.5)" }}
+              >
+                {totalCount}
+              </span>
+              <span className="font-mono text-xs text-text-muted">
+                souls initiated
+                {privateCount > 0 && (
+                  <span className="ml-1 text-text-muted/50">
+                    · {privateCount} prefer anonymity
+                  </span>
+                )}
+              </span>
+            </div>
+          )}
         </div>
       </section>
 
