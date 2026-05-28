@@ -427,6 +427,27 @@ export default async function HomePage() {
             </Link>
           )}
 
+          {/* ── NEW VISITOR PATHWAY ──────────────────────────────────── */}
+          <div className="rounded-xl border border-border bg-surface p-5 space-y-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">/// new here?</p>
+            <div className="grid gap-2 sm:grid-cols-3">
+              {([
+                { href: "/start-here", label: "Start Here", desc: "Guided entry points chosen by people who've gone deep", accent: "text-accent-gold border-accent-gold/30 hover:bg-accent-gold/5" },
+                { href: "/people",     label: "Meet the Voices", desc: "Every recurring figure — who they are and what orbit they hold", accent: "text-accent-cyan border-accent-cyan/30 hover:bg-accent-cyan/5" },
+                { href: "/oracle",     label: "Ask the Oracle", desc: "AI trained on 2,600+ episodes. Ask anything, get a cited answer", accent: "text-accent-violet border-accent-violet/30 hover:bg-accent-violet/5" },
+              ] as const).map((p) => (
+                <Link
+                  key={p.href}
+                  href={p.href}
+                  className={`rounded-lg border px-4 py-3 space-y-1 transition-colors ${p.accent}`}
+                >
+                  <p className={`font-mono text-[11px] font-bold ${p.accent.split(" ")[0]}`}>{p.label} →</p>
+                  <p className="font-mono text-[10px] text-text-muted/70 leading-relaxed">{p.desc}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+
           {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}
           <EmailCapture source="homepage" />
 
