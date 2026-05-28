@@ -20,7 +20,7 @@ import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { EmailCapture } from "@/components/marketing/email-capture";
-import { jsonLdScript } from "@/lib/seo";
+import { jsonLdScript, organizationJsonLd } from "@/lib/seo";
 
 export const revalidate = 300;
 
@@ -450,6 +450,10 @@ export default async function HomePage() {
             },
           }),
         }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(organizationJsonLd()) }}
       />
     </>
   );

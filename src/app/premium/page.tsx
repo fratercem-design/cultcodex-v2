@@ -14,7 +14,7 @@ import { TierCheckoutButton } from "@/components/subscription/tier-checkout-butt
 import { ManageSubscription } from "@/components/subscription/manage-subscription";
 import { PageHero } from "@/components/ui/page-hero";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, faqPageJsonLd, jsonLdScript } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const revalidate = 300;
@@ -406,6 +406,12 @@ export default async function PremiumPage() {
           </Link>
         </section>
       </main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(faqPageJsonLd(FAQ.map(({ q, a }) => ({ question: q, answer: a })))),
+        }}
+      />
     </>
   );
 }

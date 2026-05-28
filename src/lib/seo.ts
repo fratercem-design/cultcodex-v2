@@ -114,6 +114,38 @@ export function breadcrumbListJsonLd(items: BreadcrumbItem[]): Record<string, un
   };
 }
 
+export function organizationJsonLd(): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: SITE_URL,
+    description:
+      "The definitive intelligence archive for the Cult of Psyche. 2,600+ episodes indexed with full transcripts, AI psychological breakdowns, guest profiles, and behavioral pattern maps.",
+    sameAs: ["https://www.youtube.com/@CultofPsyche"],
+  };
+}
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export function faqPageJsonLd(items: FaqItem[]): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}
+
 export function buildMetadata({
   title,
   description,
