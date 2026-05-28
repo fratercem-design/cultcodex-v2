@@ -30,6 +30,9 @@ export default async function ProfilePage() {
         bio: true,
         codexSlug: true,
         codexPagePublic: true,
+        codexBanner: true,
+        codexLinks: true,
+        codexShowCards: true,
         createdAt: true,
         role: true,
       },
@@ -60,6 +63,9 @@ export default async function ProfilePage() {
             bio={codexUser.bio}
             codexSlug={codexUser.codexSlug}
             codexPagePublic={codexUser.codexPagePublic}
+            codexBanner={codexUser.codexBanner}
+            codexLinks={(codexUser.codexLinks as { label: string; url: string }[] | null)}
+            codexShowCards={codexUser.codexShowCards}
           />
         ) : (
           <div className="rounded-xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-8 text-center">

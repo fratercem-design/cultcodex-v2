@@ -408,6 +408,9 @@ model CodexUser {
   bio                     String?
   codexSlug               String?   @unique
   codexPagePublic         Boolean   @default(true)
+  codexBanner             String?   // gradient preset: void|crimson|emerald|gold|violet|aurora|abyss|frost
+  codexLinks              Json?     // [{label: string, url: string}][] up to 5
+  codexShowCards          Boolean   @default(false)
 
   reactions               EpisodeReaction[]
   comments                CodexComment[]
