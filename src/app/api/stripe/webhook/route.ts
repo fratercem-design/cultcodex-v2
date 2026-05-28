@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getStripe } from "@/lib/stripe";
 import { getTierByPriceId } from "@/lib/subscription-tiers";
+import { sendInitiateWelcomeEmail, sendOracleWelcomeEmail } from "@/lib/notifications";
 import type Stripe from "stripe";
 
 /** Extract current_period_end from a subscription's first item */
@@ -70,6 +71,20 @@ export async function POST(request: NextRequest) {
               currentPeriodEnd: getPeriodEnd(subscription),
             },
           });
+
+          // Send tier-specific welcome email (fire-and-forget — don't block the webhook)
+          if (tier === "access" || tier === "system") {
+            const codexUser = await prisma.codexUser.findFirst({
+              where: { stripeCustomerId: session.customer as string },
+              select: { email: true, displayName: true },
+            });
+            if (codexUser?.email) {
+              const sendFn = tier === "system" ? sendOracleWelcomeEmail : sendInitiateWelcomeEmail;
+              sendFn({ recipientEmail: codexUser.email, recipientName: codexUser.displayName }).catch(
+                (err) => console.error("[webhook] Welcome email failed:", err)
+              );
+            }
+          }
         }
         break;
       }
