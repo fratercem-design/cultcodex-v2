@@ -9,6 +9,7 @@ import {
   CARD_TYPE_LABEL,
   STAT_LABELS,
 } from "@/lib/cards/rarity";
+import { GenerativeCardArt } from "@/lib/cards/card-art";
 import type { Rarity, CardType } from "@/generated/prisma/client";
 
 export interface TradingCardData {
@@ -217,7 +218,7 @@ export function TradingCard({ card, size = "md", onClick, faceDown = false, noTi
               sizes={`${width}px`}
             />
           ) : (
-            <PlaceholderArt cardType={card.cardType} rarity={card.rarity} color={borderColor} glyph={glyph} />
+            <GenerativeCardArt slug={card.slug} cardType={card.cardType} rarity={card.rarity} width={width} height={artHeight} />
           )}
           {/* Art gradient fade at bottom */}
           <div style={{
@@ -415,58 +416,6 @@ function StatBar({ label, value, color, size }: { label: string; value: number; 
           transition: "width 600ms ease",
         }} />
       </div>
-    </div>
-  );
-}
-
-function PlaceholderArt({ cardType, rarity, color, glyph }: { cardType: CardType; rarity: Rarity; color: string; glyph: string }) {
-  const gradients: Record<CardType, string> = {
-    VOICE:        "radial-gradient(circle at 50% 60%, rgba(0,229,255,0.12) 0%, transparent 70%)",
-    TRANSMISSION: "radial-gradient(circle at 50% 50%, rgba(0,255,156,0.1) 0%, transparent 70%)",
-    LORE:         "radial-gradient(circle at 50% 40%, rgba(255,184,0,0.12) 0%, transparent 70%)",
-    SIGNAL:       "radial-gradient(circle at 50% 50%, rgba(179,136,255,0.1) 0%, transparent 70%)",
-    ORACLE:       "radial-gradient(circle at 50% 50%, rgba(255,56,96,0.12) 0%, transparent 70%)",
-    CIPHER:       "radial-gradient(circle at 50% 50%, rgba(255,43,214,0.1) 0%, transparent 70%)",
-    RELIC:        "radial-gradient(circle at 50% 50%, rgba(255,215,0,0.10) 0%, transparent 70%)",
-    ENTITY:       "radial-gradient(circle at 50% 50%, rgba(206,147,216,0.12) 0%, transparent 70%)",
-    PROPHECY:     "radial-gradient(circle at 50% 40%, rgba(255,128,171,0.12) 0%, transparent 70%)",
-    MEMBER:       "radial-gradient(circle at 50% 60%, rgba(128,222,234,0.10) 0%, transparent 70%)",
-    GLITCH:       "radial-gradient(circle at 50% 50%, rgba(255,109,0,0.12) 0%, transparent 70%)",
-    MAHAVIDYA:    "radial-gradient(circle at 50% 40%, rgba(255,152,0,0.15) 0%, transparent 70%)",
-    AVATAR:       "radial-gradient(circle at 50% 60%, rgba(179,157,219,0.12) 0%, transparent 70%)",
-    INCIDENT:     "radial-gradient(circle at 50% 50%, rgba(239,83,80,0.12) 0%, transparent 70%)",
-  };
-
-  return (
-    <div style={{
-      width: "100%",
-      height: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      background: gradients[cardType],
-      position: "relative",
-    }}>
-      {/* Geometric grid lines */}
-      <svg width="100%" height="100%" style={{ position: "absolute", inset: 0, opacity: 0.12 }}>
-        <defs>
-          <pattern id={`grid-${cardType}`} width="20" height="20" patternUnits="userSpaceOnUse">
-            <path d="M 20 0 L 0 0 0 20" fill="none" stroke={color} strokeWidth="0.5" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill={`url(#grid-${cardType})`} />
-      </svg>
-      <span style={{
-        fontSize: 48,
-        color,
-        textShadow: `0 0 20px ${color}`,
-        opacity: rarity === "STATIC" ? 0.4 : 0.7,
-        position: "relative",
-        zIndex: 1,
-        lineHeight: 1,
-      }}>
-        {glyph}
-      </span>
     </div>
   );
 }
