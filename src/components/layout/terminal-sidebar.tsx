@@ -30,8 +30,10 @@ const NAV_GROUPS: readonly NavGroup[] = [
   {
     title: "LIVE",
     items: [
-      { href: "/cult-live",                                label: "CULT OF PSYCHE",   glyph: "◎", liveKey: "cultOfPsyche"   },
-      { href: "https://www.youtube.com/@AlexandraMayers", label: "ALEXANDRA MAYERS", glyph: "◎", liveKey: "alexandraMayers", external: true },
+      { href: "/cult-live",                               label: "CULT OF PSYCHE",   glyph: "◎", liveKey: "cultOfPsyche"                    },
+      { href: "https://www.youtube.com/@IRLnewsTime",     label: "IRL NEWSTIME",     glyph: "◎", liveKey: "alexandraMayers", external: true },
+      { href: "https://www.youtube.com/@ip2wikiinfo",     label: "IP2WIKIINFO",      glyph: "◎", liveKey: "alexandraMayers", external: true },
+      { href: "https://www.youtube.com/@alexandramayers", label: "ALEXANDRA MAYERS", glyph: "◎", liveKey: "alexandraMayers", external: true },
     ],
   },
   {
