@@ -347,35 +347,21 @@ export function AmbientVisualSystem() {
   }, []);
 
   return (
+    // mix-blend-mode: screen makes the near-black canvas background transparent
+    // while glyph/particle pixels show as additive color overlays on the UI.
+    // pointer-events: none keeps all clicks/scroll passing through to content.
     <div
       aria-hidden="true"
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 0,
+        zIndex: 1,
         pointerEvents: "none",
         overflow: "hidden",
+        mixBlendMode: "screen",
       }}
     >
       <canvas ref={canvasRef} style={{ display: "block" }} />
-      {/* CRT scanlines */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage:
-            "repeating-linear-gradient(to bottom, transparent, transparent 1px, rgba(0,0,0,0.035) 1px, rgba(0,0,0,0.035) 2px)",
-        }}
-      />
-      {/* Vignette */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.82) 100%)",
-        }}
-      />
     </div>
   );
 }
