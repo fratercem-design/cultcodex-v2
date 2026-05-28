@@ -13,6 +13,7 @@ import { TerminalTopBar } from "@/components/layout/terminal-topbar";
 import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
 import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
 import { getArchiveCounts } from "@/lib/queries/stats";
+import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
 import { SkipLink } from "@/components/ui/skip-link";
 import { jsonLdScript } from "@/lib/seo";
@@ -102,12 +103,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const counts = await getArchiveCounts().catch(() => ({
-    episodes: 0,
-    topics: 0,
-    people: 0,
-    transcribedEpisodes: 0,
-  }));
+  const [counts, liveChannels] = await Promise.all([
+    getArchiveCounts().catch(() => ({
+      episodes: 0,
+      topics: 0,
+      people: 0,
+      transcribedEpisodes: 0,
+    })),
+    getLiveChannels().catch(() => ({ cultOfPsyche: false, alexandraMayers: false })),
+  ]);
 
   const fontVariables = [
     spaceGrotesk.variable,
@@ -129,7 +133,7 @@ export default async function RootLayout({
         <EntryBanner />
         <div className="terminal-grid">
           <TerminalTopBar />
-          <TerminalSidebar counts={counts} />
+          <TerminalSidebar counts={counts} liveChannels={liveChannels} />
           <div
             id="main-content"
             className="terminal-main"

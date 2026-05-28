@@ -14,6 +14,8 @@ const NAV_ITEMS = [
   { href: "/admin/comments", label: "Comments", icon: "\uD83D\uDCAC" },
   { href: "/admin/live", label: "Live Stream", icon: "\uD83D\uDD34" },
   { href: "/admin/psychenomicon", label: "Psychenomicon", icon: "\u03C8" },
+  { href: "/admin/users", label: "Users", icon: "\uD83D\uDC65" },
+  { href: "/admin/signals", label: "Signals", icon: "\u25C8" },
   { href: "/admin/sync", label: "Sync & Ingest", icon: "\u21BB" },
 ];
 
