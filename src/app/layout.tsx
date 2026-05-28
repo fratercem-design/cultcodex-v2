@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { Space_Grotesk, Inter, IBM_Plex_Mono, Playfair_Display } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SiteHeader } from "@/components/layout/site-header";
 import {
   Space_Grotesk,
   Inter,
@@ -126,6 +129,12 @@ export default async function RootLayout({
       >
         <SkipLink />
         <LiveBanner />
+        <SiteHeader />
+        <div id="main-content" className="flex-1">{children}</div>
+        <SiteFooter />
+        <KonamiEasterEgg />
+        <CommandPalette />
+        <Analytics />
         <EntryBanner />
         <div className="terminal-grid">
           <TerminalTopBar />
