@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, IBM_Plex_Mono, Playfair_Display } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
 import { SiteHeader } from "@/components/layout/site-header";
 import {
   Space_Grotesk,
