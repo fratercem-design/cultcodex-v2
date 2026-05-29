@@ -155,7 +155,9 @@ async function importEnrichment(
     where: { id: episodeId },
     data: {
       summaryShort: data.summaryShort || undefined,
-      summaryFacts: data.summaryFacts || undefined,
+      // Always write summaryFacts so the episode is marked enriched even when
+      // the AI returns nothing (e.g. short clips with no transcript content).
+      summaryFacts: data.summaryFacts || "—",
       summaryThemes: data.summaryThemes || undefined,
       // Legacy: only preserved if model returned it and new fields are empty
       ...(data.summaryLong && !data.summaryFacts
