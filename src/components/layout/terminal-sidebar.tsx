@@ -51,10 +51,12 @@ const NAV_GROUPS: readonly NavGroup[] = [
   {
     title: "DISCOVER",
     items: [
-      { href: "/start-here",  label: "START HERE",  glyph: "↳" },
-      { href: "/this-week",   label: "THIS WEEK",   glyph: "◑" },
-      { href: "/tarot",       label: "TAROT DECK",  glyph: "✦", accent: "neon-4" },
-      { href: "/cards",       label: "CARD ARCHIVE", glyph: "◈" },
+      { href: "/start-here",     label: "START HERE",     glyph: "↳" },
+      { href: "/this-week",      label: "THIS WEEK",      glyph: "◑" },
+      { href: "/symbols",        label: "SYMBOL CODEX",   glyph: "✦" },
+      { href: "/archetype-quiz", label: "ARCHETYPE QUIZ", glyph: "◈" },
+      { href: "/tarot",          label: "TAROT DECK",     glyph: "✦", accent: "neon-4" },
+      { href: "/cards",          label: "CARD ARCHIVE",   glyph: "◈" },
     ],
   },
   {
