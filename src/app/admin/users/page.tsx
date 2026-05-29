@@ -9,34 +9,38 @@ export const metadata: Metadata = {
 };
 
 async function getUsers() {
-  return prisma.codexUser.findMany({
-    select: {
-      id: true,
-      email: true,
-      displayName: true,
-      avatarUrl: true,
-      role: true,
-      subscriptionTier: true,
-      subscriptionStatus: true,
-      isLifetimeMember: true,
-      memberTitle: true,
-      isPublicMember: true,
-      codexSlug: true,
-      createdAt: true,
-    },
-    orderBy: { createdAt: "desc" },
-    take: 200,
-  });
+  try {
+    return await prisma.codexUser.findMany({
+      select: {
+        id: true,
+        email: true,
+        displayName: true,
+        avatarUrl: true,
+        role: true,
+        subscriptionTier: true,
+        subscriptionStatus: true,
+        isLifetimeMember: true,
+        memberTitle: true,
+        isPublicMember: true,
+        codexSlug: true,
+        createdAt: true,
+      },
+      orderBy: { createdAt: "desc" },
+      take: 200,
+    });
+  } catch {
+    return null;
+  }
 }
 
-type User = Awaited<ReturnType<typeof getUsers>>[number];
+type User = NonNullable<Awaited<ReturnType<typeof getUsers>>>[number];
 
 export default async function AdminUsersPage() {
   const users = await getUsers();
 
-  const oracleUsers = users.filter((u) => u.role === "admin" || u.subscriptionTier === "system" || u.isLifetimeMember);
-  const otherSubscribers = users.filter((u) => !oracleUsers.includes(u) && u.subscriptionStatus === "active");
-  const freeUsers = users.filter((u) => !oracleUsers.includes(u) && !otherSubscribers.includes(u));
+  const oracleUsers = users?.filter((u) => u.role === "admin" || u.subscriptionTier === "system" || u.isLifetimeMember) ?? [];
+  const otherSubscribers = users?.filter((u) => !oracleUsers.includes(u) && u.subscriptionStatus === "active") ?? [];
+  const freeUsers = users?.filter((u) => !oracleUsers.includes(u) && !otherSubscribers.includes(u)) ?? [];
 
   return (
     <main id="main-content" className="p-8 max-w-5xl">
@@ -44,8 +48,14 @@ export default async function AdminUsersPage() {
         User Management
       </h1>
       <p className="font-mono text-xs text-text-muted mb-8">
-        {users.length} total users
+        {users === null ? "DB migration pending" : `${users.length} total users`}
       </p>
+
+      {users === null && (
+        <div className="mb-8 rounded-xl border border-yellow-500/30 bg-yellow-500/5 p-4 font-mono text-xs text-yellow-400">
+          {"⚠ "} DB columns are still migrating — the user list is unavailable. You can still grant access using the form below. Reload once the Railway deploy finishes.
+        </div>
+      )}
 
       {/* Grant Oracle Access */}
       <section className="mb-10 rounded-xl border border-accent-gold/20 bg-surface p-6">
