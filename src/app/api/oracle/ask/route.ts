@@ -536,7 +536,14 @@ export async function POST(req: NextRequest) {
     return res;
   }
 
-  const archiveData = await searchArchive(question, searchContext);
+  // Archive search — Prisma errors return empty context rather than crashing
+  let archiveData: Awaited<ReturnType<typeof searchArchive>>;
+  try {
+    archiveData = await searchArchive(question, searchContext);
+  } catch (err) {
+    console.error("[oracle] archive search failed:", err);
+    archiveData = { quotes: [], transcripts: [], episodes: [], people: [], lore: [], chapters: [], entities: [], threads: [], query: question };
+  }
   const { contextText, citations } = buildContext(archiveData);
 
   // Build optional context preamble for the Claude prompt.
@@ -557,28 +564,43 @@ export async function POST(req: NextRequest) {
     ? `Context frame: ${contextLines.join(" | ")}\n\n`
     : "";
 
-  const client = new Anthropic({ apiKey: anthropicKey });
-  const claudeRes = await client.messages.create({
-    model: process.env.ORACLE_MODEL ?? "claude-haiku-4-5-20251001",
-    max_tokens: 400,
-    system: ORACLE_SYSTEM,
-    messages: [
-      {
-        role: "user",
-        content: `Archive context:\n${contextText}\n\n${contextPreamble}Question: ${question}`,
-      },
-    ],
-  });
+  let answer: string;
+  try {
+    const client = new Anthropic({ apiKey: anthropicKey });
+    const claudeRes = await client.messages.create({
+      model: process.env.ORACLE_MODEL ?? "claude-haiku-4-5-20251001",
+      max_tokens: 400,
+      system: ORACLE_SYSTEM,
+      messages: [
+        {
+          role: "user",
+          content: `Archive context:\n${contextText}\n\n${contextPreamble}Question: ${question}`,
+        },
+      ],
+    });
 
-  const textBlock = claudeRes.content.find((b) => b.type === "text");
-  if (!textBlock || textBlock.type !== "text") {
+    const textBlock = claudeRes.content.find((b) => b.type === "text");
+    if (!textBlock || textBlock.type !== "text") {
+      return NextResponse.json(
+        { ok: false, error: "The Oracle did not respond." } satisfies OracleResponse,
+        { status: 500 }
+      );
+    }
+    answer = textBlock.text.trim();
+  } catch (err) {
+    console.error("[oracle] Anthropic API error:", err);
+    const message = err instanceof Error ? err.message : "Unknown error";
+    const isQuota = message.toLowerCase().includes("rate") || message.toLowerCase().includes("limit");
     return NextResponse.json(
-      { ok: false, error: "The Oracle did not respond." } satisfies OracleResponse,
-      { status: 500 }
+      {
+        ok: false,
+        error: isQuota
+          ? "The Oracle is overwhelmed. Try again in a moment."
+          : "The Oracle could not be reached. Try again.",
+      } satisfies OracleResponse,
+      { status: 503 }
     );
   }
-
-  const answer = textBlock.text.trim();
 
   let audioBase64: string | null = null;
   const elKey = process.env.ELEVENLABS_API_KEY;

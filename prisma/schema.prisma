@@ -404,6 +404,11 @@ model CodexUser {
   memberTitle             String?   // chosen flair title e.g. "Oracle", "Acolyte"
   isPublicMember          Boolean   @default(false) // opt-in to public Member Roll
 
+  // Onboarding
+  handle                  String?   @unique
+  sigilGlyph              String?
+  onboardingCompleted     Boolean   @default(false)
+
   // Personal codex page (system tier)
   bio                     String?
   codexSlug               String?   @unique

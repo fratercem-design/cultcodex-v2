@@ -54,7 +54,7 @@ export default function MethodologyPage() {
         {/* Page header */}
         <div className="space-y-1">
           <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">
-            /// transparency_log
+            {"/// transparency_log"}
           </p>
           <h1 className="text-2xl font-bold text-text-primary">How CultCodex Works</h1>
           <p className="text-sm text-text-secondary leading-relaxed">

@@ -153,14 +153,21 @@ export function SyncPanel({
           setEnrichEpResult({ ok: false, error: data?.error ?? "Request failed." });
           break;
         }
-        totalDone += data.processed ?? 0;
+        const batchProcessed = data.processed ?? 0;
+        const batchResults = data.results ?? [];
+        // If nothing was processed but items remain, all failed (rate limit / API error) — stop looping
+        if (batchProcessed === 0 && batchResults.length > 0 && (data.remaining ?? 0) > 0) {
+          const firstError = batchResults.find((r) => !r.ok)?.error ?? "API error — try again later";
+          setEnrichEpResult({ ok: false, error: firstError });
+          break;
+        }
+        totalDone += batchProcessed;
         setEnrichEpProgress({ done: totalDone, remaining: data.remaining ?? 0 });
         if (!loop || data.done || data.remaining === 0) {
           setEnrichEpResult({ ...data, ok: true });
           break;
         }
-        // Small pause between batches to avoid overwhelming the API
-        await new Promise((r) => setTimeout(r, 1500));
+        await new Promise((r) => setTimeout(r, 3000));
       }
       router.refresh();
     } catch {
@@ -192,13 +199,21 @@ export function SyncPanel({
           setEnrichPeopleResult({ ok: false, error: data?.error ?? "Request failed." });
           break;
         }
-        totalDone += data.processed ?? 0;
+        const batchProcessed = data.processed ?? 0;
+        const batchResults = data.results ?? [];
+        // If nothing was processed but items remain, all failed (rate limit / API error) — stop looping
+        if (batchProcessed === 0 && batchResults.length > 0 && (data.remaining ?? 0) > 0) {
+          const firstError = batchResults.find((r) => !r.ok)?.error ?? "API error — try again later";
+          setEnrichPeopleResult({ ok: false, error: firstError });
+          break;
+        }
+        totalDone += batchProcessed;
         setEnrichPeopleProgress({ done: totalDone, remaining: data.remaining ?? 0 });
         if (!loop || data.done || data.remaining === 0) {
           setEnrichPeopleResult({ ...data, ok: true });
           break;
         }
-        await new Promise((r) => setTimeout(r, 1500));
+        await new Promise((r) => setTimeout(r, 3000));
       }
       router.refresh();
     } catch {
@@ -218,7 +233,7 @@ export function SyncPanel({
         {/* Channel Sync */}
         <section className="rounded-lg border border-accent-cyan/20 bg-accent-cyan/5 p-6 space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan">/// sync_episodes</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan">{"/// sync_episodes"}</p>
             <h2 className="font-display text-lg font-bold text-text-primary">Import All Episodes</h2>
             <p className="text-xs text-text-muted leading-relaxed">
               Sweeps the full uploads history of <strong className="text-text-primary">@CultofPsyche</strong> and{" "}
@@ -260,7 +275,7 @@ export function SyncPanel({
         {/* Transcript Sync */}
         <section className="rounded-lg border border-accent-violet/20 bg-accent-violet/5 p-6 space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">/// sync_transcripts</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">{"/// sync_transcripts"}</p>
             <h2 className="font-display text-lg font-bold text-text-primary">Fetch Transcripts</h2>
             <p className="text-xs text-text-muted leading-relaxed">
               Pulls YouTube auto-captions for episodes with a video ID but no transcript yet.
@@ -348,7 +363,7 @@ export function SyncPanel({
         {/* Episode Enrichment */}
         <section className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-6 space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">/// enrich_episodes</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">{"/// enrich_episodes"}</p>
             <h2 className="font-display text-lg font-bold text-text-primary">Enrich Episodes</h2>
             <p className="text-xs text-text-muted leading-relaxed">
               Runs Claude Haiku on each episode transcript to extract summaries, guests, quotes,
@@ -426,7 +441,7 @@ export function SyncPanel({
         {/* People Enrichment */}
         <section className="rounded-lg border border-accent-crimson/20 bg-accent-crimson/5 p-6 space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-crimson">/// enrich_people</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-crimson">{"/// enrich_people"}</p>
             <h2 className="font-display text-lg font-bold text-text-primary">Enrich People</h2>
             <p className="text-xs text-text-muted leading-relaxed">
               Generates <code>loreSummary</code> — a psychological/behavioral archive profile —
@@ -504,10 +519,10 @@ export function SyncPanel({
 
       {/* ── Pipeline guide ── */}
       <div className="rounded-lg border border-border bg-surface p-5 space-y-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">/// full_pipeline</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">{"/// full_pipeline"}</p>
         <ol className="space-y-2 font-mono text-xs text-text-muted list-decimal list-inside">
           <li>Click <strong className="text-text-primary">Sync All Episodes</strong> — imports every YouTube video.</li>
-          <li>Click <strong className="text-text-primary">Fetch Next 100 Transcripts</strong> repeatedly until "remaining" hits 0.</li>
+          <li>Click <strong className="text-text-primary">Fetch Next 100 Transcripts</strong> repeatedly until &quot;remaining&quot; hits 0.</li>
           <li>Click <strong className="text-text-primary">Enrich Next 5 Episodes</strong> repeatedly — extracts guests, quotes, lore, topics.</li>
           <li>Click <strong className="text-text-primary">Generate Next 10 Profiles</strong> repeatedly — builds Oracle-ready character profiles.</li>
           <li>Go to <strong className="text-text-primary">Psychenomicon → Generate</strong> for deep-dive chapter generation.</li>

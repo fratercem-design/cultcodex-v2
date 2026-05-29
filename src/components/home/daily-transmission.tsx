@@ -66,7 +66,7 @@ export function DailyTransmission({
       {quote && quote.episode && (
         <div className="relative space-y-4">
           <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/50">
-            /// quote_of_the_day
+            {"/// quote_of_the_day"}
           </p>
           <blockquote className="font-display text-xl sm:text-2xl leading-snug text-text-primary border-l-2 border-accent-gold/40 pl-5 italic">
             &ldquo;{cleanTranscriptText(quote.text)}&rdquo;
@@ -133,7 +133,7 @@ export function DailyTransmission({
         {/* Weekly pulse */}
         <div className="rounded-xl border border-border bg-void/40 backdrop-blur-sm p-5 space-y-3">
           <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/50">
-            /// week_in_review
+            {"/// week_in_review"}
           </p>
           <div className="grid grid-cols-2 gap-3">
             <PulseStat
@@ -173,7 +173,7 @@ export function DailyTransmission({
             className="group rounded-xl border border-border bg-void/40 backdrop-blur-sm overflow-hidden hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-colors flex flex-col"
           >
             <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/50 px-5 pt-5">
-              /// transmission_from_the_vault
+              {"/// transmission_from_the_vault"}
             </p>
             <div className="px-5 py-4 flex items-start gap-4 flex-1">
               {spotlightEpisode.thumbnailUrl && (

@@ -189,7 +189,7 @@ export default async function EraDetailPage({
         <section className="space-y-5">
           <div className="space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-              /// archetype_distribution
+              {"/// archetype_distribution"}
             </p>
             <h2 className="font-display text-lg font-bold text-text-primary">
               Archetypes in this era
@@ -234,7 +234,7 @@ export default async function EraDetailPage({
         <section className="space-y-5">
           <div className="space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-              /// most_active_voices
+              {"/// most_active_voices"}
             </p>
             <h2 className="font-display text-lg font-bold text-text-primary">
               Top guests this era
@@ -297,7 +297,7 @@ export default async function EraDetailPage({
         <div className="flex items-baseline justify-between gap-4 flex-wrap">
           <div className="space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-              /// network_map
+              {"/// network_map"}
             </p>
             <h2 className="font-display text-lg font-bold text-text-primary">
               Relationships in this era

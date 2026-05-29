@@ -58,7 +58,7 @@ export function CollectionEpisodeCard({
             <span
               className={`font-mono text-[9px] uppercase tracking-widest ${a.eyebrow}`}
             >
-              /// pinned
+              {"/// pinned"}
             </span>
           )}
           {epNum && (

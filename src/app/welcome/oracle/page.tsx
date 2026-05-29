@@ -108,7 +108,7 @@ export default async function WelcomeOraclePage() {
         {/* decree text */}
         <div className="space-y-6">
           <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-[#C8A96B]/50">
-            /// the decree
+            {"/// the decree"}
           </p>
           <blockquote className="space-y-4 border-l border-[#C8A96B]/30 pl-6">
             <p className="font-serif text-xl text-text-primary/90 leading-loose">
@@ -214,7 +214,7 @@ export default async function WelcomeOraclePage() {
       {/* ── Choose your name from the dark ── */}
       <section className="mx-auto max-w-2xl px-6 pb-20 text-center space-y-6">
         <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-text-muted/40">
-          /// name yourself
+          {"/// name yourself"}
         </p>
         <h2
           className="font-serif text-2xl font-bold"

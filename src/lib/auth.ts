@@ -43,7 +43,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           let codexUser = await prisma.codexUser.findUnique({
             where: { email: session.user.email },
-            select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true },
+            select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true, onboardingCompleted: true },
           });
 
           // If no DB record exists (e.g. signIn upsert failed when DB was down),
@@ -58,7 +58,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 avatarUrl: session.user.image ?? undefined,
                 provider: (token as { provider?: string })?.provider ?? "google",
               },
-              select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true },
+              select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true, onboardingCompleted: true },
             });
           }
 
@@ -94,6 +94,7 @@ export interface CodexSessionUser {
   avatarUrl: string | null;
   subscriptionStatus: string | null;
   subscriptionTier: string | null;
+  onboardingCompleted: boolean | null;
 }
 
 export interface SessionWithCodex {

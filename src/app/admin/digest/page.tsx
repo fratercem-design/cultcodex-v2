@@ -87,7 +87,7 @@ export default async function AdminDigestPage({ searchParams }: PageProps) {
       <div>
         <h1 className="font-display text-2xl font-bold text-text-primary">Weekly Digest</h1>
         <p className="font-mono text-xs text-text-muted mt-1">
-          Curate "This week in the archive" — published at{" "}
+          Curate &quot;This week in the archive&quot; — published at{" "}
           <a href="/this-week" target="_blank" className="text-accent-gold underline">/this-week</a>
         </p>
       </div>

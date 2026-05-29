@@ -146,6 +146,7 @@ export function faqPageJsonLd(items: FaqItem[]): Record<string, unknown> {
   };
 }
 
+
 export function buildMetadata({
   title,
   description,

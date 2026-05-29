@@ -85,7 +85,7 @@ export default async function ResultsPage({ searchParams }: Props) {
       <section key="episodes" className="space-y-4">
         <div className="space-y-1">
           <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${accent.text}/60`}>
-            /// transmissions
+            {"/// transmissions"}
           </p>
           <h2 className={`font-display text-lg font-bold ${accent.text}`}>
             Episodes to start with
@@ -173,7 +173,7 @@ export default async function ResultsPage({ searchParams }: Props) {
       <section key="people" className="space-y-4">
         <div className="space-y-1">
           <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${accent.text}/60`}>
-            /// voices
+            {"/// voices"}
           </p>
           <h2 className={`font-display text-lg font-bold ${accent.text}`}>
             People in this territory
@@ -239,7 +239,7 @@ export default async function ResultsPage({ searchParams }: Props) {
       <section key="oracle" className="space-y-4">
         <div className="space-y-1">
           <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${accent.text}/60`}>
-            /// oracle prompts
+            {"/// oracle prompts"}
           </p>
           <h2 className={`font-display text-lg font-bold ${accent.text}`}>
             Ask the Oracle
@@ -294,7 +294,7 @@ export default async function ResultsPage({ searchParams }: Props) {
       <section className="space-y-4">
         <div className="space-y-1">
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-            /// your_path
+            {"/// your_path"}
           </p>
           <h1 className="font-display text-3xl font-bold text-text-primary">
             Your Entry Point
@@ -334,7 +334,7 @@ export default async function ResultsPage({ searchParams }: Props) {
       {/* Escape hatches */}
       <section className="space-y-4">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
-          /// not what you were looking for?
+          {"/// not what you were looking for?"}
         </p>
         <div className="flex flex-wrap gap-3">
           <Link

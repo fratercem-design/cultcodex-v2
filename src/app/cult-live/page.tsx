@@ -143,6 +143,9 @@ export default async function CultLivePage() {
   const results = await Promise.allSettled(
     CHANNELS.map((ch) => fetchChannelVideos(yt, ch.handle, ch.label))
   );
+  const fetchErrors = results
+    .map((r, i) => r.status === "rejected" ? `${CHANNELS[i]!.handle}: ${String(r.reason)}` : null)
+    .filter(Boolean) as string[];
   const channelVideos = results.map((r) => (r.status === "fulfilled" ? r.value : []));
 
   const allVideos = channelVideos.flatMap((videos, idx) =>
@@ -161,7 +164,7 @@ export default async function CultLivePage() {
 
       {/* Header */}
       <div className="space-y-1">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">/// cult_live</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">{"/// cult_live"}</p>
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-white">Cult Live</h1>
           {liveCount > 0 && (
@@ -187,7 +190,12 @@ export default async function CultLivePage() {
       </div>
 
       {allVideos.length === 0 && (
-        <p className="font-mono text-sm text-text-muted">No videos found. Check YOUTUBE_API_KEY and channel handles.</p>
+        <div className="space-y-2">
+          <p className="font-mono text-sm text-text-muted">No videos found.</p>
+          {fetchErrors.length > 0 && fetchErrors.map((e, i) => (
+            <p key={i} className="font-mono text-xs text-red-400">{e}</p>
+          ))}
+        </div>
       )}
 
       {/* Channel legend */}

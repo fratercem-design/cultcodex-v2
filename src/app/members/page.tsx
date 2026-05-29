@@ -246,24 +246,14 @@ function MemberCard({
   // Rotate between gold and cyan accents for visual rhythm
   const accent = index % 3 === 2 ? "cyan" : "gold";
 
-  const CardWrapper = hasPage
-    ? ({ children }: { children: React.ReactNode }) => (
-        <Link href={`/members/${member.codexSlug}`} className={`group relative overflow-hidden rounded-xl border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg ${
-          accent === "cyan"
-            ? "border-accent-cyan/20 hover:border-accent-cyan/40 hover:shadow-accent-cyan/10"
-            : "border-accent-gold/20 hover:border-accent-gold/40 hover:shadow-accent-gold/10"
-        } block`}>{children}</Link>
-      )
-    : ({ children }: { children: React.ReactNode }) => (
-        <div className={`group relative overflow-hidden rounded-xl border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg ${
-          accent === "cyan"
-            ? "border-accent-cyan/20 hover:border-accent-cyan/40 hover:shadow-accent-cyan/10"
-            : "border-accent-gold/20 hover:border-accent-gold/40 hover:shadow-accent-gold/10"
-        }`}>{children}</div>
-      );
+  const cardClassName = `group relative overflow-hidden rounded-xl border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg ${
+    accent === "cyan"
+      ? "border-accent-cyan/20 hover:border-accent-cyan/40 hover:shadow-accent-cyan/10"
+      : "border-accent-gold/20 hover:border-accent-gold/40 hover:shadow-accent-gold/10"
+  }`;
 
-  return (
-    <CardWrapper>
+  const inner = (
+    <>
       {/* Oracle badge */}
       {oracle && (
         <div className="absolute right-3 top-3">
@@ -340,6 +330,16 @@ function MemberCard({
           )}
         </div>
       </div>
-    </CardWrapper>
+    </>
+  );
+
+  return hasPage ? (
+    <Link href={`/members/${member.codexSlug}`} className={`${cardClassName} block`}>
+      {inner}
+    </Link>
+  ) : (
+    <div className={cardClassName}>
+      {inner}
+    </div>
   );
 }

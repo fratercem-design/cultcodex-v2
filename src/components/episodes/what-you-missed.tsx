@@ -70,7 +70,7 @@ export function WhatYouMissed({ decodeData, isUnlocked, isAuthenticated, episode
                 Decode Mode found <span className="text-amber-400 font-bold">{signals.length} manipulation tactic{signals.length !== 1 ? "s" : ""}</span>,{" "}
                 <span className="text-amber-400 font-bold">{shifts.length} power shift{shifts.length !== 1 ? "s" : ""}</span>, and{" "}
                 <span className="text-amber-400 font-bold">{patterns.length} recurring pattern{patterns.length !== 1 ? "s" : ""}</span>{" "}
-                in this episode that most people don't consciously register.
+                in this episode that most people don&apos;t consciously register.
               </p>
               <div className="flex flex-wrap gap-2">
                 {!isAuthenticated && (
@@ -103,7 +103,7 @@ export function WhatYouMissed({ decodeData, isUnlocked, isAuthenticated, episode
                       <div className="min-w-0">
                         <span className="font-mono text-[10px] font-bold text-red-400">{s.tactic}</span>
                         <span className="font-mono text-[10px] text-text-muted"> — {s.who}</span>
-                        <p className="text-xs text-text-muted mt-0.5 italic leading-relaxed">"{s.evidence}"</p>
+                        <p className="text-xs text-text-muted mt-0.5 italic leading-relaxed">&quot;{s.evidence}&quot;</p>
                       </div>
                     </div>
                   ))}

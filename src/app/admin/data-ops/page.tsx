@@ -92,7 +92,7 @@ export default function DataOpsPage() {
 
       {/* Search */}
       <section className="space-y-3">
-        <h2 className="font-display text-sm font-bold text-accent-violet">/// Search by Name</h2>
+        <h2 className="font-display text-sm font-bold text-accent-violet">{"/// Search by Name"}</h2>
         <div className="flex gap-2">
           <input
             value={searchName}
@@ -115,7 +115,7 @@ export default function DataOpsPage() {
 
       {/* Rename */}
       <section className="space-y-3">
-        <h2 className="font-display text-sm font-bold text-accent-cyan">/// Rename Person</h2>
+        <h2 className="font-display text-sm font-bold text-accent-cyan">{"/// Rename Person"}</h2>
         <div className="flex gap-2">
           <input
             value={renameSlug}
@@ -140,7 +140,7 @@ export default function DataOpsPage() {
       {/* Ambiguous */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-sm font-bold text-accent-gold">/// Ambiguous Names (single token, ≤12 chars)</h2>
+          <h2 className="font-display text-sm font-bold text-accent-gold">{"/// Ambiguous Names (single token, ≤12 chars)"}</h2>
           <button onClick={doAmbiguous} disabled={loading === "ambiguous"} className="rounded border border-accent-gold/50 bg-accent-gold/10 px-4 py-2 font-mono text-xs text-accent-gold disabled:opacity-50">
             {loading === "ambiguous" ? "…" : `Find →`}
           </button>
@@ -153,7 +153,7 @@ export default function DataOpsPage() {
       {/* Dupes */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-sm font-bold text-accent-crimson">/// Duplicate Names</h2>
+          <h2 className="font-display text-sm font-bold text-accent-crimson">{"/// Duplicate Names"}</h2>
           <button onClick={doDupes} disabled={loading === "dupes"} className="rounded border border-accent-crimson/50 bg-accent-crimson/10 px-4 py-2 font-mono text-xs text-accent-crimson disabled:opacity-50">
             {loading === "dupes" ? "…" : `Find →`}
           </button>

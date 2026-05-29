@@ -9,6 +9,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import type { CardType, Rarity } from "@/generated/prisma/client";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -257,8 +258,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   for (const card of CARDS) {
     try {
       const data = {
-        cardType: card.cardType as any,
-        rarity: card.rarity as any,
+        cardType: card.cardType as CardType,
+        rarity: card.rarity as Rarity,
         title: card.title,
         subtitle: card.subtitle ?? null,
         flavourText: card.flavourText ?? null,
@@ -267,7 +268,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         statC: card.statC,
         abilities: card.abilities,
         personality: card.personality ?? null,
-        maxSupply: (card as any).maxSupply ?? null,
+        maxSupply: (card as { maxSupply?: number }).maxSupply ?? null,
         isActive: true,
       };
       await prisma.card.upsert({

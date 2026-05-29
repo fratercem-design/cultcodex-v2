@@ -22,6 +22,7 @@ function AnimatedCounter({ value }: { value: number }) {
     hasAnimated.current = true;
 
     // Reset to 0 and animate up (only on client mount)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDisplay(0);
     const duration = 1200;
     const start = performance.now();

@@ -113,7 +113,7 @@ export default function TermsPage() {
         <SectionCard title="Disclaimers and Limitation of Liability">
           <div className="space-y-3 text-sm text-text-muted leading-relaxed">
             <p>
-              The archive is provided "as is" without warranties of any kind. AI-generated content
+              The archive is provided &quot;as is&quot; without warranties of any kind. AI-generated content
               (summaries, transcripts, lore entries) may contain errors and should not be treated as
               authoritative. We are not responsible for the accuracy of AI-assisted content.
             </p>

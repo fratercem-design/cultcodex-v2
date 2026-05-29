@@ -276,7 +276,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
               </svg>
               <p className="font-mono text-sm text-amber-400">Video unavailable</p>
-              <p className="font-mono text-[11px] text-text-muted">This episode's video has been privatized or removed. Browse the transcript, quotes, and metadata below.</p>
+              <p className="font-mono text-[11px] text-text-muted">This episode&apos;s video has been privatized or removed. Browse the transcript, quotes, and metadata below.</p>
             </div>
           )}
 
@@ -634,7 +634,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           {/* Upgrade CTA — only for non-subscribers */}
           {!hasTranscriptAccess && (
             <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-5 space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">/// initiate_layer</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">{"/// initiate_layer"}</p>
               <p className="font-mono text-xs font-bold text-accent-gold">Observers see the surface.</p>
               <ul className="space-y-1.5">
                 {[

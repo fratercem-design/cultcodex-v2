@@ -46,7 +46,7 @@ function WikiCard({ item }: { item: PersonMediaItem }) {
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-cyan/70 mb-1">
-            /// ip2wiki.info
+            {"/// ip2wiki.info"}
           </p>
           <p className="font-mono text-xs font-bold text-text-primary">{item.title}</p>
         </div>
@@ -261,7 +261,7 @@ export function PersonMediaSection({ personName, videos, wiki }: Props) {
       {wiki && (
         <div>
           <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted mb-2">
-            /// wiki_profile
+            {"/// wiki_profile"}
           </p>
           <WikiCard item={wiki} />
         </div>

@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { EpisodeCard } from "@/components/archive/episode-card";
@@ -49,19 +50,24 @@ export default async function HomePage() {
       series: 0, topics: 0, segments: 0, totalHours: 0,
       comments: 0, reactions: 0,
     })),
-    getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }),
-    getQuotes({ take: 2 }),
+    getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }).catch(() => []),
+    getQuotes({ take: 2 }).catch(() => []),
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }).catch(() => null),
-    getTopTopicsByEpisodes(10),
+    getTopTopicsByEpisodes(10).catch(() => []),
     getDailyTransmission().catch(() => ({
       date: new Date().toISOString().slice(0, 10),
       quote: null,
       spotlightEpisode: null,
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
-    getCurrentUser(),
+    getCurrentUser().catch(() => null),
     prisma.weeklyDigest.findFirst({ where: { published: true }, orderBy: { weekOf: "desc" }, select: { title: true, blurb: true, weekOf: true } }).catch(() => null),
   ]);
+
+  // Redirect new users to complete onboarding before they see the main app
+  if (currentUser && currentUser.onboardingCompleted === false) {
+    redirect("/onboarding");
+  }
 
   const dailyQuoteReactions = dailyTransmission.quote
     ? await getQuoteReactionCounts(dailyTransmission.quote.id, currentUser?.id).catch(() => undefined)
@@ -164,6 +170,9 @@ export default async function HomePage() {
 
         <div className="mx-auto max-w-7xl px-4 py-10 space-y-12">
 
+          {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}
+          <EmailCapture source="homepage" />
+
           {/* ── SECTION NAV ──────────────────────────────────────────── */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {([
@@ -187,13 +196,6 @@ export default async function HomePage() {
             ))}
           </div>
 
-          {/* ── DAILY TRANSMISSION ───────────────────────────────────── */}
-          <DailyTransmission
-            data={dailyTransmission}
-            quoteReactions={dailyQuoteReactions}
-            isAuthenticated={Boolean(currentUser)}
-          />
-
           {/* ── MUSIC PLAYER ─────────────────────────────────────────── */}
           <div className="space-y-3">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">{"/// the_signal"}</p>
@@ -203,6 +205,13 @@ export default async function HomePage() {
               title="Cult of Psyche — Signal Stream"
             />
           </div>
+
+          {/* ── DAILY TRANSMISSION ───────────────────────────────────── */}
+          <DailyTransmission
+            data={dailyTransmission}
+            quoteReactions={dailyQuoteReactions}
+            isAuthenticated={Boolean(currentUser)}
+          />
 
           {/* ── ORACLE — AI SEARCH ───────────────────────────────────── */}
           <div className="rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface px-6 py-6 space-y-4">
@@ -450,6 +459,7 @@ export default async function HomePage() {
 
           {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}
           <EmailCapture source="homepage" />
+
 
           <ArchiveDisclaimer variant="full" />
         </div>

@@ -28,7 +28,7 @@ export function PageHero({ title, subtitle, backgroundImage, label }: PageHeroPr
             className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.4em]"
             style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}
           >
-            // {label}
+            {"// "}{label}
           </p>
         )}
         <h1 className="font-serif text-2xl sm:text-3xl font-black tracking-tight text-accent-gold drop-shadow-md">

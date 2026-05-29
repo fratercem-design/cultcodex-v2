@@ -46,6 +46,7 @@ const NAV_GROUPS: readonly NavGroup[] = [
       { href: "/people",        label: "VOICES",        glyph: "◐", key: "5", countKey: "people" },
       { href: "/graph",         label: "NETWORK MAP",   glyph: "✦", key: "6" },
       { href: "/psychenomicon", label: "PSYCHENOMICON", glyph: "▲", key: "7" },
+      { href: "/collections",   label: "COLLECTIONS",   glyph: "▣", key: "8" },
     ],
   },
   {
@@ -64,6 +65,7 @@ const NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { href: "/red-room",  label: "RED ROOM",    glyph: "◉", accent: "neon-4" },
       { href: "/signals",   label: "SIGNAL LAB",  glyph: "◈", accent: "neon-4" },
+      { href: "/salon",     label: "THE SALON",   glyph: "◈", accent: "neon-4" },
       { href: "/premium",   label: "INITIATE+",   glyph: "✦", accent: "neon-4" },
     ],
   },

@@ -45,7 +45,7 @@ function DecodeModeLocked({ isAuthenticated }: DecodeModeLockedProps) {
   return (
     <div className="rounded-lg border border-accent-violet/30 bg-accent-violet/5 p-8 text-center space-y-4">
       <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">
-        /// initiate_only
+        {"/// initiate_only"}
       </p>
       <h3 className="font-display text-lg font-bold text-accent-violet">
         Decode Mode — Initiates see this.
@@ -117,7 +117,7 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
   if (!decodeData) {
     return (
       <div className="rounded-lg border border-border bg-surface p-8 text-center space-y-2">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">/// decode_pending</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">{"/// decode_pending"}</p>
         <p className="text-sm text-text-muted">Analysis not yet generated for this episode.</p>
       </div>
     );
@@ -128,7 +128,7 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">/// decode_mode</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">{"/// decode_mode"}</p>
         {generated_at && (
           <p className="font-mono text-[9px] text-text-muted">
             Generated {new Date(generated_at).toLocaleDateString()}
@@ -227,7 +227,7 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
                   <Tag label={m.tactic} variant="red" />
                   <span className="font-mono text-[9px] text-text-muted">by {m.who}</span>
                 </div>
-                <p className="text-xs text-text-muted leading-relaxed italic">"{m.evidence}"</p>
+                <p className="text-xs text-text-muted leading-relaxed italic">&quot;{m.evidence}&quot;</p>
               </div>
             ))}
           </div>

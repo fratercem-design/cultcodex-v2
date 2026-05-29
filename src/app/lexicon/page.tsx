@@ -2116,8 +2116,8 @@ export default function LexiconPage() {
           if (!terms?.length) return null;
 
           return (
-            <div id={`cat-${cat}`}>
-            <SectionCard key={cat} title={meta.label}>
+            <div id={`cat-${cat}`} key={cat}>
+            <SectionCard title={meta.label}>
               <div className="flex items-center gap-2 mb-4">
                 <span className={`w-3 h-3 rounded-full ${meta.dotColor}`} />
                 <p className="text-xs text-text-muted italic">

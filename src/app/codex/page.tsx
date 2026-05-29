@@ -67,7 +67,7 @@ export default async function CodexPage() {
         {/* Mythic framing */}
         <section className="text-center max-w-2xl mx-auto space-y-2">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-accent-gold">
-            /// private · {user.displayName}
+            {"/// private · "}{user.displayName}
           </p>
           <p className="text-sm text-text-muted leading-relaxed">
             The archive is shared. The codex is yours. Save the signals
