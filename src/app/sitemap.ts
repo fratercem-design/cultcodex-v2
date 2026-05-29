@@ -7,7 +7,7 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me";
 
-  const [episodes, people, lore, topics, series, psychenomiconChapters, memberPages] = await Promise.all([
+  const [episodes, people, lore, topics, series, psychenomiconChapters] = await Promise.all([
     prisma.episode.findMany({
       where: { status: "published" },
       select: { slug: true, updatedAt: true, thumbnailUrl: true },
@@ -20,7 +20,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       where: { status: "stable" },
       select: { slug: true, updatedAt: true },
     }),
-    prisma.codexUser.findMany({
+  ]);
+
+  // Member pages are optional — schema drift on CodexUser columns must not break the build
+  let memberPages: Array<{ codexSlug: string | null; updatedAt: Date }> = [];
+  try {
+    memberPages = await prisma.codexUser.findMany({
       where: {
         isPublicMember: true,
         codexPagePublic: true,
@@ -32,8 +37,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ],
       },
       select: { codexSlug: true, updatedAt: true },
-    }),
-  ]);
+    });
+  } catch {
+    // column not yet migrated — skip member pages in sitemap
+  }
 
   const now = new Date();
 
@@ -59,6 +66,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/tarot`,                lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/members`,              lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
     { url: `${baseUrl}/graph`,                lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/symbols`,              lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/archetype-quiz`,       lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/about/methodology`,    lastModified: now, changeFrequency: "monthly", priority: 0.4 },
     { url: `${baseUrl}/corrections`,          lastModified: now, changeFrequency: "monthly", priority: 0.3 },
     { url: `${baseUrl}/content-policy`,       lastModified: now, changeFrequency: "monthly", priority: 0.3 },
@@ -117,4 +126,3 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [...staticPages, ...dynamicPages];
 }
-
