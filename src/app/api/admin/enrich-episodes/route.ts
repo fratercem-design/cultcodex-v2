@@ -273,9 +273,15 @@ export async function POST(req: NextRequest) {
   const batchSize: number = Math.min(body.batch ?? 3, 10);
   const withTranscriptOnly: boolean = body.withTranscriptOnly ?? false;
 
-  // Find unenriched episodes
+  // Find unenriched episodes — must have no summaryShort, summaryFacts, OR summaryLong.
+  // (New enrichments write summaryFacts/summaryShort, not summaryLong, so checking
+  //  only summaryLong causes already-enriched episodes to be re-processed endlessly.)
   const whereClause = {
-    OR: [{ summaryLong: null }, { summaryLong: "" }],
+    AND: [
+      { OR: [{ summaryShort: null }, { summaryShort: "" }] },
+      { OR: [{ summaryFacts: null }, { summaryFacts: "" }] },
+      { OR: [{ summaryLong: null }, { summaryLong: "" }] },
+    ],
     ...(withTranscriptOnly ? { segments: { some: {} } } : {}),
   };
 
