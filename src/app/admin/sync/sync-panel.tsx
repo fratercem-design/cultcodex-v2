@@ -116,14 +116,14 @@ export function SyncPanel({
     }
   }
 
-  async function handleTranscriptSync(retry = false) {
+  async function handleTranscriptSync(retry = false, reset = false) {
     setTranscriptLoading(true);
     setTranscriptResult(null);
     try {
       const res = await fetch("/api/admin/sync-transcripts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ limit: transcriptLimit, retry }),
+        body: JSON.stringify({ limit: transcriptLimit, retry, reset }),
       });
       const data = await res.json() as typeof transcriptResult;
       setTranscriptResult(data);
@@ -310,12 +310,20 @@ export function SyncPanel({
               : `Fetch Next ${transcriptLimit} Transcripts →`}
           </button>
           <button
+            onClick={() => handleTranscriptSync(false, true)}
+            disabled={transcriptLoading}
+            className="w-full flex items-center justify-center gap-2 rounded border border-accent-cyan/40 bg-accent-cyan/5 hover:bg-accent-cyan/10 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-accent-cyan/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Clears the no_captions mark and retries all previously-failed episodes using youtube-transcript fallback."
+          >
+            ↻ Reset &amp; retry no-caption episodes
+          </button>
+          <button
             onClick={() => handleTranscriptSync(true)}
             disabled={transcriptLoading}
             className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/40 bg-accent-gold/5 hover:bg-accent-gold/10 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-accent-gold/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Re-try episodes previously marked as having no captions, using Whisper ASR generation."
+            title="Re-try episodes previously marked as having no captions."
           >
-            ↻ Retry no-caption episodes (forces ASR)
+            ↻ Retry no-caption episodes
           </button>
           {transcriptResult && (
             <div className={`rounded border px-4 py-3 space-y-2 ${transcriptResult.ok ? "border-accent-violet/30 bg-accent-violet/5" : "border-red-500/30 bg-red-500/5"}`}>
