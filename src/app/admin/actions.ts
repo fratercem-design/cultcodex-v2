@@ -331,6 +331,71 @@ export async function toggleLiveStream(formData: FormData) {
   revalidatePath("/live");
 }
 
+export async function toggleAlexandraLive(formData: FormData) {
+  await requireAdmin();
+
+  const current = await prisma.liveStatus.findUnique({
+    where: { id: "alexandra-mayers" },
+  });
+
+  const isLive = current?.isLive ?? false;
+
+  if (isLive) {
+    await prisma.liveStatus.upsert({
+      where: { id: "alexandra-mayers" },
+      update: { isLive: false, endedAt: new Date() },
+      create: { id: "alexandra-mayers", isLive: false },
+    });
+  } else {
+    const videoId = (formData.get("videoId") as string) || null;
+    const title = (formData.get("title") as string) || "Alexandra Mayers Live";
+
+    await prisma.liveStatus.upsert({
+      where: { id: "alexandra-mayers" },
+      update: { isLive: true, videoId, title, startedAt: new Date(), endedAt: null },
+      create: { id: "alexandra-mayers", isLive: true, videoId, title, startedAt: new Date() },
+    });
+  }
+
+  revalidatePath("/admin/live");
+}
+
+// ── User Management ──────────────────────────────────
+
+export async function grantOracleAccess(email: string) {
+  await requireAdmin();
+
+  const user = await prisma.codexUser.findUnique({ where: { email } });
+  if (!user) throw new Error(`No user found with email: ${email}`);
+
+  await prisma.codexUser.update({
+    where: { id: user.id },
+    data: {
+      role: "admin",
+      isLifetimeMember: true,
+      subscriptionStatus: "active",
+      subscriptionTier: "system",
+      currentPeriodEnd: new Date("2099-01-01"),
+      isPublicMember: true,
+    },
+  });
+
+  revalidatePath("/admin/users");
+  revalidatePath("/members");
+}
+
+export async function setMemberTitle(userId: string, title: string) {
+  await requireAdmin();
+
+  await prisma.codexUser.update({
+    where: { id: userId },
+    data: { memberTitle: title || null },
+  });
+
+  revalidatePath("/admin/users");
+  revalidatePath("/members");
+}
+
 // ── Founding Oracle Gift ──────────────────────────────────
 
 export async function grantFoundingOracle({

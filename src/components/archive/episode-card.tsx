@@ -12,9 +12,10 @@ import type { EpisodeCardData } from "@/lib/queries/episodes";
 
 interface EpisodeCardProps {
   episode: EpisodeCardData;
+  hideDescription?: boolean;
 }
 
-export function EpisodeCard({ episode }: EpisodeCardProps) {
+export function EpisodeCard({ episode, hideDescription = false }: EpisodeCardProps) {
   const epNum = episode.episodeNumber
     ? `EP.${String(episode.episodeNumber).padStart(3, "0")}`
     : null;
@@ -57,7 +58,7 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
         <h2 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors truncate">
           {episode.title}
         </h2>
-        {episode.summaryShort && (
+        {!hideDescription && episode.summaryShort && (
           <p className="mt-1 text-xs text-text-muted line-clamp-2">
             {episode.summaryShort}
           </p>

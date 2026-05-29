@@ -41,6 +41,12 @@ const nextConfig: NextConfig = {
         { key: "X-Content-Type-Options", value: "nosniff" },
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         { key: "X-DNS-Prefetch-Control", value: "on" },
+        // Prevents cross-origin docs sharing a browsing context group (Spectre mitigation).
+        // same-origin-allow-popups is used (vs same-origin) so Google OAuth redirect still works.
+        { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
+        // Cross-origin images/fonts are loaded by design (Google Fonts, YouTube thumbs),
+        // so cross-origin is correct here.
+        { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
         {
           key: "Permissions-Policy",
           value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()",

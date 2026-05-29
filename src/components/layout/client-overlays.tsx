@@ -14,6 +14,7 @@ const AmbientVisualSystem = dynamic(
   { ssr: false }
 );
 
+
 const KonamiEasterEgg = dynamic(
   () => import("@/components/ui/konami-easter-egg").then((m) => m.KonamiEasterEgg),
   { ssr: false }

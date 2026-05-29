@@ -30,8 +30,10 @@ const NAV_GROUPS: readonly NavGroup[] = [
   {
     title: "LIVE",
     items: [
-      { href: "/cult-live",                                    label: "CULT OF PSYCHE",   glyph: "◎", liveKey: "cultOfPsyche"   },
-      { href: "https://www.youtube.com/@AlexandraMayers",     label: "ALEXANDRA MAYERS", glyph: "◎", liveKey: "alexandraMayers", external: true },
+      { href: "/cult-live",                               label: "CULT OF PSYCHE",   glyph: "◎", liveKey: "cultOfPsyche"                    },
+      { href: "https://www.youtube.com/@IRLnewsTime",     label: "IRL NEWSTIME",     glyph: "◎", liveKey: "alexandraMayers", external: true },
+      { href: "https://www.youtube.com/@ip2wikiinfo",     label: "IP2WIKIINFO",      glyph: "◎", liveKey: "alexandraMayers", external: true },
+      { href: "https://www.youtube.com/@alexandramayers", label: "ALEXANDRA MAYERS", glyph: "◎", liveKey: "alexandraMayers", external: true },
     ],
   },
   {
@@ -48,28 +50,23 @@ const NAV_GROUPS: readonly NavGroup[] = [
     ],
   },
   {
-    title: "COLLECT",
+    title: "DISCOVER",
     items: [
-      { href: "/cards",       label: "CARD COLLECTION", glyph: "◈", key: "9" },
-      { href: "/cards/packs", label: "PACK STORE",      glyph: "▣" },
+      { href: "/start-here",     label: "START HERE",     glyph: "↳" },
+      { href: "/this-week",      label: "THIS WEEK",      glyph: "◑" },
+      { href: "/symbols",        label: "SYMBOL CODEX",   glyph: "✦" },
+      { href: "/archetype-quiz", label: "ARCHETYPE QUIZ", glyph: "◈" },
+      { href: "/tarot",          label: "TAROT DECK",     glyph: "✦", accent: "neon-4" },
+      { href: "/cards",          label: "CARD ARCHIVE",   glyph: "◈" },
     ],
   },
   {
-    title: "TOOLS",
+    title: "ORACLE",
     items: [
-      { href: "/lexicon",             label: "LEXICON",      glyph: "≣" },
-      { href: "/corrections",         label: "CORRECTIONS",  glyph: "✕" },
-      { href: "/about/methodology",   label: "METHODOLOGY",  glyph: "◇" },
-    ],
-  },
-  {
-    title: "ACCESS",
-    items: [
-      { href: "/premium",     label: "INITIATE+",   glyph: "✦", accent: "neon-4" },
-      { href: "/salon",       label: "THE SALON",   glyph: "◈" },
-      { href: "/this-week",   label: "THIS WEEK",   glyph: "◑" },
-      { href: "/start-here",  label: "START HERE",  glyph: "↳" },
-      { href: "/tarot",       label: "TAROT DECK",  glyph: "✦", accent: "neon-4" },
+      { href: "/red-room",  label: "RED ROOM",    glyph: "◉", accent: "neon-4" },
+      { href: "/signals",   label: "SIGNAL LAB",  glyph: "◈", accent: "neon-4" },
+      { href: "/salon",     label: "THE SALON",   glyph: "◈", accent: "neon-4" },
+      { href: "/premium",   label: "INITIATE+",   glyph: "✦", accent: "neon-4" },
     ],
   },
 ];

@@ -7,18 +7,31 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me";
 
-  const [episodes, people, lore, topics, series, psychenomiconChapters] = await Promise.all([
+  const [episodes, people, lore, topics, series, psychenomiconChapters, memberPages] = await Promise.all([
     prisma.episode.findMany({
       where: { status: "published" },
-      select: { slug: true, updatedAt: true },
+      select: { slug: true, updatedAt: true, thumbnailUrl: true },
     }),
-    prisma.person.findMany({ select: { slug: true, updatedAt: true } }),
+    prisma.person.findMany({ select: { slug: true, updatedAt: true, avatarUrl: true } }),
     prisma.loreEntry.findMany({ select: { slug: true, updatedAt: true } }),
     prisma.topic.findMany({ select: { slug: true, updatedAt: true } }),
     prisma.series.findMany({ select: { slug: true, updatedAt: true } }),
     prisma.psychenomiconChapter.findMany({
       where: { status: "stable" },
       select: { slug: true, updatedAt: true },
+    }),
+    prisma.codexUser.findMany({
+      where: {
+        isPublicMember: true,
+        codexPagePublic: true,
+        codexSlug: { not: null },
+        OR: [
+          { role: "admin" },
+          { subscriptionStatus: "active" },
+          { isLifetimeMember: true },
+        ],
+      },
+      select: { codexSlug: true, updatedAt: true },
     }),
   ]);
 
@@ -44,6 +57,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/oracle`,               lastModified: now, changeFrequency: "always",  priority: 0.6 },
     { url: `${baseUrl}/live`,                 lastModified: now, changeFrequency: "daily",   priority: 0.6 },
     { url: `${baseUrl}/tarot`,                lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/members`,              lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/graph`,                lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
     { url: `${baseUrl}/about/methodology`,    lastModified: now, changeFrequency: "monthly", priority: 0.4 },
     { url: `${baseUrl}/corrections`,          lastModified: now, changeFrequency: "monthly", priority: 0.3 },
     { url: `${baseUrl}/content-policy`,       lastModified: now, changeFrequency: "monthly", priority: 0.3 },
@@ -57,12 +72,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: e.updatedAt,
       changeFrequency: "weekly" as const,
       priority: 0.8,
+      ...(e.thumbnailUrl ? { images: [e.thumbnailUrl] } : {}),
     })),
     ...people.map((p) => ({
       url: `${baseUrl}/people/${p.slug}`,
       lastModified: p.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.7,
+      ...(p.avatarUrl ? { images: [p.avatarUrl] } : {}),
     })),
     ...lore.map((l) => ({
       url: `${baseUrl}/lore/${l.slug}`,
@@ -88,6 +105,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
+    ...memberPages
+      .filter((m) => m.codexSlug)
+      .map((m) => ({
+        url: `${baseUrl}/members/${m.codexSlug}`,
+        lastModified: m.updatedAt,
+        changeFrequency: "monthly" as const,
+        priority: 0.5,
+      })),
   ];
 
   return [...staticPages, ...dynamicPages];

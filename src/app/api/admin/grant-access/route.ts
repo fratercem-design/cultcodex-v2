@@ -28,9 +28,11 @@ export async function POST(req: NextRequest) {
       role: "admin",
       isLifetimeMember: true,
       subscriptionStatus: "active",
+      subscriptionTier: "system",
       currentPeriodEnd: new Date("2099-01-01"),
+      isPublicMember: true,
     },
-    select: { id: true, email: true, displayName: true, role: true, isLifetimeMember: true, subscriptionStatus: true },
+    select: { id: true, email: true, displayName: true, role: true, isLifetimeMember: true, subscriptionStatus: true, subscriptionTier: true },
   });
 
   return NextResponse.json({ ok: true, user: updated });

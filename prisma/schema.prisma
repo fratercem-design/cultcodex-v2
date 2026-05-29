@@ -413,6 +413,9 @@ model CodexUser {
   bio                     String?
   codexSlug               String?   @unique
   codexPagePublic         Boolean   @default(true)
+  codexBanner             String?   // gradient preset: void|crimson|emerald|gold|violet|aurora|abyss|frost
+  codexLinks              Json?     // [{label: string, url: string}][] up to 5
+  codexShowCards          Boolean   @default(false)
 
   reactions               EpisodeReaction[]
   comments                CodexComment[]
@@ -431,6 +434,7 @@ model CodexUser {
   quoteReactions          QuoteReaction[]
   salonPosts              SalonPost[]
   decks                   Deck[]
+  signalProposals         SignalProposal[]
 }
 
 model CodexSession {
@@ -1042,6 +1046,24 @@ model DeckCard {
 
   @@unique([deckId, cardId])
   @@index([deckId])
+}
+
+// ─── Signal Proposals ────────────────────────────────────
+// Oracle-tier members propose what gets investigated next.
+model SignalProposal {
+  id        String   @id @default(cuid())
+  userId    String
+  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question  String   @db.Text
+  context   String?  @db.Text
+  status    String   @default("open")   // open | under_review | investigating | published | declined
+  votes     Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 // ─── Weekly Digest ────────────────────────────────────

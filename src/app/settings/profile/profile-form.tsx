@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { BANNER_THEMES } from "@/lib/codex-page";
 
 const PRESET_TITLES = [
   "Oracle",
@@ -21,6 +22,20 @@ const PRESET_TITLES = [
   "The Unseen",
 ];
 
+const LINK_PLACEHOLDERS: Record<string, string> = {
+  YouTube: "https://youtube.com/@yourchannel",
+  "X / Twitter": "https://x.com/yourhandle",
+  Instagram: "https://instagram.com/yourhandle",
+  Twitch: "https://twitch.tv/yourhandle",
+  Substack: "https://yourname.substack.com",
+  TikTok: "https://tiktok.com/@yourhandle",
+  Website: "https://yoursite.com",
+};
+
+const LINK_LABEL_SUGGESTIONS = Object.keys(LINK_PLACEHOLDERS);
+
+interface SocialLink { label: string; url: string }
+
 interface ProfileFormProps {
   displayName: string;
   email: string;
@@ -33,6 +48,9 @@ interface ProfileFormProps {
   bio: string | null;
   codexSlug: string | null;
   codexPagePublic: boolean;
+  codexBanner: string | null;
+  codexLinks: SocialLink[] | null;
+  codexShowCards: boolean;
 }
 
 export function ProfileForm({
@@ -47,6 +65,9 @@ export function ProfileForm({
   bio: initialBio,
   codexSlug: initialSlug,
   codexPagePublic: initialPagePublic,
+  codexBanner: initialBanner,
+  codexLinks: initialLinks,
+  codexShowCards: initialShowCards,
 }: ProfileFormProps) {
   const [title, setTitle] = useState(initialTitle ?? "");
   const [customTitle, setCustomTitle] = useState(
@@ -64,6 +85,9 @@ export function ProfileForm({
   const [bio, setBio] = useState(initialBio ?? "");
   const [codexSlug, setCodexSlug] = useState(initialSlug ?? "");
   const [codexPagePublic, setCodexPagePublic] = useState(initialPagePublic);
+  const [codexBanner, setCodexBanner] = useState(initialBanner ?? "void");
+  const [links, setLinks] = useState<SocialLink[]>(initialLinks ?? []);
+  const [codexShowCards, setCodexShowCards] = useState(initialShowCards);
   const [codexSaving, setCodexSaving] = useState(false);
   const [codexSaved, setCodexSaved] = useState(false);
   const [codexError, setCodexError] = useState<string | null>(null);
@@ -109,6 +133,9 @@ export function ProfileForm({
           bio: bio.trim() || null,
           codexSlug: codexSlug.trim() || null,
           codexPagePublic,
+          codexBanner,
+          codexLinks: links.filter((l) => l.label.trim() && l.url.trim()),
+          codexShowCards,
         }),
       });
       if (!res.ok) {
@@ -125,10 +152,25 @@ export function ProfileForm({
     }
   }
 
+  function addLink() {
+    if (links.length >= 5) return;
+    setLinks([...links, { label: "", url: "" }]);
+  }
+
+  function removeLink(i: number) {
+    setLinks(links.filter((_, idx) => idx !== i));
+  }
+
+  function updateLink(i: number, field: "label" | "url", value: string) {
+    setLinks(links.map((l, idx) => idx === i ? { ...l, [field]: value } : l));
+  }
+
   const memberSinceStr = new Date(memberSince).toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
   });
+
+  const bannerTheme = BANNER_THEMES[codexBanner] ?? BANNER_THEMES.void;
 
   return (
     <div className="space-y-6">
@@ -141,7 +183,7 @@ export function ProfileForm({
             </div>
           ) : (
             <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-accent-gold/40 bg-accent-gold/10 text-2xl shadow-lg shadow-accent-gold/20">
-              🌑
+              {displayName.charAt(0).toUpperCase()}
             </div>
           )}
           <div>
@@ -180,7 +222,6 @@ export function ProfileForm({
           </p>
         </div>
 
-        {/* Preset Grid */}
         {!useCustom && (
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {PRESET_TITLES.map((t) => (
@@ -199,7 +240,6 @@ export function ProfileForm({
           </div>
         )}
 
-        {/* Custom Title Toggle */}
         <div className="flex items-center gap-3 pt-1">
           <button
             onClick={() => {
@@ -289,15 +329,69 @@ export function ProfileForm({
 
       {/* ── Full System: personal codex page ── */}
       {isSystemTier && (
-        <div className="mt-2 space-y-4 rounded-xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface p-6">
+        <div className="mt-2 space-y-5 rounded-xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface p-6">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet/60 mb-1">
-              ✦ Full System
+              ✦ Full System · Oracle Tier
             </p>
             <h3 className="font-display text-base font-bold text-accent-violet">Your Codex Page</h3>
             <p className="mt-1 font-mono text-[11px] text-text-muted">
-              A public profile page on the Member Roll — your permanent place in the archive.
+              A public profile in the permanent archive — your signal in the Psycheverse.
             </p>
+          </div>
+
+          {/* Page URL / subdomain */}
+          <div className="space-y-1.5">
+            <label className="font-mono text-[11px] uppercase tracking-wider text-text-muted">Your Page URL</label>
+            <div className="flex items-center">
+              <span className="rounded-l-lg border border-r-0 border-border bg-elevated px-3 py-2.5 font-mono text-[11px] text-text-muted/60 whitespace-nowrap">
+                cultcodex.me/members/
+              </span>
+              <input
+                type="text"
+                value={codexSlug}
+                onChange={(e) =>
+                  setCodexSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 40))
+                }
+                placeholder="your-name"
+                className="flex-1 rounded-r-lg border border-border bg-elevated px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus:border-accent-violet/50 focus:outline-none focus:ring-1 focus:ring-accent-violet/30 min-w-0"
+              />
+            </div>
+            <p className="font-mono text-[10px] text-text-muted/50">
+              Lowercase, letters, numbers, hyphens. Min 3 chars. This becomes your permanent address.
+            </p>
+            {codexSlug.length >= 3 && (
+              <p className="font-mono text-[11px] text-accent-violet/70">
+                Preview:{" "}
+                <a href={`/members/${codexSlug}`} target="_blank" rel="noreferrer" className="underline hover:text-accent-violet">
+                  /members/{codexSlug}
+                </a>
+              </p>
+            )}
+          </div>
+
+          {/* Banner / theme picker */}
+          <div className="space-y-2">
+            <label className="font-mono text-[11px] uppercase tracking-wider text-text-muted">Page Banner Theme</label>
+            <div className="grid grid-cols-4 gap-2">
+              {Object.entries(BANNER_THEMES).map(([key, theme]) => (
+                <button
+                  key={key}
+                  onClick={() => setCodexBanner(key)}
+                  title={theme.label}
+                  className={`relative h-12 rounded-lg border-2 overflow-hidden transition-all ${
+                    codexBanner === key
+                      ? "border-white/50 ring-2 ring-white/20"
+                      : "border-transparent opacity-70 hover:opacity-100"
+                  }`}
+                  style={theme.style}
+                >
+                  <span className="absolute inset-x-0 bottom-0 pb-1 text-center font-mono text-[8px] uppercase tracking-wider" style={{ color: theme.accent }}>
+                    {theme.label}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Bio */}
@@ -313,32 +407,84 @@ export function ProfileForm({
             <p className="font-mono text-[10px] text-text-muted/50 text-right">{bio.length}/500</p>
           </div>
 
-          {/* Slug */}
-          <div className="space-y-1.5">
-            <label className="font-mono text-[11px] uppercase tracking-wider text-text-muted">Page URL</label>
-            <div className="flex items-center gap-0">
-              <span className="rounded-l-lg border border-r-0 border-border bg-elevated px-3 py-2.5 font-mono text-[11px] text-text-muted/60">
-                cultcodex.me/members/
-              </span>
-              <input
-                type="text"
-                value={codexSlug}
-                onChange={(e) => setCodexSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 40))}
-                placeholder="your-name"
-                className="flex-1 rounded-r-lg border border-border bg-elevated px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus:border-accent-violet/50 focus:outline-none focus:ring-1 focus:ring-accent-violet/30"
-              />
+          {/* Social links */}
+          <div className="space-y-2">
+            <label className="font-mono text-[11px] uppercase tracking-wider text-text-muted">Social Links</label>
+            <p className="font-mono text-[10px] text-text-muted/60">Up to 5 links. These appear on your public page.</p>
+            <div className="space-y-2">
+              {links.map((link, i) => (
+                <div key={i} className="flex gap-2">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={link.label}
+                      onChange={(e) => updateLink(i, "label", e.target.value.slice(0, 40))}
+                      placeholder="Label"
+                      list="link-label-suggestions"
+                      className="w-28 rounded-lg border border-border bg-elevated px-2.5 py-2 font-mono text-[11px] text-text-primary placeholder:text-text-muted/40 focus:border-accent-violet/50 focus:outline-none"
+                    />
+                  </div>
+                  <input
+                    type="url"
+                    value={link.url}
+                    onChange={(e) => updateLink(i, "url", e.target.value.slice(0, 200))}
+                    placeholder={LINK_PLACEHOLDERS[link.label] ?? "https://..."}
+                    className="flex-1 rounded-lg border border-border bg-elevated px-2.5 py-2 font-mono text-[11px] text-text-primary placeholder:text-text-muted/40 focus:border-accent-violet/50 focus:outline-none min-w-0"
+                  />
+                  <button
+                    onClick={() => removeLink(i)}
+                    className="flex-shrink-0 rounded-lg border border-border bg-elevated px-2.5 py-2 font-mono text-[11px] text-text-muted hover:border-red-500/50 hover:text-red-400 transition-colors"
+                    aria-label="Remove link"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+              <datalist id="link-label-suggestions">
+                {LINK_LABEL_SUGGESTIONS.map((s) => <option key={s} value={s} />)}
+              </datalist>
             </div>
-            <p className="font-mono text-[10px] text-text-muted/50">
-              Lowercase letters, numbers, hyphens only. Min 3 characters.
-            </p>
+            {links.length < 5 && (
+              <button
+                onClick={addLink}
+                className="flex items-center gap-2 rounded-lg border border-dashed border-accent-violet/30 px-4 py-2 font-mono text-[11px] text-accent-violet/70 hover:border-accent-violet/60 hover:text-accent-violet transition-colors"
+              >
+                + Add link
+              </button>
+            )}
+          </div>
+
+          {/* Card showcase toggle */}
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h4 className="font-mono text-[11px] font-bold text-text-primary">Show Card Collection</h4>
+              <p className="font-mono text-[10px] text-text-muted mt-0.5">
+                Display your rarest cards on your profile page.
+              </p>
+            </div>
+            <button
+              onClick={() => setCodexShowCards(!codexShowCards)}
+              className={`relative mt-0.5 h-6 w-11 flex-shrink-0 rounded-full border transition-colors duration-200 ${
+                codexShowCards
+                  ? "border-accent-violet bg-accent-violet/80"
+                  : "border-border bg-elevated"
+              }`}
+              aria-label="Toggle card showcase"
+            >
+              <span
+                className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                  codexShowCards ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
           </div>
 
           {/* Page visibility */}
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start justify-between gap-4 pt-1 border-t border-accent-violet/10">
             <div>
               <h4 className="font-mono text-[11px] font-bold text-text-primary">Public page</h4>
               <p className="font-mono text-[10px] text-text-muted">
-                When enabled, your page is visible to anyone with the link.
+                Anyone with the link can view your page when enabled.
               </p>
             </div>
             <button
@@ -358,15 +504,19 @@ export function ProfileForm({
             </button>
           </div>
 
-          {/* Preview link */}
-          {codexSlug && (
-            <p className="font-mono text-[11px] text-accent-violet/70">
-              Your page:{" "}
-              <a href={`/members/${codexSlug}`} className="underline hover:text-accent-violet">
-                /members/{codexSlug}
-              </a>
-            </p>
-          )}
+          {/* Preview banner */}
+          <div className="rounded-lg overflow-hidden border border-accent-violet/20">
+            <div className="h-16 w-full" style={bannerTheme.style} />
+            <div className="bg-surface px-4 py-2 flex items-center gap-2">
+              <div
+                className="h-5 w-5 rounded-full border"
+                style={{ background: bannerTheme.accent, borderColor: bannerTheme.accent + "60" }}
+              />
+              <span className="font-mono text-[10px] text-text-muted">
+                Banner preview — <span style={{ color: bannerTheme.accent }}>{bannerTheme.label}</span>
+              </span>
+            </div>
+          </div>
 
           {/* Codex page save */}
           <div className="flex items-center justify-between pt-1">
