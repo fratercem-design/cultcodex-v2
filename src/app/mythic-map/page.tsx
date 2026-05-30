@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "The Mythic Map — CULT CODEX",
   description:
     "Archetypes, symbols, and recurring themes of the Cult of Psyche archive. A narrative map of the mythic system.",
+  alternates: { canonical: "/mythic-map" },
 };
 
 /* ───────────────────────── Data ───────────────────────── */

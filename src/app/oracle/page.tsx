@@ -12,6 +12,7 @@ export const metadata = {
   title: "Ask the Oracle — AI Search — CULT CODEX",
   description:
     "Ask anything about the Cult of Psyche archive. The Oracle is an AI trained on 2,500+ transmissions — it synthesizes answers from actual transcripts, lore entries, and behavioral profiles, with citations.",
+  alternates: { canonical: "/oracle" },
 };
 
 export default async function OraclePage() {

@@ -25,6 +25,7 @@ export const metadata = {
   title: "CultCodex — Decode Cult of Psyche | 2,600+ Episodes Archived",
   description:
     "The definitive archive of Cult of Psyche. 2,600+ episodes with full transcripts, AI psychological breakdowns, guest profiles, topic signals, and behavioral pattern maps.",
+  alternates: { canonical: "/" },
   openGraph: {
     title: "CultCodex — Decode Cult of Psyche",
     description:

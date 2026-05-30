@@ -31,6 +31,7 @@ export const metadata = {
   title: "All Episodes — CultCodex | 2,600+ Cult of Psyche Transmissions",
   description:
     "Browse all 2,600+ Cult of Psyche episodes with full transcripts, AI breakdowns, guest profiles, and topic tags. Filter by era, series, or transcript status.",
+  alternates: { canonical: "/episodes" },
 };
 
 const SORT_OPTIONS = [
