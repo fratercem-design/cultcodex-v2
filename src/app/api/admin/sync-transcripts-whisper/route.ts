@@ -33,29 +33,37 @@ interface WhisperResult {
   error?: string;
 }
 
-// Resolve yt-dlp via shell PATH — handles Nix store symlinks transparently
+// Resolve yt-dlp binary. Priority:
+// 1. Postinstall-downloaded binary at bin/yt-dlp (relative to project root)
+// 2. Shell PATH (developer machines with yt-dlp installed globally)
+// 3. Common Nix/system paths
 async function findYtDlp(): Promise<string> {
-  const candidates = [
-    "which yt-dlp",
-    "command -v yt-dlp",
-  ];
-  for (const cmd of candidates) {
-    try {
-      const { stdout } = await execAsync(cmd);
-      const path = stdout.trim();
-      if (path) return path;
-    } catch {
-      // try next
-    }
+  // Project-local download (most reliable on Railway — downloaded during postinstall)
+  const localBin = join(process.cwd(), "bin", "yt-dlp");
+  try {
+    await execAsync(`"${shellEsc(localBin)}" --version`);
+    return localBin;
+  } catch {
+    // not downloaded yet
   }
-  // Try common Nix paths explicitly
-  const nixPaths = [
+
+  // Shell PATH (developer has it installed)
+  try {
+    const { stdout } = await execAsync("which yt-dlp 2>/dev/null || command -v yt-dlp 2>/dev/null");
+    const p = stdout.trim();
+    if (p) return p;
+  } catch {
+    // not on PATH
+  }
+
+  // Common Nix / system fallback paths
+  const fallbacks = [
     "/nix/var/nix/profiles/default/bin/yt-dlp",
     "/root/.nix-profile/bin/yt-dlp",
     "/usr/local/bin/yt-dlp",
     "/usr/bin/yt-dlp",
   ];
-  for (const p of nixPaths) {
+  for (const p of fallbacks) {
     try {
       await execAsync(`"${p}" --version`);
       return p;
@@ -63,7 +71,11 @@ async function findYtDlp(): Promise<string> {
       // try next
     }
   }
-  throw new Error("yt-dlp not found — Railway must rebuild with nixpacks.toml containing yt-dlp");
+
+  throw new Error(
+    "yt-dlp not found. It should download automatically during npm install (postinstall). " +
+    "Try redeploying to trigger a fresh build."
+  );
 }
 
 async function downloadAudio(ytDlp: string, videoId: string, outDir: string): Promise<string | null> {
