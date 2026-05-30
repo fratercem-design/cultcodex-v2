@@ -24,7 +24,7 @@ function getConfig() {
     );
   }
 
-  return { url: url.replace(/\/$/, ""), key };
+  return { url: url.replace(/[^\x00-\xFF]/g, "").trim().replace(/\/$/, ""), key: key.replace(/[^\x00-\xFF]/g, "").trim() };
 }
 
 /**

@@ -62,16 +62,19 @@ function parseArgs() {
   let skipImages = false;
   let skipUpload = false;
 
+  let uploadOnly = false;
+
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--chapter" && args[i + 1]) { chapterSlug = args[++i]; }
     if (args[i] === "--batch"   && args[i + 1]) { batch = parseInt(args[++i], 10); }
-    if (args[i] === "--force")       { force = true; }
-    if (args[i] === "--dry-run")     { dryRun = true; skipImages = true; }
-    if (args[i] === "--skip-images") { skipImages = true; }
-    if (args[i] === "--skip-upload") { skipUpload = true; }
+    if (args[i] === "--force")        { force = true; }
+    if (args[i] === "--dry-run")      { dryRun = true; skipImages = true; }
+    if (args[i] === "--skip-images")  { skipImages = true; }
+    if (args[i] === "--skip-upload")  { skipUpload = true; }
+    if (args[i] === "--upload-only")  { uploadOnly = true; }
   }
 
-  return { chapterSlug, batch, force, dryRun, skipImages, skipUpload };
+  return { chapterSlug, batch, force, dryRun, skipImages, skipUpload, uploadOnly };
 }
 
 // ─── Helper: check if chapter already has output ─────────────────────────
@@ -91,7 +94,7 @@ function sleep(ms: number) {
 // ─── Main ─────────────────────────────────────────────────────────────────
 
 async function main() {
-  const { chapterSlug, batch, force, dryRun, skipImages, skipUpload } = parseArgs();
+  const { chapterSlug, batch, force, dryRun, skipImages, skipUpload, uploadOnly } = parseArgs();
 
   // Ensure output directories exist
   fs.mkdirSync(PROMPTS_DIR, { recursive: true });
@@ -102,6 +105,7 @@ async function main() {
   if (skipImages)   log("  Mode: skip-images (prompts only)");
   if (skipUpload)   log("  Mode: skip-upload (no Supabase upload)");
   if (force)        log("  Mode: force (re-process existing outputs)");
+  if (uploadOnly)   log("  Mode: upload-only (skip Claude + image gen, upload existing local files)");
   if (chapterSlug) log(`  Filter: chapter slug = ${chapterSlug}`);
   if (batch)       log(`  Batch limit: ${batch}`);
 
@@ -149,14 +153,50 @@ async function main() {
   for (const chapter of chapters) {
     const label = `CH.${String(chapter.chapterNumber).padStart(3, "0")} "${chapter.title}" (${chapter.slug})`;
 
-    // Skip if already done and not forced
-    if (!force && hasExistingOutput(chapter.slug)) {
+    // Skip if already done and not forced (upload-only always re-uploads)
+    if (!force && !uploadOnly && hasExistingOutput(chapter.slug)) {
       log(`  ↷  ${label} — already processed, skipping (use --force to re-run)`);
       skipped++;
       continue;
     }
 
     log(`\n▶  Processing ${label}…`);
+
+    // ── Upload-only mode: skip Claude + Pollinations, just upload existing files ──
+    if (uploadOnly) {
+      try {
+        const chapterImagesDir = path.join(IMAGES_DIR, chapter.slug);
+        const slots = ["cover", "scene_01", "scene_02", "scene_03"] as const;
+        const missing = slots.filter(s => !fs.existsSync(path.join(chapterImagesDir, `${s}.png`)));
+        if (missing.length > 0) {
+          log(`  ⚠  Skipping — missing local images: ${missing.join(", ")}`);
+          skipped++;
+          continue;
+        }
+        log("  [1/1] Uploading to Supabase Storage…");
+        const localPaths = {
+          cover:    path.join(chapterImagesDir, "cover.png"),
+          scene_01: path.join(chapterImagesDir, "scene_01.png"),
+          scene_02: path.join(chapterImagesDir, "scene_02.png"),
+          scene_03: path.join(chapterImagesDir, "scene_03.png"),
+        };
+        const artUrls = await uploadChapterArt(chapter.slug, localPaths, { dryRun });
+        if (!dryRun) {
+          await prisma.psychenomiconChapter.update({
+            where: { slug: chapter.slug },
+            data: { artImageUrls: artUrls, artGeneratedAt: new Date() },
+          });
+          log(`  ✓  Art URLs saved to DB for ${chapter.slug}`);
+        } else {
+          log(`  [dry-run] Would save URLs to DB for ${chapter.slug}`);
+        }
+        processed++;
+      } catch (err) {
+        logError(`Failed uploading ${label}`, err);
+        failed++;
+      }
+      continue;
+    }
 
     try {
       // ── Step 1: Claude symbolic analysis ──────────────────────────────
