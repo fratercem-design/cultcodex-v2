@@ -35,6 +35,7 @@ export interface OracleResponse {
   audioBase64?: string | null;
   hasVoice?: boolean;
   error?: string;
+  freeQueriesRemaining?: number;
 }
 
 // Optional structured intent carriers — all fields optional, all additive.
@@ -263,17 +264,46 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
   };
 }
 
+const FREE_QUERY_LIMIT = 3;
+
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
-  const canAccess = user
+  const subscribed = user
     ? user.role === "admin" || (await isSubscribed(user.id))
     : false;
 
-  if (!canAccess) {
-    return NextResponse.json(
-      { ok: false, error: "initiate_required" } satisfies OracleResponse,
-      { status: 403 }
-    );
+  let pendingCookieUpdate: { month: string; newUsed: number } | null = null;
+  let freeQueriesRemaining: number | undefined;
+
+  if (!subscribed) {
+    if (!user) {
+      return NextResponse.json(
+        { ok: false, error: "initiate_required" } satisfies OracleResponse,
+        { status: 403 }
+      );
+    }
+
+    const cookieVal = req.cookies.get("oracle_preview")?.value;
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    let usedThisMonth = 0;
+
+    if (cookieVal) {
+      const [month, countStr] = cookieVal.split(":");
+      if (month === currentMonth) {
+        usedThisMonth = parseInt(countStr, 10) || 0;
+      }
+    }
+
+    if (usedThisMonth >= FREE_QUERY_LIMIT) {
+      return NextResponse.json(
+        { ok: false, error: "free_limit_reached", freeQueriesRemaining: 0 } satisfies OracleResponse,
+        { status: 403 }
+      );
+    }
+
+    const newUsed = usedThisMonth + 1;
+    pendingCookieUpdate = { month: currentMonth, newUsed };
+    freeQueriesRemaining = FREE_QUERY_LIMIT - newUsed;
   }
 
   const body = await req.json().catch(() => ({})) as Record<string, unknown>;
@@ -413,11 +443,27 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({
+  const responsePayload: OracleResponse = {
     ok: true,
     answer,
     citations,
     audioBase64,
     hasVoice: !!audioBase64,
-  } satisfies OracleResponse);
+    ...(freeQueriesRemaining !== undefined ? { freeQueriesRemaining } : {}),
+  };
+
+  const response = NextResponse.json(responsePayload);
+
+  if (pendingCookieUpdate) {
+    const { month, newUsed } = pendingCookieUpdate;
+    response.cookies.set("oracle_preview", `${month}:${newUsed}`, {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 35,
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+    });
+  }
+
+  return response;
 }

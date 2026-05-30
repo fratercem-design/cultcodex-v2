@@ -5,6 +5,7 @@ import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/
 import { MysticalDivider, OrnamentalBreak } from "@/components/graphics/mystical-divider";
 import { OracleConsole } from "@/components/oracle/oracle-console";
 import Link from "next/link";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -14,11 +15,26 @@ export const metadata = {
     "Ask anything about the Cult of Psyche archive. The Oracle is an AI trained on 2,500+ transmissions — it synthesizes answers from actual transcripts, lore entries, and behavioral profiles, with citations.",
 };
 
+const FREE_QUERY_LIMIT = 3;
+
 export default async function OraclePage() {
   const user = await getCurrentUser();
-  const canAccess = user
+  const subscribed = user
     ? user.role === "admin" || (await isSubscribed(user.id))
     : false;
+
+  let initialFreeQueriesRemaining: number | undefined;
+  if (user && !subscribed) {
+    const cookieStore = await cookies();
+    const cookieVal = cookieStore.get("oracle_preview")?.value;
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    let usedThisMonth = 0;
+    if (cookieVal) {
+      const [month, countStr] = cookieVal.split(":");
+      if (month === currentMonth) usedThisMonth = parseInt(countStr, 10) || 0;
+    }
+    initialFreeQueriesRemaining = Math.max(0, FREE_QUERY_LIMIT - usedThisMonth);
+  }
 
   const totalQuotes = await prisma.quote.count();
   const randomOffset = Math.floor(Math.random() * Math.max(totalQuotes - 1, 0));
@@ -92,19 +108,17 @@ export default async function OraclePage() {
 
         {/* ── Oracle Console ── */}
         <section>
-          {canAccess ? (
-            <OracleConsole />
-          ) : (
-            <div className="space-y-6">
-              <OracleConsole />
+          <div className="space-y-4">
+            <OracleConsole initialFreeQueriesRemaining={initialFreeQueriesRemaining} />
+            {!subscribed && (
               <p className="text-center font-mono text-[10px] text-text-muted/40 uppercase tracking-widest">
-                Initiate+ unlocks the Oracle ·{" "}
+                Initiate+ unlocks unlimited Oracle access ·{" "}
                 <Link href="/premium" className="text-accent-gold/60 hover:text-accent-gold transition-colors">
                   $10/mo
                 </Link>
               </p>
-            </div>
-          )}
+            )}
+          </div>
         </section>
 
         <MysticalDivider className="opacity-40 [&_svg]:!text-accent-violet/20" />

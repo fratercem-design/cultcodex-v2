@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db";
+import { ARCHETYPES } from "@/lib/archetypes";
 
 // Force dynamic so this never runs at build time — generated on first request
 export const dynamic = "force-dynamic";
@@ -33,6 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/stats`, changeFrequency: "weekly", priority: 0.5 },
     { url: `${baseUrl}/lexicon`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/symbols`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/archetypes`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/mythic-map`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/oracle`, changeFrequency: "always", priority: 0.6 },
     { url: `${baseUrl}/methodology`, changeFrequency: "monthly", priority: 0.3 },
@@ -76,5 +78,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
-  return [...staticPages, ...dynamicPages];
+  const archetypePages: MetadataRoute.Sitemap = ARCHETYPES.map((a) => ({
+    url: `${baseUrl}/archetypes/${a.slug}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
+  return [...staticPages, ...dynamicPages, ...archetypePages];
 }

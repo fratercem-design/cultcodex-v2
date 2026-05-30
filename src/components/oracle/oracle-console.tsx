@@ -6,6 +6,10 @@ import type { OracleCitation, OracleResponse } from "@/app/api/oracle/ask/route"
 
 type ConsoleState = "idle" | "loading" | "answered" | "error";
 
+interface OracleConsoleProps {
+  initialFreeQueriesRemaining?: number;
+}
+
 function formatTime(seconds: number): string {
   if (!isFinite(seconds) || seconds < 0) return "0:00";
   const m = Math.floor(seconds / 60);
@@ -29,7 +33,7 @@ const BAR_HEIGHTS = Array.from({ length: BAR_COUNT }, (_, i) => {
   return Math.max(0.15, Math.min(1, base));
 });
 
-export function OracleConsole() {
+export function OracleConsole({ initialFreeQueriesRemaining }: OracleConsoleProps) {
   const [question, setQuestion] = useState("");
   const [state, setState] = useState<ConsoleState>("idle");
   const [answer, setAnswer] = useState("");
@@ -39,6 +43,12 @@ export function OracleConsole() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [gated, setGated] = useState(false);
+  const [freeLimitReached, setFreeLimitReached] = useState(
+    initialFreeQueriesRemaining === 0
+  );
+  const [freeQueriesLeft, setFreeQueriesLeft] = useState<number | undefined>(
+    initialFreeQueriesRemaining
+  );
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -77,6 +87,7 @@ export function OracleConsole() {
     setAudioBase64(null);
     setHasVoice(false);
     setGated(false);
+    setFreeLimitReached(false);
     setErrorMsg("");
     setCurrentTime(0);
     setDuration(0);
@@ -99,6 +110,10 @@ export function OracleConsole() {
         if (data.error === "initiate_required") {
           setGated(true);
           setState("error");
+        } else if (data.error === "free_limit_reached") {
+          setFreeLimitReached(true);
+          setFreeQueriesLeft(0);
+          setState("error");
         } else {
           setErrorMsg(data.error ?? "The Oracle is silent.");
           setState("error");
@@ -110,6 +125,9 @@ export function OracleConsole() {
       setCitations(data.citations ?? []);
       setAudioBase64(data.audioBase64 ?? null);
       setHasVoice(data.hasVoice ?? false);
+      if (typeof data.freeQueriesRemaining === "number") {
+        setFreeQueriesLeft(data.freeQueriesRemaining);
+      }
       setState("answered");
     } catch {
       setErrorMsg("A disturbance in the archive. Try again.");
@@ -195,6 +213,13 @@ export function OracleConsole() {
         </div>
       )}
 
+      {/* ── Free query counter ── */}
+      {typeof freeQueriesLeft === "number" && freeQueriesLeft > 0 && state !== "loading" && (
+        <p className="text-center font-mono text-[9px] uppercase tracking-[0.35em] text-text-muted/50">
+          {freeQueriesLeft} free {freeQueriesLeft === 1 ? "query" : "queries"} remaining this month
+        </p>
+      )}
+
       {/* ── Gated ── */}
       {state === "error" && gated && (
         <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-6 text-center space-y-3">
@@ -211,6 +236,23 @@ export function OracleConsole() {
           </Link>
         </div>
       )}
+
+      {/* ── Free limit reached ── */}
+      {(state === "error" && freeLimitReached) || (freeLimitReached && state === "idle") ? (
+        <div className="rounded-xl border border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-surface p-6 text-center space-y-3">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">/// free_queries_exhausted</p>
+          <p className="font-display text-base font-bold text-text-primary">Monthly preview complete.</p>
+          <p className="font-mono text-xs text-text-muted">
+            You&apos;ve used your 3 free Oracle queries this month. Initiate+ unlocks unlimited access to the archive.
+          </p>
+          <Link
+            href="/premium"
+            className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-2.5 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25"
+          >
+            Become Initiate+ — $10/mo →
+          </Link>
+        </div>
+      ) : null}
 
       {/* ── Generic error ── */}
       {state === "error" && !gated && (

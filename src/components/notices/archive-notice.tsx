@@ -64,6 +64,14 @@ export function ArchiveNotice({ entityType, entityName, className }: ArchiveNoti
             >
               Content policy
             </Link>
+            {entityType === "person" && (
+              <Link
+                href="/corrections?type=removal"
+                className="font-mono text-[10px] text-text-muted hover:text-accent-gold hover:underline"
+              >
+                Request removal
+              </Link>
+            )}
           </div>
         </div>
       </div>

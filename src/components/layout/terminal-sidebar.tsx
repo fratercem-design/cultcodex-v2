@@ -48,6 +48,7 @@ const NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { href: "/lexicon", label: "LEXICON", glyph: "≣" },
       { href: "/symbols", label: "SYMBOL CODEX", glyph: "⊕" },
+      { href: "/archetypes", label: "ARCHETYPES", glyph: "◐" },
       { href: "/corrections", label: "CORRECTIONS", glyph: "✕" },
       { href: "/dossier", label: "AUDIT DOSSIER", glyph: "◣" },
     ],
