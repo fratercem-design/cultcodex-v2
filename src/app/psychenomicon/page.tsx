@@ -107,26 +107,61 @@ export default async function PsychenomiconPage() {
 
       {/* Empty state — no chapters generated yet */}
       {chapters.length === 0 && (
-        <div className="mx-auto max-w-2xl px-4 py-24 text-center space-y-8">
-          <div className="space-y-3">
-            <p className="font-mono text-4xl text-accent-violet/20">ψ</p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">/// no_chapters_recorded</p>
-            <h2 className="font-display text-xl font-bold text-text-primary">The chronicles have not yet begun.</h2>
-            <p className="text-sm text-text-muted leading-relaxed max-w-sm mx-auto">
-              The Psychenomicon is a living record built episode by episode. Once chapters are generated from transcripts, they will appear here — with entities, threads, and archetypal patterns tracked across time.
+        <div className="mx-auto max-w-2xl px-4 py-20 text-center space-y-10">
+          {/* Pulsing sigil rings */}
+          <div className="relative mx-auto h-28 w-28">
+            <div
+              className="absolute inset-0 rounded-full border border-accent-violet/10"
+              style={{ animation: "ping 3s cubic-bezier(0,0,0.2,1) infinite" }}
+            />
+            <div
+              className="absolute inset-3 rounded-full border border-accent-violet/15"
+              style={{ animation: "ping 3s cubic-bezier(0,0,0.2,1) infinite", animationDelay: "0.6s" }}
+            />
+            <div
+              className="absolute inset-6 rounded-full border border-accent-violet/20"
+              style={{ animation: "ping 3s cubic-bezier(0,0,0.2,1) infinite", animationDelay: "1.2s" }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="font-mono text-5xl text-accent-violet/25 select-none">ψ</span>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/50">
+              /// sealed_chamber
+            </p>
+            <h2 className="font-display text-2xl font-bold text-text-primary">
+              The chronicles have not yet begun.
+            </h2>
+            <p className="mx-auto max-w-sm text-sm leading-relaxed text-text-muted">
+              The Psychenomicon is assembled from raw transcripts — episode by episode, pattern by pattern, entity by entity. When the first chapter is sealed, it will appear here.
             </p>
           </div>
-          {isAdmin ? (
+
+          {/* Status indicators */}
+          <div className="flex flex-wrap justify-center gap-5 font-mono text-[10px] uppercase tracking-widest">
+            <div className="flex items-center gap-1.5 text-accent-violet/50">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent-violet/40 animate-pulse" />
+              <span>Transcripts processing</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-text-muted/25">
+              <span className="h-1.5 w-1.5 rounded-full bg-text-muted/20" />
+              <span>Chapters pending</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-text-muted/25">
+              <span className="h-1.5 w-1.5 rounded-full bg-text-muted/20" />
+              <span>Entities dormant</span>
+            </div>
+          </div>
+
+          {isAdmin && (
             <Link
               href="/admin/psychenomicon"
               className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-6 py-3 font-mono text-xs font-bold text-accent-gold transition-colors"
             >
               Generate First Chapter →
             </Link>
-          ) : (
-            <p className="font-mono text-[10px] text-text-muted/50 uppercase tracking-widest">
-              The first transmissions are being processed.
-            </p>
           )}
         </div>
       )}

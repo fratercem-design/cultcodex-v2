@@ -26,6 +26,8 @@ export const metadata: Metadata = buildMetadata({
   path: "/premium",
 });
 
+const FOUNDING_CAP = 22;
+
 async function getMemberCount() {
   return prisma.codexUser.count({
     where: { OR: [{ role: "admin" }, { subscriptionStatus: "active" }] },
@@ -279,7 +281,14 @@ export default async function PremiumPage() {
           </div>
           <p className="font-mono text-xs text-text-muted">
             {stats.totalHours.toLocaleString()}+ hours of recorded transmissions ·{" "}
-            <span className="text-accent-gold font-bold">{memberCount} members</span> already initiated
+            <span className="text-accent-gold font-bold">
+              {memberCount} founding {memberCount === 1 ? "initiate" : "initiates"}
+            </span>
+            {" "}
+            {Math.max(0, FOUNDING_CAP - memberCount) > 0
+              ? <>· <span className="text-accent-gold font-bold">{Math.max(0, FOUNDING_CAP - memberCount)}</span> founding {Math.max(0, FOUNDING_CAP - memberCount) === 1 ? "seat" : "seats"} remain</>
+              : "· founding cohort sealed"
+            }
           </p>
         </section>
 

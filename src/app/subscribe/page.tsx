@@ -15,6 +15,8 @@ export const metadata: Metadata = {
     "Every word spoken. Every soul catalogued. Every secret documented. Full transcripts, The Psychenomicon, and your official cult identity — $10/month.",
 };
 
+const FOUNDING_CAP = 22;
+
 async function getMemberCount() {
   return prisma.codexUser.count({
     where: {
@@ -32,6 +34,7 @@ export default async function SubscribePage() {
   ]);
 
   const isActive = subStatus?.isAdmin || subStatus?.status === "active";
+  const seatsLeft = Math.max(0, FOUNDING_CAP - memberCount);
 
   return (
     <>
@@ -78,12 +81,17 @@ export default async function SubscribePage() {
             of transmissions — at your fingertips.
           </p>
 
-          {/* Social proof pill */}
+          {/* Founding cohort pill */}
           <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-accent-gold/30 bg-accent-gold/8 px-5 py-2.5 shadow-lg shadow-accent-gold/10">
             <span className="flex h-2 w-2 animate-pulse rounded-full bg-accent-gold" />
             <span className="font-mono text-xs text-text-muted">
               <span className="font-bold text-accent-gold">{memberCount}</span>{" "}
-              souls already initiated
+              founding {memberCount === 1 ? "initiate" : "initiates"}{" "}
+              {seatsLeft > 0 ? (
+                <>· <span className="font-bold text-accent-gold">{seatsLeft}</span> founding {seatsLeft === 1 ? "seat" : "seats"} remain</>
+              ) : (
+                "· founding cohort sealed"
+              )}
             </span>
           </div>
 
