@@ -265,6 +265,7 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
 }
 
 const FREE_QUERY_LIMIT = 3;
+const ANON_QUERY_LIMIT = 1;
 
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
@@ -272,38 +273,46 @@ export async function POST(req: NextRequest) {
     ? user.role === "admin" || (await isSubscribed(user.id))
     : false;
 
-  let pendingCookieUpdate: { month: string; newUsed: number } | null = null;
+  let pendingCookieUpdate: { cookieName: string; month: string; newUsed: number } | null = null;
   let freeQueriesRemaining: number | undefined;
 
   if (!subscribed) {
-    if (!user) {
-      return NextResponse.json(
-        { ok: false, error: "initiate_required" } satisfies OracleResponse,
-        { status: 403 }
-      );
-    }
-
-    const cookieVal = req.cookies.get("oracle_preview")?.value;
     const currentMonth = new Date().toISOString().slice(0, 7);
-    let usedThisMonth = 0;
 
-    if (cookieVal) {
-      const [month, countStr] = cookieVal.split(":");
-      if (month === currentMonth) {
-        usedThisMonth = parseInt(countStr, 10) || 0;
+    if (!user) {
+      // Anonymous: 1 free query per month via oracle_anon cookie
+      const cookieVal = req.cookies.get("oracle_anon")?.value;
+      let usedThisMonth = 0;
+      if (cookieVal) {
+        const [month, countStr] = cookieVal.split(":");
+        if (month === currentMonth) usedThisMonth = parseInt(countStr, 10) || 0;
       }
+      if (usedThisMonth >= ANON_QUERY_LIMIT) {
+        return NextResponse.json(
+          { ok: false, error: "anon_limit_reached", freeQueriesRemaining: 0 } satisfies OracleResponse,
+          { status: 403 }
+        );
+      }
+      pendingCookieUpdate = { cookieName: "oracle_anon", month: currentMonth, newUsed: 1 };
+      freeQueriesRemaining = 0;
+    } else {
+      // Authenticated non-subscriber: 3 free queries per month via oracle_preview cookie
+      const cookieVal = req.cookies.get("oracle_preview")?.value;
+      let usedThisMonth = 0;
+      if (cookieVal) {
+        const [month, countStr] = cookieVal.split(":");
+        if (month === currentMonth) usedThisMonth = parseInt(countStr, 10) || 0;
+      }
+      if (usedThisMonth >= FREE_QUERY_LIMIT) {
+        return NextResponse.json(
+          { ok: false, error: "free_limit_reached", freeQueriesRemaining: 0 } satisfies OracleResponse,
+          { status: 403 }
+        );
+      }
+      const newUsed = usedThisMonth + 1;
+      pendingCookieUpdate = { cookieName: "oracle_preview", month: currentMonth, newUsed };
+      freeQueriesRemaining = FREE_QUERY_LIMIT - newUsed;
     }
-
-    if (usedThisMonth >= FREE_QUERY_LIMIT) {
-      return NextResponse.json(
-        { ok: false, error: "free_limit_reached", freeQueriesRemaining: 0 } satisfies OracleResponse,
-        { status: 403 }
-      );
-    }
-
-    const newUsed = usedThisMonth + 1;
-    pendingCookieUpdate = { month: currentMonth, newUsed };
-    freeQueriesRemaining = FREE_QUERY_LIMIT - newUsed;
   }
 
   const body = await req.json().catch(() => ({})) as Record<string, unknown>;
@@ -455,8 +464,8 @@ export async function POST(req: NextRequest) {
   const response = NextResponse.json(responsePayload);
 
   if (pendingCookieUpdate) {
-    const { month, newUsed } = pendingCookieUpdate;
-    response.cookies.set("oracle_preview", `${month}:${newUsed}`, {
+    const { cookieName, month, newUsed } = pendingCookieUpdate;
+    response.cookies.set(cookieName, `${month}:${newUsed}`, {
       httpOnly: true,
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 35,

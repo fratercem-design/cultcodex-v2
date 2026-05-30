@@ -110,7 +110,7 @@ export function OracleConsole({ initialFreeQueriesRemaining }: OracleConsoleProp
         if (data.error === "initiate_required") {
           setGated(true);
           setState("error");
-        } else if (data.error === "free_limit_reached") {
+        } else if (data.error === "free_limit_reached" || data.error === "anon_limit_reached") {
           setFreeLimitReached(true);
           setFreeQueriesLeft(0);
           setState("error");
@@ -237,13 +237,13 @@ export function OracleConsole({ initialFreeQueriesRemaining }: OracleConsoleProp
         </div>
       )}
 
-      {/* ── Free limit reached ── */}
+      {/* ── Free / anon limit reached ── */}
       {(state === "error" && freeLimitReached) || (freeLimitReached && state === "idle") ? (
         <div className="rounded-xl border border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-surface p-6 text-center space-y-3">
           <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">/// free_queries_exhausted</p>
           <p className="font-display text-base font-bold text-text-primary">Monthly preview complete.</p>
           <p className="font-mono text-xs text-text-muted">
-            You&apos;ve used your 3 free Oracle queries this month. Initiate+ unlocks unlimited access to the archive.
+            Initiate+ unlocks unlimited Oracle access to the full archive.
           </p>
           <Link
             href="/premium"

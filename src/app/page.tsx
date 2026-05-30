@@ -20,6 +20,7 @@ import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { MusicVideoPlayer } from "@/components/home/music-video-player";
+import { HomeOraclePreview } from "@/components/oracle/home-oracle-preview";
 
 export const revalidate = 300;
 
@@ -42,7 +43,7 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, memberCount] = await Promise.all([
     getArchiveStats().catch(() => ({
       episodes: 0, people: 0, loreEntries: 0, quotes: 0,
       series: 0, topics: 0, segments: 0, totalHours: 0,
@@ -59,6 +60,9 @@ export default async function HomePage() {
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
     getCurrentUser(),
+    prisma.codexUser.count({
+      where: { OR: [{ role: "admin" }, { subscriptionStatus: "active" }] },
+    }).catch(() => 0),
   ]);
 
   // Redirect new users to complete onboarding before they see the main app
@@ -202,41 +206,26 @@ export default async function HomePage() {
 
           {/* ── ORACLE — AI SEARCH ───────────────────────────────────── */}
           <div className="rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface px-6 py-6 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-              <div className="space-y-1.5">
-                <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">/// ai_oracle</p>
-                <h2 className="font-display text-lg font-bold text-white">Ask the archive anything.</h2>
-                <p className="font-mono text-[11px] text-text-muted leading-relaxed max-w-lg">
-                  AI trained on every transcript, lore entry, and behavioral profile. Ask a question —
-                  get an answer grounded in actual archive content, with citations.
-                </p>
-              </div>
+            <div className="space-y-1.5">
+              <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">/// ai_oracle</p>
+              <h2 className="font-display text-lg font-bold text-white">Ask the archive anything.</h2>
+              <p className="font-mono text-[11px] text-text-muted leading-relaxed max-w-lg">
+                AI trained on every transcript, lore entry, and behavioral profile. Ask a question —
+                get an answer grounded in actual archive content, with citations.
+              </p>
+            </div>
+            <HomeOraclePreview />
+            <div className="flex items-center justify-between">
+              <p className="font-mono text-[9px] text-text-muted/40 uppercase tracking-widest">
+                Answers cite actual episodes, transcripts, and lore
+              </p>
               <Link
                 href="/oracle"
-                className="shrink-0 self-start inline-flex items-center gap-1.5 rounded-lg border border-accent-violet bg-accent-violet/15 px-4 py-2.5 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25 whitespace-nowrap"
+                className="font-mono text-[9px] text-accent-violet/50 hover:text-accent-violet transition-colors uppercase tracking-widest"
               >
-                Ask the Oracle →
+                Full Oracle →
               </Link>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {[
-                "What are Beetle's recurring patterns?",
-                "Who challenged the host and won?",
-                "What does the archive say about manipulation?",
-                "How has Tracy-X evolved over time?",
-              ].map((q) => (
-                <Link
-                  key={q}
-                  href="/oracle"
-                  className="rounded-full border border-accent-violet/20 bg-surface px-3 py-1.5 font-mono text-[10px] text-text-muted hover:border-accent-violet/50 hover:text-accent-violet transition-colors"
-                >
-                  {q}
-                </Link>
-              ))}
-            </div>
-            <p className="font-mono text-[9px] text-text-muted/40 uppercase tracking-widest">
-              Initiate+ · $10/mo · Answers cite actual episodes, transcripts, and lore
-            </p>
           </div>
 
           {/* ── FEATURED EPISODE ─────────────────────────────────────── */}
@@ -379,6 +368,12 @@ export default async function HomePage() {
           {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
           <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">/// unlock_the_archive</p>
+            {memberCount > 0 && (
+              <p className="font-mono text-[11px] text-accent-gold/70">
+                <span className="text-accent-gold font-bold">{memberCount.toLocaleString()}</span>{" "}
+                {memberCount === 1 ? "Initiate" : "Initiates"} inside the archive
+              </p>
+            )}
             <p className="font-display text-xl font-bold text-white">Full transcripts. AI Oracle. The Psychenomicon.</p>
             <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.</p>
             <div className="flex flex-wrap justify-center gap-3">
