@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
+import { YoutubeTranscript } from "youtube-transcript";
 
 export const runtime = "nodejs";
 export const maxDuration = 600; // 10 min — enough headroom for 100 episodes
@@ -39,6 +40,24 @@ interface SupadataTranscript {
 
 interface SupadataJobId {
   jobId: string;
+}
+
+async function fetchTranscriptYT(
+  videoId: string
+): Promise<{ chunks: SupadataChunk[] | null; reason: string }> {
+  try {
+    const segments = await YoutubeTranscript.fetchTranscript(videoId, { lang: "en" });
+    if (!segments || segments.length === 0) return { chunks: null, reason: "yt_empty" };
+    const chunks: SupadataChunk[] = segments.map((s) => ({
+      text: s.text,
+      offset: s.offset,   // already milliseconds from InnerTube path
+      duration: s.duration,
+      lang: s.lang ?? "en",
+    }));
+    return { chunks, reason: "youtube-transcript" };
+  } catch {
+    return { chunks: null, reason: "yt_no_captions" };
+  }
 }
 
 async function fetchTranscriptSupadata(
@@ -115,9 +134,19 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const body = await req.json().catch(() => ({})) as { limit?: number; retry?: boolean };
+  const body = await req.json().catch(() => ({})) as { limit?: number; retry?: boolean; reset?: boolean };
   const limit = Math.min(Math.max(1, body.limit ?? 10), 100);
   const retry = body.retry === true;
+  const reset = body.reset === true;
+
+  // reset=true clears the "no_captions" sentinel so all previously-failed episodes
+  // get another attempt (useful after adding a new transcript source).
+  if (reset) {
+    await prisma.episode.updateMany({
+      where: { transcriptRaw: "no_captions" },
+      data: { transcriptRaw: null },
+    });
+  }
 
   // No hardcoded skip list needed — the DB sentinel (transcriptRaw = "no_captions")
   // permanently excludes episodes confirmed as empty/age-restricted.
@@ -153,19 +182,26 @@ export async function POST(req: NextRequest) {
     const videoId = ep.youtubeVideoId!;
 
     try {
-      const { chunks, reason, rateLimited: hit429 } = await fetchTranscriptSupadata(videoId, supadataKey);
+      // Try YouTube's caption API first (free, fast, no quota)
+      let { chunks, reason } = await fetchTranscriptYT(videoId);
 
-      if (hit429) {
-        // Plan limit exceeded — stop immediately, don't burn more quota
-        rateLimited = true;
-        results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "error", error: "Supadata plan limit exceeded", reason });
-        break;
+      // Fall back to Supadata for age-restricted / ASR-only / harder videos
+      if (!chunks) {
+        const sup = await fetchTranscriptSupadata(videoId, supadataKey);
+        chunks = sup.chunks;
+        reason = sup.reason;
+        if (sup.rateLimited) {
+          // Plan limit exceeded — stop immediately, don't burn more quota
+          rateLimited = true;
+          results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "error", error: "Supadata plan limit exceeded", reason });
+          break;
+        }
       }
 
       if (!chunks) {
         // Mark permanently unavailable episodes so we skip them on future runs.
         // 404 = no captions; 403 = age-restricted (can't fetch); empty = no transcript data.
-        const permanent = reason.startsWith("supadata_404") || reason.startsWith("supadata_403") || reason.startsWith("supadata_empty");
+        const permanent = reason.startsWith("supadata_404") || reason.startsWith("supadata_403") || reason.startsWith("supadata_empty") || reason === "yt_no_captions" || reason === "yt_empty";
         let markReason = reason;
         if (permanent) {
           try {

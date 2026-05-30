@@ -1,0 +1,16 @@
+# ASR pipeline dependencies — install on your LOCAL machine (not Railway).
+# This is the pipeline that transcribes episodes whose YouTube captions are disabled.
+#
+#   pip install -r scripts/asr-requirements.txt
+#
+# You ALSO need ffmpeg on your system PATH (not a pip package):
+#   Windows:  winget install Gyan.FFmpeg     (or: choco install ffmpeg)
+#   macOS:    brew install ffmpeg
+#   Linux:    sudo apt install ffmpeg
+
+yt-dlp>=2024.3.10          # downloads YouTube audio (uses your browser cookies)
+openai-whisper>=20231117   # free local transcription backend
+python-dotenv>=1.0.0       # reads DATABASE_URL / keys from .env
+
+# Optional faster (paid) backend — uncomment and set ELEVENLABS_API_KEY in .env:
+# elevenlabs>=1.0.0

@@ -97,6 +97,19 @@ export function SyncPanel({
     error?: string;
   } | null>(null);
 
+  // ── Avatar sync ──
+  const [avatarLimit, setAvatarLimit] = useState(20);
+  const [avatarLoading, setAvatarLoading] = useState(false);
+  const [avatarResult, setAvatarResult] = useState<{
+    ok: boolean;
+    processed?: number;
+    ok_count?: number;
+    no_match?: number;
+    remaining?: number;
+    results?: { name: string; status: string; channelTitle?: string }[];
+    error?: string;
+  } | null>(null);
+
   async function handleChannelSync() {
     setSyncLoading(true);
     setSyncResult(null);
@@ -116,14 +129,14 @@ export function SyncPanel({
     }
   }
 
-  async function handleTranscriptSync(retry = false) {
+  async function handleTranscriptSync(retry = false, reset = false) {
     setTranscriptLoading(true);
     setTranscriptResult(null);
     try {
       const res = await fetch("/api/admin/sync-transcripts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ limit: transcriptLimit, retry }),
+        body: JSON.stringify({ limit: transcriptLimit, retry, reset }),
       });
       const data = await res.json() as typeof transcriptResult;
       setTranscriptResult(data);
@@ -135,7 +148,7 @@ export function SyncPanel({
     }
   }
 
-  async function handleEnrichEpisodes(loop = false) {
+  async function handleEnrichEpisodes(loop = false, withTranscriptOnly = true) {
     setEnrichEpLoading(true);
     setEnrichEpResult(null);
     setEnrichEpProgress(null);
@@ -146,7 +159,7 @@ export function SyncPanel({
         const res = await fetch("/api/admin/enrich-episodes", {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-enrich-secret": enrichSecret },
-          body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly: true }),
+          body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly }),
         });
         const data = await res.json() as typeof enrichEpResult & { remaining?: number; done?: boolean };
         if (!res.ok || !data?.ok) {
@@ -221,6 +234,25 @@ export function SyncPanel({
     } finally {
       setEnrichPeopleLoading(false);
       setEnrichPeopleProgress(null);
+    }
+  }
+
+  async function handleAvatarSync() {
+    setAvatarLoading(true);
+    setAvatarResult(null);
+    try {
+      const res = await fetch("/api/admin/sync-avatars", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ limit: avatarLimit }),
+      });
+      const data = await res.json() as typeof avatarResult;
+      setAvatarResult(data);
+      router.refresh();
+    } catch {
+      setAvatarResult({ ok: false, error: "Network error." });
+    } finally {
+      setAvatarLoading(false);
     }
   }
 
@@ -310,12 +342,20 @@ export function SyncPanel({
               : `Fetch Next ${transcriptLimit} Transcripts →`}
           </button>
           <button
+            onClick={() => handleTranscriptSync(false, true)}
+            disabled={transcriptLoading}
+            className="w-full flex items-center justify-center gap-2 rounded border border-accent-cyan/40 bg-accent-cyan/5 hover:bg-accent-cyan/10 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-accent-cyan/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Clears the no_captions mark and retries all previously-failed episodes using youtube-transcript fallback."
+          >
+            ↻ Reset &amp; retry no-caption episodes
+          </button>
+          <button
             onClick={() => handleTranscriptSync(true)}
             disabled={transcriptLoading}
             className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/40 bg-accent-gold/5 hover:bg-accent-gold/10 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-accent-gold/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Re-try episodes previously marked as having no captions, using Whisper ASR generation."
+            title="Re-try episodes previously marked as having no captions."
           >
-            ↻ Retry no-caption episodes (forces ASR)
+            ↻ Retry no-caption episodes
           </button>
           {transcriptResult && (
             <div className={`rounded border px-4 py-3 space-y-2 ${transcriptResult.ok ? "border-accent-violet/30 bg-accent-violet/5" : "border-red-500/30 bg-red-500/5"}`}>
@@ -408,6 +448,14 @@ export function SyncPanel({
                 : "Run All →→"}
             </button>
           </div>
+          <button
+            onClick={() => handleEnrichEpisodes(true, false)}
+            disabled={enrichEpLoading}
+            className="w-full flex items-center justify-center gap-2 rounded border border-text-muted/30 bg-transparent hover:bg-elevated px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-text-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Generates title-only summaries for episodes with no transcript (Shorts, live streams, etc.)"
+          >
+            ↻ Enrich no-transcript episodes (title only)
+          </button>
           {enrichEpResult && (
             <div className={`rounded border px-4 py-3 space-y-2 ${enrichEpResult.ok ? "border-accent-gold/30 bg-accent-gold/5" : "border-red-500/30 bg-red-500/5"}`}>
               {enrichEpResult.ok ? (
@@ -515,6 +563,66 @@ export function SyncPanel({
             </div>
           )}
         </section>
+      </div>
+
+      {/* ── Avatar Sync ── */}
+      <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-6 space-y-5">
+        <div className="space-y-1">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">{"/// sync_avatars"}</p>
+          <h2 className="font-display text-lg font-bold text-text-primary">Sync People Avatars</h2>
+          <p className="text-xs text-text-muted leading-relaxed">
+            Searches YouTube for a matching channel for each person without an avatar. Only writes when the channel title
+            closely matches the person&apos;s name. Requires <code>YOUTUBE_API_KEY</code>.
+          </p>
+          <p className="font-mono text-[9px] text-text-muted/60">
+            ⚠ Each search costs 100 YouTube API quota units. Daily limit = 10,000 units = 100 searches/day.
+            Keep batches at 20 or below. Quota resets at midnight Pacific.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <label className="font-mono text-[10px] text-text-muted whitespace-nowrap">Batch size</label>
+          <select
+            value={avatarLimit}
+            onChange={(e) => setAvatarLimit(Number(e.target.value))}
+            disabled={avatarLoading}
+            className="rounded border border-border bg-void px-2 py-1 font-mono text-xs text-text-primary focus:border-accent-gold focus:outline-none disabled:opacity-50"
+          >
+            {[10, 20, 50, 100].map((n) => (
+              <option key={n} value={n}>{n} people</option>
+            ))}
+          </select>
+        </div>
+        <button
+          onClick={handleAvatarSync}
+          disabled={avatarLoading}
+          className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {avatarLoading ? <><Spinner /> Searching YouTube…</> : "Sync Avatars from YouTube →"}
+        </button>
+        {avatarResult && (
+          <div className={`rounded border px-4 py-3 space-y-2 ${avatarResult.ok ? "border-accent-gold/30 bg-accent-gold/5" : "border-red-500/30 bg-red-500/5"}`}>
+            {avatarResult.ok ? (
+              <>
+                <div className="flex flex-wrap gap-4 font-mono text-[10px]">
+                  <span className="text-accent-gold">✓ {avatarResult.ok_count} matched</span>
+                  {(avatarResult.no_match ?? 0) > 0 && (
+                    <span className="text-text-muted">{avatarResult.no_match} no match</span>
+                  )}
+                  {(avatarResult.remaining ?? 0) > 0 && (
+                    <span className="text-text-muted">{avatarResult.remaining} remaining</span>
+                  )}
+                </div>
+                {(avatarResult.results ?? []).filter((r) => r.status === "ok").slice(0, 10).map((r) => (
+                  <p key={r.name} className="font-mono text-[10px] text-accent-gold/70">
+                    ✓ {r.name} → {r.channelTitle}
+                  </p>
+                ))}
+              </>
+            ) : (
+              <p className="font-mono text-xs text-red-400">✗ {avatarResult.error}</p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* ── Pipeline guide ── */}

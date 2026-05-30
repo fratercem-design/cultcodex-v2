@@ -18,9 +18,9 @@ interface EmailCaptureProps {
  * high-intent surfaces (homepage, gated previews).
  */
 export function EmailCapture({
-  eyebrow = "/// join_the_signal",
-  heading = "Get the next transmission first.",
-  subheading = "New episodes, archive drops, and decoded patterns — straight to your inbox. No spam. Leave any time.",
+  eyebrow = "/// signal_intercept",
+  heading = "The archive sends one transmission per week.",
+  subheading = "What recurring patterns just surfaced. Which voice appeared in 40+ episodes you may have missed. What the Oracle flagged. The decoded layer — delivered.",
   source,
   className = "",
 }: EmailCaptureProps) {

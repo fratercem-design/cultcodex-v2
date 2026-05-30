@@ -6,8 +6,8 @@ import type { Metadata } from "next";
 export const revalidate = 120; // re-check live status every 2 min
 
 export const metadata: Metadata = {
-  title: "IRL Newstime — CultCodex",
-  description: "Latest videos and live streams from IRL Newstime, IP2Wiki, and Alexandra Mayers.",
+  title: "Alexandra Mayers — CultCodex",
+  description: "Latest videos and live streams from Alexandra Mayers across IRL Newstime, IP2WikiInfo, and @AlexandraMayers.",
 };
 
 const CHANNELS = [
@@ -171,9 +171,9 @@ export default async function IRLNewstimePage() {
 
       {/* Header */}
       <div className="space-y-1">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">{"/// irl_newstime"}</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">{"/// alexandra_mayers"}</p>
         <div className="flex items-center gap-3">
-          <h1 className="font-display text-2xl font-bold text-white">IRL Newstime</h1>
+          <h1 className="font-display text-2xl font-bold text-white">Alexandra Mayers</h1>
           {liveCount > 0 && (
             <span className="flex items-center gap-1.5 rounded-full bg-red-600/90 px-3 py-1 font-mono text-[10px] font-bold text-white animate-pulse">
               <span className="h-1.5 w-1.5 rounded-full bg-white" />

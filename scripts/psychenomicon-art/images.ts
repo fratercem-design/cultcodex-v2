@@ -98,6 +98,7 @@ export async function generateImages(
     console.log(`  ⬇  Generating ${filename}…`);
     const buffer = await fetchImage(prompt, SEED_BASE + seedOffset);
     fs.writeFileSync(filePath, buffer);
+    paths[key] = filePath;
     console.log(`  ✓ Saved ${filename} (${(buffer.length / 1024).toFixed(0)} KB)`);
 
     // Polite delay between requests (Pollinations has implicit rate limits)

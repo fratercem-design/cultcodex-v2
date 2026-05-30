@@ -74,3 +74,4 @@ scripts/enrich/run-log.txt
 
 # Brainstorming visual companion (superpowers skill)
 .superpowers/
+__pycache__/

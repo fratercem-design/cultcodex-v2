@@ -1,13 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { getCurrentUser } from "@/lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
+  // Accept either: ENRICH_SECRET header (CLI/curl) OR a signed-in admin session (browser)
   const secret = req.headers.get("x-enrich-secret");
-  if (!secret || secret !== process.env.ENRICH_SECRET) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const secretOk = secret && secret === process.env.ENRICH_SECRET;
+
+  if (!secretOk) {
+    const sessionUser = await getCurrentUser().catch(() => null);
+    if (!sessionUser || sessionUser.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
   }
 
   const { email, name } = await req.json();

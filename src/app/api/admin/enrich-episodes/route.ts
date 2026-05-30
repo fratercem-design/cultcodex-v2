@@ -155,7 +155,9 @@ async function importEnrichment(
     where: { id: episodeId },
     data: {
       summaryShort: data.summaryShort || undefined,
-      summaryFacts: data.summaryFacts || undefined,
+      // Always write summaryFacts so the episode is marked enriched even when
+      // the AI returns nothing (e.g. short clips with no transcript content).
+      summaryFacts: data.summaryFacts || "—",
       summaryThemes: data.summaryThemes || undefined,
       // Legacy: only preserved if model returned it and new fields are empty
       ...(data.summaryLong && !data.summaryFacts
@@ -273,9 +275,15 @@ export async function POST(req: NextRequest) {
   const batchSize: number = Math.min(body.batch ?? 3, 10);
   const withTranscriptOnly: boolean = body.withTranscriptOnly ?? false;
 
-  // Find unenriched episodes
+  // Find unenriched episodes — must have no summaryShort, summaryFacts, OR summaryLong.
+  // (New enrichments write summaryFacts/summaryShort, not summaryLong, so checking
+  //  only summaryLong causes already-enriched episodes to be re-processed endlessly.)
   const whereClause = {
-    OR: [{ summaryLong: null }, { summaryLong: "" }],
+    AND: [
+      { OR: [{ summaryShort: null }, { summaryShort: "" }] },
+      { OR: [{ summaryFacts: null }, { summaryFacts: "" }] },
+      { OR: [{ summaryLong: null }, { summaryLong: "" }] },
+    ],
     ...(withTranscriptOnly ? { segments: { some: {} } } : {}),
   };
 
