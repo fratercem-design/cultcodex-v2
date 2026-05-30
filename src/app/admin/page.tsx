@@ -36,7 +36,15 @@ export default async function AdminDashboard() {
     // Archive health queries
     Promise.all([
       prisma.episode.count(),
-      prisma.episode.count({ where: { summaryShort: null } }),
+      prisma.episode.count({
+        where: {
+          AND: [
+            { OR: [{ summaryShort: null }, { summaryShort: "" }] },
+            { OR: [{ summaryFacts: null }, { summaryFacts: "" }, { summaryFacts: "—" }] },
+            { OR: [{ summaryLong: null }, { summaryLong: "" }] },
+          ],
+        },
+      }),
       prisma.episode.count({ where: { youtubeVideoId: null, rumbleVideoId: null } }),
       prisma.episode.count({ where: { airDate: null } }),
       prisma.episode.count({ where: { status: "unavailable" } }),

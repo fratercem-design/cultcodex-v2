@@ -148,7 +148,7 @@ export function SyncPanel({
     }
   }
 
-  async function handleEnrichEpisodes(loop = false) {
+  async function handleEnrichEpisodes(loop = false, withTranscriptOnly = true) {
     setEnrichEpLoading(true);
     setEnrichEpResult(null);
     setEnrichEpProgress(null);
@@ -159,7 +159,7 @@ export function SyncPanel({
         const res = await fetch("/api/admin/enrich-episodes", {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-enrich-secret": enrichSecret },
-          body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly: true }),
+          body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly }),
         });
         const data = await res.json() as typeof enrichEpResult & { remaining?: number; done?: boolean };
         if (!res.ok || !data?.ok) {
@@ -448,6 +448,14 @@ export function SyncPanel({
                 : "Run All →→"}
             </button>
           </div>
+          <button
+            onClick={() => handleEnrichEpisodes(true, false)}
+            disabled={enrichEpLoading}
+            className="w-full flex items-center justify-center gap-2 rounded border border-text-muted/30 bg-transparent hover:bg-elevated px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-text-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Generates title-only summaries for episodes with no transcript (Shorts, live streams, etc.)"
+          >
+            ↻ Enrich no-transcript episodes (title only)
+          </button>
           {enrichEpResult && (
             <div className={`rounded border px-4 py-3 space-y-2 ${enrichEpResult.ok ? "border-accent-gold/30 bg-accent-gold/5" : "border-red-500/30 bg-red-500/5"}`}>
               {enrichEpResult.ok ? (
