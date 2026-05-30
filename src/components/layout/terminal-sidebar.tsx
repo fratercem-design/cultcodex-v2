@@ -15,6 +15,7 @@ interface NavItem {
   readonly key?: string;
   readonly countKey?: CountKey;
   readonly accent?: AccentKey;
+  readonly external?: boolean;
 }
 
 interface NavGroup {
@@ -55,6 +56,12 @@ const NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { href: "/premium", label: "INITIATE+", glyph: "✦", accent: "neon-4" },
       { href: "/start-here", label: "START HERE", glyph: "↳" },
+    ],
+  },
+  {
+    title: "CONNECT",
+    items: [
+      { href: "https://www.youtube.com/@cultofpsyche", label: "YOUTUBE", glyph: "▶", external: true, accent: "neon-4" },
     ],
   },
 ];
@@ -176,26 +183,42 @@ export function TerminalSidebar({ counts }: TerminalSidebarProps) {
                 const badgeText = item.countKey
                   ? counts[item.countKey].toLocaleString()
                   : null;
+                const inner = (
+                  <>
+                    <span aria-hidden="true" style={{ width: 14, display: "inline-block" }}>
+                      {item.glyph}
+                    </span>
+                    <span style={{ flex: 1 }}>{item.label}</span>
+                    {badgeText && (
+                      <span style={badgeStyle}>{badgeText}</span>
+                    )}
+                    {item.key && (
+                      <span aria-hidden="true" style={keyStyle}>{item.key}</span>
+                    )}
+                  </>
+                );
                 return (
                   <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={active ? "term-nav-active" : undefined}
-                      style={itemStyle}
-                      data-key={item.key}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      <span aria-hidden="true" style={{ width: 14, display: "inline-block" }}>
-                        {item.glyph}
-                      </span>
-                      <span style={{ flex: 1 }}>{item.label}</span>
-                      {badgeText && (
-                        <span style={badgeStyle}>{badgeText}</span>
-                      )}
-                      {item.key && (
-                        <span aria-hidden="true" style={keyStyle}>{item.key}</span>
-                      )}
-                    </Link>
+                    {item.external ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={itemStyle}
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className={active ? "term-nav-active" : undefined}
+                        style={itemStyle}
+                        data-key={item.key}
+                        aria-current={active ? "page" : undefined}
+                      >
+                        {inner}
+                      </Link>
+                    )}
                   </li>
                 );
               })}

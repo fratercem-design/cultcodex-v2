@@ -22,20 +22,22 @@ import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 export const revalidate = 300;
 
 export const metadata = {
-  title: "CultCodex — Decode Cult of Psyche | 1,500+ Episodes Archived",
+  title: "CultCodex — Decode Cult of Psyche | 2,600+ Episodes Archived",
   description:
-    "The definitive archive of Cult of Psyche. 1,500+ episodes with full transcripts, AI psychological breakdowns, guest profiles, topic signals, and behavioral pattern maps.",
+    "The definitive archive of Cult of Psyche. 2,600+ episodes with full transcripts, AI psychological breakdowns, guest profiles, topic signals, and behavioral pattern maps.",
   openGraph: {
     title: "CultCodex — Decode Cult of Psyche",
     description:
-      "1,500+ conversations decoded. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
+      "2,600+ conversations decoded. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
     type: "website" as const,
+    images: [{ url: "/social-share.jpg", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image" as const,
     title: "CultCodex — Decode Cult of Psyche",
     description:
       "Full transcripts, AI breakdowns, guest profiles, and pattern maps for every Cult of Psyche episode.",
+    images: ["/social-share.jpg"],
   },
 };
 

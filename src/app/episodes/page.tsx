@@ -28,8 +28,9 @@ import { formatDate, formatRelativeDate } from "@/lib/format/date";
 export const revalidate = 60;
 
 export const metadata = {
-  title: "Episodes — CULT CODEX",
-  description: "Browse all Cult of Psyche episodes",
+  title: "All Episodes — CultCodex | 2,600+ Cult of Psyche Transmissions",
+  description:
+    "Browse all 2,600+ Cult of Psyche episodes with full transcripts, AI breakdowns, guest profiles, and topic tags. Filter by era, series, or transcript status.",
 };
 
 const SORT_OPTIONS = [

@@ -10,7 +10,7 @@ export function LivePlayer({ videoId }: LivePlayerProps) {
       {/* Video */}
       <div className="aspect-video w-full overflow-hidden rounded-lg border border-accent-gold/20">
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+          src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`}
           className="h-full w-full"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
