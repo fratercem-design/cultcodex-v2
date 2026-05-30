@@ -82,7 +82,7 @@ export default async function PremiumPage() {
               {
                 role: "Observer",
                 price: "Free",
-                hook: "I can tell there's a structure here. I just can't see all of it yet.",
+                hook: "You can see the shape of the archive. You can see that something is here. But the archive is working at a level you can't reach yet. Every locked transcript is a pattern you're watching but not reading.",
                 color: "text-text-muted",
                 bg: "bg-surface",
                 border: "",

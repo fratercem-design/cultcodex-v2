@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Ask the Oracle — AI Search — CULT CODEX",
   description:
-    "Ask anything about the Cult of Psyche archive. The Oracle is an AI trained on 2,500+ transmissions — it synthesizes answers from actual transcripts, lore entries, and behavioral profiles, with citations.",
+    "Ask the archive anything. The Oracle synthesizes 2,600+ transmissions into precise answers — behavioral patterns, guest dynamics, recurring moments — all cited back to the source. Initiate+ feature.",
 };
 
 export default async function OraclePage() {
@@ -20,14 +20,30 @@ export default async function OraclePage() {
     ? user.role === "admin" || (await isSubscribed(user.id))
     : false;
 
-  const totalQuotes = await prisma.quote.count();
-  // eslint-disable-next-line react-hooks/purity
-  const randomOffset = Math.floor(Math.random() * Math.max(totalQuotes - 1, 0));
-  const quotes = await prisma.quote.findMany({
-    take: 1,
-    skip: randomOffset,
-    include: { speaker: true, episode: true },
+  // Fetch a pool of quality quotes: must have a speaker + context, exclude boilerplate
+  const BOILERPLATE = ["vidIQ", "future initiate", "Hello,", "subscribe", "like and share"];
+  const qualityPool = await prisma.quote.findMany({
+    where: {
+      speakerId: { not: null },
+      context: { not: null },
+      AND: BOILERPLATE.map((phrase) => ({ text: { not: { contains: phrase } } })),
+    },
+    select: { id: true, text: true },
+    take: 500,
+    orderBy: { createdAt: "desc" },
   });
+  // Filter to quotes with substance (60+ chars)
+  const meaningful = qualityPool.filter((q) => q.text.length >= 60);
+  const pick = meaningful.length > 0
+    ? meaningful[Math.floor(Math.random() * meaningful.length)]
+    : qualityPool[0];
+  const quotes = pick
+    ? await prisma.quote.findMany({
+        where: { id: pick.id },
+        take: 1,
+        include: { speaker: true, episode: true },
+      })
+    : [];
   const quote = quotes[0] ?? null;
 
   return (

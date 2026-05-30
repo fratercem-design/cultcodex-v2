@@ -129,18 +129,23 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          <p className="font-mono text-[11px] text-text-muted/70 max-w-lg mx-auto leading-relaxed">
+            Cult of Psyche is an unscripted livestream where consciousness, manipulation, and raw human behavior collide.
+            CultCodex is the complete intelligence archive of everything that happened.
+          </p>
+
+          <div className="flex flex-col items-center gap-2">
             <Link
               href="/start-here"
-              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-8 py-3.5 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-10 py-4 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
             >
               Enter the Codex →
             </Link>
             <Link
               href="/premium"
-              className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/60 px-6 py-3.5 font-mono text-sm text-text-muted transition-all hover:border-accent-gold/30 hover:text-accent-gold"
+              className="font-mono text-[11px] text-text-muted/50 hover:text-accent-gold/70 transition-colors underline underline-offset-4"
             >
-              Unlock full access
+              Unlock full access — $10/mo
             </Link>
           </div>
 
