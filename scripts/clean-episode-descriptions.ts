@@ -14,9 +14,7 @@
  *   npx tsx scripts/clean-episode-descriptions.ts --apply   # writes cleaned descriptions to DB
  */
 
-import { PrismaClient } from "@/generated/prisma/client";
-
-const prisma = new PrismaClient();
+import { getPrisma, disconnect } from "./ingest/lib";
 
 const BOILERPLATE_PATTERNS: RegExp[] = [
   /get vidiq[^\n]*/gi,
@@ -44,6 +42,7 @@ function cleanDescription(raw: string): string {
 }
 
 async function main() {
+  const prisma = getPrisma();
   const apply = process.argv.includes("--apply");
 
   const episodes = await prisma.episode.findMany({
@@ -79,7 +78,7 @@ async function main() {
     console.log("Dry run — pass --apply to write changes to DB.");
   }
 
-  await prisma.$disconnect();
+  await disconnect();
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });
