@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 const SITE_NAME = "CultCodex";
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://cultcodex.me";
 
 type BuildMetadataInput = {
   title: string;

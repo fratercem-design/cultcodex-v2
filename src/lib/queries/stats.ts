@@ -34,10 +34,11 @@ export const getArchiveCounts = unstable_cache(
 
 /**
  * Canonical archive stats — single source of truth for all counts site-wide.
- * Used by: homepage, stats page, admin, and any future consumer.
+ * Shared unstable_cache so every page that calls this gets the same snapshot.
  * DO NOT create a second stats function elsewhere.
  */
-export async function getArchiveStats(): Promise<ArchiveStats> {
+export const getArchiveStats = unstable_cache(
+  async (): Promise<ArchiveStats> => {
   const [
     episodes,
     people,
@@ -91,7 +92,10 @@ export async function getArchiveStats(): Promise<ArchiveStats> {
     comments,
     reactions,
   };
-}
+  },
+  ["archive-stats"],
+  { revalidate: 300, tags: ["archive-stats"] }
+);
 
 export async function getEpisodeAggregates() {
   const [total, earliest, latest, guestCount] = await Promise.all([

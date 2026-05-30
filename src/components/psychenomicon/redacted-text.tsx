@@ -5,7 +5,7 @@ import Link from "next/link";
 /**
  * Parses chapter text containing tier-gated markers:
  *   [[LOCKED: hidden text]]  → blurred for Observers (needs Initiate+)
- *   [[ORACLE: hidden text]]  → blurred for Initiates (needs Oracle tier)
+ *   [[ORACLE: hidden text]]  → blurred for Initiates (needs Architect tier)
  *
  * Renders revealed text as-is; gated text as a blurred pill with an unlock CTA.
  */
@@ -47,7 +47,7 @@ interface RedactedBlockProps {
 
 function RedactedBlock({ tier }: RedactedBlockProps) {
   const isOracle = tier === "oracle";
-  const label = isOracle ? "Oracle" : "Initiate+";
+  const label = isOracle ? "Architect" : "Initiate+";
   const href = isOracle ? "/premium#system" : "/premium#access";
   const borderCls = isOracle ? "border-accent-violet/30" : "border-accent-gold/30";
   const textCls = isOracle ? "text-accent-violet" : "text-accent-gold";
@@ -71,7 +71,7 @@ function RedactedBlock({ tier }: RedactedBlockProps) {
 
 interface RedactedTextProps {
   text: string;
-  /** Tier the current viewer holds: undefined = not subscribed, "access" = Initiate+, "system" = Oracle */
+  /** Tier the current viewer holds: undefined = not subscribed, "access" = Initiate+, "system" = Architect */
   viewerTier?: "access" | "system" | null;
   className?: string;
 }

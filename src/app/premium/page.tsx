@@ -1,5 +1,5 @@
 /**
- * /premium — Identity ladder: Observer → Initiate+ → Oracle
+ * /premium — Identity ladder: Observer → Initiate+ → Architect
  *
  * Conversion psychology: people don't upgrade for features.
  * They upgrade to change their role in the system.
@@ -22,7 +22,7 @@ export const revalidate = 300;
 export const metadata: Metadata = buildMetadata({
   title: "Join the Archive — Choose Your Role",
   description:
-    "Most people sense there's more here than they're seeing. There is. Initiate+ ($10/mo) unlocks the intelligence layer. Oracle ($25/mo) puts you inside it.",
+    "Most people sense there's more here than they're seeing. There is. Initiate+ ($10/mo) unlocks the intelligence layer. Architect ($25/mo) puts you inside it.",
   path: "/premium",
 });
 
@@ -71,8 +71,8 @@ export default async function PremiumPage() {
             />
             <p className="mt-4 text-center font-mono text-xs text-accent-gold">
               {currentTier === "system"
-                ? "You are Oracle. The system is fully open."
-                : "You are Initiate. Upgrade to Oracle for the inner layer."}
+                ? "You are Architect. The system is fully open."
+                : "You are Initiate. Upgrade to Architect for the inner layer."}
               {" · "}
               <Link href="/episodes" className="underline hover:text-accent-gold/80">Browse</Link>
               {" · "}
@@ -121,7 +121,7 @@ export default async function PremiumPage() {
                 active: hasAccess && currentTier === "access",
               },
               {
-                role: "Oracle",
+                role: "Architect",
                 price: "$25/mo",
                 hook: "I am inside the system. Not just watching it.",
                 color: "text-accent-violet",
@@ -205,7 +205,7 @@ export default async function PremiumPage() {
 
                   <div className="mb-1">
                     <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
-                      {t.slug === "access" ? "Tier I · Initiate" : "Tier II · Oracle"}
+                      {t.slug === "access" ? "Tier I · Initiate" : "Tier II · Architect"}
                     </p>
                     <h2 className={`mt-1 font-display text-2xl font-bold ${accentText}`}>{t.name}</h2>
                     <p className="mt-1 font-mono text-[11px] italic text-text-muted leading-relaxed">
@@ -249,7 +249,7 @@ export default async function PremiumPage() {
                     <div className="mt-7">
                       <TierCheckoutButton
                         tier={t.slug}
-                        label={`Upgrade to Oracle — $${t.priceMonthly}/mo`}
+                        label={`Upgrade to Architect — $${t.priceMonthly}/mo`}
                         accent={t.accent}
                         requireSignIn={false}
                       />
@@ -306,7 +306,7 @@ export default async function PremiumPage() {
                   <th className="px-5 py-3.5 text-left font-mono text-[11px] uppercase tracking-wider text-text-muted">Feature</th>
                   <th className="px-5 py-3.5 text-center font-mono text-[11px] uppercase tracking-wider text-text-muted">Observer</th>
                   <th className="px-5 py-3.5 text-center font-mono text-[11px] uppercase tracking-wider text-accent-gold">Initiate+</th>
-                  <th className="px-5 py-3.5 text-center font-mono text-[11px] uppercase tracking-wider text-accent-violet">Oracle</th>
+                  <th className="px-5 py-3.5 text-center font-mono text-[11px] uppercase tracking-wider text-accent-violet">Architect</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
@@ -335,12 +335,12 @@ export default async function PremiumPage() {
             {
               icon: "🧠",
               title: "Every recurring figure has a behavioral signature. Not just a bio.",
-              body: "Tactics. Escalation triggers. What they do under pressure. Oracle builds deep intelligence files on everyone who keeps showing up.",
+              body: "Tactics. Escalation triggers. What they do under pressure. Architect builds deep intelligence files on everyone who keeps showing up.",
               color: "border-accent-violet/20",
             },
             {
               icon: "👁",
-              title: "Oracle-tier members don't just observe the archive — they direct it.",
+              title: "Architect members don't just observe the archive — they direct it.",
               body: "Vote on investigations. Propose what gets analyzed. Name what gets examined next. The archive is shaped by the people most invested in it.",
               color: "border-accent-violet/20",
             },
@@ -380,7 +380,7 @@ export default async function PremiumPage() {
                 <span className="text-white">Start Initiating.</span>
               </h3>
               <p className="font-mono text-xs text-text-muted max-w-sm mx-auto">
-                Initiate+ for $10/month. Oracle for $25/month.<br />
+                Initiate+ for $10/month. Architect for $25/month.<br />
                 Both open immediately. Cancel any time. Nothing is ever deleted.
               </p>
               <div className="flex flex-wrap justify-center gap-4 pt-2">
@@ -392,7 +392,7 @@ export default async function PremiumPage() {
                 />
                 <TierCheckoutButton
                   tier="system"
-                  label={notSignedIn ? "Sign in to become Oracle — $25/mo" : "Become Oracle — $25/mo"}
+                  label={notSignedIn ? "Sign in to become Architect — $25/mo" : "Become Architect — $25/mo"}
                   accent="violet"
                   requireSignIn={notSignedIn}
                 />
@@ -447,11 +447,11 @@ const FAQ: { q: string; a: string }[] = [
     a: "The archive shifts from something you browse to something you can work with. Full transcripts let you read exactly what was said. AI behavioral extraction shows you what repeats across hundreds of streams. The Personal Codex lets you build your own layer on top of the existing one.",
   },
   {
-    q: "What does Oracle access add beyond Initiate+?",
-    a: "Oracle puts you inside the production of the archive itself. You influence what gets investigated, access unfiltered transmissions, see the full relationship map, and hold a permanent named role. Some Oracle features are live now; others are rolling out over the next phase — subscribers shape what gets built first.",
+    q: "What does Architect access add beyond Initiate+?",
+    a: "Architect puts you inside the production of the archive itself. You influence what gets investigated, access unfiltered transmissions, see the full relationship map, and hold a permanent named role. Some Architect features are live now; others are rolling out over the next phase — subscribers shape what gets built first.",
   },
   {
-    q: "Can I upgrade from Initiate+ to Oracle later?",
+    q: "Can I upgrade from Initiate+ to Architect later?",
     a: "Yes, any time. Stripe handles the proration — you only pay the difference for the remainder of your billing period.",
   },
   {

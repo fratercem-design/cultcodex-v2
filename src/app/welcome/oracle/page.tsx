@@ -43,7 +43,7 @@ const ORACLE_BENEFITS = [
   },
   {
     icon: "👁️",
-    title: "Named Oracle Role",
+    title: "Named Architect Role",
     body: "You hold a role in the system. Named. Listed as a contributor to the Codex.",
   },
   {
@@ -165,7 +165,7 @@ export default async function WelcomeOraclePage() {
             />
             <div className="absolute bottom-5 left-0 right-0 text-center">
               <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-[#C8A96B]/70">
-                Oracle Tier &nbsp;·&nbsp; Founding
+                Architect &nbsp;·&nbsp; Founding
               </p>
             </div>
           </div>
@@ -226,7 +226,7 @@ export default async function WelcomeOraclePage() {
           Choose yours from the dark.
         </h2>
         <p className="font-mono text-xs text-text-muted max-w-sm mx-auto leading-relaxed">
-          Every Oracle has a designation. Set yours in your Codex profile —
+          Every Architect has a designation. Set yours in your Codex profile —
           or let the archive assign one when you first appear in the records.
         </p>
         <div className="flex flex-wrap justify-center gap-3 pt-2">
