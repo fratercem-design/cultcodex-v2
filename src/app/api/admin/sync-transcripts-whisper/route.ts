@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { execFile } from "child_process";
+import { exec } from "child_process";
 import { promisify } from "util";
-import { writeFile, unlink, readdir, rm } from "fs/promises";
+import { readdir, rm } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
 import { createReadStream } from "fs";
@@ -13,10 +13,15 @@ export const runtime = "nodejs";
 export const maxDuration = 600;
 export const dynamic = "force-dynamic";
 
-const execFileAsync = promisify(execFile);
+const execAsync = promisify(exec);
 
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+// Escape a string for safe use inside a shell double-quoted argument
+function shellEsc(s: string): string {
+  return s.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/`/g, "\\`").replace(/\$/g, "\\$");
 }
 
 interface WhisperResult {
@@ -28,32 +33,45 @@ interface WhisperResult {
   error?: string;
 }
 
-// Find yt-dlp binary (Railway nixpacks puts it on PATH, local may vary)
+// Resolve yt-dlp via shell PATH — handles Nix store symlinks transparently
 async function findYtDlp(): Promise<string> {
-  for (const bin of ["yt-dlp", "/nix/var/nix/profiles/default/bin/yt-dlp"]) {
+  const candidates = [
+    "which yt-dlp",
+    "command -v yt-dlp",
+  ];
+  for (const cmd of candidates) {
     try {
-      await execFileAsync(bin, ["--version"]);
-      return bin;
+      const { stdout } = await execAsync(cmd);
+      const path = stdout.trim();
+      if (path) return path;
     } catch {
       // try next
     }
   }
-  throw new Error("yt-dlp not found — ensure nixpacks.toml includes yt-dlp");
+  // Try common Nix paths explicitly
+  const nixPaths = [
+    "/nix/var/nix/profiles/default/bin/yt-dlp",
+    "/root/.nix-profile/bin/yt-dlp",
+    "/usr/local/bin/yt-dlp",
+    "/usr/bin/yt-dlp",
+  ];
+  for (const p of nixPaths) {
+    try {
+      await execAsync(`"${p}" --version`);
+      return p;
+    } catch {
+      // try next
+    }
+  }
+  throw new Error("yt-dlp not found — Railway must rebuild with nixpacks.toml containing yt-dlp");
 }
 
 async function downloadAudio(ytDlp: string, videoId: string, outDir: string): Promise<string | null> {
-  const url = `https://www.youtube.com/watch?v=${videoId}`;
+  const url = `https://www.youtube.com/watch?v=${shellEsc(videoId)}`;
+  const outTemplate = shellEsc(join(outDir, "%(id)s.%(ext)s"));
+  const cmd = `"${ytDlp}" "${url}" --extract-audio --audio-format mp3 --audio-quality 5 --max-filesize 50m --no-playlist --quiet --output "${outTemplate}"`;
   try {
-    await execFileAsync(ytDlp, [
-      url,
-      "--extract-audio",
-      "--audio-format", "mp3",
-      "--audio-quality", "5",      // medium quality — enough for speech
-      "--max-filesize", "50m",     // Whisper API limit is 25 MB, but mp3 is compressed
-      "--no-playlist",
-      "--quiet",
-      "--output", join(outDir, "%(id)s.%(ext)s"),
-    ], { timeout: 120_000 });
+    await execAsync(cmd, { timeout: 120_000 });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     // yt-dlp exits non-zero for age-restricted / unavailable videos
@@ -141,8 +159,7 @@ export async function POST(req: NextRequest) {
     const outDir = join(tmpdir(), `whisper_${videoId}_${Date.now()}`);
 
     try {
-      await writeFile(join(tmpdir(), ".whisper_keep"), ""); // ensure tmpdir writable
-      await execFileAsync("mkdir", ["-p", outDir]);
+      await execAsync(`mkdir -p "${shellEsc(outDir)}"`);
 
       const audioPath = await downloadAudio(ytDlp, videoId, outDir);
 
