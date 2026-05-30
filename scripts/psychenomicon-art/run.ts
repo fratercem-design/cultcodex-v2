@@ -181,11 +181,15 @@ async function main() {
           scene_03: path.join(chapterImagesDir, "scene_03.png"),
         };
         const artUrls = await uploadChapterArt(chapter.slug, localPaths, { dryRun });
-        await prisma.psychenomiconChapter.update({
-          where: { slug: chapter.slug },
-          data: { artImageUrls: artUrls, artGeneratedAt: new Date() },
-        });
-        log(`  ✓  Art URLs saved to DB for ${chapter.slug}`);
+        if (!dryRun) {
+          await prisma.psychenomiconChapter.update({
+            where: { slug: chapter.slug },
+            data: { artImageUrls: artUrls, artGeneratedAt: new Date() },
+          });
+          log(`  ✓  Art URLs saved to DB for ${chapter.slug}`);
+        } else {
+          log(`  [dry-run] Would save URLs to DB for ${chapter.slug}`);
+        }
         processed++;
       } catch (err) {
         logError(`Failed uploading ${label}`, err);
