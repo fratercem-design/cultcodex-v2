@@ -131,15 +131,20 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
     <div className="min-h-screen bg-void">
       <PageHero
         title="Community Posts"
-        subtitle={`${totalCount.toLocaleString()} posts from @CultofPsyche`}
+        subtitle={totalCount > 0 ? `${totalCount.toLocaleString()} posts from @CultofPsyche` : "YouTube community posts from @CultofPsyche"}
         backgroundImage="/articles-bacgkground.jpg"
       />
 
       <div className="mx-auto max-w-4xl px-4 py-8 space-y-6">
         {posts.length === 0 ? (
-          <p className="text-center text-sm text-text-muted italic py-12">
-            No posts imported yet. Run the posts-pipeline workflow.
-          </p>
+          <div className="py-16 text-center space-y-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/50">
+              /// no_transmissions
+            </p>
+            <p className="text-sm text-text-muted">
+              Community posts from @CultofPsyche will appear here as they are archived.
+            </p>
+          </div>
         ) : (
           <>
             <div className="grid gap-4 sm:grid-cols-2">
