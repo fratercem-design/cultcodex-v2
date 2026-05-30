@@ -9,9 +9,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { getArchiveStats } from "@/lib/queries/stats";
 import { prisma } from "@/lib/db";
-import { TIERS } from "@/lib/subscription-tiers";
-import { TierCheckoutButton } from "@/components/subscription/tier-checkout-button";
 import { ManageSubscription } from "@/components/subscription/manage-subscription";
+import { PricingSection } from "@/components/subscription/pricing-section";
 import { PageHero } from "@/components/ui/page-hero";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { buildMetadata } from "@/lib/seo";
@@ -171,7 +170,7 @@ export default async function PremiumPage() {
 
         <MysticalDivider />
 
-        {/* ── Tier cards with checkout ── */}
+        {/* ── Tier cards with checkout (billing toggle inside) ── */}
         <section className="space-y-6 max-w-5xl mx-auto">
           <div className="text-center space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
@@ -181,84 +180,12 @@ export default async function PremiumPage() {
               Both tiers open immediately. Cancel any time.
             </p>
           </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {TIERS.map((t) => {
-              const isGold = t.accent === "gold";
-              const borderCls = isGold ? "border-accent-gold/40" : "border-accent-violet/40";
-              const glowCls = isGold ? "shadow-accent-gold/10" : "shadow-accent-violet/10";
-              const accentText = isGold ? "text-accent-gold" : "text-accent-violet";
-              const accentBg = isGold ? "from-accent-gold/5" : "from-accent-violet/5";
-              const accentBorder = isGold ? "border-accent-gold/30" : "border-accent-violet/30";
-
-              return (
-                <div
-                  key={t.slug}
-                  id={t.slug}
-                  className={`relative flex flex-col rounded-2xl border ${borderCls} bg-gradient-to-b ${accentBg} to-surface p-8 shadow-xl ${glowCls}`}
-                >
-                  {t.badge && (
-                    <div className={`absolute -top-3 left-1/2 -translate-x-1/2 rounded-full border ${accentBorder} bg-surface px-3 py-1 font-mono text-[10px] uppercase tracking-widest ${accentText}`}>
-                      {t.badge}
-                    </div>
-                  )}
-
-                  <div className="mb-1">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
-                      {t.slug === "access" ? "Tier I · Initiate" : "Tier II · Architect"}
-                    </p>
-                    <h2 className={`mt-1 font-display text-2xl font-bold ${accentText}`}>{t.name}</h2>
-                    <p className="mt-1 font-mono text-[11px] italic text-text-muted leading-relaxed">
-                      &ldquo;{t.psychologyHook}&rdquo;
-                    </p>
-                  </div>
-
-                  <div className="mt-4 flex items-baseline gap-1">
-                    <span className={`font-display text-5xl font-bold ${accentText}`}>${t.priceMonthly}</span>
-                    <span className="font-mono text-sm text-text-muted">/month</span>
-                  </div>
-                  <p className={`mt-1 font-mono text-[10px] ${accentText}/60`}>{t.tagline}</p>
-
-                  <ul className="mt-6 space-y-2.5 flex-1">
-                    {t.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2 text-sm">
-                        <span className={`mt-1 ${accentText}`} aria-hidden>✦</span>
-                        <span className="text-text-muted leading-relaxed font-mono text-[11px]">{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {!isActive && (
-                    <div className="mt-7">
-                      <TierCheckoutButton
-                        tier={t.slug}
-                        label={
-                          notSignedIn
-                            ? `Sign in to become ${t.role} — $${t.priceMonthly}/mo`
-                            : `Become ${t.role} — $${t.priceMonthly}/mo`
-                        }
-                        accent={t.accent}
-                        requireSignIn={notSignedIn}
-                      />
-                      <p className="mt-3 text-center font-mono text-[10px] text-text-muted/60">
-                        Cancel anytime · Instant access · No contracts
-                      </p>
-                    </div>
-                  )}
-                  {isPaying && currentTier !== t.slug && t.slug === "system" && (
-                    <div className="mt-7">
-                      <TierCheckoutButton
-                        tier={t.slug}
-                        label={`Upgrade to Architect — $${t.priceMonthly}/mo`}
-                        accent={t.accent}
-                        requireSignIn={false}
-                      />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <PricingSection
+            isActive={isActive}
+            isPaying={isPaying}
+            currentTier={currentTier as import("@/lib/subscription-tiers").TierSlug | null | undefined}
+            notSignedIn={notSignedIn}
+          />
         </section>
 
         {/* ── Archive weight ── */}
@@ -353,6 +280,42 @@ export default async function PremiumPage() {
           ))}
         </section>
 
+        {/* ── Personal Codex hero ── */}
+        <section className="max-w-4xl mx-auto rounded-2xl border border-accent-gold/25 bg-gradient-to-br from-accent-gold/5 via-surface to-surface p-8 space-y-6">
+          <div className="text-center space-y-1">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+              /// your_intelligence_file
+            </p>
+            <h3 className="font-display text-2xl font-bold text-white">
+              Your own layer on top of the archive.
+            </h3>
+            <p className="font-mono text-xs text-text-muted max-w-lg mx-auto leading-relaxed">
+              Initiate+ gives you a Personal Codex — a private intelligence file that lives alongside the archive. Save signals, annotate episodes, track patterns across years of transmissions. The more you build, the more irreplaceable it becomes.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { icon: "◈", label: "Saved Signals", body: "Flag topics, behavioral patterns, and recurring dynamics as you find them." },
+              { icon: "📌", label: "Pinned Quotes", body: "Build a personal library of moments that matter. Searchable, linked to source." },
+              { icon: "🗂", label: "Episode Notes", body: "Annotate any episode privately. Your observations, cross-linked to the archive." },
+              { icon: "✦", label: "Tracked Figures", body: "Follow specific people across the archive. Behavioral signatures surface over time." },
+              { icon: "↳", label: "Persistent History", body: "Every save stays. Cancel and resubscribe — your Codex picks up exactly where you left." },
+              { icon: "⌬", label: "Grows With You", body: "The longer you're inside the archive, the more intelligence your Codex accumulates." },
+            ].map((item) => (
+              <div key={item.label} className="flex items-start gap-3 rounded-xl border border-accent-gold/10 bg-elevated/60 p-4">
+                <span className="mt-0.5 font-mono text-accent-gold text-lg">{item.icon}</span>
+                <div>
+                  <p className="font-mono text-xs font-bold text-accent-gold/80">{item.label}</p>
+                  <p className="mt-1 font-mono text-[10px] text-text-muted leading-relaxed">{item.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-center font-mono text-[10px] text-text-muted/50 uppercase tracking-widest">
+            Personal Codex · Initiate+ · $10/month
+          </p>
+        </section>
+
         {/* ── FAQ ── */}
         <section className="space-y-3 max-w-3xl mx-auto">
           <h3 className="mb-4 text-center font-display text-sm font-bold uppercase tracking-widest text-text-muted/60">Questions</h3>
@@ -363,49 +326,6 @@ export default async function PremiumPage() {
             </div>
           ))}
         </section>
-
-        {/* ── Final CTA ── */}
-        {!isPaying && (
-          <section className="relative overflow-hidden rounded-2xl border border-accent-gold/40 bg-gradient-to-b from-[#1a0033] via-[#0d001a] to-[#0d001a] p-10 text-center shadow-2xl shadow-accent-gold/10 max-w-3xl mx-auto">
-            <div className="pointer-events-none absolute inset-0">
-              <div className="absolute -top-16 left-1/2 h-48 w-96 -translate-x-1/2 rounded-full bg-accent-gold/10 blur-3xl" />
-            </div>
-            <div className="relative space-y-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-cyan/70">
-                ✦ &nbsp; your role is waiting &nbsp; ✦
-              </p>
-              <h3 className="font-display text-3xl font-bold text-accent-gold sm:text-4xl" style={{ textShadow: "0 0 30px rgba(212,175,55,0.4)" }}>
-                Stop Observing.
-                <br />
-                <span className="text-white">Start Initiating.</span>
-              </h3>
-              <p className="font-mono text-xs text-text-muted max-w-sm mx-auto">
-                Initiate+ for $10/month. Architect for $25/month.<br />
-                Both open immediately. Cancel any time. Nothing is ever deleted.
-              </p>
-              <div className="flex flex-wrap justify-center gap-4 pt-2">
-                <TierCheckoutButton
-                  tier="access"
-                  label={notSignedIn ? "Sign in to become Initiate+ — $10/mo" : "Become Initiate+ — $10/mo"}
-                  accent="gold"
-                  requireSignIn={notSignedIn}
-                />
-                <TierCheckoutButton
-                  tier="system"
-                  label={notSignedIn ? "Sign in to become Architect — $25/mo" : "Become Architect — $25/mo"}
-                  accent="violet"
-                  requireSignIn={notSignedIn}
-                />
-              </div>
-              {!user && (
-                <p className="font-mono text-[10px] text-accent-cyan/60">
-                  <Link href="/auth/signin" className="underline hover:text-accent-cyan">Sign in with Google</Link>{" "}
-                  to subscribe
-                </p>
-              )}
-            </div>
-          </section>
-        )}
 
         <section className="text-center">
           <Link href="/start-here" className="font-mono text-xs uppercase tracking-widest text-text-muted hover:text-accent-gold transition-colors">

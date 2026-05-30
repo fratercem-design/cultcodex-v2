@@ -22,9 +22,12 @@ export interface Tier {
   tagline: string;
   psychologyHook: string;                // the feeling it sells
   priceMonthly: number;
+  priceAnnual: number;                   // annual total (e.g. 96 = $8/mo billed yearly)
+  annualSavings: number;                 // dollars saved vs 12× monthly
   accent: "gold" | "violet";
   badge?: string;
   priceEnvVar: string;
+  priceAnnualEnvVar: string;
   features: string[];
   unlocks: string[];
 }
@@ -37,8 +40,11 @@ export const TIERS: Tier[] = [
     tagline: "The archive stops being background noise.",
     psychologyHook: "Now I can actually understand what I'm watching.",
     priceMonthly: 10,
+    priceAnnual: 96,
+    annualSavings: 24,
     accent: "gold",
     priceEnvVar: "STRIPE_PRICE_ACCESS_ID",
+    priceAnnualEnvVar: "STRIPE_PRICE_ACCESS_ANNUAL_ID",
     features: [
       "Read every word ever spoken — searchable, timestamped",
       "Jump to any moment in any transmission, instantly",
@@ -60,9 +66,12 @@ export const TIERS: Tier[] = [
     tagline: "You're not watching anymore. You're inside it.",
     psychologyHook: "I am inside the system. Not just watching it.",
     priceMonthly: 25,
+    priceAnnual: 240,
+    annualSavings: 60,
     accent: "violet",
     badge: "Most immersive",
     priceEnvVar: "STRIPE_PRICE_SYSTEM_ID",
+    priceAnnualEnvVar: "STRIPE_PRICE_SYSTEM_ANNUAL_ID",
     features: [
       "Full Initiate+ access",
       "Your own page woven permanently into the archive",
@@ -102,8 +111,14 @@ export function tierUnlocks(tier: TierSlug | null, feature: string): boolean {
   return t?.unlocks.includes(feature) ?? false;
 }
 
-/** Resolve the Stripe price id for a tier from env. */
+/** Resolve the Stripe monthly price id for a tier from env. */
 export function resolvePriceId(slug: TierSlug): string | null {
   const t = getTier(slug);
   return process.env[t.priceEnvVar] ?? null;
+}
+
+/** Resolve the Stripe annual price id for a tier from env (null if not configured). */
+export function resolveAnnualPriceId(slug: TierSlug): string | null {
+  const t = getTier(slug);
+  return process.env[t.priceAnnualEnvVar] ?? null;
 }

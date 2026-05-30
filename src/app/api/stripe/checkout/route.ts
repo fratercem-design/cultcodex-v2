@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getStripe } from "@/lib/stripe";
-import { resolvePriceId, type TierSlug } from "@/lib/subscription-tiers";
+import { resolvePriceId, resolveAnnualPriceId, type TierSlug } from "@/lib/subscription-tiers";
 
 /**
  * POST /api/stripe/checkout
@@ -23,11 +23,13 @@ export async function POST(req: Request) {
     // Parse optional tier from body. POST with no body is still valid
     // for back-compat with /subscribe's existing client.
     let tier: TierSlug | undefined;
+    let period: "monthly" | "annual" = "monthly";
     try {
       const body = await req.json().catch(() => null);
       if (body && (body.tier === "access" || body.tier === "system")) {
         tier = body.tier;
       }
+      if (body?.period === "annual") period = "annual";
     } catch {
       /* no body — fall through to legacy path */
     }
@@ -57,7 +59,7 @@ export async function POST(req: Request) {
     // Resolve price id: tier first (from the two-tier config), then
     // legacy STRIPE_PRICE_ID (used by the old /subscribe flow).
     const priceId = tier
-      ? resolvePriceId(tier)
+      ? (period === "annual" ? (resolveAnnualPriceId(tier) ?? resolvePriceId(tier)) : resolvePriceId(tier))
       : process.env.STRIPE_PRICE_ID ?? null;
     if (!priceId) {
       return NextResponse.json(

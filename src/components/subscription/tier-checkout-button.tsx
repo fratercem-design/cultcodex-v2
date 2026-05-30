@@ -9,6 +9,8 @@ interface TierCheckoutButtonProps {
   accent?: "gold" | "violet";
   /** Set true if the user isn't signed in — button routes to sign-in first. */
   requireSignIn?: boolean;
+  /** If true, posts period:"annual" to checkout (uses annual Stripe price if configured). */
+  isAnnual?: boolean;
 }
 
 /**
@@ -22,6 +24,7 @@ export function TierCheckoutButton({
   label,
   accent = "gold",
   requireSignIn = false,
+  isAnnual = false,
 }: TierCheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +42,7 @@ export function TierCheckoutButton({
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier }),
+        body: JSON.stringify({ tier, ...(isAnnual ? { period: "annual" } : {}) }),
       });
       const data = await res.json();
       if (data.url) {

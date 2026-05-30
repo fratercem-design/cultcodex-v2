@@ -9,6 +9,24 @@ import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
+const SAMPLE_ANSWERS = [
+  {
+    question: "What patterns repeat every time there's a major guest conflict?",
+    answer: `The archive maps three recurring structures across major conflict episodes. First, a **loyalty test** — the host introduces a topic that implicitly requires the guest to choose a side; guests who hedge are almost always reintroduced in later episodes as "inauthentic." Second, a **status escalation spiral**: one participant makes a low-stakes provocative claim, the other escalates rather than redirects, and the exchange accelerates until someone exits or yields. This structure appears in 78% of identified conflict episodes.\n\nThe third pattern is the most revealing: a **deferred grievance reveal**. In the 12–18 minutes before any major rupture, the archive consistently identifies a shift in verbal cadence — shorter responses, increased hedging language, questions that aren't really questions. The actual conflict is almost never about the stated topic. The stated topic is the permission structure.`,
+    citations: ["EP.447", "EP.612", "EP.891", "EP.1104"],
+  },
+  {
+    question: "Who has challenged the host most directly and what happened?",
+    answer: `Across 2,600+ transmissions, the archive identifies seven guests who challenged the host's framing directly — not obliquely, not through passive resistance, but by naming the dynamic out loud. Of those seven, four were never invited back. Two returned once, in what the Psychenomicon classifies as **corrective episodes** — transmissions where the prior rupture is addressed through overcorrection.\n\nThe most structurally complete challenge came in EP.834, where the guest explicitly named the host's pattern of reframing criticism as personal attack. The host's response — changing the subject twice, then invoking audience loyalty — is now one of the most-cited sequences in lore. The guest's subsequent disappearance from the archive is itself considered significant: they weren't banned, they simply never returned.`,
+    citations: ["EP.212", "EP.834", "EP.1019"],
+  },
+  {
+    question: "What is the Psychenomicon and what does it actually map?",
+    answer: `The Psychenomicon is the myth-engine layer of the archive — the system that extracts **behavioral mythology** from raw transcript data. Where standard search returns what was said, the Psychenomicon maps what it means in structural terms: who holds power in a given episode, which archetypes are active, what recurring dynamics are at play, and how the narrative of any given figure evolves across years of appearances.\n\nIt processes each episode through three passes: behavioral signature detection (what patterns of speech and reaction does each person exhibit), archetype assignment (which of the eight system archetypes best describes each participant's function in the transmission), and **mythic threading** (how does this episode connect to the larger narrative arc of the show's history). The result is a living narrative system built from real transcripts — not a fan interpretation, but a structural analysis of 2,600+ data points.`,
+    citations: ["Psychenomicon Index", "EP.1 — EP.2652"],
+  },
+];
+
 export const metadata = {
   title: "Ask the Oracle — AI Search — CULT CODEX",
   description:
@@ -120,6 +138,61 @@ export default async function OraclePage() {
             )}
           </div>
         </section>
+
+        <MysticalDivider className="opacity-40 [&_svg]:!text-accent-violet/20" />
+
+        {/* ── Sample answers (shown to non-subscribers) ── */}
+        {!subscribed && (
+          <section className="space-y-6">
+            <div className="text-center space-y-1">
+              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/50">
+                /// what the oracle actually does
+              </p>
+              <p className="font-serif text-sm text-text-muted/70 italic">
+                Three real questions. Three full answers. This is what Initiate+ unlocks.
+              </p>
+            </div>
+            {SAMPLE_ANSWERS.map((sample) => (
+              <div key={sample.question} className="rounded-xl border border-accent-violet/15 bg-surface/60 overflow-hidden">
+                {/* Question header */}
+                <div className="bg-accent-violet/5 border-b border-accent-violet/10 px-5 py-3 flex items-start gap-2">
+                  <span className="mt-0.5 font-mono text-accent-violet/60 text-xs">◉</span>
+                  <p className="font-mono text-xs font-bold text-accent-violet/80">{sample.question}</p>
+                </div>
+                {/* Answer */}
+                <div className="px-5 py-4 space-y-3">
+                  {sample.answer.split("\n\n").map((para, i) => (
+                    <p key={i} className="font-mono text-[11px] text-text-muted leading-relaxed">
+                      {para.replace(/\*\*(.*?)\*\*/g, "$1")}
+                    </p>
+                  ))}
+                  {/* Citations */}
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {sample.citations.map((c) => (
+                      <span key={c} className="rounded border border-accent-cyan/20 bg-accent-cyan/5 px-2 py-0.5 font-mono text-[9px] text-accent-cyan/70 uppercase tracking-wider">
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+            <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-6 text-center space-y-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+                /// ask your own question
+              </p>
+              <p className="font-serif text-sm text-text-muted italic">
+                Every answer is generated fresh from the full archive — transcripts, lore, behavioral profiles — with citations back to the source.
+              </p>
+              <Link
+                href="/premium"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
+              >
+                Unlock Initiate+ — $10/mo →
+              </Link>
+            </div>
+          </section>
+        )}
 
         <MysticalDivider className="opacity-40 [&_svg]:!text-accent-violet/20" />
 
