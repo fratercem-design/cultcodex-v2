@@ -46,22 +46,22 @@ async function main() {
   const apply = process.argv.includes("--apply");
 
   const episodes = await prisma.episode.findMany({
-    where: { description: { not: null } },
-    select: { id: true, episodeNumber: true, title: true, description: true },
+    where: { summaryShort: { not: null } },
+    select: { id: true, episodeNumber: true, title: true, summaryShort: true },
   });
 
   let changed = 0;
   const updates: { id: string; cleaned: string }[] = [];
 
   for (const ep of episodes) {
-    if (!ep.description) continue;
-    const cleaned = cleanDescription(ep.description);
-    if (cleaned !== ep.description) {
+    if (!ep.summaryShort) continue;
+    const cleaned = cleanDescription(ep.summaryShort);
+    if (cleaned !== ep.summaryShort) {
       changed++;
       updates.push({ id: ep.id, cleaned });
       if (!apply) {
         console.log(`\nEP.${ep.episodeNumber ?? "?"} — ${ep.title?.slice(0, 60)}`);
-        console.log(`  BEFORE: ${ep.description.slice(0, 120).replace(/\n/g, " ")}`);
+        console.log(`  BEFORE: ${ep.summaryShort.slice(0, 120).replace(/\n/g, " ")}`);
         console.log(`  AFTER:  ${cleaned.slice(0, 120).replace(/\n/g, " ")}`);
       }
     }
@@ -71,7 +71,7 @@ async function main() {
 
   if (apply) {
     for (const { id, cleaned } of updates) {
-      await prisma.episode.update({ where: { id }, data: { description: cleaned } });
+      await prisma.episode.update({ where: { id }, data: { summaryShort: cleaned } });
     }
     console.log(`Applied ${changed} updates.`);
   } else {
