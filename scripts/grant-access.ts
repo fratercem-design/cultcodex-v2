@@ -8,11 +8,10 @@
  *   npx dotenvx run -- npx tsx scripts/grant-access.ts --list   # list all users
  */
 
-import { PrismaClient } from "@/generated/prisma/client";
-
-const prisma = new PrismaClient();
+import { getPrisma, disconnect } from "./ingest/lib";
 
 async function main() {
+  const prisma = getPrisma();
   const args = process.argv.slice(2);
   const emailIdx = args.indexOf("--email");
   const nameIdx = args.indexOf("--name");
@@ -25,7 +24,7 @@ async function main() {
       take: 50,
     });
     console.table(users);
-    await prisma.$disconnect();
+    await disconnect();
     return;
   }
 
@@ -36,7 +35,7 @@ async function main() {
     user = await prisma.codexUser.findUnique({ where: { email } });
     if (!user) {
       console.error(`No user found with email: ${email}`);
-      await prisma.$disconnect();
+      await disconnect();
       process.exit(1);
     }
   } else if (nameIdx !== -1 && args[nameIdx + 1]) {
@@ -46,13 +45,13 @@ async function main() {
     });
     if (matches.length === 0) {
       console.error(`No user found matching name: "${name}"`);
-      await prisma.$disconnect();
+      await disconnect();
       process.exit(1);
     }
     if (matches.length > 1) {
       console.log(`Multiple matches for "${name}" — use --email to be precise:`);
       console.table(matches.map(u => ({ id: u.id, email: u.email, name: u.name })));
-      await prisma.$disconnect();
+      await disconnect();
       process.exit(1);
     }
     user = matches[0];
@@ -61,7 +60,7 @@ async function main() {
     console.log("  npx dotenvx run -- npx tsx scripts/grant-access.ts --email user@example.com");
     console.log("  npx dotenvx run -- npx tsx scripts/grant-access.ts --name \"Full Name\"");
     console.log("  npx dotenvx run -- npx tsx scripts/grant-access.ts --list");
-    await prisma.$disconnect();
+    await disconnect();
     process.exit(1);
   }
 
@@ -79,7 +78,7 @@ async function main() {
   });
 
   console.log("Done. User now has lifetime Architect (system) access.");
-  await prisma.$disconnect();
+  await disconnect();
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
