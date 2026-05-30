@@ -319,6 +319,13 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
             />
           </div>
 
+          {/* SEO intro — rendered outside tabs for crawler visibility */}
+          {(episode.summaryLong ?? episode.summaryShort) && (episode.summaryLong ?? episode.summaryShort)!.length >= 100 && (
+            <p className="text-sm text-text-primary/80 leading-relaxed">
+              {episode.summaryLong ?? episode.summaryShort}
+            </p>
+          )}
+
           {/* What You Missed */}
           <WhatYouMissed
             decodeData={hasDecodeData ? (episode.decodeData as Parameters<typeof WhatYouMissed>[0]["decodeData"]) : null}
@@ -698,6 +705,34 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           uploadDate: episode.airDate?.toISOString(),
           url: `https://cultcodex.me/episodes/${episode.slug}`,
           ...(episode.youtubeVideoId && { contentUrl: `https://www.youtube.com/watch?v=${episode.youtubeVideoId}` }),
+        }),
+      }}
+    />
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "PodcastEpisode",
+          name: cleanTitle(episode.title),
+          url: `https://cultcodex.me/episodes/${episode.slug}`,
+          ...(episode.airDate ? { datePublished: episode.airDate.toISOString() } : {}),
+          description: episode.summaryShort ?? episode.summaryLong ?? undefined,
+          ...(episode.thumbnailUrl ? { image: episode.thumbnailUrl } : {}),
+          partOfSeries: {
+            "@type": "PodcastSeries",
+            name: "Cult of Psyche",
+            url: "https://cultcodex.me",
+          },
+          ...(actualGuests.length > 0
+            ? {
+                actor: actualGuests.map((g) => ({
+                  "@type": "Person",
+                  name: g.person.displayName,
+                  url: `https://cultcodex.me/people/${g.person.slug}`,
+                })),
+              }
+            : {}),
         }),
       }}
     />

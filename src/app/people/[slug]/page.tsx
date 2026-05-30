@@ -748,6 +748,9 @@ export default async function PersonDetailPage({ params }: PageProps) {
               ? { firstAppearance: person.firstAppearanceEpisode.airDate.toISOString().slice(0, 10) }
               : {}),
             numberOfAppearances: uniqueEpisodes.length,
+            ...(uniqueEpisodes.length > 0
+              ? { numberOfItems: uniqueEpisodes.length }
+              : {}),
           }),
         }}
       />
