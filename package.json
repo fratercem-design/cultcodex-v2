@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "postinstall": "prisma generate && node scripts/download-yt-dlp.js",
+    "postinstall": "prisma generate",
     "build": "next build",
     "build:migrate": "prisma migrate resolve --rolled-back 20260529000001_add_missing_codex_user_fields 2>/dev/null; prisma migrate deploy && next build",
     "start": "next start",

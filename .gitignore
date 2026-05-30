@@ -70,6 +70,3 @@ scripts/enrich/run-log.txt
 
 # Brainstorming visual companion (superpowers skill)
 .superpowers/
-
-# Downloaded binaries
-/bin/yt-dlp

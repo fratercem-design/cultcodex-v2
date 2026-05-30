@@ -13,15 +13,6 @@ interface TranscriptResult {
   reason?: string;
 }
 
-interface WhisperResult {
-  episodeId: string;
-  slug: string;
-  videoId: string;
-  status: "ok" | "no_audio" | "error";
-  segments?: number;
-  error?: string;
-}
-
 interface ChannelSyncResult {
   fetched: number;
   created: number;
@@ -103,16 +94,6 @@ export function SyncPanel({
     remaining?: number;
     done?: boolean;
     results?: EnrichPeopleResult[];
-    error?: string;
-  } | null>(null);
-
-  // ── Whisper transcription ──
-  const [whisperLimit, setWhisperLimit] = useState(3);
-  const [whisperLoading, setWhisperLoading] = useState(false);
-  const [whisperResult, setWhisperResult] = useState<{
-    ok: boolean;
-    summary?: { processed: number; ok: number; no_audio: number; errors: number; remaining: number };
-    results?: WhisperResult[];
     error?: string;
   } | null>(null);
 
@@ -253,25 +234,6 @@ export function SyncPanel({
     } finally {
       setEnrichPeopleLoading(false);
       setEnrichPeopleProgress(null);
-    }
-  }
-
-  async function handleWhisperTranscribe() {
-    setWhisperLoading(true);
-    setWhisperResult(null);
-    try {
-      const res = await fetch("/api/admin/sync-transcripts-whisper", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ limit: whisperLimit }),
-      });
-      const data = await res.json() as typeof whisperResult;
-      setWhisperResult(data);
-      router.refresh();
-    } catch {
-      setWhisperResult({ ok: false, error: "Network error." });
-    } finally {
-      setWhisperLoading(false);
     }
   }
 
@@ -433,78 +395,6 @@ export function SyncPanel({
             </div>
           )}
         </section>
-      </div>
-
-      {/* ── Whisper Transcription ── */}
-      <div className="rounded-lg border border-accent-crimson/20 bg-accent-crimson/5 p-6 space-y-5">
-        <div className="space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-crimson">{"/// whisper_transcribe"}</p>
-          <h2 className="font-display text-lg font-bold text-text-primary">Transcribe with Whisper</h2>
-          <p className="text-xs text-text-muted leading-relaxed">
-            For episodes with no YouTube captions: downloads audio via <code>yt-dlp</code> and sends it
-            to <strong className="text-text-primary">OpenAI Whisper</strong>. Slower and costs API credits,
-            but works for Shorts, live streams, and anything YouTube can&apos;t caption.
-          </p>
-          <p className="font-mono text-[9px] text-text-muted/60">
-            ~$0.006/min of audio · Requires <code>OPENAI_API_KEY</code> + yt-dlp on server.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <label className="font-mono text-[10px] text-text-muted whitespace-nowrap">Batch size</label>
-          <select
-            value={whisperLimit}
-            onChange={(e) => setWhisperLimit(Number(e.target.value))}
-            disabled={whisperLoading}
-            className="rounded border border-border bg-void px-2 py-1 font-mono text-xs text-text-primary focus:border-accent-crimson focus:outline-none disabled:opacity-50"
-          >
-            {[1, 3, 5, 10].map((n) => (
-              <option key={n} value={n}>{n} episode{n !== 1 ? "s" : ""}</option>
-            ))}
-          </select>
-        </div>
-        <button
-          onClick={handleWhisperTranscribe}
-          disabled={whisperLoading}
-          className="w-full flex items-center justify-center gap-2 rounded border border-accent-crimson/50 bg-accent-crimson/10 hover:bg-accent-crimson/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-crimson transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {whisperLoading ? <><Spinner /> Transcribing with Whisper…</> : `Transcribe Next ${whisperLimit} with Whisper →`}
-        </button>
-        {whisperResult && (
-          <div className={`rounded border px-4 py-3 space-y-2 ${whisperResult.ok ? "border-accent-crimson/30 bg-accent-crimson/5" : "border-red-500/30 bg-red-500/5"}`}>
-            {whisperResult.ok && whisperResult.summary ? (
-              <>
-                <div className="flex flex-wrap gap-4 font-mono text-[10px]">
-                  <span className="text-accent-crimson">✓ {whisperResult.summary.ok} transcribed</span>
-                  {whisperResult.summary.no_audio > 0 && (
-                    <span className="text-text-muted">— {whisperResult.summary.no_audio} no audio</span>
-                  )}
-                  {whisperResult.summary.errors > 0 && (
-                    <span className="text-red-400">✗ {whisperResult.summary.errors} errors</span>
-                  )}
-                  {whisperResult.summary.remaining > 0 && (
-                    <span className="text-accent-gold">{whisperResult.summary.remaining.toLocaleString()} remaining</span>
-                  )}
-                </div>
-                {whisperResult.results && (
-                  <div className="max-h-40 overflow-y-auto space-y-0.5 pt-1">
-                    {whisperResult.results.map((r) => (
-                      <div key={r.episodeId} className="flex items-center gap-2 font-mono text-[9px]">
-                        <span className={r.status === "ok" ? "text-accent-crimson" : r.status === "no_audio" ? "text-text-muted" : "text-red-400"}>
-                          {r.status === "ok" ? "✓" : r.status === "no_audio" ? "—" : "✗"}
-                        </span>
-                        <span className="text-text-muted truncate flex-1">{r.slug}</span>
-                        {r.segments && <span className="text-text-muted/50">{r.segments}s</span>}
-                        {r.error && <span className="text-red-400/70 truncate">{r.error}</span>}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </>
-            ) : (
-              <p className="font-mono text-xs text-red-400">✗ {whisperResult?.error}</p>
-            )}
-          </div>
-        )}
       </div>
 
       {/* ── Row 2: AI Enrichment ── */}
