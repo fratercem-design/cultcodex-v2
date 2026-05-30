@@ -26,6 +26,8 @@ const BOILERPLATE_PATTERNS: RegExp[] = [
   /join\s+this\s+channel[^\n]*/gi,
   /🚀\s*[^\n]*/g,
   /^\s*[📌🔗💬🔔]+\s*$/gm,  // lines that are only emoji
+  /https?:\/\/streamyard\.com\S*/gi,
+  /streamyard\.com\S*/gi,
 ];
 
 function cleanDescription(raw: string): string {
