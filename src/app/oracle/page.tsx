@@ -25,7 +25,7 @@ export default async function OraclePage() {
   const BOILERPLATE = ["vidIQ", "future initiate", "Hello,", "subscribe", "like and share"];
   const qualityPool = await prisma.quote.findMany({
     where: {
-      speakerId: { not: null },
+      speakerPersonId: { not: null },
       context: { not: null },
       AND: BOILERPLATE.map((phrase) => ({ text: { not: { contains: phrase } } })),
     },
