@@ -7,6 +7,7 @@ export const revalidate = 120; // re-check live status every 2 min
 export const metadata: Metadata = {
   title: "Cult Live — CultCodex",
   description: "Latest videos and live streams from Cult of Psyche and Psyche's Nightmares.",
+  alternates: { canonical: "/cult-live" },
 };
 
 const CHANNELS = [

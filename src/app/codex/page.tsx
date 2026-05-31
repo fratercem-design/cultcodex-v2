@@ -32,6 +32,7 @@ export const metadata: Metadata = {
   title: "My Codex — CULT CODEX",
   description:
     "Your personal map of the Cult of Psyche — saved signals, transmissions, and moments.",
+  alternates: { canonical: "/codex" },
 };
 
 export default async function CodexPage() {

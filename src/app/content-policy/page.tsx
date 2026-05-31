@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Content Policy — CULT CODEX",
   description: "Content sourcing, attribution, and privacy policies for the Cult Codex archive",
+  alternates: { canonical: "/content-policy" },
 };
 
 export default function ContentPolicyPage() {

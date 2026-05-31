@@ -5,6 +5,7 @@ import { CollectionView } from "./collection-view";
 export const metadata = {
   title: "Card Collection — CultCodex",
   description: "Your Codex trading card collection.",
+  alternates: { canonical: "/cards" },
 };
 
 export default async function CardsPage() {

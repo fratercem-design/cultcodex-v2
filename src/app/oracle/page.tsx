@@ -13,6 +13,7 @@ export const metadata = {
   title: "Ask the Oracle — AI Search — CULT CODEX",
   description:
     "Ask the archive anything. The Oracle synthesizes 2,600+ transmissions into precise answers — behavioral patterns, guest dynamics, recurring moments — all cited back to the source. Initiate+ feature.",
+  alternates: { canonical: "/oracle" },
 };
 
 export default async function OraclePage() {

@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Privacy Policy — CULT CODEX",
   description: "How CultCodex collects, uses, and protects your personal information.",
+  alternates: { canonical: "/privacy" },
 };
 
 export const revalidate = false;

@@ -14,6 +14,7 @@ export const metadata: Metadata = {
     description:
       "History, occult meaning, and modern interpretation of the most significant esoteric symbols.",
   },
+  alternates: { canonical: "/symbols" },
 };
 
 const CATEGORIES: SymbolEntry["category"][] = [

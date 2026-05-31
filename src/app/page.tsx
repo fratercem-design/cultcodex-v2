@@ -34,6 +34,7 @@ export const metadata = {
     description:
       "2,600+ conversations indexed. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
     type: "website" as const,
+    url: "/",
   },
   twitter: {
     card: "summary_large_image" as const,
@@ -41,6 +42,7 @@ export const metadata = {
     description:
       "AI breakdowns, guest profiles, behavioral maps, and growing transcript coverage for every Cult of Psyche episode.",
   },
+  alternates: { canonical: "/" },
 };
 
 export default async function HomePage() {

@@ -13,6 +13,7 @@ export const revalidate = 3600;
 export const metadata = {
   title: "Archive Stats — CultCodex",
   description: "The Cult of Psyche archive by the numbers",
+  alternates: { canonical: "/stats" },
 };
 
 const CANON_COLORS: Record<string, string> = {

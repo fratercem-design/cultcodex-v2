@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Signal Proposals — CultCodex",
   description: "Oracle members propose what gets investigated next in the archive.",
+  alternates: { canonical: "/signals" },
 };
 
 export const dynamic = "force-dynamic";

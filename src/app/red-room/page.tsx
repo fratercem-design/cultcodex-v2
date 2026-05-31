@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Red Room — CultCodex",
   description: "Unfiltered analysis. No softening. Oracle-tier access only.",
   robots: { index: false, follow: false },
+  alternates: { canonical: "/red-room" },
 };
 
 export const revalidate = 3600;

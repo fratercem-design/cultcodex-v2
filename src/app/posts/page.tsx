@@ -10,6 +10,7 @@ export const revalidate = 300;
 export const metadata = {
   title: "Community Posts — CULT CODEX",
   description: "YouTube community posts from Cult of Psyche",
+  alternates: { canonical: "/posts" },
 };
 
 const PAGE_SIZE = 20;

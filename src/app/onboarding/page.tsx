@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Initiation — CultCodex",
+  alternates: { canonical: "/onboarding" },
 };
 
 export default async function OnboardingPage() {

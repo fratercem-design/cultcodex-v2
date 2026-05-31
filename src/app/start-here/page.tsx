@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   title: "Start Here — CULT CODEX",
   description:
     "Cult of Psyche is a livestream show exploring consciousness, the occult, AI, and human behavior. CultCodex is the structured archive of everything that happened — 2,500+ transmissions, every word indexed, every pattern extracted.",
+  alternates: { canonical: "/start-here" },
 };
 
 const DOORWAYS = [

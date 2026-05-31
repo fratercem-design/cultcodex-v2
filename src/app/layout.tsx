@@ -75,9 +75,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "CultCodex — The Living Archive",
   description: SITE_DESCRIPTION,
-  alternates: {
-    canonical: SITE_URL,
-  },
   icons: {
     icon: "/favicon.jpg",
     apple: "/favicon.jpg",
@@ -88,7 +85,6 @@ export const metadata: Metadata = {
     images: [{ url: "/social-share.jpg", width: 1200, height: 630 }],
     siteName: "CultCodex",
     type: "website",
-    url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",

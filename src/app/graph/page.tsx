@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Relationship Map — CULT CODEX",
   description:
     "Dynamic map of every recurring Cult of Psyche figure — who appeared with whom, how often, and what orbits formed. Click any node to focus their connections.",
+  alternates: { canonical: "/graph" },
 };
 
 const ERA_ACCENT: Record<string, string> = {

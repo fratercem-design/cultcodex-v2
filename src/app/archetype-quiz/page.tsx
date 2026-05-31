@@ -12,6 +12,7 @@ export const metadata: Metadata = {
     description:
       "10 questions. One revelation. Find out which of the 8 CultCodex archetypes you embody.",
   },
+  alternates: { canonical: "/archetype-quiz" },
 };
 
 export default function ArchetypeQuizPage() {

@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Methodology — CULT CODEX",
   description: "How the Cult Codex archive is built, maintained, and quality-checked",
+  alternates: { canonical: "/methodology" },
 };
 
 export default function MethodologyPage() {

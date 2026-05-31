@@ -22,6 +22,7 @@ export const revalidate = 600;
 export const metadata = {
   title: "People — CULT CODEX",
   description: "1,300+ voices profiled from the Cult of Psyche archive. Behavioral signatures, recurring dynamics, appearance counts, and transcript moments for every figure who entered the stream.",
+  alternates: { canonical: "/people" },
 };
 
 const SORT_OPTIONS = [
