@@ -48,7 +48,7 @@ import { ColorLegend } from "@/components/ui/color-legend";
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
   try {
@@ -74,11 +74,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const episode = await getEpisodeBySlug(slug);
 
   if (!episode) {
-    return buildMetadata({
-      title: "Episode Not Found",
-      description: "This episode could not be found.",
-      path: `/episodes/${slug}`,
-    });
+    notFound();
   }
 
   return buildMetadata({

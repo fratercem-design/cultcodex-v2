@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { EpisodeCard } from "@/components/archive/episode-card";
@@ -12,7 +11,6 @@ import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
 import { DailyTransmission } from "@/components/home/daily-transmission";
 import { getQuoteReactionCounts } from "@/lib/queries/quote-reactions";
-import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
@@ -21,6 +19,7 @@ import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { MusicVideoPlayer } from "@/components/home/music-video-player";
 import { HomeOraclePreview } from "@/components/oracle/home-oracle-preview";
+import { OnboardingCheck } from "@/components/home/onboarding-check";
 
 export const revalidate = 300;
 
@@ -33,17 +32,19 @@ export const metadata = {
     description:
       "1,500+ conversations decoded. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
     type: "website" as const,
+    images: [{ url: "/social-share.jpg", width: 1168, height: 784, alt: "CultCodex" }],
   },
   twitter: {
     card: "summary_large_image" as const,
     title: "CultCodex — Decode Cult of Psyche",
     description:
       "Full transcripts, AI breakdowns, guest profiles, and pattern maps for every Cult of Psyche episode.",
+    images: ["/social-share.jpg"],
   },
 };
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, memberCount] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, memberCount] = await Promise.all([
     getArchiveStats().catch(() => ({
       episodes: 0, people: 0, loreEntries: 0, quotes: 0,
       series: 0, topics: 0, segments: 0, totalHours: 0,
@@ -59,19 +60,14 @@ export default async function HomePage() {
       spotlightEpisode: null,
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
-    getCurrentUser(),
     prisma.codexUser.count({
       where: { OR: [{ role: "admin" }, { subscriptionStatus: "active" }] },
     }).catch(() => 0),
   ]);
 
-  // Redirect new users to complete onboarding before they see the main app
-  if (currentUser && currentUser.onboardingCompleted === false) {
-    redirect("/onboarding");
-  }
-
+  // Reaction counts without user context — user-specific highlighting handled client-side
   const dailyQuoteReactions = dailyTransmission.quote
-    ? await getQuoteReactionCounts(dailyTransmission.quote.id, currentUser?.id).catch(() => undefined)
+    ? await getQuoteReactionCounts(dailyTransmission.quote.id, undefined).catch(() => undefined)
     : undefined;
 
   const recentCards = recentEpisodes.map(formatEpisodeForCard);
@@ -80,6 +76,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <OnboardingCheck />
       {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section className="relative flex min-h-[540px] sm:min-h-[620px] items-center justify-center overflow-hidden">
         <Image src="/hero-bg.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
@@ -201,7 +198,6 @@ export default async function HomePage() {
           <DailyTransmission
             data={dailyTransmission}
             quoteReactions={dailyQuoteReactions}
-            isAuthenticated={Boolean(currentUser)}
           />
 
           {/* ── ORACLE — AI SEARCH ───────────────────────────────────── */}

@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import type { DailyTransmission as DailyTransmissionData } from "@/lib/queries/daily";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { formatDate } from "@/lib/format/date";
@@ -12,7 +15,6 @@ import { QuoteShareButton } from "./quote-share-button";
 interface Props {
   data: DailyTransmissionData;
   quoteReactions?: QuoteReactionInitial;
-  isAuthenticated?: boolean;
 }
 
 function formatDateHuman(ymd: string): string {
@@ -29,8 +31,9 @@ function formatDateHuman(ymd: string): string {
 export function DailyTransmission({
   data,
   quoteReactions,
-  isAuthenticated = false,
 }: Props) {
+  const { data: session } = useSession();
+  const isAuthenticated = session?.user != null;
   const { date, quote, spotlightEpisode, pulse } = data;
   const hasAnything = quote || spotlightEpisode || pulse.newEpisodes > 0;
   if (!hasAnything) return null;

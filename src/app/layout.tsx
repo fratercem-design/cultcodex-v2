@@ -16,6 +16,7 @@ import { getArchiveCounts } from "@/lib/queries/stats";
 import { SkipLink } from "@/components/ui/skip-link";
 import { KonamiEasterEgg } from "@/components/ui/konami-easter-egg";
 import { CommandPalette } from "@/components/search/command-palette";
+import { Providers } from "@/components/providers";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -120,6 +121,7 @@ export default async function RootLayout({
         className={`${fontVariables} font-mono antialiased bg-void text-text-primary`}
         style={{ backgroundColor: "var(--term-bg)" }}
       >
+        <Providers>
         <SkipLink />
         <LiveBanner />
         <EntryBanner />
@@ -137,6 +139,7 @@ export default async function RootLayout({
         </div>
         <KonamiEasterEgg />
         <CommandPalette />
+        </Providers>
         <Analytics />
         <SpeedInsights />
       </body>
