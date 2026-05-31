@@ -131,7 +131,7 @@ const PACKS = [
     weightOracle: 12,
     weightLegendary: 6,
     weightMythic: 3,
-    weightForbidden: 1,
+    weightForbidden: 0,
   },
 ];
 
