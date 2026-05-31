@@ -4,6 +4,7 @@ import { isSubscribed } from "@/lib/subscription";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { MysticalDivider, OrnamentalBreak } from "@/components/graphics/mystical-divider";
 import { OracleConsole } from "@/components/oracle/oracle-console";
+import { OracleExampleExchanges } from "@/components/oracle/oracle-example-exchanges";
 import Link from "next/link";
 import { cookies } from "next/headers";
 
@@ -30,7 +31,7 @@ const SAMPLE_ANSWERS = [
 export const metadata = {
   title: "Ask the Oracle — AI Search — CULT CODEX",
   description:
-    "Ask anything about the Cult of Psyche archive. The Oracle is an AI trained on 2,500+ transmissions — it synthesizes answers from actual transcripts, lore entries, and behavioral profiles, with citations.",
+    "Ask the archive anything. The Oracle synthesizes 2,600+ transmissions into precise answers — behavioral patterns, guest dynamics, recurring moments — all cited back to the source. Initiate+ feature.",
 };
 
 const FREE_QUERY_LIMIT = 3;
@@ -48,27 +49,32 @@ export default async function OraclePage({
     ? user.role === "admin" || (await isSubscribed(user.id))
     : false;
 
-  let initialFreeQueriesRemaining: number | undefined;
-  if (user && !subscribed) {
-    const cookieStore = await cookies();
-    const cookieVal = cookieStore.get("oracle_preview")?.value;
-    const currentMonth = new Date().toISOString().slice(0, 7);
-    let usedThisMonth = 0;
-    if (cookieVal) {
-      const [month, countStr] = cookieVal.split(":");
-      if (month === currentMonth) usedThisMonth = parseInt(countStr, 10) || 0;
-    }
-    initialFreeQueriesRemaining = Math.max(0, FREE_QUERY_LIMIT - usedThisMonth);
-  }
-
-  const totalQuotes = await prisma.quote.count();
-  const randomOffset = Math.floor(Math.random() * Math.max(totalQuotes - 1, 0));
-  const quotes = await prisma.quote.findMany({
-    take: 1,
-    skip: randomOffset,
-    include: { speaker: true, episode: true },
+  // Quality quote: speaker + context + 60+ chars, no boilerplate
+  const BOILERPLATE = ["vidIQ", "future initiate", "Hello,", "subscribe", "like and share"];
+  const qualityPool = await prisma.quote.findMany({
+    where: {
+      speakerPersonId: { not: null },
+      context: { not: null },
+      AND: BOILERPLATE.map((phrase) => ({ text: { not: { contains: phrase } } })),
+    },
+    select: { id: true, text: true },
+    take: 500,
+    orderBy: { createdAt: "desc" },
   });
+  const meaningful = qualityPool.filter((q) => q.text.length >= 60);
+  const pick = meaningful.length > 0
+    ? meaningful[Math.floor(Math.random() * meaningful.length)]
+    : qualityPool[0];
+  const quotes = pick
+    ? await prisma.quote.findMany({
+        where: { id: pick.id },
+        take: 1,
+        include: { speaker: true, episode: true },
+      })
+    : [];
   const quote = quotes[0] ?? null;
+
+  const archiveSize = await prisma.transcriptSegment.count();
 
   return (
     <div className="relative min-h-screen bg-void">
@@ -85,9 +91,8 @@ export default async function OraclePage({
         }}
       />
 
-      {/* ── Header — Medallion ── */}
+      {/* ── Header ── */}
       <header className="relative z-10 flex flex-col items-center pt-16 pb-4 text-center">
-        {/* Portrait medallion */}
         <div className="animate-float mb-8">
           <div
             className="relative h-44 w-44 sm:h-52 sm:w-52 rounded-full overflow-hidden animate-ring-pulse"
@@ -114,100 +119,91 @@ export default async function OraclePage({
           THE ORACLE
         </h1>
         <p className="mt-1.5 font-mono text-xs uppercase tracking-[0.45em] text-accent-violet/60">
-          AI search of the complete archive
+          AI synthesis of the complete archive
         </p>
 
-        {/* Thin gold rule */}
         <div className="mt-5 w-24 h-px bg-gradient-to-r from-transparent via-accent-gold/40 to-transparent" />
-
         <MysticalDivider className="mt-4 opacity-40 [&_svg]:!text-accent-violet/25" />
 
         <p className="mx-auto mt-4 max-w-md px-4 font-serif text-sm leading-relaxed text-text-muted italic">
           Ask anything.{" "}
-          <span className="text-accent-cyan">{totalQuotes.toLocaleString()} archive moments</span>{" "}
+          <span className="text-accent-cyan">{archiveSize.toLocaleString()}+ archive moments</span>{" "}
           synthesized in real time — with citations back to the source.
         </p>
+
+        {/* Trial callout for non-subscribers */}
+        {!canAccess && (
+          <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-accent-gold/30 bg-accent-gold/5 px-5 py-2">
+            <span className="text-accent-gold text-sm">✦</span>
+            <p className="font-mono text-[11px] text-accent-gold/80">
+              3 free questions — no account required to start
+            </p>
+          </div>
+        )}
       </header>
 
       <main className="relative z-10 mx-auto max-w-2xl px-4 pb-20 space-y-12">
 
-        {/* ── Oracle Console ── */}
-        <section>
-          <div className="space-y-4">
-            <OracleConsole initialFreeQueriesRemaining={initialFreeQueriesRemaining} initialQuestion={initialQuestion} />
-            {!subscribed && (
-              <p className="text-center font-mono text-[10px] text-text-muted/40 uppercase tracking-widest">
-                Initiate+ unlocks unlimited Oracle access ·{" "}
-                <Link href="/premium" className="text-accent-gold/60 hover:text-accent-gold transition-colors">
-                  $10/mo
-                </Link>
-              </p>
-            )}
-          </div>
-        </section>
+        {/* ── For non-subscribers: show examples FIRST, then console ── */}
+        {!canAccess && (
+          <>
+            <section>
+              <OracleExampleExchanges />
+            </section>
 
-        <MysticalDivider className="opacity-40 [&_svg]:!text-accent-violet/20" />
-
-        {/* ── Sample answers (shown to non-subscribers) ── */}
-        {!subscribed && (
-          <section className="space-y-6">
-            <div className="text-center space-y-1">
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/50">
-                /// what the oracle actually does
-              </p>
-              <p className="font-serif text-sm text-text-muted/70 italic">
-                Three real questions. Three full answers. This is what Initiate+ unlocks.
+            <div className="relative">
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-violet/30 to-transparent" />
+              <p className="pt-6 text-center font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet/40">
+                {"/// now_ask_yours"}
               </p>
             </div>
-            {SAMPLE_ANSWERS.map((sample) => (
-              <div key={sample.question} className="rounded-xl border border-accent-violet/15 bg-surface/60 overflow-hidden">
-                {/* Question header */}
-                <div className="bg-accent-violet/5 border-b border-accent-violet/10 px-5 py-3 flex items-start gap-2">
-                  <span className="mt-0.5 font-mono text-accent-violet/60 text-xs" aria-hidden="true">◉</span>
-                  <p className="font-mono text-xs font-bold text-accent-violet/80">{sample.question}</p>
-                </div>
-                {/* Answer */}
-                <div className="px-5 py-4 space-y-3">
-                  {sample.answer.split("\n\n").map((para, i) => (
-                    <p key={i} className="font-mono text-[11px] text-text-muted leading-relaxed">
-                      {para.replace(/\*\*(.*?)\*\*/g, "$1")}
-                    </p>
-                  ))}
-                  {/* Citations */}
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {sample.citations.map((c) => (
-                      <span key={c} className="rounded border border-accent-cyan/20 bg-accent-cyan/5 px-2 py-0.5 font-mono text-[9px] text-accent-cyan/70 uppercase tracking-wider">
-                        {c}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-            <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-6 text-center space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
-                /// ask your own question
-              </p>
-              <p className="font-serif text-sm text-text-muted italic">
-                Every answer is generated fresh from the full archive — transcripts, lore, behavioral profiles — with citations back to the source.
-              </p>
-              <Link
-                href="/premium"
-                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
-              >
-                Unlock Initiate+ — $10/mo →
+          </>
+        )}
+
+        {/* ── Oracle Console ── */}
+        <section>
+          <OracleConsole />
+          {!canAccess && (
+            <p className="mt-3 text-center font-mono text-[10px] text-text-muted/40 uppercase tracking-widest">
+              Initiate+ — unlimited Oracle access ·{" "}
+              <Link href="/premium" className="text-accent-gold/60 hover:text-accent-gold transition-colors">
+                $10/mo
               </Link>
+            </p>
+          )}
+        </section>
+
+        {/* ── For subscribers: show what they've unlocked ── */}
+        {canAccess && (
+          <section className="rounded-xl border border-accent-violet/15 bg-surface/60 px-6 py-5 space-y-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/50">
+              {"/// oracle_capabilities"}
+            </p>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {[
+                "Behavioral patterns across episodes",
+                "Guest dynamics over time",
+                "Recurring moments & archetypes",
+                "Relationship map synthesis",
+                "Transcript citations with timestamps",
+                "Cross-episode theme tracking",
+              ].map((cap) => (
+                <div key={cap} className="flex items-start gap-2">
+                  <span className="text-accent-violet/50 mt-0.5 shrink-0">◈</span>
+                  <p className="font-mono text-[10px] text-text-muted leading-snug">{cap}</p>
+                </div>
+              ))}
             </div>
           </section>
         )}
 
         <MysticalDivider className="opacity-40 [&_svg]:!text-accent-violet/20" />
 
-        {/* ── Random quote ── */}
+        {/* ── Transmission fragment (quality-filtered random quote) ── */}
         {quote && (
           <section>
             <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/40 text-center mb-4">
-              /// transmission_fragment
+              {"/// transmission_fragment"}
             </p>
             <div className="relative rounded-xl border border-accent-violet/20 bg-surface/80 backdrop-blur-sm p-1">
               <div
@@ -263,24 +259,44 @@ export default async function OraclePage({
                 )}
               </div>
             </div>
+          </section>
+        )}
 
-            <div className="mt-8 flex justify-center">
-              <Link
-                href={`/oracle?t=${Date.now()}`}
-                className="group relative inline-flex items-center gap-2 rounded-lg border border-accent-violet/30 bg-surface px-6 py-3 font-display text-sm font-semibold text-accent-violet transition-all hover:border-accent-violet/60 hover:bg-accent-violet/5 hover:shadow-[0_0_20px_rgba(110,75,174,0.15)]"
-              >
-                <span className="inline-block transition-transform group-hover:rotate-12">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-accent-violet/60">
-                    <path
-                      d="M8 1v3M8 12v3M1 8h3M12 8h3M3.05 3.05l2.12 2.12M10.83 10.83l2.12 2.12M3.05 12.95l2.12-2.12M10.83 5.17l2.12-2.12"
-                      stroke="currentColor"
-                      strokeWidth="1.2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </span>
-                New transmission
-              </Link>
+        {/* ── Non-subscriber conversion close ── */}
+        {!canAccess && (
+          <section className="relative overflow-hidden rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-[#120020] via-[#0d001a] to-[#0d001a] p-8 text-center space-y-5 shadow-xl shadow-accent-violet/10">
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute -top-12 left-1/2 h-40 w-80 -translate-x-1/2 rounded-full bg-accent-violet/10 blur-3xl" />
+            </div>
+            <div className="relative space-y-4">
+              <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">
+                ✦ &nbsp; unlock the full archive &nbsp; ✦
+              </p>
+              <h3 className="font-display text-2xl font-bold text-white sm:text-3xl">
+                The Oracle answers{" "}
+                <span className="text-accent-violet">everything.</span>
+              </h3>
+              <p className="font-mono text-[11px] text-text-muted max-w-sm mx-auto leading-relaxed">
+                Unlimited questions. Every transcript, every behavioral profile, every pattern
+                the archive has identified — synthesized on demand, with citations.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                <Link
+                  href="/premium"
+                  className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-7 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/25 hover:shadow-lg hover:shadow-accent-violet/20"
+                >
+                  Become Initiate+ — $10/mo →
+                </Link>
+                <Link
+                  href="/premium"
+                  className="font-mono text-[11px] text-text-muted/50 hover:text-accent-violet/70 transition-colors"
+                >
+                  See what opens →
+                </Link>
+              </div>
+              <p className="font-mono text-[10px] text-text-muted/40">
+                Cancel any time · Instant access · Includes transcripts, Psychenomicon & more
+              </p>
             </div>
           </section>
         )}

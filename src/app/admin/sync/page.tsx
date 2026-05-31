@@ -31,8 +31,11 @@ export default async function SyncPage() {
     prisma.episode.count({ where: { youtubeVideoId: { not: null } } }),
     prisma.episode.count({
       where: {
-        segments: { some: {} },
-        OR: [{ summaryLong: null }, { summaryLong: "" }],
+        AND: [
+          { OR: [{ summaryShort: null }, { summaryShort: "" }] },
+          { OR: [{ summaryFacts: null }, { summaryFacts: "" }, { summaryFacts: "—" }] },
+          { OR: [{ summaryLong: null }, { summaryLong: "" }] },
+        ],
       },
     }),
     prisma.person.count({

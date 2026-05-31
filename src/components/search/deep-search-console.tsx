@@ -256,7 +256,7 @@ export function DeepSearchConsole() {
           <p className="text-violet-200 font-medium">Deep Search is a subscriber feature.</p>
           <p className="text-sm text-text-muted">Subscribe to unlock multi-concept intersection search across the full transcript archive.</p>
           <Link
-            href="/subscribe"
+            href="/premium"
             className="inline-block rounded-lg bg-violet-700 px-5 py-2 text-sm font-semibold text-white hover:bg-violet-600 transition-colors"
           >
             Subscribe

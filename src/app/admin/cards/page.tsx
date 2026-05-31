@@ -36,7 +36,7 @@ export default function AdminCardsPage() {
   return (
     <div style={{ padding: "32px 28px", maxWidth: 800, fontFamily: "var(--font-mono), monospace" }}>
       <p style={{ fontSize: 10, color: "var(--neon)", letterSpacing: "0.4em", textTransform: "uppercase", marginBottom: 8 }}>
-        // ADMIN
+        {"// ADMIN"}
       </p>
       <h1 style={{ fontSize: 20, color: "var(--term-fg)", margin: "0 0 6px" }}>Card System Seed</h1>
       <p style={{ fontSize: 11, color: "var(--term-fg-dim)", marginBottom: 28 }}>

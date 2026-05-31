@@ -76,7 +76,9 @@ export function CommandPalette() {
   useEffect(() => {
     if (debounce.current) clearTimeout(debounce.current);
     if (!query.trim() || query.length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setResults([]);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelected(0);
       return;
     }
@@ -197,7 +199,7 @@ export function CommandPalette() {
             </Link>
           ) : (
             <div className="flex items-center justify-between px-4">
-              <p className="font-mono text-[10px] text-text-muted tracking-wider">// SEARCH THE ARCHIVE</p>
+              <p className="font-mono text-[10px] text-text-muted tracking-wider">{"// SEARCH THE ARCHIVE"}</p>
               <div className="flex items-center gap-3 font-mono text-[10px] text-text-muted">
                 <span><kbd className="border border-border rounded px-1">↑↓</kbd> navigate</span>
                 <span><kbd className="border border-border rounded px-1">↵</kbd> open</span>

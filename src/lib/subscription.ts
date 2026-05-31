@@ -41,7 +41,7 @@ export async function hasSystemTier(userId: string): Promise<boolean> {
   });
   if (!user) return false;
   if (user.role === "admin") return true;
-  if (user.isLifetimeMember) return true;
+  if (user.isLifetimeMember && user.subscriptionTier === "system") return true;
   return (
     user.subscriptionStatus === "active" &&
     user.subscriptionTier === "system" &&

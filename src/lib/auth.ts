@@ -76,6 +76,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       if (session.user?.email) {
+        const adminEmails = (process.env.ADMIN_EMAILS ?? "")
+          .split(",")
+          .map((e) => e.trim().toLowerCase())
+          .filter(Boolean);
+        const isEnvAdmin = adminEmails.includes(session.user.email.toLowerCase());
+
         try {
           let codexUser = await prisma.codexUser.findUnique({
             where: { email: session.user.email },
@@ -99,11 +105,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
 
           if (codexUser) {
-            const adminEmails = (process.env.ADMIN_EMAILS ?? "")
-              .split(",")
-              .map((e) => e.trim().toLowerCase())
-              .filter(Boolean);
-            const isEnvAdmin = adminEmails.includes(session.user.email.toLowerCase());
             (session as SessionWithCodex).codexUser = {
               ...codexUser,
               role: isEnvAdmin ? "admin" : codexUser.role,
@@ -111,7 +112,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         } catch (err) {
           console.error("[auth] session callback DB error:", err);
-          // Return session without codexUser — user is OAuth-authenticated but DB unavailable
+          // Fallback: minimal select when subscription columns aren't migrated yet.
+          // This keeps env-admin users authenticated so the admin UI stays accessible.
+          try {
+            const minimal = await prisma.codexUser.findUnique({
+              where: { email: session.user.email },
+              select: { id: true, displayName: true, role: true, avatarUrl: true },
+            });
+            if (minimal) {
+              (session as SessionWithCodex).codexUser = {
+                id: minimal.id,
+                displayName: minimal.displayName,
+                role: isEnvAdmin ? "admin" : minimal.role,
+                avatarUrl: minimal.avatarUrl,
+                subscriptionStatus: null,
+                subscriptionTier: null,
+                onboardingCompleted: null,
+              };
+            }
+          } catch {
+            // DB completely unavailable — return session without codexUser
+          }
         }
       }
       return session;

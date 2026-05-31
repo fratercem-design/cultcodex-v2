@@ -161,7 +161,7 @@ export default async function CollectionsPage() {
         <section className="space-y-5">
           <div className="space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan">
-              /// signal_packs
+              {"/// signal_packs"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
               Themed Signal Packs
@@ -215,7 +215,7 @@ export default async function CollectionsPage() {
         <section className="space-y-5">
           <div className="space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">
-              /// series_packs
+              {"/// series_packs"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
               By Series

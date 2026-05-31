@@ -267,7 +267,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
                 initialCount={savedCount}
                 isAuthenticated={Boolean(user)}
               />
-              <QuoteShareButton quoteId={quote.id} quoteText={quote.text} />
+              <QuoteShareButton quoteId={quote.id} quoteText={quote.text} speakerName={quote.speaker?.displayName ?? undefined} />
             </div>
           </div>
         </div>
@@ -277,7 +277,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
       {quote.transcriptSegment && (
         <section className="space-y-3">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-            /// surrounding_context
+            {"/// surrounding_context"}
           </p>
           {canReadTranscript ? (
             <div className="rounded-xl border border-border bg-surface p-5 space-y-3 font-mono text-[11px] text-text-muted leading-relaxed">
@@ -347,7 +347,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
         <section className="space-y-3">
           <div className="flex items-baseline justify-between">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-              /// more_from_{quote.episode.episodeNumber != null
+              {"/// more_from_"}{quote.episode.episodeNumber != null
                 ? `ep_${String(quote.episode.episodeNumber).padStart(3, "0")}`
                 : "this_episode"}
             </p>
@@ -384,7 +384,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
         <section className="space-y-3">
           <div className="flex items-baseline justify-between">
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-              /// more_from_{quote.speaker.displayName.toLowerCase().replace(/\s+/g, "_")}
+              {"/// more_from_"}{quote.speaker.displayName.toLowerCase().replace(/\s+/g, "_")}
             </p>
             <Link
               href={`/people/${quote.speaker.slug}`}

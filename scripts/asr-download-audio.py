@@ -86,6 +86,7 @@ def main() -> int:
 
         cmd = [
             "yt-dlp",
+            "--impersonate", "chrome",   # mimic a real browser TLS fingerprint — avoids throttling/blocks
             "-x", "--audio-format", "mp3", "--audio-quality", "5",
             "-o", os.path.join(AUDIO_DIR, "%(id)s.%(ext)s"),
         ]

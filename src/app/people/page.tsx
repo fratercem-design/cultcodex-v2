@@ -21,28 +21,14 @@ export const revalidate = 600;
 
 export const metadata = {
   title: "People — CULT CODEX",
-  description:
-    "Every guest, host, and recurring figure in the Cult of Psyche archive — behavioral profiles, appearance counts, and cross-referenced episode links.",
-  openGraph: {
-    title: "People — CULT CODEX",
-    description:
-      "Guest profiles, host bios, and behavioral maps for every figure in the Cult of Psyche archive.",
-    type: "website" as const,
-    images: [{ url: "/wiki-page-header.jpg", width: 1200, height: 630 }],
-  },
-  twitter: {
-    card: "summary_large_image" as const,
-    title: "People — CULT CODEX",
-    description:
-      "Guest profiles and behavioral maps for every figure in the Cult of Psyche archive.",
-    images: ["/wiki-page-header.jpg"],
-  },
+  description: "1,300+ voices profiled from the Cult of Psyche archive. Behavioral signatures, recurring dynamics, appearance counts, and transcript moments for every figure who entered the stream.",
 };
 
 const SORT_OPTIONS = [
   { label: "A → Z", value: "az" },
   { label: "Z → A", value: "za" },
   { label: "Most Appearances", value: "most" },
+  { label: "Most Lore", value: "lore" },
 ];
 
 const FILTER_OPTIONS = [
@@ -84,6 +70,9 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
       const aCount = a.guestAppearances.length + a.mentions.length;
       const bCount = b.guestAppearances.length + b.mentions.length;
       return bCount - aCount;
+    }
+    if (currentSort === "lore") {
+      return b.loreConnections.length - a.loreConnections.length;
     }
     return a.displayName.localeCompare(b.displayName);
   });

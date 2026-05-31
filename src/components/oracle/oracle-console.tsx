@@ -44,12 +44,10 @@ export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: 
   const [errorMsg, setErrorMsg] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [gated, setGated] = useState(false);
-  const [freeLimitReached, setFreeLimitReached] = useState(
-    initialFreeQueriesRemaining === 0
-  );
-  const [freeQueriesLeft, setFreeQueriesLeft] = useState<number | undefined>(
-    initialFreeQueriesRemaining
-  );
+  const [trialUsed, setTrialUsed] = useState(false);
+  const [trialRemaining, setTrialRemaining] = useState<number | null>(null);
+  const [captureEmail, setCaptureEmail] = useState("");
+  const [captureState, setCaptureState] = useState<"idle" | "saving" | "done">("idle");
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
@@ -128,9 +126,8 @@ export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: 
       setCitations(data.citations ?? []);
       setAudioBase64(data.audioBase64 ?? null);
       setHasVoice(data.hasVoice ?? false);
-      if (typeof data.freeQueriesRemaining === "number") {
-        setFreeQueriesLeft(data.freeQueriesRemaining);
-      }
+      setTrialUsed(data.trialUsed ?? false);
+      if (data.trialRemaining !== undefined) setTrialRemaining(data.trialRemaining);
       setState("answered");
     } catch {
       setErrorMsg("A disturbance in the archive. Try again.");
@@ -176,6 +173,9 @@ export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: 
     setIsPlaying(false);
     setCurrentTime(0);
     setDuration(0);
+    setTrialUsed(false);
+    setCaptureState("idle");
+    setCaptureEmail("");
   }
 
   return (
@@ -227,7 +227,7 @@ export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: 
             <div className="absolute inset-4 rounded-full bg-accent-violet/20 animate-pulse" />
           </div>
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/50 animate-pulse">
-            /// searching_the_archive
+            {"/// searching_the_archive"}
           </p>
         </div>
       )}
@@ -242,7 +242,7 @@ export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: 
       {/* ── Gated ── */}
       {state === "error" && gated && (
         <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-6 text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60">/// initiate_required</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60">{"/// initiate_required"}</p>
           <p className="font-display text-base font-bold text-text-primary">The Oracle speaks only to Initiates.</p>
           <p className="font-mono text-xs text-text-muted">
             Initiate+ unlocks the Oracle, full transcripts, Decode Mode, and the Psychenomicon.
@@ -395,7 +395,7 @@ export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: 
           {citations.length > 0 && (
             <div className="space-y-2">
               <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">
-                /// archive_sources
+                {"/// archive_sources"}
               </p>
               <div className="flex flex-wrap gap-2">
                 {citations.map((c, i) => (
@@ -412,22 +412,82 @@ export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: 
             </div>
           )}
 
-          {/* Share + Ask again row */}
-          <div className="flex items-center justify-between gap-4">
-            <button
-              onClick={handleShare}
-              className="flex items-center gap-1.5 rounded border border-accent-cyan/30 bg-accent-cyan/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-accent-cyan/70 hover:border-accent-cyan/50 hover:text-accent-cyan transition-colors"
-            >
-              <ShareIcon />
-              {shareCopied ? "Link copied!" : "Share answer"}
-            </button>
-            <button
-              onClick={handleReset}
-              className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50 hover:text-accent-violet transition-colors py-2"
-            >
-              Ask another →
-            </button>
-          </div>
+          {/* Email capture after free trial */}
+          {trialUsed && captureState !== "done" && (
+            <div className="rounded-xl border border-accent-gold/30 bg-accent-gold/5 p-5 space-y-3">
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/60">
+                {trialRemaining !== null && trialRemaining > 0
+                  ? `/// ${trialRemaining} free question${trialRemaining === 1 ? "" : "s"} remaining this month`
+                  : "/// free questions exhausted"}
+              </p>
+              <p className="font-display text-sm font-bold text-text-primary">
+                The Oracle has more to say.
+              </p>
+              <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+                Initiate+ opens unlimited Oracle access — plus transcripts, behavioral profiles,
+                and the full intelligence layer. Drop your email and we&apos;ll send you in.
+              </p>
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!captureEmail.trim() || captureState === "saving") return;
+                  setCaptureState("saving");
+                  try {
+                    await fetch("/api/subscribe", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email: captureEmail.trim() }),
+                    });
+                  } finally {
+                    setCaptureState("done");
+                  }
+                }}
+                className="flex gap-2"
+              >
+                <input
+                  type="email"
+                  required
+                  placeholder="your@email.com"
+                  value={captureEmail}
+                  onChange={(e) => setCaptureEmail(e.target.value)}
+                  className="flex-1 rounded border border-accent-gold/30 bg-void px-3 py-2 font-mono text-xs text-text-primary placeholder-text-muted/40 focus:border-accent-gold/60 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  disabled={captureState === "saving"}
+                  className="rounded border border-accent-gold bg-accent-gold/15 px-4 py-2 font-mono text-[11px] font-bold text-accent-gold transition-all hover:bg-accent-gold/25 disabled:opacity-50"
+                >
+                  {captureState === "saving" ? "…" : "Send me in →"}
+                </button>
+              </form>
+              <p className="font-mono text-[10px] text-text-muted/50">
+                Or{" "}
+                <Link href="/premium" className="text-accent-gold underline hover:text-accent-gold/80">
+                  subscribe now →
+                </Link>
+              </p>
+            </div>
+          )}
+
+          {trialUsed && captureState === "done" && (
+            <div className="rounded-xl border border-accent-gold/30 bg-accent-gold/5 px-5 py-4 text-center space-y-1">
+              <p className="font-mono text-xs font-bold text-accent-gold">Received.</p>
+              <p className="font-mono text-[11px] text-text-muted">
+                Check your inbox.{" "}
+                <Link href="/premium" className="text-accent-gold underline">
+                  Subscribe now →
+                </Link>
+              </p>
+            </div>
+          )}
+
+          {/* Ask again */}
+          <button
+            onClick={handleReset}
+            className="w-full text-center font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50 hover:text-accent-violet transition-colors py-2"
+          >
+            Ask another question →
+          </button>
         </div>
       )}
     </div>
@@ -472,6 +532,8 @@ function CitationIcon({ type }: { type: OracleCitation["type"] }) {
     transcript: "◈",
     episode: "◉",
     person: "◇",
+    chapter: "▲",   // Psychenomicon chapter
+    entity: "◎",    // Psychenomicon entity
   };
   return <span className="opacity-60">{icons[type]}</span>;
 }

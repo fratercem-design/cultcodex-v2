@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
+import { YoutubeTranscript } from "youtube-transcript";
 
 export const runtime = "nodejs";
-export const maxDuration = 300;
+export const maxDuration = 600; // 10 min — enough headroom for 100 episodes
 export const dynamic = "force-dynamic";
 
-const DELAY_MS = 3000;
+const DELAY_MS = 2000; // 2s between requests — still polite, fits 100 in ~600s
 const SUPADATA_BASE = "https://api.supadata.ai/v1";
 
 function sleep(ms: number) {
@@ -41,10 +42,28 @@ interface SupadataJobId {
   jobId: string;
 }
 
+async function fetchTranscriptYT(
+  videoId: string
+): Promise<{ chunks: SupadataChunk[] | null; reason: string }> {
+  try {
+    const segments = await YoutubeTranscript.fetchTranscript(videoId, { lang: "en" });
+    if (!segments || segments.length === 0) return { chunks: null, reason: "yt_empty" };
+    const chunks: SupadataChunk[] = segments.map((s) => ({
+      text: s.text,
+      offset: s.offset,   // already milliseconds from InnerTube path
+      duration: s.duration,
+      lang: s.lang ?? "en",
+    }));
+    return { chunks, reason: "youtube-transcript" };
+  } catch {
+    return { chunks: null, reason: "yt_no_captions" };
+  }
+}
+
 async function fetchTranscriptSupadata(
   videoId: string,
   apiKey: string
-): Promise<{ chunks: SupadataChunk[] | null; reason: string }> {
+): Promise<{ chunks: SupadataChunk[] | null; reason: string; rateLimited?: boolean }> {
   // Try YouTube-specific GET endpoint first (works for both native captions and ASR)
   const params = new URLSearchParams({ videoId, lang: "en" });
   let res = await fetch(`${SUPADATA_BASE}/youtube/transcript?${params}`, {
@@ -62,6 +81,9 @@ async function fetchTranscriptSupadata(
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
+    if (res.status === 429) {
+      return { chunks: null, reason: `supadata_429: ${body.slice(0, 200)}`, rateLimited: true };
+    }
     return { chunks: null, reason: `supadata_${res.status}: ${body.slice(0, 200)}` };
   }
 
@@ -112,9 +134,24 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const body = await req.json().catch(() => ({})) as { limit?: number; retry?: boolean };
-  const limit = Math.min(Math.max(1, body.limit ?? 10), 50);
+  const body = await req.json().catch(() => ({})) as { limit?: number; retry?: boolean; reset?: boolean };
+  const limit = Math.min(Math.max(1, body.limit ?? 10), 100);
   const retry = body.retry === true;
+  const reset = body.reset === true;
+
+  // reset=true clears the "no_captions" sentinel so all previously-failed episodes
+  // get another attempt (useful after adding a new transcript source).
+  if (reset) {
+    await prisma.episode.updateMany({
+      where: { transcriptRaw: "no_captions" },
+      data: { transcriptRaw: null },
+    });
+  }
+
+  // No hardcoded skip list needed — the DB sentinel (transcriptRaw = "no_captions")
+  // permanently excludes episodes confirmed as empty/age-restricted.
+  // The WHERE clause below filters them out at query time.
+  // (retry=true bypasses this so you can re-attempt previously-marked episodes.)
 
   const episodesWithTranscripts = await prisma.transcriptSegment.groupBy({
     by: ["episodeId"],
@@ -122,8 +159,7 @@ export async function POST(req: NextRequest) {
   });
   const hasTranscript = new Set(episodesWithTranscripts.map((e) => e.episodeId));
 
-  // "no_captions" sentinel = previously confirmed unavailable.
-  // retry: true ignores the sentinel so we can re-try with mode: "generate".
+  // "no_captions" sentinel = previously confirmed unavailable (skip unless retry).
   const episodes = await prisma.episode.findMany({
     where: {
       youtubeVideoId: { not: null },
@@ -139,22 +175,47 @@ export async function POST(req: NextRequest) {
 
   const results: TranscriptResult[] = [];
 
+  let rateLimited = false;
+
   for (let i = 0; i < pending.length; i++) {
     const ep = pending[i];
     const videoId = ep.youtubeVideoId!;
 
     try {
-      const { chunks, reason } = await fetchTranscriptSupadata(videoId, supadataKey);
+      // Try YouTube's caption API first (free, fast, no quota)
+      let { chunks, reason } = await fetchTranscriptYT(videoId);
+
+      // Fall back to Supadata for age-restricted / ASR-only / harder videos
+      if (!chunks) {
+        const sup = await fetchTranscriptSupadata(videoId, supadataKey);
+        chunks = sup.chunks;
+        reason = sup.reason;
+        if (sup.rateLimited) {
+          // Plan limit exceeded — stop immediately, don't burn more quota
+          rateLimited = true;
+          results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "error", error: "Supadata plan limit exceeded", reason });
+          break;
+        }
+      }
 
       if (!chunks) {
-        // 404 = confirmed no captions on YouTube; mark so we never retry
-        if (reason.startsWith("supadata_404")) {
-          await prisma.episode.update({
-            where: { id: ep.id },
-            data: { transcriptRaw: "no_captions" },
-          });
+        // Mark permanently unavailable episodes so we skip them on future runs.
+        // 404 = no captions; 403 = age-restricted (can't fetch); empty = no transcript data.
+        const permanent = reason.startsWith("supadata_404") || reason.startsWith("supadata_403") || reason.startsWith("supadata_empty") || reason === "yt_no_captions" || reason === "yt_empty";
+        let markReason = reason;
+        if (permanent) {
+          try {
+            await prisma.episode.update({
+              where: { id: ep.id },
+              data: { transcriptRaw: "no_captions" },
+            });
+            markReason = `${reason} [marked]`;
+          } catch (dbErr) {
+            const dbMsg = dbErr instanceof Error ? dbErr.message : String(dbErr);
+            markReason = `${reason} [mark_failed: ${dbMsg.slice(0, 80)}]`;
+          }
         }
-        results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "no_transcript", reason });
+        results.push({ episodeId: ep.id, slug: ep.slug, videoId, status: "no_transcript", reason: markReason });
       } else {
         await prisma.transcriptSegment.createMany({
           data: chunks.map((chunk) => {
@@ -198,7 +259,12 @@ export async function POST(req: NextRequest) {
     no_transcript: results.filter((r) => r.status === "no_transcript").length,
     errors: results.filter((r) => r.status === "error").length,
     remaining: totalPending - results.length,
+    ...(rateLimited ? { rateLimited: true } : {}),
   };
+
+  if (rateLimited) {
+    return NextResponse.json({ ok: false, error: "Supadata plan limit exceeded. Upgrade your plan or wait for the quota to reset.", summary, results }, { status: 429 });
+  }
 
   return NextResponse.json({ ok: true, summary, results });
 }

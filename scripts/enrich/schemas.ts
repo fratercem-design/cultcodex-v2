@@ -30,7 +30,13 @@ export const EnrichedLoreSchema = z.object({
 
 export const EnrichmentResultSchema = z.object({
   summaryShort: z.string(),
-  summaryLong: z.string(),
+  // Legacy — preserved for backward compat with older enriched episodes.
+  // New enrichments populate summaryFacts + summaryThemes instead.
+  summaryLong: z.string().optional().default(""),
+  /** Transcript-grounded recap: who appeared, what was discussed, notable moments */
+  summaryFacts: z.string().optional().default(""),
+  /** Interpretive layer: recurring patterns, thematic significance, arc context */
+  summaryThemes: z.string().optional().default(""),
   // Allow null/missing — for transcript-less enrichment the model often
   // can't produce a representative quote.
   cutOfPsyche: z.string().nullable().optional().default(""),

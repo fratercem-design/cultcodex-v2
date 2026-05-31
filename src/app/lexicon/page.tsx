@@ -980,7 +980,7 @@ const LEXICON: Term[] = [
   {
     word: "Biscuitgate",
     definition:
-      "The months-long feud between Psyche and streamer Beta/VA that began when she tormented him over 'biscuits' and escalated into diss tracks, panel raids, and tattoo revisions. The first great saga of the modern Psycheverse.",
+      "The months-long feud between Psyche and streamer Beta/VA that began when Psyche tormented him over 'biscuits' and escalated into diss tracks, panel raids, and tattoo revisions. The first great saga of the modern Psycheverse.",
     usage: "\"Biscuitgate is how the BKG was born — and how it almost ended.\"",
     origin: "Cult of Psyche — Beta vs Psyche feud arc",
     category: "psycheverse",
@@ -2116,8 +2116,8 @@ export default function LexiconPage() {
           if (!terms?.length) return null;
 
           return (
-            <div id={`cat-${cat}`}>
-            <SectionCard key={cat} title={meta.label}>
+            <div id={`cat-${cat}`} key={cat}>
+            <SectionCard title={meta.label}>
               <div className="flex items-center gap-2 mb-4">
                 <span className={`w-3 h-3 rounded-full ${meta.dotColor}`} />
                 <p className="text-xs text-text-muted italic">

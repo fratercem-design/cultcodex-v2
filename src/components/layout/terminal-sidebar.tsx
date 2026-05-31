@@ -4,9 +4,11 @@ import { useEffect, useMemo, type CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ArchiveCounts } from "@/lib/queries/stats";
+import type { LiveChannels } from "@/lib/queries/live-status";
 
 type AccentKey = "neon" | "neon-4";
 type CountKey = keyof Pick<ArchiveCounts, "episodes" | "topics" | "people">;
+type LiveKey = keyof LiveChannels;
 
 interface NavItem {
   readonly href: string;
@@ -15,6 +17,8 @@ interface NavItem {
   readonly key?: string;
   readonly countKey?: CountKey;
   readonly accent?: AccentKey;
+  readonly liveKey?: LiveKey;
+  readonly external?: boolean;
 }
 
 interface NavGroup {
@@ -24,46 +28,43 @@ interface NavGroup {
 
 const NAV_GROUPS: readonly NavGroup[] = [
   {
+    title: "LIVE",
+    items: [
+      { href: "/cult-live",    label: "CULT OF PSYCHE",   glyph: "◎", liveKey: "cultOfPsyche"    },
+      { href: "/irl-newstime", label: "ALEXANDRA MAYERS", glyph: "◎", liveKey: "alexandraMayers" },
+    ],
+  },
+  {
+    title: "MAIN",
+    items: [
+      { href: "/",              label: "OVERVIEW",      glyph: "▢", key: "1" },
+      { href: "/episodes",      label: "ARCHIVE",       glyph: "▦", key: "2", countKey: "episodes" },
+      { href: "/oracle",        label: "ORACLE",        glyph: "◉", key: "3" },
+      { href: "/topics",        label: "SIGNALS",       glyph: "◈", key: "4", countKey: "topics" },
+      { href: "/people",        label: "VOICES",        glyph: "◐", key: "5", countKey: "people" },
+      { href: "/graph",         label: "NETWORK MAP",   glyph: "✦", key: "6" },
+      { href: "/psychenomicon", label: "PSYCHENOMICON", glyph: "▲", key: "7" },
+      { href: "/collections",   label: "COLLECTIONS",   glyph: "▣", key: "8" },
+    ],
+  },
+  {
     title: "DISCOVER",
     items: [
-      { href: "/", label: "OVERVIEW", glyph: "▢", key: "1" },
-      { href: "/this-week", label: "THIS WEEK", glyph: "⚡" },
-      { href: "/episodes", label: "ARCHIVE", glyph: "▦", key: "2", countKey: "episodes" },
-      { href: "/topics", label: "SIGNALS", glyph: "◈", key: "3", countKey: "topics" },
-      { href: "/people", label: "VOICES", glyph: "◐", key: "4", countKey: "people" },
-      { href: "/graph", label: "NETWORK MAP", glyph: "✦", key: "5" },
-      { href: "/collections", label: "COLLECTIONS", glyph: "▣", key: "6" },
+      { href: "/start-here",     label: "START HERE",     glyph: "↳" },
+      { href: "/this-week",      label: "THIS WEEK",      glyph: "◑" },
+      { href: "/symbols",        label: "SYMBOL CODEX",   glyph: "✦" },
+      { href: "/archetype-quiz", label: "ARCHETYPE QUIZ", glyph: "◈" },
+      { href: "/tarot",          label: "TAROT DECK",     glyph: "✦", accent: "neon-4" },
+      { href: "/cards",          label: "CARD ARCHIVE",   glyph: "◈" },
     ],
   },
   {
-    title: "INTELLIGENCE",
+    title: "ORACLE",
     items: [
-      { href: "/oracle", label: "ORACLE", glyph: "◉", key: "7" },
-      { href: "/psychenomicon", label: "PSYCHENOMICON", glyph: "▲", key: "8" },
-    ],
-  },
-  {
-    title: "COLLECT",
-    items: [
-      { href: "/cards", label: "CARD COLLECTION", glyph: "◈", key: "9" },
-      { href: "/cards/packs", label: "PACK STORE", glyph: "▣" },
-    ],
-  },
-  {
-    title: "TOOLS",
-    items: [
-      { href: "/lexicon", label: "LEXICON", glyph: "≣" },
-      { href: "/symbols", label: "SYMBOL CODEX", glyph: "⊕" },
-      { href: "/archetypes", label: "ARCHETYPES", glyph: "◐" },
-      { href: "/corrections", label: "CORRECTIONS", glyph: "✕" },
-      { href: "/dossier", label: "AUDIT DOSSIER", glyph: "◣" },
-    ],
-  },
-  {
-    title: "ACCESS",
-    items: [
-      { href: "/premium", label: "INITIATE+", glyph: "✦", accent: "neon-4" },
-      { href: "/start-here", label: "START HERE", glyph: "↳" },
+      { href: "/red-room",  label: "RED ROOM",    glyph: "◉", accent: "neon-4" },
+      { href: "/signals",   label: "SIGNAL LAB",  glyph: "◈", accent: "neon-4" },
+      { href: "/salon",     label: "THE SALON",   glyph: "◈", accent: "neon-4" },
+      { href: "/premium",   label: "INITIATE+",   glyph: "✦", accent: "neon-4" },
     ],
   },
 ];
@@ -97,11 +98,22 @@ const keyStyle: CSSProperties = {
   textAlign: "center",
 };
 
+const liveBadgeStyle: CSSProperties = {
+  fontSize: 8,
+  fontWeight: "bold",
+  letterSpacing: "0.1em",
+  color: "rgba(239,68,68,0.85)",
+  border: "1px solid rgba(239,68,68,0.35)",
+  borderRadius: 2,
+  padding: "1px 4px",
+};
+
 interface TerminalSidebarProps {
   counts: ArchiveCounts;
+  liveChannels?: LiveChannels;
 }
 
-export function TerminalSidebar({ counts }: TerminalSidebarProps) {
+export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -169,42 +181,70 @@ export function TerminalSidebar({ counts }: TerminalSidebarProps) {
             </div>
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {group.items.map((item) => {
-                const active = isActive(item.href, pathname);
+                const active = !item.external && isActive(item.href, pathname);
+                const isLive = item.liveKey ? (liveChannels?.[item.liveKey] ?? false) : false;
+
+                const itemColor = active
+                  ? "var(--neon)"
+                  : isLive
+                  ? "rgba(239,68,68,0.9)"
+                  : accentColor(item.accent);
+
                 const itemStyle: CSSProperties = {
                   display: "flex",
                   alignItems: "center",
                   gap: 10,
                   padding: "5px 14px 5px 12px",
                   borderLeft: "2px solid transparent",
-                  color: active ? "var(--neon)" : accentColor(item.accent),
+                  color: itemColor,
                   fontSize: 12,
                   letterSpacing: "0.06em",
                   textDecoration: "none",
                   transition: "color 120ms linear, background 120ms linear, border-color 120ms linear",
                 };
+
                 const badgeText = item.countKey
                   ? counts[item.countKey].toLocaleString()
                   : null;
+
+                const inner = (
+                  <>
+                    <span aria-hidden="true" style={{ width: 14, display: "inline-block" }}>
+                      {isLive ? (
+                        <span className="term-pulse" style={{ color: "rgba(239,68,68,0.9)" }}>●</span>
+                      ) : (
+                        item.glyph
+                      )}
+                    </span>
+                    <span style={{ flex: 1 }}>{item.label}</span>
+                    {isLive && <span style={liveBadgeStyle}>LIVE</span>}
+                    {!isLive && badgeText && <span style={badgeStyle}>{badgeText}</span>}
+                    {!isLive && item.key && <span aria-hidden="true" style={keyStyle}>{item.key}</span>}
+                  </>
+                );
+
                 return (
                   <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={active ? "term-nav-active" : undefined}
-                      style={itemStyle}
-                      data-key={item.key}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      <span aria-hidden="true" style={{ width: 14, display: "inline-block" }}>
-                        {item.glyph}
-                      </span>
-                      <span style={{ flex: 1 }}>{item.label}</span>
-                      {badgeText && (
-                        <span style={badgeStyle}>{badgeText}</span>
-                      )}
-                      {item.key && (
-                        <span aria-hidden="true" style={keyStyle}>{item.key}</span>
-                      )}
-                    </Link>
+                    {item.external ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={itemStyle}
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className={active ? "term-nav-active" : undefined}
+                        style={itemStyle}
+                        data-key={item.key}
+                        aria-current={active ? "page" : undefined}
+                      >
+                        {inner}
+                      </Link>
+                    )}
                   </li>
                 );
               })}

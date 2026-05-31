@@ -13,6 +13,7 @@ interface HealthMetric {
   total: number;
   severity: "good" | "warn" | "bad";
   href?: string;
+  scoreWeight?: number; // 0 = shown but excluded from score, default 1
 }
 
 export default async function AdminDashboard() {
@@ -35,7 +36,15 @@ export default async function AdminDashboard() {
     // Archive health queries
     Promise.all([
       prisma.episode.count(),
-      prisma.episode.count({ where: { summaryShort: null } }),
+      prisma.episode.count({
+        where: {
+          AND: [
+            { OR: [{ summaryShort: null }, { summaryShort: "" }] },
+            { OR: [{ summaryFacts: null }, { summaryFacts: "" }, { summaryFacts: "—" }] },
+            { OR: [{ summaryLong: null }, { summaryLong: "" }] },
+          ],
+        },
+      }),
       prisma.episode.count({ where: { youtubeVideoId: null, rumbleVideoId: null } }),
       prisma.episode.count({ where: { airDate: null } }),
       prisma.episode.count({ where: { status: "unavailable" } }),
@@ -59,12 +68,15 @@ export default async function AdminDashboard() {
     { label: "Episodes unavailable", count: unavailable, total: totalEpisodes, severity: unavailable > 50 ? "bad" : unavailable > 10 ? "warn" : "good" },
     { label: "Episodes without transcript", count: noTranscript, total: totalEpisodes, severity: noTranscript > 200 ? "bad" : noTranscript > 50 ? "warn" : "good" },
     { label: "People without bio", count: noBio, total: totalPeople, severity: noBio > 100 ? "bad" : noBio > 30 ? "warn" : "good" },
-    { label: "People without avatar", count: noAvatar, total: totalPeople, severity: noAvatar > 200 ? "bad" : noAvatar > 50 ? "warn" : "good" },
+    { label: "People without avatar", count: noAvatar, total: totalPeople, severity: noAvatar > 200 ? "bad" : noAvatar > 50 ? "warn" : "good", scoreWeight: 0 },
   ];
 
+  // Avatars are cosmetic — excluded from the score so 1300+ missing guest photos
+  // don't overwhelm the data-quality signal.
+  const scoredMetrics = healthMetrics.filter((m) => (m.scoreWeight ?? 1) > 0);
   const healthScore = Math.round(
-    ((healthMetrics.reduce((sum, m) => sum + (m.total - m.count), 0)) /
-    (healthMetrics.reduce((sum, m) => sum + m.total, 0))) * 100
+    (scoredMetrics.reduce((sum, m) => sum + (m.total - m.count), 0) /
+    scoredMetrics.reduce((sum, m) => sum + m.total, 0)) * 100
   );
 
   return (
@@ -171,6 +183,12 @@ export default async function AdminDashboard() {
               >
                 <span>🔴</span> Live Stream Controls
               </Link>
+              <Link
+                href="/admin/digest"
+                className="flex items-center gap-2 rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary hover:border-accent-gold/30 transition-colors"
+              >
+                <span>📰</span> Weekly Digest
+              </Link>
             </div>
           </SectionCard>
         </div>
@@ -194,7 +212,10 @@ export default async function AdminDashboard() {
                 <div key={m.label} className="flex items-center gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
-                      <span className="font-mono text-[10px] text-text-muted truncate">{m.label}</span>
+                      <span className="font-mono text-[10px] text-text-muted truncate">
+                        {m.label}
+                        {(m.scoreWeight ?? 1) === 0 && <span className="ml-1 text-text-muted/40">(cosmetic)</span>}
+                      </span>
                       <span className={`font-mono text-[10px] font-bold ${textColor}`}>
                         {m.count > 0 ? m.count : "\u2714"} {m.count > 0 && `/ ${m.total}`}
                       </span>

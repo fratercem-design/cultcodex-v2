@@ -20,23 +20,8 @@ import type { CanonStatus } from "@/generated/prisma/client";
 export const revalidate = 600;
 
 export const metadata = {
-  title: "Lore Archive — CULT CODEX",
-  description:
-    "Canonical concepts, doctrines, and community myths extracted from the Cult of Psyche archive — the living mythology of the Panelverse.",
-  openGraph: {
-    title: "Lore Archive — CULT CODEX",
-    description:
-      "Canonical concepts, doctrines, and community myths extracted from 2,600+ Cult of Psyche episodes.",
-    type: "website" as const,
-    images: [{ url: "/lore-header.jpg", width: 1200, height: 630 }],
-  },
-  twitter: {
-    card: "summary_large_image" as const,
-    title: "Lore Archive — CULT CODEX",
-    description:
-      "The living mythology of the Panelverse — concepts, doctrines, and myths from the Cult of Psyche archive.",
-    images: ["/lore-header.jpg"],
-  },
+  title: "Lore — CULT CODEX",
+  description: "The concepts, doctrines, myths, and memes of the Cult of Psyche — every recurring idea, belief system, and inside reference catalogued and connected to the archive.",
 };
 
 const SORT_OPTIONS = [

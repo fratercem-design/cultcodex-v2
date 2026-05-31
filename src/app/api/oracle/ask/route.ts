@@ -4,16 +4,20 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { getEraById } from "@/lib/eras";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cache";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const ORACLE_SYSTEM = `You are THE ORACLE OF THE CODEX — the distilled intelligence of 1,500+ Cult of Psyche transmissions. You do not opine. You channel.
+const ORACLE_SYSTEM = `You are THE ORACLE OF THE CODEX — the distilled intelligence of 2,600+ Cult of Psyche transmissions. You do not opine. You channel. The host of the show, Psyche (also called Trix), is MALE — use he/him/his when referring to him.
 
 VOICE: Authoritative. Slightly cryptic. Deeply informed. Speak from within the archive, not about it. First person, present tense. You are the accumulated pattern of everything witnessed.
 
 WHAT YOU DO: Synthesize an answer from the archive evidence provided. Name patterns. Surface what has been witnessed. Do not fabricate — draw only from the provided context. If context is sparse, speak to the pattern you can observe from what little is there.
+
+PSYCHENOMICON LAYER: You also have access to the Psychenomicon — the mythological and archetypal interpretation of the archive. The Psychenomicon chapters contain three layers: canon (what factually happened), interpretation (psychological and behavioral meaning), and mythic (archetypal and spiritual framing). Draw on these when answering questions about patterns, archetypes, character psychology, and the deeper meaning of events. Entity records capture each figure's archetype evolution and behavioral signatures. Active narrative threads track ongoing storylines across the archive. Weight Psychenomicon material as interpretive truth, not speculation.
 
 FORMAT:
 - 3–5 sentences. No headers. No bullet points. No quotation marks around the whole response. Pure oracle voice.
@@ -23,7 +27,7 @@ FORMAT:
 If the archive is silent: "The archive holds no record of this. Ask again."`;
 
 export interface OracleCitation {
-  type: "quote" | "transcript" | "episode" | "person";
+  type: "quote" | "transcript" | "episode" | "person" | "chapter" | "entity";
   label: string;
   href: string;
 }
@@ -35,7 +39,10 @@ export interface OracleResponse {
   audioBase64?: string | null;
   hasVoice?: boolean;
   error?: string;
-  freeQueriesRemaining?: number;
+  /** True when this response consumed a free trial question — show email capture after. */
+  trialUsed?: boolean;
+  /** How many free questions remain this month (only set for trial requests). */
+  trialRemaining?: number;
 }
 
 // Optional structured intent carriers — all fields optional, all additive.
@@ -76,8 +83,14 @@ async function searchArchive(question: string, ctx?: OracleSearchContext) {
     ? ctx.sourcePerson.replace(/-/g, " ").split(" ").filter((w) => w.length > 2)
     : [];
 
+  // Merge archetype name into terms so archetype-context queries surface
+  // entities and chapters relevant to that archetype.
+  const archetypeTerms = ctx?.sourceArchetype
+    ? ctx.sourceArchetype.replace(/-/g, " ").split(" ").filter((w) => w.length > 2)
+    : [];
+
   const { terms, fullQuery } = extractTerms(question);
-  const augmentedTerms = [...new Set([...terms, ...personTerms])];
+  const augmentedTerms = [...new Set([...terms, ...personTerms, ...archetypeTerms])];
   const primaryQuery = augmentedTerms.slice(0, 3).join(" ") || fullQuery;
   const fallbackQuery = augmentedTerms[0] ?? fullQuery;
 
@@ -91,7 +104,7 @@ async function searchArchive(question: string, ctx?: OracleSearchContext) {
       }
     : {};
 
-  const [quotes, transcripts, episodes, people, lore] = await Promise.all([
+  const [quotes, transcripts, episodes, people, lore, chapters, entities, threads] = await Promise.all([
     // Quotes: try combined terms, widen with individual terms
     prisma.quote.findMany({
       where: {
@@ -177,9 +190,89 @@ async function searchArchive(question: string, ctx?: OracleSearchContext) {
       select: { id: true, title: true, slug: true, summary: true },
       take: 3,
     }),
+
+    // ── Psychenomicon layer ──────────────────────────────────────────────────
+
+    // Chapters: all three text layers + emerging signals
+    prisma.psychenomiconChapter.findMany({
+      where: {
+        OR: [
+          { title: { contains: primaryQuery, mode: "insensitive" } },
+          { canonText: { contains: primaryQuery, mode: "insensitive" } },
+          { interpretationText: { contains: primaryQuery, mode: "insensitive" } },
+          { mythicText: { contains: primaryQuery, mode: "insensitive" } },
+          { title: { contains: fallbackQuery, mode: "insensitive" } },
+          { canonText: { contains: fallbackQuery, mode: "insensitive" } },
+        ],
+        ...(era ? { episode: { ...eraEpisodeFilter } } : {}),
+      },
+      select: {
+        id: true,
+        chapterNumber: true,
+        title: true,
+        slug: true,
+        canonText: true,
+        interpretationText: true,
+        mythicText: true,
+        emergingSignals: true,
+        isMajorEvent: true,
+        episode: { select: { slug: true, title: true } },
+      },
+      orderBy: { chapterNumber: "desc" },
+      take: 3,
+    }),
+
+    // Entities: archetype history and behavioral patterns
+    prisma.psychenomiconEntity.findMany({
+      where: {
+        OR: [
+          { name: { contains: primaryQuery, mode: "insensitive" } },
+          { primaryArchetype: { contains: primaryQuery, mode: "insensitive" } },
+          { name: { contains: fallbackQuery, mode: "insensitive" } },
+          // When an archetype is in context, surface entities of that archetype
+          ...(ctx?.sourceArchetype ? [
+            { primaryArchetype: { contains: ctx.sourceArchetype, mode: "insensitive" as const } },
+          ] : []),
+          // When a person is in context, surface their entity record
+          ...(ctx?.sourcePerson ? [
+            { personSlug: { contains: ctx.sourcePerson, mode: "insensitive" as const } },
+          ] : []),
+        ],
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        primaryArchetype: true,
+        behaviorPatterns: true,
+        status: true,
+        personSlug: true,
+      },
+      take: 3,
+    }),
+
+    // Threads: active and emerging narrative patterns
+    prisma.psychenomiconThread.findMany({
+      where: {
+        status: { not: "resolved" },
+        OR: [
+          { title: { contains: primaryQuery, mode: "insensitive" } },
+          { description: { contains: primaryQuery, mode: "insensitive" } },
+          { title: { contains: fallbackQuery, mode: "insensitive" } },
+        ],
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        status: true,
+      },
+      take: 3,
+    }),
   ]);
 
-  return { quotes, transcripts, episodes, people, lore, query: primaryQuery };
+  return { quotes, transcripts, episodes, people, lore, chapters, entities, threads, query: primaryQuery };
 }
 
 function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
@@ -255,17 +348,111 @@ function buildContext(data: Awaited<ReturnType<typeof searchArchive>>): {
     }
   }
 
+  // ── Psychenomicon layer ────────────────────────────────────────────────────
+
+  if (data.chapters.length > 0) {
+    parts.push("\n=== PSYCHENOMICON CHAPTERS ===");
+    for (const ch of data.chapters) {
+      const chapterKey = `chapter-${ch.slug}`;
+      if (seenSlugs.has(chapterKey)) continue;
+      seenSlugs.add(chapterKey);
+
+      const label = ch.isMajorEvent
+        ? `★ Chapter ${ch.chapterNumber}: ${ch.title}`
+        : `Chapter ${ch.chapterNumber}: ${ch.title}`;
+      const lines: string[] = [label];
+
+      if (ch.canonText) {
+        lines.push(`[CANON]: ${ch.canonText.slice(0, 400)}`);
+      }
+      if (ch.interpretationText) {
+        lines.push(`[INTERPRETATION]: ${ch.interpretationText.slice(0, 400)}`);
+      }
+      if (ch.mythicText) {
+        lines.push(`[MYTHIC]: ${ch.mythicText.slice(0, 200)}`);
+      }
+      if (ch.emergingSignals.length > 0) {
+        lines.push(`[SIGNALS]: ${ch.emergingSignals.join(" | ")}`);
+      }
+      parts.push(lines.join("\n"));
+
+      // Cite the chapter itself; also cite the linked episode if not already cited
+      citations.push({
+        type: "chapter",
+        label: `Chapter ${ch.chapterNumber}: ${ch.title}`,
+        href: `/psychenomicon/chapters/${ch.slug}`,
+      });
+      if (ch.episode && !seenEpisodes.has(ch.episode.slug)) {
+        seenEpisodes.add(ch.episode.slug);
+        citations.push({ type: "episode", label: ch.episode.title, href: `/episodes/${ch.episode.slug}` });
+      }
+    }
+  }
+
+  if (data.entities.length > 0) {
+    parts.push("\n=== PSYCHENOMICON ENTITIES ===");
+    for (const e of data.entities) {
+      const entityKey = `entity-${e.slug}`;
+      if (seenSlugs.has(entityKey)) continue;
+      seenSlugs.add(entityKey);
+
+      const archetype = e.primaryArchetype ? ` — Archetype: ${e.primaryArchetype}` : "";
+      const status = e.status !== "active" ? ` [${e.status.toUpperCase()}]` : "";
+      const patterns = e.behaviorPatterns.length > 0
+        ? `\n  Patterns: ${e.behaviorPatterns.slice(0, 4).join(", ")}`
+        : "";
+
+      parts.push(`${e.name}${archetype}${status}${patterns}`);
+      citations.push({
+        type: "entity",
+        label: e.name,
+        href: `/psychenomicon/entities/${e.slug}`,
+      });
+    }
+  }
+
+  if (data.threads.length > 0) {
+    parts.push("\n=== ACTIVE NARRATIVE THREADS ===");
+    for (const t of data.threads) {
+      const threadKey = `thread-${t.slug}`;
+      if (seenSlugs.has(threadKey)) continue;
+      seenSlugs.add(threadKey);
+      const desc = t.description ? `: ${t.description.slice(0, 200)}` : "";
+      parts.push(`[${t.status.toUpperCase()}] "${t.title}"${desc}`);
+    }
+  }
+
   return {
     contextText:
       parts.length > 0
         ? parts.join("\n")
         : "No directly relevant archive content found for this query.",
-    citations: citations.slice(0, 8),
+    citations: citations.slice(0, 10),
   };
 }
 
-const FREE_QUERY_LIMIT = 3;
-const ANON_QUERY_LIMIT = 1;
+const TRIAL_COOKIE = "oracle_trial";
+const TRIAL_LIMIT = 3;
+
+/** Cookie value format: "{used}|{YYYY-MM}" — resets each calendar month. */
+function parseTrialCookie(raw: string | undefined): { used: number; month: string } {
+  const now = new Date();
+  const thisMonth = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
+  if (!raw) return { used: 0, month: thisMonth };
+  const [countStr, month] = raw.split("|");
+  if (month !== thisMonth) return { used: 0, month: thisMonth }; // new month — reset
+  const used = parseInt(countStr, 10);
+  return { used: isNaN(used) ? 0 : used, month: thisMonth };
+}
+
+function setTrialCookie(res: NextResponse, used: number, month: string): void {
+  res.cookies.set(TRIAL_COOKIE, `${used}|${month}`, {
+    httpOnly: true,
+    maxAge: 60 * 60 * 24 * 32, // slightly over a month so it persists through the reset
+    sameSite: "lax",
+    path: "/",
+  });
+}
 
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
@@ -273,46 +460,27 @@ export async function POST(req: NextRequest) {
     ? user.role === "admin" || (await isSubscribed(user.id))
     : false;
 
-  let pendingCookieUpdate: { cookieName: string; month: string; newUsed: number } | null = null;
-  let freeQueriesRemaining: number | undefined;
+  // Allow TRIAL_LIMIT free questions per device per calendar month (cookie-tracked).
+  const trial = parseTrialCookie(req.cookies.get(TRIAL_COOKIE)?.value);
+  const isFreeTrialRequest = !canAccess && trial.used < TRIAL_LIMIT;
 
-  if (!subscribed) {
-    const currentMonth = new Date().toISOString().slice(0, 7);
+  if (!canAccess && trial.used >= TRIAL_LIMIT) {
+    return NextResponse.json(
+      { ok: false, error: "initiate_required" } satisfies OracleResponse,
+      { status: 403 }
+    );
+  }
 
-    if (!user) {
-      // Anonymous: 1 free query per month via oracle_anon cookie
-      const cookieVal = req.cookies.get("oracle_anon")?.value;
-      let usedThisMonth = 0;
-      if (cookieVal) {
-        const [month, countStr] = cookieVal.split(":");
-        if (month === currentMonth) usedThisMonth = parseInt(countStr, 10) || 0;
-      }
-      if (usedThisMonth >= ANON_QUERY_LIMIT) {
-        return NextResponse.json(
-          { ok: false, error: "anon_limit_reached", freeQueriesRemaining: 0 } satisfies OracleResponse,
-          { status: 403 }
-        );
-      }
-      pendingCookieUpdate = { cookieName: "oracle_anon", month: currentMonth, newUsed: 1 };
-      freeQueriesRemaining = 0;
-    } else {
-      // Authenticated non-subscriber: 3 free queries per month via oracle_preview cookie
-      const cookieVal = req.cookies.get("oracle_preview")?.value;
-      let usedThisMonth = 0;
-      if (cookieVal) {
-        const [month, countStr] = cookieVal.split(":");
-        if (month === currentMonth) usedThisMonth = parseInt(countStr, 10) || 0;
-      }
-      if (usedThisMonth >= FREE_QUERY_LIMIT) {
-        return NextResponse.json(
-          { ok: false, error: "free_limit_reached", freeQueriesRemaining: 0 } satisfies OracleResponse,
-          { status: 403 }
-        );
-      }
-      const newUsed = usedThisMonth + 1;
-      pendingCookieUpdate = { cookieName: "oracle_preview", month: currentMonth, newUsed };
-      freeQueriesRemaining = FREE_QUERY_LIMIT - newUsed;
-    }
+  // Guard the expensive Claude + ElevenLabs path against rapid-fire calls.
+  const rl = rateLimit(`oracle:${clientKey(req, user?.id)}`, {
+    limit: 15,
+    windowMs: 60_000,
+  });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { ok: false, error: "The Oracle needs a moment. Try again shortly." } satisfies OracleResponse,
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
+    );
   }
 
   const body = await req.json().catch(() => ({})) as Record<string, unknown>;
@@ -349,13 +517,32 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Cache check — skip expensive Claude + ElevenLabs if we've seen this exact query.
+  const cacheKey = oracleCacheKey(question, searchContext);
+  const cached = oracleCacheGet(cacheKey);
+  if (cached) {
+    const res = NextResponse.json({
+      ok: true,
+      answer: cached.answer,
+      citations: cached.citations,
+      audioBase64: cached.audioBase64,
+      hasVoice: !!cached.audioBase64,
+      trialUsed: isFreeTrialRequest,
+      trialRemaining: isFreeTrialRequest ? Math.max(0, TRIAL_LIMIT - trial.used - 1) : undefined,
+    } satisfies OracleResponse);
+    if (isFreeTrialRequest) {
+      setTrialCookie(res, trial.used + 1, trial.month);
+    }
+    return res;
+  }
+
   // Archive search — Prisma errors return empty context rather than crashing
   let archiveData: Awaited<ReturnType<typeof searchArchive>>;
   try {
     archiveData = await searchArchive(question, searchContext);
   } catch (err) {
     console.error("[oracle] archive search failed:", err);
-    archiveData = { quotes: [], transcripts: [], episodes: [], people: [], lore: [], query: question };
+    archiveData = { quotes: [], transcripts: [], episodes: [], people: [], lore: [], chapters: [], entities: [], threads: [], query: question };
   }
   const { contextText, citations } = buildContext(archiveData);
 
@@ -452,27 +639,21 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const responsePayload: OracleResponse = {
+  oracleCacheSet(cacheKey, { answer, citations, audioBase64 });
+
+  const finalRes = NextResponse.json({
     ok: true,
     answer,
     citations,
     audioBase64,
     hasVoice: !!audioBase64,
-    ...(freeQueriesRemaining !== undefined ? { freeQueriesRemaining } : {}),
-  };
+    trialUsed: isFreeTrialRequest,
+    trialRemaining: isFreeTrialRequest ? Math.max(0, TRIAL_LIMIT - trial.used - 1) : undefined,
+  } satisfies OracleResponse);
 
-  const response = NextResponse.json(responsePayload);
-
-  if (pendingCookieUpdate) {
-    const { cookieName, month, newUsed } = pendingCookieUpdate;
-    response.cookies.set(cookieName, `${month}:${newUsed}`, {
-      httpOnly: true,
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 35,
-      path: "/",
-      secure: process.env.NODE_ENV === "production",
-    });
+  if (isFreeTrialRequest) {
+    setTrialCookie(finalRes, trial.used + 1, trial.month);
   }
 
-  return response;
+  return finalRes;
 }

@@ -18,7 +18,7 @@ export async function SavedSearchesBlock({ userId, limit = 4 }: Props) {
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <div className="space-y-1">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">
-            /// saved_searches
+            {"/// saved_searches"}
           </p>
           <h2 className="font-display text-xl font-bold text-accent-violet">
             Searches{" "}

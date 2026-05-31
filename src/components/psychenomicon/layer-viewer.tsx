@@ -201,7 +201,7 @@ export function LayerViewer({
           {activeLayer === "all" && (
             <div className="flex items-center gap-2 mb-4">
               <div className="h-px flex-1 bg-accent-violet/20" />
-              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet">/// myth — the symbolic layer</span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet">{"/// myth — the symbolic layer"}</span>
               <div className="h-px flex-1 bg-accent-violet/20" />
             </div>
           )}
@@ -220,7 +220,7 @@ export function LayerViewer({
           {activeLayer === "all" && (
             <div className="flex items-center gap-2 mb-3 mt-6">
               <div className="h-px flex-1 bg-accent-cyan/20" />
-              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-cyan">/// record — what happened</span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-cyan">{"/// record — what happened"}</span>
               <div className="h-px flex-1 bg-accent-cyan/20" />
             </div>
           )}
@@ -239,7 +239,7 @@ export function LayerViewer({
           {activeLayer === "all" && (
             <div className="flex items-center gap-2 mb-3 mt-6">
               <div className="h-px flex-1 bg-accent-gold/20" />
-              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">/// analysis — beneath the surface</span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">{"/// analysis — beneath the surface"}</span>
               <div className="h-px flex-1 bg-accent-gold/20" />
             </div>
           )}

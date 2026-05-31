@@ -23,7 +23,7 @@ export default async function ArchetypesIndexPage() {
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
           <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">
-            /// initiate_only
+            {"/// initiate_only"}
           </p>
           <p className="font-display text-xl font-bold text-text-primary">
             Archetype atlas sealed.
@@ -71,7 +71,7 @@ export default async function ArchetypesIndexPage() {
           <div className="py-20 text-center space-y-3">
             <p className="font-mono text-4xl text-accent-violet/20">ψ</p>
             <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">
-              /// no_archetypes_recorded
+              {"/// no_archetypes_recorded"}
             </p>
             <p className="text-sm text-text-muted max-w-sm mx-auto">
               Archetypes will appear here as entities are tagged across the

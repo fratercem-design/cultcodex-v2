@@ -13,7 +13,7 @@ import { ManageSubscription } from "@/components/subscription/manage-subscriptio
 import { PricingSection } from "@/components/subscription/pricing-section";
 import { PageHero } from "@/components/ui/page-hero";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, faqPageJsonLd, jsonLdScript } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const revalidate = 300;
@@ -25,20 +25,11 @@ export const metadata: Metadata = buildMetadata({
   path: "/premium",
 });
 
-const FOUNDING_CAP = 22;
-
-async function getMemberCount() {
-  return prisma.codexUser.count({
-    where: { OR: [{ role: "admin" }, { subscriptionStatus: "active" }] },
-  });
-}
-
 export default async function PremiumPage() {
   const user = await getCurrentUser();
-  const [subStatus, stats, memberCount] = await Promise.all([
+  const [subStatus, stats] = await Promise.all([
     user ? getSubscriptionStatus(user.id) : Promise.resolve(null),
     getArchiveStats(),
-    getMemberCount(),
   ]);
 
   // hasAccess: gates what the user can SEE (admin + paying subscribers)
@@ -83,14 +74,14 @@ export default async function PremiumPage() {
         {/* ── Identity ladder explainer ── */}
         <section className="max-w-4xl mx-auto">
           <p className="mb-8 text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
-            /// the_ladder_of_identity
+            {"/// the_ladder_of_identity"}
           </p>
           <div className="grid gap-px md:grid-cols-3 overflow-hidden rounded-2xl border border-border">
             {[
               {
                 role: "Observer",
                 price: "Free",
-                hook: "I can tell there's a structure here. I just can't see all of it yet.",
+                hook: "You can see the shape of the archive. You can see that something is here. But the archive is working at a level you can't reach yet. Every locked transcript is a pattern you're watching but not reading.",
                 color: "text-text-muted",
                 bg: "bg-surface",
                 border: "",
@@ -174,24 +165,100 @@ export default async function PremiumPage() {
         <section className="space-y-6 max-w-5xl mx-auto">
           <div className="text-center space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-              /// choose_your_depth
+              {"/// choose_your_depth"}
             </p>
             <p className="font-display text-lg text-text-primary">
               Both tiers open immediately. Cancel any time.
             </p>
           </div>
-          <PricingSection
-            isActive={isActive}
-            isPaying={isPaying}
-            currentTier={currentTier as import("@/lib/subscription-tiers").TierSlug | null | undefined}
-            notSignedIn={notSignedIn}
-          />
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {TIERS.map((t) => {
+              const isGold = t.accent === "gold";
+              const borderCls = isGold ? "border-accent-gold/40" : "border-accent-violet/40";
+              const glowCls = isGold ? "shadow-accent-gold/10" : "shadow-accent-violet/10";
+              const accentText = isGold ? "text-accent-gold" : "text-accent-violet";
+              const accentBg = isGold ? "from-accent-gold/5" : "from-accent-violet/5";
+              const accentBorder = isGold ? "border-accent-gold/30" : "border-accent-violet/30";
+
+              return (
+                <div
+                  key={t.slug}
+                  id={t.slug}
+                  className={`relative flex flex-col rounded-2xl border ${borderCls} bg-gradient-to-b ${accentBg} to-surface p-8 shadow-xl ${glowCls}`}
+                >
+                  {t.badge && (
+                    <div className={`absolute -top-3 left-1/2 -translate-x-1/2 rounded-full border ${accentBorder} bg-surface px-3 py-1 font-mono text-[10px] uppercase tracking-widest ${accentText}`}>
+                      {t.badge}
+                    </div>
+                  )}
+
+                  <div className="mb-1">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+                      {t.slug === "access" ? "Tier I · Initiate" : "Tier II · Oracle"}
+                    </p>
+                    <h2 className={`mt-1 font-display text-2xl font-bold ${accentText}`}>{t.name}</h2>
+                    <p className="mt-1 font-mono text-[11px] italic text-text-muted leading-relaxed">
+                      &ldquo;{t.psychologyHook}&rdquo;
+                    </p>
+                  </div>
+
+                  <div className="mt-4 flex items-baseline gap-1">
+                    <span className={`font-display text-5xl font-bold ${accentText}`}>${t.priceMonthly}</span>
+                    <span className="font-mono text-sm text-text-muted">/month</span>
+                  </div>
+                  <p className="mt-1 font-mono text-[10px] text-text-muted/70">
+                    or ${t.priceAnnual}/yr — save ${t.priceMonthly * 12 - t.priceAnnual}
+                  </p>
+                  <p className={`mt-1 font-mono text-[10px] ${accentText}/60`}>{t.tagline}</p>
+
+                  <ul className="mt-6 space-y-2.5 flex-1">
+                    {t.features.map((f) => (
+                      <li key={f} className="flex items-start gap-2 text-sm">
+                        <span className={`mt-1 ${accentText}`} aria-hidden>✦</span>
+                        <span className="text-text-muted leading-relaxed font-mono text-[11px]">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {!isActive && (
+                    <div className="mt-7">
+                      <TierCheckoutButton
+                        tier={t.slug}
+                        role={t.role}
+                        priceMonthly={t.priceMonthly}
+                        priceAnnual={t.priceAnnual}
+                        accent={t.accent}
+                        requireSignIn={notSignedIn}
+                      />
+                      <p className="mt-3 text-center font-mono text-[10px] text-text-muted/60">
+                        Cancel anytime · Instant access · No contracts
+                      </p>
+                    </div>
+                  )}
+                  {isPaying && currentTier !== t.slug && t.slug === "system" && (
+                    <div className="mt-7">
+                      <TierCheckoutButton
+                        tier={t.slug}
+                        role={t.role}
+                        priceMonthly={t.priceMonthly}
+                        priceAnnual={t.priceAnnual}
+                        accent={t.accent}
+                        requireSignIn={false}
+                        verb="Upgrade to"
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         {/* ── Archive weight ── */}
         <section className="max-w-4xl mx-auto rounded-2xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-8 text-center space-y-6">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
-            /// what you&apos;re entering
+            {"/// what you're entering"}
           </p>
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
             {[
@@ -207,15 +274,9 @@ export default async function PremiumPage() {
             ))}
           </div>
           <p className="font-mono text-xs text-text-muted">
-            {stats.totalHours.toLocaleString()}+ hours of recorded transmissions ·{" "}
-            <span className="text-accent-gold font-bold">
-              {memberCount} founding {memberCount === 1 ? "initiate" : "initiates"}
-            </span>
-            {" "}
-            {Math.max(0, FOUNDING_CAP - memberCount) > 0
-              ? <>· <span className="text-accent-gold font-bold">{Math.max(0, FOUNDING_CAP - memberCount)}</span> founding {Math.max(0, FOUNDING_CAP - memberCount) === 1 ? "seat" : "seats"} remain</>
-              : "· founding cohort sealed"
-            }
+            {stats.totalHours.toLocaleString()}+ hours decoded ·{" "}
+            {stats.segments.toLocaleString()} transcript segments ·{" "}
+            <span className="text-accent-gold font-bold">{stats.loreEntries.toLocaleString()} lore entries</span> extracted
           </p>
         </section>
 
@@ -224,7 +285,7 @@ export default async function PremiumPage() {
         {/* ── Full comparison matrix ── */}
         <section className="space-y-4 max-w-4xl mx-auto">
           <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-            /// what opens at each level
+            {"/// what opens at each level"}
           </p>
           <div className="overflow-hidden rounded-2xl border border-border">
             <table className="w-full">
@@ -327,12 +388,65 @@ export default async function PremiumPage() {
           ))}
         </section>
 
+        {/* ── Final CTA ── */}
+        {!isPaying && (
+          <section className="relative overflow-hidden rounded-2xl border border-accent-gold/40 bg-gradient-to-b from-[#1a0033] via-[#0d001a] to-[#0d001a] p-10 text-center shadow-2xl shadow-accent-gold/10 max-w-3xl mx-auto">
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute -top-16 left-1/2 h-48 w-96 -translate-x-1/2 rounded-full bg-accent-gold/10 blur-3xl" />
+            </div>
+            <div className="relative space-y-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-cyan/70">
+                ✦ &nbsp; your role is waiting &nbsp; ✦
+              </p>
+              <h3 className="font-display text-3xl font-bold text-accent-gold sm:text-4xl" style={{ textShadow: "0 0 30px rgba(212,175,55,0.4)" }}>
+                Stop Observing.
+                <br />
+                <span className="text-white">Start Initiating.</span>
+              </h3>
+              <p className="font-mono text-xs text-text-muted max-w-sm mx-auto">
+                Initiate+ for $10/month. Oracle for $25/month.<br />
+                Both open immediately. Cancel any time. Nothing is ever deleted.
+              </p>
+              <div className="flex flex-wrap justify-center gap-4 pt-2">
+                <TierCheckoutButton
+                  tier="access"
+                  role="Initiate+"
+                  priceMonthly={10}
+                  priceAnnual={96}
+                  accent="gold"
+                  requireSignIn={notSignedIn}
+                />
+                <TierCheckoutButton
+                  tier="system"
+                  role="Oracle"
+                  priceMonthly={25}
+                  priceAnnual={240}
+                  accent="violet"
+                  requireSignIn={notSignedIn}
+                />
+              </div>
+              {!user && (
+                <p className="font-mono text-[10px] text-accent-cyan/60">
+                  <Link href="/auth/signin" className="underline hover:text-accent-cyan">Sign in with Google</Link>{" "}
+                  to subscribe
+                </p>
+              )}
+            </div>
+          </section>
+        )}
+
         <section className="text-center">
           <Link href="/start-here" className="font-mono text-xs uppercase tracking-widest text-text-muted hover:text-accent-gold transition-colors">
             ← Browse as Observer first
           </Link>
         </section>
       </main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(faqPageJsonLd(FAQ.map(({ q, a }) => ({ question: q, answer: a })))),
+        }}
+      />
     </>
   );
 }

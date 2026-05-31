@@ -11,6 +11,7 @@ export function EntryBanner() {
   useEffect(() => {
     try {
       if (!localStorage.getItem(STORAGE_KEY)) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setVisible(true);
       }
     } catch {
@@ -36,9 +37,9 @@ export function EntryBanner() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
         <p className="font-mono text-[11px] text-text-muted leading-relaxed">
-          <span className="text-accent-gold font-bold">///</span>{" "}
+          <span className="text-accent-gold font-bold">{"///"}</span>{" "}
           First time here?{" "}
-          <span className="text-text-primary">Pick a doorway — five ways into 1,500+ episodes.</span>{" "}
+          <span className="text-text-primary">Pick a doorway — five ways into 2,600+ episodes.</span>{" "}
           <Link
             href="/start-here"
             className="text-accent-gold underline underline-offset-2 hover:text-accent-gold/80 transition-colors"
@@ -49,7 +50,7 @@ export function EntryBanner() {
         <button
           onClick={dismiss}
           aria-label="Dismiss"
-          className="shrink-0 text-text-muted/50 hover:text-text-muted transition-colors text-lg leading-none"
+          className="shrink-0 text-text-muted/70 hover:text-text-muted transition-colors text-lg leading-none"
         >
           ×
         </button>

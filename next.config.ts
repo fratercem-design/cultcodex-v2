@@ -11,6 +11,7 @@ const { version } = JSON.parse(readFileSync(join(process.cwd(), "package.json"),
 // `process.cwd()` works because `next dev` is always launched from the
 // project root; matches the launch.json cwd setup.
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   env: {
     NEXT_PUBLIC_APP_VERSION: version,
   },
@@ -54,6 +55,12 @@ const nextConfig: NextConfig = {
         { key: "X-Content-Type-Options", value: "nosniff" },
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         { key: "X-DNS-Prefetch-Control", value: "on" },
+        // Prevents cross-origin docs sharing a browsing context group (Spectre mitigation).
+        // same-origin-allow-popups is used (vs same-origin) so Google OAuth redirect still works.
+        { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
+        // Cross-origin images/fonts are loaded by design (Google Fonts, YouTube thumbs),
+        // so cross-origin is correct here.
+        { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
         {
           key: "Permissions-Policy",
           value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()",
@@ -95,9 +102,30 @@ const nextConfig: NextConfig = {
       ],
     },
     {
+      source: "/:path*.woff",
+      headers: [
+        { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+      ],
+    },
+    {
       source: "/_next/static/:path*",
       headers: [
         { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+      ],
+    },
+    // Public images (logo, favicon, thumbnails served directly from /public)
+    {
+      source: "/:path*.(jpg|jpeg|png|webp|avif|gif|svg|ico)",
+      headers: [
+        { key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" },
+      ],
+    },
+    // Service worker — must never be cached so updates propagate immediately
+    {
+      source: "/sw.js",
+      headers: [
+        { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+        { key: "Service-Worker-Allowed", value: "/" },
       ],
     },
   ],

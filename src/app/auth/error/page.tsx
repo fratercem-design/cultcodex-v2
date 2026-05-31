@@ -26,7 +26,7 @@ export default async function AuthErrorPage({ searchParams }: PageProps) {
     <main className="min-h-screen bg-void flex items-center justify-center px-4">
       <div className="text-center space-y-5 max-w-sm">
         <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-crimson">
-          /// auth_error
+          {"/// auth_error"}
         </p>
         <p className="font-display text-xl font-bold text-text-primary">
           Sign-in failed

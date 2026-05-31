@@ -245,7 +245,7 @@ export function PackOpener({ packSlug, packTitle, packAccentColor, onClose }: Pa
         textShadow: `0 0 10px ${accent}`,
         opacity: 0.9,
       }}>
-        // {packTitle.toUpperCase()}
+        {"// "}{packTitle}
       </div>
 
       {/* Card fan */}

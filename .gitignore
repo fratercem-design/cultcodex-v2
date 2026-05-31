@@ -56,6 +56,10 @@ next-env.d.ts
 
 /src/generated/prisma
 
+# Python
+__pycache__/
+*.py[cod]
+
 # Local runtime artefacts for data-ingest / ASR pipelines
 scripts/*.log
 scripts/cookies.txt
@@ -70,3 +74,4 @@ scripts/enrich/run-log.txt
 
 # Brainstorming visual companion (superpowers skill)
 .superpowers/
+__pycache__/

@@ -120,6 +120,36 @@ export default async function StartHerePage() {
   return (
     <main id="main-content" className="mx-auto max-w-5xl px-4 py-12 space-y-20">
 
+      {/* ── 0. Personalized path CTA ── */}
+      <section className="max-w-2xl mx-auto">
+        <div className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface overflow-hidden">
+          <div className="p-7 space-y-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
+              {"/// not sure where to start?"}
+            </p>
+            <h2 className="font-display text-xl font-bold text-text-primary">
+              Let the archive find you.
+            </h2>
+            <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+              Three questions. The archive calibrates around your answers and
+              gives you five episodes, three people, and two Oracle prompts
+              tailored to where you are right now.
+            </p>
+          </div>
+          <div className="border-t border-accent-violet/20 bg-accent-violet/5 px-7 py-4 flex items-center justify-between gap-3">
+            <p className="font-mono text-[10px] text-text-muted">Takes 30 seconds.</p>
+            <Link
+              href="/start-here/quiz"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-5 py-2 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25"
+            >
+              Find your path →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <MysticalDivider />
+
       {/* ── 1. What is this? ── */}
       <section className="max-w-3xl mx-auto space-y-8 text-center">
         <div className="space-y-2">
@@ -177,7 +207,7 @@ export default async function StartHerePage() {
       <section className="space-y-6 max-w-4xl mx-auto">
         <div className="text-center space-y-1">
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-            /// before_you_go_further
+            {"/// before_you_go_further"}
           </p>
           <p className="font-display text-lg text-text-primary">Three things worth knowing.</p>
         </div>
@@ -220,7 +250,7 @@ export default async function StartHerePage() {
       <section className="space-y-6">
         <div className="text-center space-y-1">
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-            /// enter_the_archive
+            {"/// enter_the_archive"}
           </p>
           <p className="font-display text-lg text-text-primary">Start with what&apos;s pulling on you.</p>
           <p className="font-mono text-xs text-text-muted max-w-md mx-auto">
@@ -281,7 +311,7 @@ export default async function StartHerePage() {
         <div className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface overflow-hidden">
           <div className="p-7 space-y-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
-              /// not_sure_where_to_start
+              {"/// not_sure_where_to_start"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
               Ask the Oracle anything.
@@ -319,7 +349,7 @@ export default async function StartHerePage() {
       {/* ── 5. What opens as Initiate+ ── */}
       <section className="max-w-3xl mx-auto space-y-5">
         <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted text-center">
-          /// the_intelligence_layer
+          {"/// the_intelligence_layer"}
         </p>
         <div className="rounded-2xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface overflow-hidden">
           <div className="p-7 space-y-4">
@@ -368,7 +398,7 @@ export default async function StartHerePage() {
       {/* ── 6. Full map ── */}
       <section className="space-y-6">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted text-center">
-          /// full_map — every surface in the codex
+          {"/// full_map — every surface in the codex"}
         </p>
 
         {[

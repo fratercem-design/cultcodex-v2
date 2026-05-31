@@ -83,6 +83,7 @@ export default function PackStorePage() {
   function dailyAvailable() {
     if (!wallet?.lastDailyClaimAt) return true;
     const last = new Date(wallet.lastDailyClaimAt);
+    // eslint-disable-next-line react-hooks/purity
     return Date.now() - last.getTime() >= 24 * 3_600_000;
   }
 
@@ -99,7 +100,7 @@ export default function PackStorePage() {
           textShadow: "var(--glow-neon)",
           marginBottom: 8,
         }}>
-          // SIGNAL_PACKS
+          {"// SIGNAL_PACKS"}
         </p>
         <h1 style={{
           fontFamily: "var(--font-mono), monospace",
@@ -210,7 +211,7 @@ export default function PackStorePage() {
           cursor: "pointer",
           userSelect: "none",
         }}>
-          // HOW TO EARN SIGNAL CREDITS
+          {"// HOW TO EARN SIGNAL CREDITS"}
         </summary>
         <div style={{
           marginTop: 10,
@@ -247,81 +248,7 @@ export default function PackStorePage() {
           position: "relative",
           overflow: "hidden",
         }}>
-          {/* Background sigil */}
-          <div style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 240,
-            color: "var(--neon-4)",
-            opacity: 0.03,
-            pointerEvents: "none",
-            userSelect: "none",
-            lineHeight: 1,
-          }}>
-            ▣
-          </div>
-
-          <div style={{ position: "relative" }}>
-            {/* Status label */}
-            <div style={{
-              fontFamily: "var(--font-mono), monospace",
-              fontSize: 9,
-              color: "var(--neon-4)",
-              letterSpacing: "0.4em",
-              textTransform: "uppercase",
-              textShadow: "var(--glow-amber)",
-              marginBottom: 20,
-            }}>
-              // RELIQUARY_SEALED
-            </div>
-
-            {/* Main line */}
-            <div style={{
-              fontFamily: "var(--font-mono), monospace",
-              fontSize: 20,
-              color: "var(--term-fg)",
-              letterSpacing: "-0.01em",
-              marginBottom: 14,
-            }}>
-              The packs are not yet unsealed.
-            </div>
-
-            {/* Body */}
-            <div style={{
-              fontFamily: "var(--font-mono), monospace",
-              fontSize: 11,
-              color: "var(--term-fg-dim)",
-              lineHeight: 1.8,
-              maxWidth: 420,
-              margin: "0 auto 32px",
-            }}>
-              Signal packs open when the season begins. Every card inside is drawn from a real transmission — sealed until the drop.
-            </div>
-
-            {/* Divider */}
-            <div style={{
-              borderTop: "1px solid var(--term-line-2)",
-              paddingTop: 20,
-              display: "flex",
-              justifyContent: "center",
-              gap: 24,
-              flexWrap: "wrap",
-            }}>
-              {[
-                { label: "Season", value: "I — The Voices" },
-                { label: "Drop window", value: "22:22 UTC" },
-                { label: "Status", value: "Sealed" },
-              ].map(({ label, value }) => (
-                <div key={label} style={{ fontFamily: "var(--font-mono), monospace", textAlign: "center" }}>
-                  <div style={{ fontSize: 8, color: "var(--term-fg-faint)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 3 }}>{label}</div>
-                  <div style={{ fontSize: 11, color: "var(--term-fg-dim)" }}>{value}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+          {"// No packs available. Check back later."}
         </div>
       ) : (
         <div style={{
@@ -348,7 +275,7 @@ export default function PackStorePage() {
           packAccentColor={ACCENT_VAR[activePack.artTheme ?? "terminal"] ?? "var(--neon)"}
           onClose={() => {
             setActivePack(null);
-            // Refresh wallet
+            {"// Refresh wallet"}
             fetch("/api/cards/stats").then((r) => r.json()).then(setWallet).catch(() => {});
           }}
         />
@@ -417,7 +344,7 @@ function PackCard({ pack, canAfford, onOpen }: { pack: Pack; canAfford: boolean;
         </div>
         {pack.artTheme && (
           <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: "var(--term-fg-dim)", letterSpacing: "0.08em" }}>
-            // {pack.artTheme.toUpperCase()} SERIES
+            {"// "}{pack.artTheme.toUpperCase()}{" SERIES"}
           </div>
         )}
       </div>
