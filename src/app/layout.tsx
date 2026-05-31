@@ -74,9 +74,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "CultCodex — The Living Archive",
   description: SITE_DESCRIPTION,
-  alternates: {
-    canonical: SITE_URL,
-  },
+  // NOTE: no global `alternates.canonical` here. Setting it at the root made
+  // every page inherit the homepage URL as its canonical, so Google treated
+  // all routes as duplicates of `/`. Each page declares its own canonical.
   icons: {
     icon: "/favicon.jpg",
     apple: "/favicon.jpg",
@@ -87,7 +87,6 @@ export const metadata: Metadata = {
     images: [{ url: "/social-share.jpg", width: 1200, height: 630 }],
     siteName: "CultCodex",
     type: "website",
-    url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",

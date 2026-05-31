@@ -26,6 +26,7 @@ import { jsonLdScript, organizationJsonLd } from "@/lib/seo";
 export const revalidate = 300;
 
 export const metadata = {
+  alternates: { canonical: "/" },
   title: "CultCodex — Decode Cult of Psyche | 2,600+ Episodes Archived",
   description:
     "The definitive archive of Cult of Psyche. 2,600+ transmissions with AI psychological breakdowns, guest profiles, topic signals, behavioral pattern maps, and growing transcript coverage.",

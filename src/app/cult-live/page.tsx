@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 export const revalidate = 120; // re-check live status every 2 min
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/cult-live" },
   title: "Cult Live — CultCodex",
   description: "Latest videos and live streams from Cult of Psyche and Psyche's Nightmares.",
 };

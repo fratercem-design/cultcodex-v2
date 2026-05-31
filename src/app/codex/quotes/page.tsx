@@ -15,6 +15,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { formatDate } from "@/lib/format/date";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/codex/quotes" },
   title: "Saved Quotes — CULT CODEX",
   description: "The lines that stayed with you.",
 };

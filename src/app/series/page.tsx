@@ -9,6 +9,7 @@ import { IconSeries, IconTransmission } from "@/components/graphics/codex-icons"
 export const revalidate = 600;
 
 export const metadata = {
+  alternates: { canonical: "/series" },
   title: "Series — CULT CODEX",
   description: "Browse Cult of Psyche series and collections",
 };

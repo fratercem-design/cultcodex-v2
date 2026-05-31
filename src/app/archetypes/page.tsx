@@ -4,6 +4,7 @@ import { ARCHETYPES } from "@/lib/archetypes";
 import { PageHero } from "@/components/ui/page-hero";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/archetypes" },
   title: "Archetypes — CULT CODEX",
   description:
     "Eight recurring patterns the Oracle has identified across the archive. Which one are you?",

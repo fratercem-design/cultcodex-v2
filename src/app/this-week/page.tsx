@@ -15,6 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       digest?.blurb ??
       "Five moments from the Cult of Psyche archive — curated weekly.",
+    alternates: { canonical: "/this-week" },
   };
 }
 
