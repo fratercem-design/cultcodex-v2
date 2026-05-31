@@ -41,6 +41,7 @@ const ACCENT_VAR: Record<string, string> = {
   occult:   "var(--neon-3)",
   chaos:    "var(--neon-5)",
   sacred:   "var(--neon-4)",
+  myth:     "var(--neon-2)",
 };
 
 export default function PackStorePage() {
