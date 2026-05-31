@@ -35,7 +35,14 @@ export const metadata = {
 
 const FREE_QUERY_LIMIT = 3;
 
-export default async function OraclePage() {
+export default async function OraclePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q } = await searchParams;
+  const initialQuestion = q ? decodeURIComponent(q).slice(0, 500) : undefined;
+
   const user = await getCurrentUser();
   const subscribed = user
     ? user.role === "admin" || (await isSubscribed(user.id))
@@ -127,7 +134,7 @@ export default async function OraclePage() {
         {/* ── Oracle Console ── */}
         <section>
           <div className="space-y-4">
-            <OracleConsole initialFreeQueriesRemaining={initialFreeQueriesRemaining} />
+            <OracleConsole initialFreeQueriesRemaining={initialFreeQueriesRemaining} initialQuestion={initialQuestion} />
             {!subscribed && (
               <p className="text-center font-mono text-[10px] text-text-muted/40 uppercase tracking-widest">
                 Initiate+ unlocks unlimited Oracle access ·{" "}

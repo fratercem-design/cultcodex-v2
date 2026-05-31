@@ -8,6 +8,7 @@ type ConsoleState = "idle" | "loading" | "answered" | "error";
 
 interface OracleConsoleProps {
   initialFreeQueriesRemaining?: number;
+  initialQuestion?: string;
 }
 
 function formatTime(seconds: number): string {
@@ -33,8 +34,8 @@ const BAR_HEIGHTS = Array.from({ length: BAR_COUNT }, (_, i) => {
   return Math.max(0.15, Math.min(1, base));
 });
 
-export function OracleConsole({ initialFreeQueriesRemaining }: OracleConsoleProps) {
-  const [question, setQuestion] = useState("");
+export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: OracleConsoleProps) {
+  const [question, setQuestion] = useState(initialQuestion ?? "");
   const [state, setState] = useState<ConsoleState>("idle");
   const [answer, setAnswer] = useState("");
   const [citations, setCitations] = useState<OracleCitation[]>([]);

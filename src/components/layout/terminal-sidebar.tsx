@@ -27,6 +27,7 @@ const NAV_GROUPS: readonly NavGroup[] = [
     title: "DISCOVER",
     items: [
       { href: "/", label: "OVERVIEW", glyph: "▢", key: "1" },
+      { href: "/this-week", label: "THIS WEEK", glyph: "⚡" },
       { href: "/episodes", label: "ARCHIVE", glyph: "▦", key: "2", countKey: "episodes" },
       { href: "/topics", label: "SIGNALS", glyph: "◈", key: "3", countKey: "topics" },
       { href: "/people", label: "VOICES", glyph: "◐", key: "4", countKey: "people" },
