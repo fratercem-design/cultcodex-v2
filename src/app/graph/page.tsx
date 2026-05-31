@@ -66,9 +66,9 @@ export default async function GraphPage({
         </p>
 
         {/* Stats strip */}
-        <div className="flex flex-wrap gap-x-6 gap-y-1">
+        <div className="flex flex-wrap gap-x-6 gap-y-1 items-baseline">
           {[
-            { n: totalPeople, label: "recurring figures" },
+            { n: totalPeople, label: "figures in this graph" },
             { n: totalConnections, label: "connections mapped" },
             { n: totalEpisodes, label: activeEra ? "episodes in era" : "episodes analyzed" },
           ].map((s) => (
@@ -77,6 +77,9 @@ export default async function GraphPage({
               {s.label}
             </span>
           ))}
+          <span className="font-mono text-[9px] text-text-muted/40 italic">
+            2+ appearances only — <Link href="/people" className="underline hover:text-text-muted transition-colors">all voices →</Link>
+          </span>
         </div>
       </div>
 

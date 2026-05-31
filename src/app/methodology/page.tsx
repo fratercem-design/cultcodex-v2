@@ -101,15 +101,28 @@ export default function MethodologyPage() {
           </div>
         </SectionCard>
 
-        <div className="flex items-center justify-center gap-4 text-xs">
-          <Link href="/corrections" className="font-mono text-accent-gold hover:underline">
-            Submit a Correction
-          </Link>
-          <span className="text-text-muted">|</span>
-          <Link href="/content-policy" className="font-mono text-accent-gold hover:underline">
-            Content Policy
-          </Link>
-        </div>
+        <SectionCard title="Corrections & Contact">
+          <div className="space-y-3 text-sm text-text-muted leading-relaxed">
+            <p>
+              If you spot a factual error — misidentified speaker, wrong date, garbled transcript,
+              or inaccurate summary — use the corrections form and it will be reviewed and fixed.
+            </p>
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Link
+                href="/corrections"
+                className="inline-flex items-center gap-2 rounded border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2 font-mono text-xs font-bold text-accent-gold transition-colors"
+              >
+                Submit a Correction →
+              </Link>
+              <Link
+                href="/content-policy"
+                className="inline-flex items-center gap-2 rounded border border-border px-4 py-2 font-mono text-xs text-text-muted hover:text-text-primary transition-colors"
+              >
+                Content Policy
+              </Link>
+            </div>
+          </div>
+        </SectionCard>
       </main>
     </>
   );

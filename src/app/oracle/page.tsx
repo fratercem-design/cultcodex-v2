@@ -22,13 +22,13 @@ export default async function OraclePage() {
     : false;
 
   const totalQuotes = await prisma.quote.count();
-  const randomOffset = Math.floor(Math.random() * Math.max(totalQuotes - 1, 0));
+  const randomOffset = Math.floor(Math.random() * Math.max(totalQuotes - 5, 0));
   const quotes = await prisma.quote.findMany({
-    take: 1,
+    take: 5,
     skip: randomOffset,
     include: { speaker: true, episode: true },
   });
-  const quote = quotes[0] ?? null;
+  const quote = quotes.find((q) => q.text.length > 100) ?? quotes[0] ?? null;
 
   return (
     <div className="relative min-h-screen bg-void">
