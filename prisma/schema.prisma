@@ -401,6 +401,7 @@ model CodexUser {
   handle                  String?   @unique
   sigilGlyph              String?
   onboardingCompleted     Boolean   @default(false)
+  userArchetype           String?   // archetype slug e.g. "oracle", "alchemist"
 
   // Personal codex page (system tier)
   bio                     String?

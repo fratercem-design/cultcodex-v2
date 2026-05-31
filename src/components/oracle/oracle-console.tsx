@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import type { OracleCitation, OracleResponse } from "@/app/api/oracle/ask/route";
 
@@ -51,6 +51,8 @@ export function OracleConsole({ initialFreeQueriesRemaining }: OracleConsoleProp
   );
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  const [shareCopied, setShareCopied] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const answerRef = useRef<HTMLDivElement | null>(null);
@@ -144,6 +146,22 @@ export function OracleConsole({ initialFreeQueriesRemaining }: OracleConsoleProp
       audio.play().catch(() => {});
     }
   }
+
+  const handleShare = useCallback(async () => {
+    const params = new URLSearchParams({
+      q: question.slice(0, 120),
+      a: answer.slice(0, 240),
+    });
+    const url = `${window.location.origin}/oracle/share?${params.toString()}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2500);
+    } catch {
+      // Fallback: open share URL in new tab
+      window.open(url, "_blank", "noopener");
+    }
+  }, [question, answer]);
 
   function handleReset() {
     if (audioRef.current) {
@@ -393,13 +411,22 @@ export function OracleConsole({ initialFreeQueriesRemaining }: OracleConsoleProp
             </div>
           )}
 
-          {/* Ask again */}
-          <button
-            onClick={handleReset}
-            className="w-full text-center font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50 hover:text-accent-violet transition-colors py-2"
-          >
-            Ask another question →
-          </button>
+          {/* Share + Ask again row */}
+          <div className="flex items-center justify-between gap-4">
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-1.5 rounded border border-accent-cyan/30 bg-accent-cyan/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-accent-cyan/70 hover:border-accent-cyan/50 hover:text-accent-cyan transition-colors"
+            >
+              <ShareIcon />
+              {shareCopied ? "Link copied!" : "Share answer"}
+            </button>
+            <button
+              onClick={handleReset}
+              className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50 hover:text-accent-violet transition-colors py-2"
+            >
+              Ask another →
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -425,6 +452,15 @@ function PauseIcon() {
     <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
       <rect x="2" y="1.5" width="2.5" height="7" rx="0.5" />
       <rect x="5.5" y="1.5" width="2.5" height="7" rx="0.5" />
+    </svg>
+  );
+}
+
+function ShareIcon() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M7 1L9 3L7 5" />
+      <path d="M9 3H4.5C3 3 2 4 2 5.5V9" />
     </svg>
   );
 }

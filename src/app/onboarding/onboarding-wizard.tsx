@@ -425,7 +425,60 @@ export function OnboardingWizard({ displayName }: WizardProps) {
       <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
         <div>
           <div style={label("", { marginBottom: 10 })}>04 · THE FIRST SIGNAL</div>
-          <h1 style={heading()}>Your transmission<br />awaits</h1>
+          <h1 style={heading()}>Your archetype<br />is revealed</h1>
+
+          {result.archetype && (
+            <div
+              style={{
+                marginTop: 20,
+                padding: "20px",
+                border: `1px solid ${result.archetype.color}50`,
+                background: `${result.archetype.color}0c`,
+                display: "flex",
+                flexDirection: "column",
+                gap: 12,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <span
+                  style={{
+                    fontSize: 48,
+                    color: result.archetype.color,
+                    lineHeight: 1,
+                    flexShrink: 0,
+                    textShadow: `0 0 24px ${result.archetype.color}60`,
+                  }}
+                >
+                  {result.archetype.glyph}
+                </span>
+                <div>
+                  <div style={{ fontSize: 10, color: result.archetype.color, letterSpacing: "0.18em", marginBottom: 4 }}>
+                    YOUR ARCHETYPE
+                  </div>
+                  <div style={{ fontSize: 22, color: C.bone, fontWeight: 600, letterSpacing: "0.04em", fontStyle: "italic" }}>
+                    {result.archetype.name}
+                  </div>
+                </div>
+              </div>
+              <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.7, margin: 0 }}>
+                {result.archetype.summary}
+              </p>
+              <Link
+                href={`/archetypes/${result.archetype.slug}`}
+                style={{
+                  fontSize: 10,
+                  color: result.archetype.color,
+                  letterSpacing: "0.14em",
+                  textDecoration: "none",
+                  display: "inline-block",
+                  opacity: 0.8,
+                }}
+              >
+                EXPLORE YOUR ARCHETYPE →
+              </Link>
+            </div>
+          )}
+
           {result.starterCard && (
             <div
               style={{

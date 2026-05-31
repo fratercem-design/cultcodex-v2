@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { grantStarterCard } from "@/lib/queries/cards";
+import { getArchetype } from "@/lib/archetypes";
 
 const SIGILS = [
   "⊕","⊗","⊘","⊙","⊛","⊚","◈","◎","◉","◐",
@@ -15,6 +16,14 @@ function computeSigil(handle: string): string {
   for (let i = 0; i < handle.length; i++) sum += handle.charCodeAt(i);
   return SIGILS[sum % SIGILS.length];
 }
+
+const VIBE_ARCHETYPE: Record<string, string> = {
+  consciousness: "oracle",
+  synthetic: "architect",
+  esoteric: "alchemist",
+  human: "mirror-walker",
+  unknown: "trickster",
+};
 
 const VIBE_CARD_TYPES: Record<string, string> = {
   consciousness: "SIGNAL",
@@ -46,6 +55,7 @@ export type OnboardingResult =
         summaryShort: string | null;
         episodeNumber: number | null;
       } | null;
+      archetype: { slug: string; name: string; glyph: string; color: string; summary: string } | null;
     };
 
 export async function completeOnboarding(data: {
@@ -75,6 +85,8 @@ export async function completeOnboarding(data: {
   const sigil = computeSigil(handle);
   const cardType = VIBE_CARD_TYPES[vibeChoice] ?? "SIGNAL";
   const topicKeyword = VIBE_TOPIC_KEYWORDS[vibeChoice] ?? "";
+  const archetypeSlug = VIBE_ARCHETYPE[vibeChoice] ?? null;
+  const archetypeData = archetypeSlug ? (getArchetype(archetypeSlug) ?? null) : null;
 
   const [starterCard, episode] = await Promise.all([
     grantStarterCard(user.id, cardType),
@@ -108,6 +120,7 @@ export async function completeOnboarding(data: {
       sigilGlyph: sigil,
       onboardingCompleted: true,
       bio: firstQuestion || undefined,
+      userArchetype: archetypeSlug ?? undefined,
     },
   });
 
@@ -119,5 +132,8 @@ export async function completeOnboarding(data: {
       ? { title: starterCard.title, cardType: starterCard.cardType, rarity: starterCard.rarity }
       : null,
     firstEpisode: episode ?? null,
+    archetype: archetypeData
+      ? { slug: archetypeData.slug, name: archetypeData.name, glyph: archetypeData.glyph, color: archetypeData.color, summary: archetypeData.summary }
+      : null,
   };
 }
