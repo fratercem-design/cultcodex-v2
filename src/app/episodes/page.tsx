@@ -29,7 +29,21 @@ export const revalidate = 60;
 
 export const metadata = {
   title: "Episodes — CULT CODEX",
-  description: "Browse all Cult of Psyche episodes",
+  description:
+    "Every Cult of Psyche transmission, fully indexed. Browse 2,600+ episodes with full transcripts, AI breakdowns, behavioral pattern analysis, and guest profiles.",
+  openGraph: {
+    title: "Episodes — CULT CODEX",
+    description:
+      "Every Cult of Psyche transmission, fully indexed. Browse 2,600+ episodes with full transcripts, AI breakdowns, and behavioral pattern analysis.",
+    type: "website" as const,
+    images: [{ url: "/social-share.jpg", width: 1168, height: 784 }],
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Episodes — CULT CODEX",
+    description: "Every Cult of Psyche transmission indexed. Browse 2,600+ episodes.",
+    images: ["/social-share.jpg"],
+  },
 };
 
 const SORT_OPTIONS = [

@@ -1,6 +1,12 @@
 import { describe, it, expect, vi } from "vitest";
 import type { ArchiveStats } from "@/types";
 
+// Bypass Next.js cache in test environment
+vi.mock("next/cache", () => ({
+  unstable_cache: <T extends (...args: unknown[]) => unknown>(fn: T) => fn,
+  revalidateTag: vi.fn(),
+}));
+
 // Mock prisma
 vi.mock("@/lib/db", () => ({
   prisma: {

@@ -117,7 +117,7 @@ export default async function OraclePage() {
 
         <p className="mx-auto mt-4 max-w-md px-4 font-serif text-sm leading-relaxed text-text-muted italic">
           Ask anything.{" "}
-          <span className="text-accent-cyan">{totalQuotes.toLocaleString()}+ archive moments</span>{" "}
+          <span className="text-accent-cyan">{totalQuotes.toLocaleString()} archive moments</span>{" "}
           synthesized in real time — with citations back to the source.
         </p>
       </header>
@@ -156,7 +156,7 @@ export default async function OraclePage() {
               <div key={sample.question} className="rounded-xl border border-accent-violet/15 bg-surface/60 overflow-hidden">
                 {/* Question header */}
                 <div className="bg-accent-violet/5 border-b border-accent-violet/10 px-5 py-3 flex items-start gap-2">
-                  <span className="mt-0.5 font-mono text-accent-violet/60 text-xs">◉</span>
+                  <span className="mt-0.5 font-mono text-accent-violet/60 text-xs" aria-hidden="true">◉</span>
                   <p className="font-mono text-xs font-bold text-accent-violet/80">{sample.question}</p>
                 </div>
                 {/* Answer */}

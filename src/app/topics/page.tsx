@@ -18,8 +18,23 @@ import {
 export const revalidate = 600;
 
 export const metadata = {
-  title: "Topics — CULT CODEX",
-  description: "Explore the key topics and themes of the Cult of Psyche",
+  title: "Topic Signals — CULT CODEX",
+  description:
+    "Key themes and recurring subjects across the Cult of Psyche archive — topic signals cross-referenced with episodes, people, and lore.",
+  openGraph: {
+    title: "Topic Signals — CULT CODEX",
+    description:
+      "Key themes and recurring subjects in the Cult of Psyche archive — with episode and person cross-references.",
+    type: "website" as const,
+    images: [{ url: "/long-form-background.jpg", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Topic Signals — CULT CODEX",
+    description:
+      "Topic signals from the Cult of Psyche archive — themes, recurring subjects, and behavioral patterns.",
+    images: ["/long-form-background.jpg"],
+  },
 };
 
 const SORT_OPTIONS = [

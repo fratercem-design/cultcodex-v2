@@ -77,12 +77,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     notFound();
   }
 
-  return buildMetadata({
+  const isThin =
+    (episode.summaryShort?.trim().length ?? 0) < 60 &&
+    !episode.summaryLong &&
+    episode.segments.length === 0;
+
+  const meta = buildMetadata({
     title: episode.title,
     description: episode.summaryShort || episode.searchText || null,
     path: `/episodes/${episode.slug}`,
     image: episode.thumbnailUrl ?? null,
   });
+
+  if (isThin) {
+    return { ...meta, robots: { index: false, follow: true } };
+  }
+
+  return meta;
 }
 
 export default async function EpisodeDetailPage({ params, searchParams }: PageProps) {

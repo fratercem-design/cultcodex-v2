@@ -21,7 +21,22 @@ export const revalidate = 600;
 
 export const metadata = {
   title: "People — CULT CODEX",
-  description: "Guests, hosts, and figures of the Cult of Psyche",
+  description:
+    "Every guest, host, and recurring figure in the Cult of Psyche archive — behavioral profiles, appearance counts, and cross-referenced episode links.",
+  openGraph: {
+    title: "People — CULT CODEX",
+    description:
+      "Guest profiles, host bios, and behavioral maps for every figure in the Cult of Psyche archive.",
+    type: "website" as const,
+    images: [{ url: "/wiki-page-header.jpg", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "People — CULT CODEX",
+    description:
+      "Guest profiles and behavioral maps for every figure in the Cult of Psyche archive.",
+    images: ["/wiki-page-header.jpg"],
+  },
 };
 
 const SORT_OPTIONS = [

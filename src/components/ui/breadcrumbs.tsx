@@ -1,5 +1,8 @@
 import Link from "next/link";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://cultcodex.me";
+
 interface BreadcrumbItem {
   label: string;
   href?: string;
@@ -12,8 +15,24 @@ interface BreadcrumbsProps {
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   if (items.length === 0) return null;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.label,
+      ...(item.href ? { item: `${SITE_URL}${item.href}` } : {}),
+    })),
+  };
+
   return (
-    <nav aria-label="Breadcrumb" className="mx-auto max-w-7xl px-4 py-2">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <nav aria-label="Breadcrumb" className="mx-auto max-w-7xl px-4 py-2">
       <ol className="flex flex-wrap items-center gap-1 font-mono text-[11px] text-text-muted">
         {items.map((item, i) => {
           const isLast = i === items.length - 1;
@@ -37,5 +56,6 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
         })}
       </ol>
     </nav>
+    </>
   );
 }

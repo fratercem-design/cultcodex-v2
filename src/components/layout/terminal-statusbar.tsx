@@ -50,7 +50,9 @@ interface TerminalStatusBarProps {
 }
 
 export function TerminalStatusBar({ feedCount }: TerminalStatusBarProps) {
-  const [utc, setUtc] = useState<string>("");
+  const [utc, setUtc] = useState<string>(
+    () => (typeof window !== "undefined" ? formatUtc(new Date()) : ""),
+  );
 
   useEffect(() => {
     function tick(): void {

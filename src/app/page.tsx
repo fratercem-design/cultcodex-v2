@@ -103,7 +103,7 @@ export default async function HomePage() {
           <div className="space-y-3">
             <div className="space-y-1">
               <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-cyan/80">
-                ✦ &nbsp; CultCodex &nbsp; ✦
+                <span aria-hidden="true">✦</span> &nbsp; CultCodex &nbsp; <span aria-hidden="true">✦</span>
               </p>
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
                 The Cult of Psyche intelligence archive
@@ -120,7 +120,7 @@ export default async function HomePage() {
               </span>
             </h1>
             <p className="font-mono text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
-              {stats.episodes.toLocaleString()}+ Cult of Psyche conversations. Full transcripts,
+              {stats.episodes.toLocaleString()} Cult of Psyche conversations. Full transcripts,
               AI psychological breakdowns, and behavioral maps — all searchable.
             </p>
           </div>
@@ -158,7 +158,7 @@ export default async function HomePage() {
               { value: stats.episodes.toLocaleString(), label: "transmissions archived" },
               { value: stats.segments.toLocaleString(), label: "transcript segments" },
               { value: stats.people.toLocaleString(), label: "voices profiled" },
-              { value: `${stats.totalHours.toLocaleString()}+`, label: "hours decoded" },
+              { value: stats.totalHours.toLocaleString(), label: "hours decoded" },
             ].map((s) => (
               <span key={s.label} className="font-mono text-[11px] text-text-muted whitespace-nowrap">
                 <span className="text-accent-gold font-bold">{s.value}</span>{" "}{s.label}
@@ -183,7 +183,7 @@ export default async function HomePage() {
                 href={item.href}
                 className={`group flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-4 transition-all ${item.accent}`}
               >
-                <span className="text-xl flex-shrink-0">{item.icon}</span>
+                <span className="text-xl flex-shrink-0" aria-hidden="true">{item.icon}</span>
                 <div className="min-w-0">
                   <p className="font-mono text-xs font-bold text-text-primary truncate">{item.label}</p>
                   <p className="font-mono text-[10px] text-text-muted truncate">{item.count}</p>
