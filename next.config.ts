@@ -37,6 +37,12 @@ const nextConfig: NextConfig = {
       destination: "https://cultcodex.me/:path*",
       permanent: true,
     },
+    {
+      source: "/:path*",
+      has: [{ type: "host", value: "cultcodex.xyz" }],
+      destination: "https://cultcodex.me/:path*",
+      permanent: true,
+    },
   ],
   headers: async () => [
     {
