@@ -1,5 +1,7 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import Apple from "next-auth/providers/apple";
+import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/db";
 import type { CodexUserRole } from "@/generated/prisma/client";
 
@@ -9,6 +11,46 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    ...(process.env.APPLE_ID && process.env.APPLE_SECRET
+      ? [
+          Apple({
+            clientId: process.env.APPLE_ID,
+            clientSecret: process.env.APPLE_SECRET,
+          }),
+        ]
+      : []),
+    Credentials({
+      id: "magic-link",
+      name: "Magic Link",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        token: { label: "Token", type: "text" },
+      },
+      async authorize(credentials) {
+        const { email, token } = credentials as { email?: string; token?: string };
+        if (!email || !token) return null;
+
+        const record = await prisma.verificationToken.findUnique({
+          where: { token },
+        });
+
+        if (!record) return null;
+        if (record.identifier !== email.toLowerCase().trim()) return null;
+        if (record.expires < new Date()) {
+          await prisma.verificationToken.delete({ where: { token } }).catch(() => {});
+          return null;
+        }
+
+        // One-time use — delete immediately after validation
+        await prisma.verificationToken.delete({ where: { token } });
+
+        return {
+          id: email,
+          email: email.toLowerCase().trim(),
+          name: email.split("@")[0],
+        };
+      },
     }),
   ],
   session: {
@@ -28,7 +70,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email: user.email,
             displayName: user.name ?? user.email.split("@")[0],
             avatarUrl: user.image ?? undefined,
-            provider: account?.provider ?? "unknown",
+            provider:
+              account?.provider === "magic-link"
+                ? "email"
+                : account?.provider ?? "unknown",
           },
         });
       } catch (err) {
