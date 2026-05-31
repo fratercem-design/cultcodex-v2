@@ -13,6 +13,7 @@ import type { Metadata } from "next";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/psychenomicon/entities" },
   title: "Entity Network — Psychenomicon — CULT CODEX",
   description: "All tracked entities and their co-appearance relationships across Psychenomicon chapters.",
 };

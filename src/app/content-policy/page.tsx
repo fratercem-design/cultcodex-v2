@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/content-policy" },
   title: "Content Policy — CULT CODEX",
   description: "Content sourcing, attribution, and privacy policies for the Cult Codex archive",
 };

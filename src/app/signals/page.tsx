@@ -7,6 +7,7 @@ import { submitSignalProposal, voteOnProposal } from "./actions";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/signals" },
   title: "Signal Proposals — CultCodex",
   description: "Oracle members propose what gets investigated next in the archive.",
 };

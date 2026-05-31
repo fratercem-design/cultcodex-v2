@@ -49,6 +49,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   return {
     title: `Your Path Into ${label} — CULT CODEX`,
     description: `A personalized entry point into the Cult of Psyche archive, calibrated for ${label}.`,
+    // Consolidate all ?interest/?depth/?intent permutations to one canonical.
+    alternates: { canonical: "/start-here/results" },
   };
 }
 

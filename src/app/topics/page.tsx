@@ -18,6 +18,7 @@ import {
 export const revalidate = 600;
 
 export const metadata = {
+  alternates: { canonical: "/topics" },
   title: "Topics — CULT CODEX",
   description: "Browse the recurring themes, behavioral patterns, and obsessions that run through the Cult of Psyche archive — each one mapped to the episodes and moments where it emerged.",
 };

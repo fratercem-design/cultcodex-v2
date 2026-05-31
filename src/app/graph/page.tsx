@@ -7,6 +7,7 @@ import { ERAS, getEraById } from "@/lib/eras";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/graph" },
   title: "Relationship Map — CULT CODEX",
   description:
     "Dynamic map of every recurring Cult of Psyche figure — who appeared with whom, how often, and what orbits formed. Click any node to focus their connections.",

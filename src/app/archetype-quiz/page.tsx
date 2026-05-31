@@ -4,6 +4,7 @@ import { QuizClient } from "@/components/archetype-quiz/quiz-client";
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/archetype-quiz" },
   title: "Discover Your Archetype — CultCodex",
   description:
     "10 questions. One revelation. Discover your mythic archetype through the Cult Codex system — Oracle, Alchemist, Trickster, Mirror Walker, Prophet, Architect, Exile, or Familiar.",

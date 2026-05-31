@@ -11,6 +11,7 @@ import { SubscriptionCTA } from "@/components/subscription/subscription-cta";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/lore/psychenomicon" },
   title: "The Psychenomicon -- CULT CODEX",
   description:
     "The forbidden chronicle of the Cult of Psyche. A living grimoire of every soul, saga, and spectacle from over 1,400 live transmissions.",

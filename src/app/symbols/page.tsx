@@ -6,6 +6,7 @@ import type { SymbolEntry } from "@/lib/symbols/data";
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/symbols" },
   title: "Symbol Encyclopedia — CultCodex",
   description:
     "Comprehensive history, occult meaning, and modern interpretation of the most significant esoteric symbols — from the Ouroboros to the Chaos Star.",
