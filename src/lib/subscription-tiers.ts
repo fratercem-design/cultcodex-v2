@@ -81,7 +81,7 @@ export const TIERS: Tier[] = [
       "Red Room: no-filter analysis, nothing softened",
       "See the full power structure — who connects to whom and how",
       "Deep behavioral profiles on every recurring figure",
-      "Named role inside the system — Oracle, Architect, or Watcher",
+      "Named role inside the archive — Architect, Watcher, or Hierophant",
       "Listed as a contributor to the archive itself",
     ],
     unlocks: ["transcripts", "psychenomicon", "member-identity", "personal-codex", "insights", "salon"],

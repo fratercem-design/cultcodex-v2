@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/lib/format/date";
+import { cleanEpisodeSummary } from "@/lib/format/text";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
 import { EraTag } from "@/components/ui/era-tag";
@@ -53,9 +54,9 @@ export function EpisodeCard({ episode }: EpisodeCardProps) {
         <h2 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors truncate">
           {episode.title}
         </h2>
-        {episode.summaryShort && (
+        {cleanEpisodeSummary(episode.summaryShort) && (
           <p className="mt-1 text-xs text-text-muted line-clamp-2">
-            {episode.summaryShort}
+            {cleanEpisodeSummary(episode.summaryShort)}
           </p>
         )}
         <div className="mt-2 flex flex-wrap gap-1.5">

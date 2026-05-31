@@ -5,7 +5,7 @@ import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SearchInput } from "@/components/search/search-input";
 import { getEpisodes, formatEpisodeForCard } from "@/lib/queries/episodes";
-import { getArchiveStats } from "@/lib/queries/stats";
+import { getArchiveStats, getMemberCount } from "@/lib/queries/stats";
 import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
@@ -60,9 +60,7 @@ export default async function HomePage() {
       spotlightEpisode: null,
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
-    prisma.codexUser.count({
-      where: { OR: [{ role: "admin" }, { subscriptionStatus: "active" }] },
-    }).catch(() => 0),
+    getMemberCount().catch(() => 0),
   ]);
 
   // Reaction counts without user context — user-specific highlighting handled client-side

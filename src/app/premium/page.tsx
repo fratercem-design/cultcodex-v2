@@ -354,7 +354,7 @@ const COMPARISON_ROWS: [string, boolean, boolean, boolean][] = [
   ["Access unfiltered transmissions — Red Room + raw segments", false, false, true],
   ["See the full power structure — Relationship Map", false, false, true],
   ["Deep behavioral profiles on every recurring figure", false, false, true],
-  ["Permanent named role in the record — Oracle, Architect, or Watcher", false, false, true],
+  ["Permanent named role in the record — Architect, Watcher, or Hierophant", false, false, true],
 ];
 
 const FAQ: { q: string; a: string }[] = [

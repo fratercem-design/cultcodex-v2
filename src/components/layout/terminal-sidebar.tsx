@@ -24,16 +24,21 @@ interface NavGroup {
 
 const NAV_GROUPS: readonly NavGroup[] = [
   {
-    title: "MAIN",
+    title: "DISCOVER",
     items: [
       { href: "/", label: "OVERVIEW", glyph: "▢", key: "1" },
       { href: "/episodes", label: "ARCHIVE", glyph: "▦", key: "2", countKey: "episodes" },
-      { href: "/oracle", label: "ORACLE", glyph: "◉", key: "3" },
-      { href: "/topics", label: "SIGNALS", glyph: "◈", key: "4", countKey: "topics" },
-      { href: "/people", label: "VOICES", glyph: "◐", key: "5", countKey: "people" },
-      { href: "/graph", label: "NETWORK MAP", glyph: "✦", key: "6" },
-      { href: "/psychenomicon", label: "PSYCHENOMICON", glyph: "▲", key: "7" },
-      { href: "/collections", label: "COLLECTIONS", glyph: "▣", key: "8" },
+      { href: "/topics", label: "SIGNALS", glyph: "◈", key: "3", countKey: "topics" },
+      { href: "/people", label: "VOICES", glyph: "◐", key: "4", countKey: "people" },
+      { href: "/graph", label: "NETWORK MAP", glyph: "✦", key: "5" },
+      { href: "/collections", label: "COLLECTIONS", glyph: "▣", key: "6" },
+    ],
+  },
+  {
+    title: "INTELLIGENCE",
+    items: [
+      { href: "/oracle", label: "ORACLE", glyph: "◉", key: "7" },
+      { href: "/psychenomicon", label: "PSYCHENOMICON", glyph: "▲", key: "8" },
     ],
   },
   {

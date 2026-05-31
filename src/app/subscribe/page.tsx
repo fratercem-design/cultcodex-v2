@@ -1,7 +1,6 @@
 import { getCurrentUser } from "@/lib/auth";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { getArchiveStats } from "@/lib/queries/stats";
-import { prisma } from "@/lib/db";
+import { getArchiveStats, getMemberCount } from "@/lib/queries/stats";
 import { SubscriptionCTA } from "@/components/subscription/subscription-cta";
 import { ManageSubscription } from "@/components/subscription/manage-subscription";
 import Link from "next/link";
@@ -16,14 +15,6 @@ export const metadata: Metadata = {
 };
 
 const FOUNDING_CAP = 22;
-
-async function getMemberCount() {
-  return prisma.codexUser.count({
-    where: {
-      OR: [{ role: "admin" }, { subscriptionStatus: "active" }],
-    },
-  });
-}
 
 export default async function SubscribePage() {
   const user = await getCurrentUser();
@@ -380,7 +371,7 @@ export default async function SubscribePage() {
                 </p>
                 <ul className="mt-4 space-y-2">
                   {[
-                    "Custom flair title (Oracle, Acolyte…)",
+                    "Custom flair title (Architect, Hierophant…)",
                     "Listed on public Member Roll",
                     "Member-since badge",
                     "Founding Member status (early birds)",
@@ -461,7 +452,7 @@ export default async function SubscribePage() {
               {[
                 {
                   quote: "I didn't know what I was missing until I searched a guest's name and found every single thing they ever said on the show.",
-                  handle: "Oracle in the Dark",
+                  handle: "Hierophant in the Dark",
                 },
                 {
                   quote: "The Psychenomicon reads like a mythology textbook for a universe that shouldn't exist but absolutely does.",

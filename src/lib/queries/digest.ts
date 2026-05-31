@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { getMemberCount } from "@/lib/queries/stats";
 
 export interface WeeklyDigestData {
   weekStart: Date;
@@ -77,9 +78,7 @@ export async function getWeeklyDigestData(): Promise<WeeklyDigestData> {
       orderBy: { createdAt: "desc" },
       take: 3,
     }),
-    prisma.codexUser.count({
-      where: { OR: [{ role: "admin" }, { subscriptionStatus: "active" }] },
-    }),
+    getMemberCount(),
   ]);
 
   // Top quote by reaction count over past 30 days (wider window = more stable signal)
