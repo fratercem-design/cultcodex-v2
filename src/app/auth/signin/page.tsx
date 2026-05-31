@@ -1,5 +1,6 @@
 import { PageHero } from "@/components/ui/page-hero";
 import { GoogleSignInButton } from "@/components/auth/google-signin-button";
+import { EmailSignInForm } from "@/components/auth/email-signin-form";
 
 export const dynamic = "force-dynamic";
 
@@ -32,17 +33,23 @@ export default async function SignInPage({ searchParams }: PageProps) {
 
           <GoogleSignInButton callbackUrl={redirectTo} />
 
+          {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-surface px-2 font-mono text-text-muted">or</span>
+              <span className="bg-surface px-2 font-mono text-text-muted">
+                or sign in with email
+              </span>
             </div>
           </div>
 
-          <p className="text-center text-xs text-text-muted">
-            Email sign-in coming soon.
+          {/* Email magic-link */}
+          <EmailSignInForm callbackUrl={redirectTo} />
+
+          <p className="text-center font-mono text-[10px] text-text-muted/40">
+            No password needed — we&apos;ll send you a secure link.
           </p>
         </div>
       </main>

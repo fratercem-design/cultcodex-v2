@@ -133,7 +133,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
   );
 }
 
-export const revalidate = 600;
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
   try {
@@ -157,11 +157,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const person = await getPersonBySlug(slug);
 
   if (!person) {
-    return buildMetadata({
-      title: "Person Not Found",
-      description: "This person could not be found.",
-      path: `/people/${slug}`,
-    });
+    notFound();
   }
 
   // Noindex for "mentioned" people — they were only name-dropped, never appeared as guests.

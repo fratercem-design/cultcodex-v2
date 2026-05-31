@@ -6,7 +6,7 @@
  *   - /api/stripe/webhook (map priceId back to tier)
  *   - SoftGate component (which tier a surface requires)
  *
- * Identity ladder: Observer (free) → Initiate+ ($10) → Oracle ($25)
+ * Identity ladder: Observer (free) → Initiate+ ($10) → Architect ($25)
  * People don't upgrade for features — they upgrade to change their role.
  *
  * Stripe price IDs are read from env at request time so the same config
@@ -60,8 +60,8 @@ export const TIERS: Tier[] = [
   },
   {
     slug: "system",
-    name: "Oracle Tier",
-    role: "Oracle",
+    name: "Architect",
+    role: "Architect",
     tagline: "You're not watching anymore. You're inside it.",
     psychologyHook: "I am inside the system. Not just watching it.",
     priceMonthly: 25,
@@ -79,7 +79,7 @@ export const TIERS: Tier[] = [
       "Red Room: no-filter analysis, nothing softened",
       "See the full power structure — who connects to whom and how",
       "Deep behavioral profiles on every recurring figure",
-      "Named role inside the system — Oracle, Architect, or Watcher",
+      "Named role inside the archive — Architect, Watcher, or Hierophant",
       "Listed as a contributor to the archive itself",
     ],
     unlocks: ["transcripts", "psychenomicon", "member-identity", "personal-codex", "insights", "salon"],
@@ -121,4 +121,10 @@ export function resolvePriceId(
   const t = getTier(slug);
   const envVar = interval === "year" ? t.priceEnvVarAnnual : t.priceEnvVar;
   return process.env[envVar] ?? null;
+}
+
+/** Resolve the Stripe annual price id for a tier from env (null if not configured). */
+export function resolveAnnualPriceId(slug: TierSlug): string | null {
+  const t = getTier(slug);
+  return process.env[t.priceEnvVarAnnual] ?? null;
 }

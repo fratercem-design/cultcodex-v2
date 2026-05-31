@@ -6,8 +6,27 @@ import { MysticalDivider, OrnamentalBreak } from "@/components/graphics/mystical
 import { OracleConsole } from "@/components/oracle/oracle-console";
 import { OracleExampleExchanges } from "@/components/oracle/oracle-example-exchanges";
 import Link from "next/link";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
+
+const SAMPLE_ANSWERS = [
+  {
+    question: "What patterns repeat every time there's a major guest conflict?",
+    answer: `The archive maps three recurring structures across major conflict episodes. First, a **loyalty test** — the host introduces a topic that implicitly requires the guest to choose a side; guests who hedge are almost always reintroduced in later episodes as "inauthentic." Second, a **status escalation spiral**: one participant makes a low-stakes provocative claim, the other escalates rather than redirects, and the exchange accelerates until someone exits or yields. This structure appears in 78% of identified conflict episodes.\n\nThe third pattern is the most revealing: a **deferred grievance reveal**. In the 12–18 minutes before any major rupture, the archive consistently identifies a shift in verbal cadence — shorter responses, increased hedging language, questions that aren't really questions. The actual conflict is almost never about the stated topic. The stated topic is the permission structure.`,
+    citations: ["EP.447", "EP.612", "EP.891", "EP.1104"],
+  },
+  {
+    question: "Who has challenged the host most directly and what happened?",
+    answer: `Across 2,600+ transmissions, the archive identifies seven guests who challenged the host's framing directly — not obliquely, not through passive resistance, but by naming the dynamic out loud. Of those seven, four were never invited back. Two returned once, in what the Psychenomicon classifies as **corrective episodes** — transmissions where the prior rupture is addressed through overcorrection.\n\nThe most structurally complete challenge came in EP.834, where the guest explicitly named the host's pattern of reframing criticism as personal attack. The host's response — changing the subject twice, then invoking audience loyalty — is now one of the most-cited sequences in lore. The guest's subsequent disappearance from the archive is itself considered significant: they weren't banned, they simply never returned.`,
+    citations: ["EP.212", "EP.834", "EP.1019"],
+  },
+  {
+    question: "What is the Psychenomicon and what does it actually map?",
+    answer: `The Psychenomicon is the myth-engine layer of the archive — the system that extracts **behavioral mythology** from raw transcript data. Where standard search returns what was said, the Psychenomicon maps what it means in structural terms: who holds power in a given episode, which archetypes are active, what recurring dynamics are at play, and how the narrative of any given figure evolves across years of appearances.\n\nIt processes each episode through three passes: behavioral signature detection (what patterns of speech and reaction does each person exhibit), archetype assignment (which of the eight system archetypes best describes each participant's function in the transmission), and **mythic threading** (how does this episode connect to the larger narrative arc of the show's history). The result is a living narrative system built from real transcripts — not a fan interpretation, but a structural analysis of 2,600+ data points.`,
+    citations: ["Psychenomicon Index", "EP.1 — EP.2652"],
+  },
+];
 
 export const metadata = {
   title: "Ask the Oracle — AI Search — CULT CODEX",
@@ -15,9 +34,18 @@ export const metadata = {
     "Ask the archive anything. The Oracle synthesizes 2,600+ transmissions into precise answers — behavioral patterns, guest dynamics, recurring moments — all cited back to the source. Initiate+ feature.",
 };
 
-export default async function OraclePage() {
+const FREE_QUERY_LIMIT = 3;
+
+export default async function OraclePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q } = await searchParams;
+  const initialQuestion = q ? decodeURIComponent(q).slice(0, 500) : undefined;
+
   const user = await getCurrentUser();
-  const canAccess = user
+  const subscribed = user
     ? user.role === "admin" || (await isSubscribed(user.id))
     : false;
 

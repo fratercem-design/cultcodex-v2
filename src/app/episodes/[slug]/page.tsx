@@ -53,7 +53,7 @@ import { ColorLegend } from "@/components/ui/color-legend";
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
   try {
@@ -79,19 +79,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const episode = await getEpisodeBySlug(slug);
 
   if (!episode) {
-    return buildMetadata({
-      title: "Episode Not Found",
-      description: "This episode could not be found.",
-      path: `/episodes/${slug}`,
-    });
+    notFound();
   }
 
-  return buildMetadata({
+  const isThin =
+    (episode.summaryShort?.trim().length ?? 0) < 60 &&
+    !episode.summaryLong &&
+    episode.segments.length === 0;
+
+  const meta = buildMetadata({
     title: episode.title,
     description: episode.summaryShort || episode.searchText || null,
     path: `/episodes/${episode.slug}`,
     image: episode.thumbnailUrl ?? null,
   });
+
+  if (isThin) {
+    return { ...meta, robots: { index: false, follow: true } };
+  }
+
+  return meta;
 }
 
 export default async function EpisodeDetailPage({ params, searchParams }: PageProps) {
@@ -340,6 +347,13 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               entityTitle={episode.title}
             />
           </div>
+
+          {/* SEO intro — rendered outside tabs for crawler visibility */}
+          {(episode.summaryLong ?? episode.summaryShort) && (episode.summaryLong ?? episode.summaryShort)!.length >= 100 && (
+            <p className="text-sm text-text-primary/80 leading-relaxed">
+              {episode.summaryLong ?? episode.summaryShort}
+            </p>
+          )}
 
           {/* What You Missed */}
           <WhatYouMissed
@@ -735,6 +749,34 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           uploadDate: episode.airDate?.toISOString(),
           url: `https://cultcodex.me/episodes/${episode.slug}`,
           ...(episode.youtubeVideoId && { contentUrl: `https://www.youtube.com/watch?v=${episode.youtubeVideoId}` }),
+        }),
+      }}
+    />
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "PodcastEpisode",
+          name: cleanTitle(episode.title),
+          url: `https://cultcodex.me/episodes/${episode.slug}`,
+          ...(episode.airDate ? { datePublished: episode.airDate.toISOString() } : {}),
+          description: episode.summaryShort ?? episode.summaryLong ?? undefined,
+          ...(episode.thumbnailUrl ? { image: episode.thumbnailUrl } : {}),
+          partOfSeries: {
+            "@type": "PodcastSeries",
+            name: "Cult of Psyche",
+            url: "https://cultcodex.me",
+          },
+          ...(actualGuests.length > 0
+            ? {
+                actor: actualGuests.map((g) => ({
+                  "@type": "Person",
+                  name: g.person.displayName,
+                  url: `https://cultcodex.me/people/${g.person.slug}`,
+                })),
+              }
+            : {}),
         }),
       }}
     />

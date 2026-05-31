@@ -137,7 +137,7 @@ export default function WelcomeInitiatePage() {
         <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
           {"/// when you&apos;re ready to go deeper"}
         </p>
-        <h3 className="font-display text-xl font-bold text-accent-violet">Oracle Tier</h3>
+        <h3 className="font-display text-xl font-bold text-accent-violet">Architect</h3>
         <p className="font-mono text-xs text-text-muted max-w-sm mx-auto leading-relaxed">
           A personal codex page. Votes on future guests. Red Room Sessions. A named role in the archive.
           $25/month — when you&rsquo;re ready to stop watching and start shaping it.
@@ -146,7 +146,7 @@ export default function WelcomeInitiatePage() {
           href="/premium#system"
           className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 px-5 py-2 font-mono text-xs text-accent-violet transition-all hover:bg-accent-violet/20"
         >
-          See what Oracle opens →
+          See what Architect opens →
         </Link>
       </section>
 

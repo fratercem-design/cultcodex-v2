@@ -240,13 +240,13 @@ export default function PackStorePage() {
       {/* Pack grid */}
       {packs.length === 0 ? (
         <div style={{
-          fontFamily: "var(--font-mono), monospace",
-          fontSize: 11,
-          color: "var(--term-fg-faint)",
-          textAlign: "center",
-          padding: 48,
           border: "1px solid var(--term-line)",
-          borderRadius: 6,
+          borderRadius: 8,
+          backgroundColor: "var(--term-bg-1)",
+          padding: "60px 40px",
+          textAlign: "center",
+          position: "relative",
+          overflow: "hidden",
         }}>
           {"// No packs available. Check back later."}
         </div>

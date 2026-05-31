@@ -1,10 +1,15 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import type { OracleCitation, OracleResponse } from "@/app/api/oracle/ask/route";
 
 type ConsoleState = "idle" | "loading" | "answered" | "error";
+
+interface OracleConsoleProps {
+  initialFreeQueriesRemaining?: number;
+  initialQuestion?: string;
+}
 
 function formatTime(seconds: number): string {
   if (!isFinite(seconds) || seconds < 0) return "0:00";
@@ -29,8 +34,8 @@ const BAR_HEIGHTS = Array.from({ length: BAR_COUNT }, (_, i) => {
   return Math.max(0.15, Math.min(1, base));
 });
 
-export function OracleConsole() {
-  const [question, setQuestion] = useState("");
+export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: OracleConsoleProps) {
+  const [question, setQuestion] = useState(initialQuestion ?? "");
   const [state, setState] = useState<ConsoleState>("idle");
   const [answer, setAnswer] = useState("");
   const [citations, setCitations] = useState<OracleCitation[]>([]);
@@ -45,6 +50,8 @@ export function OracleConsole() {
   const [captureState, setCaptureState] = useState<"idle" | "saving" | "done">("idle");
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  const [shareCopied, setShareCopied] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const answerRef = useRef<HTMLDivElement | null>(null);
@@ -81,6 +88,7 @@ export function OracleConsole() {
     setAudioBase64(null);
     setHasVoice(false);
     setGated(false);
+    setTrialUsed(false);
     setErrorMsg("");
     setCurrentTime(0);
     setDuration(0);
@@ -102,6 +110,10 @@ export function OracleConsole() {
       if (!data.ok) {
         if (data.error === "initiate_required") {
           setGated(true);
+          setState("error");
+        } else if (data.error === "free_limit_reached" || data.error === "anon_limit_reached") {
+          setTrialUsed(true);
+          setTrialRemaining(0);
           setState("error");
         } else {
           setErrorMsg(data.error ?? "The Oracle is silent.");
@@ -132,6 +144,22 @@ export function OracleConsole() {
       audio.play().catch(() => {});
     }
   }
+
+  const handleShare = useCallback(async () => {
+    const params = new URLSearchParams({
+      q: question.slice(0, 120),
+      a: answer.slice(0, 240),
+    });
+    const url = `${window.location.origin}/oracle/share?${params.toString()}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2500);
+    } catch {
+      // Fallback: open share URL in new tab
+      window.open(url, "_blank", "noopener");
+    }
+  }, [question, answer]);
 
   function handleReset() {
     if (audioRef.current) {
@@ -204,6 +232,13 @@ export function OracleConsole() {
         </div>
       )}
 
+      {/* ── Free query counter ── */}
+      {typeof trialRemaining === "number" && trialRemaining > 0 && state !== "loading" && (
+        <p className="text-center font-mono text-[9px] uppercase tracking-[0.35em] text-text-muted/50">
+          {trialRemaining} free {trialRemaining === 1 ? "query" : "queries"} remaining this month
+        </p>
+      )}
+
       {/* ── Gated ── */}
       {state === "error" && gated && (
         <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-6 text-center space-y-3">
@@ -220,6 +255,23 @@ export function OracleConsole() {
           </Link>
         </div>
       )}
+
+      {/* ── Free / anon limit reached ── */}
+      {(state === "error" && trialUsed) || (trialUsed && state === "idle") ? (
+        <div className="rounded-xl border border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-surface p-6 text-center space-y-3">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">/// free_queries_exhausted</p>
+          <p className="font-display text-base font-bold text-text-primary">Monthly preview complete.</p>
+          <p className="font-mono text-xs text-text-muted">
+            Initiate+ unlocks unlimited Oracle access to the full archive.
+          </p>
+          <Link
+            href="/premium"
+            className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-2.5 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25"
+          >
+            Become Initiate+ — $10/mo →
+          </Link>
+        </div>
+      ) : null}
 
       {/* ── Generic error ── */}
       {state === "error" && !gated && (
@@ -461,6 +513,15 @@ function PauseIcon() {
     <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
       <rect x="2" y="1.5" width="2.5" height="7" rx="0.5" />
       <rect x="5.5" y="1.5" width="2.5" height="7" rx="0.5" />
+    </svg>
+  );
+}
+
+function ShareIcon() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M7 1L9 3L7 5" />
+      <path d="M9 3H4.5C3 3 2 4 2 5.5V9" />
     </svg>
   );
 }

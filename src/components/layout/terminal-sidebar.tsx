@@ -264,7 +264,7 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-          <span>TRANSCRIBED</span>
+          <span>INDEXED</span>
           <span style={{ color: "var(--neon)" }}>{integrityPct}%</span>
         </div>
         <div
@@ -275,7 +275,7 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
             overflow: "hidden",
           }}
           role="progressbar"
-          aria-label="Transcript coverage"
+          aria-label="Archive indexed coverage"
           aria-valuenow={integrityPct}
           aria-valuemin={0}
           aria-valuemax={100}
@@ -291,7 +291,7 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
           />
         </div>
         <div style={{ marginTop: 6 }}>
-          {counts.transcribedEpisodes.toLocaleString()} / {counts.episodes.toLocaleString()} eps
+          {counts.transcribedEpisodes.toLocaleString()} eps indexed
         </div>
       </div>
     </aside>

@@ -17,4 +17,5 @@ export interface ArchiveStats {
   totalHours: number;
   comments: number;
   reactions: number;
+  transcribedEpisodes: number;
 }
