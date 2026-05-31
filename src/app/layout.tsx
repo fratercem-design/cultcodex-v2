@@ -139,9 +139,7 @@ export default async function RootLayout({
         <KonamiEasterEgg />
         <CommandPalette />
         </Providers>
-        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
-        )}
+        <GoogleAnalytics gaId="G-1ML217JXYV" />
       </body>
     </html>
   );
