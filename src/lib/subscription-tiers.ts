@@ -126,5 +126,5 @@ export function resolvePriceId(
 /** Resolve the Stripe annual price id for a tier from env (null if not configured). */
 export function resolveAnnualPriceId(slug: TierSlug): string | null {
   const t = getTier(slug);
-  return process.env[t.priceAnnualEnvVar] ?? null;
+  return process.env[t.priceEnvVarAnnual] ?? null;
 }

@@ -88,7 +88,7 @@ export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: 
     setAudioBase64(null);
     setHasVoice(false);
     setGated(false);
-    setFreeLimitReached(false);
+    setTrialUsed(false);
     setErrorMsg("");
     setCurrentTime(0);
     setDuration(0);
@@ -112,8 +112,8 @@ export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: 
           setGated(true);
           setState("error");
         } else if (data.error === "free_limit_reached" || data.error === "anon_limit_reached") {
-          setFreeLimitReached(true);
-          setFreeQueriesLeft(0);
+          setTrialUsed(true);
+          setTrialRemaining(0);
           setState("error");
         } else {
           setErrorMsg(data.error ?? "The Oracle is silent.");
@@ -233,9 +233,9 @@ export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: 
       )}
 
       {/* ── Free query counter ── */}
-      {typeof freeQueriesLeft === "number" && freeQueriesLeft > 0 && state !== "loading" && (
+      {typeof trialRemaining === "number" && trialRemaining > 0 && state !== "loading" && (
         <p className="text-center font-mono text-[9px] uppercase tracking-[0.35em] text-text-muted/50">
-          {freeQueriesLeft} free {freeQueriesLeft === 1 ? "query" : "queries"} remaining this month
+          {trialRemaining} free {trialRemaining === 1 ? "query" : "queries"} remaining this month
         </p>
       )}
 
@@ -257,7 +257,7 @@ export function OracleConsole({ initialFreeQueriesRemaining, initialQuestion }: 
       )}
 
       {/* ── Free / anon limit reached ── */}
-      {(state === "error" && freeLimitReached) || (freeLimitReached && state === "idle") ? (
+      {(state === "error" && trialUsed) || (trialUsed && state === "idle") ? (
         <div className="rounded-xl border border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-surface p-6 text-center space-y-3">
           <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">/// free_queries_exhausted</p>
           <p className="font-display text-base font-bold text-text-primary">Monthly preview complete.</p>

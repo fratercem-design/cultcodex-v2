@@ -17,8 +17,8 @@ import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
 import { SkipLink } from "@/components/ui/skip-link";
 import { jsonLdScript } from "@/lib/seo";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Providers } from "@/components/providers";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -166,8 +166,8 @@ export default async function RootLayout({
             }),
           }}
         />
-        <Analytics />
-        <SpeedInsights />
+        </Providers>
+        <GoogleAnalytics gaId="G-1ML217JXYV" />
       </body>
     </html>
   );
