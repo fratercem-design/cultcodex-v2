@@ -66,7 +66,7 @@ export default function TermsPage() {
         <SectionCard title="Subscriptions and Billing">
           <div className="space-y-3 text-sm text-text-muted leading-relaxed">
             <p>
-              Paid subscriptions (Initiate+ and Architect tiers) are billed monthly through Stripe.
+              Paid subscriptions (Initiate+ and Oracle tiers) are billed monthly through Stripe.
               Subscriptions renew automatically unless cancelled before the renewal date.
               You may cancel at any time; access continues until the end of the current billing period.
             </p>

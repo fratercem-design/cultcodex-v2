@@ -55,9 +55,9 @@ export default function PrivacyPage() {
             <div>
               <h3 className="font-mono text-xs uppercase tracking-wider text-accent-cyan mb-2">Usage Data</h3>
               <p className="text-text-muted">
-                We use Google Analytics to measure aggregate page views and performance metrics.
-                Google Analytics may use cookies to distinguish returning visitors.
-                No personally identifiable information beyond what Google Analytics collects by default is shared.
+                We use Vercel Analytics (privacy-preserving, no cookies, no cross-site tracking)
+                to measure aggregate page views and performance metrics. No personally identifiable
+                information is collected in this process.
               </p>
             </div>
             <div>
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
               <li>To verify your subscription tier and gate subscriber-only features</li>
               <li>To send transactional emails (e.g. subscription receipts via Stripe)</li>
               <li>To process correction requests and improvement feedback</li>
-              <li>To measure aggregate site performance (Google Analytics)</li>
+              <li>To measure aggregate site performance (Vercel Analytics)</li>
             </ul>
             <p className="mt-3">
               We do not sell your personal data. We do not use your data for advertising profiling.
@@ -100,7 +100,7 @@ export default function PrivacyPage() {
             <p>
               We use a session cookie to maintain your login state (via NextAuth.js). This cookie is
               strictly necessary for the site to function and does not track you across other websites.
-              Google Analytics uses cookies to distinguish returning visitors and measure aggregate traffic.
+              Vercel Analytics operates without cookies.
             </p>
           </div>
         </SectionCard>
@@ -110,8 +110,7 @@ export default function PrivacyPage() {
             <ul className="space-y-2 list-disc list-inside">
               <li><span className="text-text-primary font-medium">Google OAuth</span> — sign-in authentication</li>
               <li><span className="text-text-primary font-medium">Stripe</span> — payment processing</li>
-              <li><span className="text-text-primary font-medium">Railway</span> — hosting and deployment infrastructure</li>
-              <li><span className="text-text-primary font-medium">Google Analytics</span> — aggregate traffic measurement</li>
+              <li><span className="text-text-primary font-medium">Vercel</span> — hosting and analytics</li>
               <li><span className="text-text-primary font-medium">Anthropic Claude</span> — AI enrichment of archive data (content only, not user data)</li>
               <li><span className="text-text-primary font-medium">OpenAI Whisper</span> — transcript generation (audio content only, not user data)</li>
             </ul>

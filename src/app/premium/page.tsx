@@ -1,5 +1,5 @@
 /**
- * /premium — Identity ladder: Observer → Initiate+ → Architect
+ * /premium — Identity ladder: Observer → Initiate+ → Oracle
  *
  * Conversion psychology: people don't upgrade for features.
  * They upgrade to change their role in the system.
@@ -9,8 +9,9 @@ import { getCurrentUser } from "@/lib/auth";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { getArchiveStats } from "@/lib/queries/stats";
 import { prisma } from "@/lib/db";
+import { TIERS } from "@/lib/subscription-tiers";
+import { TierCheckoutButton } from "@/components/subscription/tier-checkout-button";
 import { ManageSubscription } from "@/components/subscription/manage-subscription";
-import { PricingSection } from "@/components/subscription/pricing-section";
 import { PageHero } from "@/components/ui/page-hero";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { buildMetadata, faqPageJsonLd, jsonLdScript } from "@/lib/seo";
@@ -21,7 +22,7 @@ export const revalidate = 300;
 export const metadata: Metadata = buildMetadata({
   title: "Join the Archive — Choose Your Role",
   description:
-    "Most people sense there's more here than they're seeing. There is. Initiate+ ($10/mo) unlocks the intelligence layer. Architect ($25/mo) puts you inside it.",
+    "Most people sense there's more here than they're seeing. There is. Initiate+ ($10/mo) unlocks the intelligence layer. Oracle ($25/mo) puts you inside it.",
   path: "/premium",
 });
 
@@ -61,8 +62,8 @@ export default async function PremiumPage() {
             />
             <p className="mt-4 text-center font-mono text-xs text-accent-gold">
               {currentTier === "system"
-                ? "You are Architect. The system is fully open."
-                : "You are Initiate. Upgrade to Architect for the inner layer."}
+                ? "You are Oracle. The system is fully open."
+                : "You are Initiate. Upgrade to Oracle for the inner layer."}
               {" · "}
               <Link href="/episodes" className="underline hover:text-accent-gold/80">Browse</Link>
               {" · "}
@@ -111,7 +112,7 @@ export default async function PremiumPage() {
                 active: hasAccess && currentTier === "access",
               },
               {
-                role: "Architect",
+                role: "Oracle",
                 price: "$25/mo",
                 hook: "I am inside the system. Not just watching it.",
                 color: "text-accent-violet",
@@ -161,7 +162,7 @@ export default async function PremiumPage() {
 
         <MysticalDivider />
 
-        {/* ── Tier cards with checkout (billing toggle inside) ── */}
+        {/* ── Tier cards with checkout ── */}
         <section className="space-y-6 max-w-5xl mx-auto">
           <div className="text-center space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
@@ -294,7 +295,7 @@ export default async function PremiumPage() {
                   <th className="px-5 py-3.5 text-left font-mono text-[11px] uppercase tracking-wider text-text-muted">Feature</th>
                   <th className="px-5 py-3.5 text-center font-mono text-[11px] uppercase tracking-wider text-text-muted">Observer</th>
                   <th className="px-5 py-3.5 text-center font-mono text-[11px] uppercase tracking-wider text-accent-gold">Initiate+</th>
-                  <th className="px-5 py-3.5 text-center font-mono text-[11px] uppercase tracking-wider text-accent-violet">Architect</th>
+                  <th className="px-5 py-3.5 text-center font-mono text-[11px] uppercase tracking-wider text-accent-violet">Oracle</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
@@ -323,12 +324,12 @@ export default async function PremiumPage() {
             {
               icon: "🧠",
               title: "Every recurring figure has a behavioral signature. Not just a bio.",
-              body: "Tactics. Escalation triggers. What they do under pressure. Architect builds deep intelligence files on everyone who keeps showing up.",
+              body: "Tactics. Escalation triggers. What they do under pressure. Oracle builds deep intelligence files on everyone who keeps showing up.",
               color: "border-accent-violet/20",
             },
             {
               icon: "👁",
-              title: "Architect members don't just observe the archive — they direct it.",
+              title: "Oracle-tier members don't just observe the archive — they direct it.",
               body: "Vote on investigations. Propose what gets analyzed. Name what gets examined next. The archive is shaped by the people most invested in it.",
               color: "border-accent-violet/20",
             },
@@ -339,42 +340,6 @@ export default async function PremiumPage() {
               <p className="font-mono text-[11px] text-text-muted leading-relaxed">{c.body}</p>
             </div>
           ))}
-        </section>
-
-        {/* ── Personal Codex hero ── */}
-        <section className="max-w-4xl mx-auto rounded-2xl border border-accent-gold/25 bg-gradient-to-br from-accent-gold/5 via-surface to-surface p-8 space-y-6">
-          <div className="text-center space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
-              /// your_intelligence_file
-            </p>
-            <h3 className="font-display text-2xl font-bold text-white">
-              Your own layer on top of the archive.
-            </h3>
-            <p className="font-mono text-xs text-text-muted max-w-lg mx-auto leading-relaxed">
-              Initiate+ gives you a Personal Codex — a private intelligence file that lives alongside the archive. Save signals, annotate episodes, track patterns across years of transmissions. The more you build, the more irreplaceable it becomes.
-            </p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              { icon: "◈", label: "Saved Signals", body: "Flag topics, behavioral patterns, and recurring dynamics as you find them." },
-              { icon: "📌", label: "Pinned Quotes", body: "Build a personal library of moments that matter. Searchable, linked to source." },
-              { icon: "🗂", label: "Episode Notes", body: "Annotate any episode privately. Your observations, cross-linked to the archive." },
-              { icon: "✦", label: "Tracked Figures", body: "Follow specific people across the archive. Behavioral signatures surface over time." },
-              { icon: "↳", label: "Persistent History", body: "Every save stays. Cancel and resubscribe — your Codex picks up exactly where you left." },
-              { icon: "⌬", label: "Grows With You", body: "The longer you're inside the archive, the more intelligence your Codex accumulates." },
-            ].map((item) => (
-              <div key={item.label} className="flex items-start gap-3 rounded-xl border border-accent-gold/10 bg-elevated/60 p-4">
-                <span className="mt-0.5 font-mono text-accent-gold text-lg">{item.icon}</span>
-                <div>
-                  <p className="font-mono text-xs font-bold text-accent-gold/80">{item.label}</p>
-                  <p className="mt-1 font-mono text-[10px] text-text-muted leading-relaxed">{item.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="text-center font-mono text-[10px] text-text-muted/50 uppercase tracking-widest">
-            Personal Codex · Initiate+ · $10/month
-          </p>
         </section>
 
         {/* ── FAQ ── */}
@@ -468,7 +433,7 @@ const COMPARISON_ROWS: [string, boolean, boolean, boolean][] = [
   ["Access unfiltered transmissions — Red Room + raw segments", false, false, true],
   ["See the full power structure — Relationship Map", false, false, true],
   ["Deep behavioral profiles on every recurring figure", false, false, true],
-  ["Permanent named role in the record — Architect, Watcher, or Hierophant", false, false, true],
+  ["Permanent named role in the record — Oracle, Architect, or Watcher", false, false, true],
 ];
 
 const FAQ: { q: string; a: string }[] = [
@@ -481,11 +446,11 @@ const FAQ: { q: string; a: string }[] = [
     a: "The archive shifts from something you browse to something you can work with. Full transcripts let you read exactly what was said. AI behavioral extraction shows you what repeats across hundreds of streams. The Personal Codex lets you build your own layer on top of the existing one.",
   },
   {
-    q: "What does Architect access add beyond Initiate+?",
-    a: "Architect puts you inside the production of the archive itself. You influence what gets investigated, access unfiltered transmissions, see the full relationship map, and hold a permanent named role. Some Architect features are live now; others are rolling out over the next phase — subscribers shape what gets built first.",
+    q: "What does Oracle access add beyond Initiate+?",
+    a: "Oracle puts you inside the production of the archive itself. You influence what gets investigated, access unfiltered transmissions, see the full relationship map, and hold a permanent named role. Some Oracle features are live now; others are rolling out over the next phase — subscribers shape what gets built first.",
   },
   {
-    q: "Can I upgrade from Initiate+ to Architect later?",
+    q: "Can I upgrade from Initiate+ to Oracle later?",
     a: "Yes, any time. Stripe handles the proration — you only pay the difference for the remainder of your billing period.",
   },
   {

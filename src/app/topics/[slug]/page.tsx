@@ -16,7 +16,7 @@ import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import { SaveSignalButton } from "@/components/codex/save-signal-button";
 import type { Metadata } from "next";
 
-export const revalidate = 3600;
+export const revalidate = 600;
 
 export async function generateStaticParams() {
   try {
@@ -40,7 +40,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const topic = await getTopicBySlug(slug);
 
   if (!topic) {
-    notFound();
+    return buildMetadata({
+      title: "Topic Not Found",
+      description: "This topic could not be found.",
+      path: `/topics/${slug}`,
+    });
   }
 
   return buildMetadata({

@@ -17,7 +17,6 @@ import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
 import { SkipLink } from "@/components/ui/skip-link";
 import { jsonLdScript } from "@/lib/seo";
-import { Providers } from "@/components/providers";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
@@ -128,7 +127,6 @@ export default async function RootLayout({
         className={`${fontVariables} font-mono antialiased bg-void text-text-primary`}
         style={{ backgroundColor: "var(--term-bg)" }}
       >
-        <Providers>
         <SkipLink />
         <LiveBanner />
         <EntryBanner />
@@ -166,7 +164,6 @@ export default async function RootLayout({
             }),
           }}
         />
-        </Providers>
         <GoogleAnalytics gaId="G-1ML217JXYV" />
       </body>
     </html>

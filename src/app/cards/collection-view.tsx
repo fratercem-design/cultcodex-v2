@@ -6,11 +6,6 @@ import { TradingCard, type TradingCardData } from "@/components/cards/trading-ca
 import { RARITY_LABEL, RARITY_ORDER, CARD_TYPE_LABEL } from "@/lib/cards/rarity";
 import type { Rarity, CardType } from "@/generated/prisma/client";
 
-const BURN_CREDITS: Record<string, number> = {
-  STATIC: 5, SIGNAL: 10, TRANSMISSION: 20, ANOMALY: 30,
-  ORACLE: 50, LEGENDARY: 80, MYTHIC: 100, FORBIDDEN: 0,
-};
-
 interface OwnedWithCard {
   id: string;
   isFoil: boolean;
@@ -45,40 +40,8 @@ export function CollectionView({ collection, stats }: CollectionViewProps) {
   const [filterRarity, setFilterRarity] = useState<FilterRarity>("ALL");
   const [filterType, setFilterType] = useState<FilterType>("ALL");
   const [search, setSearch] = useState("");
-  const [burning, setBurning] = useState<string | null>(null); // ownedCardId being burned
-  const [burnFeedback, setBurnFeedback] = useState<{ msg: string; id: string } | null>(null);
-  const [localCollection, setLocalCollection] = useState(collection);
 
-  async function handleBurn(ownedCardId: string, rarity: string) {
-    if (rarity === "FORBIDDEN") return;
-    setBurning(ownedCardId);
-    try {
-      const res = await fetch("/api/cards/burn", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ownedCardId }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Burn failed");
-      setBurnFeedback({ msg: `+${json.credits} credits`, id: ownedCardId });
-      // Remove or decrement locally
-      setLocalCollection((prev) =>
-        prev.flatMap((oc) => {
-          if (oc.id !== ownedCardId) return [oc];
-          if (oc.quantity > 1) return [{ ...oc, quantity: oc.quantity - 1 }];
-          return []; // remove
-        })
-      );
-      setTimeout(() => setBurnFeedback(null), 2500);
-    } catch (err) {
-      setBurnFeedback({ msg: err instanceof Error ? err.message : "Error", id: ownedCardId });
-      setTimeout(() => setBurnFeedback(null), 2500);
-    } finally {
-      setBurning(null);
-    }
-  }
-
-  const filtered = localCollection
+  const filtered = collection
     .filter((oc) => {
       if (filterRarity !== "ALL" && oc.card.rarity !== filterRarity) return false;
       if (filterType !== "ALL" && oc.card.cardType !== filterType) return false;
@@ -288,7 +251,7 @@ export function CollectionView({ collection, stats }: CollectionViewProps) {
       </div>
 
       {/* Grid */}
-      {localCollection.length === 0 ? (
+      {collection.length === 0 ? (
         <EmptyState />
       ) : filtered.length === 0 ? (
         <div style={{
@@ -307,90 +270,31 @@ export function CollectionView({ collection, stats }: CollectionViewProps) {
           gap: 16,
           justifyContent: "flex-start",
         }}>
-          {filtered.map((oc) => {
-            const isBurning = burning === oc.id;
-            const feedback = burnFeedback?.id === oc.id ? burnFeedback.msg : null;
-            const canBurn = oc.card.rarity !== "FORBIDDEN";
-            return (
-              <div key={oc.id} style={{ position: "relative" }}>
+          {filtered.map((oc) => (
+            <div key={oc.id} style={{ position: "relative" }}>
+              <TradingCard
+                card={{ ...oc.card, isFoil: oc.isFoil, isNew: oc.isNew }}
+                size="md"
+                noTilt={false}
+              />
+              {oc.quantity > 1 && (
                 <div style={{
-                  opacity: isBurning ? 0 : 1,
-                  animation: isBurning ? "cardBurn 0.9s ease forwards" : undefined,
+                  position: "absolute",
+                  bottom: 6,
+                  left: 6,
+                  fontFamily: "var(--font-mono), monospace",
+                  fontSize: 9,
+                  color: "var(--term-fg-faint)",
+                  background: "rgba(0,0,0,0.75)",
+                  border: "1px solid var(--term-line)",
+                  borderRadius: 2,
+                  padding: "1px 5px",
                 }}>
-                  <TradingCard
-                    card={{ ...oc.card, isFoil: oc.isFoil, isNew: oc.isNew }}
-                    size="md"
-                    noTilt={false}
-                  />
+                  ×{oc.quantity}
                 </div>
-
-                {/* Quantity badge */}
-                {oc.quantity > 1 && !isBurning && (
-                  <div style={{
-                    position: "absolute",
-                    bottom: 6,
-                    left: 6,
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: 9,
-                    color: "var(--term-fg-faint)",
-                    background: "rgba(0,0,0,0.8)",
-                    border: "1px solid var(--term-line)",
-                    borderRadius: 2,
-                    padding: "1px 5px",
-                  }}>
-                    ×{oc.quantity}
-                  </div>
-                )}
-
-                {/* Burn button */}
-                {canBurn && !isBurning && !feedback && (
-                  <button
-                    onClick={() => handleBurn(oc.id, oc.card.rarity)}
-                    title={`Burn for ${BURN_CREDITS[oc.card.rarity] ?? 5} credits`}
-                    style={{
-                      position: "absolute",
-                      top: 6,
-                      right: 6,
-                      fontFamily: "var(--font-mono), monospace",
-                      fontSize: 9,
-                      color: "var(--term-fg-faint)",
-                      background: "rgba(0,0,0,0.75)",
-                      border: "1px solid var(--term-line-2)",
-                      borderRadius: 2,
-                      padding: "2px 5px",
-                      cursor: "pointer",
-                      opacity: 0,
-                      transition: "opacity 150ms ease",
-                      lineHeight: 1,
-                    }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = "1"; (e.currentTarget as HTMLElement).style.color = "#c8392e"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = "0"; (e.currentTarget as HTMLElement).style.color = "var(--term-fg-faint)"; }}
-                  >
-                    🔥 {BURN_CREDITS[oc.card.rarity] ?? 5}
-                  </button>
-                )}
-
-                {/* Burn feedback */}
-                {feedback && (
-                  <div style={{
-                    position: "absolute",
-                    inset: 0,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: "var(--font-mono), monospace",
-                    fontSize: 13,
-                    color: "var(--neon-4)",
-                    textShadow: "var(--glow-amber)",
-                    animation: "fadeIn 200ms ease",
-                    pointerEvents: "none",
-                  }}>
-                    {feedback}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>

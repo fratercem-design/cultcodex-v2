@@ -6,13 +6,14 @@ import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SearchInput } from "@/components/search/search-input";
 import { getEpisodes, formatEpisodeForCard } from "@/lib/queries/episodes";
-import { getArchiveStats, getMemberCount } from "@/lib/queries/stats";
+import { getArchiveStats } from "@/lib/queries/stats";
 import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
 import { DailyTransmission } from "@/components/home/daily-transmission";
 import { YouTubePlayer } from "@/components/home/youtube-player";
 import { getQuoteReactionCounts } from "@/lib/queries/quote-reactions";
+import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
@@ -33,7 +34,6 @@ export const metadata = {
     description:
       "2,600+ conversations indexed. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
     type: "website" as const,
-    images: [{ url: "/social-share.jpg", width: 1168, height: 784, alt: "CultCodex" }],
   },
   twitter: {
     card: "summary_large_image" as const,
@@ -70,7 +70,7 @@ export default async function HomePage() {
   }
 
   const dailyQuoteReactions = dailyTransmission.quote
-    ? await getQuoteReactionCounts(dailyTransmission.quote.id, undefined).catch(() => undefined)
+    ? await getQuoteReactionCounts(dailyTransmission.quote.id, currentUser?.id).catch(() => undefined)
     : undefined;
 
   const recentCards = recentEpisodes.map(formatEpisodeForCard);
@@ -79,7 +79,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <OnboardingCheck />
       {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section className="relative flex min-h-[540px] sm:min-h-[620px] items-center justify-center overflow-hidden">
         <Image src="/hero-bg.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
@@ -108,7 +107,7 @@ export default async function HomePage() {
           <div className="space-y-3">
             <div className="space-y-1">
               <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-cyan/80">
-                <span aria-hidden="true">✦</span> &nbsp; CultCodex &nbsp; <span aria-hidden="true">✦</span>
+                ✦ &nbsp; CultCodex &nbsp; ✦
               </p>
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
                 The Cult of Psyche intelligence archive
@@ -125,7 +124,7 @@ export default async function HomePage() {
               </span>
             </h1>
             <p className="font-mono text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
-              {stats.episodes.toLocaleString()} Cult of Psyche conversations. Full transcripts,
+              {stats.episodes.toLocaleString()}+ Cult of Psyche conversations. Full transcripts,
               AI psychological breakdowns, and behavioral maps — all searchable.
             </p>
           </div>
@@ -156,9 +155,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── MUSIC VIDEO PLAYER ───────────────────────────────────────── */}
-      <MusicVideoPlayer />
-
       <main id="main-content" className="space-y-0">
 
         {/* ── STATS STRIP ──────────────────────────────────────────────── */}
@@ -168,7 +164,7 @@ export default async function HomePage() {
               { value: stats.episodes.toLocaleString(), label: "transmissions archived" },
               { value: stats.segments.toLocaleString(), label: "transcript segments" },
               { value: stats.people.toLocaleString(), label: "voices profiled" },
-              { value: stats.totalHours.toLocaleString(), label: "hours decoded" },
+              { value: `${stats.totalHours.toLocaleString()}+`, label: "hours decoded" },
             ].map((s) => (
               <span key={s.label} className="font-mono text-[11px] text-text-muted whitespace-nowrap">
                 <span className="text-accent-gold font-bold">{s.value}</span>{" "}{s.label}
@@ -196,7 +192,7 @@ export default async function HomePage() {
                 href={item.href}
                 className={`group flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-4 transition-all ${item.accent}`}
               >
-                <span className="text-xl flex-shrink-0" aria-hidden="true">{item.icon}</span>
+                <span className="text-xl flex-shrink-0">{item.icon}</span>
                 <div className="min-w-0">
                   <p className="font-mono text-xs font-bold text-text-primary truncate">{item.label}</p>
                   <p className="font-mono text-[10px] text-text-muted truncate">{item.count}</p>
@@ -219,6 +215,7 @@ export default async function HomePage() {
           <DailyTransmission
             data={dailyTransmission}
             quoteReactions={dailyQuoteReactions}
+            isAuthenticated={Boolean(currentUser)}
           />
 
           {/* ── ORACLE — AI SEARCH ───────────────────────────────────── */}
@@ -234,11 +231,30 @@ export default async function HomePage() {
               </div>
               <Link
                 href="/oracle"
-                className="font-mono text-[9px] text-accent-violet/50 hover:text-accent-violet transition-colors uppercase tracking-widest"
+                className="shrink-0 self-start inline-flex items-center gap-1.5 rounded-lg border border-accent-violet bg-accent-violet/15 px-4 py-2.5 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25 whitespace-nowrap"
               >
-                Full Oracle →
+                Ask the Oracle →
               </Link>
             </div>
+            <div className="flex flex-wrap gap-2">
+              {[
+                "What are Beetle's recurring patterns?",
+                "Who challenged the host and won?",
+                "What does the archive say about manipulation?",
+                "How has Tracy-X evolved over time?",
+              ].map((q) => (
+                <Link
+                  key={q}
+                  href="/oracle"
+                  className="rounded-full border border-accent-violet/20 bg-surface px-3 py-1.5 font-mono text-[10px] text-text-muted hover:border-accent-violet/50 hover:text-accent-violet transition-colors"
+                >
+                  {q}
+                </Link>
+              ))}
+            </div>
+            <p className="font-mono text-[9px] text-text-muted/40 uppercase tracking-widest">
+              Initiate+ · $10/mo · Answers cite actual episodes, transcripts, and lore
+            </p>
           </div>
 
           {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}

@@ -1,12 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import type { ArchiveStats } from "@/types";
 
-// Bypass Next.js cache in test environment
-vi.mock("next/cache", () => ({
-  unstable_cache: <T extends (...args: unknown[]) => unknown>(fn: T) => fn,
-  revalidateTag: vi.fn(),
-}));
-
 // Mock prisma
 vi.mock("@/lib/db", () => ({
   prisma: {
@@ -73,14 +67,13 @@ describe("ArchiveStats type completeness", () => {
       people: 1,
       loreEntries: 1,
       quotes: 1,
-      series: 1,
-      topics: 1,
-      segments: 1,
-      totalHours: 1,
-      comments: 1,
-      reactions: 1,
-      transcribedEpisodes: 1,
+      series: 1, // from old stats.ts
+      topics: 1, // from old stats.ts
+      segments: 1, // from old analytics.ts
+      totalHours: 1, // from old analytics.ts
+      comments: 1, // from old analytics.ts
+      reactions: 1, // from old analytics.ts
     };
-    expect(Object.keys(mockStats)).toHaveLength(11);
+    expect(Object.keys(mockStats)).toHaveLength(10);
   });
 });

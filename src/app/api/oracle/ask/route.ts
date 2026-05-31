@@ -456,7 +456,7 @@ function setTrialCookie(res: NextResponse, used: number, month: string): void {
 
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
-  const subscribed = user
+  const canAccess = user
     ? user.role === "admin" || (await isSubscribed(user.id))
     : false;
 

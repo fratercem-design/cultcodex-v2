@@ -116,30 +116,17 @@ export default async function PsychenomiconPage() {
               The Psychenomicon is a living record built episode by episode. Once chapters are generated from transcripts, they will appear here — with entities, threads, and archetypal patterns tracked across time.
             </p>
           </div>
-
-          {/* Status indicators */}
-          <div className="flex flex-wrap justify-center gap-5 font-mono text-[10px] uppercase tracking-widest">
-            <div className="flex items-center gap-1.5 text-accent-violet/50">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent-violet/40 animate-pulse" />
-              <span>Transcripts processing</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-text-muted/25">
-              <span className="h-1.5 w-1.5 rounded-full bg-text-muted/20" />
-              <span>Chapters pending</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-text-muted/25">
-              <span className="h-1.5 w-1.5 rounded-full bg-text-muted/20" />
-              <span>Entities dormant</span>
-            </div>
-          </div>
-
-          {isAdmin && (
+          {isAdmin ? (
             <Link
               href="/admin/psychenomicon"
               className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-6 py-3 font-mono text-xs font-bold text-accent-gold transition-colors"
             >
               Generate First Chapter →
             </Link>
+          ) : (
+            <p className="font-mono text-[10px] text-text-muted/50 uppercase tracking-widest">
+              The first transmissions are being processed.
+            </p>
           )}
         </div>
       )}

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/lib/format/date";
-import { cleanEpisodeSummary } from "@/lib/format/text";
 
 interface EpisodeListItemProps {
   slug: string;
@@ -58,9 +57,9 @@ export function EpisodeListItem({
         <h2 className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
           {title}
         </h2>
-        {cleanEpisodeSummary(summaryShort) && (
+        {summaryShort && (
           <p className="mt-1 text-xs text-text-muted line-clamp-2">
-            {cleanEpisodeSummary(summaryShort)}
+            {summaryShort}
           </p>
         )}
       </div>

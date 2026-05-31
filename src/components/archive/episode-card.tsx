@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/lib/format/date";
-import { cleanEpisodeSummary } from "@/lib/format/text";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
 import { ConfidenceBadge } from "@/components/ui/confidence-badge";
@@ -61,7 +60,7 @@ export function EpisodeCard({ episode, hideDescription = false }: EpisodeCardPro
         </h2>
         {!hideDescription && episode.summaryShort && (
           <p className="mt-1 text-xs text-text-muted line-clamp-2">
-            {cleanEpisodeSummary(episode.summaryShort)}
+            {episode.summaryShort}
           </p>
         )}
         <div className="mt-2 flex flex-wrap gap-1.5">

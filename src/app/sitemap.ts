@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db";
-import { ARCHETYPES } from "@/lib/archetypes";
 
 // Regenerate at most once per hour
 export const revalidate = 3600;
@@ -125,11 +124,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       })),
   ];
 
-  const archetypePages: MetadataRoute.Sitemap = ARCHETYPES.map((a) => ({
-    url: `${baseUrl}/archetypes/${a.slug}`,
-    changeFrequency: "monthly" as const,
-    priority: 0.6,
-  }));
-
-  return [...staticPages, ...dynamicPages, ...archetypePages];
+  return [...staticPages, ...dynamicPages];
 }

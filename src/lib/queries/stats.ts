@@ -10,14 +10,34 @@ export interface ArchiveCounts {
 }
 
 /**
- * Canonical archive stats — single source of truth for ALL counts site-wide.
- * Every surface that shows episode/person/topic counts must call this function.
- * DO NOT create a second stats function or run independent prisma.*.count()
- * calls for display purposes — multiple cache keys diverge and show different
- * numbers on different pages.
+ * Lightweight cached count query used by the terminal chrome (sidebar badges,
+ * statusbar feed count, integrity meter). Revalidates every 10 minutes.
+ * Kept separate from getArchiveStats() to avoid the expensive duration query
+ * on every layout render.
  */
-export const getArchiveStats = unstable_cache(
-  async (): Promise<ArchiveStats> => {
+export const getArchiveCounts = unstable_cache(
+  async (): Promise<ArchiveCounts> => {
+    // Note: intentionally no try-catch here — let errors propagate so
+    // unstable_cache does NOT cache the failed result. The caller (layout)
+    // handles the error with a fallback.
+    const [episodes, topics, people, transcribedEpisodes] = await Promise.all([
+      prisma.episode.count(),
+      prisma.topic.count(),
+      prisma.person.count(),
+      prisma.episode.count({ where: { segments: { some: {} } } }),
+    ]);
+    return { episodes, topics, people, transcribedEpisodes };
+  },
+  ["archive-counts"],
+  { revalidate: 600, tags: ["archive-counts"] }
+);
+
+/**
+ * Canonical archive stats — single source of truth for all counts site-wide.
+ * Used by: homepage, stats page, admin, and any future consumer.
+ * DO NOT create a second stats function elsewhere.
+ */
+export async function getArchiveStats(): Promise<ArchiveStats> {
   const [
     episodes,
     people,
@@ -26,7 +46,6 @@ export const getArchiveStats = unstable_cache(
     series,
     topics,
     segments,
-    transcribedEpisodes,
     comments,
     reactions,
     durationData,
@@ -38,7 +57,6 @@ export const getArchiveStats = unstable_cache(
     prisma.series.count(),
     prisma.topic.count(),
     prisma.transcriptSegment.count(),
-    prisma.episode.count({ where: { segments: { some: {} } } }),
     prisma.codexComment.count(),
     prisma.episodeReaction.count(),
     prisma.episode.findMany({
@@ -47,6 +65,7 @@ export const getArchiveStats = unstable_cache(
     }),
   ]);
 
+  // Parse duration strings (format: "HH:MM:SS" or "MM:SS") into total hours
   let totalSeconds = 0;
   for (const ep of durationData) {
     if (ep.duration) {
@@ -71,41 +90,8 @@ export const getArchiveStats = unstable_cache(
     totalHours,
     comments,
     reactions,
-    transcribedEpisodes,
-  };
-  },
-  ["archive-stats"],
-  { revalidate: 600, tags: ["archive-stats"] }
-);
-
-/**
- * Subset of getArchiveStats for the terminal chrome (sidebar, statusbar).
- * Derives from getArchiveStats so sidebar and page counts are always in sync.
- */
-export async function getArchiveCounts(): Promise<ArchiveCounts> {
-  const stats = await getArchiveStats();
-  return {
-    episodes: stats.episodes,
-    topics: stats.topics,
-    people: stats.people,
-    transcribedEpisodes: stats.transcribedEpisodes,
   };
 }
-
-/**
- * Cached member count (active subscribers + admins). Separate from archive
- * stats so subscription churn is reflected within 5 minutes without busting
- * the full archive-stats cache.
- */
-export const getMemberCount = unstable_cache(
-  async (): Promise<number> => {
-    return prisma.codexUser.count({
-      where: { OR: [{ role: "admin" }, { subscriptionStatus: "active" }] },
-    });
-  },
-  ["member-count"],
-  { revalidate: 300, tags: ["member-count"] }
-);
 
 export async function getEpisodeAggregates() {
   const [total, earliest, latest, guestCount] = await Promise.all([

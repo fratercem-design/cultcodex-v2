@@ -50,9 +50,7 @@ interface TerminalStatusBarProps {
 }
 
 export function TerminalStatusBar({ feedCount }: TerminalStatusBarProps) {
-  const [utc, setUtc] = useState<string>(
-    () => (typeof window !== "undefined" ? formatUtc(new Date()) : ""),
-  );
+  const [utc, setUtc] = useState<string>("");
 
   useEffect(() => {
     function tick(): void {
@@ -112,7 +110,7 @@ export function TerminalStatusBar({ feedCount }: TerminalStatusBarProps) {
           </span>
           <span style={{ color: "var(--neon-3)" }}>ORACLE_LIVE</span>
         </span>
-        <span style={cellStyleLeftBorder}>ARCHIVE: LIVE</span>
+        <span style={cellStyleLeftBorder}>BUILD: {BUILD_VERSION}</span>
         <span style={cellStyleNoBorder} suppressHydrationWarning>
           <span style={{ color: "var(--term-fg-faint)" }}>UTC</span>
           <span style={{ color: "var(--term-fg)" }}>{utc || "--:--:--"}</span>
