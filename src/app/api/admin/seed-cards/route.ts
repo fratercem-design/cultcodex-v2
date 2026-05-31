@@ -22,6 +22,10 @@ const MIGRATION_STEPS = [
   { name: "nullable CardPack.title",       sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='title' AND is_nullable='NO') THEN ALTER TABLE "CardPack" ALTER COLUMN "title" DROP NOT NULL; END IF; END $$` },
   { name: "nullable CardPack.accentColor", sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='accentColor' AND is_nullable='NO') THEN ALTER TABLE "CardPack" ALTER COLUMN "accentColor" DROP NOT NULL; END IF; END $$` },
   { name: "nullable CardPack.subtitle",    sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='subtitle' AND is_nullable='NO') THEN ALTER TABLE "CardPack" ALTER COLUMN "subtitle" DROP NOT NULL; END IF; END $$` },
+  // Legacy NOT NULL columns the INSERT below does not supply (cost/isAvailable are
+  // the operative fields). Give them a default + backfill so the upsert succeeds.
+  { name: "default CardPack.price",     sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='price') THEN ALTER TABLE "CardPack" ALTER COLUMN "price" SET DEFAULT 0; UPDATE "CardPack" SET "price" = COALESCE("price", "cost", 0) WHERE "price" IS NULL; END IF; END $$` },
+  { name: "default CardPack.isActive",  sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='isActive') THEN ALTER TABLE "CardPack" ALTER COLUMN "isActive" SET DEFAULT true; UPDATE "CardPack" SET "isActive" = COALESCE("isActive", "isAvailable", true) WHERE "isActive" IS NULL; END IF; END $$` },
   { name: "add LEGENDARY rarity",   sql: `ALTER TYPE "Rarity" ADD VALUE IF NOT EXISTS 'LEGENDARY'` },
   { name: "add MYTHIC rarity",      sql: `ALTER TYPE "Rarity" ADD VALUE IF NOT EXISTS 'MYTHIC'` },
   { name: "add FORBIDDEN rarity",   sql: `ALTER TYPE "Rarity" ADD VALUE IF NOT EXISTS 'FORBIDDEN'` },
