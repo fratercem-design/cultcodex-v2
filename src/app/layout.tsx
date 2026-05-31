@@ -17,8 +17,7 @@ import { SkipLink } from "@/components/ui/skip-link";
 import { KonamiEasterEgg } from "@/components/ui/konami-easter-egg";
 import { CommandPalette } from "@/components/search/command-palette";
 import { Providers } from "@/components/providers";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -140,8 +139,9 @@ export default async function RootLayout({
         <KonamiEasterEgg />
         <CommandPalette />
         </Providers>
-        <Analytics />
-        <SpeedInsights />
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
       </body>
     </html>
   );
