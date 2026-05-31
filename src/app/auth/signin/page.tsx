@@ -1,6 +1,5 @@
 import { PageHero } from "@/components/ui/page-hero";
 import { GoogleSignInButton } from "@/components/auth/google-signin-button";
-import { AppleSignInButton } from "@/components/auth/apple-signin-button";
 import { EmailSignInForm } from "@/components/auth/email-signin-form";
 
 export const dynamic = "force-dynamic";
@@ -12,7 +11,6 @@ interface PageProps {
 export default async function SignInPage({ searchParams }: PageProps) {
   const { callbackUrl } = await searchParams;
   const redirectTo = callbackUrl ?? "/";
-  const hasApple = !!(process.env.APPLE_ID && process.env.APPLE_SECRET);
 
   return (
     <>
@@ -33,11 +31,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
             </p>
           </div>
 
-          {/* OAuth buttons */}
-          <div className="space-y-3">
-            <GoogleSignInButton callbackUrl={redirectTo} />
-            {hasApple && <AppleSignInButton callbackUrl={redirectTo} />}
-          </div>
+          <GoogleSignInButton callbackUrl={redirectTo} />
 
           {/* Divider */}
           <div className="relative">
