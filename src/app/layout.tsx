@@ -12,6 +12,7 @@ import { EntryBanner } from "@/components/layout/entry-banner";
 import { TerminalTopBar } from "@/components/layout/terminal-topbar";
 import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
 import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
+import { SiteFooter } from "@/components/layout/site-footer";
 import { getArchiveCounts } from "@/lib/queries/stats";
 import { SkipLink } from "@/components/ui/skip-link";
 import { KonamiEasterEgg } from "@/components/ui/konami-easter-egg";
@@ -128,10 +129,11 @@ export default async function RootLayout({
           <TerminalSidebar counts={counts} />
           <div
             id="main-content"
-            className="terminal-main"
+            className="terminal-main flex flex-col"
             style={{ backgroundColor: "var(--term-bg)" }}
           >
             {children}
+            <SiteFooter />
           </div>
           <TerminalStatusBar feedCount={counts.episodes} />
         </div>
