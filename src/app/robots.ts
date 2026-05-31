@@ -4,11 +4,18 @@ export default function robots(): MetadataRoute.Robots {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me";
 
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/api/", "/auth/", "/admin/"],
-    },
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/", "/auth/", "/admin/"],
+      },
+      // Training crawlers — blocked
+      {
+        userAgent: ["GPTBot", "ClaudeBot", "CCBot", "anthropic-ai", "Google-Extended", "Diffbot", "FacebookBot"],
+        disallow: "/",
+      },
+    ],
     sitemap: `${baseUrl}/sitemap.xml`,
   };
 }

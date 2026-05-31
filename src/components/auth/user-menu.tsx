@@ -1,21 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import type { CodexSessionUser } from "@/lib/auth";
 
-interface UserMenuProps {
-  user: {
-    id: string;
-    displayName: string;
-    avatarUrl: string | null;
-    role: string;
-  } | null;
-}
+type SessionState = "loading" | "guest" | "user";
 
-export function UserMenu({ user }: UserMenuProps) {
+export function UserMenu() {
+  const [status, setStatus] = useState<SessionState>("loading");
+  const [user, setUser] = useState<CodexSessionUser | null>(null);
   const [open, setOpen] = useState(false);
 
-  if (!user) {
+  useEffect(() => {
+    fetch("/api/me/session")
+      .then((r) => r.json())
+      .then((data: { user: CodexSessionUser | null }) => {
+        setUser(data.user);
+        setStatus(data.user ? "user" : "guest");
+      })
+      .catch(() => setStatus("guest"));
+  }, []);
+
+  if (status === "loading") {
+    return (
+      <div className="h-[30px] w-20 animate-pulse rounded-lg bg-surface border border-border" />
+    );
+  }
+
+  if (status === "guest" || !user) {
     return (
       <Link
         href="/auth/signin"

@@ -92,6 +92,11 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: ["/social-share.jpg"],
   },
+  alternates: {
+    types: {
+      "application/rss+xml": [{ url: "/feed.xml", title: "CultCodex — Latest Episodes" }],
+    },
+  },
 };
 
 export default async function RootLayout({
