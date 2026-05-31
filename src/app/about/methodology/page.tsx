@@ -147,7 +147,7 @@ export default function MethodologyPage() {
             {[
               { label: "Video metadata", source: "YouTube Data API v3" },
               { label: "Transcripts", source: "YouTube auto-generated captions via Supadata API" },
-              { label: "AI enrichment", source: "Anthropic Claude (claude-haiku-4-5)" },
+              { label: "AI enrichment", source: "Anthropic Claude (claude-opus-4-8)" },
               { label: "Semantic search", source: "OpenAI text-embedding-3-small + pgvector" },
             ].map(({ label, source }) => (
               <li key={label} className="flex gap-3 text-sm">

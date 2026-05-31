@@ -568,7 +568,7 @@ export async function POST(req: NextRequest) {
   try {
     const client = new Anthropic({ apiKey: anthropicKey });
     const claudeRes = await client.messages.create({
-      model: process.env.ORACLE_MODEL ?? "claude-haiku-4-5-20251001",
+      model: process.env.ORACLE_MODEL ?? "claude-opus-4-8",
       max_tokens: 400,
       system: ORACLE_SYSTEM,
       messages: [
