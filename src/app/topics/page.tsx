@@ -19,7 +19,7 @@ export const revalidate = 600;
 
 export const metadata = {
   title: "Topics — CULT CODEX",
-  description: "Explore the key topics and themes of the Cult of Psyche",
+  description: "Browse the recurring themes, behavioral patterns, and obsessions that run through the Cult of Psyche archive — each one mapped to the episodes and moments where it emerged.",
 };
 
 const SORT_OPTIONS = [
