@@ -1,18 +1,22 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { toggleLiveStream, toggleAlexandraLive } from "@/app/admin/actions";
+import { toggleLiveStream, toggleAlexandraLive, toggleNightmareFrequenciesLive } from "@/app/admin/actions";
 import { useRouter } from "next/navigation";
 
 interface Props {
-  channel: "cultOfPsyche" | "alexandraMayers";
+  channel: "cultOfPsyche" | "alexandraMayers" | "nightmareFrequencies";
   isLive: boolean;
   currentVideoId?: string | null;
   currentTitle?: string | null;
 }
 
 export function LiveToggleForm({ channel, isLive, currentVideoId, currentTitle }: Props) {
-  const defaultTitle = channel === "cultOfPsyche" ? "Cult of Psyche Live Stream" : "Alexandra Mayers Live";
+  const defaultTitle = channel === "cultOfPsyche"
+    ? "Cult of Psyche Live Stream"
+    : channel === "alexandraMayers"
+      ? "Alexandra Mayers Live"
+      : "Nightmare Frequencies Live";
   const [videoId, setVideoId] = useState(currentVideoId ?? "");
   const [title, setTitle] = useState(currentTitle ?? defaultTitle);
   const [isPending, startTransition] = useTransition();
@@ -31,8 +35,10 @@ export function LiveToggleForm({ channel, isLive, currentVideoId, currentTitle }
     startTransition(async () => {
       if (channel === "cultOfPsyche") {
         await toggleLiveStream(formData);
-      } else {
+      } else if (channel === "alexandraMayers") {
         await toggleAlexandraLive(formData);
+      } else {
+        await toggleNightmareFrequenciesLive(formData);
       }
       router.refresh();
     });

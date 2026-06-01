@@ -5,13 +5,17 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const [cop, am] = await Promise.all([
+    const [cop, am, nf] = await Promise.all([
       prisma.liveStatus.findUnique({
         where: { id: "singleton" },
         select: { isLive: true, videoId: true, title: true },
       }),
       prisma.liveStatus.findUnique({
         where: { id: "alexandra-mayers" },
+        select: { isLive: true, videoId: true, title: true },
+      }),
+      prisma.liveStatus.findUnique({
+        where: { id: "nightmare-frequencies" },
         select: { isLive: true, videoId: true, title: true },
       }),
     ]);
@@ -27,11 +31,17 @@ export async function GET() {
         videoId: am?.videoId ?? null,
         title: am?.title ?? null,
       },
+      nightmareFrequencies: {
+        isLive: nf?.isLive ?? false,
+        videoId: nf?.videoId ?? null,
+        title: nf?.title ?? null,
+      },
     });
   } catch {
     return NextResponse.json({
       cultOfPsyche: { isLive: false, videoId: null, title: null },
       alexandraMayers: { isLive: false, videoId: null, title: null },
+      nightmareFrequencies: { isLive: false, videoId: null, title: null },
     });
   }
 }

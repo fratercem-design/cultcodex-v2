@@ -6,9 +6,10 @@ import { LiveToggleForm } from "./live-toggle-form";
 export const dynamic = "force-dynamic";
 
 export default async function AdminLivePage() {
-  const [copStatus, amStatus] = await Promise.all([
+  const [copStatus, amStatus, nfStatus] = await Promise.all([
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }),
     prisma.liveStatus.findUnique({ where: { id: "alexandra-mayers" } }),
+    prisma.liveStatus.findUnique({ where: { id: "nightmare-frequencies" } }),
   ]);
 
   return (
@@ -83,6 +84,41 @@ export default async function AdminLivePage() {
             isLive={amStatus?.isLive ?? false}
             currentVideoId={amStatus?.videoId}
             currentTitle={amStatus?.title}
+          />
+        </div>
+      </div>
+
+      {/* Nightmare Frequencies */}
+      <div>
+        <h2 className="font-mono text-sm font-bold text-text-primary mb-4 uppercase tracking-widest">
+          Nightmare Frequencies
+        </h2>
+        <SectionCard title="Current Status">
+          <div className="flex items-center gap-3 mb-4">
+            <span
+              className={`h-4 w-4 rounded-full ${
+                nfStatus?.isLive ? "bg-red-500 animate-pulse" : "bg-text-muted"
+              }`}
+            />
+            <span className="font-mono text-lg font-bold text-text-primary">
+              {nfStatus?.isLive ? "LIVE" : "OFFLINE"}
+            </span>
+          </div>
+          {nfStatus && (
+            <div className="space-y-1 font-mono text-xs text-text-muted">
+              {nfStatus.videoId && <p>Video ID: {nfStatus.videoId}</p>}
+              {nfStatus.title && <p>Title: {nfStatus.title}</p>}
+              {nfStatus.startedAt && <p>Started: {formatDate(nfStatus.startedAt)}</p>}
+              {nfStatus.endedAt && <p>Ended: {formatDate(nfStatus.endedAt)}</p>}
+            </div>
+          )}
+        </SectionCard>
+        <div className="mt-4">
+          <LiveToggleForm
+            channel="nightmareFrequencies"
+            isLive={nfStatus?.isLive ?? false}
+            currentVideoId={nfStatus?.videoId}
+            currentTitle={nfStatus?.title}
           />
         </div>
       </div>

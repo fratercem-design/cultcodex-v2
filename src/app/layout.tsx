@@ -108,7 +108,7 @@ export default async function RootLayout({
       people: 0,
       transcribedEpisodes: 0,
     })),
-    getLiveChannels().catch(() => ({ cultOfPsyche: false, alexandraMayers: false })),
+    getLiveChannels().catch(() => ({ cultOfPsyche: false, alexandraMayers: false, nightmareFrequencies: false })),
   ]);
 
   const fontVariables = [
