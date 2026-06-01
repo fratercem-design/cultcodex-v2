@@ -360,6 +360,35 @@ export async function toggleAlexandraLive(formData: FormData) {
   revalidatePath("/admin/live");
 }
 
+export async function toggleNightmareFrequenciesLive(formData: FormData) {
+  await requireAdmin();
+
+  const current = await prisma.liveStatus.findUnique({
+    where: { id: "nightmare-frequencies" },
+  });
+
+  const isLive = current?.isLive ?? false;
+
+  if (isLive) {
+    await prisma.liveStatus.upsert({
+      where: { id: "nightmare-frequencies" },
+      update: { isLive: false, endedAt: new Date() },
+      create: { id: "nightmare-frequencies", isLive: false },
+    });
+  } else {
+    const videoId = (formData.get("videoId") as string) || null;
+    const title = (formData.get("title") as string) || "Nightmare Frequencies Live";
+
+    await prisma.liveStatus.upsert({
+      where: { id: "nightmare-frequencies" },
+      update: { isLive: true, videoId, title, startedAt: new Date(), endedAt: null },
+      create: { id: "nightmare-frequencies", isLive: true, videoId, title, startedAt: new Date() },
+    });
+  }
+
+  revalidatePath("/admin/live");
+}
+
 // ── User Management ──────────────────────────────────
 
 export async function grantOracleAccess(email: string) {

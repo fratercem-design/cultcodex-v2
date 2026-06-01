@@ -12,11 +12,13 @@ interface ChannelStatus {
 interface AllLiveStatus {
   cultOfPsyche: ChannelStatus;
   alexandraMayers: ChannelStatus;
+  nightmareFrequencies: ChannelStatus;
 }
 
 const EMPTY: AllLiveStatus = {
   cultOfPsyche: { isLive: false, videoId: null, title: null },
   alexandraMayers: { isLive: false, videoId: null, title: null },
+  nightmareFrequencies: { isLive: false, videoId: null, title: null },
 };
 
 interface BannerEntry {
@@ -74,6 +76,19 @@ export function LiveBanner() {
       accentBorder: "border-violet-500/30",
       accentText: "text-violet-300",
       dotColor: "bg-violet-400",
+    });
+  }
+
+  if (status.nightmareFrequencies.isLive) {
+    entries.push({
+      key: "nightmareFrequencies",
+      label: "NIGHTMARE FREQUENCIES",
+      title: status.nightmareFrequencies.title,
+      href: "/nightmare-frequencies",
+      accentBg: "bg-cyan-950/70",
+      accentBorder: "border-cyan-500/30",
+      accentText: "text-cyan-300",
+      dotColor: "bg-cyan-400",
     });
   }
 
