@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "\ud83d\udc31 \u2014 CULT CODEX",
   description: "You weren\u2019t supposed to find this.",
+  alternates: { canonical: "/meow" },
 };
 
 const CAT_QUOTES = [

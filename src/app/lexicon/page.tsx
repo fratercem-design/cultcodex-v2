@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Panelverse Lexicon — CULT CODEX",
   description:
     "A glossary of slang, jargon, and specialized terms from the Cult of Psyche and the wider Panelverse streaming community.",
+  alternates: { canonical: "/lexicon" },
 };
 
 /* ------------------------------------------------------------------ */

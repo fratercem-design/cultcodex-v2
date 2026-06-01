@@ -13,6 +13,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Collections — CULT CODEX",
   description: "Curated collections of the best Cult of Psyche episodes, organized by theme.",
+  alternates: { canonical: "/collections" },
 };
 
 interface Collection {

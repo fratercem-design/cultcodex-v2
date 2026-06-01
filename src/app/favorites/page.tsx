@@ -10,6 +10,7 @@ import Link from "next/link";
 
 export const metadata = {
   title: "My Favorites — CultCodex",
+  alternates: { canonical: "/favorites" },
 };
 
 export default async function FavoritesPage() {
