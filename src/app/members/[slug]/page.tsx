@@ -258,7 +258,7 @@ export default async function MemberProfilePage({ params }: Props) {
                 className="font-mono text-[10px] uppercase tracking-[0.3em] mb-3"
                 style={{ color: bannerTheme.accent + "80" }}
               >
-                /// about
+                {"/// about"}
               </p>
               <p className="font-mono text-sm leading-relaxed text-text-primary whitespace-pre-wrap">
                 {member.bio}
@@ -297,7 +297,7 @@ export default async function MemberProfilePage({ params }: Props) {
                   className="font-mono text-[10px] uppercase tracking-[0.3em]"
                   style={{ color: bannerTheme.accent + "80" }}
                 >
-                  /// card archive
+                  {"/// card archive"}
                 </p>
                 <div
                   className="flex-1 border-t"

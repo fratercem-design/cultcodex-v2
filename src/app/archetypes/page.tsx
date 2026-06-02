@@ -77,7 +77,7 @@ export default function ArchetypesPage() {
         </div>
 
         <p className="mt-16 text-center font-mono text-[9px] uppercase tracking-[0.35em] text-text-muted/30">
-          /// eight_patterns · one_archive · who_are_you
+          {"/// eight_patterns · one_archive · who_are_you"}
         </p>
       </div>
     </div>

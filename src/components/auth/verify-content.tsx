@@ -19,6 +19,7 @@ export function VerifyContent() {
     const callbackUrl = searchParams.get("callbackUrl") ?? "/";
 
     if (!token || !email) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- React 18 batches synchronous setState; no cascade
       setErrorMsg("This sign-in link is incomplete or malformed.");
       setStatus("error");
       return;
@@ -52,7 +53,7 @@ export function VerifyContent() {
     return (
       <div className="flex flex-col items-center gap-3 text-center">
         <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
-          /// access_granted
+          {"/// access_granted"}
         </p>
         <p className="font-display text-lg font-semibold text-text-primary">You&apos;re in</p>
         <p className="font-mono text-xs text-text-muted">Redirecting…</p>
@@ -63,7 +64,7 @@ export function VerifyContent() {
   return (
     <div className="flex flex-col items-center gap-4 text-center">
       <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-red-400/60">
-        /// link_invalid
+        {"/// link_invalid"}
       </p>
       <p className="font-display text-lg font-semibold text-text-primary">Link expired</p>
       <p className="font-mono text-xs text-text-muted max-w-xs">{errorMsg}</p>

@@ -127,7 +127,7 @@ export default async function SymbolDetailPage({
             {/* History */}
             <section>
               <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60 mb-3">
-                /// history
+                {"/// history"}
               </p>
               <p className="text-sm text-text-muted leading-relaxed">{symbol.history}</p>
             </section>
@@ -137,7 +137,7 @@ export default async function SymbolDetailPage({
             {/* Occult Meaning */}
             <section>
               <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60 mb-3">
-                /// occult_meaning
+                {"/// occult_meaning"}
               </p>
               <p className="text-sm text-text-muted leading-relaxed">{symbol.occultMeaning}</p>
             </section>
@@ -147,7 +147,7 @@ export default async function SymbolDetailPage({
             {/* Modern Interpretation */}
             <section>
               <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60 mb-3">
-                /// modern_interpretation
+                {"/// modern_interpretation"}
               </p>
               <p className="text-sm text-text-muted leading-relaxed">
                 {symbol.modernInterpretation}
@@ -159,7 +159,7 @@ export default async function SymbolDetailPage({
             {/* Associated Archetypes */}
             <section>
               <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60 mb-3">
-                /// associated_archetypes
+                {"/// associated_archetypes"}
               </p>
               <div className="flex flex-wrap gap-2">
                 {symbol.associatedArchetypes.map((archetype) => (
@@ -181,7 +181,7 @@ export default async function SymbolDetailPage({
                 <div className="h-px bg-border" />
                 <section>
                   <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60 mb-4">
-                    /// related_symbols
+                    {"/// related_symbols"}
                   </p>
                   <div className="grid gap-3 sm:grid-cols-3">
                     {relatedSymbols.map((related) => (
@@ -209,7 +209,7 @@ export default async function SymbolDetailPage({
             {/* Keywords (for SEO, visually subtle) */}
             <section className="rounded-xl border border-border/50 bg-surface/40 px-5 py-4">
               <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/40 mb-2">
-                /// related_topics
+                {"/// related_topics"}
               </p>
               <div className="flex flex-wrap gap-2">
                 {symbol.keywords.map((kw) => (
@@ -227,7 +227,7 @@ export default async function SymbolDetailPage({
           {/* Footer CTAs */}
           <footer className="mt-12 pt-8 border-t border-border">
             <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60 mb-4">
-              /// continue_your_research
+              {"/// continue_your_research"}
             </p>
             <div className="flex flex-wrap gap-3">
               <Link

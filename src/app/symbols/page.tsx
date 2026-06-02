@@ -40,8 +40,8 @@ export default function SymbolsPage({
 }: {
   searchParams: Promise<{ category?: string }>;
 }) {
-  // We use searchParams for static-safe filtering hint but since force-static
-  // we render all — filtering is handled client-free via hash or just show all
+  {"// We use searchParams for static-safe filtering hint but since force-static"}
+  {"// we render all — filtering is handled client-free via hash or just show all"}
   void searchParams;
 
   return (
@@ -50,7 +50,7 @@ export default function SymbolsPage({
       <section className="border-b border-border bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-5xl space-y-4">
           <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold/60">
-            /// symbol_encyclopedia
+            {"/// symbol_encyclopedia"}
           </p>
           <div className="flex items-center gap-4">
             <div className="h-px flex-1 bg-accent-gold/30" />

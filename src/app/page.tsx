@@ -445,7 +445,7 @@ export default async function HomePage() {
 
           {/* ── NEW VISITOR PATHWAY ──────────────────────────────────── */}
           <div className="rounded-xl border border-border bg-surface p-5 space-y-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">/// new here?</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">{"/// new here?"}</p>
             <div className="grid gap-2 sm:grid-cols-3">
               {([
                 { href: "/start-here",     label: "Start Here",       desc: "Guided entry points chosen by people who've gone deep", accent: "text-accent-gold border-accent-gold/30 hover:bg-accent-gold/5" },
