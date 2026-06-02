@@ -6,7 +6,7 @@ import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SearchInput } from "@/components/search/search-input";
 import { getEpisodes, formatEpisodeForCard } from "@/lib/queries/episodes";
-import { getArchiveStats } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
 import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
@@ -47,10 +47,10 @@ export const metadata = {
 
 export default async function HomePage() {
   const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest] = await Promise.all([
-    getArchiveStats().catch(() => ({
-      episodes: 0, people: 0, loreEntries: 0, quotes: 0,
-      series: 0, topics: 0, segments: 0, totalHours: 0,
-      comments: 0, reactions: 0,
+    getCounts().catch(() => ({
+      episodes: 0, segments: 0, people: 0, topics: 0,
+      lore: 0, quotes: 0, totalHours: 0,
+      transcribedEpisodes: 0, transcribedPct: 0,
     })),
     getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }).catch(() => []),
     getQuotes({ take: 2 }).catch(() => []),
