@@ -4,71 +4,9 @@ import { useEffect, useMemo, type CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ArchiveCounts } from "@/lib/queries/stats";
+import { NAV_GROUPS } from "@/lib/nav";
+import type { AccentKey, CountKey } from "@/lib/nav";
 import type { LiveChannels } from "@/lib/queries/live-status";
-
-type AccentKey = "neon" | "neon-4";
-type CountKey = keyof Pick<ArchiveCounts, "episodes" | "topics" | "people">;
-type LiveKey = keyof LiveChannels;
-
-interface NavItem {
-  readonly href: string;
-  readonly label: string;
-  readonly glyph: string;
-  readonly key?: string;
-  readonly countKey?: CountKey;
-  readonly accent?: AccentKey;
-  readonly liveKey?: LiveKey;
-  readonly external?: boolean;
-}
-
-interface NavGroup {
-  readonly title: string;
-  readonly items: readonly NavItem[];
-}
-
-const NAV_GROUPS: readonly NavGroup[] = [
-  {
-    title: "LIVE",
-    items: [
-      { href: "/cult-live",             label: "CULT OF PSYCHE",        glyph: "◎", liveKey: "cultOfPsyche"       },
-      { href: "/irl-newstime",          label: "ALEXANDRA MAYERS",      glyph: "◎", liveKey: "alexandraMayers"   },
-      { href: "/nightmare-frequencies", label: "NIGHTMARE FREQUENCIES", glyph: "◎", liveKey: "nightmareFrequencies" },
-    ],
-  },
-  {
-    title: "MAIN",
-    items: [
-      { href: "/",              label: "OVERVIEW",      glyph: "▢", key: "1" },
-      { href: "/episodes",      label: "ARCHIVE",       glyph: "▦", key: "2", countKey: "episodes" },
-      { href: "/oracle",        label: "ORACLE",        glyph: "◉", key: "3" },
-      { href: "/topics",        label: "SIGNALS",       glyph: "◈", key: "4", countKey: "topics" },
-      { href: "/people",        label: "VOICES",        glyph: "◐", key: "5", countKey: "people" },
-      { href: "/graph",         label: "NETWORK MAP",   glyph: "✦", key: "6" },
-      { href: "/psychenomicon", label: "PSYCHENOMICON", glyph: "▲", key: "7" },
-      { href: "/collections",   label: "COLLECTIONS",   glyph: "▣", key: "8" },
-    ],
-  },
-  {
-    title: "DISCOVER",
-    items: [
-      { href: "/start-here",     label: "START HERE",     glyph: "↳" },
-      { href: "/this-week",      label: "THIS WEEK",      glyph: "◑" },
-      { href: "/symbols",        label: "SYMBOL CODEX",   glyph: "✦" },
-      { href: "/archetype-quiz", label: "ARCHETYPE QUIZ", glyph: "◈" },
-      { href: "/tarot",          label: "TAROT DECK",     glyph: "✦", accent: "neon-4" },
-      { href: "/cards",          label: "CARD ARCHIVE",   glyph: "◈" },
-    ],
-  },
-  {
-    title: "ORACLE",
-    items: [
-      { href: "/red-room",  label: "RED ROOM",    glyph: "◉", accent: "neon-4" },
-      { href: "/signals",   label: "SIGNAL LAB",  glyph: "◈", accent: "neon-4" },
-      { href: "/salon",     label: "THE SALON",   glyph: "◈", accent: "neon-4" },
-      { href: "/premium",   label: "INITIATE+",   glyph: "✦", accent: "neon-4" },
-    ],
-  },
-];
 
 function isActive(href: string, pathname: string | null): boolean {
   if (!pathname) return false;
