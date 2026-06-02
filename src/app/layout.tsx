@@ -12,7 +12,7 @@ import { EntryBanner } from "@/components/layout/entry-banner";
 import { TerminalTopBar } from "@/components/layout/terminal-topbar";
 import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
 import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
-import { getArchiveCounts } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
 import { SkipLink } from "@/components/ui/skip-link";
@@ -102,11 +102,16 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const [counts, liveChannels] = await Promise.all([
-    getArchiveCounts().catch(() => ({
+    getCounts().catch(() => ({
       episodes: 0,
-      topics: 0,
+      segments: 0,
       people: 0,
+      topics: 0,
+      lore: 0,
+      quotes: 0,
+      totalHours: 0,
       transcribedEpisodes: 0,
+      transcribedPct: 0,
     })),
     getLiveChannels().catch(() => ({ cultOfPsyche: false, alexandraMayers: false, nightmareFrequencies: false })),
   ]);
