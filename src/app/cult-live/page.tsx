@@ -7,18 +7,20 @@ export const revalidate = 120; // re-check live status every 2 min
 export const metadata: Metadata = {
   alternates: { canonical: "/cult-live" },
   title: "Cult Live — CultCodex",
-  description: "Latest videos and live streams from Cult of Psyche and Psyche's Nightmares.",
+  description: "Latest videos and live streams from Cult of Psyche, Psyche's Nightmares, and Nightmare Frequencies.",
 };
 
 const CHANNELS = [
-  { handle: "@cultofpsyche",      label: "Cult of Psyche"      },
-  { handle: "@PsychesNightmares", label: "Psyche's Nightmares" },
+  { handle: "@cultofpsyche",           label: "Cult of Psyche"       },
+  { handle: "@PsychesNightmares",      label: "Psyche's Nightmares"  },
+  { handle: "@NightmareFrequenciesTV", label: "Nightmare Frequencies" },
 ];
 
 /** One colour per channel */
 const CHANNEL_COLORS = [
   "text-accent-gold",
   "text-accent-violet",
+  "text-accent-cyan",
 ] as const;
 
 interface VideoItem {
