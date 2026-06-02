@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { getArchiveStats } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
 import { AdminStatCard } from "@/components/admin/admin-stat-card";
 import { SectionCard } from "@/components/ui/section-card";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -18,7 +18,7 @@ interface HealthMetric {
 
 export default async function AdminDashboard() {
   const [stats, flaggedCount, recentEpisodes, liveStatus, health] = await Promise.all([
-    getArchiveStats(),
+    getCounts(),
     prisma.codexComment.count({ where: { flagged: true } }),
     prisma.episode.findMany({
       orderBy: { updatedAt: "desc" },
@@ -89,9 +89,8 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
         <AdminStatCard icon="🎬" label="Episodes" value={stats.episodes} href="/admin/episodes" />
         <AdminStatCard icon="👤" label="People" value={stats.people} href="/admin/people" />
-        <AdminStatCard icon="📜" label="Lore" value={stats.loreEntries} href="/admin/lore" />
+        <AdminStatCard icon="📜" label="Lore" value={stats.lore} href="/admin/lore" />
         <AdminStatCard icon="🏷️" label="Topics" value={stats.topics} href="/admin/topics" />
-        <AdminStatCard icon="📚" label="Series" value={stats.series} href="/admin/series" />
         <AdminStatCard icon="💬" label="Quotes" value={stats.quotes} />
         <AdminStatCard icon="📝" label="Comments" value={0} href="/admin/comments" />
         <AdminStatCard

@@ -1,6 +1,6 @@
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
-import { getArchiveStats } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
 import {
   getMostQuotedPeople,
   getTopTopicsByEpisodes,
@@ -30,7 +30,7 @@ const CANON_LABELS: Record<string, string> = {
 
 export default async function StatsPage() {
   const [stats, quotedPeople, topTopics, canonBreakdown] = await Promise.all([
-    getArchiveStats(),
+    getCounts(),
     getMostQuotedPeople(10),
     getTopTopicsByEpisodes(15),
     getCanonBreakdown(),
@@ -55,13 +55,10 @@ export default async function StatsPage() {
   const statCards = [
     { label: "Episodes", value: stats.episodes },
     { label: "People", value: stats.people },
-    { label: "Lore Entries", value: stats.loreEntries },
+    { label: "Lore Entries", value: stats.lore },
     { label: "Quotes", value: stats.quotes },
     { label: "Transcript Segments", value: stats.segments },
     { label: "Hours of Content", value: stats.totalHours },
-    // Only show community stats when there's activity
-    ...(stats.comments > 0 ? [{ label: "Comments", value: stats.comments }] : []),
-    ...(stats.reactions > 0 ? [{ label: "Reactions", value: stats.reactions }] : []),
   ];
 
   return (
