@@ -3,9 +3,9 @@ import { getUserCollection, getUserCollectionStats } from "@/lib/queries/cards";
 import { CollectionView } from "./collection-view";
 
 export const metadata = {
+  alternates: { canonical: "/cards" },
   title: "Card Collection — CultCodex",
   description: "Your Codex trading card collection.",
-  alternates: { canonical: "/cards" },
 };
 
 export default async function CardsPage() {

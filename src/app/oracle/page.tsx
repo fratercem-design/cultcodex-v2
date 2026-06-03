@@ -10,10 +10,10 @@ import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
+  alternates: { canonical: "/oracle" },
   title: "Ask the Oracle — AI Search — CULT CODEX",
   description:
     "Ask the archive anything. The Oracle synthesizes 2,600+ transmissions into precise answers — behavioral patterns, guest dynamics, recurring moments — all cited back to the source. Initiate+ feature.",
-  alternates: { canonical: "/oracle" },
 };
 
 export default async function OraclePage() {
@@ -35,9 +35,9 @@ export default async function OraclePage() {
     orderBy: { createdAt: "desc" },
   });
   const meaningful = qualityPool.filter((q) => q.text.length >= 60);
-  const pick = meaningful.length > 0
-    ? meaningful[Math.floor(Math.random() * meaningful.length)]
-    : qualityPool[0];
+  const pool = meaningful.length > 0 ? meaningful : qualityPool;
+  // eslint-disable-next-line react-hooks/purity -- server component: runs once per request, no re-render risk
+  const pick = pool[Date.now() % pool.length] ?? pool[0];
   const quotes = pick
     ? await prisma.quote.findMany({
         where: { id: pick.id },

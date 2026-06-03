@@ -268,8 +268,9 @@ export function SyncPanel({
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan">{"/// sync_episodes"}</p>
             <h2 className="font-display text-lg font-bold text-text-primary">Import All Episodes</h2>
             <p className="text-xs text-text-muted leading-relaxed">
-              Sweeps the full uploads history of <strong className="text-text-primary">@CultofPsyche</strong> and{" "}
-              <strong className="text-text-primary">@PsychesNightmares</strong> on YouTube.
+              Sweeps the full uploads history of <strong className="text-text-primary">@CultofPsyche</strong>,{" "}
+              <strong className="text-text-primary">@PsychesNightmares</strong>, and{" "}
+              <strong className="text-text-primary">@NightmareFrequenciesTV</strong> on YouTube.
               Safe to re-run; only inserts videos not already in the DB.
             </p>
             <p className="font-mono text-[9px] text-text-muted/60">

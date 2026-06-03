@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DeepSearchConsole } from "@/components/search/deep-search-console";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/search/deep" },
   title: "Deep Search — CultCodex",
   description:
     "Multi-concept intersection search across the full Cult of Psyche transcript archive. Find every episode where betrayal, astrology, and a specific person intersect.",

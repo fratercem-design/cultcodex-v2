@@ -254,8 +254,9 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
 }`;
 
   const message = await callAnthropicWithRetry({
-    model: "claude-sonnet-4-6",
+    model: "claude-opus-4-8",
     max_tokens: 8000,
+    thinking: { type: "adaptive" },
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: userPrompt }],
   });

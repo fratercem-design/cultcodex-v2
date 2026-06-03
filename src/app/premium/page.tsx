@@ -7,7 +7,7 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { getArchiveStats } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
 import { prisma } from "@/lib/db";
 import { TIERS } from "@/lib/subscription-tiers";
 import { TierCheckoutButton } from "@/components/subscription/tier-checkout-button";
@@ -30,7 +30,7 @@ export default async function PremiumPage() {
   const user = await getCurrentUser();
   const [subStatus, stats] = await Promise.all([
     user ? getSubscriptionStatus(user.id) : Promise.resolve(null),
-    getArchiveStats(),
+    getCounts(),
   ]);
 
   // hasAccess: gates what the user can SEE (admin + paying subscribers)
@@ -266,7 +266,7 @@ export default async function PremiumPage() {
               { n: stats.episodes.toLocaleString(), label: "Transmissions", color: "text-accent-gold" },
               { n: stats.segments.toLocaleString(), label: "Moments Indexed", color: "text-accent-cyan" },
               { n: stats.people.toLocaleString(), label: "Profiled Souls", color: "text-accent-gold" },
-              { n: stats.loreEntries.toLocaleString(), label: "Lore Entries", color: "text-accent-cyan" },
+              { n: stats.lore.toLocaleString(), label: "Lore Entries", color: "text-accent-cyan" },
             ].map((s) => (
               <div key={s.label}>
                 <p className={`font-display text-3xl font-bold ${s.color}`}>{s.n}</p>
@@ -277,7 +277,7 @@ export default async function PremiumPage() {
           <p className="font-mono text-xs text-text-muted">
             {stats.totalHours.toLocaleString()}+ hours decoded ·{" "}
             {stats.segments.toLocaleString()} transcript segments ·{" "}
-            <span className="text-accent-gold font-bold">{stats.loreEntries.toLocaleString()} lore entries</span> extracted
+            <span className="text-accent-gold font-bold">{stats.lore.toLocaleString()} lore entries</span> extracted
           </p>
         </section>
 

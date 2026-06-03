@@ -4,9 +4,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/terms" },
   title: "Terms of Service — CULT CODEX",
   description: "Terms governing use of the CultCodex archive and subscription services.",
-  alternates: { canonical: "/terms" },
 };
 
 export const revalidate = false;

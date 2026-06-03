@@ -84,8 +84,9 @@ export async function POST(
   }
 
   const message = await anthropic.messages.create({
-    model: "claude-haiku-4-5-20251001",
+    model: "claude-opus-4-8",
     max_tokens: 2048,
+    thinking: { type: "adaptive" },
     system: SYSTEM_PROMPT,
     messages: [
       {

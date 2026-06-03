@@ -6,7 +6,7 @@ import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SearchInput } from "@/components/search/search-input";
 import { getEpisodes, formatEpisodeForCard } from "@/lib/queries/episodes";
-import { getArchiveStats } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
 import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
@@ -26,6 +26,7 @@ import { jsonLdScript, organizationJsonLd } from "@/lib/seo";
 export const revalidate = 300;
 
 export const metadata = {
+  alternates: { canonical: "/" },
   title: "CultCodex — Decode Cult of Psyche | 2,600+ Episodes Archived",
   description:
     "The definitive archive of Cult of Psyche. 2,600+ transmissions with AI psychological breakdowns, guest profiles, topic signals, behavioral pattern maps, and growing transcript coverage.",
@@ -42,15 +43,14 @@ export const metadata = {
     description:
       "AI breakdowns, guest profiles, behavioral maps, and growing transcript coverage for every Cult of Psyche episode.",
   },
-  alternates: { canonical: "/" },
 };
 
 export default async function HomePage() {
   const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest] = await Promise.all([
-    getArchiveStats().catch(() => ({
-      episodes: 0, people: 0, loreEntries: 0, quotes: 0,
-      series: 0, topics: 0, segments: 0, totalHours: 0,
-      comments: 0, reactions: 0,
+    getCounts().catch(() => ({
+      episodes: 0, segments: 0, people: 0, topics: 0,
+      lore: 0, quotes: 0, totalHours: 0,
+      transcribedEpisodes: 0, transcribedPct: 0,
     })),
     getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }).catch(() => []),
     getQuotes({ take: 2 }).catch(() => []),
@@ -445,7 +445,7 @@ export default async function HomePage() {
 
           {/* ── NEW VISITOR PATHWAY ──────────────────────────────────── */}
           <div className="rounded-xl border border-border bg-surface p-5 space-y-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">/// new here?</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">{"/// new here?"}</p>
             <div className="grid gap-2 sm:grid-cols-3">
               {([
                 { href: "/start-here",     label: "Start Here",       desc: "Guided entry points chosen by people who've gone deep", accent: "text-accent-gold border-accent-gold/30 hover:bg-accent-gold/5" },

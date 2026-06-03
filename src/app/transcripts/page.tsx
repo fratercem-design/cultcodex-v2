@@ -27,9 +27,9 @@ import { SubscriptionCTA } from "@/components/subscription/subscription-cta";
 export const revalidate = 600;
 
 export const metadata = {
+  alternates: { canonical: "/transcripts" },
   title: "Transcripts — CULT CODEX",
   description: "Search and browse episode transcripts from the Cult of Psyche archive",
-  alternates: { canonical: "/transcripts" },
 };
 
 interface TranscriptsPageProps {

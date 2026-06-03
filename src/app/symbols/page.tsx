@@ -6,6 +6,7 @@ import type { SymbolEntry } from "@/lib/symbols/data";
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/symbols" },
   title: "Symbol Encyclopedia — CultCodex",
   description:
     "Comprehensive history, occult meaning, and modern interpretation of the most significant esoteric symbols — from the Ouroboros to the Chaos Star.",
@@ -14,7 +15,6 @@ export const metadata: Metadata = {
     description:
       "History, occult meaning, and modern interpretation of the most significant esoteric symbols.",
   },
-  alternates: { canonical: "/symbols" },
 };
 
 const CATEGORIES: SymbolEntry["category"][] = [
@@ -40,8 +40,8 @@ export default function SymbolsPage({
 }: {
   searchParams: Promise<{ category?: string }>;
 }) {
-  // We use searchParams for static-safe filtering hint but since force-static
-  // we render all — filtering is handled client-free via hash or just show all
+  {"// We use searchParams for static-safe filtering hint but since force-static"}
+  {"// we render all — filtering is handled client-free via hash or just show all"}
   void searchParams;
 
   return (
@@ -50,7 +50,7 @@ export default function SymbolsPage({
       <section className="border-b border-border bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-5xl space-y-4">
           <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold/60">
-            /// symbol_encyclopedia
+            {"/// symbol_encyclopedia"}
           </p>
           <div className="flex items-center gap-4">
             <div className="h-px flex-1 bg-accent-gold/30" />

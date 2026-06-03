@@ -4,6 +4,7 @@ import { QuizClient } from "@/components/archetype-quiz/quiz-client";
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/archetype-quiz" },
   title: "Discover Your Archetype — CultCodex",
   description:
     "10 questions. One revelation. Discover your mythic archetype through the Cult Codex system — Oracle, Alchemist, Trickster, Mirror Walker, Prophet, Architect, Exile, or Familiar.",
@@ -12,7 +13,6 @@ export const metadata: Metadata = {
     description:
       "10 questions. One revelation. Find out which of the 8 CultCodex archetypes you embody.",
   },
-  alternates: { canonical: "/archetype-quiz" },
 };
 
 export default function ArchetypeQuizPage() {
@@ -22,7 +22,7 @@ export default function ArchetypeQuizPage() {
       <section className="border-b border-border bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-2xl space-y-4 text-center">
           <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">
-            /// archetype_discovery
+            {"/// archetype_discovery"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
             DISCOVER YOUR ARCHETYPE

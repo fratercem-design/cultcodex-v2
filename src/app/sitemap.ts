@@ -1,5 +1,9 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db";
+import { ARCHETYPES } from "@/lib/archetypes";
+import { SYMBOLS } from "@/lib/symbols/data";
+
+export const dynamic = "force-dynamic";
 
 // Regenerate at most once per hour
 export const revalidate = 3600;
@@ -67,6 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/members`,              lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
     { url: `${baseUrl}/graph`,                lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
     { url: `${baseUrl}/symbols`,              lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/archetypes`,           lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/archetype-quiz`,       lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/about/methodology`,    lastModified: now, changeFrequency: "monthly", priority: 0.4 },
     { url: `${baseUrl}/corrections`,          lastModified: now, changeFrequency: "monthly", priority: 0.3 },
@@ -122,6 +127,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "monthly" as const,
         priority: 0.5,
       })),
+    // Static archetype and symbol pages (force-static, no DB)
+    ...ARCHETYPES.map((a) => ({
+      url: `${baseUrl}/archetypes/${a.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+    ...SYMBOLS.map((s) => ({
+      url: `${baseUrl}/symbols/${s.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
   ];
 
   return [...staticPages, ...dynamicPages];

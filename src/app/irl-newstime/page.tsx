@@ -6,9 +6,9 @@ import type { Metadata } from "next";
 export const revalidate = 120; // re-check live status every 2 min
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/irl-newstime" },
   title: "Alexandra Mayers — CultCodex",
   description: "Latest videos and live streams from Alexandra Mayers across IRL Newstime, IP2WikiInfo, and @AlexandraMayers.",
-  alternates: { canonical: "/irl-newstime" },
 };
 
 const CHANNELS = [

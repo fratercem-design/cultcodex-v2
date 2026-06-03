@@ -9,6 +9,7 @@ import { archetypeHex } from "@/lib/archetype-colors";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/psychenomicon/archetypes" },
   title: "Archetypes — Psychenomicon — CULT CODEX",
   description:
     "Every archetypal current running through the Cult of Psyche — Mirror, Siren, Chaos, Flame and beyond. The patterns that recur across guests, eras, and chapters.",

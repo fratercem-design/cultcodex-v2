@@ -4,9 +4,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/corrections" },
   title: "Corrections — CULT CODEX",
   description: "How to report errors or request changes in the Cult Codex archive",
-  alternates: { canonical: "/corrections" },
 };
 
 export default function CorrectionsPage() {

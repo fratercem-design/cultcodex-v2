@@ -29,10 +29,10 @@ import { formatDate } from "@/lib/format/date";
 import { SavedSearchesBlock } from "@/components/codex/saved-searches-block";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/codex" },
   title: "My Codex — CULT CODEX",
   description:
     "Your personal map of the Cult of Psyche — saved signals, transmissions, and moments.",
-  alternates: { canonical: "/codex" },
 };
 
 export default async function CodexPage() {

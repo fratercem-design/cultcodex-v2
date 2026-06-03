@@ -7,9 +7,9 @@ import { LiveChat } from "@/components/live/live-chat";
 import { SubscribeForm } from "@/components/live/subscribe-form";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/live" },
   title: "Live — CultCodex",
   description: "Watch Cult of Psyche live streams",
-  alternates: { canonical: "/live" },
 };
 
 export const dynamic = "force-dynamic";

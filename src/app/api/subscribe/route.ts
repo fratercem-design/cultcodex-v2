@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod/v4";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/db";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 const subscribeSchema = z.object({
   email: z.email().optional(),
@@ -9,6 +10,11 @@ const subscribeSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  const rl = rateLimit(`subscribe:${clientKey(req)}`, { limit: 5, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   try {
     const body = await req.json().catch(() => ({}));
     const data = subscribeSchema.parse(body);

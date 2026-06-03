@@ -4,9 +4,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/privacy" },
   title: "Privacy Policy — CULT CODEX",
   description: "How CultCodex collects, uses, and protects your personal information.",
-  alternates: { canonical: "/privacy" },
 };
 
 export const revalidate = false;

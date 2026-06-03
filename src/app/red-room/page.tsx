@@ -6,10 +6,10 @@ import { prisma } from "@/lib/db";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/red-room" },
   title: "Red Room — CultCodex",
   description: "Unfiltered analysis. No softening. Oracle-tier access only.",
   robots: { index: false, follow: false },
-  alternates: { canonical: "/red-room" },
 };
 
 export const revalidate = 3600;

@@ -21,7 +21,7 @@ export const runtime = "nodejs";
 export const maxDuration = 300;
 export const dynamic = "force-dynamic";
 
-const DEFAULT_CHANNELS = ["@CultofPsyche", "@PsychesNightmares"];
+const DEFAULT_CHANNELS = ["@CultofPsyche", "@PsychesNightmares", "@NightmareFrequenciesTV"];
 
 function slugify(text: string): string {
   return text

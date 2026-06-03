@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/start-here/quiz" },
   title: "Find Your Path — CULT CODEX",
   description:
     "Three questions. A personalized entry point into 2,600+ transmissions.",

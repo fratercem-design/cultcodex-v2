@@ -12,11 +12,13 @@ interface ChannelStatus {
 interface AllLiveStatus {
   cultOfPsyche: ChannelStatus;
   alexandraMayers: ChannelStatus;
+  nightmareFrequencies: ChannelStatus;
 }
 
 const EMPTY: AllLiveStatus = {
   cultOfPsyche: { isLive: false, videoId: null, title: null },
   alexandraMayers: { isLive: false, videoId: null, title: null },
+  nightmareFrequencies: { isLive: false, videoId: null, title: null },
 };
 
 interface BannerEntry {
@@ -51,12 +53,17 @@ export function LiveBanner() {
 
   const entries: BannerEntry[] = [];
 
-  if (status.cultOfPsyche.isLive) {
+  const cultLive = status.cultOfPsyche.isLive || status.nightmareFrequencies.isLive;
+  const cultTitle = status.cultOfPsyche.isLive
+    ? status.cultOfPsyche.title
+    : status.nightmareFrequencies.title;
+
+  if (cultLive) {
     entries.push({
       key: "cultOfPsyche",
       label: "CULT OF PSYCHE",
-      title: status.cultOfPsyche.title,
-      href: "/live",
+      title: cultTitle,
+      href: "/cult-live",
       accentBg: "bg-red-950/70",
       accentBorder: "border-red-500/30",
       accentText: "text-red-300",

@@ -18,6 +18,7 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/start-here/guided" },
   title: "The Guided Path — CULT CODEX",
   description:
     "Five emotional doorways into the Cult of Psyche archive. Pick what's pulling you.",

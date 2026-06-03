@@ -9,9 +9,9 @@ export const revalidate = 300;
 export const maxDuration = 30;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/timeline" },
   title: "Timeline — CULT CODEX",
   description: "A chronological journey through every Cult of Psyche episode",
-  alternates: { canonical: "/timeline" },
 };
 
 interface TimelineEpisode {

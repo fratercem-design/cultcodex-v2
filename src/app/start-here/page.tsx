@@ -8,14 +8,14 @@ import {
   IconMicrophone,
 } from "@/components/graphics/codex-icons";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
-import { getArchiveStats } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/start-here" },
   title: "Start Here — CULT CODEX",
   description:
     "Cult of Psyche is a livestream show exploring consciousness, the occult, AI, and human behavior. CultCodex is the structured archive of everything that happened — 2,500+ transmissions, every word indexed, every pattern extracted.",
-  alternates: { canonical: "/start-here" },
 };
 
 const DOORWAYS = [
@@ -116,7 +116,7 @@ const colorMapFull = {
 };
 
 export default async function StartHerePage() {
-  const stats = await getArchiveStats();
+  const stats = await getCounts();
 
   return (
     <main id="main-content" className="mx-auto max-w-5xl px-4 py-12 space-y-20">
@@ -192,7 +192,7 @@ export default async function StartHerePage() {
             { n: stats.people.toLocaleString(), label: "Voices" },
             { n: stats.segments.toLocaleString(), label: "Moments indexed" },
             { n: stats.quotes.toLocaleString(), label: "Quotes" },
-            { n: stats.loreEntries.toLocaleString(), label: "Lore entries" },
+            { n: stats.lore.toLocaleString(), label: "Lore entries" },
           ].map((s) => (
             <div key={s.label} className="rounded-lg border border-border bg-surface p-3 text-center">
               <p className="font-mono text-lg font-bold text-accent-gold">{s.n}</p>

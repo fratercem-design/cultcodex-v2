@@ -12,6 +12,7 @@
  * - Idempotent: skips videos whose youtubeVideoId already exists in DB.
  */
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { google } from "googleapis";
 import { prisma } from "@/lib/db";
 import { ContentStatus } from "@/generated/prisma/client";
@@ -258,6 +259,8 @@ async function handle(req: NextRequest) {
     0,
   );
 
+  // Bust the counts cache so sidebar/stats reflect new episodes immediately
+  if (totalNew > 0) revalidatePath("/", "layout");
   return NextResponse.json({
     ok: true,
     totalNew,

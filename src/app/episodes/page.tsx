@@ -28,9 +28,9 @@ import { formatDate, formatRelativeDate } from "@/lib/format/date";
 export const revalidate = 60;
 
 export const metadata = {
+  alternates: { canonical: "/episodes" },
   title: "Episodes — CULT CODEX",
   description: "Browse 2,600+ Cult of Psyche transmissions — sortable by era, type, topic, and guest. Full transcripts, AI breakdowns, and behavioral profiles for every session.",
-  alternates: { canonical: "/episodes" },
 };
 
 const SORT_OPTIONS = [

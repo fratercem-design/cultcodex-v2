@@ -4,6 +4,7 @@ import { DecksList } from "./decks-list";
 import { redirect } from "next/navigation";
 
 export const metadata = {
+  alternates: { canonical: "/cards/decks" },
   title: "Signal Arrays — CultCodex",
   description: "Build and manage your curated card arrays.",
 };

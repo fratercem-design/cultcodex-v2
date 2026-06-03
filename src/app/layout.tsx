@@ -12,13 +12,12 @@ import { EntryBanner } from "@/components/layout/entry-banner";
 import { TerminalTopBar } from "@/components/layout/terminal-topbar";
 import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
 import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
-import { getArchiveCounts } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
 import { SkipLink } from "@/components/ui/skip-link";
 import { jsonLdScript } from "@/lib/seo";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -71,10 +70,15 @@ const SITE_DESCRIPTION =
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://cultcodex.me";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "CultCodex — The Living Archive",
   description: SITE_DESCRIPTION,
+  // NOTE: no global `alternates.canonical` here. Setting it at the root made
+  // every page inherit the homepage URL as its canonical, so Google treated
+  // all routes as duplicates of `/`. Each page declares its own canonical.
   icons: {
     icon: "/favicon.jpg",
     apple: "/favicon.jpg",
@@ -100,13 +104,18 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const [counts, liveChannels] = await Promise.all([
-    getArchiveCounts().catch(() => ({
+    getCounts().catch(() => ({
       episodes: 0,
-      topics: 0,
+      segments: 0,
       people: 0,
+      topics: 0,
+      lore: 0,
+      quotes: 0,
+      totalHours: 0,
       transcribedEpisodes: 0,
+      transcribedPct: 0,
     })),
-    getLiveChannels().catch(() => ({ cultOfPsyche: false, alexandraMayers: false })),
+    getLiveChannels().catch(() => ({ cultOfPsyche: false, alexandraMayers: false, nightmareFrequencies: false })),
   ]);
 
   const fontVariables = [
@@ -161,8 +170,7 @@ export default async function RootLayout({
             }),
           }}
         />
-        <Analytics />
-        <SpeedInsights />
+        <GoogleAnalytics gaId="G-1ML217JXYV" />
       </body>
     </html>
   );

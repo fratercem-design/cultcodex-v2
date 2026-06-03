@@ -7,9 +7,9 @@ import type { Metadata } from "next";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/psychenomicon" },
   title: "The Psychenomicon — CULT CODEX",
   description: "A living record of evolving patterns. The myth-engine of the Cult of Psyche, built from real transcripts.",
-  alternates: { canonical: "/psychenomicon" },
 };
 
 const STATUS_STYLES: Record<string, string> = {

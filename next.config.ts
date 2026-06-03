@@ -65,8 +65,8 @@ const nextConfig: NextConfig = {
             "font-src 'self' https://fonts.gstatic.com",
             // Images: self + inline data URIs + blob + any HTTPS (YouTube thumbnails, Google avatars, imgur).
             "img-src 'self' data: blob: https:",
-            // Frames: YouTube privacy-enhanced embeds only.
-            "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
+            // Frames: YouTube + Cult of Psyche Arcanum Oracle.
+            "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://tarot-oracle-production.up.railway.app",
             // Fetch/XHR: self + Vercel Analytics beacon + Speed Insights beacon.
             "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com",
             // No plugins (Flash, etc.).

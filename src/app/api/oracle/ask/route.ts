@@ -952,7 +952,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const client = new Anthropic({ apiKey: anthropicKey });
-    const model = process.env.ORACLE_MODEL ?? "claude-sonnet-4-6";
+    const model = process.env.ORACLE_MODEL ?? "claude-opus-4-8";
     const result = await runOracleAgent(client, model, contextText, question, preFlightCitations, contextPreamble);
     answer = result.answer;
     citations = result.citations;

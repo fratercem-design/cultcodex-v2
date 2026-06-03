@@ -1,79 +1,68 @@
 import { describe, it, expect, vi } from "vitest";
-import type { ArchiveStats } from "@/types";
+import type { SiteCounts } from "@/lib/queries/stats";
+
+// unstable_cache requires Next.js runtime infra; make it a transparent pass-through
+vi.mock("next/cache", () => ({
+  unstable_cache: (fn: (...args: unknown[]) => unknown) => fn,
+  revalidateTag: vi.fn(),
+}));
 
 // Mock prisma
 vi.mock("@/lib/db", () => ({
   prisma: {
-    episode: { count: vi.fn().mockResolvedValue(100), findMany: vi.fn().mockResolvedValue([]) },
+    episode: {
+      count: vi.fn().mockResolvedValue(100),
+      findMany: vi.fn().mockResolvedValue([]),
+      aggregate: vi.fn().mockResolvedValue({ _sum: { value: 0 } }),
+    },
     person: { count: vi.fn().mockResolvedValue(50) },
     loreEntry: { count: vi.fn().mockResolvedValue(200) },
     quote: { count: vi.fn().mockResolvedValue(300) },
     series: { count: vi.fn().mockResolvedValue(10) },
     topic: { count: vi.fn().mockResolvedValue(150) },
     transcriptSegment: { count: vi.fn().mockResolvedValue(5000) },
-    codexComment: { count: vi.fn().mockResolvedValue(0) },
-    episodeReaction: { count: vi.fn().mockResolvedValue(0) },
-    episodeGuest: { count: vi.fn().mockResolvedValue(400) },
+    $queryRaw: vi.fn().mockResolvedValue([{ total_hours: "0" }]),
   },
 }));
 
-import { getArchiveStats } from "../stats";
+import { getCounts } from "../stats";
 
-describe("getArchiveStats (canonical)", () => {
-  it("returns all required fields", async () => {
-    const stats = await getArchiveStats();
+describe("getCounts (canonical archive stats)", () => {
+  it("returns all required SiteCounts fields", async () => {
+    const counts = await getCounts();
 
-    // Verify all ArchiveStats fields are present
-    const requiredKeys: (keyof ArchiveStats)[] = [
+    const requiredKeys: (keyof SiteCounts)[] = [
       "episodes",
-      "people",
-      "loreEntries",
-      "quotes",
-      "series",
-      "topics",
       "segments",
+      "people",
+      "topics",
+      "lore",
+      "quotes",
       "totalHours",
-      "comments",
-      "reactions",
+      "transcribedEpisodes",
+      "transcribedPct",
     ];
 
     for (const key of requiredKeys) {
-      expect(stats).toHaveProperty(key);
-      expect(typeof stats[key]).toBe("number");
+      expect(counts).toHaveProperty(key);
+      expect(typeof counts[key]).toBe("number");
     }
-  });
-
-  it("returns correct mock values", async () => {
-    const stats = await getArchiveStats();
-    expect(stats.episodes).toBe(100);
-    expect(stats.people).toBe(50);
-    expect(stats.loreEntries).toBe(200);
-    expect(stats.quotes).toBe(300);
-    expect(stats.series).toBe(10);
-    expect(stats.topics).toBe(150);
-    expect(stats.segments).toBe(5000);
-    expect(stats.totalHours).toBe(0); // No duration data mocked
-    expect(stats.comments).toBe(0);
-    expect(stats.reactions).toBe(0);
   });
 });
 
-describe("ArchiveStats type completeness", () => {
-  it("has both homepage and stats page fields", () => {
-    // This test ensures the canonical type includes fields from both
-    // the old stats.ts (series, topics) and old analytics.ts (segments, totalHours, comments, reactions)
-    const mockStats: ArchiveStats = {
+describe("SiteCounts type completeness", () => {
+  it("has all required fields", () => {
+    const mockCounts: SiteCounts = {
       episodes: 1,
+      segments: 1,
       people: 1,
-      loreEntries: 1,
+      topics: 1,
+      lore: 1,
       quotes: 1,
-      series: 1, // from old stats.ts
-      topics: 1, // from old stats.ts
-      segments: 1, // from old analytics.ts
-      totalHours: 1, // from old analytics.ts
-      comments: 1, // from old analytics.ts
-      reactions: 1, // from old analytics.ts
+      totalHours: 1,
+      transcribedEpisodes: 1,
+      transcribedPct: 1,
     };
-    expect(Object.keys(mockStats)).toHaveLength(10);
+    expect(Object.keys(mockCounts)).toHaveLength(9);
   });
 });

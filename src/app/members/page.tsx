@@ -6,10 +6,10 @@ import type { Metadata } from "next";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/members" },
   title: "Member Roll — CultCodex",
   description:
     "The official roll of initiated CultCodex premium members. These souls have opened the archive.",
-  alternates: { canonical: "/members" },
 };
 
 const MEMBER_SELECT = {
