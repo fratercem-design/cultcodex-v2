@@ -53,12 +53,17 @@ export function LiveBanner() {
 
   const entries: BannerEntry[] = [];
 
-  if (status.cultOfPsyche.isLive) {
+  const cultLive = status.cultOfPsyche.isLive || status.nightmareFrequencies.isLive;
+  const cultTitle = status.cultOfPsyche.isLive
+    ? status.cultOfPsyche.title
+    : status.nightmareFrequencies.title;
+
+  if (cultLive) {
     entries.push({
       key: "cultOfPsyche",
       label: "CULT OF PSYCHE",
-      title: status.cultOfPsyche.title,
-      href: "/live",
+      title: cultTitle,
+      href: "/cult-live",
       accentBg: "bg-red-950/70",
       accentBorder: "border-red-500/30",
       accentText: "text-red-300",
@@ -76,19 +81,6 @@ export function LiveBanner() {
       accentBorder: "border-violet-500/30",
       accentText: "text-violet-300",
       dotColor: "bg-violet-400",
-    });
-  }
-
-  if (status.nightmareFrequencies.isLive) {
-    entries.push({
-      key: "nightmareFrequencies",
-      label: "NIGHTMARE FREQUENCIES",
-      title: status.nightmareFrequencies.title,
-      href: "/nightmare-frequencies",
-      accentBg: "bg-cyan-950/70",
-      accentBorder: "border-cyan-500/30",
-      accentText: "text-cyan-300",
-      dotColor: "bg-cyan-400",
     });
   }
 
