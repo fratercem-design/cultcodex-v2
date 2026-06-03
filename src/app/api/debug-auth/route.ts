@@ -1,9 +1,15 @@
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 /** Auth config diagnostic — shows which env vars are set (not their values). Admin only. */
 export async function GET() {
+  try {
+    await requireAdmin();
+  } catch {
+    return NextResponse.json({ error: "Admin only" }, { status: 403 });
+  }
   const vars = {
     AUTH_SECRET:          !!process.env.AUTH_SECRET,
     NEXTAUTH_SECRET:      !!process.env.NEXTAUTH_SECRET,
