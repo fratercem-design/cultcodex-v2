@@ -2,6 +2,15 @@ import { prisma } from "@/lib/db";
 import type { Rarity, CardType, Prisma } from "@/generated/prisma/client";
 import { rollRarity, rollFoil } from "@/lib/cards/rarity";
 
+// ─── Vault (all cards) ───────────────────────────────────────────────────────
+
+export async function getAllCards() {
+  return prisma.card.findMany({
+    where: { isActive: true },
+    orderBy: [{ cardType: "asc" }, { title: "asc" }],
+  });
+}
+
 // ─── Collection ─────────────────────────────────────────────────────────────
 
 export async function getUserCollection(userId: string) {
