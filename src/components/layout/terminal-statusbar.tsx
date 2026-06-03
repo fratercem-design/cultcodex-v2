@@ -97,7 +97,7 @@ export function TerminalStatusBar({ feedCount }: TerminalStatusBarProps) {
         <span style={cellStyle}>FEED: {feedCount.toLocaleString()}</span>
       </div>
 
-      <div style={{ display: "flex", alignItems: "stretch" }}>
+      <div className="statusbar-right" style={{ alignItems: "stretch" }}>
         <span style={cellStyleLeftBorder}>
           <span
             aria-hidden="true"

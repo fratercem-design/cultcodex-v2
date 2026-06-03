@@ -98,8 +98,6 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
         borderRight: "1px solid var(--term-line)",
         backgroundColor: "var(--term-bg-1)",
         overflowY: "auto",
-        display: "flex",
-        flexDirection: "column",
         fontFamily: "var(--font-mono), 'JetBrains Mono', 'IBM Plex Mono', monospace",
       }}
       aria-label="Primary"

@@ -406,6 +406,8 @@ body {
 }
 .terminal-sidebar {
   grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   min-height: 0;
 }
@@ -417,6 +419,10 @@ body {
 }
 .terminal-statusbar {
   grid-area: statusbar;
+  overflow: hidden;
+}
+.statusbar-right {
+  display: flex;
 }
 
 @media (max-width: 900px) {
@@ -429,6 +435,9 @@ body {
     grid-template-rows: 36px 1fr 24px;
   }
   .terminal-sidebar {
+    display: none !important;
+  }
+  .statusbar-right {
     display: none;
   }
 }
