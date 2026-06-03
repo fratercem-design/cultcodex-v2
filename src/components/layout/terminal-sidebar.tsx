@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ArchiveCounts } from "@/lib/queries/stats";
 import { NAV_GROUPS } from "@/lib/nav";
-import type { AccentKey, CountKey } from "@/lib/nav";
+import type { AccentKey } from "@/lib/nav";
 import type { LiveChannels } from "@/lib/queries/live-status";
 
 function isActive(href: string, pathname: string | null): boolean {
@@ -14,8 +14,10 @@ function isActive(href: string, pathname: string | null): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function accentColor(accent: AccentKey | undefined): string {
-  return accent === "neon-4" ? "var(--neon-4)" : "var(--term-fg-dim)";
+function accentColor(accent: AccentKey | undefined, fallback: string): string {
+  if (accent === "neon-4") return "var(--neon-4)";
+  if (accent === "neon") return "var(--neon)";
+  return fallback;
 }
 
 const badgeStyle: CSSProperties = {
@@ -110,7 +112,8 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
                 fontSize: 10,
                 textTransform: "uppercase",
                 letterSpacing: "0.18em",
-                color: "var(--term-fg-faint)",
+                color: group.color,
+                opacity: 0.5,
                 padding: "0 14px",
                 marginBottom: 6,
               }}
@@ -127,7 +130,7 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
                   ? "var(--neon)"
                   : isLive
                   ? "rgba(239,68,68,0.9)"
-                  : accentColor(item.accent);
+                  : accentColor(item.accent, group.color);
 
                 const itemStyle: CSSProperties = {
                   display: "flex",
