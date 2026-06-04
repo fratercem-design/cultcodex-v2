@@ -119,6 +119,7 @@ export async function updatePerson(id: string, formData: FormData) {
       loreSummary: (formData.get("loreSummary") as string) || null,
       personType: formData.get("personType") as PersonType,
       avatarUrl: (formData.get("avatarUrl") as string) || null,
+      youtubeChannelUrl: (formData.get("youtubeChannelUrl") as string) || null,
       altNames,
     },
   });

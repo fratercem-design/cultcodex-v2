@@ -136,6 +136,7 @@ model Person {
   shortBio                 String?
   loreSummary              String?
   avatarUrl                String?
+  youtubeChannelUrl        String?
   personType               PersonType @default(guest)
   searchText               String?
   firstAppearanceEpisodeId String?
