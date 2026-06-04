@@ -1,0 +1,39 @@
+version: 2
+updates:
+  # npm dependencies
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/New_York
+    open-pull-requests-limit: 5
+    # Group patch and minor updates together to reduce PR noise.
+    # Security updates are always opened individually regardless of grouping.
+    groups:
+      patch-updates:
+        applies-to: version-updates
+        update-types: [patch]
+      minor-updates:
+        applies-to: version-updates
+        update-types: [minor]
+    # Don't auto-update major versions — those require deliberate review.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    labels:
+      - dependencies
+
+  # GitHub Actions versions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/New_York
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - ci
