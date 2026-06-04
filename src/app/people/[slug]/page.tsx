@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
@@ -210,6 +210,12 @@ export default async function PersonDetailPage({ params }: PageProps) {
   const person = await getPersonBySlug(slug);
 
   if (!person) notFound();
+
+  // Guests and unknowns without a proper profile → compiled "the rest" entry
+  const isProfiled = Boolean(person.loreSummary) || Boolean(person.shortBio);
+  if (!isProfiled && (person.personType === "guest" || person.personType === "mentioned")) {
+    redirect("/people/the-rest");
+  }
 
   const allEpisodes = [
     ...person.guestAppearances.map((g) => g.episode),

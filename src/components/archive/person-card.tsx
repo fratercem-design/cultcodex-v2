@@ -22,13 +22,22 @@ const typeVariant: Record<PersonType, "green" | "purple" | "gold" | "muted"> = {
   mentioned: "muted",
 };
 
+/** Unproiled guests/mentioned → compiled "the rest" entry instead of individual page */
+function personHref(p: PersonCardProps["person"]): string {
+  const isProfiled = Boolean(p.loreSummary) || Boolean(p.shortBio);
+  if (!isProfiled && (p.personType === "guest" || p.personType === "mentioned")) {
+    return "/people/the-rest";
+  }
+  return `/people/${p.slug}`;
+}
+
 export function PersonCard({ person }: PersonCardProps) {
   const isProfileComplete =
     Boolean(person.loreSummary) && Boolean(person.shortBio) && Boolean(person.avatarUrl);
 
   return (
     <Link
-      href={`/people/${person.slug}`}
+      href={personHref(person)}
       className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated"
     >
       {person.avatarUrl ? (
