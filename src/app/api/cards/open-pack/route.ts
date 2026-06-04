@@ -14,7 +14,15 @@ export async function POST(req: Request) {
     const cards = await openPack(user.id, packSlug);
     return NextResponse.json({ cards });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json({ error: message }, { status: 400 });
+    // Map known user-facing errors through; swallow internal DB details.
+    const message = err instanceof Error ? err.message : "";
+    const isUserFacing = ["not found", "insufficient", "already", "cooldown", "invalid"].some(
+      (k) => message.toLowerCase().includes(k)
+    );
+    console.error("[open-pack] error:", err);
+    return NextResponse.json(
+      { error: isUserFacing ? message : "Failed to open pack. Please try again." },
+      { status: 400 }
+    );
   }
 }
