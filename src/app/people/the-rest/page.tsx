@@ -20,7 +20,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "The Rest — Voices — CultCodex",
   description:
-    "Every guest, unknown, and passing voice who entered the Cult of Psyche stream without a full profile. One-time appearances, mentioned figures, unidentified voices — compiled.",
+    "Every guest, unknown, or passing voice who entered the Cult of Psyche stream without a full profile. One-time appearances, unidentified voices, and name-drops — compiled in one entry.",
   alternates: { canonical: "/people/the-rest" },
   robots: { index: false },
 };
@@ -95,7 +95,7 @@ export default async function TheRestPage() {
     .slice(0, 20);
 
   const totalGuests = unprofiled.filter((p) => p.personType === "guest").length;
-  const totalMentioned = unprofiled.filter((p) => p.personType === "mentioned").length;
+  const totalMentioned = unprofiled.filter((p) => p.personType === "mentioned").length; // "unknown" in archive parlance
 
   return (
     <>
@@ -117,7 +117,7 @@ export default async function TheRestPage() {
         {[
           { value: unprofiled.length, label: "Total in this entry" },
           { value: totalGuests, label: "One-time guests" },
-          { value: totalMentioned, label: "Mentioned / unknown" },
+          { value: totalMentioned, label: "Unknown / mentioned" },
           { value: profiled.length, label: "Guests with profiles" },
         ].map(({ value, label }, i, arr) => (
           <div
@@ -287,10 +287,11 @@ export default async function TheRestPage() {
                   }}
                 >
                   <span
+                    title={p.personType === "mentioned" ? "Unknown / mentioned only" : "Guest"}
                     style={{
                       width: 5,
                       height: 5,
-                      borderRadius: "50%",
+                      borderRadius: p.personType === "mentioned" ? 1 : "50%", // square = unknown
                       flexShrink: 0,
                       backgroundColor:
                         p.personType === "mentioned"

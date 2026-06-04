@@ -117,7 +117,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
       <div className="mb-5 flex items-center justify-between gap-4 rounded-lg border border-border bg-surface px-4 py-3">
         <p className="font-mono text-[11px] text-text-muted">
           <span className="text-text-primary font-bold">THE REST</span>
-          {" "}— one-time guests, unknowns, and mentioned figures without full profiles are compiled in a single collective entry.
+          {" "}— one-time guests, unknowns, and figures without full profiles are compiled in a single collective entry rather than individual stubs.
         </p>
         <Link
           href="/people/the-rest"
