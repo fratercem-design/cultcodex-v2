@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+        env:
+          # Build-time generation only — no real DB needed.
+          DATABASE_URL: postgresql://localhost/placeholder
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm run test
+        env:
+          DATABASE_URL: postgresql://localhost/placeholder
+
+      - name: Build
+        run: npm run build
+        env:
+          # Real secrets are not needed for a build check — placeholders prevent
+          # "env var missing" crashes while keeping real values out of CI logs.
+          DATABASE_URL: postgresql://localhost/placeholder
+          NEXTAUTH_SECRET: ci-placeholder-secret-not-real
+          NEXTAUTH_URL: https://cultcodex.me
+          GOOGLE_CLIENT_ID: ci-placeholder
+          GOOGLE_CLIENT_SECRET: ci-placeholder
+          ANTHROPIC_API_KEY: ci-placeholder
+          STRIPE_SECRET_KEY: sk_test_placeholder
+          STRIPE_WEBHOOK_SECRET: whsec_placeholder
+          ENRICH_SECRET: ci-placeholder
