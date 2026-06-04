@@ -1068,6 +1068,17 @@ model SignalProposal {
   @@index([createdAt])
 }
 
+// ─── Stripe Webhook Event Deduplication ───────────────
+// Records processed Stripe event IDs so retried webhooks are no-oped.
+// Rows expire naturally — Stripe event IDs are globally unique.
+model StripeWebhookEvent {
+  id          String   @id          // Stripe event id (evt_…)
+  type        String                // event type, e.g. "checkout.session.completed"
+  processedAt DateTime @default(now())
+
+  @@index([processedAt])
+}
+
 // ─── Weekly Digest ────────────────────────────────────
 // Admin-curated "This week in the archive" selections.
 // quoteIds / episodeIds / personIds are arrays of DB IDs

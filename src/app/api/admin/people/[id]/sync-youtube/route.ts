@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 function isAdmin(req: NextRequest, user: { role: string } | null): boolean {
   const secret = req.headers.get("x-enrich-secret");
@@ -47,6 +48,15 @@ export async function POST(
   const user = await getCurrentUser();
   if (!isAdmin(req, user)) {
     return NextResponse.json({ error: "Admin only" }, { status: 403 });
+  }
+
+  // Guard the external YouTube API call — 30 syncs/minute is generous for admin use.
+  const rl = rateLimit(`yt-sync:${clientKey(req, user?.id)}`, { limit: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests — slow down." },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
+    );
   }
 
   const { id } = await params;

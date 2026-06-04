@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const { version } = JSON.parse(readFileSync(join(process.cwd(), "package.json"), "utf-8")) as { version: string };
 
@@ -117,4 +118,21 @@ const nextConfig: NextConfig = {
   ],
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // Sentry organization + project — set these in your Sentry dashboard.
+  // The DSN itself lives in env vars (NEXT_PUBLIC_SENTRY_DSN / SENTRY_DSN).
+  silent: true,             // Suppress Sentry CLI output during build
+  disableLogger: true,      // Remove Sentry logger calls from bundles
+
+  // Upload source maps to Sentry on production builds only.
+  // Set SENTRY_AUTH_TOKEN in Railway to enable source maps.
+  // Without it, Sentry still works — errors just show minified stack traces.
+  hideSourceMaps: true,
+
+  // Automatically instrument API routes and Server Components.
+  autoInstrumentServerFunctions: true,
+  autoInstrumentMiddleware: true,
+
+  // Don't tunnel — we're on Railway, not Vercel.
+  tunnelRoute: undefined,
+});
