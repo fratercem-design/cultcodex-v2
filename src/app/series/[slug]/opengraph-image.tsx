@@ -122,7 +122,7 @@ export default async function OGImage({
 
               {epCount > 0 && (
                 <div style={{ color: "#444", fontSize: 19, marginTop: 4 }}>
-                  {epCount} episode{epCount !== 1 ? "s" : ""} in this series
+                  {`${epCount} episode${epCount !== 1 ? "s" : ""} in this series`}
                 </div>
               )}
             </div>
