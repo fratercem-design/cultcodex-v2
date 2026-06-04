@@ -3,8 +3,7 @@ import { prisma } from "@/lib/db";
 import { notifySubscribers } from "@/lib/notifications";
 
 export async function POST(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const key = searchParams.get("key");
+const key = req.headers.get("x-live-secret");
 
   if (key !== process.env.LIVE_TOGGLE_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
