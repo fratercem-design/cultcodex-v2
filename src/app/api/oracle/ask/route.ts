@@ -517,16 +517,53 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Cache check — skip expensive Claude + ElevenLabs if we've seen this exact query.
+  // Cache check — skip the expensive Claude call if we've seen this exact query.
+  // Audio is NOT cached (base64 MP3s are large); TTS is re-fetched on cache hits.
   const cacheKey = oracleCacheKey(question, searchContext);
   const cached = oracleCacheGet(cacheKey);
   if (cached) {
+    // Re-run TTS so callers still get voice on cache hits, without storing audio in memory.
+    let cachedAudio: string | null = null;
+    const elKey = process.env.ELEVENLABS_API_KEY;
+    const elVoice = process.env.ELEVENLABS_VOICE_ID ?? "21m00Tcm4TlvDq8ikWAM";
+    if (elKey) {
+      try {
+        const elRes = await fetch(
+          `https://api.elevenlabs.io/v1/text-to-speech/${elVoice}`,
+          {
+            method: "POST",
+            headers: {
+              "xi-api-key": elKey,
+              "Content-Type": "application/json",
+              Accept: "audio/mpeg",
+            },
+            body: JSON.stringify({
+              text: cached.answer,
+              model_id: "eleven_multilingual_v2",
+              voice_settings: {
+                stability: 0.60,
+                similarity_boost: 0.80,
+                style: 0.15,
+                use_speaker_boost: true,
+              },
+            }),
+          }
+        );
+        if (elRes.ok) {
+          const buf = await elRes.arrayBuffer();
+          cachedAudio = Buffer.from(buf).toString("base64");
+        }
+      } catch {
+        // Voice unavailable — text-only fallback
+      }
+    }
+
     const res = NextResponse.json({
       ok: true,
       answer: cached.answer,
       citations: cached.citations,
-      audioBase64: cached.audioBase64,
-      hasVoice: !!cached.audioBase64,
+      audioBase64: cachedAudio,
+      hasVoice: !!cachedAudio,
       trialUsed: isFreeTrialRequest,
       trialRemaining: isFreeTrialRequest ? Math.max(0, TRIAL_LIMIT - trial.used - 1) : undefined,
     } satisfies OracleResponse);
@@ -568,7 +605,7 @@ export async function POST(req: NextRequest) {
   try {
     const client = new Anthropic({ apiKey: anthropicKey });
     const claudeRes = await client.messages.create({
-      model: process.env.ORACLE_MODEL ?? "claude-opus-4-8",
+      model: process.env.ORACLE_MODEL ?? "claude-opus-4-5",
       max_tokens: 400,
       system: ORACLE_SYSTEM,
       messages: [
@@ -639,7 +676,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  oracleCacheSet(cacheKey, { answer, citations, audioBase64 });
+  oracleCacheSet(cacheKey, { answer, citations });
 
   const finalRes = NextResponse.json({
     ok: true,
