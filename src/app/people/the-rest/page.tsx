@@ -84,7 +84,8 @@ export default async function TheRestPage() {
   });
 
   // Aggregate episode list across all unprofiled (deduplicated, newest first)
-  const episodeMap = new Map<string, typeof EPISODE_SELECT extends Record<string, unknown> ? typeof unprofiled[0]["guestAppearances"][0]["episode"] : never>();
+  type EpRow = (typeof unprofiled)[0]["guestAppearances"][0]["episode"];
+  const episodeMap = new Map<string, EpRow>();
   for (const person of unprofiled) {
     for (const g of person.guestAppearances) {
       if (!episodeMap.has(g.episode.id)) episodeMap.set(g.episode.id, g.episode);
@@ -102,6 +103,7 @@ export default async function TheRestPage() {
       <PageHero
         title="THE REST"
         subtitle="Every guest, unknown, and passing voice"
+        backgroundImage="/wiki-page-header.jpg"
         label="voices · archive"
       />
 
@@ -159,14 +161,14 @@ export default async function TheRestPage() {
         <SectionCard title="Codex Entry">
           <p className="text-sm text-text-primary leading-relaxed mb-3">
             Not every voice that entered the Cult of Psyche stream left a name. Not every
-            name left a story. The Rest is the archive's acknowledgment of that — a
+            name left a story. The Rest is the archive&apos;s acknowledgment of that — a
             collective entry for the {unprofiled.length.toLocaleString()} guests,
             one-time speakers, and mentioned figures who passed through without accumulating
             enough of a footprint to justify a standalone profile.
           </p>
           <p className="text-sm text-text-primary leading-relaxed mb-3">
             Their appearances are real. Their moments in the transcript are real. But the
-            archive's function is to surface signal, not to maintain stubs. When a voice
+            archive&apos;s function is to surface signal, not to maintain stubs. When a voice
             becomes distinct enough to require its own entry — through recurring appearances,
             a developed lore connection, or a notable moment — it gets promoted out of
             this page. Until then: this is where they live.
@@ -253,7 +255,7 @@ export default async function TheRestPage() {
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {recentEpisodes.map((ep) => (
-                <EpisodeListItem key={ep.id} episode={ep} />
+                <EpisodeListItem key={ep.id} {...ep} />
               ))}
             </div>
           </SectionCard>

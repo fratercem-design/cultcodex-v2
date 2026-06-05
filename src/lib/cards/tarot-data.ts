@@ -115,7 +115,6 @@ export const MAJOR_ARCANA: TarotCard[] = [
 ];
 
 // ── Minor Arcana helpers ──────────────────────────────────────────────────────
-const ROMAN = ["I","II","III","IV","V","VI","VII","VIII","IX","X"];
 const RANK  = ["ACE","TWO","THREE","FOUR","FIVE","SIX","SEVEN","EIGHT","NINE","TEN"];
 
 type SuitDef = {

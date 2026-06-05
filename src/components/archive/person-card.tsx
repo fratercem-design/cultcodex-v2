@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PersonSigil } from "@/components/ui/person-sigil";
 import type { PersonType } from "@/generated/prisma/client";
@@ -41,9 +42,12 @@ export function PersonCard({ person }: PersonCardProps) {
       className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated"
     >
       {person.avatarUrl ? (
-        <img
+        <Image
           src={person.avatarUrl}
           alt={person.displayName}
+          width={40}
+          height={40}
+          unoptimized
           className="h-10 w-10 flex-shrink-0 rounded-full object-cover border border-accent-gold/20"
         />
       ) : (
