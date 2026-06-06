@@ -2,11 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+function getOpenRouterClient(): OpenAI {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) throw new Error("OPENROUTER_API_KEY not set");
+  const baseURL = process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
+  return new OpenAI({ apiKey, baseURL, defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" } });
+}
 
 const SYSTEM_PROMPT = `You are the Archivist of the Psychenomicon.
 
@@ -253,18 +261,19 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
   "threads": [{"title": "thread title", "description": "what this thread tracks", "status": "active|emerging|resolved"}]
 }`;
 
-  const message = await callAnthropicWithRetry({
-    model: "claude-opus-4-8",
+  // Use Bluesminds/OpenRouter (gemini-3.5-flash) — Anthropic credits exhausted
+  const client = getOpenRouterClient();
+  const model = process.env.ENRICHMENT_MODEL ?? "gemini-3.5-flash";
+  console.log("[psychenomicon] using openrouter, model:", model, "baseURL:", process.env.OPENROUTER_BASE_URL);
+  const completion = await client.chat.completions.create({
+    model,
     max_tokens: 8000,
-    thinking: { type: "adaptive" },
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userPrompt }],
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: userPrompt },
+    ],
   });
-
-  const rawText = message.content
-    .filter((b) => b.type === "text")
-    .map((b) => (b as { type: "text"; text: string }).text)
-    .join("");
+  const rawText = completion.choices[0]?.message?.content?.trim() ?? "";
 
   let generated: GeneratedChapter;
   try {
@@ -272,9 +281,8 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
     const cleaned = rawText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
     generated = JSON.parse(cleaned) as GeneratedChapter;
   } catch {
-    const stopReason = message.stop_reason;
     return NextResponse.json(
-      { error: `Model returned invalid JSON (stop_reason: ${stopReason})`, raw: rawText.slice(0, 2000) },
+      { error: `Model returned invalid JSON`, raw: rawText.slice(0, 2000) },
       { status: 502 }
     );
   }
