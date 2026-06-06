@@ -76,28 +76,36 @@ QUALITY SUFFIX (append to every prompt):
 ${QUALITY_SUFFIX}
 `.trim();
 
-  const response = await client.messages.create({
-    model: "claude-opus-4-7",
-    max_tokens: 3000,
-    system: PROMPT_SYSTEM,
-    messages: [
-      {
-        role: "user",
-        content: `Generate four cinematic image prompts for this chapter briefing:\n\n${briefing}`,
-      },
-    ],
-  });
+  const userMessage = `Generate four cinematic image prompts for this chapter briefing:\n\n${briefing}`;
 
-  const text =
-    response.content[0].type === "text" ? response.content[0].text : "";
-  const cleaned = text.replace(/^```json\s*/i, "").replace(/```\s*$/, "").trim();
+  let parsed: ChapterPrompts | undefined;
+  let lastError = "";
 
-  let parsed: ChapterPrompts;
-  try {
-    parsed = JSON.parse(cleaned) as ChapterPrompts;
-  } catch {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const response = await client.messages.create({
+      model: "claude-opus-4-7",
+      max_tokens: 6000,
+      system: PROMPT_SYSTEM,
+      messages: [{ role: "user", content: userMessage }],
+    });
+
+    const text =
+      response.content[0].type === "text" ? response.content[0].text : "";
+    // Strip markdown code fences if present
+    const cleaned = text.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "").trim();
+
+    try {
+      parsed = JSON.parse(cleaned) as ChapterPrompts;
+      break;
+    } catch {
+      lastError = `attempt ${attempt}: ${text.slice(0, 200)}`;
+      if (attempt < 3) await new Promise((r) => setTimeout(r, 2000));
+    }
+  }
+
+  if (!parsed) {
     throw new Error(
-      `Claude returned invalid JSON for prompts (chapter: ${analysis.slug}):\n${text.slice(0, 500)}`
+      `Claude returned invalid JSON for prompts after 3 attempts (chapter: ${analysis.slug}):\n${lastError}`
     );
   }
 

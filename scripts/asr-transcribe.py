@@ -24,6 +24,12 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -182,12 +188,32 @@ def transcribe_whisper(mp3_path: str, model_name: str):
     ]
 
 
+# ─── faster-whisper backend ────────────────────────────────────────────
+
+_FASTER_MODEL = None
+def transcribe_faster_whisper(mp3_path: str, model_name: str):
+    global _FASTER_MODEL
+    if _FASTER_MODEL is None:
+        from faster_whisper import WhisperModel  # type: ignore
+        log(f"Loading faster-whisper {model_name} model...")
+        _FASTER_MODEL = WhisperModel(model_name, device="cpu", compute_type="int8")
+    segments, _ = _FASTER_MODEL.transcribe(mp3_path, language="en", beam_size=5)
+    return [
+        {
+            "offset": int(seg.start * 1000),
+            "duration": int((seg.end - seg.start) * 1000),
+            "text": seg.text.strip(),
+        }
+        for seg in segments
+    ]
+
+
 # ─── Main ──────────────────────────────────────────────────────────────
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--batch", type=int, default=999)
-    parser.add_argument("--backend", choices=["elevenlabs", "whisper"], default="elevenlabs")
+    parser.add_argument("--backend", choices=["elevenlabs", "whisper", "faster-whisper"], default="elevenlabs")
     parser.add_argument("--whisper-model", default="medium")
     parser.add_argument("--overwrite", action="store_true",
                         help="Re-transcribe even if transcript already exists")
@@ -227,6 +253,8 @@ def main() -> int:
         try:
             if args.backend == "elevenlabs":
                 segments = transcribe_elevenlabs(mp3_path)
+            elif args.backend == "faster-whisper":
+                segments = transcribe_faster_whisper(mp3_path, args.whisper_model)
             else:
                 segments = transcribe_whisper(mp3_path, args.whisper_model)
 
