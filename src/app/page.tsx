@@ -34,13 +34,13 @@ export const revalidate = 300;
 
 export const metadata = {
   alternates: { canonical: "/" },
-  title: "CultCodex — Decode Cult of Psyche | 2,600+ Episodes Archived",
+  title: "CultCodex — Decode Cult of Psyche | Live Since October 2024",
   description:
-    "The definitive archive of Cult of Psyche. 2,600+ transmissions with AI psychological breakdowns, guest profiles, topic signals, behavioral pattern maps, and growing transcript coverage.",
+    "The definitive archive of Cult of Psyche — live streaming since October 2024. AI psychological breakdowns, guest profiles, topic signals, behavioral pattern maps, and full transcript coverage.",
   openGraph: {
     title: "CultCodex — Decode Cult of Psyche",
     description:
-      "2,600+ conversations indexed. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
+      "Every Cult of Psyche transmission indexed. Psychological patterns, behavioral archetypes, guest profiles, and searchable transcripts — live since October 2024.",
     type: "website" as const,
     url: "/",
   },
@@ -48,7 +48,7 @@ export const metadata = {
     card: "summary_large_image" as const,
     title: "CultCodex — Decode Cult of Psyche",
     description:
-      "AI breakdowns, guest profiles, behavioral maps, and growing transcript coverage for every Cult of Psyche episode.",
+      "AI breakdowns, guest profiles, behavioral maps, and full transcript coverage for every Cult of Psyche live stream.",
   },
 };
 

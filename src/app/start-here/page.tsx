@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/start-here" },
   title: "Start Here — CULT CODEX",
   description:
-    "Cult of Psyche is a livestream show exploring consciousness, the occult, AI, and human behavior. CultCodex is the structured archive of everything that happened — 2,500+ transmissions, every word indexed, every pattern extracted.",
+    "Cult of Psyche is a live streaming show — back since October 2024 after years away. CultCodex is the structured archive of every transmission: every word indexed, every pattern extracted, every figure profiled.",
 };
 
 const DOORWAYS = [
@@ -70,7 +70,7 @@ const DOORWAYS = [
     title: "Lore Archive",
     question: "What keeps getting referenced?",
     description:
-      "Running myths, recurring entities, cult in-jokes, and the growing mythology the archive has catalogued across 2,600+ transmissions.",
+      "Running myths, recurring entities, cult in-jokes, and the growing mythology the archive has catalogued since the show's return.",
     href: "/lore",
     accent: "cyan" as const,
   },
@@ -177,15 +177,15 @@ export default async function StartHerePage() {
 
         <div className="space-y-4 text-left rounded-2xl border border-border bg-surface p-7">
           <p className="text-sm text-text-muted leading-relaxed">
-            <span className="text-text-primary font-semibold">Cult of Psyche is a livestream show.</span>{" "}
+            <span className="text-text-primary font-semibold">Cult of Psyche is a live streaming show.</span>{" "}
             Unscripted, unfiltered panels between a host and rotating guests — exploring consciousness,
             the occult, AI, human psychology, and whatever was happening that day. No script.
             No editorial filter. Just the conversation and wherever it went.
           </p>
           <p className="text-sm text-text-muted leading-relaxed">
-            It ran for years. Thousands of conversations. The community that formed around it
-            became part of the content — guests became recurring figures, dynamics became lore,
-            conflicts became mythology.
+            The show went dark for years. It came back in October 2024 — live streaming, rotating
+            guests, the same format, a different frequency. Guests became recurring figures, dynamics
+            became lore, conflicts became mythology.
           </p>
           <p className="text-sm text-text-muted leading-relaxed">
             <span className="text-accent-gold font-semibold">CultCodex is what that became.</span>{" "}
