@@ -86,6 +86,8 @@ model Episode {
   /** Set by an admin after manually reading and verifying the AI summary */
   isHumanReviewed Boolean       @default(false)
   humanReviewedAt DateTime?
+  /** Manually queued by admin for (re-)enrichment even if summaryLong already exists */
+  enrichmentQueued Boolean      @default(false)
   series          Series?       @relation(fields: [seriesId], references: [id])
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt

@@ -164,6 +164,8 @@ async function importEnrichment(
         ? { summaryLong: data.summaryLong }
         : {}),
       cutOfPsyche: data.cutOfPsyche || undefined,
+      // Clear the manual queue flag after successful enrichment
+      enrichmentQueued: false,
     },
   });
 
@@ -271,21 +273,28 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({})) as {
     batch?: number;
     withTranscriptOnly?: boolean;
+    queuedOnly?: boolean;
   };
   const batchSize: number = Math.min(body.batch ?? 3, 10);
   const withTranscriptOnly: boolean = body.withTranscriptOnly ?? false;
+  const queuedOnly: boolean = body.queuedOnly ?? false;
 
-  // Find unenriched episodes — must have no summaryShort, summaryFacts, OR summaryLong.
-  // (New enrichments write summaryFacts/summaryShort, not summaryLong, so checking
-  //  only summaryLong causes already-enriched episodes to be re-processed endlessly.)
-  const whereClause = {
-    AND: [
-      { OR: [{ summaryShort: null }, { summaryShort: "" }] },
-      { OR: [{ summaryFacts: null }, { summaryFacts: "" }] },
-      { OR: [{ summaryLong: null }, { summaryLong: "" }] },
-    ],
-    ...(withTranscriptOnly ? { segments: { some: {} } } : {}),
-  };
+  // Find episodes to enrich.
+  // queuedOnly=true: process ONLY enrichmentQueued=true episodes (regardless of existing summaries — for re-enrichment)
+  // default: unenriched episodes (no summaryShort, summaryFacts, OR summaryLong)
+  const whereClause = queuedOnly
+    ? {
+        enrichmentQueued: true,
+        ...(withTranscriptOnly ? { segments: { some: {} } } : {}),
+      }
+    : {
+        AND: [
+          { OR: [{ summaryShort: null }, { summaryShort: "" }] },
+          { OR: [{ summaryFacts: null }, { summaryFacts: "" }] },
+          { OR: [{ summaryLong: null }, { summaryLong: "" }] },
+        ],
+        ...(withTranscriptOnly ? { segments: { some: {} } } : {}),
+      };
 
   const totalRemaining = await prisma.episode.count({ where: whereClause });
 

@@ -148,7 +148,7 @@ export function SyncPanel({
     }
   }
 
-  async function handleEnrichEpisodes(loop = false, withTranscriptOnly = true) {
+  async function handleEnrichEpisodes(loop = false, withTranscriptOnly = true, queuedOnly = false) {
     setEnrichEpLoading(true);
     setEnrichEpResult(null);
     setEnrichEpProgress(null);
@@ -159,7 +159,7 @@ export function SyncPanel({
         const res = await fetch("/api/admin/enrich-episodes", {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-enrich-secret": enrichSecret },
-          body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly }),
+          body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly, queuedOnly }),
         });
         const data = await res.json() as typeof enrichEpResult & { remaining?: number; done?: boolean };
         if (!res.ok || !data?.ok) {
@@ -456,6 +456,14 @@ export function SyncPanel({
             title="Generates title-only summaries for episodes with no transcript (Shorts, live streams, etc.)"
           >
             ↻ Enrich no-transcript episodes (title only)
+          </button>
+          <button
+            onClick={() => handleEnrichEpisodes(true, false, true)}
+            disabled={enrichEpLoading}
+            className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/40 bg-accent-gold/5 hover:bg-accent-gold/15 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-accent-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Re-enriches all manually queued episodes, even if they already have summaries"
+          >
+            ⚡ Run enrichment queue (manual)
           </button>
           {enrichEpResult && (
             <div className={`rounded border px-4 py-3 space-y-2 ${enrichEpResult.ok ? "border-accent-gold/30 bg-accent-gold/5" : "border-red-500/30 bg-red-500/5"}`}>
