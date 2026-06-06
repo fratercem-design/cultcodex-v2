@@ -87,6 +87,7 @@ export default async function SyncPage() {
       <SyncPanel
         withoutTranscript={withoutTranscript}
         unenrichedEpisodes={unenrichedEpisodes}
+        enrichmentQueued={enrichmentQueued}
         unenrichedPeople={unenrichedPeople}
         enrichSecret={enrichSecret}
       />
