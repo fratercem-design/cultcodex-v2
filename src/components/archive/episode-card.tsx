@@ -27,18 +27,19 @@ export function EpisodeCard({ episode, hideDescription = false }: EpisodeCardPro
       href={`/episodes/${episode.slug}`}
       className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated"
     >
-      {episode.thumbnailUrl ? (
-        <Image
-          src={episode.thumbnailUrl}
-          alt=""
-          width={64}
-          height={64}
-          unoptimized
-          className="h-16 w-16 flex-shrink-0 rounded object-cover"
-        />
-      ) : (
-        <div className="h-16 w-16 flex-shrink-0 rounded bg-gradient-to-br from-accent-gold/10 to-accent-violet/10" />
-      )}
+      {/* 16:9 thumbnail — matches YouTube aspect ratio */}
+      <div className="relative h-[63px] w-[112px] flex-shrink-0 rounded overflow-hidden bg-gradient-to-br from-accent-gold/10 to-accent-violet/10">
+        {episode.thumbnailUrl && (
+          <Image
+            src={episode.thumbnailUrl}
+            alt=""
+            fill
+            unoptimized
+            sizes="112px"
+            className="object-cover"
+          />
+        )}
+      </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-1">
           {epNum && (
@@ -55,7 +56,7 @@ export function EpisodeCard({ episode, hideDescription = false }: EpisodeCardPro
             </time>
           )}
         </div>
-        <h2 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors truncate">
+        <h2 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
           {episode.title}
         </h2>
         {!hideDescription && episode.summaryShort && (

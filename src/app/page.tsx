@@ -22,6 +22,13 @@ import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { EmailCapture } from "@/components/marketing/email-capture";
 import { jsonLdScript, organizationJsonLd } from "@/lib/seo";
+import {
+  IconTransmission,
+  IconPerson,
+  IconScroll,
+  IconRecurring,
+  IconLink,
+} from "@/components/graphics/codex-icons";
 
 export const revalidate = 300;
 
@@ -177,24 +184,51 @@ export default async function HomePage() {
 
         <div className="mx-auto max-w-7xl px-4 py-10 space-y-12">
 
-          {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}
-          <EmailCapture source="homepage" />
-
           {/* ── SECTION NAV ──────────────────────────────────────────── */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {([
-              { href: "/episodes",       icon: "📺", label: "Episodes",         count: stats.episodes.toLocaleString(),    accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
-              { href: "/people",         icon: "👁",  label: "People",           count: stats.people.toLocaleString(),      accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5 group-hover:text-accent-cyan" },
-              { href: "/symbols",        icon: "✦",  label: "Symbol Codex",     count: "esoteric encyclopedia",            accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
-              { href: "/archetype-quiz", icon: "◈",  label: "Archetype Quiz",   count: "discover your archetype",          accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
-              { href: "/graph",          icon: "🕸️", label: "Network Map",      count: "relationship graph",               accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
-            ] as const).map((item) => (
+              {
+                href: "/episodes",
+                icon: <IconTransmission size={22} className="text-accent-gold" />,
+                label: "Episodes",
+                count: `${stats.episodes.toLocaleString()} transmissions`,
+                accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
+              },
+              {
+                href: "/people",
+                icon: <IconPerson size={22} className="text-accent-cyan" />,
+                label: "People",
+                count: `${stats.people.toLocaleString()} profiled`,
+                accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5",
+              },
+              {
+                href: "/symbols",
+                icon: <IconScroll size={22} className="text-accent-gold" />,
+                label: "Symbol Codex",
+                count: "esoteric encyclopedia",
+                accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
+              },
+              {
+                href: "/archetype-quiz",
+                icon: <IconRecurring size={22} className="text-accent-violet" />,
+                label: "Archetype Quiz",
+                count: "find your pattern",
+                accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5",
+              },
+              {
+                href: "/graph",
+                icon: <IconLink size={22} className="text-accent-violet" />,
+                label: "Network Map",
+                count: "relationship graph",
+                accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5",
+              },
+            ]).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={`group flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-4 transition-all ${item.accent}`}
               >
-                <span className="text-xl flex-shrink-0">{item.icon}</span>
+                <span className="flex-shrink-0">{item.icon}</span>
                 <div className="min-w-0">
                   <p className="font-mono text-xs font-bold text-text-primary truncate">{item.label}</p>
                   <p className="font-mono text-[10px] text-text-muted truncate">{item.count}</p>

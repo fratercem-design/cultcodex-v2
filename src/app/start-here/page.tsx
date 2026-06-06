@@ -6,6 +6,7 @@ import {
   IconTarot,
   IconPerson,
   IconMicrophone,
+  IconScroll,
 } from "@/components/graphics/codex-icons";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { getCounts } from "@/lib/queries/stats";
@@ -63,6 +64,15 @@ const DOORWAYS = [
       "Open panels, Troll Tribunal, legendary guests, chaos streams. Where the script gets thrown out and the cult does what it does best.",
     href: "/collections/wild-conversations",
     accent: "gold" as const,
+  },
+  {
+    icon: <IconScroll size={36} />,
+    title: "Lore Archive",
+    question: "What keeps getting referenced?",
+    description:
+      "Running myths, recurring entities, cult in-jokes, and the growing mythology the archive has catalogued across 2,600+ transmissions.",
+    href: "/lore",
+    accent: "cyan" as const,
   },
 ] as const;
 
@@ -247,7 +257,7 @@ export default async function StartHerePage() {
 
       <MysticalDivider />
 
-      {/* ── 3. Five doorways ── */}
+      {/* ── 3. Six doorways ── */}
       <section className="space-y-6">
         <div className="text-center space-y-1">
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
@@ -255,7 +265,7 @@ export default async function StartHerePage() {
           </p>
           <p className="font-display text-lg text-text-primary">Start with what&apos;s pulling on you.</p>
           <p className="font-mono text-xs text-text-muted max-w-md mx-auto">
-            Forget categories. These are the five territories the archive keeps returning to.
+            Forget categories. These are the six territories the archive keeps returning to.
             Pick the one that resonates right now.
           </p>
         </div>
