@@ -136,14 +136,12 @@ export default async function ReportsPage() {
                       </div>
                     </div>
                     <p className={`mt-3 font-mono text-[10px] uppercase tracking-widest ${hasAccess ? "text-accent-cyan/70" : "text-text-muted/40"}`}>
-                      {hasAccess ? "Open dossier →" : "🔒 Initiate+"}
+                      {hasAccess ? "Open report →" : "🔒 Initiate+"}
                     </p>
                   </div>
                 );
-                return hasAccess ? (
-                  <Link key={g.slug} href={`/people/${g.slug}`} className="block h-full">{card}</Link>
-                ) : (
-                  <div key={g.slug}>{card}</div>
+                return (
+                  <Link key={g.slug} href={`/reports/${g.slug}`} className="block h-full">{card}</Link>
                 );
               })}
             </div>

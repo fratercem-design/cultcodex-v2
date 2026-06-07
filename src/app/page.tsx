@@ -227,6 +227,20 @@ export default async function HomePage() {
                 count: "relationship graph",
                 accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5",
               },
+              {
+                href: "/explore",
+                icon: <IconScroll size={22} className="text-accent-cyan" />,
+                label: "Explore",
+                count: "tarot · occult · AI · more",
+                accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5",
+              },
+              {
+                href: "/reports",
+                icon: <IconTransmission size={22} className="text-accent-gold" />,
+                label: "Codex Reports",
+                count: "guest intelligence",
+                accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
+              },
             ]).map((item) => (
               <Link
                 key={item.href}
