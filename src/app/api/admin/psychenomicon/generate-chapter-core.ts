@@ -4,14 +4,7 @@
  * to avoid self-referencing HTTP fetches that fail on Railway.
  */
 import { prisma } from "@/lib/db";
-import OpenAI from "openai";
-
-function getOpenRouterClient(): OpenAI {
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey) throw new Error("OPENROUTER_API_KEY not set");
-  const baseURL = process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
-  return new OpenAI({ apiKey, baseURL, defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" } });
-}
+import { anthropic } from "@/lib/anthropic";
 
 const SYSTEM_PROMPT = `You are the Archivist of the Psychenomicon.
 
@@ -191,18 +184,17 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
   "threads": [{"title": "thread title", "description": "what this thread tracks", "status": "active|emerging|resolved"}]
 }`;
 
-  const client = getOpenRouterClient();
-  const model = process.env.ENRICHMENT_MODEL ?? "gemini-3.5-flash";
+  const model = process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8";
   console.log(`[psychenomicon] CH.${nextChapterNumber} — model: ${model}`);
 
-  const completion = await client.chat.completions.create({
-    model, max_tokens: 8000,
-    messages: [
-      { role: "system", content: SYSTEM_PROMPT },
-      { role: "user", content: userPrompt },
-    ],
+  const response = await anthropic.messages.create({
+    model,
+    max_tokens: 8000,
+    thinking: { type: "adaptive" },
+    system: SYSTEM_PROMPT,
+    messages: [{ role: "user", content: userPrompt }],
   });
-  const rawText = completion.choices[0]?.message?.content?.trim() ?? "";
+  const rawText = response.content.find((b) => b.type === "text")?.text?.trim() ?? "";
 
   let generated: GeneratedChapter;
   try {

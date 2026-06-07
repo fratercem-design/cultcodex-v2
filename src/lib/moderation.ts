@@ -1,6 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
-
-const anthropic = new Anthropic();
+import { anthropic } from "@/lib/anthropic";
 
 export async function moderateComment(
   content: string,

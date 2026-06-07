@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { globalSearch } from "@/lib/queries/search";
 import type { SearchFilters } from "@/lib/queries/search";

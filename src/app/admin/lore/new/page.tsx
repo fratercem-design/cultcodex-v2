@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { requireAdmin } from "@/lib/auth";
 import { AdminFormField } from "@/components/admin/admin-form-field";
 import { SlugField } from "@/components/admin/slug-field";

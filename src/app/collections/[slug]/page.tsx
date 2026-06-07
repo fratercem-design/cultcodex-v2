@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 /**
  * /collections/[slug] — Themed "Signal Pack" detail page.
  *

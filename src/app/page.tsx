@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -162,6 +164,8 @@ export default async function HomePage() {
               Unlock full access — $10/mo
             </Link>
           </div>
+
+          <EmailCapture compact source="hero" />
 
           <div className="w-full max-w-md">
             <SearchInput />

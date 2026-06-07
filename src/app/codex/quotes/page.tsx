@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 /**
  * /codex/quotes — full list of the user's saved quotes.
  *

@@ -10,6 +10,8 @@ interface EmailCaptureProps {
   /** Where the lead was captured — stored for future segmentation context. */
   source?: string;
   className?: string;
+  /** Compact inline variant for use inside hero sections — no card border/background. */
+  compact?: boolean;
 }
 
 /**
@@ -23,6 +25,7 @@ export function EmailCapture({
   subheading = "One transmission per week: the behavioral pattern that surfaced most, a recurring voice you've missed, and what the Oracle flagged — synthesized from the archive, not a recap.",
   source,
   className = "",
+  compact = false,
 }: EmailCaptureProps) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -42,7 +45,7 @@ export function EmailCapture({
       });
       if (res.ok) {
         setStatus("success");
-        setMessage("You're on the list. The archive will reach you.");
+        setMessage("You're in. The archive will reach you.");
         setEmail("");
       } else {
         setStatus("error");
@@ -52,6 +55,39 @@ export function EmailCapture({
       setStatus("error");
       setMessage("Network error. Try again.");
     }
+  }
+
+  if (compact) {
+    return (
+      <div className={`flex flex-col items-center gap-2 ${className}`}>
+        <p className="font-mono text-[10px] text-text-muted/60 uppercase tracking-widest">
+          Weekly signal drop — free
+        </p>
+        <form onSubmit={handleSubmit} className="flex w-full max-w-sm flex-col gap-2 sm:flex-row">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="your@email.com"
+            required
+            disabled={status === "loading" || status === "success"}
+            className="flex-1 rounded-lg border border-white/20 bg-black/40 px-4 py-2.5 font-mono text-sm text-white placeholder:text-white/30 focus:border-accent-gold/60 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 backdrop-blur-sm disabled:opacity-50"
+          />
+          <button
+            type="submit"
+            disabled={status === "loading" || status === "success"}
+            className="rounded-lg border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-sm font-bold text-accent-gold transition hover:bg-accent-gold/25 disabled:opacity-50 whitespace-nowrap"
+          >
+            {status === "loading" ? "…" : status === "success" ? "✓ Subscribed" : "Get the signal"}
+          </button>
+        </form>
+        {message && (
+          <p className={`font-mono text-[11px] ${status === "success" ? "text-accent-gold" : "text-red-400"}`}>
+            {message}
+          </p>
+        )}
+      </div>
+    );
   }
 
   return (

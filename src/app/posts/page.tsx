@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Suspense } from "react";
 import Image from "next/image";
 import { PageHero } from "@/components/ui/page-hero";

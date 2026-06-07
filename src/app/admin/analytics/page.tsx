@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { requireAdmin } from "@/lib/auth";
 import { AdminStatCard } from "@/components/admin/admin-stat-card";
 import { SectionCard } from "@/components/ui/section-card";

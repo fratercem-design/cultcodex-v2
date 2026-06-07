@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getCurrentUser } from "@/lib/auth";
 import { getUserDecks } from "@/lib/queries/cards";
 import { DecksList } from "./decks-list";

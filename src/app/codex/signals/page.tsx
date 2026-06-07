@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 /**
  * /codex/signals — full list of the user's saved topics.
  *

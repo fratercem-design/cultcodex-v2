@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getCurrentUser } from "@/lib/auth";
 import { getUserCollection, getUserCollectionStats } from "@/lib/queries/cards";
 import { CollectionView } from "./collection-view";
