@@ -528,23 +528,8 @@ export default async function HomePage() {
         </div>
       </main>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: jsonLdScript({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            name: "Cult Codex",
-            url: "https://cultcodex.me",
-            description: "A pattern intelligence system. 2,600+ conversations. Every soul. Every pattern — decoded.",
-            potentialAction: {
-              "@type": "SearchAction",
-              target: { "@type": "EntryPoint", urlTemplate: "https://cultcodex.me/search?q={search_term_string}" },
-              "query-input": "required name=search_term_string",
-            },
-          }),
-        }}
-      />
+      {/* WebSite + SearchAction JSON-LD is emitted once in the root layout —
+          avoid a second, conflicting WebSite block here. */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(organizationJsonLd()) }}

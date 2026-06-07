@@ -81,7 +81,11 @@ export const metadata: Metadata = {
   // every page inherit the homepage URL as its canonical, so Google treated
   // all routes as duplicates of `/`. Each page declares its own canonical.
   icons: {
-    icon: "/favicon.jpg",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.jpg" },
+    ],
+    shortcut: "/favicon.svg",
     apple: "/favicon.jpg",
   },
   openGraph: {
