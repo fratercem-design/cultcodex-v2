@@ -663,13 +663,8 @@ export async function POST(req: NextRequest) {
       error: errObj.error,
     });
     const lc = message.toLowerCase();
-    const userMsg = lc.includes("rate") || lc.includes("throttl") || lc.includes("limit")
-      ? "The Oracle is overwhelmed. Try again in a moment."
-      : lc.includes("access") || lc.includes("denied") || lc.includes("forbidden")
-      ? "Oracle model access not enabled — check AWS Bedrock console."
-      : lc.includes("not found") || lc.includes("resource") || lc.includes("model")
-      ? "Oracle model not found — check ORACLE_MODEL env var."
-      : "The Oracle could not be reached. Try again.";
+    // Surface raw error in response so we can diagnose — remove once working
+    const userMsg = `Bedrock error: ${message}`;
     return NextResponse.json(
       { ok: false, error: userMsg } satisfies OracleResponse,
       { status: 503 }
