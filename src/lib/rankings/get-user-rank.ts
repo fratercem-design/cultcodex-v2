@@ -27,6 +27,7 @@ export async function getUserRank(userId: string, isMember: boolean) {
     decks,
     ownedCards,
     signalProposals,
+    annotations,
     user,
   ] = await Promise.all([
     safeCount(prisma.favorite.count({ where: { userId } })),
@@ -40,6 +41,7 @@ export async function getUserRank(userId: string, isMember: boolean) {
     safeCount(prisma.deck.count({ where: { userId } })),
     safeCount(prisma.ownedCard.count({ where: { userId } })),
     safeCount(prisma.signalProposal.count({ where: { userId } })),
+    safeCount(prisma.annotation.count({ where: { userId, status: "approved" } })),
     prisma.codexUser
       .findUnique({ where: { id: userId }, select: { createdAt: true } })
       .catch(() => null),
@@ -61,6 +63,7 @@ export async function getUserRank(userId: string, isMember: boolean) {
     decks,
     ownedCards,
     signalProposals,
+    annotations,
     accountAgeDays,
     isMember,
   };

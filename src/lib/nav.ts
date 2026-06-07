@@ -46,6 +46,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { href: "/",             label: "OVERVIEW",      glyph: "▢", key: "1" },
       { href: "/episodes",     label: "ARCHIVE",       glyph: "▦", key: "2", countKey: "episodes" },
       { href: "/oracle",       label: "ORACLE",        glyph: "◉", key: "3" },
+      { href: "/reports",      label: "REPORTS",       glyph: "▦" },
       { href: "/topics",       label: "SIGNALS",       glyph: "◈", key: "4", countKey: "topics" },
       { href: "/people",       label: "VOICES",        glyph: "◐", key: "5", countKey: "people" },
       { href: "/graph",        label: "NETWORK MAP",   glyph: "✦", key: "6" },
@@ -76,7 +77,6 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     color: "var(--neon-4)",
     items: [
       { href: "/red-room",   label: "RED ROOM",    glyph: "◉" },
-      { href: "/reports",    label: "CODEX REPORTS", glyph: "▦" },
       { href: "/signals",    label: "SIGNAL LAB",  glyph: "◈" },
       { href: "/salon",      label: "THE SALON",   glyph: "◈" },
       { href: "/corrections",label: "CORRECTIONS", glyph: "▢" },

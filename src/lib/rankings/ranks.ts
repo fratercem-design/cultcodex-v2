@@ -77,6 +77,7 @@ export interface RankActivity {
   decks: number;
   ownedCards: number;
   signalProposals: number;
+  annotations: number;
   accountAgeDays: number;
   isMember: boolean;
 }
@@ -84,6 +85,7 @@ export interface RankActivity {
 /** Point value of each activity. Tuned so contribution > collection > reaction. */
 export const WEIGHTS = {
   signalProposal: 8, // contributing to the archive is worth the most
+  annotation: 6,     // approved community annotations — real contribution
   salonPost: 5,
   deck: 4,
   comment: 3,
@@ -112,6 +114,7 @@ export function scoreBreakdown(a: RankActivity): { total: number; lines: ScoreLi
   const agePoints = Math.min(a.accountAgeDays * WEIGHTS.perAgeDay, MAX_AGE_POINTS);
   const lines: ScoreLine[] = [
     { label: "Signal proposals", count: a.signalProposals, points: a.signalProposals * WEIGHTS.signalProposal },
+    { label: "Annotations (approved)", count: a.annotations, points: a.annotations * WEIGHTS.annotation },
     { label: "Salon posts", count: a.salonPosts, points: a.salonPosts * WEIGHTS.salonPost },
     { label: "Decks built", count: a.decks, points: a.decks * WEIGHTS.deck },
     { label: "Comments", count: a.comments, points: a.comments * WEIGHTS.comment },

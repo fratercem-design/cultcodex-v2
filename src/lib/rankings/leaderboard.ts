@@ -66,7 +66,17 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
 
   const d = prisma as unknown as Record<string, { groupBy: (a: unknown) => Promise<unknown> }>;
 
-  const [fav, st, sq, ss, er, qr, cc, sp, dk, oc, prop] = await Promise.all([
+  // Approved annotations only (separate where clause).
+  const countAnnotations = () =>
+    safeGroup(
+      d.annotation.groupBy({
+        by: ["userId"],
+        where: { userId: { in: ids }, status: "approved" },
+        _count: { _all: true },
+      }) as Promise<GroupRow[]>
+    );
+
+  const [fav, st, sq, ss, er, qr, cc, sp, dk, oc, prop, ann] = await Promise.all([
     countByUser(d.favorite),
     countByUser(d.savedTopic),
     countByUser(d.savedQuote),
@@ -78,12 +88,13 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
     countByUser(d.deck),
     countByUser(d.ownedCard),
     countByUser(d.signalProposal),
+    countAnnotations(),
   ]);
 
   const maps = {
     fav: toMap(fav), st: toMap(st), sq: toMap(sq), ss: toMap(ss),
     er: toMap(er), qr: toMap(qr), cc: toMap(cc), sp: toMap(sp),
-    dk: toMap(dk), oc: toMap(oc), prop: toMap(prop),
+    dk: toMap(dk), oc: toMap(oc), prop: toMap(prop), ann: toMap(ann),
   };
 
   const entries: LeaderboardEntry[] = members.map((m) => {
@@ -99,6 +110,7 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
       decks: maps.dk.get(m.id) ?? 0,
       ownedCards: maps.oc.get(m.id) ?? 0,
       signalProposals: maps.prop.get(m.id) ?? 0,
+      annotations: maps.ann.get(m.id) ?? 0,
       accountAgeDays: Math.max(0, (Date.now() - m.createdAt.getTime()) / 86_400_000),
       isMember: true,
     };
