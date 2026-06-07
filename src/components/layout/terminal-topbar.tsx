@@ -3,6 +3,7 @@ import { auth, type SessionWithCodex } from "@/lib/auth";
 import { UserMenu } from "@/components/auth/user-menu";
 import { SearchTrigger } from "@/components/search/search-trigger";
 import { TerminalPathSeg } from "@/components/layout/terminal-path-seg";
+import { CodexSigil } from "@/components/graphics/codex-sigil";
 
 /**
  * Terminal-style topbar (36px). Server component.
@@ -40,7 +41,7 @@ export async function TerminalTopBar() {
           letterSpacing: "0.12em",
         }}
       >
-        <span aria-hidden="true">◣</span>
+        <CodexSigil size={18} glow title="CultCodex sigil" />
         <span>CULTCODEX</span>
       </Link>
 

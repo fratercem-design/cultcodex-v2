@@ -15,6 +15,7 @@ import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
 import { getCounts } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
+import { CRTOverlay } from "@/components/graphics/crt-overlay";
 import { SkipLink } from "@/components/ui/skip-link";
 import { jsonLdScript } from "@/lib/seo";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -149,6 +150,7 @@ export default async function RootLayout({
           <TerminalStatusBar feedCount={counts.episodes} />
         </div>
         <ClientOverlays />
+        <CRTOverlay />
         {/* WebSite + SearchAction JSON-LD — enables sitelinks search box in Google */}
         <script
           type="application/ld+json"

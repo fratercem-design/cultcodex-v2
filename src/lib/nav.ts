@@ -58,6 +58,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     color: "var(--accent-cyan)",
     items: [
       { href: "/start-here",    label: "START HERE",    glyph: "↳" },
+      { href: "/explore",       label: "EXPLORE",       glyph: "◇" },
       { href: "/this-week",     label: "THIS WEEK",     glyph: "◑" },
       { href: "/symbols",       label: "SYMBOL CODEX",  glyph: "✦" },
       { href: "/lexicon",       label: "LEXICON",       glyph: "◈" },
