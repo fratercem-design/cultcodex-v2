@@ -12,6 +12,7 @@ import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
 import { DailyTransmission } from "@/components/home/daily-transmission";
 import { YouTubePlayer } from "@/components/home/youtube-player";
+import { TopAscenders } from "@/components/home/top-ascenders";
 import { getQuoteReactionCounts } from "@/lib/queries/quote-reactions";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -22,18 +23,25 @@ import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { EmailCapture } from "@/components/marketing/email-capture";
 import { jsonLdScript, organizationJsonLd } from "@/lib/seo";
+import {
+  IconTransmission,
+  IconPerson,
+  IconScroll,
+  IconRecurring,
+  IconLink,
+} from "@/components/graphics/codex-icons";
 
 export const revalidate = 300;
 
 export const metadata = {
   alternates: { canonical: "/" },
-  title: "CultCodex — Decode Cult of Psyche | 2,600+ Episodes Archived",
+  title: "CultCodex — The Archive of Cult of Psyche | Tarot, Consciousness & Open Panels",
   description:
-    "The definitive archive of Cult of Psyche. 2,600+ transmissions with AI psychological breakdowns, guest profiles, topic signals, behavioral pattern maps, and growing transcript coverage.",
+    "Cult of Psyche is a live, unscripted internet show — tarot, consciousness, spirituality, open-panel debates, and the strange edges of human behavior. CultCodex is its complete searchable archive: 2,600+ episodes with full transcripts, guest profiles, lore, and an AI Oracle.",
   openGraph: {
     title: "CultCodex — Decode Cult of Psyche",
     description:
-      "2,600+ conversations indexed. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
+      "Every Cult of Psyche transmission indexed. Psychological patterns, behavioral archetypes, guest profiles, and searchable transcripts — live since October 2024.",
     type: "website" as const,
     url: "/",
   },
@@ -41,7 +49,7 @@ export const metadata = {
     card: "summary_large_image" as const,
     title: "CultCodex — Decode Cult of Psyche",
     description:
-      "AI breakdowns, guest profiles, behavioral maps, and growing transcript coverage for every Cult of Psyche episode.",
+      "AI breakdowns, guest profiles, behavioral maps, and full transcript coverage for every Cult of Psyche live stream.",
   },
 };
 
@@ -125,15 +133,19 @@ export default async function HomePage() {
                 Every pattern — still decoding.
               </span>
             </h1>
-            <p className="font-mono text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
-              {stats.episodes.toLocaleString()}+ Cult of Psyche conversations. Full transcripts,
-              AI psychological breakdowns, and behavioral maps — all searchable.
+            {/* Plain-English "what is this" — leads with the show, then the archive */}
+            <p className="font-mono text-sm text-text-primary/90 max-w-xl mx-auto leading-relaxed">
+              <span className="text-white font-bold">Cult of Psyche</span> is a live, unscripted
+              internet show — tarot, consciousness, spirituality, open-panel debates, and the
+              strange edges of human behavior, broadcast since October 2024.
             </p>
           </div>
 
-          <p className="font-mono text-[11px] text-text-muted/70 max-w-lg mx-auto leading-relaxed">
-            Cult of Psyche is an unscripted livestream where consciousness, manipulation, and raw human behavior collide.
-            CultCodex is the complete intelligence archive of everything that happened.
+          <p className="font-mono text-[12px] text-text-muted max-w-lg mx-auto leading-relaxed">
+            <span className="text-accent-gold font-bold">CultCodex</span> is the complete searchable
+            archive: <span className="text-accent-cyan">{stats.episodes.toLocaleString()}+ episodes</span>{" "}
+            indexed — full transcripts, guest profiles, lore, and an AI Oracle that answers questions
+            from inside it all.
           </p>
 
           <div className="flex flex-col items-center gap-2">
@@ -177,24 +189,65 @@ export default async function HomePage() {
 
         <div className="mx-auto max-w-7xl px-4 py-10 space-y-12">
 
-          {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}
-          <EmailCapture source="homepage" />
-
           {/* ── SECTION NAV ──────────────────────────────────────────── */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {([
-              { href: "/episodes",       icon: "📺", label: "Episodes",         count: stats.episodes.toLocaleString(),    accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
-              { href: "/people",         icon: "👁",  label: "People",           count: stats.people.toLocaleString(),      accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5 group-hover:text-accent-cyan" },
-              { href: "/symbols",        icon: "✦",  label: "Symbol Codex",     count: "esoteric encyclopedia",            accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
-              { href: "/archetype-quiz", icon: "◈",  label: "Archetype Quiz",   count: "discover your archetype",          accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
-              { href: "/graph",          icon: "🕸️", label: "Network Map",      count: "relationship graph",               accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
-            ] as const).map((item) => (
+              {
+                href: "/episodes",
+                icon: <IconTransmission size={22} className="text-accent-gold" />,
+                label: "Episodes",
+                count: `${stats.episodes.toLocaleString()} transmissions`,
+                accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
+              },
+              {
+                href: "/people",
+                icon: <IconPerson size={22} className="text-accent-cyan" />,
+                label: "People",
+                count: `${stats.people.toLocaleString()} profiled`,
+                accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5",
+              },
+              {
+                href: "/symbols",
+                icon: <IconScroll size={22} className="text-accent-gold" />,
+                label: "Symbol Codex",
+                count: "esoteric encyclopedia",
+                accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
+              },
+              {
+                href: "/archetype-quiz",
+                icon: <IconRecurring size={22} className="text-accent-violet" />,
+                label: "Archetype Quiz",
+                count: "find your pattern",
+                accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5",
+              },
+              {
+                href: "/graph",
+                icon: <IconLink size={22} className="text-accent-violet" />,
+                label: "Network Map",
+                count: "relationship graph",
+                accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5",
+              },
+              {
+                href: "/explore",
+                icon: <IconScroll size={22} className="text-accent-cyan" />,
+                label: "Explore",
+                count: "tarot · occult · AI · more",
+                accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5",
+              },
+              {
+                href: "/reports",
+                icon: <IconTransmission size={22} className="text-accent-gold" />,
+                label: "Codex Reports",
+                count: "guest intelligence",
+                accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
+              },
+            ]).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={`group flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-4 transition-all ${item.accent}`}
               >
-                <span className="text-xl flex-shrink-0">{item.icon}</span>
+                <span className="flex-shrink-0">{item.icon}</span>
                 <div className="min-w-0">
                   <p className="font-mono text-xs font-bold text-text-primary truncate">{item.label}</p>
                   <p className="font-mono text-[10px] text-text-muted truncate">{item.count}</p>
@@ -258,6 +311,9 @@ export default async function HomePage() {
               Initiate+ · $10/mo · Answers cite actual episodes, transcripts, and lore
             </p>
           </div>
+
+          {/* ── TOP ASCENDERS ────────────────────────────────────────── */}
+          <TopAscenders />
 
           {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
           <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
@@ -445,7 +501,7 @@ export default async function HomePage() {
 
           {/* ── NEW VISITOR PATHWAY ──────────────────────────────────── */}
           <div className="rounded-xl border border-border bg-surface p-5 space-y-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">/// new here?</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">{"/// new here?"}</p>
             <div className="grid gap-2 sm:grid-cols-3">
               {([
                 { href: "/start-here",     label: "Start Here",       desc: "Guided entry points chosen by people who've gone deep", accent: "text-accent-gold border-accent-gold/30 hover:bg-accent-gold/5" },
@@ -472,23 +528,8 @@ export default async function HomePage() {
         </div>
       </main>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: jsonLdScript({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            name: "Cult Codex",
-            url: "https://cultcodex.me",
-            description: "A pattern intelligence system. 2,600+ conversations. Every soul. Every pattern — decoded.",
-            potentialAction: {
-              "@type": "SearchAction",
-              target: { "@type": "EntryPoint", urlTemplate: "https://cultcodex.me/search?q={search_term_string}" },
-              "query-input": "required name=search_term_string",
-            },
-          }),
-        }}
-      />
+      {/* WebSite + SearchAction JSON-LD is emitted once in the root layout —
+          avoid a second, conflicting WebSite block here. */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(organizationJsonLd()) }}

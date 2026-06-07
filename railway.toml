@@ -1,7 +1,8 @@
 [build]
-buildCommand = "npm run build:migrate"
+buildCommand = "npm run build"
 
 [deploy]
+preDeployCommand = "npx prisma migrate deploy"
 startCommand = "npm run start"
 healthcheckPath = "/"
 healthcheckTimeout = 300

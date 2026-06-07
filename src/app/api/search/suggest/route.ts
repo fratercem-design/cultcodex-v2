@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
+  const rl = rateLimit(`suggest:${clientKey(req)}`, { limit: 60, windowMs: 60_000 });
+  if (!rl.ok) return NextResponse.json([], { status: 429 });
+
   const q = req.nextUrl.searchParams.get("q")?.trim();
   if (!q || q.length < 2) return NextResponse.json([]);
 

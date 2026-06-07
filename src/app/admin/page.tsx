@@ -91,8 +91,9 @@ export default async function AdminDashboard() {
         <AdminStatCard icon="👤" label="People" value={stats.people} href="/admin/people" />
         <AdminStatCard icon="📜" label="Lore" value={stats.lore} href="/admin/lore" />
         <AdminStatCard icon="🏷️" label="Topics" value={stats.topics} href="/admin/topics" />
+        <AdminStatCard icon="📊" label="Segments" value={stats.segments} />
         <AdminStatCard icon="💬" label="Quotes" value={stats.quotes} />
-        <AdminStatCard icon="📝" label="Comments" value={0} href="/admin/comments" />
+        <AdminStatCard icon="⏱️" label="Hours" value={stats.totalHours} />
         <AdminStatCard
           icon={flaggedCount > 0 ? "⚠️" : "✅"}
           label="Flagged"

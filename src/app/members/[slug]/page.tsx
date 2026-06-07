@@ -7,6 +7,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { TradingCard } from "@/components/cards/trading-card";
 import type { TradingCardData } from "@/components/cards/trading-card";
 import { BANNER_THEMES } from "@/lib/codex-page";
+import { RankBadge } from "@/components/rank/rank-badge";
+import { getUserRank } from "@/lib/rankings/get-user-rank";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -120,6 +122,7 @@ export default async function MemberProfilePage({ params }: Props) {
   }
 
   const cards = member.codexShowCards ? await getMemberCards(member.id) : [];
+  const memberRank = await getUserRank(member.id, true).catch(() => null);
 
   const joinYear = new Date(member.createdAt).getFullYear();
   const joinMonth = new Date(member.createdAt).toLocaleDateString("en-US", { month: "long" });
@@ -222,6 +225,14 @@ export default async function MemberProfilePage({ params }: Props) {
             Member since {joinMonth} {joinYear}
           </p>
 
+          {memberRank && (
+            <div className="mt-3 flex items-center justify-center">
+              <Link href="/leaderboard" title={`${memberRank.score.toLocaleString()} codex score`}>
+                <RankBadge rank={memberRank.progress.current} size="sm" />
+              </Link>
+            </div>
+          )}
+
           {/* Social links */}
           {links.length > 0 && (
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
@@ -258,7 +269,7 @@ export default async function MemberProfilePage({ params }: Props) {
                 className="font-mono text-[10px] uppercase tracking-[0.3em] mb-3"
                 style={{ color: bannerTheme.accent + "80" }}
               >
-                /// about
+                {"/// about"}
               </p>
               <p className="font-mono text-sm leading-relaxed text-text-primary whitespace-pre-wrap">
                 {member.bio}
@@ -297,7 +308,7 @@ export default async function MemberProfilePage({ params }: Props) {
                   className="font-mono text-[10px] uppercase tracking-[0.3em]"
                   style={{ color: bannerTheme.accent + "80" }}
                 >
-                  /// card archive
+                  {"/// card archive"}
                 </p>
                 <div
                   className="flex-1 border-t"

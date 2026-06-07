@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { Resend } from "resend";
 import crypto from "crypto";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://cultcodex.me";
@@ -15,6 +16,16 @@ function getResend() {
 }
 
 export async function POST(req: NextRequest) {
+  // IP-level rate limit: 5 sends per minute per IP, independent of email.
+  // Prevents quota exhaustion by cycling through different addresses.
+  const ipRl = rateLimit(`magic-link-ip:${clientKey(req)}`, { limit: 5, windowMs: 60_000 });
+  if (!ipRl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait before trying again." },
+      { status: 429, headers: { "Retry-After": String(ipRl.retryAfterSec) } }
+    );
+  }
+
   let body: unknown;
   try {
     body = await req.json();
@@ -23,6 +34,14 @@ export async function POST(req: NextRequest) {
   }
 
   const { email, callbackUrl } = body as { email?: string; callbackUrl?: string };
+
+  // Validate callbackUrl server-side: only allow same-origin relative paths.
+  // This prevents open-redirect attacks where an attacker embeds an external
+  // URL in the magic link and the user is redirected there post-auth.
+  const safeCallback =
+    callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")
+      ? callbackUrl
+      : undefined;
 
   if (!email || typeof email !== "string") {
     return NextResponse.json({ error: "Email is required" }, { status: 400 });
@@ -57,7 +76,7 @@ export async function POST(req: NextRequest) {
   });
 
   const params = new URLSearchParams({ token, email: emailLower });
-  if (callbackUrl) params.set("callbackUrl", callbackUrl);
+  if (safeCallback) params.set("callbackUrl", safeCallback);
   const magicUrl = `${SITE_URL}/auth/verify?${params.toString()}`;
 
   const resend = getResend();

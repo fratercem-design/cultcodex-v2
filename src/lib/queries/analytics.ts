@@ -179,6 +179,85 @@ export async function getTopTopicsByEpisodes(limit = 15) {
     }));
 }
 
+export async function getBroadcastCalendar() {
+  // Episodes per day since Oct 2024
+  const since = new Date("2024-10-01");
+  const episodes = await prisma.episode.findMany({
+    where: { status: "published", airDate: { gte: since, not: null } },
+    select: { airDate: true },
+  });
+  const counts: Record<string, number> = {};
+  for (const ep of episodes) {
+    const key = ep.airDate!.toISOString().slice(0, 10);
+    counts[key] = (counts[key] ?? 0) + 1;
+  }
+  return counts; // { "2024-10-05": 3, ... }
+}
+
+export async function getTopGuestsByAppearances(limit = 20) {
+  const people = await prisma.person.findMany({
+    where: { guestAppearances: { some: {} } },
+    select: {
+      displayName: true,
+      slug: true,
+      _count: { select: { guestAppearances: true } },
+    },
+    orderBy: { guestAppearances: { _count: "desc" } },
+    take: limit,
+  });
+  return people.map((p) => ({
+    displayName: p.displayName,
+    slug: p.slug,
+    count: p._count.guestAppearances,
+  }));
+}
+
+export async function getTopicMonthlyTrend(topN = 6) {
+  // Get top N topics
+  const topTopics = await prisma.topic.findMany({
+    select: { id: true, title: true, slug: true, _count: { select: { episodes: true } } },
+    orderBy: { episodes: { _count: "desc" } },
+    take: topN,
+  });
+
+  // Get episode-topic joins for top topic IDs since Oct 2024
+  const topicIds = topTopics.map((t) => t.id);
+  const joins = await prisma.episodeTopic.findMany({
+    where: {
+      topicId: { in: topicIds },
+      episode: { status: "published", airDate: { gte: new Date("2024-10-01"), not: null } },
+    },
+    select: { topicId: true, episode: { select: { airDate: true } } },
+  });
+
+  // Build month → topic → count
+  const topicIdSet = new Set(topicIds);
+  const buckets: Record<string, Record<string, number>> = {};
+
+  for (const join of joins) {
+    const airDate = join.episode.airDate;
+    if (!airDate) continue;
+    const month = airDate.toISOString().slice(0, 7); // "2024-10"
+    if (!buckets[month]) buckets[month] = {};
+    if (topicIdSet.has(join.topicId)) {
+      buckets[month][join.topicId] = (buckets[month][join.topicId] ?? 0) + 1;
+    }
+  }
+
+  const months = Object.keys(buckets).sort();
+  const idToTitle: Record<string, string> = {};
+  for (const t of topTopics) idToTitle[t.id] = t.title;
+
+  return {
+    months: months.map((m) => {
+      const row: Record<string, string | number> = { month: m };
+      for (const t of topTopics) row[t.title] = buckets[m]?.[t.id] ?? 0;
+      return row;
+    }),
+    topics: topTopics.map((t) => ({ id: t.id, title: t.title, slug: t.slug })),
+  };
+}
+
 export async function getCanonBreakdown() {
   const entries = await prisma.loreEntry.groupBy({
     by: ["canonStatus"],

@@ -168,6 +168,7 @@ export default async function EpisodesPage({
                   airDate={ep.airDate}
                   summaryShort={ep.summaryShort}
                   thumbnailUrl={ep.thumbnailUrl}
+                  segmentCount={ep.segmentCount}
                 />
               ))}
             </div>

@@ -4,8 +4,9 @@ import { useEffect, useMemo, type CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ArchiveCounts } from "@/lib/queries/stats";
+
 import { NAV_GROUPS } from "@/lib/nav";
-import type { AccentKey, CountKey } from "@/lib/nav";
+import type { AccentKey } from "@/lib/nav";
 import type { LiveChannels } from "@/lib/queries/live-status";
 
 function isActive(href: string, pathname: string | null): boolean {
@@ -14,8 +15,10 @@ function isActive(href: string, pathname: string | null): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function accentColor(accent: AccentKey | undefined): string {
-  return accent === "neon-4" ? "var(--neon-4)" : "var(--term-fg-dim)";
+function accentColor(accent: AccentKey | undefined, fallback: string): string {
+  if (accent === "neon-4") return "var(--neon-4)";
+  if (accent === "neon") return "var(--neon)";
+  return fallback;
 }
 
 const badgeStyle: CSSProperties = {
@@ -96,27 +99,50 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
         borderRight: "1px solid var(--term-line)",
         backgroundColor: "var(--term-bg-1)",
         overflowY: "auto",
-        display: "flex",
-        flexDirection: "column",
         fontFamily: "var(--font-mono), 'JetBrains Mono', 'IBM Plex Mono', monospace",
       }}
       aria-label="Primary"
     >
       <nav style={{ flex: 1, padding: "12px 0" }}>
         {NAV_GROUPS.map((group) => (
-          <div key={group.title} style={{ marginBottom: 16 }}>
+          <div
+            key={group.title}
+            style={{
+              marginBottom: 16,
+              borderLeft: `2px solid ${group.color}`,
+              paddingLeft: 2,
+            }}
+          >
             <div
               style={{
-                fontSize: 10,
-                textTransform: "uppercase",
-                letterSpacing: "0.18em",
-                color: "var(--term-fg-faint)",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
                 padding: "0 14px",
                 marginBottom: 6,
               }}
             >
-              {"// "}
-              {group.title}
+              <span
+                aria-hidden="true"
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: 1,
+                  background: group.color,
+                  boxShadow: `0 0 6px ${group.color}`,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 10,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.18em",
+                  color: group.color,
+                  opacity: 0.85,
+                }}
+              >
+                {group.title}
+              </span>
             </div>
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {group.items.map((item) => {
@@ -127,7 +153,7 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
                   ? "var(--neon)"
                   : isLive
                   ? "rgba(239,68,68,0.9)"
-                  : accentColor(item.accent);
+                  : accentColor(item.accent, group.color);
 
                 const itemStyle: CSSProperties = {
                   display: "flex",
