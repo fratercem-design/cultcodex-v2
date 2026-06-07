@@ -618,7 +618,7 @@ export async function POST(req: NextRequest) {
     const client = getBedrockClient();
     // Use ORACLE_MODEL env var, or fall back to a widely-available cross-region profile.
     // Make sure this model has access ENABLED in AWS Console → Bedrock → Model access.
-    const model = process.env.ORACLE_MODEL ?? "us.anthropic.claude-3-5-sonnet-20241022-v2:0";
+    const model = process.env.ORACLE_MODEL ?? "anthropic.claude-3-5-sonnet-20241022-v2:0";
     console.log(`[oracle] invoking model: ${model}`);
     const completion = await client.messages.create({
       model,
