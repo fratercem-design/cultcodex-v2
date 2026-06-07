@@ -620,9 +620,9 @@ export async function POST(req: NextRequest) {
     // All models must be enabled in AWS Console → Bedrock → Model access.
     const modelPreference = [
       process.env.ORACLE_MODEL,
-      "anthropic.claude-3-5-sonnet-20241022-v2:0",
-      "anthropic.claude-3-5-haiku-20241022-v1:0",
-      "anthropic.claude-3-haiku-20240307-v1:0",
+      "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+      "us.anthropic.claude-3-5-haiku-20241022-v1:0",
+      "us.anthropic.claude-3-haiku-20240307-v1:0",
     ].filter(Boolean) as string[];
 
     let completion: Awaited<ReturnType<typeof client.messages.create>> | null = null;
