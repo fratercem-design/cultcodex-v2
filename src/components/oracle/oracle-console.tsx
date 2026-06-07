@@ -265,78 +265,29 @@ export function OracleConsole() {
 
       {/* ── Loading — flashing oracle portrait ── */}
       {state === "loading" && (
-        <>
-          <style>{`
-            @keyframes oracle-flash {
-              0%, 100% {
-                box-shadow:
-                  0 0 0 3px #9B6ED0,
-                  0 0 0 6px #5DB7D8,
-                  0 0 30px rgba(155,110,208,0.8),
-                  0 0 60px rgba(93,183,216,0.4);
-                opacity: 1;
-              }
-              50% {
-                box-shadow:
-                  0 0 0 3px rgba(155,110,208,0.3),
-                  0 0 0 6px rgba(93,183,216,0.15),
-                  0 0 10px rgba(155,110,208,0.2),
-                  0 0 20px rgba(93,183,216,0.1);
-                opacity: 0.75;
-              }
-            }
-            @keyframes oracle-ring-flash {
-              0%, 100% { opacity: 0.9; transform: scale(1); }
-              50% { opacity: 0.1; transform: scale(1.08); }
-            }
-          `}</style>
-          <div className="flex flex-col items-center gap-5 py-10">
-            <div className="relative flex items-center justify-center">
-              {/* Flashing rings */}
-              <div
-                className="absolute rounded-full border-2 border-accent-violet"
-                style={{
-                  width: 160, height: 160,
-                  animation: "oracle-ring-flash 0.8s ease-in-out infinite",
-                  animationDelay: "0s",
-                }}
+        <div className="flex flex-col items-center gap-5 py-10">
+          <div className="relative flex items-center justify-center">
+            {/* Flashing rings — defined in globals.css */}
+            <div className="absolute rounded-full border-2 border-accent-violet animate-oracle-ring"
+              style={{ width: 160, height: 160 }} />
+            <div className="absolute rounded-full border border-accent-cyan animate-oracle-ring"
+              style={{ width: 190, height: 190, animationDelay: "0.25s" }} />
+            <div className="absolute rounded-full border border-accent-violet/40 animate-oracle-ring"
+              style={{ width: 220, height: 220, animationDelay: "0.5s" }} />
+            {/* Oracle portrait — flashing glow */}
+            <div className="relative h-28 w-28 rounded-full overflow-hidden animate-oracle-flash">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/oracle-throne.jpg"
+                alt="The Oracle"
+                className="h-full w-full object-cover object-top"
               />
-              <div
-                className="absolute rounded-full border border-accent-cyan"
-                style={{
-                  width: 190, height: 190,
-                  animation: "oracle-ring-flash 0.8s ease-in-out infinite",
-                  animationDelay: "0.2s",
-                }}
-              />
-              <div
-                className="absolute rounded-full border border-accent-violet/40"
-                style={{
-                  width: 220, height: 220,
-                  animation: "oracle-ring-flash 0.8s ease-in-out infinite",
-                  animationDelay: "0.4s",
-                }}
-              />
-              {/* Oracle portrait — flashing glow */}
-              <div
-                className="relative h-28 w-28 rounded-full overflow-hidden"
-                style={{
-                  animation: "oracle-flash 0.8s ease-in-out infinite",
-                }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/oracle-throne.jpg"
-                  alt="The Oracle"
-                  className="h-full w-full object-cover object-top"
-                />
-              </div>
             </div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-violet/50 animate-pulse">
-              searching_the_archive
-            </p>
           </div>
-        </>
+          <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-violet/50 animate-pulse">
+            searching_the_archive
+          </p>
+        </div>
       )}
 
       {/* ── Gated ── */}

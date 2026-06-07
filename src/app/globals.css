@@ -302,6 +302,35 @@ textarea:focus-visible {
 .animate-ring-pulse {
   animation: ringPulse 3s ease-in-out infinite;
 }
+
+@keyframes oracle-flash {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px #9B6ED0,
+      0 0 0 6px #5DB7D8,
+      0 0 30px rgba(155,110,208,0.8),
+      0 0 60px rgba(93,183,216,0.4);
+    opacity: 1;
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(155,110,208,0.3),
+      0 0 0 6px rgba(93,183,216,0.15),
+      0 0 10px rgba(155,110,208,0.2),
+      0 0 20px rgba(93,183,216,0.1);
+    opacity: 0.7;
+  }
+}
+@keyframes oracle-ring-flash {
+  0%, 100% { opacity: 0.9; transform: scale(1); }
+  50% { opacity: 0.08; transform: scale(1.1); }
+}
+.animate-oracle-flash {
+  animation: oracle-flash 0.75s ease-in-out infinite;
+}
+.animate-oracle-ring {
+  animation: oracle-ring-flash 0.75s ease-in-out infinite;
+}
 .animation-delay-150 {
   animation-delay: 150ms;
 }

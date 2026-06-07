@@ -616,21 +616,32 @@ export async function POST(req: NextRequest) {
   let answer: string;
   try {
     const client = getBedrockClient();
-    // Use ORACLE_MODEL env var, or fall back to a widely-available cross-region profile.
-    // Make sure this model has access ENABLED in AWS Console → Bedrock → Model access.
-    const model = process.env.ORACLE_MODEL ?? "anthropic.claude-3-5-sonnet-20241022-v2:0";
-    console.log(`[oracle] invoking model: ${model}`);
-    const completion = await client.messages.create({
-      model,
-      max_tokens: 400,
-      system: ORACLE_SYSTEM,
-      messages: [
-        {
-          role: "user",
-          content: `Archive context:\n${contextText}\n\n${contextPreamble}Question: ${question}`,
-        },
-      ],
-    });
+    // Try models in order until one works. Add ORACLE_MODEL to Railway to pin a specific model.
+    // All models must be enabled in AWS Console → Bedrock → Model access.
+    const modelPreference = [
+      process.env.ORACLE_MODEL,
+      "anthropic.claude-3-5-sonnet-20241022-v2:0",
+      "anthropic.claude-3-haiku-20240307-v1:0",
+    ].filter(Boolean) as string[];
+
+    let completion: Awaited<ReturnType<typeof client.messages.create>> | null = null;
+    let lastErr: unknown;
+    for (const model of modelPreference) {
+      try {
+        console.log(`[oracle] trying model: ${model}`);
+        completion = await client.messages.create({
+          model,
+          max_tokens: 400,
+          system: ORACLE_SYSTEM,
+          messages: [{ role: "user", content: `Archive context:\n${contextText}\n\n${contextPreamble}Question: ${question}` }],
+        });
+        break;
+      } catch (e) {
+        console.error(`[oracle] model ${model} failed:`, e instanceof Error ? e.message : e);
+        lastErr = e;
+      }
+    }
+    if (!completion) throw lastErr;
 
     const block = completion.content[0];
     const text = block?.type === "text" ? block.text.trim() : null;

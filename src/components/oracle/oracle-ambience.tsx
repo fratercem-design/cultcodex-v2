@@ -1,269 +1,142 @@
 "use client";
 
-/**
- * OracleAmbience
- *
- * Procedurally synthesized temple / new-age ambient music using the Web Audio API.
- * No external audio files — everything is generated:
- *   • A-minor pentatonic drone  (layered sine waves + slow LFO tremolo)
- *   • Singing-bowl bell melody  (triangle + detuned sine, long decay)
- *   • Cathedral reverb          (synthesized impulse response)
- *   • Soft delay echo           (for spaciousness)
- *
- * Floats fixed at bottom-left of the page.
- * First click unlocks the AudioContext (required by browser autoplay policy).
- */
-
 import { useState, useRef, useEffect } from "react";
 
-// A-minor pentatonic: A C D E G across several octaves
-const PENTATONIC_FREQS = [
-  55.0, 65.41, 73.42, 82.41, 98.0,       // A1 C2 D2 E2 G2
-  110.0, 130.81, 146.83, 164.81, 196.0,  // A2 C3 D3 E3 G3
-  220.0, 261.63, 293.66, 329.63, 392.0,  // A3 C4 D4 E4 G4
-  440.0, 523.25, 587.33, 659.25, 783.99, // A4 C5 D5 E5 G5
-  880.0, 1046.5,                          // A5 C6
-];
+// A-minor pentatonic, upper register — ethereal bell territory
+const NOTES = [220, 261.63, 293.66, 329.63, 392, 440, 523.25, 587.33, 659.25, 783.99];
 
-// Melody pool: upper 60% of the scale — keeps it ethereal
-const MELODY_POOL = PENTATONIC_FREQS.slice(8);
-
-// Build a synthetic reverb impulse response (decaying white noise)
-function buildReverb(ctx: AudioContext, duration = 3.5, decay = 3.0): ConvolverNode {
+function makeReverb(ctx: AudioContext): ConvolverNode {
   const conv = ctx.createConvolver();
-  const len = Math.floor(ctx.sampleRate * duration);
+  const len = ctx.sampleRate * 3;
   const buf = ctx.createBuffer(2, len, ctx.sampleRate);
-  for (let ch = 0; ch < 2; ch++) {
-    const data = buf.getChannelData(ch);
-    for (let i = 0; i < len; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
-    }
+  for (let c = 0; c < 2; c++) {
+    const d = buf.getChannelData(c);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5);
   }
   conv.buffer = buf;
   return conv;
 }
 
-// Play one singing-bowl note: triangle osc + detuned overtone, long exponential decay
-function playBell(
-  ctx: AudioContext,
-  dest: AudioNode,
-  freq: number,
-  peakGain = 0.07,
-  decaySec = 4.5
-) {
+function playBell(ctx: AudioContext, dest: AudioNode, freq: number) {
   const now = ctx.currentTime;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0, now);
+  g.gain.linearRampToValueAtTime(0.18, now + 0.03);
+  g.gain.exponentialRampToValueAtTime(0.0001, now + 5);
+  g.connect(dest);
 
-  // Fundamental — triangle for warmth
-  const osc1 = ctx.createOscillator();
-  const g1 = ctx.createGain();
-  osc1.type = "triangle";
-  osc1.frequency.value = freq;
-  g1.gain.setValueAtTime(0, now);
-  g1.gain.linearRampToValueAtTime(peakGain, now + 0.04);
-  g1.gain.exponentialRampToValueAtTime(0.0001, now + decaySec);
-  osc1.connect(g1);
-  g1.connect(dest);
-  osc1.start(now);
-  osc1.stop(now + decaySec + 0.1);
+  // Fundamental (triangle — warm bell body)
+  const o1 = ctx.createOscillator();
+  o1.type = "triangle";
+  o1.frequency.value = freq;
+  o1.connect(g);
+  o1.start(now);
+  o1.stop(now + 5.5);
 
-  // Overtone (2.756× — inharmonic, like a real bowl)
-  const osc2 = ctx.createOscillator();
+  // Inharmonic overtone (singing bowl quality)
+  const o2 = ctx.createOscillator();
+  o2.type = "sine";
+  o2.frequency.value = freq * 2.756;
   const g2 = ctx.createGain();
-  osc2.type = "sine";
-  osc2.frequency.value = freq * 2.756;
   g2.gain.setValueAtTime(0, now);
-  g2.gain.linearRampToValueAtTime(peakGain * 0.35, now + 0.02);
-  g2.gain.exponentialRampToValueAtTime(0.0001, now + decaySec * 0.6);
-  osc2.connect(g2);
+  g2.gain.linearRampToValueAtTime(0.07, now + 0.02);
+  g2.gain.exponentialRampToValueAtTime(0.0001, now + 3);
+  o2.connect(g2);
   g2.connect(dest);
-  osc2.start(now);
-  osc2.stop(now + decaySec * 0.7);
+  o2.start(now);
+  o2.stop(now + 3.5);
 }
 
 export function OracleAmbience() {
-  const [active, setActive] = useState(false);
-  const [started, setStarted] = useState(false);
-
+  const [on, setOn] = useState(false);
+  const [ready, setReady] = useState(false);
   const ctxRef = useRef<AudioContext | null>(null);
   const masterRef = useRef<GainNode | null>(null);
-  const droneOscsRef = useRef<OscillatorNode[]>([]);
-  const droneGainsRef = useRef<GainNode[]>([]);
-  const lfoOscsRef = useRef<OscillatorNode[]>([]);
-  const melodyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const oscRefs = useRef<OscillatorNode[]>([]);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // ── Build and start the audio graph ──────────────────────────────
-  function initAudio() {
+  function start() {
     const ctx = new AudioContext();
     ctxRef.current = ctx;
 
-    // Master gain (fades in/out)
     const master = ctx.createGain();
-    master.gain.value = 0;
+    master.gain.value = 0.9;
     masterRef.current = master;
 
-    // Reverb chain
-    const reverb = buildReverb(ctx);
-    const reverbGain = ctx.createGain();
-    reverbGain.gain.value = 0.55;
+    const reverb = makeReverb(ctx);
+    const rvGain = ctx.createGain();
+    rvGain.gain.value = 0.5;
 
-    // Delay echo (1/3 sec, feedback 0.35)
-    const delay = ctx.createDelay(2.0);
-    delay.delayTime.value = 0.33;
-    const delayFb = ctx.createGain();
-    delayFb.gain.value = 0.32;
-    const delayOut = ctx.createGain();
-    delayOut.gain.value = 0.3;
-
-    delay.connect(delayFb);
-    delayFb.connect(delay);
-    delay.connect(delayOut);
-    delayOut.connect(ctx.destination);
-
-    // Routing: master → reverb → out + delay
-    //          master → dry out
     master.connect(reverb);
-    reverb.connect(reverbGain);
-    reverbGain.connect(ctx.destination);
-    reverbGain.connect(delay);
+    reverb.connect(rvGain);
+    rvGain.connect(ctx.destination);
     master.connect(ctx.destination);
 
-    // ── Drone oscillators ──
-    // A minor: A2 + E3 + A3 (perfect fifth + octave)
-    const droneDefs: [number, OscillatorType, number][] = [
-      [110.0, "sine", 0.18],  // A2 — fundamental
-      [164.81, "sine", 0.09], // E3 — perfect fifth
-      [220.0, "sine", 0.07],  // A3 — octave
-      [55.0, "sine", 0.10],   // A1 — sub bass
-    ];
-
-    droneDefs.forEach(([freq, type, vol], i) => {
+    // Drone: A2 + E3 + A3
+    [[110, 0.20], [164.81, 0.10], [220, 0.08], [55, 0.12]].forEach(([freq, vol]) => {
       const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = type;
+      const g = ctx.createGain();
+      osc.type = "sine";
       osc.frequency.value = freq;
-      gain.gain.value = 0;
-
-      // Slow LFO tremolo
-      const lfo = ctx.createOscillator();
-      const lfoAmt = ctx.createGain();
-      lfo.frequency.value = 0.25 + i * 0.06;
-      lfoAmt.gain.value = vol * 0.25;
-      lfo.connect(lfoAmt);
-      lfoAmt.connect(gain.gain);
-      lfo.start();
-
-      osc.connect(gain);
-      gain.connect(master);
+      g.gain.setValueAtTime(0, ctx.currentTime);
+      g.gain.linearRampToValueAtTime(vol as number, ctx.currentTime + 4);
+      osc.connect(g);
+      g.connect(master);
       osc.start();
-
-      // Fade drone in slowly
-      gain.gain.setTargetAtTime(vol, ctx.currentTime, 3.0);
-
-      droneOscsRef.current.push(osc, lfo);
-      droneGainsRef.current.push(gain);
+      oscRefs.current.push(osc);
     });
 
-    // ── Melody loop ──
-    function scheduleNext() {
+    // Bell melody loop
+    function ring() {
       if (!ctxRef.current) return;
-
-      // Pick a random note, weighted toward mid-range
-      const idx = Math.floor(Math.random() * MELODY_POOL.length);
-      const freq = MELODY_POOL[idx];
-
-      // Occasionally play a chord interval (minor third above)
-      playBell(ctx, master, freq, 0.065, 5.0);
-      if (Math.random() < 0.35) {
-        playBell(ctx, master, freq * 1.189, 0.03, 4.0); // minor third
-      }
-
-      // Gap: 2–7 seconds
-      const gap = 2200 + Math.random() * 4800;
-      melodyTimerRef.current = setTimeout(scheduleNext, gap);
+      const freq = NOTES[Math.floor(Math.random() * NOTES.length)];
+      playBell(ctx, master, freq);
+      if (Math.random() < 0.4) playBell(ctx, master, freq * 1.5); // perfect fifth
+      timerRef.current = setTimeout(ring, 2000 + Math.random() * 5000);
     }
+    timerRef.current = setTimeout(ring, 1000);
 
-    // First note after 2s delay so drone establishes first
-    melodyTimerRef.current = setTimeout(scheduleNext, 2000);
-
-    // Fade master in
-    master.gain.setTargetAtTime(1.0, ctx.currentTime, 2.0);
-
-    setStarted(true);
-    setActive(true);
+    setReady(true);
+    setOn(true);
   }
 
-  // ── Toggle mute / unmute ──────────────────────────────────────────
   function toggle() {
-    if (!started) {
-      initAudio();
-      return;
-    }
-
-    const ctx = ctxRef.current;
+    if (!ready) { start(); return; }
     const master = masterRef.current;
-    if (!ctx || !master) return;
-
-    if (active) {
-      master.gain.setTargetAtTime(0, ctx.currentTime, 0.8);
-      setActive(false);
+    const ctx = ctxRef.current;
+    if (!master || !ctx) return;
+    if (on) {
+      master.gain.setTargetAtTime(0, ctx.currentTime, 0.5);
+      setOn(false);
     } else {
-      master.gain.setTargetAtTime(1.0, ctx.currentTime, 0.8);
-      setActive(true);
+      master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.5);
+      setOn(true);
     }
   }
 
-  // ── Cleanup on unmount ────────────────────────────────────────────
-  useEffect(() => {
-    return () => {
-      if (melodyTimerRef.current) clearTimeout(melodyTimerRef.current);
-      droneOscsRef.current.forEach((o) => { try { o.stop(); } catch {} });
-      ctxRef.current?.close();
-    };
+  useEffect(() => () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    oscRefs.current.forEach(o => { try { o.stop(); } catch {} });
+    ctxRef.current?.close();
   }, []);
 
   return (
     <button
       onClick={toggle}
-      title={active ? "Mute ambient music" : "Play ambient temple music"}
-      className="group fixed bottom-6 left-6 z-50 flex items-center gap-2.5 rounded-full border px-4 py-2.5 transition-all duration-500 focus:outline-none"
+      aria-label={on ? "Mute ambient music" : "Play ambient music"}
+      className="fixed bottom-6 left-6 z-50 flex items-center gap-2 rounded-full px-4 py-2.5 font-mono text-[11px] uppercase tracking-widest transition-all duration-300 focus:outline-none border"
       style={{
-        background: active
-          ? "radial-gradient(ellipse at 30% 40%, rgba(155,110,208,0.4) 0%, rgba(93,183,216,0.18) 60%, rgba(10,0,20,0.85) 100%)"
-          : "rgba(10, 0, 20, 0.85)",
-        borderColor: active ? "rgba(155,110,208,0.7)" : "rgba(155,110,208,0.35)",
-        boxShadow: active
-          ? "0 0 16px rgba(155,110,208,0.4), 0 0 40px rgba(93,183,216,0.15)"
-          : "0 0 6px rgba(155,110,208,0.1)",
-        backdropFilter: "blur(12px)",
+        background: on
+          ? "linear-gradient(135deg, rgba(155,110,208,0.3) 0%, rgba(93,183,216,0.15) 100%)"
+          : "rgba(8, 0, 18, 0.85)",
+        borderColor: on ? "rgba(155,110,208,0.7)" : "rgba(155,110,208,0.3)",
+        color: on ? "#9B6ED0" : "rgba(155,110,208,0.5)",
+        boxShadow: on ? "0 0 20px rgba(155,110,208,0.35)" : "none",
+        backdropFilter: "blur(10px)",
       }}
-      aria-label={active ? "Mute ambient music" : "Play ambient temple music"}
     >
-      {/* Pulsing ring when active */}
-      {active && (
-        <span
-          className="absolute inset-0 rounded-full animate-ping pointer-events-none"
-          style={{ border: "1px solid rgba(155,110,208,0.3)", animationDuration: "2.5s" }}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Icon */}
-      <span
-        className="relative text-lg leading-none transition-colors duration-300"
-        style={{ color: active ? "#9B6ED0" : "rgba(155,110,208,0.6)" }}
-        aria-hidden="true"
-      >
-        {active ? "♫" : "♪"}
-      </span>
-
-      {/* Label — always visible */}
-      <span
-        className="relative font-mono text-[10px] uppercase tracking-[0.2em] transition-colors duration-300"
-        style={{ color: active ? "rgba(155,110,208,0.9)" : "rgba(155,110,208,0.45)" }}
-      >
-        {active ? "ambient on" : "ambient"}
-      </span>
+      <span className="text-base">{on ? "♫" : "♪"}</span>
+      <span>{on ? "on" : "music"}</span>
     </button>
   );
 }
