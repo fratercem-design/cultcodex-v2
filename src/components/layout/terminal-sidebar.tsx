@@ -104,20 +104,44 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
     >
       <nav style={{ flex: 1, padding: "12px 0" }}>
         {NAV_GROUPS.map((group) => (
-          <div key={group.title} style={{ marginBottom: 16 }}>
+          <div
+            key={group.title}
+            style={{
+              marginBottom: 16,
+              borderLeft: `2px solid ${group.color}`,
+              paddingLeft: 2,
+            }}
+          >
             <div
               style={{
-                fontSize: 10,
-                textTransform: "uppercase",
-                letterSpacing: "0.18em",
-                color: group.color,
-                opacity: 0.5,
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
                 padding: "0 14px",
                 marginBottom: 6,
               }}
             >
-              {"// "}
-              {group.title}
+              <span
+                aria-hidden="true"
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: 1,
+                  background: group.color,
+                  boxShadow: `0 0 6px ${group.color}`,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 10,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.18em",
+                  color: group.color,
+                  opacity: 0.85,
+                }}
+              >
+                {group.title}
+              </span>
             </div>
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {group.items.map((item) => {

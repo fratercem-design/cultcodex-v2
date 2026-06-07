@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/page-hero";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { RankBadge } from "@/components/rank/rank-badge";
+import { RankUpToast } from "@/components/rank/rank-up-toast";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { getUserRank } from "@/lib/rankings/get-user-rank";
@@ -28,6 +29,7 @@ export default async function RankPage() {
 
   return (
     <>
+      {data && <RankUpToast currentRankId={data.progress.current.id} />}
       <PageHero
         title="THE RANKS"
         subtitle="Initiate · Adept · Oracle · Archivist"
