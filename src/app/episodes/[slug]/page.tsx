@@ -48,6 +48,7 @@ import { RandomEpisodeButton } from "@/components/archive/random-episode-button"
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
 import { ProvenanceBadge } from "@/components/ui/provenance-badge";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
+import { AnnotationSection } from "@/components/annotations/annotation-section";
 import { DataQualityBadge } from "@/components/ui/data-quality-badge";
 import { ColorLegend } from "@/components/ui/color-legend";
 import Link from "next/link";
@@ -544,15 +545,25 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   </div>
                 ),
                 discussion: (
-                  <SectionCard title={`Comments (${commentsData.totalCount})`}>
-                    <CommentSection
-                      slug={episode.slug}
-                      initialComments={JSON.parse(JSON.stringify(commentsData.comments))}
-                      initialTotalCount={commentsData.totalCount}
-                      isAuthenticated={!!user}
-                      currentUserId={user?.id}
-                    />
-                  </SectionCard>
+                  <div className="space-y-6">
+                    <SectionCard title={`Comments (${commentsData.totalCount})`}>
+                      <CommentSection
+                        slug={episode.slug}
+                        initialComments={JSON.parse(JSON.stringify(commentsData.comments))}
+                        initialTotalCount={commentsData.totalCount}
+                        isAuthenticated={!!user}
+                        currentUserId={user?.id}
+                      />
+                    </SectionCard>
+                    <SectionCard title="Community Annotations">
+                      <AnnotationSection
+                        targetType="episode"
+                        targetId={episode.slug}
+                        returnPath={`/episodes/${episode.slug}`}
+                        label="Connections, corrections, and context added by Initiate+ members."
+                      />
+                    </SectionCard>
+                  </div>
                 ),
               }}
             </EpisodeTabLayout>

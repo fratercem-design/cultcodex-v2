@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { href: "/admin/psychenomicon", label: "Psychenomicon", icon: "\u03C8" },
   { href: "/admin/users", label: "Users", icon: "\uD83D\uDC65" },
   { href: "/admin/signals", label: "Signals", icon: "\u25C8" },
+  { href: "/admin/annotations", label: "Annotations", icon: "\u270E" },
   { href: "/admin/sync", label: "Sync & Ingest", icon: "\u21BB" },
 ];
 

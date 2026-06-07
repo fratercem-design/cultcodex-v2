@@ -439,6 +439,7 @@ model CodexUser {
   salonPosts              SalonPost[]
   decks                   Deck[]
   signalProposals         SignalProposal[]
+  annotations             Annotation[]
 }
 
 model CodexSession {
@@ -1098,4 +1099,25 @@ model WeeklyDigest {
   updatedAt  DateTime @updatedAt
 
   @@index([weekOf])
+}
+
+// ─── Community Annotations ─────────────────────────────
+// Member-submitted notes/connections on archive entities. Submitted by
+// subscribers, displayed publicly once approved. Moderated at
+// /admin/annotations. targetId is the entity SLUG (stable, URL-aligned).
+model Annotation {
+  id         String   @id @default(cuid())
+  userId     String
+  user       CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetType String   // "episode" | "lore" | "person" | "topic"
+  targetId   String   // slug of the target entity
+  body       String   @db.Text
+  status     String   @default("pending") // pending | approved | hidden
+  votes      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([targetType, targetId, status])
+  @@index([userId])
+  @@index([status])
 }
