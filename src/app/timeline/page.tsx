@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { prisma } from "@/lib/db";
 import { PageHero } from "@/components/ui/page-hero";
 import { cleanTitle } from "@/lib/format/text";

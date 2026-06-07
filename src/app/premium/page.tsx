@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 /**
  * /premium — Identity ladder: Observer → Initiate+ → Oracle
  *
