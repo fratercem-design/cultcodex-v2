@@ -151,6 +151,8 @@ export default async function HomePage() {
             </Link>
           </div>
 
+          <EmailCapture compact source="hero" />
+
           <div className="w-full max-w-md">
             <SearchInput />
           </div>
@@ -176,9 +178,6 @@ export default async function HomePage() {
         </div>
 
         <div className="mx-auto max-w-7xl px-4 py-10 space-y-12">
-
-          {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}
-          <EmailCapture source="homepage" />
 
           {/* ── SECTION NAV ──────────────────────────────────────────── */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
