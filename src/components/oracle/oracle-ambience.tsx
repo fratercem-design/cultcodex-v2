@@ -187,7 +187,7 @@ export function OracleAmbience() {
     melodyTimerRef.current = setTimeout(scheduleNext, 2000);
 
     // Fade master in
-    master.gain.setTargetAtTime(0.75, ctx.currentTime, 2.0);
+    master.gain.setTargetAtTime(1.0, ctx.currentTime, 2.0);
 
     setStarted(true);
     setActive(true);
@@ -208,7 +208,7 @@ export function OracleAmbience() {
       master.gain.setTargetAtTime(0, ctx.currentTime, 0.8);
       setActive(false);
     } else {
-      master.gain.setTargetAtTime(0.75, ctx.currentTime, 0.8);
+      master.gain.setTargetAtTime(1.0, ctx.currentTime, 0.8);
       setActive(true);
     }
   }
@@ -226,16 +226,16 @@ export function OracleAmbience() {
     <button
       onClick={toggle}
       title={active ? "Mute ambient music" : "Play ambient temple music"}
-      className="group fixed bottom-6 left-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-500 focus:outline-none"
+      className="group fixed bottom-6 left-6 z-50 flex items-center gap-2.5 rounded-full border px-4 py-2.5 transition-all duration-500 focus:outline-none"
       style={{
         background: active
-          ? "radial-gradient(circle at 40% 40%, rgba(155,110,208,0.35) 0%, rgba(93,183,216,0.15) 60%, transparent 100%)"
-          : "rgba(10, 0, 20, 0.7)",
-        borderColor: active ? "rgba(155,110,208,0.6)" : "rgba(155,110,208,0.2)",
+          ? "radial-gradient(ellipse at 30% 40%, rgba(155,110,208,0.4) 0%, rgba(93,183,216,0.18) 60%, rgba(10,0,20,0.85) 100%)"
+          : "rgba(10, 0, 20, 0.85)",
+        borderColor: active ? "rgba(155,110,208,0.7)" : "rgba(155,110,208,0.35)",
         boxShadow: active
-          ? "0 0 0 0 transparent, 0 0 14px rgba(155,110,208,0.35), 0 0 30px rgba(93,183,216,0.12)"
-          : "none",
-        backdropFilter: "blur(8px)",
+          ? "0 0 16px rgba(155,110,208,0.4), 0 0 40px rgba(93,183,216,0.15)"
+          : "0 0 6px rgba(155,110,208,0.1)",
+        backdropFilter: "blur(12px)",
       }}
       aria-label={active ? "Mute ambient music" : "Play ambient temple music"}
     >
@@ -243,27 +243,26 @@ export function OracleAmbience() {
       {active && (
         <span
           className="absolute inset-0 rounded-full animate-ping pointer-events-none"
-          style={{
-            borderColor: "rgba(155,110,208,0.25)",
-            border: "1px solid",
-            animationDuration: "3s",
-          }}
+          style={{ border: "1px solid rgba(155,110,208,0.3)", animationDuration: "2.5s" }}
           aria-hidden="true"
         />
       )}
 
       {/* Icon */}
       <span
-        className="relative text-base transition-colors duration-300"
-        style={{ color: active ? "#9B6ED0" : "rgba(155,110,208,0.4)" }}
+        className="relative text-lg leading-none transition-colors duration-300"
+        style={{ color: active ? "#9B6ED0" : "rgba(155,110,208,0.6)" }}
         aria-hidden="true"
       >
         {active ? "♫" : "♪"}
       </span>
 
-      {/* Tooltip */}
-      <span className="pointer-events-none absolute left-12 whitespace-nowrap rounded-md border border-accent-violet/20 bg-black/80 px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest text-accent-violet/70 opacity-0 group-hover:opacity-100 transition-opacity duration-200 backdrop-blur-sm">
-        {active ? "mute music" : started ? "resume music" : "play ambient"}
+      {/* Label — always visible */}
+      <span
+        className="relative font-mono text-[10px] uppercase tracking-[0.2em] transition-colors duration-300"
+        style={{ color: active ? "rgba(155,110,208,0.9)" : "rgba(155,110,208,0.45)" }}
+      >
+        {active ? "ambient on" : "ambient"}
       </span>
     </button>
   );
