@@ -290,6 +290,7 @@ export default function DossierPage() {
 
             <div className="blueprint">
               <div className="blueprint__frame">
+                <div className="blueprint__title">// homepage.flow.v2</div>
                 <div className="blueprint__title">{"// homepage.flow.v2"}</div>
 
                 <div className="bp-section bp-section--threshold">

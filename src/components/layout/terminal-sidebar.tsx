@@ -4,6 +4,61 @@ import { useEffect, useMemo, type CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ArchiveCounts } from "@/lib/queries/stats";
+
+type AccentKey = "neon" | "neon-4";
+type CountKey = keyof Pick<ArchiveCounts, "episodes" | "topics" | "people">;
+
+interface NavItem {
+  readonly href: string;
+  readonly label: string;
+  readonly glyph: string;
+  readonly key?: string;
+  readonly countKey?: CountKey;
+  readonly accent?: AccentKey;
+}
+
+interface NavGroup {
+  readonly title: string;
+  readonly items: readonly NavItem[];
+}
+
+const NAV_GROUPS: readonly NavGroup[] = [
+  {
+    title: "MAIN",
+    items: [
+      { href: "/", label: "OVERVIEW", glyph: "▢", key: "1" },
+      { href: "/episodes", label: "ARCHIVE", glyph: "▦", key: "2", countKey: "episodes" },
+      { href: "/oracle", label: "ORACLE", glyph: "◉", key: "3" },
+      { href: "/topics", label: "SIGNALS", glyph: "◈", key: "4", countKey: "topics" },
+      { href: "/people", label: "VOICES", glyph: "◐", key: "5", countKey: "people" },
+      { href: "/graph", label: "NETWORK MAP", glyph: "✦", key: "6" },
+      { href: "/psychenomicon", label: "PSYCHENOMICON", glyph: "▲", key: "7" },
+      { href: "/collections", label: "COLLECTIONS", glyph: "▣", key: "8" },
+    ],
+  },
+  {
+    title: "COLLECT",
+    items: [
+      { href: "/cards", label: "CARD COLLECTION", glyph: "◈", key: "9" },
+      { href: "/cards/packs", label: "PACK STORE", glyph: "▣" },
+    ],
+  },
+  {
+    title: "TOOLS",
+    items: [
+      { href: "/lexicon", label: "LEXICON", glyph: "≣" },
+      { href: "/corrections", label: "CORRECTIONS", glyph: "✕" },
+      { href: "/dossier", label: "AUDIT DOSSIER", glyph: "◣" },
+    ],
+  },
+  {
+    title: "ACCESS",
+    items: [
+      { href: "/premium", label: "INITIATE+", glyph: "✦", accent: "neon-4" },
+      { href: "/start-here", label: "START HERE", glyph: "↳" },
+    ],
+  },
+];
 import { NAV_GROUPS } from "@/lib/nav";
 import type { AccentKey } from "@/lib/nav";
 import type { LiveChannels } from "@/lib/queries/live-status";
