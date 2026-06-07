@@ -190,6 +190,9 @@ export default async function RankPage() {
             <Link href="/explore" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-cyan/30 text-accent-cyan hover:bg-accent-cyan/5 transition-colors">
               Explore the archive →
             </Link>
+            <Link href="/leaderboard" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold hover:bg-accent-gold/5 transition-colors">
+              Leaderboard →
+            </Link>
             {!isMember && (
               <Link href="/premium" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold hover:bg-accent-gold/5 transition-colors">
                 Become Initiate+ →

@@ -99,6 +99,13 @@ export default async function MembersPage() {
             <span className="italic text-text-primary">yes</span>.
           </p>
 
+          <Link
+            href="/leaderboard"
+            className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent-gold/30 bg-accent-gold/5 px-5 py-2 font-mono text-[11px] uppercase tracking-widest text-accent-gold transition-colors hover:bg-accent-gold/10"
+          >
+            ◆ View the rank leaderboard →
+          </Link>
+
           {/* Count bar — only shown once the roster reaches a meaningful size */}
           {totalCount >= 20 && (
             <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-accent-gold/20 bg-accent-gold/5 px-5 py-2">

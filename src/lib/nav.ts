@@ -60,6 +60,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { href: "/start-here",    label: "START HERE",    glyph: "↳" },
       { href: "/explore",       label: "EXPLORE",       glyph: "◇" },
       { href: "/rank",          label: "YOUR RANK",     glyph: "▲" },
+      { href: "/leaderboard",   label: "LEADERBOARD",   glyph: "◆" },
       { href: "/this-week",     label: "THIS WEEK",     glyph: "◑" },
       { href: "/symbols",       label: "SYMBOL CODEX",  glyph: "✦" },
       { href: "/lexicon",       label: "LEXICON",       glyph: "◈" },
