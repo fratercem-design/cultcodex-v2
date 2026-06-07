@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { AdminFormField } from "@/components/admin/admin-form-field";
