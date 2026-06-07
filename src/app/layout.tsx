@@ -20,6 +20,11 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
+// Revert to force-dynamic to prevent build-time database queries.
+// The cache refactor (revalidate = 60) caused pages to attempt static generation
+// at build time, which fails when they call Prisma without a session.
+export const dynamic = "force-dynamic";
+
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
   subsets: ["latin"],
@@ -143,3 +148,4 @@ export default async function RootLayout({
     </html>
   );
 }
+
