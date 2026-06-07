@@ -1,23 +1,20 @@
 import Link from "next/link";
-import { auth, type SessionWithCodex } from "@/lib/auth";
-import { UserMenu } from "@/components/auth/user-menu";
+import { UserMenuLoader } from "@/components/auth/user-menu-loader";
 import { SearchTrigger } from "@/components/search/search-trigger";
 import { TerminalPathSeg } from "@/components/layout/terminal-path-seg";
+import { CodexSigil } from "@/components/graphics/codex-sigil";
 
 /**
- * Terminal-style topbar (36px). Server component.
+ * Terminal-style topbar (36px).
  *
  * Layout (left → right):
  *   [◣ CULTCODEX]   [~/codex/{page}_]                 [● UPLINK: STABLE] [Search] [User]
  *
- * Auth + nested components (UserMenu, SearchTrigger) are preserved from
- * the prior SiteHeader implementation so existing session wiring keeps
- * working.
+ * The session is loaded client-side (UserMenuLoader) rather than read
+ * from the cookie during server render — this keeps the app shell and the
+ * public content pages beneath it statically renderable / edge-cacheable.
  */
-export async function TerminalTopBar() {
-  const session = await auth().catch(() => null);
-  const sessionUser = (session as SessionWithCodex)?.codexUser ?? null;
-
+export function TerminalTopBar() {
   return (
     <header
       className="terminal-topbar flex items-center justify-between"
@@ -40,7 +37,7 @@ export async function TerminalTopBar() {
           letterSpacing: "0.12em",
         }}
       >
-        <span aria-hidden="true">◣</span>
+        <CodexSigil size={18} glow title="CultCodex sigil" />
         <span>CULTCODEX</span>
       </Link>
 
@@ -61,7 +58,7 @@ export async function TerminalTopBar() {
           <span>UPLINK: STABLE</span>
         </span>
         <SearchTrigger />
-        <UserMenu user={sessionUser} />
+        <UserMenuLoader />
       </div>
     </header>
   );

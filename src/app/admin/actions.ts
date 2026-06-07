@@ -82,6 +82,43 @@ export async function toggleHumanReview(id: string) {
   revalidatePath("/admin/episodes");
 }
 
+/**
+ * Toggle the enrichment-queued flag on an episode.
+ * When true, the enrichment pipeline will (re-)process this episode
+ * even if summaryLong already exists.
+ */
+export async function toggleEnrichmentQueued(id: string) {
+  await requireAdmin();
+
+  const episode = await prisma.episode.findUnique({
+    where: { id },
+    select: { enrichmentQueued: true },
+  });
+  if (!episode) return;
+
+  await prisma.episode.update({
+    where: { id },
+    data: { enrichmentQueued: !episode.enrichmentQueued },
+  });
+
+  revalidatePath(`/admin/episodes/${id}/edit`);
+  revalidatePath("/admin/episodes");
+  revalidatePath("/admin/sync");
+}
+
+/**
+ * Queue a batch of episodes for enrichment by their IDs.
+ */
+export async function bulkQueueForEnrichment(ids: string[]) {
+  await requireAdmin();
+  await prisma.episode.updateMany({
+    where: { id: { in: ids } },
+    data: { enrichmentQueued: true },
+  });
+  revalidatePath("/admin/episodes");
+  revalidatePath("/admin/sync");
+}
+
 export async function bulkUpdateEpisodeStatus(
   ids: string[],
   status: ContentStatus,
@@ -119,6 +156,7 @@ export async function updatePerson(id: string, formData: FormData) {
       loreSummary: (formData.get("loreSummary") as string) || null,
       personType: formData.get("personType") as PersonType,
       avatarUrl: (formData.get("avatarUrl") as string) || null,
+      youtubeChannelUrl: (formData.get("youtubeChannelUrl") as string) || null,
       altNames,
     },
   });

@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# Cancel in-progress CI runs for the same ref when a new push arrives.
+# Keeps queue short on rapid push sequences without wasting runner minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Job 1: Lint + Type check ─────────────────────────────────────────────────
+  lint-typecheck:
+    name: Lint & Types
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://localhost/placeholder
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+  # ── Job 2: Unit tests ────────────────────────────────────────────────────────
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://localhost/placeholder
+
+      - name: Run tests
+        run: npm run test
+        env:
+          DATABASE_URL: postgresql://localhost/placeholder
+
+  # ── Job 3: Build ─────────────────────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://localhost/placeholder
+
+      - name: Build
+        run: npm run build
+        env:
+          # Placeholders only — real secrets must NOT be stored here.
+          # The build only needs env vars to avoid "missing key" crashes;
+          # no DB connection is opened, no API calls are made.
+          DATABASE_URL: postgresql://localhost/placeholder
+          NEXTAUTH_SECRET: ci-placeholder-not-real
+          NEXTAUTH_URL: https://cultcodex.me
+          GOOGLE_CLIENT_ID: ci-placeholder
+          GOOGLE_CLIENT_SECRET: ci-placeholder
+          ANTHROPIC_API_KEY: ci-placeholder
+          STRIPE_SECRET_KEY: sk_test_placeholder
+          STRIPE_WEBHOOK_SECRET: whsec_placeholder
+          ENRICH_SECRET: ci-placeholder
+
+  # ── Job 4: Security audit ────────────────────────────────────────────────────
+  # Gate: critical vulnerabilities block merge.
+  # Level is "critical" (not "high") because the current high advisories for
+  # next@16.1.6 and prisma@7.x are either false positives on the stable
+  # channel or via internal dev-only sub-packages with no production call-path.
+  # Raise to --audit-level=high once those advisories have stable-channel fixes.
+  audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=critical

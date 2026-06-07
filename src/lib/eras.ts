@@ -20,45 +20,23 @@ export interface Era {
 // ── Edit these dates to match your actual channel history ─────────────────────
 export const ERAS: readonly Era[] = [
   {
-    id: "origin",
-    label: "The First Signal",
-    subtitle: "Where it began",
+    id: "return",
+    label: "The Return",
+    subtitle: "Back after years away",
     description:
-      "The archive opens. Raw transmission, unpolished, finding the frequency. Every archetype that would define the Cult was seeded here — the voice before it had an audience.",
-    dateStart: "2019-01-01",  // ← set to channel launch date
-    dateEnd:   "2020-06-30",  // ← set to end of founding period
+      "After years off the air, the signal comes back. The format is familiar but the frequency has shifted — livestream panels, open conversations, the cult reassembling in real time.",
+    dateStart: "2024-07-01",
+    dateEnd:   "2024-09-30",
     color: "gold",
     sigil: "◈",
   },
   {
-    id: "descent",
-    label: "The Descent",
-    subtitle: "Going underground",
-    description:
-      "The show finds its shadow. Consciousness, manipulation, the occult — conversations get stranger and more honest. The audience starts paying attention. Something shifts.",
-    dateStart: "2020-07-01",  // ← set to start of second phase
-    dateEnd:   "2022-03-31",  // ← set to end of second phase
-    color: "violet",
-    sigil: "↓",
-  },
-  {
-    id: "dark-arc",
-    label: "The Dark Arc",
-    subtitle: "Peak intensity",
-    description:
-      "Everything is on the table. Nothing is sacred. Psychological pressure hits a peak and the transmissions start bleeding into each other. The most referenced era in the Psychenomicon.",
-    dateStart: "2022-04-01",  // ← set to start of dark arc
-    dateEnd:   "2023-12-31",  // ← set to end of dark arc
-    color: "crimson",
-    sigil: "⬡",
-  },
-  {
     id: "current",
     label: "The Current",
-    subtitle: "Now. Ongoing.",
+    subtitle: "Live. Ongoing.",
     description:
-      "The signal doesn't stop. The current era is still being written — every new transmission adds to the archive in real time. Patterns from every prior era resurface in new forms.",
-    dateStart: "2024-01-01",  // ← set to start of current era
+      "The live era. October 2024 to now — unscripted panels, rotating guests, the full chaos of the stream format. Every transmission enters the archive in real time. The mythology is still being written.",
+    dateStart: "2024-10-01",
     dateEnd:   null,
     color: "cyan",
     sigil: "∞",

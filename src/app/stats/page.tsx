@@ -5,7 +5,13 @@ import {
   getMostQuotedPeople,
   getTopTopicsByEpisodes,
   getCanonBreakdown,
+  getBroadcastCalendar,
+  getTopGuestsByAppearances,
+  getTopicMonthlyTrend,
 } from "@/lib/queries/analytics";
+import { BroadcastCalendar } from "@/components/stats/broadcast-calendar";
+import { GuestRadialChart } from "@/components/stats/guest-radial-chart";
+import { TopicPulseChart } from "@/components/stats/topic-pulse-chart";
 import Link from "next/link";
 
 export const revalidate = 3600;
@@ -29,11 +35,14 @@ const CANON_LABELS: Record<string, string> = {
 };
 
 export default async function StatsPage() {
-  const [stats, quotedPeople, topTopics, canonBreakdown] = await Promise.all([
+  const [stats, quotedPeople, topTopics, canonBreakdown, calendarData, topGuests, topicTrend] = await Promise.all([
     getCounts(),
     getMostQuotedPeople(10),
     getTopTopicsByEpisodes(15),
     getCanonBreakdown(),
+    getBroadcastCalendar(),
+    getTopGuestsByAppearances(20),
+    getTopicMonthlyTrend(6),
   ]);
 
   const maxQuotes = Math.max(...quotedPeople.map((p) => p.count), 1);
@@ -212,6 +221,37 @@ export default async function StatsPage() {
             )}
           </div>
         </SectionCard>
+
+        {/* Broadcast Calendar Heatmap */}
+        <SectionCard title="BROADCAST CALENDAR">
+          <div className="pt-2">
+            <p className="font-mono text-[10px] text-text-muted mb-4">
+              Streams per day since October 2024 — darker = more transmissions
+            </p>
+            <BroadcastCalendar data={calendarData} />
+          </div>
+        </SectionCard>
+
+        {/* Guest Frequency Radial */}
+        <SectionCard title="GUEST FREQUENCY">
+          <div className="pt-2">
+            <p className="font-mono text-[10px] text-text-muted mb-4">
+              Top 20 recurring guests by total appearances
+            </p>
+            <GuestRadialChart data={topGuests} />
+          </div>
+        </SectionCard>
+
+        {/* Topic Pulse */}
+        <SectionCard title="TOPIC PULSE">
+          <div className="pt-2">
+            <p className="font-mono text-[10px] text-text-muted mb-4">
+              Top topics by episode count, month by month
+            </p>
+            <TopicPulseChart months={topicTrend.months} topics={topicTrend.topics} />
+          </div>
+        </SectionCard>
+
       </div>
     </div>
   );

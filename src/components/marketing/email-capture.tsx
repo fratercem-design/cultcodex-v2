@@ -21,8 +21,8 @@ interface EmailCaptureProps {
  */
 export function EmailCapture({
   eyebrow = "/// signal_intercept",
-  heading = "The archive sends one transmission per week.",
-  subheading = "What recurring patterns just surfaced. Which voice appeared in 40+ episodes you may have missed. What the Oracle flagged. The decoded layer — delivered.",
+  heading = "Get the decoded layer in your inbox each week.",
+  subheading = "One transmission per week: the behavioral pattern that surfaced most, a recurring voice you've missed, and what the Oracle flagged — synthesized from the archive, not a recap.",
   source,
   className = "",
   compact = false,

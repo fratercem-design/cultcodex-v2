@@ -5,6 +5,7 @@ import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/
 import { MysticalDivider, OrnamentalBreak } from "@/components/graphics/mystical-divider";
 import { OracleConsole } from "@/components/oracle/oracle-console";
 import { OracleExampleExchanges } from "@/components/oracle/oracle-example-exchanges";
+import { OracleAmbience } from "@/components/oracle/oracle-ambience";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -53,6 +54,7 @@ export default async function OraclePage() {
     <div className="relative min-h-screen bg-void">
       <SacredGeometryOverlay />
       <FloatingParticles count={20} />
+      <OracleAmbience />
 
       {/* Ambient violet glow */}
       <div

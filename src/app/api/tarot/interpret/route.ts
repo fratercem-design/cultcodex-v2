@@ -120,6 +120,10 @@ export async function POST(req: NextRequest) {
     const cleaned = text.trim().replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "").trim();
     const parsed = JSON.parse(cleaned) as InterpretResponse;
 
+    if (typeof parsed.overall !== "string" || !Array.isArray(parsed.cardReadings)) {
+      return NextResponse.json({ error: "The Oracle could not interpret this reading." }, { status: 503 });
+    }
+
     return NextResponse.json(parsed);
   } catch (err) {
     console.error("[tarot/interpret] error:", err);

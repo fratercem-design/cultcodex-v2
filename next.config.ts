@@ -56,9 +56,9 @@ const nextConfig: NextConfig = {
           value: [
             // Default: only same-origin resources.
             "default-src 'self'",
-            // Scripts: self + inline (required for Next.js hydration and JSON-LD) + Vercel Analytics + YouTube IFrame API.
+            // Scripts: self + inline (required for Next.js hydration and JSON-LD) + GA4 + YouTube IFrame API.
             // TODO: replace 'unsafe-inline' with per-request nonces once Next.js middleware is wired.
-            "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com https://www.youtube.com https://s.ytimg.com",
+            "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.youtube.com https://s.ytimg.com",
             // Styles: self + inline (Tailwind) + Google Fonts CSS.
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             // Fonts: self + Google Fonts files.
@@ -67,8 +67,8 @@ const nextConfig: NextConfig = {
             "img-src 'self' data: blob: https:",
             // Frames: YouTube + Cult of Psyche Arcanum Oracle.
             "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://tarot-oracle-production.up.railway.app",
-            // Fetch/XHR: self + Vercel Analytics beacon + Speed Insights beacon.
-            "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com",
+            // Fetch/XHR: self + GA4 measurement beacon.
+            "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com",
             // No plugins (Flash, etc.).
             "object-src 'none'",
             // Prevent base-tag hijacking.

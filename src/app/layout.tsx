@@ -15,6 +15,7 @@ import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
 import { getCounts } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
+import { CRTOverlay } from "@/components/graphics/crt-overlay";
 import { SkipLink } from "@/components/ui/skip-link";
 import { jsonLdScript } from "@/lib/seo";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -70,7 +71,10 @@ const SITE_DESCRIPTION =
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://cultcodex.me";
 
-export const dynamic = "force-dynamic";
+// The shell no longer reads the session cookie during server render (the
+// user menu loads client-side), so the layout can be cached. Pages that
+// read cookies/headers still opt into dynamic rendering on their own.
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -80,7 +84,11 @@ export const metadata: Metadata = {
   // every page inherit the homepage URL as its canonical, so Google treated
   // all routes as duplicates of `/`. Each page declares its own canonical.
   icons: {
-    icon: "/favicon.jpg",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.jpg" },
+    ],
+    shortcut: "/favicon.svg",
     apple: "/favicon.jpg",
   },
   openGraph: {
@@ -149,6 +157,7 @@ export default async function RootLayout({
           <TerminalStatusBar feedCount={counts.episodes} />
         </div>
         <ClientOverlays />
+        <CRTOverlay />
         {/* WebSite + SearchAction JSON-LD — enables sitelinks search box in Google */}
         <script
           type="application/ld+json"

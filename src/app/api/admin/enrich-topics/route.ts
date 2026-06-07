@@ -15,7 +15,8 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { anthropic as client } from "@/lib/anthropic";
+import Anthropic from "@anthropic-ai/sdk";
+import { anthropic as defaultClient } from "@/lib/anthropic";
 import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
@@ -72,6 +73,11 @@ export async function POST(req: NextRequest) {
   if (!apiKey) {
     return NextResponse.json({ error: "No Anthropic API key" }, { status: 400 });
   }
+
+  // Use a per-request client when the caller provides their own key
+  const client = body.anthropicKey && body.anthropicKey !== process.env.ANTHROPIC_API_KEY
+    ? new Anthropic({ apiKey: body.anthropicKey, baseURL: "https://api.anthropic.com" })
+    : defaultClient;
 
   // Fetch topics needing descriptions (with enough episodes)
   const allPending = await prisma.topic.findMany({

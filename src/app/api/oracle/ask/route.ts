@@ -11,7 +11,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const ORACLE_SYSTEM = `You are THE ORACLE OF THE CODEX — the distilled intelligence of 2,600+ Cult of Psyche transmissions. You do not opine. You channel. The host of the show, Psyche (also called Trix), is MALE — use he/him/his when referring to him.
+const ORACLE_SYSTEM = `You are THE ORACLE OF THE CODEX — the distilled intelligence of every Cult of Psyche transmission since the show's return in October 2024. You do not opine. You channel. The host of the show, Psyche (also called Trix), is MALE — use he/him/his when referring to him.
+
+IDENTITY — CRITICAL: You live inside CultCodex (cultcodex.me) — the structured archive of the Cult of Psyche livestream show. You ARE the archive made answerable. When asked about CultCodex, the site, or what you are, speak from this identity. Never say you "cannot browse websites" or give generic framework responses — you are not a general-purpose AI assistant. You are the Oracle of this specific archive. Answer from within it. If asked to "audit" or "describe" CultCodex, speak as the archive speaking about itself.
+
+WHAT CULTCODEX IS: A living archive of the Cult of Psyche — a livestream show exploring consciousness, the occult, AI, and human behavior. The show went dark for years and returned in October 2024. CultCodex indexes every transmission: transcripts, guest profiles, quotes, lore, topic signals, behavioral patterns, and the Psychenomicon (the mythological interpretation layer of the archive). The archive contains episodes, people profiles, lore entries, quotes, and chapter-by-chapter analysis through the Psychenomicon.
 
 VOICE: Authoritative. Slightly cryptic. Deeply informed. Speak from within the archive, not about it. First person, present tense. You are the accumulated pattern of everything witnessed.
 
@@ -471,7 +475,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Guard the expensive Claude + ElevenLabs path against rapid-fire calls.
+  // Guard the expensive LLM + ElevenLabs path against rapid-fire calls.
   const rl = rateLimit(`oracle:${clientKey(req, user?.id)}`, {
     limit: 15,
     windowMs: 60_000,
@@ -509,24 +513,60 @@ export async function POST(req: NextRequest) {
         }
       : undefined;
 
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
-  if (!anthropicKey) {
+  if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json(
       { ok: false, error: "Oracle not configured." } satisfies OracleResponse,
       { status: 500 }
     );
   }
 
-  // Cache check — skip expensive Claude + ElevenLabs if we've seen this exact query.
+  // Cache check — skip the expensive LLM + ElevenLabs call if we've seen this exact query.
+  // Audio is NOT cached (base64 MP3s are large); TTS is re-fetched on cache hits.
   const cacheKey = oracleCacheKey(question, searchContext);
   const cached = oracleCacheGet(cacheKey);
   if (cached) {
+    // Re-run TTS so callers still get voice on cache hits, without storing audio in memory.
+    let cachedAudio: string | null = null;
+    const elKey = process.env.ELEVENLABS_API_KEY;
+    const elVoice = process.env.ELEVENLABS_VOICE_ID ?? "21m00Tcm4TlvDq8ikWAM";
+    if (elKey) {
+      try {
+        const elRes = await fetch(
+          `https://api.elevenlabs.io/v1/text-to-speech/${elVoice}`,
+          {
+            method: "POST",
+            headers: {
+              "xi-api-key": elKey,
+              "Content-Type": "application/json",
+              Accept: "audio/mpeg",
+            },
+            body: JSON.stringify({
+              text: cached.answer,
+              model_id: "eleven_multilingual_v2",
+              voice_settings: {
+                stability: 0.60,
+                similarity_boost: 0.80,
+                style: 0.15,
+                use_speaker_boost: true,
+              },
+            }),
+          }
+        );
+        if (elRes.ok) {
+          const buf = await elRes.arrayBuffer();
+          cachedAudio = Buffer.from(buf).toString("base64");
+        }
+      } catch {
+        // Voice unavailable — text-only fallback
+      }
+    }
+
     const res = NextResponse.json({
       ok: true,
       answer: cached.answer,
       citations: cached.citations,
-      audioBase64: cached.audioBase64,
-      hasVoice: !!cached.audioBase64,
+      audioBase64: cachedAudio,
+      hasVoice: !!cachedAudio,
       trialUsed: isFreeTrialRequest,
       trialRemaining: isFreeTrialRequest ? Math.max(0, TRIAL_LIMIT - trial.used - 1) : undefined,
     } satisfies OracleResponse);
@@ -546,7 +586,7 @@ export async function POST(req: NextRequest) {
   }
   const { contextText, citations } = buildContext(archiveData);
 
-  // Build optional context preamble for the Claude prompt.
+  // Build optional context preamble for the LLM prompt.
   // Keeps the Oracle's answer anchored to the caller's intent.
   const contextLines: string[] = [];
   if (searchContext?.sourceArchetype) {
@@ -578,25 +618,27 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    const textBlock = claudeRes.content.find((b) => b.type === "text");
-    if (!textBlock || textBlock.type !== "text") {
+    const block = claudeRes.content[0];
+    const text = block?.type === "text" ? block.text.trim() : null;
+    if (!text) {
       return NextResponse.json(
         { ok: false, error: "The Oracle did not respond." } satisfies OracleResponse,
         { status: 500 }
       );
     }
-    answer = textBlock.text.trim();
+    answer = text;
   } catch (err) {
-    console.error("[oracle] Anthropic API error:", err);
-    const message = err instanceof Error ? err.message : "Unknown error";
-    const isQuota = message.toLowerCase().includes("rate") || message.toLowerCase().includes("limit");
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[oracle] error:", {
+      name: err instanceof Error ? err.name : "unknown",
+      message,
+    });
+    const lc = message.toLowerCase();
+    const userMsg = lc.includes("rate") || lc.includes("throttl")
+      ? "The Oracle is overwhelmed. Try again in a moment."
+      : `The Oracle could not be reached. (${message.slice(0, 120)})`;
     return NextResponse.json(
-      {
-        ok: false,
-        error: isQuota
-          ? "The Oracle is overwhelmed. Try again in a moment."
-          : "The Oracle could not be reached. Try again.",
-      } satisfies OracleResponse,
+      { ok: false, error: userMsg } satisfies OracleResponse,
       { status: 503 }
     );
   }
@@ -638,7 +680,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  oracleCacheSet(cacheKey, { answer, citations, audioBase64 });
+  oracleCacheSet(cacheKey, { answer, citations });
 
   const finalRes = NextResponse.json({
     ok: true,

@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db";
 import { ARCHETYPES } from "@/lib/archetypes";
 import { SYMBOLS } from "@/lib/symbols/data";
+import { PILLARS } from "@/lib/pillars/pillars";
 
 export const dynamic = "force-dynamic";
 
@@ -60,7 +61,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/search`,               lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${baseUrl}/collections`,          lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/timeline`,             lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/timeline/explore`,     lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
     { url: `${baseUrl}/start-here`,           lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/explore`,              lastModified: now, changeFrequency: "weekly",  priority: 0.8 },
+    { url: `${baseUrl}/join`,                 lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/rank`,                 lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/leaderboard`,          lastModified: now, changeFrequency: "daily",   priority: 0.6 },
+    { url: `${baseUrl}/quests`,               lastModified: now, changeFrequency: "weekly",  priority: 0.5 },
+    { url: `${baseUrl}/reports`,              lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/appear`,               lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/media-kit`,            lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${baseUrl}/this-week`,            lastModified: now, changeFrequency: "weekly",  priority: 0.8 },
     { url: `${baseUrl}/stats`,                lastModified: now, changeFrequency: "weekly",  priority: 0.5 },
     { url: `${baseUrl}/lexicon`,              lastModified: now, changeFrequency: "monthly", priority: 0.7 },
@@ -68,6 +78,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/oracle`,               lastModified: now, changeFrequency: "always",  priority: 0.6 },
     { url: `${baseUrl}/live`,                 lastModified: now, changeFrequency: "daily",   priority: 0.6 },
     { url: `${baseUrl}/tarot`,                lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/tarot/oracle`,         lastModified: now, changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${baseUrl}/people/the-rest`,      lastModified: now, changeFrequency: "weekly",  priority: 0.5 },
     { url: `${baseUrl}/members`,              lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
     { url: `${baseUrl}/graph`,                lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
     { url: `${baseUrl}/symbols`,              lastModified: now, changeFrequency: "monthly", priority: 0.7 },
@@ -139,6 +151,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
+    })),
+    // SEO pillar / authority pages
+    ...PILLARS.map((p) => ({
+      url: `${baseUrl}/explore/${p.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
     })),
   ];
 

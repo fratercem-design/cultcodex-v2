@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function GlobalError({
   error,
@@ -9,6 +10,22 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    // Ship the client error to the server so it flows through Railway's
+    // log drain to Better Stack and triggers configured alerts.
+    fetch("/api/errors", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message:  error.message,
+        digest:   error.digest,
+        stack:    error.stack,
+        pathname: window.location.pathname,
+      }),
+    }).catch(() => {
+      // Best-effort — if the API is down we're already in a bad state.
+    });
+  }, [error]);
   return (
     <html lang="en" className="dark">
       <body

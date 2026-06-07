@@ -39,7 +39,7 @@ export function EntryBanner() {
         <p className="font-mono text-[11px] text-text-muted leading-relaxed">
           <span className="text-accent-gold font-bold">{"///"}</span>{" "}
           First time here?{" "}
-          <span className="text-text-primary">Pick a doorway — five ways into 2,600+ episodes.</span>{" "}
+          <span className="text-text-primary">Pick a doorway — six ways into 2,600+ episodes.</span>{" "}
           <Link
             href="/start-here"
             className="text-accent-gold underline underline-offset-2 hover:text-accent-gold/80 transition-colors"

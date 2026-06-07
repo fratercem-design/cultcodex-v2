@@ -10,7 +10,7 @@ export const EnrichedGuestSchema = z.object({
 export const EnrichedQuoteSchema = z.object({
   text: z.string().min(1),
   speaker: z.string().min(1),
-  timestampSeconds: z.number().int().nullable(),
+  timestampSeconds: z.union([z.number(), z.null()]).transform((v) => (v == null ? null : Math.round(v))),
   context: z.string(),
   significance: z.string(),
 });
