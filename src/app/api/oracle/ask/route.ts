@@ -616,9 +616,11 @@ export async function POST(req: NextRequest) {
   let answer: string;
   try {
     const client = getBedrockClient();
+    // Verified available on Bedrock us-east-1 (3.5-sonnet-v2 is end-of-life).
     const modelPreference = [
       process.env.ORACLE_MODEL,
-      "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+      "us.anthropic.claude-opus-4-8",
+      "us.anthropic.claude-sonnet-4-6",
       "us.anthropic.claude-3-5-haiku-20241022-v1:0",
     ].filter(Boolean) as string[];
 
