@@ -34,9 +34,9 @@ export const revalidate = 300;
 
 export const metadata = {
   alternates: { canonical: "/" },
-  title: "CultCodex — Decode Cult of Psyche | Live Since October 2024",
+  title: "CultCodex — The Archive of Cult of Psyche | Tarot, Consciousness & Open Panels",
   description:
-    "The definitive archive of Cult of Psyche — live streaming since October 2024. AI psychological breakdowns, guest profiles, topic signals, behavioral pattern maps, and full transcript coverage.",
+    "Cult of Psyche is a live, unscripted internet show — tarot, consciousness, spirituality, open-panel debates, and the strange edges of human behavior. CultCodex is its complete searchable archive: 2,600+ episodes with full transcripts, guest profiles, lore, and an AI Oracle.",
   openGraph: {
     title: "CultCodex — Decode Cult of Psyche",
     description:
@@ -132,15 +132,19 @@ export default async function HomePage() {
                 Every pattern — still decoding.
               </span>
             </h1>
-            <p className="font-mono text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
-              {stats.episodes.toLocaleString()}+ Cult of Psyche conversations. Full transcripts,
-              AI psychological breakdowns, and behavioral maps — all searchable.
+            {/* Plain-English "what is this" — leads with the show, then the archive */}
+            <p className="font-mono text-sm text-text-primary/90 max-w-xl mx-auto leading-relaxed">
+              <span className="text-white font-bold">Cult of Psyche</span> is a live, unscripted
+              internet show — tarot, consciousness, spirituality, open-panel debates, and the
+              strange edges of human behavior, broadcast since October 2024.
             </p>
           </div>
 
-          <p className="font-mono text-[11px] text-text-muted/70 max-w-lg mx-auto leading-relaxed">
-            Cult of Psyche is an unscripted livestream where consciousness, manipulation, and raw human behavior collide.
-            CultCodex is the complete intelligence archive of everything that happened.
+          <p className="font-mono text-[12px] text-text-muted max-w-lg mx-auto leading-relaxed">
+            <span className="text-accent-gold font-bold">CultCodex</span> is the complete searchable
+            archive: <span className="text-accent-cyan">{stats.episodes.toLocaleString()}+ episodes</span>{" "}
+            indexed — full transcripts, guest profiles, lore, and an AI Oracle that answers questions
+            from inside it all.
           </p>
 
           <div className="flex flex-col items-center gap-2">
