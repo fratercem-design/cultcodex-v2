@@ -7,7 +7,7 @@ export async function moderateComment(
 ): Promise<{ flagged: boolean; reason?: string }> {
   try {
     const response = await anthropic.messages.create({
-      model: "claude-opus-4-8",
+      model: process.env.ORACLE_MODEL ?? "claude-opus-4-5",
       max_tokens: 50,
       messages: [
         {

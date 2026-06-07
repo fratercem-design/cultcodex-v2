@@ -7,10 +7,10 @@ import {
   oracleCacheSize,
 } from "../oracle-cache";
 
+// audioBase64 is intentionally NOT cached (too large for heap); mock uses only cached fields
 const MOCK_ENTRY = {
   answer: "The archive speaks.",
   citations: [{ type: "episode" as const, label: "EP.001", href: "/episodes/ep-001" }],
-  audioBase64: null,
 };
 
 beforeEach(() => {
@@ -67,7 +67,6 @@ describe("oracleCacheGet / oracleCacheSet", () => {
     expect(result).not.toBeNull();
     expect(result!.answer).toBe("The archive speaks.");
     expect(result!.citations).toHaveLength(1);
-    expect(result!.audioBase64).toBeNull();
   });
 
   it("returns null after TTL expires", () => {

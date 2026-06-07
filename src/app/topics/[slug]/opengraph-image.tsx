@@ -116,8 +116,7 @@ export default async function OGImage({
 
             {episodeCount > 0 && (
               <div style={{ color: "#444", fontSize: 19, marginTop: 4 }}>
-                {episodeCount} episode{episodeCount !== 1 ? "s" : ""} archived
-                {topic._count.people > 0 && ` · ${topic._count.people} voice${topic._count.people !== 1 ? "s" : ""}`}
+                {`${episodeCount} episode${episodeCount !== 1 ? "s" : ""} archived${topic._count.people > 0 ? ` · ${topic._count.people} voice${topic._count.people !== 1 ? "s" : ""}` : ""}`}
               </div>
             )}
           </div>

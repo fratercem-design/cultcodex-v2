@@ -13,9 +13,6 @@ import { useEffect, useState, type CSSProperties } from "react";
  * matches the first client render (avoids hydration mismatch).
  */
 
-const BUILD_VERSION = process.env.NEXT_PUBLIC_APP_VERSION
-  ? `v${process.env.NEXT_PUBLIC_APP_VERSION}-codex`
-  : "v2.4.1-codex";
 
 function formatUtc(date: Date): string {
   const hh = String(date.getUTCHours()).padStart(2, "0");
@@ -110,7 +107,6 @@ export function TerminalStatusBar({ feedCount }: TerminalStatusBarProps) {
           </span>
           <span style={{ color: "var(--neon-3)" }}>ORACLE_LIVE</span>
         </span>
-        <span style={cellStyleLeftBorder}>BUILD: {BUILD_VERSION}</span>
         <span style={cellStyleNoBorder} suppressHydrationWarning>
           <span style={{ color: "var(--term-fg-faint)" }}>UTC</span>
           <span style={{ color: "var(--term-fg)" }}>{utc || "--:--:--"}</span>

@@ -134,7 +134,10 @@ async function main() {
       }
 
       const transcriptText = buildTranscriptText(segments);
-      const MAX_CHARS = 400_000;
+      // gpt-4o-mini has 128k token context; timestamps are ~3 chars/token so
+      // 280k chars ≈ 93k tokens, leaving headroom for system prompt + output.
+      // Longer transcripts fall back to OpenRouter Gemini (1M ctx) via lib.ts.
+      const MAX_CHARS = 280_000;
       const truncated =
         transcriptText.length > MAX_CHARS
           ? transcriptText.slice(0, MAX_CHARS) + "\n\n[TRANSCRIPT TRUNCATED]"

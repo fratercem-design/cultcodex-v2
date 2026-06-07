@@ -1,3 +1,5 @@
+import 'dotenv/config'
+import { PrismaPg } from '@prisma/adapter-pg'
 /**
  * seed-cards-phase2.ts
  * Seed card packs and 30 starter cards for the Cult of Psyche card system.
@@ -5,7 +7,7 @@
  */
 import { PrismaClient } from "../src/generated/prisma/client";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
 
 const PACKS = [
   {
@@ -243,3 +245,8 @@ async function main() {
 main()
   .catch((e) => { console.error(e); process.exit(1); })
   .finally(() => prisma.$disconnect());
+
+
+
+
+

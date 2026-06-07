@@ -18,6 +18,9 @@ export async function POST(
   if (!reason || reason.trim().length === 0) {
     return NextResponse.json({ error: "Reason is required" }, { status: 400 });
   }
+  if (reason.length > 500) {
+    return NextResponse.json({ error: "Reason too long (max 500 characters)" }, { status: 400 });
+  }
 
   const comment = await prisma.codexComment.findUnique({
     where: { id: commentId },

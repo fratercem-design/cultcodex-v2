@@ -130,7 +130,7 @@ export default async function OGImage({
 
             {entry._count.episodes > 0 && (
               <div style={{ color: "#444", fontSize: 19, marginTop: 4 }}>
-                Referenced in {entry._count.episodes} episode{entry._count.episodes !== 1 ? "s" : ""}
+                {`Referenced in ${entry._count.episodes} episode${entry._count.episodes !== 1 ? "s" : ""}`}
               </div>
             )}
           </div>

@@ -342,6 +342,16 @@ export default async function PremiumPage() {
           ))}
         </section>
 
+        {/* ── Reports hook ── */}
+        <section className="max-w-3xl mx-auto text-center">
+          <Link
+            href="/reports"
+            className="inline-flex items-center gap-2 rounded-full border border-accent-cyan/30 bg-accent-cyan/5 px-5 py-2.5 font-mono text-[11px] uppercase tracking-widest text-accent-cyan transition-colors hover:bg-accent-cyan/10"
+          >
+            ▦ See what Initiate+ unlocks — Codex Reports →
+          </Link>
+        </section>
+
         {/* ── FAQ ── */}
         <section className="space-y-3 max-w-3xl mx-auto">
           <h3 className="mb-4 text-center font-display text-sm font-bold uppercase tracking-widest text-text-muted/60">Questions</h3>

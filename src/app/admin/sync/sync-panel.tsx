@@ -42,11 +42,13 @@ function Spinner() {
 export function SyncPanel({
   withoutTranscript,
   unenrichedEpisodes,
+  enrichmentQueued,
   unenrichedPeople,
   enrichSecret,
 }: {
   withoutTranscript: number;
   unenrichedEpisodes: number;
+  enrichmentQueued: number;
   unenrichedPeople: number;
   enrichSecret: string;
 }) {
@@ -148,7 +150,7 @@ export function SyncPanel({
     }
   }
 
-  async function handleEnrichEpisodes(loop = false, withTranscriptOnly = true) {
+  async function handleEnrichEpisodes(loop = false, withTranscriptOnly = true, queuedOnly = false) {
     setEnrichEpLoading(true);
     setEnrichEpResult(null);
     setEnrichEpProgress(null);
@@ -159,7 +161,7 @@ export function SyncPanel({
         const res = await fetch("/api/admin/enrich-episodes", {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-enrich-secret": enrichSecret },
-          body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly }),
+          body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly, queuedOnly }),
         });
         const data = await res.json() as typeof enrichEpResult & { remaining?: number; done?: boolean };
         if (!res.ok || !data?.ok) {
@@ -456,6 +458,22 @@ export function SyncPanel({
             title="Generates title-only summaries for episodes with no transcript (Shorts, live streams, etc.)"
           >
             ↻ Enrich no-transcript episodes (title only)
+          </button>
+          <button
+            onClick={() => handleEnrichEpisodes(true, false, true)}
+            disabled={enrichEpLoading || enrichmentQueued === 0}
+            className="w-full flex flex-col items-center gap-0.5 rounded border border-accent-gold/40 bg-accent-gold/5 hover:bg-accent-gold/15 px-4 py-2.5 font-mono transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title={enrichmentQueued === 0 ? "Queue episodes first from /admin/episodes → click '+ enrich' on any row" : `Re-enriches ${enrichmentQueued} manually queued episode${enrichmentQueued !== 1 ? "s" : ""}`}
+          >
+            <span className="text-[10px] uppercase tracking-widest text-accent-gold">
+              ⚡ Run enrichment queue
+              {enrichmentQueued > 0 && <span className="ml-1.5 rounded-full bg-accent-gold/20 px-1.5 py-0.5 text-accent-gold font-bold">{enrichmentQueued}</span>}
+            </span>
+            <span className="text-[9px] text-text-muted/60">
+              {enrichmentQueued === 0
+                ? "No episodes queued — go to Episodes and click + enrich"
+                : `Re-enriches ${enrichmentQueued} episode${enrichmentQueued !== 1 ? "s" : ""} even if already summarised`}
+            </span>
           </button>
           {enrichEpResult && (
             <div className={`rounded border px-4 py-3 space-y-2 ${enrichEpResult.ok ? "border-accent-gold/30 bg-accent-gold/5" : "border-red-500/30 bg-red-500/5"}`}>

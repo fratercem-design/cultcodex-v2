@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
+import { generateChapterForEpisode } from "../generate-chapter-core";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -8,12 +9,8 @@ export const maxDuration = 300;
  * POST /api/admin/psychenomicon/generate-batch
  * Body: { episodeIds: string[] }
  *
- * Calls the single-chapter generate endpoint sequentially for each episode.
- * Returns a stream-friendly JSON array of per-episode results so the UI
- * can show progress without waiting for all chapters to finish.
- *
- * Because chapters must be numbered sequentially and each one reads the
- * previous chapter's signals as context, they cannot run in parallel.
+ * Generates chapters sequentially — calls generateChapterForEpisode directly
+ * (no internal HTTP fetch, which fails on Railway due to self-referencing).
  */
 export async function POST(req: NextRequest) {
   try {
@@ -32,9 +29,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Maximum 20 episodes per batch" }, { status: 400 });
   }
 
-  const origin = req.nextUrl.origin;
-  const generateUrl = `${origin}/api/admin/psychenomicon/generate`;
-
   const results: Array<{
     episodeId: string;
     status: "ok" | "skipped" | "error";
@@ -44,28 +38,12 @@ export async function POST(req: NextRequest) {
 
   for (const episodeId of episodeIds) {
     try {
-      const res = await fetch(generateUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Forward admin cookies so requireAdmin() passes
-          Cookie: req.headers.get("cookie") ?? "",
-        },
-        body: JSON.stringify({ episodeId }),
-      });
-
-      const data = await res.json() as {
-        ok?: boolean;
-        error?: string;
-        chapter?: { chapterNumber: number; slug: string; title: string };
-      };
-
-      if (res.status === 409) {
-        results.push({ episodeId, status: "skipped", error: data.error });
-      } else if (!res.ok || !data.ok) {
-        results.push({ episodeId, status: "error", error: data.error ?? `HTTP ${res.status}` });
+      const result = await generateChapterForEpisode(episodeId);
+      if (!result.ok) {
+        const isSkip = result.status === 409;
+        results.push({ episodeId, status: isSkip ? "skipped" : "error", error: result.error });
       } else {
-        results.push({ episodeId, status: "ok", chapter: data.chapter });
+        results.push({ episodeId, status: "ok", chapter: result.chapter });
       }
     } catch (err) {
       results.push({ episodeId, status: "error", error: String(err).slice(0, 200) });

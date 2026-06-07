@@ -16,7 +16,13 @@ export function VerifyContent() {
   useEffect(() => {
     const token = searchParams.get("token");
     const email = searchParams.get("email");
-    const callbackUrl = searchParams.get("callbackUrl") ?? "/";
+    // Validate callbackUrl to prevent open-redirect attacks. Only allow
+    // same-origin relative paths (must start with "/" but not "//").
+    const rawCallback = searchParams.get("callbackUrl");
+    const callbackUrl =
+      rawCallback && rawCallback.startsWith("/") && !rawCallback.startsWith("//")
+        ? rawCallback
+        : "/";
 
     if (!token || !email) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- React 18 batches synchronous setState; no cascade

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { AdminFormField } from "@/components/admin/admin-form-field";
 import { updatePerson } from "@/app/admin/actions";
 import { MergePersonForm } from "./merge-form";
+import { YouTubeSync } from "./youtube-sync";
 import Link from "next/link";
 
 interface PageProps {
@@ -51,6 +52,13 @@ export default async function EditPersonPage({ params }: PageProps) {
         <AdminFormField label="Lore Summary" name="loreSummary" type="textarea" defaultValue={person.loreSummary} />
         <AdminFormField label="Avatar URL" name="avatarUrl" type="url" defaultValue={person.avatarUrl} />
         <AdminFormField label="Alt Names (comma-separated)" name="altNames" defaultValue={person.altNames.join(", ")} />
+
+        {/* YouTube channel — syncs avatar + stores channel link */}
+        <YouTubeSync
+          personId={id}
+          initialChannelUrl={person.youtubeChannelUrl ?? null}
+          initialAvatarUrl={person.avatarUrl ?? null}
+        />
 
         <div className="flex items-center gap-3 pt-4">
           <button type="submit" className="rounded bg-accent-gold px-6 py-2 font-mono text-sm font-bold text-void hover:bg-accent-gold/80">
