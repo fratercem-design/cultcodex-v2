@@ -27,7 +27,7 @@ Two new Prisma models:
 
 ### Live Detection
 
-Manual toggle via `/api/live/toggle?key=SECRET`. No YouTube API polling needed — zero quota cost, instant control.
+Manual toggle via `/api/live/toggle -H "x-live-secret: SECRET"`. No YouTube API polling needed — zero quota cost, instant control.
 
 ### Notification Flow
 

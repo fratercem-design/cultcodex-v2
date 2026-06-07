@@ -12,6 +12,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid reason" }, { status: 400 });
   }
 
-  const result = await earnCreditsForActivity(user.id, reason, body.metadata ?? {});
+  // Validate metadata shape — only allow the known contentId field.
+  // Arbitrary client-controlled JSON must not reach the transactions table.
+  const rawMeta = body.metadata;
+  const metadata =
+    rawMeta && typeof rawMeta === "object" && !Array.isArray(rawMeta)
+      ? { contentId: typeof rawMeta.contentId === "string" ? rawMeta.contentId.slice(0, 100) : undefined }
+      : {};
+
+  const result = await earnCreditsForActivity(user.id, reason, metadata);
   return NextResponse.json(result);
 }

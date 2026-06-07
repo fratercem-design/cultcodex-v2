@@ -346,7 +346,8 @@ export async function POST(req: NextRequest) {
 **Step 3: Test manually**
 
 ```bash
-curl -X POST "http://localhost:3000/api/live/toggle?key=YOUR_SECRET" \
+curl -X POST "http://localhost:3000/api/live/toggle" \
+  -H "x-live-secret: YOUR_SECRET" \
   -H "Content-Type: application/json" \
   -d '{"videoId":"dQw4w9WgXcQ","title":"Test Stream"}'
 ```
@@ -970,7 +971,8 @@ npx vercel --prod
 **Step 5: Test toggle**
 
 ```bash
-curl -X POST "https://cultcodex.me/api/live/toggle?key=YOUR_SECRET" \
+curl -X POST "https://cultcodex.me/api/live/toggle" \
+  -H "x-live-secret: YOUR_SECRET" \
   -H "Content-Type: application/json" \
   -d '{"videoId":"YOUR_VIDEO_ID","title":"Test Stream"}'
 ```
@@ -979,7 +981,8 @@ Verify banner appears on site, /live page shows embed.
 
 Toggle off:
 ```bash
-curl -X POST "https://cultcodex.me/api/live/toggle?key=YOUR_SECRET"
+curl -X POST "https://cultcodex.me/api/live/toggle" \
+  -H "x-live-secret: YOUR_SECRET"
 ```
 
 **Step 6: Final commit**

@@ -5,6 +5,7 @@ import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/
 import { MysticalDivider, OrnamentalBreak } from "@/components/graphics/mystical-divider";
 import { OracleConsole } from "@/components/oracle/oracle-console";
 import { OracleExampleExchanges } from "@/components/oracle/oracle-example-exchanges";
+import { OracleAmbience } from "@/components/oracle/oracle-ambience";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -35,9 +36,9 @@ export default async function OraclePage() {
     orderBy: { createdAt: "desc" },
   });
   const meaningful = qualityPool.filter((q) => q.text.length >= 60);
-  const pick = meaningful.length > 0
-    ? meaningful[Math.floor(Math.random() * meaningful.length)]
-    : qualityPool[0];
+  const pool = meaningful.length > 0 ? meaningful : qualityPool;
+  // eslint-disable-next-line react-hooks/purity -- server component: runs once per request, no re-render risk
+  const pick = pool[Date.now() % pool.length] ?? pool[0];
   const quotes = pick
     ? await prisma.quote.findMany({
         where: { id: pick.id },
@@ -53,6 +54,7 @@ export default async function OraclePage() {
     <div className="relative min-h-screen bg-void">
       <SacredGeometryOverlay />
       <FloatingParticles count={20} />
+      <OracleAmbience />
 
       {/* Ambient violet glow */}
       <div

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
@@ -210,6 +210,12 @@ export default async function PersonDetailPage({ params }: PageProps) {
   const person = await getPersonBySlug(slug);
 
   if (!person) notFound();
+
+  // Guests and unknowns without a proper profile → compiled "the rest" entry
+  const isProfiled = Boolean(person.loreSummary) || Boolean(person.shortBio);
+  if (!isProfiled && (person.personType === "guest" || person.personType === "mentioned")) {
+    redirect("/people/the-rest");
+  }
 
   const allEpisodes = [
     ...person.guestAppearances.map((g) => g.episode),
@@ -666,15 +672,22 @@ export default async function PersonDetailPage({ params }: PageProps) {
               )}
             </SectionCard>
 
-            {/* External Links */}
+            {/* External Links — hardcoded list merged with DB-backed YouTube channel */}
             {(() => {
-              const links = getExternalLinks(person.slug);
-              if (links.length === 0) return null;
+              const staticLinks = getExternalLinks(person.slug);
+              // Merge DB youtubeChannelUrl in — deduplicated against the static list
+              const ytDbUrl = person.youtubeChannelUrl;
+              const allLinks = ytDbUrl && !staticLinks.some((l) => l.url === ytDbUrl)
+                ? [{ label: "YouTube Channel", url: ytDbUrl, icon: "▶" as const }, ...staticLinks]
+                : staticLinks;
+
+              if (allLinks.length === 0) return null;
+
               const isYt = (url: string) => url.includes("youtube.com") || url.includes("youtu.be");
               return (
                 <SectionCard title="External Links">
                   <ul className="space-y-2">
-                    {links.map((link) => (
+                    {allLinks.map((link) => (
                       <li key={link.url}>
                         <a
                           href={link.url}
@@ -764,6 +777,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             ...(person.shortBio ? { description: person.shortBio } : {}),
             ...(person.avatarUrl ? { image: person.avatarUrl } : {}),
             url: `https://cultcodex.me/people/${person.slug}`,
+            ...(person.youtubeChannelUrl ? { sameAs: person.youtubeChannelUrl } : {}),
             ...(person.firstAppearanceEpisode?.airDate
               ? { firstAppearance: person.firstAppearanceEpisode.airDate.toISOString().slice(0, 10) }
               : {}),

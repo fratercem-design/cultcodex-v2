@@ -10,7 +10,14 @@ export async function POST() {
     const result = await claimDailyReward(user.id);
     return NextResponse.json(result);
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json({ error: message }, { status: 400 });
+    const message = err instanceof Error ? err.message : "";
+    const isUserFacing = ["already claimed", "cooldown", "not found"].some(
+      (k) => message.toLowerCase().includes(k)
+    );
+    console.error("[daily-reward] error:", err);
+    return NextResponse.json(
+      { error: isUserFacing ? message : "Failed to claim reward. Please try again." },
+      { status: 400 }
+    );
   }
 }

@@ -42,7 +42,7 @@ export function EmailSignInForm({ callbackUrl }: EmailSignInFormProps) {
     return (
       <div className="space-y-3 rounded-lg border border-accent-gold/30 bg-accent-gold/5 p-5 text-center">
         <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
-          /// transmission_sent
+          {"/// transmission_sent"}
         </p>
         <p className="font-display text-sm font-semibold text-text-primary">
           Check your inbox

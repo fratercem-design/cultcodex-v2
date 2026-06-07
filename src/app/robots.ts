@@ -11,25 +11,63 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
         disallow: ["/api/", "/auth/", "/admin/"],
       },
-      // AI training crawlers — block entirely
-      // These bots scrape content for LLM training datasets without contributing
-      // any search traffic back to the site.
+
+      // AI *retrieval* bots (ChatGPT Browse, Perplexity, Claude, AI Overviews) —
+      // allow the public surface so we get cited as a source when people ask about
+      // Cult of Psyche, guest names, lore, etc. Transcripts + Oracle are already
+      // gated server-side behind auth — nothing premium leaks to these crawlers.
       {
         userAgent: [
-          "GPTBot",           // OpenAI
-          "ChatGPT-User",     // OpenAI ChatGPT browsing
+          "GPTBot",           // OpenAI ChatGPT browsing
           "OAI-SearchBot",    // OpenAI search
-          "Claude-Web",       // Anthropic
-          "ClaudeBot",        // Anthropic
-          "anthropic-ai",     // Anthropic
+          "ChatGPT-User",     // OpenAI ChatGPT
           "PerplexityBot",    // Perplexity
-          "Cohere-ai",        // Cohere
-          "CCBot",            // Common Crawl (used by many AI trainers)
-          "FacebookBot",      // Meta AI
-          "Google-Extended",  // Google Bard/Gemini training
-          "Bytespider",       // TikTok/ByteDance
-          "Diffbot",          // Data extraction
-          "omgili",           // Data harvesting
+          "ClaudeBot",        // Anthropic Claude
+          "Claude-Web",       // Anthropic Claude
+          "anthropic-ai",
+          "Google-Extended",  // Google Gemini / AI Overviews
+        ],
+        allow: [
+          "/episodes/",
+          "/people/",
+          "/topics/",
+          "/lore/",
+          "/eras/",
+          "/archetypes/",
+          "/collections/",
+          "/lexicon/",
+          "/symbols/",
+          "/series/",
+          "/graph/",
+        ],
+        disallow: [
+          "/api/",
+          "/admin/",
+          "/auth/",
+          "/oracle/",          // paid AI feature — don't let them replicate it
+          "/psychenomicon/",   // premium narrative content
+          "/settings/",
+          "/members/",
+          "/cards/",
+          "/salon/",
+          "/red-room/",
+          "/onboarding/",
+          "/claim/",
+          "/user/",
+        ],
+      },
+
+      // AI *training* crawlers — block entirely.
+      // These scrape content for LLM training datasets and contribute zero
+      // search traffic or citations in return.
+      {
+        userAgent: [
+          "CCBot",             // Common Crawl — primary LLM training source
+          "Bytespider",        // TikTok/ByteDance training
+          "FacebookBot",       // Meta AI training
+          "Cohere-ai",
+          "Diffbot",           // Data extraction service
+          "omgili",
           "omgilibot",
           "peer39_crawler",
           "Scrapy",
@@ -40,4 +78,3 @@ export default function robots(): MetadataRoute.Robots {
     sitemap: `${baseUrl}/sitemap.xml`,
   };
 }
-

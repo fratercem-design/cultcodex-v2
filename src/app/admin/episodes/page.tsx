@@ -11,18 +11,21 @@ import {
   buildPaginationMeta,
 } from "@/lib/pagination";
 import { EpisodeBulkActions } from "./bulk-actions";
+import { EnrichQueueToggle } from "./enrich-queue-toggle";
 
 interface PageProps {
-  searchParams: Promise<{ page?: string; status?: string; q?: string }>;
+  searchParams: Promise<{ page?: string; status?: string; q?: string; filter?: string }>;
 }
 
 export default async function AdminEpisodesPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const statusFilter = params.status;
   const search = params.q;
+  const filterMode = params.filter; // "enrich" = show only queued-for-enrichment
 
   const where = {
     ...(statusFilter ? { status: statusFilter as ContentStatus } : {}),
+    ...(filterMode === "enrich" ? { enrichmentQueued: true } : {}),
     ...(search
       ? { title: { contains: search, mode: "insensitive" as const } }
       : {}),
@@ -45,6 +48,7 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
       airDate: true,
       status: true,
       contentType: true,
+      enrichmentQueued: true,
       _count: { select: { guests: true, topics: true } },
     },
   });
@@ -93,7 +97,7 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
               key={s}
               href={`/admin/episodes${s !== "all" ? `?status=${s}` : ""}`}
               className={`rounded-full border px-3 py-1 font-mono text-[10px] transition-colors ${
-                (statusFilter ?? "all") === s || (!statusFilter && s === "all")
+                !filterMode && ((statusFilter ?? "all") === s || (!statusFilter && s === "all"))
                   ? "border-accent-gold text-accent-gold bg-accent-gold/10"
                   : "border-border text-text-muted hover:border-accent-gold/50"
               }`}
@@ -101,6 +105,16 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
               {s.charAt(0).toUpperCase() + s.slice(1)}
             </Link>
           ))}
+          <Link
+            href="/admin/episodes?filter=enrich"
+            className={`rounded-full border px-3 py-1 font-mono text-[10px] transition-colors ${
+              filterMode === "enrich"
+                ? "border-accent-gold text-accent-gold bg-accent-gold/10"
+                : "border-border text-text-muted hover:border-accent-gold/50"
+            }`}
+          >
+            ⚡ Enrich Queue
+          </Link>
         </div>
       </div>
 
@@ -144,12 +158,18 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
                   {ep._count.topics}
                 </td>
                 <td className="px-3 py-2 text-right">
-                  <Link
-                    href={`/admin/episodes/${ep.id}/edit`}
-                    className="font-mono text-[10px] text-accent-gold hover:underline"
-                  >
-                    Edit
-                  </Link>
+                  <div className="flex items-center justify-end gap-2">
+                    <EnrichQueueToggle
+                      episodeId={ep.id}
+                      queued={ep.enrichmentQueued}
+                    />
+                    <Link
+                      href={`/admin/episodes/${ep.id}/edit`}
+                      className="font-mono text-[10px] text-accent-gold hover:underline"
+                    >
+                      Edit
+                    </Link>
+                  </div>
                 </td>
               </tr>
             ))}

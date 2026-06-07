@@ -86,6 +86,8 @@ model Episode {
   /** Set by an admin after manually reading and verifying the AI summary */
   isHumanReviewed Boolean       @default(false)
   humanReviewedAt DateTime?
+  /** Manually queued by admin for (re-)enrichment even if summaryLong already exists */
+  enrichmentQueued Boolean      @default(false)
   series          Series?       @relation(fields: [seriesId], references: [id])
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -136,6 +138,7 @@ model Person {
   shortBio                 String?
   loreSummary              String?
   avatarUrl                String?
+  youtubeChannelUrl        String?
   personType               PersonType @default(guest)
   searchText               String?
   firstAppearanceEpisodeId String?
@@ -436,6 +439,7 @@ model CodexUser {
   salonPosts              SalonPost[]
   decks                   Deck[]
   signalProposals         SignalProposal[]
+  annotations             Annotation[]
 }
 
 model CodexSession {
@@ -1067,6 +1071,17 @@ model SignalProposal {
   @@index([createdAt])
 }
 
+// ─── Stripe Webhook Event Deduplication ───────────────
+// Records processed Stripe event IDs so retried webhooks are no-oped.
+// Rows expire naturally — Stripe event IDs are globally unique.
+model StripeWebhookEvent {
+  id          String   @id          // Stripe event id (evt_…)
+  type        String                // event type, e.g. "checkout.session.completed"
+  processedAt DateTime @default(now())
+
+  @@index([processedAt])
+}
+
 // ─── Weekly Digest ────────────────────────────────────
 // Admin-curated "This week in the archive" selections.
 // quoteIds / episodeIds / personIds are arrays of DB IDs
@@ -1084,4 +1099,25 @@ model WeeklyDigest {
   updatedAt  DateTime @updatedAt
 
   @@index([weekOf])
+}
+
+// ─── Community Annotations ─────────────────────────────
+// Member-submitted notes/connections on archive entities. Submitted by
+// subscribers, displayed publicly once approved. Moderated at
+// /admin/annotations. targetId is the entity SLUG (stable, URL-aligned).
+model Annotation {
+  id         String   @id @default(cuid())
+  userId     String
+  user       CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetType String   // "episode" | "lore" | "person" | "topic"
+  targetId   String   // slug of the target entity
+  body       String   @db.Text
+  status     String   @default("pending") // pending | approved | hidden
+  votes      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([targetType, targetId, status])
+  @@index([userId])
+  @@index([status])
 }

@@ -6,6 +6,7 @@ import {
   IconTarot,
   IconPerson,
   IconMicrophone,
+  IconScroll,
 } from "@/components/graphics/codex-icons";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { getCounts } from "@/lib/queries/stats";
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/start-here" },
   title: "Start Here — CULT CODEX",
   description:
-    "Cult of Psyche is a livestream show exploring consciousness, the occult, AI, and human behavior. CultCodex is the structured archive of everything that happened — 2,500+ transmissions, every word indexed, every pattern extracted.",
+    "Cult of Psyche is a live streaming show — back since October 2024 after years away. CultCodex is the structured archive of every transmission: every word indexed, every pattern extracted, every figure profiled.",
 };
 
 const DOORWAYS = [
@@ -63,6 +64,15 @@ const DOORWAYS = [
       "Open panels, Troll Tribunal, legendary guests, chaos streams. Where the script gets thrown out and the cult does what it does best.",
     href: "/collections/wild-conversations",
     accent: "gold" as const,
+  },
+  {
+    icon: <IconScroll size={36} />,
+    title: "Lore Archive",
+    question: "What keeps getting referenced?",
+    description:
+      "Running myths, recurring entities, cult in-jokes, and the growing mythology the archive has catalogued since the show's return.",
+    href: "/lore",
+    accent: "cyan" as const,
   },
 ] as const;
 
@@ -121,31 +131,61 @@ export default async function StartHerePage() {
   return (
     <main id="main-content" className="mx-auto max-w-5xl px-4 py-12 space-y-20">
 
-      {/* ── 0. Personalized path CTA ── */}
-      <section className="max-w-2xl mx-auto">
-        <div className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface overflow-hidden">
-          <div className="p-7 space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
-              {"/// not sure where to start?"}
-            </p>
-            <h2 className="font-display text-xl font-bold text-text-primary">
-              Let the archive find you.
-            </h2>
-            <p className="font-mono text-[11px] text-text-muted leading-relaxed">
-              Three questions. The archive calibrates around your answers and
-              gives you five episodes, three people, and two Oracle prompts
-              tailored to where you are right now.
-            </p>
-          </div>
-          <div className="border-t border-accent-violet/20 bg-accent-violet/5 px-7 py-4 flex items-center justify-between gap-3">
-            <p className="font-mono text-[10px] text-text-muted">Takes 30 seconds.</p>
-            <Link
-              href="/start-here/quiz"
-              className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-5 py-2 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25"
-            >
-              Find your path →
-            </Link>
-          </div>
+      {/* ── 0. Six doorways (top — primary entry) ── */}
+      <section className="space-y-6">
+        <div className="text-center space-y-1">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
+            {"/// enter_the_archive"}
+          </p>
+          <p className="font-display text-lg text-text-primary">Start with what&apos;s pulling on you.</p>
+          <p className="font-mono text-xs text-text-muted max-w-md mx-auto">
+            Forget categories. These are the six territories the archive keeps returning to.
+            Pick the one that resonates right now.
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {DOORWAYS.map((d) => {
+            const a = accentMap[d.accent];
+            return (
+              <Link
+                key={d.title}
+                href={d.href}
+                className={`group relative flex flex-col gap-4 rounded-lg border ${a.border} bg-surface p-6 transition-all ${a.hover} hover:-translate-y-0.5`}
+              >
+                <div className={`${a.icon} transition-transform group-hover:scale-110`}>{d.icon}</div>
+                <div className="space-y-1">
+                  <h2 className={`font-display text-lg font-bold ${a.title}`}>{d.title}</h2>
+                  <p className={`font-mono text-xs italic ${a.question}`}>&ldquo;{d.question}&rdquo;</p>
+                </div>
+                <p className="text-xs text-text-muted leading-relaxed flex-1">{d.description}</p>
+                <span className={`font-mono text-[10px] uppercase tracking-widest ${a.question} inline-flex items-center gap-2 group-hover:gap-3 transition-all`}>
+                  Enter this doorway <span aria-hidden>→</span>
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+
+        <div className="flex flex-wrap gap-3 justify-center pt-2">
+          <Link
+            href="/episodes"
+            className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet hover:bg-accent-violet-dim transition-colors"
+          >
+            Full archive →
+          </Link>
+          <Link
+            href="/topics"
+            className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-cyan/30 text-accent-cyan hover:bg-accent-cyan-dim transition-colors"
+          >
+            Browse all signals →
+          </Link>
+          <Link
+            href="/search"
+            className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold hover:bg-accent-gold-dim transition-colors"
+          >
+            Search directly →
+          </Link>
         </div>
       </section>
 
@@ -167,15 +207,15 @@ export default async function StartHerePage() {
 
         <div className="space-y-4 text-left rounded-2xl border border-border bg-surface p-7">
           <p className="text-sm text-text-muted leading-relaxed">
-            <span className="text-text-primary font-semibold">Cult of Psyche is a livestream show.</span>{" "}
+            <span className="text-text-primary font-semibold">Cult of Psyche is a live streaming show.</span>{" "}
             Unscripted, unfiltered panels between a host and rotating guests — exploring consciousness,
             the occult, AI, human psychology, and whatever was happening that day. No script.
             No editorial filter. Just the conversation and wherever it went.
           </p>
           <p className="text-sm text-text-muted leading-relaxed">
-            It ran for years. Thousands of conversations. The community that formed around it
-            became part of the content — guests became recurring figures, dynamics became lore,
-            conflicts became mythology.
+            The show went dark for years. It came back in October 2024 — live streaming, rotating
+            guests, the same format, a different frequency. Guests became recurring figures, dynamics
+            became lore, conflicts became mythology.
           </p>
           <p className="text-sm text-text-muted leading-relaxed">
             <span className="text-accent-gold font-semibold">CultCodex is what that became.</span>{" "}
@@ -247,61 +287,31 @@ export default async function StartHerePage() {
 
       <MysticalDivider />
 
-      {/* ── 3. Five doorways ── */}
-      <section className="space-y-6">
-        <div className="text-center space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-            {"/// enter_the_archive"}
-          </p>
-          <p className="font-display text-lg text-text-primary">Start with what&apos;s pulling on you.</p>
-          <p className="font-mono text-xs text-text-muted max-w-md mx-auto">
-            Forget categories. These are the five territories the archive keeps returning to.
-            Pick the one that resonates right now.
-          </p>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {DOORWAYS.map((d) => {
-            const a = accentMap[d.accent];
-            return (
-              <Link
-                key={d.title}
-                href={d.href}
-                className={`group relative flex flex-col gap-4 rounded-lg border ${a.border} bg-surface p-6 transition-all ${a.hover} hover:-translate-y-0.5`}
-              >
-                <div className={`${a.icon} transition-transform group-hover:scale-110`}>{d.icon}</div>
-                <div className="space-y-1">
-                  <h2 className={`font-display text-lg font-bold ${a.title}`}>{d.title}</h2>
-                  <p className={`font-mono text-xs italic ${a.question}`}>&ldquo;{d.question}&rdquo;</p>
-                </div>
-                <p className="text-xs text-text-muted leading-relaxed flex-1">{d.description}</p>
-                <span className={`font-mono text-[10px] uppercase tracking-widest ${a.question} inline-flex items-center gap-2 group-hover:gap-3 transition-all`}>
-                  Enter this doorway <span aria-hidden>→</span>
-                </span>
-              </Link>
-            );
-          })}
-        </div>
-
-        <div className="flex flex-wrap gap-3 justify-center pt-2">
-          <Link
-            href="/episodes"
-            className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet hover:bg-accent-violet-dim transition-colors"
-          >
-            Full archive →
-          </Link>
-          <Link
-            href="/topics"
-            className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-cyan/30 text-accent-cyan hover:bg-accent-cyan-dim transition-colors"
-          >
-            Browse all signals →
-          </Link>
-          <Link
-            href="/search"
-            className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold hover:bg-accent-gold-dim transition-colors"
-          >
-            Search directly →
-          </Link>
+      {/* ── 3. Personalized path CTA (quiz) ── */}
+      <section className="max-w-2xl mx-auto">
+        <div className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface overflow-hidden">
+          <div className="p-7 space-y-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
+              {"/// not sure where to start?"}
+            </p>
+            <h2 className="font-display text-xl font-bold text-text-primary">
+              Let the archive find you.
+            </h2>
+            <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+              Three questions. The archive calibrates around your answers and
+              gives you five episodes, three people, and two Oracle prompts
+              tailored to where you are right now.
+            </p>
+          </div>
+          <div className="border-t border-accent-violet/20 bg-accent-violet/5 px-7 py-4 flex items-center justify-between gap-3">
+            <p className="font-mono text-[10px] text-text-muted">Takes 30 seconds.</p>
+            <Link
+              href="/start-here/quiz"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-5 py-2 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25"
+            >
+              Find your path →
+            </Link>
+          </div>
         </div>
       </section>
 

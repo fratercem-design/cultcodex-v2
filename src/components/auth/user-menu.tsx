@@ -70,6 +70,20 @@ export function UserMenu({ user }: UserMenuProps) {
             ✦ Member Profile
           </Link>
           <Link
+            href="/rank"
+            className="block w-full px-3 py-2 text-left text-xs text-text-primary hover:bg-elevated transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            ▲ Your Rank
+          </Link>
+          <Link
+            href="/quests"
+            className="block w-full px-3 py-2 text-left text-xs text-text-primary hover:bg-elevated transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            ◈ The Trials
+          </Link>
+          <Link
             href="/members"
             className="block w-full px-3 py-2 text-left text-xs text-text-muted hover:bg-elevated transition-colors"
             onClick={() => setOpen(false)}

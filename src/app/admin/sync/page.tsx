@@ -18,6 +18,7 @@ export default async function SyncPage() {
     withoutTranscript,
     withYoutubeId,
     unenrichedEpisodes,
+    enrichmentQueued,
     unenrichedPeople,
     totalPeople,
   ] = await Promise.all([
@@ -38,6 +39,7 @@ export default async function SyncPage() {
         ],
       },
     }),
+    prisma.episode.count({ where: { enrichmentQueued: true } }),
     prisma.person.count({
       where: {
         guestAppearances: { some: {} },
@@ -65,6 +67,7 @@ export default async function SyncPage() {
           { label: "Have transcript", value: withTranscript, color: "text-accent-violet" },
           { label: "Need transcript", value: withoutTranscript, color: "text-accent-cyan" },
           { label: "Need enrichment", value: unenrichedEpisodes, color: "text-accent-gold" },
+          { label: "⚡ Enrich queued", value: enrichmentQueued, color: "text-accent-gold" },
           { label: "With YouTube ID", value: withYoutubeId, color: "text-text-muted" },
           { label: "Total people", value: totalPeople, color: "text-text-muted" },
           { label: "Need profiles", value: unenrichedPeople, color: "text-accent-crimson" },
@@ -84,6 +87,7 @@ export default async function SyncPage() {
       <SyncPanel
         withoutTranscript={withoutTranscript}
         unenrichedEpisodes={unenrichedEpisodes}
+        enrichmentQueued={enrichmentQueued}
         unenrichedPeople={unenrichedPeople}
         enrichSecret={enrichSecret}
       />

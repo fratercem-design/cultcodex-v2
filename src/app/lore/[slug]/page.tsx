@@ -17,6 +17,7 @@ import { formatDate } from "@/lib/format/date";
 import { editorialFrame } from "@/lib/format/editorial-frame";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
+import { AnnotationSection } from "@/components/annotations/annotation-section";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
@@ -227,6 +228,14 @@ export default async function LoreDetailPage({ params }: PageProps) {
               />
             </SectionCard>
           </div>
+        </div>
+
+        <div className="mt-10">
+          <AnnotationSection
+            targetType="lore"
+            targetId={entry.slug}
+            returnPath={`/lore/${entry.slug}`}
+          />
         </div>
 
         <SuggestCorrection

@@ -61,7 +61,7 @@ export default function TarotWaitlistPage() {
         </div>
 
         {/* Hero */}
-        <div style={{ marginBottom: 48 }}>
+        <div style={{ marginBottom: 40 }}>
           <p style={{
             fontSize: 10,
             color: "var(--neon-3)",
@@ -70,7 +70,7 @@ export default function TarotWaitlistPage() {
             textShadow: "var(--glow-magenta, 0 0 8px currentColor)",
             marginBottom: 12,
           }}>
-            {"// COMING SOON"}
+            {"// CULT OF PSYCHE TAROT SYSTEM v2.0"}
           </p>
           <h1 style={{
             fontSize: 32,
@@ -96,6 +96,53 @@ export default function TarotWaitlistPage() {
             The archive made tangible.
           </p>
         </div>
+
+        {/* Digital Oracle CTA */}
+        <Link href="/tarot/oracle" style={{ textDecoration: "none", display: "block", marginBottom: 48 }}>
+          <div style={{
+            border: "1px solid var(--neon-3)",
+            borderRadius: 8,
+            padding: "24px 28px",
+            backgroundColor: "var(--term-bg-1)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 20,
+            cursor: "pointer",
+            transition: "background-color 0.2s",
+          }}
+            onMouseEnter={e => (e.currentTarget.style.backgroundColor = "rgba(255,43,214,0.06)")}
+            onMouseLeave={e => (e.currentTarget.style.backgroundColor = "var(--term-bg-1)")}
+          >
+            <div>
+              <div style={{
+                fontSize: 10,
+                color: "var(--neon-3)",
+                letterSpacing: "0.3em",
+                marginBottom: 6,
+                textShadow: "var(--glow-magenta, 0 0 6px currentColor)",
+              }}>
+                {"// DIGITAL ORACLE — LIVE NOW"}
+              </div>
+              <div style={{ fontSize: 16, color: "var(--term-fg)", fontWeight: 600, letterSpacing: "0.02em", marginBottom: 6 }}>
+                Pull a reading from the archive
+              </div>
+              <div style={{ fontSize: 11, color: "var(--term-fg-dim)", lineHeight: 1.6, maxWidth: 420 }}>
+                80 cards online. Single signal, three-card triad, or full five-position protocol.
+                Every transmission drawn from the Cult of Psyche codex.
+              </div>
+            </div>
+            <div style={{
+              fontSize: 24,
+              color: "var(--neon-3)",
+              opacity: 0.7,
+              flexShrink: 0,
+              textShadow: "var(--glow-magenta, 0 0 12px currentColor)",
+            }}>
+              ◆ →
+            </div>
+          </div>
+        </Link>
 
         {/* Stats strip */}
         <div style={{
@@ -258,7 +305,10 @@ export default function TarotWaitlistPage() {
         </div>
 
         {/* Footer links */}
-        <div style={{ marginTop: 40, display: "flex", gap: 24 }}>
+        <div style={{ marginTop: 40, display: "flex", gap: 24, flexWrap: "wrap" }}>
+          <Link href="/tarot/oracle" style={{ fontSize: 10, color: "var(--neon-3)", textDecoration: "none", letterSpacing: "0.08em" }}>
+            ◆ OPEN ORACLE
+          </Link>
           <Link href="/cards" style={{ fontSize: 10, color: "var(--term-fg-faint)", textDecoration: "none", letterSpacing: "0.08em" }}>
             ← DIGITAL CARDS
           </Link>

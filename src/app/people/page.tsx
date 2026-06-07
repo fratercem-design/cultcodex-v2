@@ -22,7 +22,7 @@ export const revalidate = 600;
 export const metadata = {
   alternates: { canonical: "/people" },
   title: "People — CULT CODEX",
-  description: "1,300+ voices profiled from the Cult of Psyche archive. Behavioral signatures, recurring dynamics, appearance counts, and transcript moments for every figure who entered the stream.",
+  description: "Hosts, recurring figures, and profiled guests from the Cult of Psyche archive. One-time appearances and unknowns are compiled at /people/the-rest.",
 };
 
 const SORT_OPTIONS = [
@@ -32,11 +32,11 @@ const SORT_OPTIONS = [
   { label: "Most Lore", value: "lore" },
 ];
 
+// Guests and mentioned now route to /people/the-rest — only show profiled types in filters
 const FILTER_OPTIONS = [
   { label: "Host", value: "host" },
   { label: "Recurring", value: "recurring" },
-  { label: "Guest", value: "guest" },
-  { label: "Mentioned", value: "mentioned" },
+  { label: "Guest (profiled)", value: "guest" },
 ];
 
 interface PeoplePageProps {
@@ -100,7 +100,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
     <EntityGlanceBar items={glanceItems} />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
       {/* Graph teaser */}
-      <div className="mb-5 flex items-center justify-between gap-4 rounded-lg border border-accent-violet/20 bg-accent-violet/5 px-4 py-3">
+      <div className="mb-3 flex items-center justify-between gap-4 rounded-lg border border-accent-violet/20 bg-accent-violet/5 px-4 py-3">
         <p className="font-mono text-[11px] text-text-muted">
           <span className="text-accent-violet font-bold">Relationship Map</span>
           {" "}— see who appeared with whom across the entire archive, as a live network graph.
@@ -110,6 +110,20 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
           className="shrink-0 inline-flex items-center gap-1 rounded border border-accent-violet/40 bg-surface px-3 py-1.5 font-mono text-[10px] font-bold text-accent-violet hover:bg-accent-violet/10 transition-colors whitespace-nowrap"
         >
           View map →
+        </Link>
+      </div>
+
+      {/* The Rest callout */}
+      <div className="mb-5 flex items-center justify-between gap-4 rounded-lg border border-border bg-surface px-4 py-3">
+        <p className="font-mono text-[11px] text-text-muted">
+          <span className="text-text-primary font-bold">THE REST</span>
+          {" "}— one-time guests, unknowns, and figures without full profiles are compiled in a single collective entry rather than individual stubs.
+        </p>
+        <Link
+          href="/people/the-rest"
+          className="shrink-0 inline-flex items-center gap-1 rounded border border-border bg-elevated px-3 py-1.5 font-mono text-[10px] font-bold text-text-muted hover:text-text-primary hover:border-accent-gold/30 transition-colors whitespace-nowrap"
+        >
+          View entry →
         </Link>
       </div>
 
