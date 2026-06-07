@@ -2,6 +2,9 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 
+// Admin pages require authentication — never statically pre-render them.
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Admin — CULT CODEX",
   robots: { index: false, follow: false },
@@ -27,3 +30,4 @@ export default async function AdminLayout({
     </div>
   );
 }
+
