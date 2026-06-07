@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
@@ -458,10 +458,12 @@ function setTrialCookie(res: NextResponse, used: number, month: string): void {
   });
 }
 
-function getAnthropicClient() {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set.");
-  return new Anthropic({ apiKey });
+function getBedrockClient() {
+  // Let the AWS SDK credential chain pick up AWS_ACCESS_KEY_ID + AWS_SECRET_ACCESS_KEY
+  // from environment automatically — don't pass them explicitly.
+  return new AnthropicBedrock({
+    awsRegion: process.env.AWS_REGION ?? "us-east-1",
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -519,8 +521,8 @@ export async function POST(req: NextRequest) {
         }
       : undefined;
 
-  // Verify Anthropic API key is configured
-  if (!process.env.ANTHROPIC_API_KEY) {
+  // Verify AWS credentials are present
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
     return NextResponse.json(
       { ok: false, error: "Oracle not configured." } satisfies OracleResponse,
       { status: 500 }
@@ -613,15 +615,31 @@ export async function POST(req: NextRequest) {
 
   let answer: string;
   try {
-    const client = getAnthropicClient();
-    const model = process.env.ORACLE_MODEL ?? "claude-opus-4-8";
-    console.log(`[oracle] invoking model: ${model}`);
-    const completion = await client.messages.create({
-      model,
-      max_tokens: 400,
-      system: ORACLE_SYSTEM,
-      messages: [{ role: "user", content: `Archive context:\n${contextText}\n\n${contextPreamble}Question: ${question}` }],
-    });
+    const client = getBedrockClient();
+    const modelPreference = [
+      process.env.ORACLE_MODEL,
+      "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+      "us.anthropic.claude-3-5-haiku-20241022-v1:0",
+    ].filter(Boolean) as string[];
+
+    let completion: Awaited<ReturnType<typeof client.messages.create>> | null = null;
+    let lastErr: unknown;
+    for (const model of modelPreference) {
+      try {
+        console.log(`[oracle] trying: ${model}`);
+        completion = await client.messages.create({
+          model,
+          max_tokens: 400,
+          system: ORACLE_SYSTEM,
+          messages: [{ role: "user", content: `Archive context:\n${contextText}\n\n${contextPreamble}Question: ${question}` }],
+        });
+        break;
+      } catch (e) {
+        console.error(`[oracle] ${model} failed:`, e instanceof Error ? e.message : e);
+        lastErr = e;
+      }
+    }
+    if (!completion) throw lastErr;
 
     const block = completion.content[0];
     const text = block?.type === "text" ? block.text.trim() : null;
