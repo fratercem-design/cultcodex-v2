@@ -37,6 +37,8 @@ jobs:
 
       - name: Type check
         run: npx tsc --noEmit
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
 
       - name: Lint
         run: npm run lint
@@ -105,6 +107,7 @@ jobs:
           STRIPE_SECRET_KEY: sk_test_placeholder
           STRIPE_WEBHOOK_SECRET: whsec_placeholder
           ENRICH_SECRET: ci-placeholder
+          NODE_OPTIONS: --max-old-space-size=4096
 
   # ── Job 4: Security audit ────────────────────────────────────────────────────
   # Gate: critical vulnerabilities block merge.

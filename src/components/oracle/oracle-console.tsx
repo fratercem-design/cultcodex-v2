@@ -39,6 +39,7 @@ function useTypewriter(text: string, active: boolean, speed = 16) {
 
   useEffect(() => {
     if (!active || !text) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDisplayed(text);
       return;
     }
