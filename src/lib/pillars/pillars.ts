@@ -310,6 +310,105 @@ export const PILLARS: Pillar[] = [
     ],
     related: ["human-behavior"],
   },
+  {
+    slug: "music",
+    title: "Music & Performance",
+    tagline: "Freestyle, diss tracks, AI anthems, and live rap battles.",
+    metaTitle: "Music & Performance — Freestyle, Diss Tracks & AI Anthems | CultCodex",
+    metaDescription:
+      "Explore the music of Cult of Psyche: live freestyle rap battles, AI-generated diss tracks and anthems, the Biscuit Song saga, and devotional song cycles — across the archive.",
+    accent: "crimson",
+    intro: [
+      "Cult of Psyche is as much a music project as a talk show. Live freestyle battles erupt mid-panel, beef becomes diss tracks, and the host generates AI anthems that turn the show's mythology into songs you can actually play.",
+      "This archive collects the performances: the legendary rap battles, the Biscuit Song saga, the devotional cycles to the Mahavidyas, and the growing songbook of AI-produced tracks that score the Psycheverse. Music here isn't a break from the content — it's how the content crystallizes into myth.",
+      "The transmissions below are where the show stops talking and starts performing.",
+    ],
+    whatYoullFind: [
+      "Live freestyle rap battles and cyphers from the panels",
+      "AI-generated diss tracks, including the Biscuit Song saga",
+      "Devotional song cycles and the Ten Mystical Women",
+      "How beef becomes bars — conflict rendered as performance",
+      "The growing AI songbook of the Psycheverse",
+    ],
+    topicMatchers: ["music", "rap", "freestyle", "song", "diss", "battle", "bars", "anthem", "performance", "beat"],
+    faqs: [
+      {
+        q: "Does Cult of Psyche make original music?",
+        a: "Yes — live freestyles and rap battles on the panels, plus AI-generated diss tracks, anthems, and devotional songs that are part of the show's growing songbook.",
+      },
+      {
+        q: "What is the Biscuit Song?",
+        a: "An AI-generated diss track format born from the Biscuitgate feud, using biscuit and cookie metaphors to call someone out. It became a recurring musical weapon on the show.",
+      },
+    ],
+    related: ["open-panels", "occult"],
+  },
+  {
+    slug: "relationships",
+    title: "Relationships & Dating",
+    tagline: "Twin flames, situationships, attachment, and the ick.",
+    metaTitle: "Relationships & Dating — Twin Flames, Attachment & Red Flags | CultCodex",
+    metaDescription:
+      "Explore relationships and dating through the Cult of Psyche archive: twin flames, situationships, attachment styles, red flags, and the messy reality of modern love — across hundreds of transmissions.",
+    accent: "violet",
+    intro: [
+      "Few subjects light up an open panel like love. Cult of Psyche dissects relationships with a rare mix of the spiritual and the brutally practical — twin flames and attachment theory in the same breath as red flags and the ick.",
+      "This archive maps the show's running conversation about connection: situationships, love bombing and trauma bonds, the dating-panel chaos, and the tarot readings people request when they can't stop thinking about someone. It's part group therapy, part field guide, part cautionary tale.",
+      "The transmissions below are where the cult gets honest about what we do to each other in the name of love.",
+    ],
+    whatYoullFind: [
+      "Twin flames, soul connections, and karmic relationships",
+      "Situationships, the ick, and modern dating chaos",
+      "Attachment, love bombing, and trauma bonds explained",
+      "Live relationship tarot readings for viewers",
+      "Red flags and recovery, on and off the panel",
+    ],
+    topicMatchers: ["relationship", "dating", "love", "twin flame", "situationship", "attachment", "romance", "breakup", "marriage", "ex"],
+    faqs: [
+      {
+        q: "Is this relationship advice?",
+        a: "It's commentary and exploration, not professional counseling. The show discusses relationships through tarot, psychology, and lived experience — entertaining and often insightful, but not a substitute for therapy.",
+      },
+      {
+        q: "What relationship topics come up most?",
+        a: "Twin flames, situationships, attachment styles, love bombing, trauma bonds, and recovery from toxic relationships — frequently woven into live tarot readings.",
+      },
+    ],
+    related: ["spirituality", "human-behavior", "tarot"],
+  },
+  {
+    slug: "mythology",
+    title: "Mythology & Archetypes",
+    tagline: "Jungian archetypes, gods, and the myths we live by.",
+    metaTitle: "Mythology & Archetypes — Jung, Gods & the Hero's Journey | CultCodex",
+    metaDescription:
+      "Explore mythology and archetypes through the Cult of Psyche archive: Jungian archetypes, world mythologies, the hero's journey, and the living mythology the show builds around itself.",
+    accent: "gold",
+    intro: [
+      "Cult of Psyche treats mythology as a living language. Jungian archetypes, Hindu deities, Greek and Egyptian gods, and the hero's journey aren't academic references here — they're lenses for reading real people and real events on the panel.",
+      "This archive traces the show's mythic vocabulary: the archetypes guests embody, the gods invoked in readings, and the Psychenomicon itself — the running mythology the cult builds from its own history, turning livestream drama into legend.",
+      "The transmissions below are where ordinary internet chaos gets read as something older and stranger.",
+    ],
+    whatYoullFind: [
+      "Jungian archetypes — shadow, anima, the self — applied live",
+      "World mythologies: Hindu, Greek, Egyptian, Celtic",
+      "The hero's journey as a frame for real lives",
+      "The Psychenomicon — the show's self-built mythology",
+      "How guests become archetypes in the archive",
+    ],
+    topicMatchers: ["myth", "mythology", "archetype", "jung", "god", "goddess", "hero", "legend", "deity", "folklore"],
+    faqs: [
+      {
+        q: "How does the show use mythology?",
+        a: "As a practical lens — Jungian archetypes and world mythologies are used to interpret real people and events on the panel, and to build the Psychenomicon, the show's own living mythology.",
+      },
+      {
+        q: "What is the Psychenomicon?",
+        a: "The forbidden chronicle of the Cult of Psyche — a living grimoire that documents every soul, saga, and spectacle from the show's transmissions as an evolving mythology.",
+      },
+    ],
+    related: ["occult", "tarot", "consciousness"],
+  },
 ];
 
 export function getPillarBySlug(slug: string): Pillar | undefined {

@@ -19,7 +19,7 @@ export default function ExploreIndexPage() {
     <>
       <PageHero
         title="EXPLORE THE ARCHIVE"
-        subtitle="Eight territories the Cult keeps returning to."
+        subtitle={`${PILLARS.length} territories the Cult keeps returning to.`}
         backgroundImage="/hero-bg.jpg"
         label="explore"
       />
