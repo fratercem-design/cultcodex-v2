@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Admin — CULT CODEX",
   robots: { index: false, follow: false },
