@@ -13,6 +13,7 @@ import type { Metadata } from "next";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/psychenomicon/entities" },
   title: "Entity Network — Psychenomicon — CULT CODEX",
   description: "All tracked entities and their co-appearance relationships across Psychenomicon chapters.",
 };
@@ -26,7 +27,7 @@ export default async function EntitiesPage() {
     return (
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">/// initiate_only</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">{"/// initiate_only"}</p>
           <p className="font-display text-xl font-bold text-text-primary">Entity network sealed.</p>
           <Link href="/premium#access" className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors">
             Become Initiate+ →
@@ -136,7 +137,7 @@ export default async function EntitiesPage() {
         {nodes.length === 0 ? (
           <div className="py-20 text-center space-y-6">
             <p className="font-mono text-4xl text-accent-violet/20">ψ</p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">/// no_entities_recorded</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">{"/// no_entities_recorded"}</p>
             <p className="text-sm text-text-muted leading-relaxed max-w-sm mx-auto">
               Entities are extracted automatically when Psychenomicon chapters are generated. Each significant person becomes a tracked entity with archetype evolution, radar traits, and chapter appearances.
             </p>
@@ -165,7 +166,7 @@ export default async function EntitiesPage() {
 
         {/* Entity grid */}
         <div className="space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// all_entities</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// all_entities"}</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {entities.map((e) => {
               const latestEvent = e.archetypeEvents[0];

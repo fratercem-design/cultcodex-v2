@@ -70,6 +70,10 @@ model Episode {
   thumbnailUrl    String?
   summaryShort    String?
   summaryLong     String?
+  /** Transcript-grounded recap: what happened, who appeared, notable moments with timestamps */
+  summaryFacts    String?
+  /** AI interpretive layer: recurring patterns, thematic significance, arc context */
+  summaryThemes   String?
   cutOfPsyche     String?
   transcriptRaw   String?
   transcriptHtml  String?
@@ -79,6 +83,11 @@ model Episode {
   status          ContentStatus @default(draft)
   contentType     ContentType   @default(original)
   seriesId        String?
+  /** Set by an admin after manually reading and verifying the AI summary */
+  isHumanReviewed Boolean       @default(false)
+  humanReviewedAt DateTime?
+  /** Manually queued by admin for (re-)enrichment even if summaryLong already exists */
+  enrichmentQueued Boolean      @default(false)
   series          Series?       @relation(fields: [seriesId], references: [id])
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -129,6 +138,7 @@ model Person {
   shortBio                 String?
   loreSummary              String?
   avatarUrl                String?
+  youtubeChannelUrl        String?
   personType               PersonType @default(guest)
   searchText               String?
   firstAppearanceEpisodeId String?
@@ -397,10 +407,19 @@ model CodexUser {
   memberTitle             String?   // chosen flair title e.g. "Oracle", "Acolyte"
   isPublicMember          Boolean   @default(false) // opt-in to public Member Roll
 
+  // Onboarding
+  handle                  String?   @unique
+  sigilGlyph              String?
+  onboardingCompleted     Boolean   @default(false)
+  userArchetype           String?   // archetype slug e.g. "oracle", "alchemist"
+
   // Personal codex page (system tier)
   bio                     String?
   codexSlug               String?   @unique
   codexPagePublic         Boolean   @default(true)
+  codexBanner             String?   // gradient preset: void|crimson|emerald|gold|violet|aurora|abyss|frost
+  codexLinks              Json?     // [{label: string, url: string}][] up to 5
+  codexShowCards          Boolean   @default(false)
 
   reactions               EpisodeReaction[]
   comments                CodexComment[]
@@ -417,6 +436,10 @@ model CodexUser {
   wallet                  UserWallet?
   packPurchases           PackPurchase[]
   quoteReactions          QuoteReaction[]
+  salonPosts              SalonPost[]
+  decks                   Deck[]
+  signalProposals         SignalProposal[]
+  annotations             Annotation[]
 }
 
 model CodexSession {
@@ -496,6 +519,38 @@ model CommentReport {
   createdAt DateTime     @default(now())
 
   @@unique([commentId, userId])
+}
+
+// ─── Salon (Oracle-tier members space) ─────────────
+
+/// A discussion prompt/topic in the Salon. Authored by staff (admin).
+model SalonThread {
+  id        String      @id @default(cuid())
+  title     String
+  prompt    String      @db.Text
+  pinned    Boolean     @default(false)
+  closed    Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  posts     SalonPost[]
+
+  @@index([pinned, createdAt])
+}
+
+/// A member contribution within a Salon thread.
+model SalonPost {
+  id            String      @id @default(cuid())
+  threadId      String
+  thread        SalonThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  userId        String
+  user          CodexUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content       String      @db.Text
+  flagged       Boolean     @default(false)
+  flaggedReason String?
+  createdAt     DateTime    @default(now())
+
+  @@index([threadId, createdAt])
+  @@index([userId])
 }
 
 // ─── Chat & Notifications ─────────────────────────
@@ -589,6 +644,11 @@ model PsychenomiconChapter {
   threadRefs     Json?
   isMajorEvent   Boolean @default(false)
   status         String  @default("stable") // stable | contested | evolving
+
+  // AI-generated art — Supabase Storage public URLs, set by the art pipeline
+  // Shape: { cover, scene_01, scene_02, scene_03 }
+  artImageUrls   Json?
+  artGeneratedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -848,7 +908,7 @@ model Card {
   statA       Int       @default(50)
   statB       Int       @default(50)
   statC       Int       @default(50)
-  abilities   String[]
+  abilities   String[]  @default([])
   personality String?
   totalMinted Int       @default(0)
   maxSupply   Int?
@@ -858,6 +918,7 @@ model Card {
 
   packCards  PackCard[]
   ownedCards OwnedCard[]
+  deckCards  DeckCard[]
 
   @@index([rarity])
   @@index([cardType])
@@ -963,4 +1024,100 @@ model PackPurchase {
 
   @@index([userId])
   @@index([packId])
+}
+
+// ─── Deck Builder ────────────────────────────────────────────────────────────
+
+model Deck {
+  id          String     @id @default(cuid())
+  userId      String
+  user        CodexUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  isPublic    Boolean    @default(false)
+  deckCards   DeckCard[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([userId])
+}
+
+model DeckCard {
+  id     String @id @default(cuid())
+  deckId String
+  deck   Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  cardId String
+  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([deckId, cardId])
+  @@index([deckId])
+}
+
+// ─── Signal Proposals ────────────────────────────────────
+// Oracle-tier members propose what gets investigated next.
+model SignalProposal {
+  id        String   @id @default(cuid())
+  userId    String
+  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question  String   @db.Text
+  context   String?  @db.Text
+  status    String   @default("open")   // open | under_review | investigating | published | declined
+  votes     Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ─── Stripe Webhook Event Deduplication ───────────────
+// Records processed Stripe event IDs so retried webhooks are no-oped.
+// Rows expire naturally — Stripe event IDs are globally unique.
+model StripeWebhookEvent {
+  id          String   @id          // Stripe event id (evt_…)
+  type        String                // event type, e.g. "checkout.session.completed"
+  processedAt DateTime @default(now())
+
+  @@index([processedAt])
+}
+
+// ─── Weekly Digest ────────────────────────────────────
+// Admin-curated "This week in the archive" selections.
+// quoteIds / episodeIds / personIds are arrays of DB IDs
+// that the public /this-week page resolves at render time.
+model WeeklyDigest {
+  id         String   @id @default(cuid())
+  weekOf     DateTime @unique
+  title      String
+  blurb      String?
+  published  Boolean  @default(false)
+  quoteIds   String[]
+  episodeIds String[]
+  personIds  String[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([weekOf])
+}
+
+// ─── Community Annotations ─────────────────────────────
+// Member-submitted notes/connections on archive entities. Submitted by
+// subscribers, displayed publicly once approved. Moderated at
+// /admin/annotations. targetId is the entity SLUG (stable, URL-aligned).
+model Annotation {
+  id         String   @id @default(cuid())
+  userId     String
+  user       CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetType String   // "episode" | "lore" | "person" | "topic"
+  targetId   String   // slug of the target entity
+  body       String   @db.Text
+  status     String   @default("pending") // pending | approved | hidden
+  votes      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([targetType, targetId, status])
+  @@index([userId])
+  @@index([status])
 }

@@ -31,6 +31,8 @@ export async function updateEpisode(id: string, formData: FormData) {
       status: formData.get("status") as ContentStatus,
       summaryShort: (formData.get("summaryShort") as string) || null,
       summaryLong: (formData.get("summaryLong") as string) || null,
+      summaryFacts: (formData.get("summaryFacts") as string) || null,
+      summaryThemes: (formData.get("summaryThemes") as string) || null,
       youtubeVideoId: (formData.get("youtubeVideoId") as string) || null,
       thumbnailUrl: (formData.get("thumbnailUrl") as string) || null,
       contentType: (formData.get("contentType") as ContentType) || null,
@@ -51,6 +53,70 @@ export async function updateEpisode(id: string, formData: FormData) {
 
   revalidatePath("/admin/episodes");
   revalidatePath("/episodes");
+}
+
+/**
+ * Toggle the human-review flag on an episode.
+ * Sets isHumanReviewed=true + humanReviewedAt=now, or clears both.
+ */
+export async function toggleHumanReview(id: string) {
+  await requireAdmin();
+
+  const episode = await prisma.episode.findUnique({
+    where: { id },
+    select: { isHumanReviewed: true },
+  });
+  if (!episode) return;
+
+  const next = !episode.isHumanReviewed;
+  await prisma.episode.update({
+    where: { id },
+    data: {
+      isHumanReviewed: next,
+      humanReviewedAt: next ? new Date() : null,
+    },
+  });
+
+  revalidatePath(`/admin/episodes/${id}/edit`);
+  revalidatePath("/episodes");
+  revalidatePath("/admin/episodes");
+}
+
+/**
+ * Toggle the enrichment-queued flag on an episode.
+ * When true, the enrichment pipeline will (re-)process this episode
+ * even if summaryLong already exists.
+ */
+export async function toggleEnrichmentQueued(id: string) {
+  await requireAdmin();
+
+  const episode = await prisma.episode.findUnique({
+    where: { id },
+    select: { enrichmentQueued: true },
+  });
+  if (!episode) return;
+
+  await prisma.episode.update({
+    where: { id },
+    data: { enrichmentQueued: !episode.enrichmentQueued },
+  });
+
+  revalidatePath(`/admin/episodes/${id}/edit`);
+  revalidatePath("/admin/episodes");
+  revalidatePath("/admin/sync");
+}
+
+/**
+ * Queue a batch of episodes for enrichment by their IDs.
+ */
+export async function bulkQueueForEnrichment(ids: string[]) {
+  await requireAdmin();
+  await prisma.episode.updateMany({
+    where: { id: { in: ids } },
+    data: { enrichmentQueued: true },
+  });
+  revalidatePath("/admin/episodes");
+  revalidatePath("/admin/sync");
 }
 
 export async function bulkUpdateEpisodeStatus(
@@ -90,6 +156,7 @@ export async function updatePerson(id: string, formData: FormData) {
       loreSummary: (formData.get("loreSummary") as string) || null,
       personType: formData.get("personType") as PersonType,
       avatarUrl: (formData.get("avatarUrl") as string) || null,
+      youtubeChannelUrl: (formData.get("youtubeChannelUrl") as string) || null,
       altNames,
     },
   });
@@ -300,6 +367,100 @@ export async function toggleLiveStream(formData: FormData) {
 
   revalidatePath("/admin/live");
   revalidatePath("/live");
+}
+
+export async function toggleAlexandraLive(formData: FormData) {
+  await requireAdmin();
+
+  const current = await prisma.liveStatus.findUnique({
+    where: { id: "alexandra-mayers" },
+  });
+
+  const isLive = current?.isLive ?? false;
+
+  if (isLive) {
+    await prisma.liveStatus.upsert({
+      where: { id: "alexandra-mayers" },
+      update: { isLive: false, endedAt: new Date() },
+      create: { id: "alexandra-mayers", isLive: false },
+    });
+  } else {
+    const videoId = (formData.get("videoId") as string) || null;
+    const title = (formData.get("title") as string) || "Alexandra Mayers Live";
+
+    await prisma.liveStatus.upsert({
+      where: { id: "alexandra-mayers" },
+      update: { isLive: true, videoId, title, startedAt: new Date(), endedAt: null },
+      create: { id: "alexandra-mayers", isLive: true, videoId, title, startedAt: new Date() },
+    });
+  }
+
+  revalidatePath("/admin/live");
+}
+
+export async function toggleNightmareFrequenciesLive(formData: FormData) {
+  await requireAdmin();
+
+  const current = await prisma.liveStatus.findUnique({
+    where: { id: "nightmare-frequencies" },
+  });
+
+  const isLive = current?.isLive ?? false;
+
+  if (isLive) {
+    await prisma.liveStatus.upsert({
+      where: { id: "nightmare-frequencies" },
+      update: { isLive: false, endedAt: new Date() },
+      create: { id: "nightmare-frequencies", isLive: false },
+    });
+  } else {
+    const videoId = (formData.get("videoId") as string) || null;
+    const title = (formData.get("title") as string) || "Nightmare Frequencies Live";
+
+    await prisma.liveStatus.upsert({
+      where: { id: "nightmare-frequencies" },
+      update: { isLive: true, videoId, title, startedAt: new Date(), endedAt: null },
+      create: { id: "nightmare-frequencies", isLive: true, videoId, title, startedAt: new Date() },
+    });
+  }
+
+  revalidatePath("/admin/live");
+}
+
+// ── User Management ──────────────────────────────────
+
+export async function grantOracleAccess(email: string) {
+  await requireAdmin();
+
+  const user = await prisma.codexUser.findUnique({ where: { email } });
+  if (!user) throw new Error(`No user found with email: ${email}`);
+
+  await prisma.codexUser.update({
+    where: { id: user.id },
+    data: {
+      role: "admin",
+      isLifetimeMember: true,
+      subscriptionStatus: "active",
+      subscriptionTier: "system",
+      currentPeriodEnd: new Date("2099-01-01"),
+      isPublicMember: true,
+    },
+  });
+
+  revalidatePath("/admin/users");
+  revalidatePath("/members");
+}
+
+export async function setMemberTitle(userId: string, title: string) {
+  await requireAdmin();
+
+  await prisma.codexUser.update({
+    where: { id: userId },
+    data: { memberTitle: title || null },
+  });
+
+  revalidatePath("/admin/users");
+  revalidatePath("/members");
 }
 
 // ── Founding Oracle Gift ──────────────────────────────────

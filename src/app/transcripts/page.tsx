@@ -27,6 +27,7 @@ import { SubscriptionCTA } from "@/components/subscription/subscription-cta";
 export const revalidate = 600;
 
 export const metadata = {
+  alternates: { canonical: "/transcripts" },
   title: "Transcripts — CULT CODEX",
   description: "Search and browse episode transcripts from the Cult of Psyche archive",
 };
@@ -54,7 +55,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
     const hasAccess = userId ? await isSubscribed(userId).catch(() => false) : false;
 
     if (!hasAccess) {
-      // Count results without returning any content — used to tease the paywall
+      {"// Count results without returning any content — used to tease the paywall"}
       const { totalCount: teasedCount } = await searchWithinTranscripts(query, { take: 0, skip: 0 });
 
       return (
@@ -70,7 +71,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
             {/* Teased result count */}
             <div className="mb-8 rounded-lg border border-accent-cyan/20 bg-accent-cyan/5 p-5 text-center">
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60 mb-2">
-                // search_results for "{query}"
+                {"// search_results for \""}{query}{"\""}
               </p>
               <div className="relative inline-block">
                 <span

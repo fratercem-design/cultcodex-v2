@@ -14,6 +14,7 @@
  */
 
 export type TierSlug = "access" | "system";
+export type BillingInterval = "month" | "year";
 
 export interface Tier {
   slug: TierSlug;
@@ -22,9 +23,11 @@ export interface Tier {
   tagline: string;
   psychologyHook: string;                // the feeling it sells
   priceMonthly: number;
+  priceAnnual: number;                   // total billed once per year
   accent: "gold" | "violet";
   badge?: string;
-  priceEnvVar: string;
+  priceEnvVar: string;                   // monthly Stripe price id env var
+  priceEnvVarAnnual: string;             // annual Stripe price id env var
   features: string[];
   unlocks: string[];
 }
@@ -37,8 +40,10 @@ export const TIERS: Tier[] = [
     tagline: "The archive stops being background noise.",
     psychologyHook: "Now I can actually understand what I'm watching.",
     priceMonthly: 10,
+    priceAnnual: 96,
     accent: "gold",
     priceEnvVar: "STRIPE_PRICE_ACCESS_ID",
+    priceEnvVarAnnual: "STRIPE_PRICE_ACCESS_ANNUAL_ID",
     features: [
       "Read every word ever spoken — searchable, timestamped",
       "Jump to any moment in any transmission, instantly",
@@ -60,9 +65,11 @@ export const TIERS: Tier[] = [
     tagline: "You're not watching anymore. You're inside it.",
     psychologyHook: "I am inside the system. Not just watching it.",
     priceMonthly: 25,
+    priceAnnual: 240,
     accent: "violet",
     badge: "Most immersive",
     priceEnvVar: "STRIPE_PRICE_SYSTEM_ID",
+    priceEnvVarAnnual: "STRIPE_PRICE_SYSTEM_ANNUAL_ID",
     features: [
       "Full Initiate+ access",
       "Your own page woven permanently into the archive",
@@ -86,11 +93,15 @@ export function getTier(slug: TierSlug): Tier {
   return t;
 }
 
-/** Look up a tier by its Stripe price id at runtime. Used by the webhook. */
+/**
+ * Look up a tier by its Stripe price id at runtime. Used by the webhook.
+ * Matches both the monthly and annual price ids for a tier.
+ */
 export function getTierByPriceId(priceId: string | null | undefined): Tier | null {
   if (!priceId) return null;
   for (const t of TIERS) {
     if (process.env[t.priceEnvVar] === priceId) return t;
+    if (process.env[t.priceEnvVarAnnual] === priceId) return t;
   }
   return null;
 }
@@ -102,8 +113,12 @@ export function tierUnlocks(tier: TierSlug | null, feature: string): boolean {
   return t?.unlocks.includes(feature) ?? false;
 }
 
-/** Resolve the Stripe price id for a tier from env. */
-export function resolvePriceId(slug: TierSlug): string | null {
+/** Resolve the Stripe price id for a tier + billing interval from env. */
+export function resolvePriceId(
+  slug: TierSlug,
+  interval: BillingInterval = "month"
+): string | null {
   const t = getTier(slug);
-  return process.env[t.priceEnvVar] ?? null;
+  const envVar = interval === "year" ? t.priceEnvVarAnnual : t.priceEnvVar;
+  return process.env[envVar] ?? null;
 }

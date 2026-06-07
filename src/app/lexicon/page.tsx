@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Panelverse Lexicon — CULT CODEX",
   description:
     "A glossary of slang, jargon, and specialized terms from the Cult of Psyche and the wider Panelverse streaming community.",
+  alternates: { canonical: "/lexicon" },
 };
 
 /* ------------------------------------------------------------------ */
@@ -980,7 +981,7 @@ const LEXICON: Term[] = [
   {
     word: "Biscuitgate",
     definition:
-      "The months-long feud between Psyche and streamer Beta/VA that began when she tormented him over 'biscuits' and escalated into diss tracks, panel raids, and tattoo revisions. The first great saga of the modern Psycheverse.",
+      "The months-long feud between Psyche and streamer Beta/VA that began when Psyche tormented him over 'biscuits' and escalated into diss tracks, panel raids, and tattoo revisions. The first great saga of the modern Psycheverse.",
     usage: "\"Biscuitgate is how the BKG was born — and how it almost ended.\"",
     origin: "Cult of Psyche — Beta vs Psyche feud arc",
     category: "psycheverse",
@@ -1939,6 +1940,679 @@ const LEXICON: Term[] = [
       "Subtly, quietly, without drawing attention. 'Lowkey I thought that episode was the best of the year.' A hedge that signals sincerity — the speaker is confessing something they weren't planning to admit.",
     category: "slang",
   },
+
+  // ── NEW ENTRIES (batch 4 — 100 terms) ──────────────────────────
+
+  // ── SLANG ───────────────────────────────────────────────────────
+  {
+    word: "Highkey",
+    definition:
+      "The opposite of lowkey — openly, obviously, with full conviction. 'Highkey the best panel of the month.' Used to signal there's no shame in the take.",
+    category: "slang",
+  },
+  {
+    word: "Mid",
+    definition:
+      "Mediocre, unremarkable, neither good nor bad. One of the harshest casual insults in panel culture — calling someone's take, music, or whole vibe 'mid' is more cutting than calling it bad, because it denies them even the dignity of failure.",
+    category: "slang",
+  },
+  {
+    word: "Goated",
+    aka: ["GOAT"],
+    definition:
+      "Greatest Of All Time. To be 'goated' is to be the best in your lane. 'That freestyle was goated.' High, unambiguous praise in the panelverse.",
+    category: "slang",
+  },
+  {
+    word: "Rizz",
+    aka: ["Rizzler"],
+    definition:
+      "Charisma, especially the romantic or persuasive kind. Someone with 'rizz' can charm their way onto any panel or out of any beef. 'He's got unspoken rizz.'",
+    category: "slang",
+  },
+  {
+    word: "Glazing",
+    definition:
+      "Excessively praising or defending someone to the point of embarrassment. A more aggressive cousin of simping — 'stop glazing him, he's not that deep.' Common accusation against loyal panel regulars.",
+    category: "slang",
+  },
+  {
+    word: "Yap",
+    aka: ["Yapping", "Yapper"],
+    definition:
+      "Talking too much, often without substance. In open panels the 'yap' is both a sin and a sport — a 'certified yapper' can hold the floor for an hour. 'Less yap, more facts.'",
+    category: "slang",
+  },
+  {
+    word: "Sus",
+    definition:
+      "Suspicious or untrustworthy. Popularized by Among Us, fully absorbed into panel slang. 'That story is sus' — something doesn't add up and the chat smells it.",
+    category: "slang",
+  },
+  {
+    word: "Bet",
+    definition:
+      "An affirmation meaning 'okay,' 'agreed,' or 'I'll hold you to that.' A one-word verbal handshake. Can also be a challenge: 'Bet.' — try me.",
+    category: "slang",
+  },
+  {
+    word: "Cap",
+    aka: ["No Cap", "Capping"],
+    definition:
+      "A lie or exaggeration. 'That's cap' means you don't believe it. 'No cap' means you're being completely honest. 'Stop capping' is a demand for the truth — frequently invoked when receipts are about to be pulled.",
+    category: "slang",
+  },
+  {
+    word: "Lock In",
+    aka: ["Locked In"],
+    definition:
+      "To focus completely and commit to the moment. 'Lock in' is the rallying cry before a serious panel, a rap battle, or a deep reading. The opposite of being distracted or half-present.",
+    category: "slang",
+  },
+  {
+    word: "Aura",
+    aka: ["Aura Points"],
+    definition:
+      "An informal measure of how cool, composed, or impressive someone is. You 'gain aura' by handling a situation smoothly and 'lose aura points' by fumbling on camera. A spiritual-sounding meme repurposed as a social scoreboard.",
+    category: "slang",
+  },
+  {
+    word: "Opp",
+    aka: ["Opps"],
+    definition:
+      "An opponent, enemy, or hater. In the panelverse your 'opps' are the channels and personalities perpetually beefing with you. 'The opps are in the chat tonight.'",
+    category: "slang",
+  },
+  {
+    word: "Pluh",
+    definition:
+      "A nonsense interjection used as filler, punctuation, or pure chaos energy in chat. Means nothing and everything. A pure artifact of livestream chat culture.",
+    category: "slang",
+  },
+  {
+    word: "Crash Out",
+    aka: ["Crashing Out", "Crashed Out"],
+    definition:
+      "To completely lose composure — emotionally melting down, raging, or self-sabotaging on camera. 'He's about to crash out' is a warning that someone's restraint is gone. Prime panel content.",
+    category: "slang",
+  },
+  {
+    word: "Pop Off",
+    definition:
+      "To go off impressively — whether ranting, performing, or destroying someone in an argument. 'Pop off!' is encouragement; 'they popped off' is a recap of a memorable moment.",
+    category: "slang",
+  },
+  {
+    word: "Gagged",
+    definition:
+      "Rendered speechless by something shocking or impressive. Borrowed from ballroom culture. 'I was gagged' means the moment left you stunned — in admiration or disbelief.",
+    category: "slang",
+  },
+  {
+    word: "The Girls Are Fighting",
+    definition:
+      "A gleeful chat phrase deployed whenever two panelists start bickering, regardless of their gender. Frames every petty conflict as catty drama for the audience's amusement.",
+    category: "slang",
+  },
+  {
+    word: "Menace",
+    aka: ["Menace to Society"],
+    definition:
+      "An affectionate label for someone who causes delightful chaos. Calling a panelist a 'menace' is half complaint, half compliment — they're a problem, but an entertaining one.",
+    category: "slang",
+  },
+  {
+    word: "Unserious",
+    definition:
+      "Not to be taken seriously — applied to a person, take, or whole vibe. 'This panel is so unserious' can be a complaint or the highest praise depending on the night.",
+    category: "slang",
+  },
+  {
+    word: "Sending Me",
+    aka: ["I'm Sent", "It Sent Me"],
+    definition:
+      "Something so funny it 'sends' you into uncontrollable laughter. 'This chat is sending me.' A measure of comedic impact.",
+    category: "slang",
+  },
+
+  // ── PANELVERSE ──────────────────────────────────────────────────
+  {
+    word: "Hot Mic",
+    definition:
+      "When a panelist's microphone is left on while they say something they didn't intend to broadcast. Hot mic moments are panelverse gold — unguarded truths, accidental confessions, background chaos.",
+    category: "panelverse",
+  },
+  {
+    word: "Dead Air",
+    definition:
+      "An awkward silence during a stream when no one is talking and nothing is happening. The enemy of every panel host. Psyche fills dead air with tarot, cat updates, or a sudden philosophical tangent.",
+    category: "panelverse",
+  },
+  {
+    word: "Green Room",
+    definition:
+      "The waiting area where guests sit before being brought onto the panel. In StreamYard, the digital green room is where alliances form, beef simmers, and people get forgotten for an hour.",
+    category: "panelverse",
+  },
+  {
+    word: "On the Decks",
+    aka: ["Bring Them On"],
+    definition:
+      "Being actively placed on the visible panel rather than waiting in the wings. 'Put them on the decks' means promote a guest from the green room to the live stage.",
+    category: "panelverse",
+  },
+  {
+    word: "Panel Hopper",
+    definition:
+      "Someone who bounces between multiple channels' panels in a single night, chasing whichever stream has the most action. Loyalty to the drama, not the host.",
+    category: "panelverse",
+  },
+  {
+    word: "Stage Diving",
+    definition:
+      "Jumping into a panel uninvited or barging into a conversation that wasn't yours. Sometimes welcomed as energy, sometimes grounds for a swift clap-off.",
+    category: "panelverse",
+  },
+  {
+    word: "The Frame",
+    definition:
+      "The visible on-screen layout of who's currently on the panel. 'Getting in the frame' means making it onto the broadcast; 'stealing the frame' means dominating attention once you're there.",
+    category: "panelverse",
+  },
+  {
+    word: "Soft Block",
+    definition:
+      "Removing someone from your panel or follows without a public announcement or permanent ban — a quiet distancing rather than a dramatic exile. The passive-aggressive cousin of the gong.",
+    category: "panelverse",
+  },
+  {
+    word: "Run It Back",
+    definition:
+      "To replay, restart, or do something again — a clip, a debate, a whole stream. 'Run it back' is the call for a rematch after a rap battle or a heated exchange.",
+    category: "panelverse",
+  },
+  {
+    word: "Cooking Up",
+    aka: ["In the Lab"],
+    definition:
+      "Working on something behind the scenes — a diss track, a collab, a comeback stream. 'He's been cooking up' signals that a major drop is coming.",
+    category: "panelverse",
+  },
+  {
+    word: "Panel Veteran",
+    aka: ["OG Panelist"],
+    definition:
+      "A long-tenured community member who has appeared across many eras of the show and remembers the deep lore. Panel veterans carry institutional memory and can settle 'who said what years ago' disputes.",
+    category: "panelverse",
+  },
+  {
+    word: "First Timer",
+    definition:
+      "Someone making their debut appearance on the panel. First timers are often gently grilled, welcomed, or tested by the regulars. How you handle your first panel sets your reputation.",
+    category: "panelverse",
+  },
+  {
+    word: "The Wings",
+    definition:
+      "The unseen periphery of a stream — green room, chat, and side DMs — where people wait, watch, and scheme before stepping into the frame. 'Waiting in the wings.'",
+    category: "panelverse",
+  },
+
+  // ── STREAMING ───────────────────────────────────────────────────
+  {
+    word: "StreamYard",
+    definition:
+      "The browser-based streaming studio many panelverse hosts use to run multi-guest broadcasts. Its duck logo and green-room mechanics are baked into panel culture — see also 'The Quack Pack.'",
+    origin: "Streaming software widely used in the panelverse",
+    category: "streaming",
+  },
+  {
+    word: "Restream",
+    definition:
+      "Broadcasting a single stream to multiple platforms at once (YouTube, Twitch, Kick, X). Maximizes reach and provides backup if one platform strikes or drops the feed mid-broadcast.",
+    category: "streaming",
+  },
+  {
+    word: "VOD",
+    aka: ["Video on Demand"],
+    definition:
+      "The recorded archive of a livestream, available to watch after the broadcast ends. 'Check the VOD' is how the community fact-checks what really happened. The raw material the Cult Codex is built from.",
+    category: "streaming",
+  },
+  {
+    word: "Clip",
+    aka: ["Clipped", "Clipper"],
+    definition:
+      "A short, shareable excerpt from a stream capturing a notable moment. 'Clip that!' is shouted live when something memorable happens. Clippers are community members who farm viral moments from long VODs.",
+    category: "streaming",
+  },
+  {
+    word: "Banger",
+    definition:
+      "An exceptionally good stream, song, clip, or moment. 'That was a banger episode.' Unqualified approval.",
+    category: "streaming",
+  },
+  {
+    word: "Going Live",
+    definition:
+      "The act of starting a broadcast. 'Going live in 5' is the rally signal that pulls the community in. The moment the portal opens.",
+    category: "streaming",
+  },
+  {
+    word: "Off Stream",
+    aka: ["Offline"],
+    definition:
+      "Anything that happens when the camera isn't rolling — DMs, phone calls, private drama. 'We settled it off stream' both resolves and hides a conflict from the audience.",
+    category: "streaming",
+  },
+  {
+    word: "Brand Deal",
+    aka: ["Sponsor"],
+    definition:
+      "A paid partnership where a creator promotes a product. Rare and complicated in the panelverse, where 'too real' content frequently scares off advertisers. Worn as both aspiration and joke.",
+    category: "streaming",
+  },
+  {
+    word: "Engagement Bait",
+    definition:
+      "Content or statements designed purely to provoke comments, shares, and arguments rather than to communicate anything. The algorithm rewards it; the community resents being played by it.",
+    category: "streaming",
+  },
+  {
+    word: "Drop a Sub",
+    aka: ["Smash That Sub"],
+    definition:
+      "A call for viewers to subscribe to the channel. The lifeblood ask of every creator, delivered with varying degrees of irony in the self-aware panelverse.",
+    category: "streaming",
+  },
+  {
+    word: "Cooked the Stream",
+    definition:
+      "When technical failure or chaos ends a broadcast prematurely — a crash, a strike, a porn bomb. 'That porn bomb cooked the stream.'",
+    category: "streaming",
+  },
+  {
+    word: "Numbers",
+    aka: ["The Numbers"],
+    definition:
+      "Live viewer count, watch hours, and subscriber stats — the metrics streamers obsess over. 'The numbers are up' or 'doing numbers' signals a stream is performing. The currency of the attention economy.",
+    category: "streaming",
+  },
+
+  // ── MODERATION ──────────────────────────────────────────────────
+  {
+    word: "Timeout",
+    aka: ["Timed Out"],
+    definition:
+      "A temporary chat suspension — a user can't type for a set duration. The mild, reversible end of the moderation spectrum, used to cool someone down rather than exile them.",
+    category: "moderation",
+  },
+  {
+    word: "Slow Mode",
+    definition:
+      "A chat setting that limits how often each user can post, used to calm a chat that's moving too fast or being flooded. A crowd-control tool during high-drama streams.",
+    category: "moderation",
+  },
+  {
+    word: "Mod Abuse",
+    definition:
+      "When a moderator misuses their powers — a broader umbrella than 'rogue mod,' covering favoritism, petty timeouts, and silencing critics. A frequent accusation hurled both fairly and unfairly.",
+    category: "moderation",
+  },
+  {
+    word: "Ban Evasion",
+    definition:
+      "Returning to a channel after being banned by using a sock puppet or new account. A cat-and-mouse game in the panelverse, where determined trolls cycle through endless alts.",
+    category: "moderation",
+  },
+  {
+    word: "Word Filter",
+    aka: ["Blocked Terms"],
+    definition:
+      "An automated list of banned words that chat messages are screened against. Savvy trolls invent creative misspellings to slip past it — an endless linguistic arms race.",
+    category: "moderation",
+  },
+  {
+    word: "Report Brigade",
+    aka: ["Mass Report"],
+    definition:
+      "A coordinated campaign where a group mass-reports a channel or video to trigger automated platform penalties. A weaponization of moderation systems against a target — Psyche has survived several.",
+    category: "moderation",
+  },
+  {
+    word: "Verified Mod",
+    definition:
+      "A moderator whose trust has been established over time, distinguished from new or probationary mods. In the panelverse, mod hierarchy is real and contested.",
+    category: "moderation",
+  },
+  {
+    word: "Cleanup Crew",
+    definition:
+      "The team of mods who spring into action during a raid, porn bomb, or chat meltdown — deleting, banning, and restoring order. The unsung first responders of a chaotic stream.",
+    category: "moderation",
+  },
+
+  // ── COMMUNITY ───────────────────────────────────────────────────
+  {
+    word: "Ride or Die",
+    definition:
+      "A community member who stays loyal through every controversy, strike, and platform migration. The highest tier of allegiance in the Psycheverse — these are the ones who show up when it counts.",
+    category: "community",
+  },
+  {
+    word: "Day One",
+    aka: ["Day Ones"],
+    definition:
+      "A supporter who has been there since the beginning. 'Day ones' carry special status and bragging rights — they remember the show before it was an archive.",
+    category: "community",
+  },
+  {
+    word: "Fairweather Fan",
+    definition:
+      "A supporter who shows up only when things are going well and disappears during controversy or low periods. The opposite of ride or die. Identified and remembered when the tide turns.",
+    category: "community",
+  },
+  {
+    word: "Lore Keeper",
+    definition:
+      "A community member who tracks and preserves the show's mythology — who feuded with whom, which episode birthed which meme. Unofficial historians whose work the Cult Codex formalizes.",
+    category: "community",
+  },
+  {
+    word: "Dogpile",
+    aka: ["Pile On"],
+    definition:
+      "When a crowd collectively attacks a single person, each adding their own jab until the target is buried. Distinct from a roast by its lack of affection — a dogpile is meant to wound.",
+    category: "community",
+  },
+  {
+    word: "Touch Base",
+    definition:
+      "To reconnect or check in with someone after time apart or after conflict. In the perpetually feuding panelverse, 'touching base' off stream is how broken alliances quietly mend.",
+    category: "community",
+  },
+  {
+    word: "Inner Circle",
+    definition:
+      "The trusted core of the community closest to Psyche — the ones with backstage access, private channels, and real influence. Distinct from the broader audience. Membership shifts with the eras.",
+    category: "community",
+  },
+  {
+    word: "Hate Watch",
+    aka: ["Hate Watching"],
+    definition:
+      "Tuning into a stream specifically because you dislike it or the host, then complaining about it. The panelverse paradox: the most dedicated haters are also the most loyal viewers.",
+    category: "community",
+  },
+  {
+    word: "Plant",
+    definition:
+      "Someone secretly aligned with one side who poses as neutral or as a member of the other camp to gather information or stir conflict. A recurring suspicion in community drama.",
+    category: "community",
+  },
+  {
+    word: "Cancelled",
+    aka: ["Cancel Culture"],
+    definition:
+      "Subjected to mass public withdrawal of support after a perceived offense. In the panelverse, 'cancelled' is often ironic — people declared cancelled keep streaming, and comebacks are routine.",
+    category: "community",
+  },
+  {
+    word: "Vouch",
+    aka: ["Vouched For"],
+    definition:
+      "To publicly stake your reputation on someone's character, smoothing their entry into the community. 'I'll vouch for them.' If they then cause drama, the voucher shares the blame.",
+    category: "community",
+  },
+  {
+    word: "Burner",
+    aka: ["Burner Account"],
+    definition:
+      "A throwaway account used to say things anonymously — confess, snitch, or attack without consequences to one's main identity. Distinct from a sock puppet by intent: a burner is for deniability, not impersonation.",
+    category: "community",
+  },
+
+  // ── TAROT & MYSTIC ──────────────────────────────────────────────
+  {
+    word: "Querent",
+    definition:
+      "The person receiving a tarot reading — the one asking the question. In Psyche's panels, anyone who throws a question into a super chat becomes a querent.",
+    category: "tarot",
+  },
+  {
+    word: "Major Arcana",
+    aka: ["Minor Arcana"],
+    definition:
+      "The 22 trump cards of the tarot (The Fool, Death, The Tower, etc.) representing major life forces and archetypes; the Minor Arcana are the 56 suit cards covering everyday matters. Psyche reads both, often weaving the Majors into the show's mythology.",
+    category: "tarot",
+  },
+  {
+    word: "Reversed",
+    aka: ["Reversal"],
+    definition:
+      "A tarot card that appears upside-down in a spread, traditionally read as a blocked, inverted, or shadow expression of its upright meaning. 'The Tower reversed' softens — or delays — the collapse.",
+    category: "tarot",
+  },
+  {
+    word: "The Tower",
+    definition:
+      "The tarot card of sudden collapse, upheaval, and revelation — the lightning-struck tower. A favorite Psyche reference for moments when someone's carefully built illusion comes crashing down on stream. 'That was a Tower moment.'",
+    category: "tarot",
+  },
+  {
+    word: "The Fool's Journey",
+    definition:
+      "The narrative arc of the Major Arcana read as one story — the soul's progression from innocence (The Fool) to completion (The World). Psyche maps personal and community sagas onto this journey.",
+    category: "tarot",
+  },
+  {
+    word: "Clarifier",
+    definition:
+      "An additional card pulled to shed light on a confusing or ambiguous card already on the table. 'Let me pull a clarifier' — the reading needs more focus before it makes sense.",
+    category: "tarot",
+  },
+  {
+    word: "Synchronicity",
+    definition:
+      "A meaningful coincidence that feels too perfect to be random — Jung's term, central to Psyche's worldview. When a card, a song, and a chat message all align, that's synchronicity confirming you're on the right frequency.",
+    category: "tarot",
+  },
+  {
+    word: "Sigil",
+    definition:
+      "A symbol charged with intention, used in chaos magick to focus the will toward a goal. Psyche connects ancient sigil-craft to modern branding, logos, and even the show's own iconography.",
+    category: "tarot",
+  },
+  {
+    word: "Egregore",
+    definition:
+      "An occult concept for a collective thoughtform — an entity generated and sustained by the shared attention and belief of a group. Psyche frames the Cult of Psyche community itself as an egregore: a living being made of attention.",
+    category: "tarot",
+  },
+  {
+    word: "Shadow Self",
+    definition:
+      "The repressed, hidden side of the personality — everything you refuse to acknowledge about yourself. Distinct from 'shadow work,' which is the practice; the shadow self is the material. The panels often drag it into the light involuntarily.",
+    category: "tarot",
+  },
+  {
+    word: "Smudging",
+    definition:
+      "The ritual of burning herbs (sage, palo santo) to cleanse a space of negative energy. Referenced when the panel feels 'off' or after a particularly toxic guest — the stream needs an energetic reset.",
+    category: "tarot",
+  },
+  {
+    word: "Solar Return",
+    definition:
+      "An astrological chart cast for the exact moment the sun returns to its natal position each year — essentially a cosmic birthday forecast. Psyche reads solar returns to map the themes of someone's coming year.",
+    category: "tarot",
+  },
+  {
+    word: "The Magician",
+    definition:
+      "The tarot card of will, manifestation, and channeling higher forces into material reality — 'as above, so below' incarnate. Psyche identifies with The Magician as the archetype of the creator who turns spirit into content.",
+    category: "tarot",
+  },
+  {
+    word: "High Priestess",
+    definition:
+      "The tarot card of intuition, hidden knowledge, and the subconscious — the keeper of mysteries behind the veil. A recurring archetype Psyche assigns to the show's most enigmatic feminine figures.",
+    category: "tarot",
+  },
+
+  // ── PSYCHEVERSE ─────────────────────────────────────────────────
+  {
+    word: "The Awakening Hour",
+    definition:
+      "Psyche's term for the peak moment of a stream when the conversation transcends drama and becomes genuine collective insight — when the panel stops performing and starts revealing. Rare and sacred.",
+    origin: "Cult of Psyche",
+    category: "psycheverse",
+  },
+  {
+    word: "Frequency",
+    definition:
+      "The energetic and intellectual register the show operates on. 'Match my frequency' or 'we're on the same frequency' signals genuine alignment. 'A different frequency' marks the show's post-2024 return — same format, evolved energy.",
+    origin: "Cult of Psyche — recurring concept",
+    category: "psycheverse",
+  },
+  {
+    word: "The Codex Keeper",
+    definition:
+      "The role of maintaining and expanding the Cult Codex archive — cataloging transmissions, profiling figures, extracting lore. Part librarian, part mythologist, part AI operator.",
+    origin: "Cult Codex",
+    category: "psycheverse",
+  },
+  {
+    word: "Mythmaking",
+    definition:
+      "The active process by which the show turns real events into legend — feuds become sagas, guests become archetypes, episodes become Cult Classics. Psyche is the chief mythmaker; the community co-authors.",
+    usage: "\"You are the stormborn architect, a mythmaker who exposes illusions.\"",
+    origin: "Cult of Psyche",
+    category: "psycheverse",
+  },
+  {
+    word: "The Transmission Log",
+    definition:
+      "The running chronological record of every episode the show has aired — the backbone of the Cult Codex. Each entry a dated signal in the larger mythology.",
+    origin: "Cult Codex",
+    category: "psycheverse",
+  },
+  {
+    word: "Cult of Two",
+    definition:
+      "Psyche's phrase for the origin point of the community — the idea that even a connection between just two people can become a movement. 'The cult of two becomes the many.'",
+    usage: "\"The cult of two becomes the many. Digital resurrection. Mystic alchemy.\"",
+    origin: "Cult of Psyche lore",
+    category: "psycheverse",
+  },
+  {
+    word: "Soul Saga",
+    definition:
+      "A long-running personal narrative tracked across many episodes — a community member's evolution through arcs, redemptions, and relapses. The Psychenomicon catalogs the major soul sagas.",
+    origin: "Cult Codex / Psychenomicon",
+    category: "psycheverse",
+  },
+  {
+    word: "The Altar",
+    definition:
+      "Psyche's on-stream setup — the candles, cards, cats, and crystals visible behind him. More than a backdrop, it's framed as a working altar that consecrates the broadcast space.",
+    origin: "Cult of Psyche — stream setup",
+    category: "psycheverse",
+  },
+  {
+    word: "Spectacle",
+    definition:
+      "The Psycheverse term for the show's deliberate theatricality — the masks, the drama, the larger-than-life conflicts. Acknowledged openly: the spectacle is the medium through which real transformation sneaks in.",
+    origin: "Cult of Psyche",
+    category: "psycheverse",
+  },
+  {
+    word: "The Comeback",
+    aka: ["Comeback Stream"],
+    definition:
+      "Psyche's recurring narrative of return after a strike, ban, hiatus, or smear campaign. Each comeback is staged as resurrection — proof that the signal can't be permanently silenced.",
+    origin: "Cult of Psyche — recurring arc",
+    category: "psycheverse",
+  },
+  {
+    word: "Wisdom Through Wounds",
+    definition:
+      "The core Psyche teaching that genuine insight is earned only through survived suffering — the wounded healer principle. Pain isn't an obstacle to wisdom; it's the price of it.",
+    origin: "Cult of Psyche — philosophical teaching",
+    category: "psycheverse",
+  },
+  {
+    word: "The Open Door",
+    definition:
+      "Psyche's philosophy of radical accessibility — anyone can join the panel, return after a ban, or be heard. The open door is both the show's greatest strength and its biggest vulnerability to trolls.",
+    origin: "Cult of Psyche — guiding principle",
+    category: "psycheverse",
+  },
+  {
+    word: "Ego Death",
+    definition:
+      "The dissolution of the constructed self, whether through psychedelics, spiritual crisis, or brutal public humiliation. In the Psycheverse, getting thoroughly exposed on panel is jokingly framed as a forced ego death — painful but clarifying.",
+    category: "psycheverse",
+  },
+
+  // ── MUSIC & PERFORMANCE ─────────────────────────────────────────
+  {
+    word: "Diss Track",
+    definition:
+      "A song written specifically to attack a rival. A central weapon in the panelverse — Psyche's AI-generated diss tracks (see 'Biscuit Song') turn beef into art and often escalate feuds into full sagas.",
+    category: "music",
+  },
+  {
+    word: "Beat",
+    definition:
+      "The instrumental backing track over which someone raps or sings. 'Drop the beat' kicks off a freestyle. A hard beat can carry a mediocre verse; a great verse can elevate any beat.",
+    category: "music",
+  },
+  {
+    word: "Hook",
+    aka: ["Chorus"],
+    definition:
+      "The catchy, repeated part of a song designed to lodge in your head. In panel rap battles, a strong hook can win the crowd even if the verses falter.",
+    category: "music",
+  },
+  {
+    word: "Cypher",
+    definition:
+      "A gathering where rappers take turns freestyling over a shared beat, building off each other's energy. Panel cyphers are communal performances — less competition than collaboration.",
+    category: "music",
+  },
+  {
+    word: "Acapella",
+    definition:
+      "Singing or rapping with no instrumental backing — just the raw voice. Acapella moments on the show strip the performance bare, revealing whether the bars actually hold up.",
+    category: "music",
+  },
+  {
+    word: "Auto-Tune",
+    definition:
+      "Pitch-correction software used to smooth or stylize vocals. In the panelverse it's both a tool and a punchline — 'turn off the auto-tune' is a challenge to prove someone can actually sing.",
+    category: "music",
+  },
+  {
+    word: "AI Track",
+    aka: ["AI Song", "Suno Track"],
+    definition:
+      "A song generated using AI music tools, a signature of the modern Psycheverse. Psyche produces AI tracks for diss songs, devotionals, and lore anthems — turning prompts into the show's growing songbook.",
+    origin: "Cult of Psyche — AI music production",
+    category: "music",
+  },
+  {
+    word: "Drop",
+    definition:
+      "The moment in a track when the beat hits full force after a build-up — or the release of any new song, video, or project. 'The drop goes crazy.' Anticipation, then payoff.",
+    category: "music",
+  },
+  {
+    word: "Anthem",
+    definition:
+      "A song that captures the spirit of the community and gets adopted as a rallying cry. 'Psyche Haters Club' and the 'Ten Mystical Women' cycle function as Psycheverse anthems — communal, repeatable, identity-defining.",
+    category: "music",
+  },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -2116,8 +2790,8 @@ export default function LexiconPage() {
           if (!terms?.length) return null;
 
           return (
-            <div id={`cat-${cat}`}>
-            <SectionCard key={cat} title={meta.label}>
+            <div id={`cat-${cat}`} key={cat}>
+            <SectionCard title={meta.label}>
               <div className="flex items-center gap-2 mb-4">
                 <span className={`w-3 h-3 rounded-full ${meta.dotColor}`} />
                 <p className="text-xs text-text-muted italic">

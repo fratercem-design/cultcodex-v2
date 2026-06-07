@@ -31,8 +31,8 @@
   /* Accents — use with discipline */
   --color-accent-gold: #C8A96B;
   --color-accent-gold-dim: rgba(200, 169, 107, 0.15);
-  --color-accent-violet: #6E4BAE;
-  --color-accent-violet-dim: rgba(110, 75, 174, 0.13);
+  --color-accent-violet: #9B6ED0;
+  --color-accent-violet-dim: rgba(155, 110, 208, 0.13);
   --color-accent-cyan: #5DB7D8;
   --color-accent-cyan-dim: rgba(93, 183, 216, 0.15);
   --color-accent-crimson: #A94A4A;
@@ -40,8 +40,8 @@
   /* Legacy aliases for existing components */
   --color-accent-green: #C8A96B;
   --color-accent-green-dim: rgba(200, 169, 107, 0.15);
-  --color-accent-purple: #6E4BAE;
-  --color-accent-purple-dim: rgba(110, 75, 174, 0.13);
+  --color-accent-purple: #9B6ED0;
+  --color-accent-purple-dim: rgba(155, 110, 208, 0.13);
 
   /* shadcn/ui mappings */
   --color-background: var(--bg-void);
@@ -103,8 +103,8 @@
   --text-muted: #B6AE9B;
   --accent-gold: #C8A96B;
   --accent-gold-dim: rgba(200, 169, 107, 0.15);
-  --accent-violet: #6E4BAE;
-  --accent-violet-dim: rgba(110, 75, 174, 0.13);
+  --accent-violet: #9B6ED0;
+  --accent-violet-dim: rgba(155, 110, 208, 0.13);
   --accent-cyan: #5DB7D8;
   --accent-cyan-dim: rgba(93, 183, 216, 0.15);
   --accent-crimson: #A94A4A;
@@ -112,8 +112,8 @@
   /* Legacy aliases */
   --accent-green: #C8A96B;
   --accent-green-dim: rgba(200, 169, 107, 0.15);
-  --accent-purple: #6E4BAE;
-  --accent-purple-dim: rgba(110, 75, 174, 0.13);
+  --accent-purple: #9B6ED0;
+  --accent-purple-dim: rgba(155, 110, 208, 0.13);
 
   /* shadcn/ui base (light fallback, overridden by .dark) */
   --background: #0A0A0F;
@@ -128,13 +128,13 @@
   --secondary-foreground: #F3EEDF;
   --muted: #0b0f18;
   --muted-foreground: #B6AE9B;
-  --accent: #6E4BAE;
+  --accent: #9B6ED0;
   --accent-foreground: #F3EEDF;
   --destructive: #A94A4A;
   --input: #182135;
   --ring: rgba(200, 169, 107, 0.3);
   --chart-1: #C8A96B;
-  --chart-2: #6E4BAE;
+  --chart-2: #9B6ED0;
   --chart-3: #5DB7D8;
   --chart-4: #A94A4A;
   --chart-5: #B6AE9B;
@@ -178,7 +178,7 @@ h1, h2, h3 {
 }
 
 @utility glow-violet {
-  box-shadow: 0 0 8px rgba(110, 75, 174, 0.3), 0 0 24px rgba(110, 75, 174, 0.1);
+  box-shadow: 0 0 8px rgba(155, 110, 208, 0.3), 0 0 24px rgba(155, 110, 208, 0.1);
 }
 
 @utility glow-cyan {
@@ -191,7 +191,7 @@ h1, h2, h3 {
 }
 
 @utility glow-purple {
-  box-shadow: 0 0 8px rgba(110, 75, 174, 0.3), 0 0 24px rgba(110, 75, 174, 0.1);
+  box-shadow: 0 0 8px rgba(155, 110, 208, 0.3), 0 0 24px rgba(155, 110, 208, 0.1);
 }
 
 @utility border-glow-green {
@@ -224,14 +224,14 @@ h1, h2, h3 {
   --secondary-foreground: #F3EEDF;
   --muted: #0b0f18;
   --muted-foreground: #B6AE9B;
-  --accent: #6E4BAE;
+  --accent: #9B6ED0;
   --accent-foreground: #F3EEDF;
   --destructive: #A94A4A;
   --border: #182135;
   --input: #182135;
   --ring: rgba(200, 169, 107, 0.3);
   --chart-1: #C8A96B;
-  --chart-2: #6E4BAE;
+  --chart-2: #9B6ED0;
   --chart-3: #5DB7D8;
   --chart-4: #A94A4A;
   --chart-5: #B6AE9B;
@@ -302,6 +302,104 @@ textarea:focus-visible {
 .animate-ring-pulse {
   animation: ringPulse 3s ease-in-out infinite;
 }
+
+@keyframes oracle-flash {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px #9B6ED0,
+      0 0 0 6px #5DB7D8,
+      0 0 30px rgba(155,110,208,0.8),
+      0 0 60px rgba(93,183,216,0.4);
+    opacity: 1;
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(155,110,208,0.3),
+      0 0 0 6px rgba(93,183,216,0.15),
+      0 0 10px rgba(155,110,208,0.2),
+      0 0 20px rgba(93,183,216,0.1);
+    opacity: 0.7;
+  }
+}
+@keyframes oracle-ring-flash {
+  0%, 100% { opacity: 0.9; transform: scale(1); }
+  50% { opacity: 0.08; transform: scale(1.1); }
+}
+.animate-oracle-flash {
+  animation: oracle-flash 0.75s ease-in-out infinite;
+}
+.animate-oracle-ring {
+  animation: oracle-ring-flash 0.75s ease-in-out infinite;
+}
+
+/* ─── CRT / VHS MYSTIQUE LAYER ──────────────────────────────────────
+   A fixed, full-viewport overlay that sits above all content (pointer
+   events disabled). Three stacked effects: horizontal scanlines, a
+   drifting film-grain noise, and a vignette. Kept very subtle so the
+   UI stays readable. Disabled entirely under prefers-reduced-motion. */
+
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Scanlines — thin repeating dark lines + a slow vertical roll */
+.crt-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.12) 3px,
+    rgba(0, 0, 0, 0.12) 4px
+  );
+  opacity: 0.5;
+  animation: crt-roll 8s linear infinite;
+}
+
+/* Vignette + faint cyan/violet edge bloom */
+.crt-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.45) 100%),
+    radial-gradient(ellipse at 50% 0%, rgba(93, 183, 216, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(155, 110, 208, 0.04) 0%, transparent 50%);
+}
+
+/* Film grain — separate element so it can animate independently */
+.crt-grain {
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  animation: crt-grain 0.6s steps(4) infinite;
+}
+
+@keyframes crt-roll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+@keyframes crt-grain {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-3%, 2%); }
+  50% { transform: translate(2%, -3%); }
+  75% { transform: translate(-2%, -2%); }
+  100% { transform: translate(3%, 2%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-overlay { display: none; }
+}
 .animation-delay-150 {
   animation-delay: 150ms;
 }
@@ -330,9 +428,9 @@ textarea:focus-visible {
   --term-line-2: #243151;
   --term-line-hot: #2c3a5e;
   --term-fg: #d4f5e8;
-  --term-fg-dim: #7a948c;
-  --term-fg-faint: #3d524a;
-  --term-fg-mute: #2a3833;
+  --term-fg-dim: #9cbcb3;    /* was #7a948c — lifted to ~10:1 contrast */
+  --term-fg-faint: #6b9589;  /* was #3d524a — lifted to ~6.5:1 contrast */
+  --term-fg-mute: #527a6e;   /* was #2a3833 — lifted to ~4.7:1 contrast */
   --glow-neon: 0 0 6px rgba(0, 255, 156, 0.6), 0 0 18px rgba(0, 255, 156, 0.25);
   --glow-cyan: 0 0 6px rgba(0, 229, 255, 0.6), 0 0 18px rgba(0, 229, 255, 0.25);
   --glow-magenta: 0 0 6px rgba(255, 43, 214, 0.55), 0 0 22px rgba(255, 43, 214, 0.22);
@@ -406,6 +504,8 @@ body {
 }
 .terminal-sidebar {
   grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   min-height: 0;
 }
@@ -417,6 +517,10 @@ body {
 }
 .terminal-statusbar {
   grid-area: statusbar;
+  overflow: hidden;
+}
+.statusbar-right {
+  display: flex;
 }
 
 @media (max-width: 900px) {
@@ -429,6 +533,9 @@ body {
     grid-template-rows: 36px 1fr 24px;
   }
   .terminal-sidebar {
+    display: none !important;
+  }
+  .statusbar-right {
     display: none;
   }
 }

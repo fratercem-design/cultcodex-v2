@@ -59,6 +59,9 @@ const NAV_GROUPS: readonly NavGroup[] = [
     ],
   },
 ];
+import { NAV_GROUPS } from "@/lib/nav";
+import type { AccentKey } from "@/lib/nav";
+import type { LiveChannels } from "@/lib/queries/live-status";
 
 function isActive(href: string, pathname: string | null): boolean {
   if (!pathname) return false;
@@ -66,8 +69,10 @@ function isActive(href: string, pathname: string | null): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function accentColor(accent: AccentKey | undefined): string {
-  return accent === "neon-4" ? "var(--neon-4)" : "var(--term-fg-dim)";
+function accentColor(accent: AccentKey | undefined, fallback: string): string {
+  if (accent === "neon-4") return "var(--neon-4)";
+  if (accent === "neon") return "var(--neon)";
+  return fallback;
 }
 
 const badgeStyle: CSSProperties = {
@@ -89,11 +94,22 @@ const keyStyle: CSSProperties = {
   textAlign: "center",
 };
 
+const liveBadgeStyle: CSSProperties = {
+  fontSize: 8,
+  fontWeight: "bold",
+  letterSpacing: "0.1em",
+  color: "rgba(239,68,68,0.85)",
+  border: "1px solid rgba(239,68,68,0.35)",
+  borderRadius: 2,
+  padding: "1px 4px",
+};
+
 interface TerminalSidebarProps {
   counts: ArchiveCounts;
+  liveChannels?: LiveChannels;
 }
 
-export function TerminalSidebar({ counts }: TerminalSidebarProps) {
+export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -137,66 +153,117 @@ export function TerminalSidebar({ counts }: TerminalSidebarProps) {
         borderRight: "1px solid var(--term-line)",
         backgroundColor: "var(--term-bg-1)",
         overflowY: "auto",
-        display: "flex",
-        flexDirection: "column",
         fontFamily: "var(--font-mono), 'JetBrains Mono', 'IBM Plex Mono', monospace",
       }}
       aria-label="Primary"
     >
       <nav style={{ flex: 1, padding: "12px 0" }}>
         {NAV_GROUPS.map((group) => (
-          <div key={group.title} style={{ marginBottom: 16 }}>
+          <div
+            key={group.title}
+            style={{
+              marginBottom: 16,
+              borderLeft: `2px solid ${group.color}`,
+              paddingLeft: 2,
+            }}
+          >
             <div
               style={{
-                fontSize: 10,
-                textTransform: "uppercase",
-                letterSpacing: "0.18em",
-                color: "var(--term-fg-faint)",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
                 padding: "0 14px",
                 marginBottom: 6,
               }}
             >
-              {"// "}
-              {group.title}
+              <span
+                aria-hidden="true"
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: 1,
+                  background: group.color,
+                  boxShadow: `0 0 6px ${group.color}`,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 10,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.18em",
+                  color: group.color,
+                  opacity: 0.85,
+                }}
+              >
+                {group.title}
+              </span>
             </div>
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {group.items.map((item) => {
-                const active = isActive(item.href, pathname);
+                const active = !item.external && isActive(item.href, pathname);
+                const isLive = item.liveKey ? (liveChannels?.[item.liveKey] ?? false) : false;
+
+                const itemColor = active
+                  ? "var(--neon)"
+                  : isLive
+                  ? "rgba(239,68,68,0.9)"
+                  : accentColor(item.accent, group.color);
+
                 const itemStyle: CSSProperties = {
                   display: "flex",
                   alignItems: "center",
                   gap: 10,
                   padding: "5px 14px 5px 12px",
                   borderLeft: "2px solid transparent",
-                  color: active ? "var(--neon)" : accentColor(item.accent),
+                  color: itemColor,
                   fontSize: 12,
                   letterSpacing: "0.06em",
                   textDecoration: "none",
                   transition: "color 120ms linear, background 120ms linear, border-color 120ms linear",
                 };
+
                 const badgeText = item.countKey
                   ? counts[item.countKey].toLocaleString()
                   : null;
+
+                const inner = (
+                  <>
+                    <span aria-hidden="true" style={{ width: 14, display: "inline-block" }}>
+                      {isLive ? (
+                        <span className="term-pulse" style={{ color: "rgba(239,68,68,0.9)" }}>●</span>
+                      ) : (
+                        item.glyph
+                      )}
+                    </span>
+                    <span style={{ flex: 1 }}>{item.label}</span>
+                    {isLive && <span style={liveBadgeStyle}>LIVE</span>}
+                    {!isLive && badgeText && <span style={badgeStyle}>{badgeText}</span>}
+                    {!isLive && item.key && <span aria-hidden="true" style={keyStyle}>{item.key}</span>}
+                  </>
+                );
+
                 return (
                   <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={active ? "term-nav-active" : undefined}
-                      style={itemStyle}
-                      data-key={item.key}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      <span aria-hidden="true" style={{ width: 14, display: "inline-block" }}>
-                        {item.glyph}
-                      </span>
-                      <span style={{ flex: 1 }}>{item.label}</span>
-                      {badgeText && (
-                        <span style={badgeStyle}>{badgeText}</span>
-                      )}
-                      {item.key && (
-                        <span aria-hidden="true" style={keyStyle}>{item.key}</span>
-                      )}
-                    </Link>
+                    {item.external ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={itemStyle}
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className={active ? "term-nav-active" : undefined}
+                        style={itemStyle}
+                        data-key={item.key}
+                        aria-current={active ? "page" : undefined}
+                      >
+                        {inner}
+                      </Link>
+                    )}
                   </li>
                 );
               })}

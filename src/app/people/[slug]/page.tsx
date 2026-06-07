@@ -1,11 +1,12 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
+import { AiNotice } from "@/components/ui/ai-notice";
 import { ERAS, getEraForEpisode } from "@/lib/eras";
 import { archetypeToSlug, splitArchetypes } from "@/lib/queries/archetypes";
 import { EntityHero } from "@/components/ui/entity-hero";
@@ -49,6 +50,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
             {editorialFrame(para.trim())}
           </p>
         ))}
+        <AiNotice className="mt-3" />
       </SectionCard>
     );
   }
@@ -98,7 +100,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
       {/* Codex entry header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold">/// codex_entry</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold">{"/// codex_entry"}</p>
         <p className="font-mono text-[9px] text-text-muted/50 tracking-widest">AI · ARCHIVAL</p>
       </div>
 
@@ -121,6 +123,11 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
             </div>
           );
         })}
+      </div>
+
+      {/* AI-generated notice */}
+      <div className="border-t border-border/60 px-4 py-2.5">
+        <AiNotice />
       </div>
     </div>
   );
@@ -161,11 +168,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   // This reduces SEO risk for people who didn't actively participate.
   const shouldNoIndex = person.personType === "mentioned";
 
+  const appearanceCount = person.guestAppearances.length;
+  const typeLabel =
+    person.personType === "host" ? "host" :
+    person.personType === "recurring" ? "recurring figure" : "guest";
+  const countPhrase = appearanceCount > 0
+    ? `${appearanceCount} appearance${appearanceCount !== 1 ? "s" : ""} in the Cult of Psyche archive`
+    : "Featured in the Cult of Psyche archive";
+  const bioSnippet = person.shortBio
+    ? ` · ${person.shortBio.slice(0, 120)}${person.shortBio.length > 120 ? "…" : ""}`
+    : "";
+  const description = `${countPhrase} · ${typeLabel}${bioSnippet}`;
+
   return {
     ...buildMetadata({
       title: person.displayName,
-      description: person.shortBio || person.searchText || null,
+      description,
       path: `/people/${person.slug}`,
+      image: person.avatarUrl ?? null,
     }),
     ...(shouldNoIndex ? { robots: { index: false, follow: true } } : {}),
   };
@@ -190,6 +210,12 @@ export default async function PersonDetailPage({ params }: PageProps) {
   const person = await getPersonBySlug(slug);
 
   if (!person) notFound();
+
+  // Guests and unknowns without a proper profile → compiled "the rest" entry
+  const isProfiled = Boolean(person.loreSummary) || Boolean(person.shortBio);
+  if (!isProfiled && (person.personType === "guest" || person.personType === "mentioned")) {
+    redirect("/people/the-rest");
+  }
 
   const allEpisodes = [
     ...person.guestAppearances.map((g) => g.episode),
@@ -402,7 +428,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             ) : person.guestAppearances.length >= 2 && (
               <div className="rounded-lg border border-border bg-surface overflow-hidden">
                 <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">/// codex_entry</p>
+                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">{"/// codex_entry"}</p>
                   <p className="font-mono text-[9px] text-text-muted/40 tracking-widest">PENDING</p>
                 </div>
                 <div className="px-4 py-5 flex items-center gap-3">
@@ -646,15 +672,22 @@ export default async function PersonDetailPage({ params }: PageProps) {
               )}
             </SectionCard>
 
-            {/* External Links */}
+            {/* External Links — hardcoded list merged with DB-backed YouTube channel */}
             {(() => {
-              const links = getExternalLinks(person.slug);
-              if (links.length === 0) return null;
+              const staticLinks = getExternalLinks(person.slug);
+              // Merge DB youtubeChannelUrl in — deduplicated against the static list
+              const ytDbUrl = person.youtubeChannelUrl;
+              const allLinks = ytDbUrl && !staticLinks.some((l) => l.url === ytDbUrl)
+                ? [{ label: "YouTube Channel", url: ytDbUrl, icon: "▶" as const }, ...staticLinks]
+                : staticLinks;
+
+              if (allLinks.length === 0) return null;
+
               const isYt = (url: string) => url.includes("youtube.com") || url.includes("youtu.be");
               return (
                 <SectionCard title="External Links">
                   <ul className="space-y-2">
-                    {links.map((link) => (
+                    {allLinks.map((link) => (
                       <li key={link.url}>
                         <a
                           href={link.url}
@@ -737,18 +770,41 @@ export default async function PersonDetailPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             "@context": "https://schema.org",
             "@type": "Person",
             name: person.displayName,
             ...(person.shortBio ? { description: person.shortBio } : {}),
             ...(person.avatarUrl ? { image: person.avatarUrl } : {}),
             url: `https://cultcodex.me/people/${person.slug}`,
+            ...(person.youtubeChannelUrl ? { sameAs: person.youtubeChannelUrl } : {}),
             ...(person.firstAppearanceEpisode?.airDate
               ? { firstAppearance: person.firstAppearanceEpisode.airDate.toISOString().slice(0, 10) }
               : {}),
             numberOfAppearances: uniqueEpisodes.length,
+            // Topics this person discusses — knowledge-graph edges
+            ...(person.topics.length > 0
+              ? {
+                  knowsAbout: person.topics.slice(0, 8).map((t) => ({
+                    "@type": "DefinedTerm",
+                    name: t.topic.title,
+                    url: `https://cultcodex.me/topics/${t.topic.slug}`,
+                  })),
+                }
+              : {}),
           }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbListJsonLd([
+              { name: "CultCodex", url: "https://cultcodex.me" },
+              { name: "Voices", url: "https://cultcodex.me/people" },
+              { name: person.displayName, url: `https://cultcodex.me/people/${person.slug}` },
+            ])
+          ),
         }}
       />
     </>

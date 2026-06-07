@@ -85,7 +85,8 @@ def main() -> int:
         log(f"[{i + 1}/{len(episodes)}] EP.{ep['ep']} ({ytid}) {ep['title'][:55]}")
 
         cmd = [
-            "yt-dlp",
+            "python3", "-m", "yt_dlp",
+            "--impersonate", "chrome",   # mimic a real browser TLS fingerprint — avoids throttling/blocks
             "-x", "--audio-format", "mp3", "--audio-quality", "5",
             "-o", os.path.join(AUDIO_DIR, "%(id)s.%(ext)s"),
         ]

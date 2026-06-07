@@ -15,6 +15,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { semanticSearch } from "@/lib/queries/semantic";
 import { getEraById } from "@/lib/eras";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -30,6 +31,18 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       { error: "Deep search requires an active subscription." },
       { status: 403 }
+    );
+  }
+
+  // Each query embeds its concepts via OpenAI — throttle to bound cost.
+  const rl = rateLimit(`semantic:${clientKey(req, user?.id)}`, {
+    limit: 30,
+    windowMs: 60_000,
+  });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many searches. Please wait a moment." },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
     );
   }
 

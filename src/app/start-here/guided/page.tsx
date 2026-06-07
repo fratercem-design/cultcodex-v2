@@ -18,6 +18,7 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/start-here/guided" },
   title: "The Guided Path — CULT CODEX",
   description:
     "Five emotional doorways into the Cult of Psyche archive. Pick what's pulling you.",
@@ -161,14 +162,14 @@ export default function GuidedPathPage() {
         {/* Mythic framing */}
         <section className="text-center max-w-2xl mx-auto space-y-3">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-accent-cyan">
-            /// path_i · guided_entry
+            {"/// path_i · guided_entry"}
           </p>
           <p className="font-display text-lg text-text-primary leading-relaxed">
             Forget categories. Forget chronology. Forget which host said what in
             year seven.
           </p>
           <p className="text-sm text-text-muted leading-relaxed">
-            Ask yourself what's pulling on you right now. Pick a doorway. The
+            Ask yourself what&apos;s pulling on you right now. Pick a doorway. The
             archive will meet you there.
           </p>
         </section>
@@ -224,7 +225,7 @@ export default function GuidedPathPage() {
         {/* Escape hatches */}
         <section className="text-center space-y-4">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
-            /// none of these? try another path
+            {"/// none of these? try another path"}
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link

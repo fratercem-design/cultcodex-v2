@@ -2,6 +2,7 @@
 import { config } from "dotenv";
 config({ override: true });
 import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { EnrichmentResultSchema, type EnrichmentResult } from "./schemas";
 
 interface RawSegment {
@@ -35,7 +36,8 @@ Your task: analyze the provided episode transcript and extract structured data. 
 Return a JSON object with this exact structure:
 {
   "summaryShort": "1-2 sentence summary of the episode",
-  "summaryLong": "2-3 paragraph comprehensive summary covering main topics, key moments, and themes",
+  "summaryFacts": "WHAT HAPPENED — 2-3 paragraphs, transcript-grounded. Cover who appeared, what was discussed, key events and exchanges, in the order they occurred. Embed [MM:SS] or [H:MM:SS] timestamps when referencing specific moments. Use only timestamps from the provided transcript. Aim for 3–6 timestamp references. Write like a TV recap — clear, specific, no interpretation.",
+  "summaryThemes": "INTERPRETIVE LAYER — 1-2 paragraphs. Identify recurring patterns, thematic threads, and what this episode represents in the context of the show. Explicitly frame everything as interpretation: 'appears to', 'suggests', 'continues the pattern of'. Do NOT repeat facts from summaryFacts — only add the layer of meaning. Keep it grounded; avoid mythology (that belongs to the Psychenomicon).",
   "cutOfPsyche": "A characteristic or memorable quote/moment from this episode (verbatim from transcript if possible)",
   "guests": [
     {
@@ -67,9 +69,16 @@ Return a JSON object with this exact structure:
 Guidelines:
 - For guests: include the host as personType "host". Panel participants are "guest". People discussed but not present are "mentioned".
 - For quotes: extract the 3-5 most notable, interesting, or representative quotes. Include timestamp in seconds if identifiable from transcript timestamps.
+- For summaryFacts: embed [MM:SS] or [H:MM:SS] timestamps for specific moments. Use only timestamps from the transcript. Omit if no transcript available.
+- For summaryThemes: frame as interpretation — "appears to", "suggests", "continues the pattern of". Never assert facts; those go in summaryFacts.
 - For lore: identify mythology references, recurring show concepts, tarot interpretations, or spiritual/occult ideas discussed. Use canonStatus to reflect how definitively the idea is presented.
 - For topics: list the main subjects discussed (e.g., "tarot", "consciousness", "astrology", "Greek mythology").
-- Return ONLY valid JSON. No markdown, no code fences, no explanation.`;
+- Return ONLY valid JSON. No markdown, no code fences, no explanation.
+
+LANGUAGE RULES — CRITICAL:
+- Use observational, on-stream descriptive language. Summaries describe what happened and was discussed on stream.
+- Never use clinical or psychiatric terminology (e.g. "paranoid," "delusional," "narcissistic," "erratic," "unstable," "psychotic," "manipulative").
+- Describe what people expressed or said — not diagnoses. E.g. "expressed suspicion about…" not "displayed paranoia about…"; "reacted with visible frustration" not "had an erratic episode."`;
 
 interface UserMessageInput {
   title: string;
@@ -90,36 +99,128 @@ Transcript:
 ${input.transcript}`;
 }
 
-let _client: Anthropic | null = null;
+// ── Provider setup ────────────────────────────────────────────────────────────
+// ENRICHMENT_PROVIDER=openai   → use OpenAI, fall back to OpenRouter free on credit/rate errors
+// ENRICHMENT_PROVIDER=openrouter → OpenRouter only
+// ENRICHMENT_PROVIDER=anthropic  → Claude (default)
+// ENRICHMENT_MODEL overrides the default model for the chosen provider.
 
-function getClient(): Anthropic {
-  if (_client) return _client;
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey)
-    throw new Error("ANTHROPIC_API_KEY environment variable is not set");
-  _client = new Anthropic({ apiKey });
-  return _client;
+let _anthropic: Anthropic | null = null;
+let _openaiClient: OpenAI | null = null;
+let _openrouterClient: OpenAI | null = null;
+
+function getProvider(): "anthropic" | "openai" | "openrouter" {
+  return (process.env.ENRICHMENT_PROVIDER ?? "anthropic") as "anthropic" | "openai" | "openrouter";
 }
 
-export async function enrichEpisode(
-  input: UserMessageInput
-): Promise<EnrichmentResult> {
-  const client = getClient();
-  const model = process.env.ENRICHMENT_MODEL ?? "claude-sonnet-4-20250514";
+function getAnthropicClient(): Anthropic {
+  if (_anthropic) return _anthropic;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
+  const baseURL = process.env.ANTHROPIC_BASE_URL;
+  _anthropic = new Anthropic({ apiKey, ...(baseURL ? { baseURL } : {}) });
+  return _anthropic;
+}
 
+function buildOpenAIClient(): OpenAI {
+  if (_openaiClient) return _openaiClient;
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error("OPENAI_API_KEY not set");
+  _openaiClient = new OpenAI({ apiKey });
+  return _openaiClient;
+}
+
+function buildOpenRouterClient(): OpenAI {
+  if (_openrouterClient) return _openrouterClient;
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) throw new Error("OPENROUTER_API_KEY not set");
+  const baseURL = process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
+  _openrouterClient = new OpenAI({
+    apiKey,
+    baseURL,
+    defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" },
+  });
+  return _openrouterClient;
+}
+
+function isCreditOrRateError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return (
+    msg.includes("insufficient_quota") ||
+    msg.includes("credit balance") ||
+    msg.includes("402") ||
+    msg.includes("429") ||
+    msg.includes("maximum context length") ||
+    msg.includes("context_length_exceeded")
+  );
+}
+
+async function callChatAPI(client: OpenAI, model: string, input: UserMessageInput, jsonMode: boolean): Promise<string> {
+  const response = await client.chat.completions.create({
+    model,
+    max_tokens: 8192,
+    ...(jsonMode ? { response_format: { type: "json_object" as const } } : {}),
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      { role: "user", content: buildUserMessage(input) },
+    ],
+  });
+  const text = response.choices[0]?.message?.content;
+  if (!text) throw new Error(`No text response from ${model}`);
+  return text.trim();
+}
+
+async function enrichWithAnthropic(input: UserMessageInput): Promise<string> {
+  const client = getAnthropicClient();
+  const model = process.env.ENRICHMENT_MODEL ?? "claude-sonnet-4-20250514";
   const response = await client.messages.create({
     model,
     max_tokens: 4096,
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: buildUserMessage(input) }],
   });
-
   const textBlock = response.content.find((b) => b.type === "text");
-  if (!textBlock || textBlock.type !== "text") {
-    throw new Error("No text response from Claude");
+  if (!textBlock || textBlock.type !== "text") throw new Error("No text response from Claude");
+  return textBlock.text.trim();
+}
+
+export async function enrichEpisode(
+  input: UserMessageInput
+): Promise<EnrichmentResult> {
+  const provider = getProvider();
+  let jsonText: string;
+
+  if (provider === "openai") {
+    // Try OpenAI first; fall back to free OpenRouter model on credit/rate errors
+    try {
+      const model = process.env.ENRICHMENT_MODEL ?? "gpt-4o-mini";
+      jsonText = await callChatAPI(buildOpenAIClient(), model, input, true);
+    } catch (err) {
+      if (isCreditOrRateError(err)) {
+        console.warn(`  ⚠ OpenAI limit hit — falling back to OpenRouter free model`);
+        jsonText = await callChatAPI(buildOpenRouterClient(), "google/gemini-2.0-flash-exp:free", input, false);
+      } else {
+        throw err;
+      }
+    }
+  } else if (provider === "openrouter") {
+    const model = process.env.ENRICHMENT_MODEL ?? "google/gemini-2.0-flash-exp:free";
+    try {
+      jsonText = await callChatAPI(buildOpenRouterClient(), model, input, false);
+    } catch (err) {
+      if (isCreditOrRateError(err) && process.env.OPENROUTER_FALLBACK_KEY) {
+        console.warn(`  ⚠ Primary OpenRouter/Bluesminds failed — falling back to OpenRouter free`);
+        const fallback = new OpenAI({ apiKey: process.env.OPENROUTER_FALLBACK_KEY, baseURL: "https://openrouter.ai/api/v1", defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" } });
+        jsonText = await callChatAPI(fallback, "google/gemini-2.0-flash-exp:free", input, false);
+      } else {
+        throw err;
+      }
+    }
+  } else {
+    jsonText = await enrichWithAnthropic(input);
   }
 
-  let jsonText = textBlock.text.trim();
+  // Strip accidental markdown fences
   if (jsonText.startsWith("```")) {
     jsonText = jsonText.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
   }

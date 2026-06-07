@@ -90,7 +90,7 @@ export default function WelcomeInitiatePage() {
       {/* ── What just opened ── */}
       <section className="space-y-6">
         <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
-          /// what just opened
+          {"/// what just opened"}
         </p>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {BENEFITS.map((b) => (
@@ -111,7 +111,7 @@ export default function WelcomeInitiatePage() {
       {/* ── Where to go first ── */}
       <section className="max-w-2xl mx-auto space-y-5">
         <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/60">
-          /// where to go first
+          {"/// where to go first"}
         </p>
         <div className="space-y-2">
           {STARTING_POINTS.map((s, i) => (
@@ -135,7 +135,7 @@ export default function WelcomeInitiatePage() {
       {/* ── Upgrade tease ── */}
       <section className="rounded-2xl border border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-surface p-8 text-center space-y-4 max-w-2xl mx-auto">
         <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
-          /// when you&apos;re ready to go deeper
+          {"/// when you&apos;re ready to go deeper"}
         </p>
         <h3 className="font-display text-xl font-bold text-accent-violet">Oracle Tier</h3>
         <p className="font-mono text-xs text-text-muted max-w-sm mx-auto leading-relaxed">

@@ -52,12 +52,31 @@ export default async function OGImage({
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
-          backgroundColor: "#0a0a0a",
-          padding: "60px",
+          backgroundColor: "#080810",
           fontFamily: "monospace",
+          position: "relative",
         }}
       >
+        {/* Accent bar — uses collection colour */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 4,
+            backgroundColor: accentColor,
+          }}
+        />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            flex: 1,
+            padding: "52px 56px",
+          }}
+        >
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <div
             style={{
@@ -116,6 +135,7 @@ export default async function OGImage({
           <div style={{ color: "#333333", fontSize: 16 }}>
             CULT OF PSYCHE ARCHIVE
           </div>
+        </div>
         </div>
       </div>
     ),

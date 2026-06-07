@@ -6,44 +6,121 @@ import { LiveToggleForm } from "./live-toggle-form";
 export const dynamic = "force-dynamic";
 
 export default async function AdminLivePage() {
-  const status = await prisma.liveStatus.findUnique({
-    where: { id: "singleton" },
-  });
-
-  const isLive = status?.isLive ?? false;
+  const [copStatus, amStatus, nfStatus] = await Promise.all([
+    prisma.liveStatus.findUnique({ where: { id: "singleton" } }),
+    prisma.liveStatus.findUnique({ where: { id: "alexandra-mayers" } }),
+    prisma.liveStatus.findUnique({ where: { id: "nightmare-frequencies" } }),
+  ]);
 
   return (
-    <main id="main-content" className="p-8 max-w-2xl">
-      <h1 className="font-display text-2xl font-bold text-accent-gold mb-6">
+    <main id="main-content" className="p-8 max-w-3xl space-y-8">
+      <h1 className="font-display text-2xl font-bold text-accent-gold mb-2">
         Live Stream Controls
       </h1>
 
-      {/* Status card */}
-      <SectionCard title="Current Status">
-        <div className="flex items-center gap-3 mb-4">
-          <span
-            className={`h-4 w-4 rounded-full ${
-              isLive ? "bg-red-500 animate-pulse" : "bg-text-muted"
-            }`}
-          />
-          <span className="font-mono text-lg font-bold text-text-primary">
-            {isLive ? "LIVE" : "OFFLINE"}
-          </span>
-        </div>
-
-        {status && (
-          <div className="space-y-1 font-mono text-xs text-text-muted">
-            {status.videoId && <p>Video ID: {status.videoId}</p>}
-            {status.title && <p>Title: {status.title}</p>}
-            {status.startedAt && <p>Started: {formatDate(status.startedAt)}</p>}
-            {status.endedAt && <p>Ended: {formatDate(status.endedAt)}</p>}
+      {/* Cult of Psyche */}
+      <div>
+        <h2 className="font-mono text-sm font-bold text-text-primary mb-4 uppercase tracking-widest">
+          Cult of Psyche
+        </h2>
+        <SectionCard title="Current Status">
+          <div className="flex items-center gap-3 mb-4">
+            <span
+              className={`h-4 w-4 rounded-full ${
+                copStatus?.isLive ? "bg-red-500 animate-pulse" : "bg-text-muted"
+              }`}
+            />
+            <span className="font-mono text-lg font-bold text-text-primary">
+              {copStatus?.isLive ? "LIVE" : "OFFLINE"}
+            </span>
           </div>
-        )}
-      </SectionCard>
+          {copStatus && (
+            <div className="space-y-1 font-mono text-xs text-text-muted">
+              {copStatus.videoId && <p>Video ID: {copStatus.videoId}</p>}
+              {copStatus.title && <p>Title: {copStatus.title}</p>}
+              {copStatus.startedAt && <p>Started: {formatDate(copStatus.startedAt)}</p>}
+              {copStatus.endedAt && <p>Ended: {formatDate(copStatus.endedAt)}</p>}
+            </div>
+          )}
+        </SectionCard>
+        <div className="mt-4">
+          <LiveToggleForm
+            channel="cultOfPsyche"
+            isLive={copStatus?.isLive ?? false}
+            currentVideoId={copStatus?.videoId}
+            currentTitle={copStatus?.title}
+          />
+        </div>
+      </div>
 
-      {/* Toggle form */}
-      <div className="mt-6">
-        <LiveToggleForm isLive={isLive} currentVideoId={status?.videoId} currentTitle={status?.title} />
+      {/* Alexandra Mayers */}
+      <div>
+        <h2 className="font-mono text-sm font-bold text-text-primary mb-4 uppercase tracking-widest">
+          Alexandra Mayers
+        </h2>
+        <SectionCard title="Current Status">
+          <div className="flex items-center gap-3 mb-4">
+            <span
+              className={`h-4 w-4 rounded-full ${
+                amStatus?.isLive ? "bg-red-500 animate-pulse" : "bg-text-muted"
+              }`}
+            />
+            <span className="font-mono text-lg font-bold text-text-primary">
+              {amStatus?.isLive ? "LIVE" : "OFFLINE"}
+            </span>
+          </div>
+          {amStatus && (
+            <div className="space-y-1 font-mono text-xs text-text-muted">
+              {amStatus.videoId && <p>Video ID: {amStatus.videoId}</p>}
+              {amStatus.title && <p>Title: {amStatus.title}</p>}
+              {amStatus.startedAt && <p>Started: {formatDate(amStatus.startedAt)}</p>}
+              {amStatus.endedAt && <p>Ended: {formatDate(amStatus.endedAt)}</p>}
+            </div>
+          )}
+        </SectionCard>
+        <div className="mt-4">
+          <LiveToggleForm
+            channel="alexandraMayers"
+            isLive={amStatus?.isLive ?? false}
+            currentVideoId={amStatus?.videoId}
+            currentTitle={amStatus?.title}
+          />
+        </div>
+      </div>
+
+      {/* Nightmare Frequencies */}
+      <div>
+        <h2 className="font-mono text-sm font-bold text-text-primary mb-4 uppercase tracking-widest">
+          Nightmare Frequencies
+        </h2>
+        <SectionCard title="Current Status">
+          <div className="flex items-center gap-3 mb-4">
+            <span
+              className={`h-4 w-4 rounded-full ${
+                nfStatus?.isLive ? "bg-red-500 animate-pulse" : "bg-text-muted"
+              }`}
+            />
+            <span className="font-mono text-lg font-bold text-text-primary">
+              {nfStatus?.isLive ? "LIVE" : "OFFLINE"}
+            </span>
+          </div>
+          {nfStatus && (
+            <div className="space-y-1 font-mono text-xs text-text-muted">
+              {nfStatus.videoId && <p>Video ID: {nfStatus.videoId}</p>}
+              {nfStatus.title && <p>Title: {nfStatus.title}</p>}
+              {nfStatus.startedAt && <p>Started: {formatDate(nfStatus.startedAt)}</p>}
+              {nfStatus.endedAt && <p>Ended: {formatDate(nfStatus.endedAt)}</p>}
+            </div>
+          )}
+        </SectionCard>
+        <div className="mt-4">
+          <LiveToggleForm
+            channel="nightmareFrequencies"
+            isLive={nfStatus?.isLive ?? false}
+            currentVideoId={nfStatus?.videoId}
+            currentTitle={nfStatus?.title}
+          />
+        </div>
       </div>
     </main>
   );

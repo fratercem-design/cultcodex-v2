@@ -12,12 +12,13 @@ import { EntryBanner } from "@/components/layout/entry-banner";
 import { TerminalTopBar } from "@/components/layout/terminal-topbar";
 import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
 import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
-import { getArchiveCounts } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
+import { getLiveChannels } from "@/lib/queries/live-status";
+import { ClientOverlays } from "@/components/layout/client-overlays";
+import { CRTOverlay } from "@/components/graphics/crt-overlay";
 import { SkipLink } from "@/components/ui/skip-link";
-import { KonamiEasterEgg } from "@/components/ui/konami-easter-egg";
-import { CommandPalette } from "@/components/search/command-palette";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { jsonLdScript } from "@/lib/seo";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 // Revert to force-dynamic to prevent build-time database queries.
@@ -73,14 +74,26 @@ const vt323 = VT323({
 const SITE_DESCRIPTION =
   "The complete archive of the Cult of Psyche: 2,500+ transmissions, searchable transcripts, lore entries, guest profiles, relationship maps, and AI-powered exploration of every word ever spoken in the stream.";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://cultcodex.me";
+
+// The shell no longer reads the session cookie during server render (the
+// user menu loads client-side), so the layout can be cached. Pages that
+// read cookies/headers still opt into dynamic rendering on their own.
+export const revalidate = 60;
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me"
-  ),
+  metadataBase: new URL(SITE_URL),
   title: "CultCodex — The Living Archive",
   description: SITE_DESCRIPTION,
+  // NOTE: no global `alternates.canonical` here. Setting it at the root made
+  // every page inherit the homepage URL as its canonical, so Google treated
+  // all routes as duplicates of `/`. Each page declares its own canonical.
   icons: {
-    icon: "/favicon.jpg",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.jpg" },
+    ],
+    shortcut: "/favicon.svg",
     apple: "/favicon.jpg",
   },
   openGraph: {
@@ -103,12 +116,20 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const counts = await getArchiveCounts().catch(() => ({
-    episodes: 0,
-    topics: 0,
-    people: 0,
-    transcribedEpisodes: 0,
-  }));
+  const [counts, liveChannels] = await Promise.all([
+    getCounts().catch(() => ({
+      episodes: 0,
+      segments: 0,
+      people: 0,
+      topics: 0,
+      lore: 0,
+      quotes: 0,
+      totalHours: 0,
+      transcribedEpisodes: 0,
+      transcribedPct: 0,
+    })),
+    getLiveChannels().catch(() => ({ cultOfPsyche: false, alexandraMayers: false, nightmareFrequencies: false })),
+  ]);
 
   const fontVariables = [
     spaceGrotesk.variable,
@@ -130,7 +151,7 @@ export default async function RootLayout({
         <EntryBanner />
         <div className="terminal-grid">
           <TerminalTopBar />
-          <TerminalSidebar counts={counts} />
+          <TerminalSidebar counts={counts} liveChannels={liveChannels} />
           <div
             id="main-content"
             className="terminal-main"
@@ -140,10 +161,30 @@ export default async function RootLayout({
           </div>
           <TerminalStatusBar feedCount={counts.episodes} />
         </div>
-        <KonamiEasterEgg />
-        <CommandPalette />
-        <Analytics />
-        <SpeedInsights />
+        <ClientOverlays />
+        <CRTOverlay />
+        {/* WebSite + SearchAction JSON-LD — enables sitelinks search box in Google */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: jsonLdScript({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "CultCodex",
+              url: SITE_URL,
+              description: SITE_DESCRIPTION,
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+                },
+                "query-input": "required name=search_term_string",
+              },
+            }),
+          }}
+        />
+        <GoogleAnalytics gaId="G-1ML217JXYV" />
       </body>
     </html>
   );

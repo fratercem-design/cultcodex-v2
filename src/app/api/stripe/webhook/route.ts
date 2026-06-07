@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getStripe } from "@/lib/stripe";
 import { getTierByPriceId } from "@/lib/subscription-tiers";
+import { sendInitiateWelcomeEmail, sendOracleWelcomeEmail } from "@/lib/notifications";
 import type Stripe from "stripe";
 
 /** Extract current_period_end from a subscription's first item */
@@ -25,6 +26,28 @@ function getInvoiceSubscriptionId(invoice: Stripe.Invoice): string | null {
   return null;
 }
 
+/**
+ * Mark an event as processed and return true if it's new (should be handled),
+ * or false if it's a duplicate (already processed — skip to avoid double side-effects).
+ *
+ * Stripe retries webhooks when it doesn't receive a 2xx within 30 seconds.
+ * DB writes are idempotent (updateMany overwrites with the same data), but
+ * sending a welcome email is not — this guard prevents the duplicate send.
+ */
+async function markEventProcessed(eventId: string, eventType: string): Promise<boolean> {
+  try {
+    await prisma.stripeWebhookEvent.create({
+      data: { id: eventId, type: eventType },
+    });
+    return true; // new event — proceed
+  } catch {
+    // Unique constraint violation means we've seen this event before.
+    // Any other DB error: log and continue (fail open so Stripe doesn't
+    // keep retrying and backlogging legitimate events).
+    return false; // duplicate — skip
+  }
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.text();
   const sig = request.headers.get("stripe-signature");
@@ -44,6 +67,15 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
+
+  // Idempotency guard — return 200 immediately for duplicate deliveries.
+  // Stripe marks a webhook as delivered on first 2xx; retries only happen
+  // when the original delivery timed out or the connection dropped.
+  const isNew = await markEventProcessed(event.id, event.type);
+  if (!isNew) {
+    console.log(`[webhook] Duplicate event ${event.id} (${event.type}) — skipping`);
+    return NextResponse.json({ received: true, duplicate: true });
   }
 
   try {
@@ -70,6 +102,21 @@ export async function POST(request: NextRequest) {
               currentPeriodEnd: getPeriodEnd(subscription),
             },
           });
+
+          // Send tier-specific welcome email (fire-and-forget — don't block the webhook).
+          // Safe to send here because markEventProcessed already deduplicated the event.
+          if (tier === "access" || tier === "system") {
+            const codexUser = await prisma.codexUser.findFirst({
+              where: { stripeCustomerId: session.customer as string },
+              select: { email: true, displayName: true },
+            });
+            if (codexUser?.email) {
+              const sendFn = tier === "system" ? sendOracleWelcomeEmail : sendInitiateWelcomeEmail;
+              sendFn({ recipientEmail: codexUser.email, recipientName: codexUser.displayName }).catch(
+                (err) => console.error("[webhook] Welcome email failed:", err)
+              );
+            }
+          }
         }
         break;
       }

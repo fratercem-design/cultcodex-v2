@@ -161,7 +161,7 @@ export function PackOpener({ packSlug, packTitle, packAccentColor, onClose }: Pa
         marginBottom: 24,
         textShadow: `0 0 8px ${accentVar}`,
       }}>
-        // {packTitle}
+        {"// "}{packTitle}
       </div>
 
       {/* Card spread */}

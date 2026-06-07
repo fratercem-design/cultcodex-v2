@@ -29,6 +29,7 @@ import { formatDate } from "@/lib/format/date";
 import { SavedSearchesBlock } from "@/components/codex/saved-searches-block";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/codex" },
   title: "My Codex — CULT CODEX",
   description:
     "Your personal map of the Cult of Psyche — saved signals, transmissions, and moments.",
@@ -67,7 +68,7 @@ export default async function CodexPage() {
         {/* Mythic framing */}
         <section className="text-center max-w-2xl mx-auto space-y-2">
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-accent-gold">
-            /// private · {user.displayName}
+            {"/// private · "}{user.displayName}
           </p>
           <p className="text-sm text-text-muted leading-relaxed">
             The archive is shared. The codex is yours. Save the signals

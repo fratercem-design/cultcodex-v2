@@ -12,7 +12,12 @@ import { getEraForEpisode } from "@/lib/eras";
 import { EraNeighbors } from "@/components/episodes/era-neighbors";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, episodeJsonLd, jsonLdScript } from "@/lib/seo";
+import { AiNotice } from "@/components/ui/ai-notice";
+import { getConfidenceTier } from "@/lib/format/confidence-tier";
+import { renderWithTimestamps } from "@/lib/format/render-timestamps";
+import { HumanReviewBadge } from "@/components/ui/human-review-badge";
+import { SplitSummaryCard } from "@/components/episodes/split-summary";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EpisodeHero } from "@/components/episodes/episode-hero";
 import { EpisodeGlanceBar } from "@/components/episodes/episode-glance-bar";
@@ -43,6 +48,7 @@ import { RandomEpisodeButton } from "@/components/archive/random-episode-button"
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
 import { ProvenanceBadge } from "@/components/ui/provenance-badge";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
+import { AnnotationSection } from "@/components/annotations/annotation-section";
 import { DataQualityBadge } from "@/components/ui/data-quality-badge";
 import { ColorLegend } from "@/components/ui/color-legend";
 import Link from "next/link";
@@ -121,6 +127,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     : null;
 
   const hasTranscript = episode.segments.length > 0;
+  const confidenceTier = getConfidenceTier(episode.segments.length, !!episode.summaryLong);
   const hasTranscriptAccess = user ? await isSubscribed(user.id).catch(() => false) : false;
   const hasDecodeAccess = hasTranscriptAccess; // same tier — Initiate+
   const hasDecodeData = !!episode.decodeData;
@@ -187,6 +194,22 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
   return (
     <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: jsonLdScript(
+          episodeJsonLd({
+            title: cleanTitle(episode.title),
+            slug: episode.slug,
+            description: episode.summaryShort ?? episode.summaryLong ?? null,
+            airDate: episode.airDate,
+            thumbnailUrl: episode.thumbnailUrl,
+            youtubeVideoId: episode.youtubeVideoId,
+            duration: episode.duration,
+          })
+        ),
+      }}
+    />
     {episode.series && (
       <nav className="mx-auto max-w-7xl px-4 pt-4">
         <ol className="flex items-center gap-2 font-mono text-xs text-text-muted">
@@ -254,7 +277,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
               </svg>
               <p className="font-mono text-sm text-amber-400">Video unavailable</p>
-              <p className="font-mono text-[11px] text-text-muted">This episode's video has been privatized or removed. Browse the transcript, quotes, and metadata below.</p>
+              <p className="font-mono text-[11px] text-text-muted">This episode&apos;s video has been privatized or removed. Browse the transcript, quotes, and metadata below.</p>
             </div>
           )}
 
@@ -333,14 +356,29 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               {{
                 overview: (
                   <div className="space-y-6">
-                    {/* Summary */}
-                    {episode.summaryLong && (
+                    {/* Summary — split view (new) or legacy single-blob (old) */}
+                    {episode.summaryFacts ? (
+                      <SplitSummaryCard
+                        summaryFacts={episode.summaryFacts}
+                        summaryThemes={episode.summaryThemes}
+                        youtubeVideoId={episode.youtubeVideoId}
+                        confidenceTier={confidenceTier}
+                        isHumanReviewed={episode.isHumanReviewed}
+                        humanReviewedAt={episode.humanReviewedAt}
+                      />
+                    ) : episode.summaryLong ? (
                       <SectionCard title="Summary">
                         <p className="text-sm text-text-primary leading-relaxed">
-                          {episode.summaryLong}
+                          {renderWithTimestamps(episode.summaryLong, episode.youtubeVideoId)}
                         </p>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          {episode.isHumanReviewed && (
+                            <HumanReviewBadge reviewedAt={episode.humanReviewedAt} variant="full" />
+                          )}
+                          <AiNotice tier={confidenceTier} />
+                        </div>
                       </SectionCard>
-                    )}
+                    ) : null}
 
                     {/* Guests (inline for mobile) — hosts filtered out */}
                     {actualGuests.length > 0 && (
@@ -507,15 +545,25 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   </div>
                 ),
                 discussion: (
-                  <SectionCard title={`Comments (${commentsData.totalCount})`}>
-                    <CommentSection
-                      slug={episode.slug}
-                      initialComments={JSON.parse(JSON.stringify(commentsData.comments))}
-                      initialTotalCount={commentsData.totalCount}
-                      isAuthenticated={!!user}
-                      currentUserId={user?.id}
-                    />
-                  </SectionCard>
+                  <div className="space-y-6">
+                    <SectionCard title={`Comments (${commentsData.totalCount})`}>
+                      <CommentSection
+                        slug={episode.slug}
+                        initialComments={JSON.parse(JSON.stringify(commentsData.comments))}
+                        initialTotalCount={commentsData.totalCount}
+                        isAuthenticated={!!user}
+                        currentUserId={user?.id}
+                      />
+                    </SectionCard>
+                    <SectionCard title="Community Annotations">
+                      <AnnotationSection
+                        targetType="episode"
+                        targetId={episode.slug}
+                        returnPath={`/episodes/${episode.slug}`}
+                        label="Connections, corrections, and context added by Initiate+ members."
+                      />
+                    </SectionCard>
+                  </div>
                 ),
               }}
             </EpisodeTabLayout>
@@ -597,7 +645,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           {/* Upgrade CTA — only for non-subscribers */}
           {!hasTranscriptAccess && (
             <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-5 space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">/// initiate_layer</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">{"/// initiate_layer"}</p>
               <p className="font-mono text-xs font-bold text-accent-gold">Observers see the surface.</p>
               <ul className="space-y-1.5">
                 {[
@@ -689,7 +737,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
+        __html: jsonLdScript({
           "@context": "https://schema.org",
           "@type": "VideoObject",
           name: episode.title,
@@ -697,7 +745,24 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           thumbnailUrl: episode.thumbnailUrl ?? undefined,
           uploadDate: episode.airDate?.toISOString(),
           url: `https://cultcodex.me/episodes/${episode.slug}`,
-          ...(episode.youtubeVideoId && { contentUrl: `https://www.youtube.com/watch?v=${episode.youtubeVideoId}` }),
+          ...(episode.youtubeVideoId && {
+            contentUrl: `https://www.youtube.com/watch?v=${episode.youtubeVideoId}`,
+            // embedUrl lets Google render a video card in search results
+            embedUrl: `https://www.youtube.com/embed/${episode.youtubeVideoId}`,
+          }),
+          // Convert stored "h:mm:ss" / "m:ss" to ISO 8601 duration for rich results
+          ...(episode.duration && (() => {
+            const parts = episode.duration!.split(":").map(Number);
+            if (parts.length === 3) {
+              const [h, m, s] = parts;
+              return { duration: `PT${h}H${m}M${s}S` };
+            }
+            if (parts.length === 2) {
+              const [m, s] = parts;
+              return { duration: `PT${m}M${s}S` };
+            }
+            return {};
+          })()),
         }),
       }}
     />

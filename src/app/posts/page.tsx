@@ -8,6 +8,7 @@ import { parsePage, paginationArgs, buildPaginationMeta } from "@/lib/pagination
 export const revalidate = 300;
 
 export const metadata = {
+  alternates: { canonical: "/posts" },
   title: "Community Posts — CULT CODEX",
   description: "YouTube community posts from Cult of Psyche",
 };

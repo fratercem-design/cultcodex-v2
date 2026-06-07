@@ -4,6 +4,9 @@ import { notifySubscribers } from "@/lib/notifications";
 
 export async function POST(req: NextRequest) {
 const key = req.headers.get("x-live-secret");
+  // Secret must be passed as a header — never as a query param (query params
+  // appear in server logs, proxy logs, and Referrer headers).
+  const key = req.headers.get("x-live-secret");
 
   if (key !== process.env.LIVE_TOGGLE_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

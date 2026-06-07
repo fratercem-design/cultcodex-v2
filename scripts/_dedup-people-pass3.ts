@@ -109,10 +109,11 @@ const GROUPS: MergeGroup[] = [
     ],
   },
   {
-    label: "Alexandria",
-    notes: "Slash combo 'Alexandria/Alexander' — same panel regular.",
-    keepId: "cmo3dvx3j05t7cktt3rfhud1y",
+    label: "Alexandria → Alexandra Mayers",
+    notes: "Owner rule: 'alexandria is ALEXANDRA MAYERS'. Both records merge into canonical Mayers.",
+    keepId: "cmn5tenff00mgpottlmcnwxje", // alexandra-mayers (canonical)
     dupeIds: [
+      "cmo3dvx3j05t7cktt3rfhud1y", // Alexandria
       "cmo3e8jq106i7cktta0xmz93j", // Alexandria/Alexander
     ],
   },

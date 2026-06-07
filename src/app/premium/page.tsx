@@ -7,14 +7,14 @@
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { getSubscriptionStatus } from "@/lib/subscription";
-import { getArchiveStats } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
 import { prisma } from "@/lib/db";
 import { TIERS } from "@/lib/subscription-tiers";
 import { TierCheckoutButton } from "@/components/subscription/tier-checkout-button";
 import { ManageSubscription } from "@/components/subscription/manage-subscription";
 import { PageHero } from "@/components/ui/page-hero";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, faqPageJsonLd, jsonLdScript } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const revalidate = 300;
@@ -26,18 +26,11 @@ export const metadata: Metadata = buildMetadata({
   path: "/premium",
 });
 
-async function getMemberCount() {
-  return prisma.codexUser.count({
-    where: { OR: [{ role: "admin" }, { subscriptionStatus: "active" }] },
-  });
-}
-
 export default async function PremiumPage() {
   const user = await getCurrentUser();
-  const [subStatus, stats, memberCount] = await Promise.all([
+  const [subStatus, stats] = await Promise.all([
     user ? getSubscriptionStatus(user.id) : Promise.resolve(null),
-    getArchiveStats(),
-    getMemberCount(),
+    getCounts(),
   ]);
 
   // hasAccess: gates what the user can SEE (admin + paying subscribers)
@@ -82,14 +75,14 @@ export default async function PremiumPage() {
         {/* ── Identity ladder explainer ── */}
         <section className="max-w-4xl mx-auto">
           <p className="mb-8 text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
-            /// the_ladder_of_identity
+            {"/// the_ladder_of_identity"}
           </p>
           <div className="grid gap-px md:grid-cols-3 overflow-hidden rounded-2xl border border-border">
             {[
               {
                 role: "Observer",
                 price: "Free",
-                hook: "I can tell there's a structure here. I just can't see all of it yet.",
+                hook: "You can see the shape of the archive. You can see that something is here. But the archive is working at a level you can't reach yet. Every locked transcript is a pattern you're watching but not reading.",
                 color: "text-text-muted",
                 bg: "bg-surface",
                 border: "",
@@ -173,7 +166,7 @@ export default async function PremiumPage() {
         <section className="space-y-6 max-w-5xl mx-auto">
           <div className="text-center space-y-1">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-              /// choose_your_depth
+              {"/// choose_your_depth"}
             </p>
             <p className="font-display text-lg text-text-primary">
               Both tiers open immediately. Cancel any time.
@@ -215,6 +208,9 @@ export default async function PremiumPage() {
                     <span className={`font-display text-5xl font-bold ${accentText}`}>${t.priceMonthly}</span>
                     <span className="font-mono text-sm text-text-muted">/month</span>
                   </div>
+                  <p className="mt-1 font-mono text-[10px] text-text-muted/70">
+                    or ${t.priceAnnual}/yr — save ${t.priceMonthly * 12 - t.priceAnnual}
+                  </p>
                   <p className={`mt-1 font-mono text-[10px] ${accentText}/60`}>{t.tagline}</p>
 
                   <ul className="mt-6 space-y-2.5 flex-1">
@@ -230,11 +226,9 @@ export default async function PremiumPage() {
                     <div className="mt-7">
                       <TierCheckoutButton
                         tier={t.slug}
-                        label={
-                          notSignedIn
-                            ? `Sign in to become ${t.role} — $${t.priceMonthly}/mo`
-                            : `Become ${t.role} — $${t.priceMonthly}/mo`
-                        }
+                        role={t.role}
+                        priceMonthly={t.priceMonthly}
+                        priceAnnual={t.priceAnnual}
                         accent={t.accent}
                         requireSignIn={notSignedIn}
                       />
@@ -247,9 +241,12 @@ export default async function PremiumPage() {
                     <div className="mt-7">
                       <TierCheckoutButton
                         tier={t.slug}
-                        label={`Upgrade to Oracle — $${t.priceMonthly}/mo`}
+                        role={t.role}
+                        priceMonthly={t.priceMonthly}
+                        priceAnnual={t.priceAnnual}
                         accent={t.accent}
                         requireSignIn={false}
+                        verb="Upgrade to"
                       />
                     </div>
                   )}
@@ -262,14 +259,14 @@ export default async function PremiumPage() {
         {/* ── Archive weight ── */}
         <section className="max-w-4xl mx-auto rounded-2xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-8 text-center space-y-6">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
-            /// what you&apos;re entering
+            {"/// what you're entering"}
           </p>
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
             {[
               { n: stats.episodes.toLocaleString(), label: "Transmissions", color: "text-accent-gold" },
               { n: stats.segments.toLocaleString(), label: "Moments Indexed", color: "text-accent-cyan" },
               { n: stats.people.toLocaleString(), label: "Profiled Souls", color: "text-accent-gold" },
-              { n: stats.loreEntries.toLocaleString(), label: "Lore Entries", color: "text-accent-cyan" },
+              { n: stats.lore.toLocaleString(), label: "Lore Entries", color: "text-accent-cyan" },
             ].map((s) => (
               <div key={s.label}>
                 <p className={`font-display text-3xl font-bold ${s.color}`}>{s.n}</p>
@@ -278,8 +275,9 @@ export default async function PremiumPage() {
             ))}
           </div>
           <p className="font-mono text-xs text-text-muted">
-            {stats.totalHours.toLocaleString()}+ hours of recorded transmissions ·{" "}
-            <span className="text-accent-gold font-bold">{memberCount} members</span> already initiated
+            {stats.totalHours.toLocaleString()}+ hours decoded ·{" "}
+            {stats.segments.toLocaleString()} transcript segments ·{" "}
+            <span className="text-accent-gold font-bold">{stats.lore.toLocaleString()} lore entries</span> extracted
           </p>
         </section>
 
@@ -288,7 +286,7 @@ export default async function PremiumPage() {
         {/* ── Full comparison matrix ── */}
         <section className="space-y-4 max-w-4xl mx-auto">
           <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-            /// what opens at each level
+            {"/// what opens at each level"}
           </p>
           <div className="overflow-hidden rounded-2xl border border-border">
             <table className="w-full">
@@ -344,6 +342,16 @@ export default async function PremiumPage() {
           ))}
         </section>
 
+        {/* ── Reports hook ── */}
+        <section className="max-w-3xl mx-auto text-center">
+          <Link
+            href="/reports"
+            className="inline-flex items-center gap-2 rounded-full border border-accent-cyan/30 bg-accent-cyan/5 px-5 py-2.5 font-mono text-[11px] uppercase tracking-widest text-accent-cyan transition-colors hover:bg-accent-cyan/10"
+          >
+            ▦ See what Initiate+ unlocks — Codex Reports →
+          </Link>
+        </section>
+
         {/* ── FAQ ── */}
         <section className="space-y-3 max-w-3xl mx-auto">
           <h3 className="mb-4 text-center font-display text-sm font-bold uppercase tracking-widest text-text-muted/60">Questions</h3>
@@ -377,13 +385,17 @@ export default async function PremiumPage() {
               <div className="flex flex-wrap justify-center gap-4 pt-2">
                 <TierCheckoutButton
                   tier="access"
-                  label={notSignedIn ? "Sign in to become Initiate+ — $10/mo" : "Become Initiate+ — $10/mo"}
+                  role="Initiate+"
+                  priceMonthly={10}
+                  priceAnnual={96}
                   accent="gold"
                   requireSignIn={notSignedIn}
                 />
                 <TierCheckoutButton
                   tier="system"
-                  label={notSignedIn ? "Sign in to become Oracle — $25/mo" : "Become Oracle — $25/mo"}
+                  role="Oracle"
+                  priceMonthly={25}
+                  priceAnnual={240}
                   accent="violet"
                   requireSignIn={notSignedIn}
                 />
@@ -404,6 +416,12 @@ export default async function PremiumPage() {
           </Link>
         </section>
       </main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(faqPageJsonLd(FAQ.map(({ q, a }) => ({ question: q, answer: a })))),
+        }}
+      />
     </>
   );
 }

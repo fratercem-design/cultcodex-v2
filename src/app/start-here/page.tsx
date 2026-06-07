@@ -6,15 +6,17 @@ import {
   IconTarot,
   IconPerson,
   IconMicrophone,
+  IconScroll,
 } from "@/components/graphics/codex-icons";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
-import { getArchiveStats } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/start-here" },
   title: "Start Here — CULT CODEX",
   description:
-    "Cult of Psyche is a livestream show exploring consciousness, the occult, AI, and human behavior. CultCodex is the structured archive of everything that happened — 2,500+ transmissions, every word indexed, every pattern extracted.",
+    "Cult of Psyche is a live streaming show — back since October 2024 after years away. CultCodex is the structured archive of every transmission: every word indexed, every pattern extracted, every figure profiled.",
 };
 
 const DOORWAYS = [
@@ -62,6 +64,15 @@ const DOORWAYS = [
       "Open panels, Troll Tribunal, legendary guests, chaos streams. Where the script gets thrown out and the cult does what it does best.",
     href: "/collections/wild-conversations",
     accent: "gold" as const,
+  },
+  {
+    icon: <IconScroll size={36} />,
+    title: "Lore Archive",
+    question: "What keeps getting referenced?",
+    description:
+      "Running myths, recurring entities, cult in-jokes, and the growing mythology the archive has catalogued since the show's return.",
+    href: "/lore",
+    accent: "cyan" as const,
   },
 ] as const;
 
@@ -115,116 +126,20 @@ const colorMapFull = {
 };
 
 export default async function StartHerePage() {
-  const stats = await getArchiveStats();
+  const stats = await getCounts();
 
   return (
     <main id="main-content" className="mx-auto max-w-5xl px-4 py-12 space-y-20">
 
-      {/* ── 1. What is this? ── */}
-      <section className="max-w-3xl mx-auto space-y-8 text-center">
-        <div className="space-y-2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
-            ✦ &nbsp; CultCodex &nbsp; ✦
-          </p>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary leading-tight">
-            Start Here
-          </h1>
-          <p className="font-mono text-xs text-text-muted/70 tracking-wide">
-            What Cult of Psyche is · What this archive captures · Where to begin
-          </p>
-        </div>
-
-        <div className="space-y-4 text-left rounded-2xl border border-border bg-surface p-7">
-          <p className="text-sm text-text-muted leading-relaxed">
-            <span className="text-text-primary font-semibold">Cult of Psyche is a livestream show.</span>{" "}
-            Unscripted, unfiltered panels between a host and rotating guests — exploring consciousness,
-            the occult, AI, human psychology, and whatever was happening that day. No script.
-            No editorial filter. Just the conversation and wherever it went.
-          </p>
-          <p className="text-sm text-text-muted leading-relaxed">
-            It ran for years. Thousands of conversations. The community that formed around it
-            became part of the content — guests became recurring figures, dynamics became lore,
-            conflicts became mythology.
-          </p>
-          <p className="text-sm text-text-muted leading-relaxed">
-            <span className="text-accent-gold font-semibold">CultCodex is what that became.</span>{" "}
-            Every transmission indexed. Every figure profiled. Every recurring pattern extracted.
-            The chaos turned into a searchable, navigable archive — with an AI layer that keeps
-            building the mythology from the inside.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-          {[
-            { n: stats.episodes.toLocaleString(), label: "Transmissions" },
-            { n: `${stats.totalHours.toLocaleString()}+`, label: "Hours" },
-            { n: stats.people.toLocaleString(), label: "Voices" },
-            { n: stats.segments.toLocaleString(), label: "Moments indexed" },
-            { n: stats.quotes.toLocaleString(), label: "Quotes" },
-            { n: stats.loreEntries.toLocaleString(), label: "Lore entries" },
-          ].map((s) => (
-            <div key={s.label} className="rounded-lg border border-border bg-surface p-3 text-center">
-              <p className="font-mono text-lg font-bold text-accent-gold">{s.n}</p>
-              <p className="mt-0.5 font-mono text-[10px] text-text-muted">{s.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <MysticalDivider />
-
-      {/* ── 2. Three things worth understanding ── */}
-      <section className="space-y-6 max-w-4xl mx-auto">
-        <div className="text-center space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-            /// before_you_go_further
-          </p>
-          <p className="font-display text-lg text-text-primary">Three things worth knowing.</p>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          {[
-            {
-              num: "I",
-              title: "The archive captures behavior, not just content.",
-              body: "\"Who said what\" is the surface. CultCodex tracks what happened underneath — recurring tactics, shifting dynamics, behavioral signatures across hundreds of appearances. That's what separates this from a YouTube playlist.",
-              color: "border-accent-gold/20 text-accent-gold",
-            },
-            {
-              num: "II",
-              title: "The chaos had structure.",
-              body: "From outside, livestream panels look random. Inside the archive, the same dynamics repeat — different guests, different eras, same underlying patterns. The Psychenomicon is the system that maps what keeps recurring and what it means.",
-              color: "border-accent-violet/20 text-accent-violet",
-            },
-            {
-              num: "III",
-              title: "This is a living record.",
-              body: "The archive is still growing. New transmissions enter. Patterns are extracted. The mythology builds in real time. You're not looking at a completed artifact — you're looking at something that is still becoming what it is.",
-              color: "border-accent-cyan/20 text-accent-cyan",
-            },
-          ].map((c) => (
-            <div key={c.num} className={`rounded-xl border ${c.color.split(" ")[0]} bg-surface p-6 space-y-3`}>
-              <p className={`font-mono text-xs font-bold ${c.color.split(" ")[1]}`}>
-                {c.num}
-              </p>
-              <h3 className="font-display text-sm font-bold text-text-primary leading-snug">{c.title}</h3>
-              <p className="font-mono text-[11px] text-text-muted leading-relaxed">{c.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <MysticalDivider />
-
-      {/* ── 3. Five doorways ── */}
+      {/* ── 0. Six doorways (top — primary entry) ── */}
       <section className="space-y-6">
         <div className="text-center space-y-1">
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-            /// enter_the_archive
+            {"/// enter_the_archive"}
           </p>
           <p className="font-display text-lg text-text-primary">Start with what&apos;s pulling on you.</p>
           <p className="font-mono text-xs text-text-muted max-w-md mx-auto">
-            Forget categories. These are the five territories the archive keeps returning to.
+            Forget categories. These are the six territories the archive keeps returning to.
             Pick the one that resonates right now.
           </p>
         </div>
@@ -276,12 +191,138 @@ export default async function StartHerePage() {
 
       <MysticalDivider />
 
+      {/* ── 1. What is this? ── */}
+      <section className="max-w-3xl mx-auto space-y-8 text-center">
+        <div className="space-y-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+            ✦ &nbsp; CultCodex &nbsp; ✦
+          </p>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary leading-tight">
+            Start Here
+          </h1>
+          <p className="font-mono text-xs text-text-muted/70 tracking-wide">
+            What Cult of Psyche is · What this archive captures · Where to begin
+          </p>
+        </div>
+
+        <div className="space-y-4 text-left rounded-2xl border border-border bg-surface p-7">
+          <p className="text-sm text-text-muted leading-relaxed">
+            <span className="text-text-primary font-semibold">Cult of Psyche is a live streaming show.</span>{" "}
+            Unscripted, unfiltered panels between a host and rotating guests — exploring consciousness,
+            the occult, AI, human psychology, and whatever was happening that day. No script.
+            No editorial filter. Just the conversation and wherever it went.
+          </p>
+          <p className="text-sm text-text-muted leading-relaxed">
+            The show went dark for years. It came back in October 2024 — live streaming, rotating
+            guests, the same format, a different frequency. Guests became recurring figures, dynamics
+            became lore, conflicts became mythology.
+          </p>
+          <p className="text-sm text-text-muted leading-relaxed">
+            <span className="text-accent-gold font-semibold">CultCodex is what that became.</span>{" "}
+            Every transmission indexed. Every figure profiled. Every recurring pattern extracted.
+            The chaos turned into a searchable, navigable archive — with an AI layer that keeps
+            building the mythology from the inside.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+          {[
+            { n: stats.episodes.toLocaleString(), label: "Transmissions" },
+            { n: `${stats.totalHours.toLocaleString()}+`, label: "Hours" },
+            { n: stats.people.toLocaleString(), label: "Voices" },
+            { n: stats.segments.toLocaleString(), label: "Moments indexed" },
+            { n: stats.quotes.toLocaleString(), label: "Quotes" },
+            { n: stats.lore.toLocaleString(), label: "Lore entries" },
+          ].map((s) => (
+            <div key={s.label} className="rounded-lg border border-border bg-surface p-3 text-center">
+              <p className="font-mono text-lg font-bold text-accent-gold">{s.n}</p>
+              <p className="mt-0.5 font-mono text-[10px] text-text-muted">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <MysticalDivider />
+
+      {/* ── 2. Three things worth understanding ── */}
+      <section className="space-y-6 max-w-4xl mx-auto">
+        <div className="text-center space-y-1">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
+            {"/// before_you_go_further"}
+          </p>
+          <p className="font-display text-lg text-text-primary">Three things worth knowing.</p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            {
+              num: "I",
+              title: "The archive captures behavior, not just content.",
+              body: "\"Who said what\" is the surface. CultCodex tracks what happened underneath — recurring tactics, shifting dynamics, behavioral signatures across hundreds of appearances. That's what separates this from a YouTube playlist.",
+              color: "border-accent-gold/20 text-accent-gold",
+            },
+            {
+              num: "II",
+              title: "The chaos had structure.",
+              body: "From outside, livestream panels look random. Inside the archive, the same dynamics repeat — different guests, different eras, same underlying patterns. The Psychenomicon is the system that maps what keeps recurring and what it means.",
+              color: "border-accent-violet/20 text-accent-violet",
+            },
+            {
+              num: "III",
+              title: "This is a living record.",
+              body: "The archive is still growing. New transmissions enter. Patterns are extracted. The mythology builds in real time. You're not looking at a completed artifact — you're looking at something that is still becoming what it is.",
+              color: "border-accent-cyan/20 text-accent-cyan",
+            },
+          ].map((c) => (
+            <div key={c.num} className={`rounded-xl border ${c.color.split(" ")[0]} bg-surface p-6 space-y-3`}>
+              <p className={`font-mono text-xs font-bold ${c.color.split(" ")[1]}`}>
+                {c.num}
+              </p>
+              <h3 className="font-display text-sm font-bold text-text-primary leading-snug">{c.title}</h3>
+              <p className="font-mono text-[11px] text-text-muted leading-relaxed">{c.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <MysticalDivider />
+
+      {/* ── 3. Personalized path CTA (quiz) ── */}
+      <section className="max-w-2xl mx-auto">
+        <div className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface overflow-hidden">
+          <div className="p-7 space-y-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
+              {"/// not sure where to start?"}
+            </p>
+            <h2 className="font-display text-xl font-bold text-text-primary">
+              Let the archive find you.
+            </h2>
+            <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+              Three questions. The archive calibrates around your answers and
+              gives you five episodes, three people, and two Oracle prompts
+              tailored to where you are right now.
+            </p>
+          </div>
+          <div className="border-t border-accent-violet/20 bg-accent-violet/5 px-7 py-4 flex items-center justify-between gap-3">
+            <p className="font-mono text-[10px] text-text-muted">Takes 30 seconds.</p>
+            <Link
+              href="/start-here/quiz"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-5 py-2 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25"
+            >
+              Find your path →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <MysticalDivider />
+
       {/* ── 4. Ask the Oracle ── */}
       <section className="max-w-3xl mx-auto">
         <div className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface overflow-hidden">
           <div className="p-7 space-y-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
-              /// not_sure_where_to_start
+              {"/// not_sure_where_to_start"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
               Ask the Oracle anything.
@@ -319,7 +360,7 @@ export default async function StartHerePage() {
       {/* ── 5. What opens as Initiate+ ── */}
       <section className="max-w-3xl mx-auto space-y-5">
         <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted text-center">
-          /// the_intelligence_layer
+          {"/// the_intelligence_layer"}
         </p>
         <div className="rounded-2xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface overflow-hidden">
           <div className="p-7 space-y-4">
@@ -368,7 +409,7 @@ export default async function StartHerePage() {
       {/* ── 6. Full map ── */}
       <section className="space-y-6">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted text-center">
-          /// full_map — every surface in the codex
+          {"/// full_map — every surface in the codex"}
         </p>
 
         {[

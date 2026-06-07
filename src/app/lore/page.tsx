@@ -21,7 +21,8 @@ export const revalidate = 600;
 
 export const metadata = {
   title: "Lore — CULT CODEX",
-  description: "Concepts, doctrines, and myths of the Cult of Psyche",
+  description: "The concepts, doctrines, myths, and memes of the Cult of Psyche — every recurring idea, belief system, and inside reference catalogued and connected to the archive.",
+  alternates: { canonical: "/lore" },
 };
 
 const SORT_OPTIONS = [

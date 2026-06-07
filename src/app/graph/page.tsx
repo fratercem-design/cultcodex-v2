@@ -7,6 +7,7 @@ import { ERAS, getEraById } from "@/lib/eras";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/graph" },
   title: "Relationship Map — CULT CODEX",
   description:
     "Dynamic map of every recurring Cult of Psyche figure — who appeared with whom, how often, and what orbits formed. Click any node to focus their connections.",
@@ -46,7 +47,7 @@ export default async function GraphPage({
       <div className="space-y-4 max-w-3xl">
         <div className="space-y-1">
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-            /// relationship_map
+            {"/// relationship_map"}
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">
             The Network

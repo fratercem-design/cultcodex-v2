@@ -14,6 +14,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Search — CULT CODEX",
   description: "Search the Cult of Psyche archive for episodes, people, and lore.",
+  alternates: { canonical: "/search" },
 };
 
 interface SearchPageProps {

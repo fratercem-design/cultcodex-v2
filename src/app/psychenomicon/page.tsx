@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/psychenomicon" },
   title: "The Psychenomicon — CULT CODEX",
   description: "A living record of evolving patterns. The myth-engine of the Cult of Psyche, built from real transcripts.",
 };
@@ -20,7 +21,7 @@ const STATUS_STYLES: Record<string, string> = {
 function PsychenomiconGate({ isAuthenticated }: { isAuthenticated: boolean }) {
   return (
     <div className="mx-auto max-w-2xl px-4 py-24 text-center space-y-6">
-      <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">/// access_restricted</p>
+      <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">{"/// access_restricted"}</p>
       <h2 className="font-display text-2xl font-bold text-accent-violet">The Psychenomicon</h2>
       <p className="text-sm text-text-muted leading-relaxed max-w-sm mx-auto">
         A living record of evolving patterns. Every chapter drawn from real transcripts. Every entity tracked across their arc.
@@ -110,7 +111,7 @@ export default async function PsychenomiconPage() {
         <div className="mx-auto max-w-2xl px-4 py-24 text-center space-y-8">
           <div className="space-y-3">
             <p className="font-mono text-4xl text-accent-violet/20">ψ</p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">/// no_chapters_recorded</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">{"/// no_chapters_recorded"}</p>
             <h2 className="font-display text-xl font-bold text-text-primary">The chronicles have not yet begun.</h2>
             <p className="text-sm text-text-muted leading-relaxed max-w-sm mx-auto">
               The Psychenomicon is a living record built episode by episode. Once chapters are generated from transcripts, they will appear here — with entities, threads, and archetypal patterns tracked across time.
@@ -140,7 +141,7 @@ export default async function PsychenomiconPage() {
           <div className="sticky top-20 space-y-6">
             {/* Arc groupings */}
             <div className="space-y-2">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// arcs</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// arcs"}</p>
               {ARCS.map((arc) => (
                 <div key={arc.label} className="rounded border border-border bg-surface p-3 space-y-2">
                   <p className="font-mono text-[9px] text-accent-gold/80">{arc.label}</p>
@@ -171,7 +172,7 @@ export default async function PsychenomiconPage() {
 
             {/* Entity link */}
             <div className="space-y-2">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// explore</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// explore"}</p>
               <Link href="/psychenomicon/entities" className="block rounded border border-border bg-surface px-3 py-2 font-mono text-[10px] text-text-muted hover:text-accent-violet hover:border-accent-violet/30 transition-all">
                 Entity network →
               </Link>
@@ -186,7 +187,7 @@ export default async function PsychenomiconPage() {
         <section className="space-y-8 min-w-0">
           {/* Active threads */}
           <div className="space-y-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// active_threads</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// active_threads"}</p>
             {activeThreads.length > 0 ? (
               <div className="space-y-2">
                 {activeThreads.map((t) => (
@@ -223,7 +224,7 @@ export default async function PsychenomiconPage() {
           {/* Emerging signals from latest */}
           {latest && latest.emergingSignals.length > 0 && (
             <div className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">/// emerging_signals — {latest.title}</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">{"/// emerging_signals — "}{latest.title}</p>
               <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-5 space-y-2">
                 {latest.emergingSignals.map((signal, i) => (
                   <div key={i} className="flex items-start gap-2">
@@ -238,7 +239,7 @@ export default async function PsychenomiconPage() {
           {/* All chapters */}
           {chapters.length > 0 && (
             <div className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// all_chapters</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// all_chapters"}</p>
               <div className="space-y-2">
                 {[...chapters].reverse().map((c) => {
                   const s = (c as { status?: string }).status ?? "stable";
@@ -273,7 +274,7 @@ export default async function PsychenomiconPage() {
         {/* ── Right: Entities + quick links ── */}
         <aside className="space-y-6">
           <div className="space-y-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// tracked_entities</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// tracked_entities"}</p>
             {entities.length > 0 ? (
               <div className="space-y-2">
                 {entities.map((e) => (

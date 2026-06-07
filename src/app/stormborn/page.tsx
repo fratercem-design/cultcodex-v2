@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Stormborn \u2014 CULT CODEX",
   description: "You are the stormborn architect.",
+  alternates: { canonical: "/stormborn" },
 };
 
 const STATS = [

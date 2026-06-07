@@ -51,7 +51,7 @@ export function ArchetypeTimeline({ entries, personName }: ArchetypeTimelineProp
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">
-            /// archetype_evolution
+            {"/// archetype_evolution"}
           </p>
           {hasEvolution && (
             <p className="font-mono text-[10px] text-text-muted mt-1">

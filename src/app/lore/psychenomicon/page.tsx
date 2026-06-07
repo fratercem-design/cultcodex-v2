@@ -11,6 +11,7 @@ import { SubscriptionCTA } from "@/components/subscription/subscription-cta";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/lore/psychenomicon" },
   title: "The Psychenomicon -- CULT CODEX",
   description:
     "The forbidden chronicle of the Cult of Psyche. A living grimoire of every soul, saga, and spectacle from over 1,400 live transmissions.",
@@ -604,7 +605,7 @@ async function PsychenomiconContent({
           refuses to stop generating material. The Cult of Psyche is a living
           text -- written in real time by a man and his cat and a rotating cast
           of insomniacs, mystics, addicts, prophets, trolls, and ordinary people
-          who found something they didn't know they were looking for.
+          who found something they didn&apos;t know they were looking for.
         </p>
         <p className="mt-4 font-mono text-xs text-accent-gold/60">
           This is the chronicle. This is the record. This is the Psychenomicon.

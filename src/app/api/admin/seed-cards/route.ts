@@ -1,7 +1,7 @@
 /**
  * POST /api/admin/seed-cards
  *
- * Applies the Phase 2 card system migration and seeds 4 packs + 30 cards.
+ * Applies the Phase 2 card system migration and seeds 5 packs + cards.
  * Idempotent — uses upsert everywhere.
  *
  * Auth: X-Enrich-Secret header must match ENRICH_SECRET env var.
@@ -9,6 +9,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import type { CardType, Rarity } from "@/generated/prisma/client";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,6 +22,10 @@ const MIGRATION_STEPS = [
   { name: "nullable CardPack.title",       sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='title' AND is_nullable='NO') THEN ALTER TABLE "CardPack" ALTER COLUMN "title" DROP NOT NULL; END IF; END $$` },
   { name: "nullable CardPack.accentColor", sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='accentColor' AND is_nullable='NO') THEN ALTER TABLE "CardPack" ALTER COLUMN "accentColor" DROP NOT NULL; END IF; END $$` },
   { name: "nullable CardPack.subtitle",    sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='subtitle' AND is_nullable='NO') THEN ALTER TABLE "CardPack" ALTER COLUMN "subtitle" DROP NOT NULL; END IF; END $$` },
+  // Legacy NOT NULL columns the INSERT below does not supply (cost/isAvailable are
+  // the operative fields). Give them a default + backfill so the upsert succeeds.
+  { name: "default CardPack.price",     sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='price') THEN ALTER TABLE "CardPack" ALTER COLUMN "price" SET DEFAULT 0; UPDATE "CardPack" SET "price" = COALESCE("price", "cost", 0) WHERE "price" IS NULL; END IF; END $$` },
+  { name: "default CardPack.isActive",  sql: `DO $$ BEGIN IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='CardPack' AND column_name='isActive') THEN ALTER TABLE "CardPack" ALTER COLUMN "isActive" SET DEFAULT true; UPDATE "CardPack" SET "isActive" = COALESCE("isActive", "isAvailable", true) WHERE "isActive" IS NULL; END IF; END $$` },
   { name: "add LEGENDARY rarity",   sql: `ALTER TYPE "Rarity" ADD VALUE IF NOT EXISTS 'LEGENDARY'` },
   { name: "add MYTHIC rarity",      sql: `ALTER TYPE "Rarity" ADD VALUE IF NOT EXISTS 'MYTHIC'` },
   { name: "add FORBIDDEN rarity",   sql: `ALTER TYPE "Rarity" ADD VALUE IF NOT EXISTS 'FORBIDDEN'` },
@@ -114,6 +119,24 @@ const PACKS = [
     weightMythic: 3,
     weightForbidden: 2,
   },
+  {
+    slug: "mythology",
+    name: "Mythology Pack",
+    description: "Gods, archetypes, and divine feminine forces. The ten Mahavidyas, the myths that shaped the stream, and the symbols that run beneath everything.",
+    cost: 250,
+    cardCount: 5,
+    isAvailable: true,
+    sortOrder: 5,
+    artTheme: "myth",
+    weightStatic: 15,
+    weightSignal: 22,
+    weightTransmission: 23,
+    weightAnomaly: 18,
+    weightOracle: 12,
+    weightLegendary: 6,
+    weightMythic: 3,
+    weightForbidden: 0,
+  },
 ];
 
 const CARDS = [
@@ -153,6 +176,17 @@ const CARDS = [
   { slug: "chaos-magick-primer",    cardType: "LORE",      rarity: "TRANSMISSION", title: "Chaos Magick Primer", subtitle: "Core Doctrine",       flavourText: "Belief is a tool. Use accordingly.",                  statA: 77, statB: 82, statC: 68, abilities: ["Reality Flex", "Sigil Boost"], personality: null },
   { slug: "alchemical-biography",   cardType: "CIPHER",    rarity: "SIGNAL",    title: "Alchemical Biography", subtitle: "Pain → Gold Protocol", flavourText: "Every crack is ore.",                                 statA: 66, statB: 77, statC: 88, abilities: ["Resilience Boost"], personality: null },
   { slug: "amor-fati",              cardType: "CIPHER",    rarity: "STATIC",    title: "Amor Fati",           subtitle: "Love of Fate",           flavourText: "Not acceptance. Love.",                               statA: 55, statB: 66, statC: 77, abilities: ["Resolve"], personality: null },
+  // MYTHOLOGY PACK
+  { slug: "tara-the-liberator",     cardType: "MAHAVIDYA", rarity: "LEGENDARY", title: "Tārā",                subtitle: "She Who Carries Across",  flavourText: "Not rescued. Carried. There is a difference.",        statA: 96, statB: 91, statC: 88, abilities: ["Liberation", "Compassion Surge"], personality: "The Liberator" },
+  { slug: "tripura-sundari",        cardType: "MAHAVIDYA", rarity: "MYTHIC",    title: "Tripura Sundarī",     subtitle: "Beauty of the Three Worlds", flavourText: "Desire is the engine. She is the engineer.",       statA: 99, statB: 88, statC: 94, abilities: ["Manifestation", "Desire Bind"], personality: "The Creatrix" },
+  { slug: "bhuvaneshvari",          cardType: "MAHAVIDYA", rarity: "ORACLE",    title: "Bhuvaneshvarī",       subtitle: "Queen of the Universe",   flavourText: "The space you think is empty is her body.",          statA: 88, statB: 99, statC: 82, abilities: ["Space Control", "Reality Hold"], personality: "The Expanse" },
+  { slug: "bhairavi-the-fierce",    cardType: "MAHAVIDYA", rarity: "LEGENDARY", title: "Bhairavī",            subtitle: "The Fierce One",          flavourText: "She doesn't punish the past. She burns the future that would repeat it.", statA: 95, statB: 87, statC: 99, abilities: ["Cycle Break", "Fear Transmute"], personality: "The Fierce" },
+  { slug: "chhinnamasta",           cardType: "MAHAVIDYA", rarity: "MYTHIC",    title: "Chhinnamastā",        subtitle: "She Who Severs the Self",  flavourText: "She cut off her own head. The blood fed two serpents. The lesson is obvious.", statA: 99, statB: 77, statC: 91, abilities: ["Self-Sacrifice", "Ego Decap"], personality: "The Severed" },
+  { slug: "psyche-and-eros",        cardType: "LORE",      rarity: "LEGENDARY", title: "Psyche & Eros",       subtitle: "The Origin Myth",         flavourText: "A mortal who looked at the god directly. That's what started all this.", statA: 91, statB: 99, statC: 88, abilities: ["Archive Origin", "Soul Bond"], personality: null },
+  { slug: "the-oracle-at-delphi",   cardType: "ENTITY",    rarity: "ANOMALY",   title: "The Oracle at Delphi", subtitle: "Know Thyself",           flavourText: "The answer was always a question. Always.",           statA: 82, statB: 95, statC: 78, abilities: ["Truth Demand", "Paradox Lock"], personality: "The Oracle" },
+  { slug: "hermes-trismegistus",    cardType: "ENTITY",    rarity: "LEGENDARY", title: "Hermes Trismegistus", subtitle: "Thrice-Great",            flavourText: "As above, so below. As within, so without. Keep going.", statA: 97, statB: 92, statC: 88, abilities: ["Transmutation", "Message Carry"], personality: "The Messenger" },
+  { slug: "the-underworld-map",     cardType: "LORE",      rarity: "ORACLE",    title: "The Underworld Map",  subtitle: "Katabasis Protocol",      flavourText: "Every descent is voluntary. The story doesn't mention the return until you need it.", statA: 85, statB: 91, statC: 77, abilities: ["Descent Guide", "Return Path"], personality: null },
+  { slug: "myth-of-the-eternal-return", cardType: "CIPHER", rarity: "SIGNAL",  title: "Eternal Return",      subtitle: "The Loop Signal",         flavourText: "You have done this before. The question is whether you'll do it better this time.", statA: 72, statB: 88, statC: 81, abilities: ["Cycle Sense", "Pattern Memory"], personality: null },
 ];
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
@@ -257,8 +291,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   for (const card of CARDS) {
     try {
       const data = {
-        cardType: card.cardType as any,
-        rarity: card.rarity as any,
+        cardType: card.cardType as CardType,
+        rarity: card.rarity as Rarity,
         title: card.title,
         subtitle: card.subtitle ?? null,
         flavourText: card.flavourText ?? null,
@@ -267,7 +301,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         statC: card.statC,
         abilities: card.abilities,
         personality: card.personality ?? null,
-        maxSupply: (card as any).maxSupply ?? null,
+        maxSupply: (card as { maxSupply?: number }).maxSupply ?? null,
         isActive: true,
       };
       await prisma.card.upsert({
@@ -345,6 +379,34 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         });
       }
       log.push(`✓ Nyx Collection ← ${seen.size} sacred cards`);
+    }
+
+    // Mythology — mahavidya, lore, cipher, entity + myth-slug cards
+    const mythPack = await prisma.cardPack.findUnique({ where: { slug: "mythology" } });
+    const mythSlugs = new Set([
+      "tara-the-liberator","tripura-sundari","bhuvaneshvari","bhairavi-the-fierce","chhinnamasta",
+      "kali-the-devourer","bagalamukhi-the-still",
+      "psyche-and-eros","the-oracle-at-delphi","hermes-trismegistus",
+      "the-underworld-map","myth-of-the-eternal-return",
+      "the-psychenomicon","alchemical-biography","amor-fati",
+      "the-second-broadcast","the-archive-opens",
+    ]);
+    const mythCards = allCards.filter((c) =>
+      mythSlugs.has(c.slug) ||
+      c.cardType === "MAHAVIDYA"
+    );
+    if (mythPack) {
+      const seen = new Set<string>();
+      for (const card of mythCards) {
+        if (seen.has(card.id)) continue;
+        seen.add(card.id);
+        await prisma.packCard.upsert({
+          where: { packId_cardId: { packId: mythPack.id, cardId: card.id } },
+          update: {},
+          create: { packId: mythPack.id, cardId: card.id, weight: 1.8 },
+        });
+      }
+      log.push(`✓ Mythology ← ${seen.size} myth cards`);
     }
   } catch (err) {
     log.push(`✗ Pack links: ${err instanceof Error ? err.message : err}`);

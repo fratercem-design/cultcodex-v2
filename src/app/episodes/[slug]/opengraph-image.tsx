@@ -19,6 +19,8 @@ export default async function OGImage({
       title: true,
       episodeNumber: true,
       airDate: true,
+      summaryShort: true,
+      thumbnailUrl: true,
     },
   });
 
@@ -32,7 +34,7 @@ export default async function OGImage({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "#0a0a0a",
+            backgroundColor: "#080810",
             color: "#ffffff",
             fontSize: 48,
             fontFamily: "monospace",
@@ -57,6 +59,19 @@ export default async function OGImage({
       })
     : null;
 
+  const hasThumbnail = !!episode.thumbnailUrl;
+  const titleMaxLen = hasThumbnail ? 55 : 75;
+  const displayTitle =
+    episode.title.length > titleMaxLen
+      ? episode.title.slice(0, titleMaxLen - 3) + "..."
+      : episode.title;
+
+  const shortDesc = episode.summaryShort
+    ? episode.summaryShort.length > 100
+      ? episode.summaryShort.slice(0, 97) + "..."
+      : episode.summaryShort
+    : null;
+
   return new ImageResponse(
     (
       <div
@@ -65,79 +80,130 @@ export default async function OGImage({
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
-          backgroundColor: "#0a0a0a",
-          padding: "60px",
+          backgroundColor: "#080810",
           fontFamily: "monospace",
+          position: "relative",
         }}
       >
-        {/* Top section */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          {epNum && (
-            <div
-              style={{
-                color: "#00d9ff",
-                fontSize: 28,
-                fontWeight: 700,
-                letterSpacing: "0.1em",
-              }}
-            >
-              {epNum}
-            </div>
-          )}
-          <div
-            style={{
-              color: "#ffffff",
-              fontSize: 56,
-              fontWeight: 700,
-              lineHeight: 1.2,
-              maxWidth: "900px",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {episode.title.length > 80
-              ? episode.title.slice(0, 77) + "..."
-              : episode.title}
-          </div>
-          {airDate && (
-            <div
-              style={{
-                color: "#666666",
-                fontSize: 22,
-              }}
-            >
-              {airDate}
-            </div>
-          )}
-        </div>
-
-        {/* Bottom branding */}
+        {/* Gold accent bar */}
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 4,
+            background: "linear-gradient(90deg, #C8A96B 0%, #e8c98b 50%, #C8A96B 100%)",
           }}
-        >
+        />
+
+        <div style={{ display: "flex", flex: 1, padding: "52px 56px 52px 56px" }}>
+          {/* Left column — text content */}
           <div
             style={{
-              color: "#C8A96B",
-              fontSize: 24,
-              fontWeight: 700,
-              letterSpacing: "0.15em",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              flex: 1,
+              paddingRight: hasThumbnail ? "48px" : "0",
             }}
           >
-            CULTCODEX.ME
+            {/* Top: episode number + title + date */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                {epNum && (
+                  <div
+                    style={{
+                      color: "#00d9ff",
+                      fontSize: 20,
+                      fontWeight: 700,
+                      letterSpacing: "0.12em",
+                      backgroundColor: "rgba(0,217,255,0.08)",
+                      border: "1px solid rgba(0,217,255,0.25)",
+                      borderRadius: 4,
+                      padding: "4px 10px",
+                    }}
+                  >
+                    {epNum}
+                  </div>
+                )}
+                {airDate && (
+                  <div style={{ color: "#555", fontSize: 18 }}>{airDate}</div>
+                )}
+              </div>
+
+              <div
+                style={{
+                  color: "#f5f0e8",
+                  fontSize: hasThumbnail ? 46 : 52,
+                  fontWeight: 700,
+                  lineHeight: 1.15,
+                }}
+              >
+                {displayTitle}
+              </div>
+
+              {shortDesc && (
+                <div
+                  style={{
+                    color: "#666",
+                    fontSize: 20,
+                    lineHeight: 1.45,
+                    marginTop: 4,
+                  }}
+                >
+                  {shortDesc}
+                </div>
+              )}
+            </div>
+
+            {/* Bottom branding */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-end",
+              }}
+            >
+              <div
+                style={{
+                  color: "#C8A96B",
+                  fontSize: 22,
+                  fontWeight: 700,
+                  letterSpacing: "0.18em",
+                }}
+              >
+                CULTCODEX.ME
+              </div>
+              <div style={{ color: "#333", fontSize: 15, letterSpacing: "0.05em" }}>
+                CULT OF PSYCHE ARCHIVE
+              </div>
+            </div>
           </div>
-          <div
-            style={{
-              color: "#333333",
-              fontSize: 16,
-            }}
-          >
-            CULT OF PSYCHE ARCHIVE
-          </div>
+
+          {/* Right column — thumbnail */}
+          {hasThumbnail && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexShrink: 0,
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={episode.thumbnailUrl!}
+                alt=""
+                width={380}
+                height={214}
+                style={{
+                  borderRadius: 8,
+                  objectFit: "cover",
+                  border: "1px solid rgba(200,169,107,0.2)",
+                }}
+              />
+            </div>
+          )}
         </div>
       </div>
     ),

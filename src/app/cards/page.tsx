@@ -3,6 +3,7 @@ import { getUserCollection, getUserCollectionStats } from "@/lib/queries/cards";
 import { CollectionView } from "./collection-view";
 
 export const metadata = {
+  alternates: { canonical: "/cards" },
   title: "Card Collection — CultCodex",
   description: "Your Codex trading card collection.",
 };
@@ -21,7 +22,7 @@ export default async function CardsPage() {
           textShadow: "var(--glow-neon)",
           marginBottom: 16,
         }}>
-          // ACCESS_REQUIRED
+          {"// ACCESS_REQUIRED"}
         </p>
         <h1 style={{ fontFamily: "var(--font-mono), monospace", fontSize: 20, color: "var(--term-fg)", marginBottom: 12 }}>
           Sign in to collect cards

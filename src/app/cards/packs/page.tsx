@@ -41,6 +41,7 @@ const ACCENT_VAR: Record<string, string> = {
   occult:   "var(--neon-3)",
   chaos:    "var(--neon-5)",
   sacred:   "var(--neon-4)",
+  myth:     "var(--neon-2)",
 };
 
 export default function PackStorePage() {
@@ -83,6 +84,7 @@ export default function PackStorePage() {
   function dailyAvailable() {
     if (!wallet?.lastDailyClaimAt) return true;
     const last = new Date(wallet.lastDailyClaimAt);
+    // eslint-disable-next-line react-hooks/purity
     return Date.now() - last.getTime() >= 24 * 3_600_000;
   }
 
@@ -99,7 +101,7 @@ export default function PackStorePage() {
           textShadow: "var(--glow-neon)",
           marginBottom: 8,
         }}>
-          // SIGNAL_PACKS
+          {"// SIGNAL_PACKS"}
         </p>
         <h1 style={{
           fontFamily: "var(--font-mono), monospace",
@@ -210,7 +212,7 @@ export default function PackStorePage() {
           cursor: "pointer",
           userSelect: "none",
         }}>
-          // HOW TO EARN SIGNAL CREDITS
+          {"// HOW TO EARN SIGNAL CREDITS"}
         </summary>
         <div style={{
           marginTop: 10,
@@ -247,7 +249,7 @@ export default function PackStorePage() {
           border: "1px solid var(--term-line)",
           borderRadius: 6,
         }}>
-          // No packs available. Check back later.
+          {"// No packs available. Check back later."}
         </div>
       ) : (
         <div style={{
@@ -274,7 +276,7 @@ export default function PackStorePage() {
           packAccentColor={ACCENT_VAR[activePack.artTheme ?? "terminal"] ?? "var(--neon)"}
           onClose={() => {
             setActivePack(null);
-            // Refresh wallet
+            {"// Refresh wallet"}
             fetch("/api/cards/stats").then((r) => r.json()).then(setWallet).catch(() => {});
           }}
         />
@@ -343,7 +345,7 @@ function PackCard({ pack, canAfford, onOpen }: { pack: Pack; canAfford: boolean;
         </div>
         {pack.artTheme && (
           <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: "var(--term-fg-dim)", letterSpacing: "0.08em" }}>
-            // {pack.artTheme.toUpperCase()} SERIES
+            {"// "}{pack.artTheme.toUpperCase()}{" SERIES"}
           </div>
         )}
       </div>

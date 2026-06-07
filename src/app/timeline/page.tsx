@@ -9,6 +9,7 @@ export const revalidate = 300;
 export const maxDuration = 30;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/timeline" },
   title: "Timeline — CULT CODEX",
   description: "A chronological journey through every Cult of Psyche episode",
 };
@@ -83,6 +84,16 @@ export default async function TimelinePage() {
       label="timeline"
     />
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8">
+        {/* Interactive explorer link */}
+        <div className="mb-6 flex justify-center">
+          <Link
+            href="/timeline/explore"
+            className="inline-flex items-center gap-2 rounded-full border border-accent-cyan/30 bg-accent-cyan/5 px-5 py-2 font-mono text-[11px] uppercase tracking-widest text-accent-cyan transition-colors hover:bg-accent-cyan/10"
+          >
+            ◆ Try the interactive Timeline Explorer →
+          </Link>
+        </div>
+
         {/* Year navigation */}
         <nav className="mb-8 flex flex-wrap gap-2">
           {years.map((year) => (

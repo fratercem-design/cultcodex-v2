@@ -32,6 +32,11 @@ export interface EpisodeCardData {
   status: ContentStatus;
   hasVideo: boolean;
   segmentCount: number;
+  /** True when the episode has an AI-generated long summary */
+  hasSummary: boolean;
+  /** True when an admin has manually verified the AI summary */
+  isHumanReviewed: boolean;
+  humanReviewedAt: Date | null;
   guestNames: string[];
   topicNames: string[];
 }
@@ -48,6 +53,12 @@ export function formatEpisodeForCard(episode: EpisodeWithRelations): EpisodeCard
     status: episode.status,
     hasVideo: !!(episode.youtubeVideoId || episode.rumbleVideoId),
     segmentCount: episode.segments.length,
+    hasSummary: !!(
+      (episode.summaryFacts && episode.summaryFacts.length > 0) ||
+      (episode.summaryLong && episode.summaryLong.length > 0)
+    ),
+    isHumanReviewed: episode.isHumanReviewed,
+    humanReviewedAt: episode.humanReviewedAt,
     guestNames: episode.guests
       .filter((g) => g.person.personType !== "host")
       .map((g) => g.person.displayName),

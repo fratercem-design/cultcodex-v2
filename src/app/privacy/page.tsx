@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/privacy" },
   title: "Privacy Policy — CULT CODEX",
   description: "How CultCodex collects, uses, and protects your personal information.",
 };
@@ -49,7 +50,7 @@ export default function PrivacyPage() {
               <p className="text-text-muted">
                 Subscription payments are processed by Stripe. We never see or store your card number,
                 CVV, or full payment details. Stripe returns a customer ID and subscription status,
-                which we store to gate subscriber features. Stripe's privacy policy governs payment data.
+                which we store to gate subscriber features. Stripe&apos;s privacy policy governs payment data.
               </p>
             </div>
             <div>
@@ -90,7 +91,7 @@ export default function PrivacyPage() {
             <p>
               Account data is retained as long as your account exists. You may request deletion of
               your account and associated personal data by emailing us at the address below.
-              Stripe subscription records are governed by Stripe's retention policies.
+              Stripe subscription records are governed by Stripe&apos;s retention policies.
             </p>
           </div>
         </SectionCard>

@@ -51,7 +51,7 @@ export default async function ConnectionPathPage({ searchParams }: PageProps) {
       {/* ── Header ─────────────────────────────────────────────── */}
       <div className="space-y-3 max-w-2xl">
         <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-          /// connection_paths
+          {"/// connection_paths"}
         </p>
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">
           How does one figure reach another?
@@ -248,7 +248,7 @@ function PathResult({
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <div className="space-y-1">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-            /// chain_resolved
+            {"/// chain_resolved"}
           </p>
           <h2 className="font-display text-lg font-bold text-text-primary">
             {fromName} → {toName}

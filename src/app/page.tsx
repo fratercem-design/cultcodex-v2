@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { EpisodeCard } from "@/components/archive/episode-card";
@@ -5,11 +6,13 @@ import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SearchInput } from "@/components/search/search-input";
 import { getEpisodes, formatEpisodeForCard } from "@/lib/queries/episodes";
-import { getArchiveStats } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
 import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
 import { DailyTransmission } from "@/components/home/daily-transmission";
+import { YouTubePlayer } from "@/components/home/youtube-player";
+import { TopAscenders } from "@/components/home/top-ascenders";
 import { getQuoteReactionCounts } from "@/lib/queries/quote-reactions";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -18,46 +21,63 @@ import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
+import { EmailCapture } from "@/components/marketing/email-capture";
+import { jsonLdScript, organizationJsonLd } from "@/lib/seo";
+import {
+  IconTransmission,
+  IconPerson,
+  IconScroll,
+  IconRecurring,
+  IconLink,
+} from "@/components/graphics/codex-icons";
 
 export const revalidate = 300;
 
 export const metadata = {
-  title: "CultCodex — Decode Cult of Psyche | 1,500+ Episodes Archived",
+  alternates: { canonical: "/" },
+  title: "CultCodex — The Archive of Cult of Psyche | Tarot, Consciousness & Open Panels",
   description:
-    "The definitive archive of Cult of Psyche. 1,500+ episodes with full transcripts, AI psychological breakdowns, guest profiles, topic signals, and behavioral pattern maps.",
+    "Cult of Psyche is a live, unscripted internet show — tarot, consciousness, spirituality, open-panel debates, and the strange edges of human behavior. CultCodex is its complete searchable archive: 2,600+ episodes with full transcripts, guest profiles, lore, and an AI Oracle.",
   openGraph: {
     title: "CultCodex — Decode Cult of Psyche",
     description:
-      "1,500+ conversations decoded. Manipulation tactics, psychological patterns, and behavioral archetypes from every Cult of Psyche episode — all searchable.",
+      "Every Cult of Psyche transmission indexed. Psychological patterns, behavioral archetypes, guest profiles, and searchable transcripts — live since October 2024.",
     type: "website" as const,
+    url: "/",
   },
   twitter: {
     card: "summary_large_image" as const,
     title: "CultCodex — Decode Cult of Psyche",
     description:
-      "Full transcripts, AI breakdowns, guest profiles, and pattern maps for every Cult of Psyche episode.",
+      "AI breakdowns, guest profiles, behavioral maps, and full transcript coverage for every Cult of Psyche live stream.",
   },
 };
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser] = await Promise.all([
-    getArchiveStats().catch(() => ({
-      episodes: 0, people: 0, loreEntries: 0, quotes: 0,
-      series: 0, topics: 0, segments: 0, totalHours: 0,
-      comments: 0, reactions: 0,
+  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest] = await Promise.all([
+    getCounts().catch(() => ({
+      episodes: 0, segments: 0, people: 0, topics: 0,
+      lore: 0, quotes: 0, totalHours: 0,
+      transcribedEpisodes: 0, transcribedPct: 0,
     })),
-    getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }),
-    getQuotes({ take: 2 }),
+    getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }).catch(() => []),
+    getQuotes({ take: 2 }).catch(() => []),
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }).catch(() => null),
-    getTopTopicsByEpisodes(10),
+    getTopTopicsByEpisodes(10).catch(() => []),
     getDailyTransmission().catch(() => ({
       date: new Date().toISOString().slice(0, 10),
       quote: null,
       spotlightEpisode: null,
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
-    getCurrentUser(),
+    getCurrentUser().catch(() => null),
+    prisma.weeklyDigest.findFirst({ where: { published: true }, orderBy: { weekOf: "desc" }, select: { title: true, blurb: true, weekOf: true } }).catch(() => null),
   ]);
+
+  // Redirect new users to complete onboarding before they see the main app
+  if (currentUser && currentUser.onboardingCompleted === false) {
+    redirect("/onboarding");
+  }
 
   const dailyQuoteReactions = dailyTransmission.quote
     ? await getQuoteReactionCounts(dailyTransmission.quote.id, currentUser?.id).catch(() => undefined)
@@ -107,30 +127,39 @@ export default async function HomePage() {
               className="font-display text-3xl sm:text-5xl font-bold leading-tight text-white"
               style={{ textShadow: "0 0 60px rgba(212,175,55,0.3)" }}
             >
-              Every word. Every soul.
+              2,600+ transmissions.
               <br />
               <span className="text-accent-gold" style={{ textShadow: "0 0 40px rgba(212,175,55,0.6)" }}>
-                Every pattern — decoded.
+                Every pattern — still decoding.
               </span>
             </h1>
-            <p className="font-mono text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
-              {stats.episodes.toLocaleString()}+ Cult of Psyche conversations. Full transcripts,
-              AI psychological breakdowns, and behavioral maps — all searchable.
+            {/* Plain-English "what is this" — leads with the show, then the archive */}
+            <p className="font-mono text-sm text-text-primary/90 max-w-xl mx-auto leading-relaxed">
+              <span className="text-white font-bold">Cult of Psyche</span> is a live, unscripted
+              internet show — tarot, consciousness, spirituality, open-panel debates, and the
+              strange edges of human behavior, broadcast since October 2024.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          <p className="font-mono text-[12px] text-text-muted max-w-lg mx-auto leading-relaxed">
+            <span className="text-accent-gold font-bold">CultCodex</span> is the complete searchable
+            archive: <span className="text-accent-cyan">{stats.episodes.toLocaleString()}+ episodes</span>{" "}
+            indexed — full transcripts, guest profiles, lore, and an AI Oracle that answers questions
+            from inside it all.
+          </p>
+
+          <div className="flex flex-col items-center gap-2">
             <Link
               href="/start-here"
-              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-8 py-3.5 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-10 py-4 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
             >
               Enter the Codex →
             </Link>
             <Link
-              href="/subscribe"
-              className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface/60 px-6 py-3.5 font-mono text-sm text-text-muted transition-all hover:border-accent-gold/30 hover:text-accent-gold"
+              href="/premium"
+              className="font-mono text-[11px] text-text-muted/50 hover:text-accent-gold/70 transition-colors underline underline-offset-4"
             >
-              Unlock full access
+              Unlock full access — $10/mo
             </Link>
           </div>
 
@@ -163,24 +192,78 @@ export default async function HomePage() {
           {/* ── SECTION NAV ──────────────────────────────────────────── */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {([
-              { href: "/episodes", icon: "📺", label: "Episodes",    count: stats.episodes.toLocaleString(),    accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5 group-hover:text-accent-gold" },
-              { href: "/people",   icon: "👁",  label: "People",      count: stats.people.toLocaleString(),      accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5 group-hover:text-accent-cyan" },
-              { href: "/graph",    icon: "🕸️", label: "Network Map", count: "relationship graph",               accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
-              { href: "/topics",   icon: "◈",  label: "Signals",     count: stats.topics.toLocaleString(),      accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
-              { href: "/lore",     icon: "📜",  label: "Lore",        count: stats.loreEntries.toLocaleString(), accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5 group-hover:text-accent-violet" },
-            ] as const).map((item) => (
+              {
+                href: "/episodes",
+                icon: <IconTransmission size={22} className="text-accent-gold" />,
+                label: "Episodes",
+                count: `${stats.episodes.toLocaleString()} transmissions`,
+                accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
+              },
+              {
+                href: "/people",
+                icon: <IconPerson size={22} className="text-accent-cyan" />,
+                label: "People",
+                count: `${stats.people.toLocaleString()} profiled`,
+                accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5",
+              },
+              {
+                href: "/symbols",
+                icon: <IconScroll size={22} className="text-accent-gold" />,
+                label: "Symbol Codex",
+                count: "esoteric encyclopedia",
+                accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
+              },
+              {
+                href: "/archetype-quiz",
+                icon: <IconRecurring size={22} className="text-accent-violet" />,
+                label: "Archetype Quiz",
+                count: "find your pattern",
+                accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5",
+              },
+              {
+                href: "/graph",
+                icon: <IconLink size={22} className="text-accent-violet" />,
+                label: "Network Map",
+                count: "relationship graph",
+                accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5",
+              },
+              {
+                href: "/explore",
+                icon: <IconScroll size={22} className="text-accent-cyan" />,
+                label: "Explore",
+                count: "tarot · occult · AI · more",
+                accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5",
+              },
+              {
+                href: "/reports",
+                icon: <IconTransmission size={22} className="text-accent-gold" />,
+                label: "Codex Reports",
+                count: "guest intelligence",
+                accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
+              },
+            ]).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={`group flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-4 transition-all ${item.accent}`}
               >
-                <span className="text-xl flex-shrink-0">{item.icon}</span>
+                <span className="flex-shrink-0">{item.icon}</span>
                 <div className="min-w-0">
                   <p className="font-mono text-xs font-bold text-text-primary truncate">{item.label}</p>
                   <p className="font-mono text-[10px] text-text-muted truncate">{item.count}</p>
                 </div>
               </Link>
             ))}
+          </div>
+
+          {/* ── MUSIC PLAYER ─────────────────────────────────────────── */}
+          <div className="space-y-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">{"/// the_signal"}</p>
+            <YouTubePlayer
+              videoId="xlpOB2eXM1o"
+              playlistId="PLvfZtruvrMTufahIz2Mx9GI_4SJP-ySMw"
+              title="Cult of Psyche — Signal Stream"
+            />
           </div>
 
           {/* ── DAILY TRANSMISSION ───────────────────────────────────── */}
@@ -194,7 +277,7 @@ export default async function HomePage() {
           <div className="rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface px-6 py-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="space-y-1.5">
-                <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">/// ai_oracle</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">{"/// ai_oracle"}</p>
                 <h2 className="font-display text-lg font-bold text-white">Ask the archive anything.</h2>
                 <p className="font-mono text-[11px] text-text-muted leading-relaxed max-w-lg">
                   AI trained on every transcript, lore entry, and behavioral profile. Ask a question —
@@ -229,6 +312,30 @@ export default async function HomePage() {
             </p>
           </div>
 
+          {/* ── TOP ASCENDERS ────────────────────────────────────────── */}
+          <TopAscenders />
+
+          {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
+          <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">{"/// unlock_the_archive"}</p>
+            <p className="font-display text-xl font-bold text-white">Full transcripts. AI Oracle. The Psychenomicon.</p>
+            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.</p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link
+                href="/premium"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
+              >
+                Become Initiate+ — $10/mo →
+              </Link>
+              <Link
+                href="/premium"
+                className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-3 font-mono text-xs text-text-muted transition-all hover:border-accent-gold/30 hover:text-text-primary"
+              >
+                Compare tiers
+              </Link>
+            </div>
+          </div>
+
           {/* ── FEATURED EPISODE ─────────────────────────────────────── */}
           {featured && (
             <div className="space-y-3">
@@ -236,7 +343,7 @@ export default async function HomePage() {
                 href="/episodes"
                 className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60 hover:text-accent-gold transition-colors"
               >
-                /// latest_transmission <span className="opacity-50 ml-1">→</span>
+                {"/// latest_transmission"} <span className="opacity-50 ml-1">→</span>
               </Link>
               <Link
                 href={`/episodes/${featured.slug}`}
@@ -269,9 +376,7 @@ export default async function HomePage() {
                   <h3 className="text-lg font-medium text-text-primary group-hover:text-accent-gold transition-colors">
                     {featured.title}
                   </h3>
-                  {featured.summaryShort && (
-                    <p className="mt-2 text-sm text-text-muted line-clamp-2">{featured.summaryShort}</p>
-                  )}
+                  {/* summaryShort intentionally omitted — AI summaries read as filler in this context */}
                   <GuestGrid
                     bare
                     guests={featured.guests
@@ -295,11 +400,11 @@ export default async function HomePage() {
                 href="/episodes"
                 className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60 hover:text-accent-gold transition-colors"
               >
-                /// recent_transmissions <span className="opacity-50 ml-1">→</span>
+                {"/// recent_transmissions"} <span className="opacity-50 ml-1">→</span>
               </Link>
               <div className="grid gap-3">
                 {recentCards.slice(1).map((ep) => (
-                  <EpisodeCard key={ep.id} episode={ep} />
+                  <EpisodeCard key={ep.id} episode={ep} hideDescription />
                 ))}
               </div>
               <Link href="/episodes" className="font-mono text-xs text-accent-gold hover:underline">
@@ -317,7 +422,7 @@ export default async function HomePage() {
                 href="/topics"
                 className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60 hover:text-accent-cyan transition-colors"
               >
-                /// active_signals <span className="opacity-50 ml-1">→</span>
+                {"/// active_signals"} <span className="opacity-50 ml-1">→</span>
               </Link>
               <div className="flex flex-wrap gap-2">
                 {popularTopics.map((topic) => (
@@ -344,7 +449,7 @@ export default async function HomePage() {
                 href="/quotes"
                 className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-red-400/60 hover:text-red-400 transition-colors"
               >
-                /// notable_moments <span className="opacity-50 ml-1">→</span>
+                {"/// notable_moments"} <span className="opacity-50 ml-1">→</span>
               </Link>
               <div className="space-y-4">
                 {recentQuotes.map((q) => (
@@ -366,47 +471,68 @@ export default async function HomePage() {
             </div>
           )}
 
-          {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
-          <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">/// unlock_the_archive</p>
-            <p className="font-display text-xl font-bold text-white">Full transcripts. AI Oracle. The Psychenomicon.</p>
-            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.</p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link
-                href="/subscribe"
-                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
-              >
-                Become Initiate+ — $10/mo →
-              </Link>
-              <Link
-                href="/premium"
-                className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-3 font-mono text-xs text-text-muted transition-all hover:border-accent-gold/30 hover:text-text-primary"
-              >
-                Compare tiers
-              </Link>
+          {/* ── THIS WEEK ────────────────────────────────────────────── */}
+          {latestDigest && (
+            <Link
+              href="/this-week"
+              className="group flex items-start gap-4 rounded-xl border border-accent-gold/20 bg-gradient-to-r from-accent-gold/5 to-surface p-5 transition-all hover:border-accent-gold/40 hover:from-accent-gold/8"
+            >
+              <div className="shrink-0 mt-0.5">
+                <span className="font-mono text-lg text-accent-gold/60">◑</span>
+              </div>
+              <div className="min-w-0 flex-1 space-y-1">
+                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/50">
+                  ✦ &nbsp; This week in the archive &nbsp; ✦
+                </p>
+                <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold transition-colors">
+                  {latestDigest.title}
+                </p>
+                {latestDigest.blurb && (
+                  <p className="font-mono text-[11px] text-text-muted leading-relaxed line-clamp-2">
+                    {latestDigest.blurb}
+                  </p>
+                )}
+              </div>
+              <span className="font-mono text-[10px] text-accent-gold/40 group-hover:text-accent-gold transition-colors shrink-0 self-center">
+                →
+              </span>
+            </Link>
+          )}
+
+          {/* ── NEW VISITOR PATHWAY ──────────────────────────────────── */}
+          <div className="rounded-xl border border-border bg-surface p-5 space-y-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">{"/// new here?"}</p>
+            <div className="grid gap-2 sm:grid-cols-3">
+              {([
+                { href: "/start-here",     label: "Start Here",       desc: "Guided entry points chosen by people who've gone deep", accent: "text-accent-gold border-accent-gold/30 hover:bg-accent-gold/5" },
+                { href: "/archetype-quiz", label: "Find Your Archetype", desc: "10 questions reveal which mythic pattern you embody", accent: "text-accent-violet border-accent-violet/30 hover:bg-accent-violet/5" },
+                { href: "/symbols",        label: "Symbol Codex",     desc: "History and occult meaning of 20+ esoteric symbols", accent: "text-accent-gold border-accent-gold/30 hover:bg-accent-gold/5" },
+              ] as const).map((p) => (
+                <Link
+                  key={p.href}
+                  href={p.href}
+                  className={`rounded-lg border px-4 py-3 space-y-1 transition-colors ${p.accent}`}
+                >
+                  <p className={`font-mono text-[11px] font-bold ${p.accent.split(" ")[0]}`}>{p.label} →</p>
+                  <p className="font-mono text-[10px] text-text-muted/70 leading-relaxed">{p.desc}</p>
+                </Link>
+              ))}
             </div>
           </div>
+
+          {/* ── EMAIL CAPTURE ────────────────────────────────────────── */}
+          <EmailCapture source="homepage" />
+
 
           <ArchiveDisclaimer variant="full" />
         </div>
       </main>
 
+      {/* WebSite + SearchAction JSON-LD is emitted once in the root layout —
+          avoid a second, conflicting WebSite block here. */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            name: "Cult Codex",
-            url: "https://cultcodex.me",
-            description: "A pattern intelligence system. 1,500+ conversations. Every word. Every soul. Every connection.",
-            potentialAction: {
-              "@type": "SearchAction",
-              target: { "@type": "EntryPoint", urlTemplate: "https://cultcodex.me/search?q={search_term_string}" },
-              "query-input": "required name=search_term_string",
-            },
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(organizationJsonLd()) }}
       />
     </>
   );
