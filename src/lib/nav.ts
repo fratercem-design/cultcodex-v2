@@ -75,6 +75,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     color: "var(--neon-4)",
     items: [
       { href: "/red-room",   label: "RED ROOM",    glyph: "◉" },
+      { href: "/reports",    label: "CODEX REPORTS", glyph: "▦" },
       { href: "/signals",    label: "SIGNAL LAB",  glyph: "◈" },
       { href: "/salon",      label: "THE SALON",   glyph: "◈" },
       { href: "/corrections",label: "CORRECTIONS", glyph: "▢" },
