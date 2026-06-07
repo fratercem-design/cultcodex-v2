@@ -616,7 +616,10 @@ export async function POST(req: NextRequest) {
   let answer: string;
   try {
     const client = getBedrockClient();
-    const model = process.env.ORACLE_MODEL ?? "us.anthropic.claude-opus-4-8-20250514-v1:0";
+    // Use ORACLE_MODEL env var, or fall back to a widely-available cross-region profile.
+    // Make sure this model has access ENABLED in AWS Console → Bedrock → Model access.
+    const model = process.env.ORACLE_MODEL ?? "us.anthropic.claude-3-5-sonnet-20241022-v2:0";
+    console.log(`[oracle] invoking model: ${model}`);
     const completion = await client.messages.create({
       model,
       max_tokens: 400,
@@ -639,16 +642,25 @@ export async function POST(req: NextRequest) {
     }
     answer = text;
   } catch (err) {
-    console.error("[oracle] LLM error:", err);
-    const message = err instanceof Error ? err.message : "Unknown error";
-    const isQuota = message.toLowerCase().includes("rate") || message.toLowerCase().includes("limit");
+    const message = err instanceof Error ? err.message : String(err);
+    // Log full error with name/status for Railway logs
+    const errObj = err as Record<string, unknown>;
+    console.error("[oracle] Bedrock error:", {
+      name: err instanceof Error ? err.name : "unknown",
+      message,
+      status: errObj.status,
+      error: errObj.error,
+    });
+    const lc = message.toLowerCase();
+    const userMsg = lc.includes("rate") || lc.includes("throttl") || lc.includes("limit")
+      ? "The Oracle is overwhelmed. Try again in a moment."
+      : lc.includes("access") || lc.includes("denied") || lc.includes("forbidden")
+      ? "Oracle model access not enabled — check AWS Bedrock console."
+      : lc.includes("not found") || lc.includes("resource") || lc.includes("model")
+      ? "Oracle model not found — check ORACLE_MODEL env var."
+      : "The Oracle could not be reached. Try again.";
     return NextResponse.json(
-      {
-        ok: false,
-        error: isQuota
-          ? "The Oracle is overwhelmed. Try again in a moment."
-          : "The Oracle could not be reached. Try again.",
-      } satisfies OracleResponse,
+      { ok: false, error: userMsg } satisfies OracleResponse,
       { status: 503 }
     );
   }
