@@ -15,7 +15,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { anthropic as client } from "@/lib/anthropic";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 
@@ -311,7 +311,6 @@ export async function POST(req: NextRequest) {
     take: batchSize,
   });
 
-  const client = new Anthropic({ apiKey });
   const results: { slug: string; title: string; ok: boolean; error?: string }[] = [];
 
   for (const ep of episodes) {

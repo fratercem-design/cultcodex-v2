@@ -11,7 +11,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { anthropic as client } from "@/lib/anthropic";
 import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
@@ -133,7 +133,6 @@ export async function POST(req: NextRequest) {
 
   const filtered = people.filter((p) => p.guestAppearances.length >= minAppearances);
 
-  const client = new Anthropic({ apiKey });
   const results: { slug: string; name: string; ok: boolean; error?: string }[] = [];
 
   for (const person of filtered) {

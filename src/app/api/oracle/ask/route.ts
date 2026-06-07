@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { anthropic } from "@/lib/anthropic";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
@@ -566,8 +566,7 @@ export async function POST(req: NextRequest) {
 
   let answer: string;
   try {
-    const client = new Anthropic({ apiKey: anthropicKey });
-    const claudeRes = await client.messages.create({
+    const claudeRes = await anthropic.messages.create({
       model: process.env.ORACLE_MODEL ?? "claude-opus-4-8",
       max_tokens: 400,
       system: ORACLE_SYSTEM,

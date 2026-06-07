@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { anthropic as client } from "@/lib/anthropic";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -107,7 +107,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid card count" }, { status: 400 });
   }
 
-  const client = new Anthropic({ apiKey });
   try {
     const response = await client.messages.create({
       model: process.env.ORACLE_MODEL ?? "claude-opus-4-8",
