@@ -71,7 +71,10 @@ const SITE_DESCRIPTION =
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://cultcodex.me";
 
-export const dynamic = "force-dynamic";
+// The shell no longer reads the session cookie during server render (the
+// user menu loads client-side), so the layout can be cached. Pages that
+// read cookies/headers still opt into dynamic rendering on their own.
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
