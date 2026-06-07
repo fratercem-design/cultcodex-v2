@@ -8,6 +8,7 @@ import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
 import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { getPrisma, disconnect } from "../ingest/lib";
 
 const LOG_PATH = path.join(__dirname, "enrich-people.log");
@@ -62,7 +63,7 @@ async function main() {
   const prisma = getPrisma();
 
   const allPeople = await prisma.person.findMany({
-    where: { personType: { in: ["guest", "host", "recurring"] } },
+    where: {},
     include: {
       guestAppearances: {
         include: {
@@ -86,10 +87,55 @@ async function main() {
   log(`Needing profiles: ${allPeople.filter(p => p.guestAppearances.length >= minAppearances && (force || !p.loreSummary || p.loreSummary.length < 100)).length}`);
   log(`Processing batch of ${eligible.length}`);
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
-  const client = new Anthropic({ apiKey });
-  const model = process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
+  // ── provider setup ──────────────────────────────────────────────────────────
+  const provider = (process.env.ENRICHMENT_PROVIDER ?? "anthropic") as "anthropic" | "openai" | "openrouter";
+  const model = process.env.ENRICHMENT_MODEL ?? (provider === "anthropic" ? "claude-haiku-4-5-20251001" : "google/gemini-2.0-flash-exp:free");
+
+  function buildOpenRouterClient(): OpenAI {
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    if (!apiKey) throw new Error("OPENROUTER_API_KEY not set");
+    const baseURL = process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
+    return new OpenAI({ apiKey, baseURL, defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" } });
+  }
+
+  async function callLLM(userMsg: string): Promise<string> {
+    if (provider === "anthropic") {
+      const apiKey = process.env.ANTHROPIC_API_KEY;
+      if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
+      const client = new Anthropic({ apiKey });
+      const response = await client.messages.create({
+        model,
+        max_tokens: 1024,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: "user", content: userMsg }],
+      });
+      const text = response.content.find((b) => b.type === "text");
+      if (!text || text.type !== "text") throw new Error("No text response from Claude");
+      return text.text.trim();
+    } else if (provider === "openai") {
+      const apiKey = process.env.OPENAI_API_KEY;
+      if (!apiKey) throw new Error("OPENAI_API_KEY not set");
+      const client = new OpenAI({ apiKey });
+      const response = await client.chat.completions.create({
+        model: model ?? "gpt-4o-mini",
+        max_tokens: 1024,
+        messages: [{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: userMsg }],
+      });
+      return response.choices[0]?.message?.content?.trim() ?? "";
+    } else {
+      // openrouter (default — also works for Bluesminds via OPENROUTER_BASE_URL)
+      const client = buildOpenRouterClient();
+      const response = await client.chat.completions.create({
+        model,
+        max_tokens: 1024,
+        messages: [{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: userMsg }],
+      });
+      return response.choices[0]?.message?.content?.trim() ?? "";
+    }
+  }
+  // ── end provider setup ───────────────────────────────────────────────────────
+
+  log(`Provider: ${provider}, model: ${model}`);
 
   let success = 0;
   let failures = 0;
@@ -123,20 +169,13 @@ async function main() {
         person.quotes.length ? `\nNotable quotes:\n${person.quotes.slice(0, 5).map((q) => `- "${q.text}"${q.context ? ` [${q.context}]` : ""}`).join("\n")}` : "",
       ].filter(Boolean).join("\n");
 
-      const response = await client.messages.create({
-        model,
-        max_tokens: 1024,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: "user", content: userMsg }],
-      });
-
-      const text = response.content.find((b) => b.type === "text");
-      if (!text || text.type !== "text") throw new Error("No text response");
+      const profileText = await callLLM(userMsg);
+      if (!profileText) throw new Error("Empty response from LLM");
 
       await prisma.person.update({
         where: { id: person.id },
         data: {
-          loreSummary: text.text.trim(),
+          loreSummary: profileText,
           personType: person.guestAppearances.length >= 5 ? "recurring" : person.personType,
         },
       });

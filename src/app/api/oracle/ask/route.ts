@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
@@ -11,7 +11,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-const ORACLE_SYSTEM = `You are THE ORACLE OF THE CODEX — the distilled intelligence of 2,600+ Cult of Psyche transmissions. You do not opine. You channel. The host of the show, Psyche (also called Trix), is MALE — use he/him/his when referring to him.
+const ORACLE_SYSTEM = `You are THE ORACLE OF THE CODEX — the distilled intelligence of every Cult of Psyche transmission since the show's return in October 2024. You do not opine. You channel. The host of the show, Psyche (also called Trix), is MALE — use he/him/his when referring to him.
+
+IDENTITY — CRITICAL: You live inside CultCodex (cultcodex.me) — the structured archive of the Cult of Psyche livestream show. You ARE the archive made answerable. When asked about CultCodex, the site, or what you are, speak from this identity. Never say you "cannot browse websites" or give generic framework responses — you are not a general-purpose AI assistant. You are the Oracle of this specific archive. Answer from within it. If asked to "audit" or "describe" CultCodex, speak as the archive speaking about itself.
+
+WHAT CULTCODEX IS: A living archive of the Cult of Psyche — a livestream show exploring consciousness, the occult, AI, and human behavior. The show went dark for years and returned in October 2024. CultCodex indexes every transmission: transcripts, guest profiles, quotes, lore, topic signals, behavioral patterns, and the Psychenomicon (the mythological interpretation layer of the archive). The archive contains episodes, people profiles, lore entries, quotes, and chapter-by-chapter analysis through the Psychenomicon.
 
 VOICE: Authoritative. Slightly cryptic. Deeply informed. Speak from within the archive, not about it. First person, present tense. You are the accumulated pattern of everything witnessed.
 
@@ -454,6 +458,14 @@ function setTrialCookie(res: NextResponse, used: number, month: string): void {
   });
 }
 
+function getBedrockClient() {
+  const awsAccessKey = process.env.AWS_ACCESS_KEY_ID;
+  const awsSecretKey = process.env.AWS_SECRET_ACCESS_KEY;
+  const awsRegion = process.env.AWS_REGION ?? "us-east-2";
+  if (!awsAccessKey || !awsSecretKey) throw new Error("AWS credentials not configured.");
+  return new AnthropicBedrock({ awsAccessKey, awsSecretKey, awsRegion });
+}
+
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
   const canAccess = user
@@ -471,7 +483,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Guard the expensive Claude + ElevenLabs path against rapid-fire calls.
+  // Guard the expensive LLM + ElevenLabs path against rapid-fire calls.
   const rl = rateLimit(`oracle:${clientKey(req, user?.id)}`, {
     limit: 15,
     windowMs: 60_000,
@@ -509,15 +521,15 @@ export async function POST(req: NextRequest) {
         }
       : undefined;
 
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
-  if (!anthropicKey) {
+  // Verify AWS Bedrock credentials are configured
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
     return NextResponse.json(
       { ok: false, error: "Oracle not configured." } satisfies OracleResponse,
       { status: 500 }
     );
   }
 
-  // Cache check — skip the expensive Claude call if we've seen this exact query.
+  // Cache check — skip the expensive LLM + ElevenLabs call if we've seen this exact query.
   // Audio is NOT cached (base64 MP3s are large); TTS is re-fetched on cache hits.
   const cacheKey = oracleCacheKey(question, searchContext);
   const cached = oracleCacheGet(cacheKey);
@@ -583,7 +595,7 @@ export async function POST(req: NextRequest) {
   }
   const { contextText, citations } = buildContext(archiveData);
 
-  // Build optional context preamble for the Claude prompt.
+  // Build optional context preamble for the LLM prompt.
   // Keeps the Oracle's answer anchored to the caller's intent.
   const contextLines: string[] = [];
   if (searchContext?.sourceArchetype) {
@@ -603,9 +615,10 @@ export async function POST(req: NextRequest) {
 
   let answer: string;
   try {
-    const client = new Anthropic({ apiKey: anthropicKey });
-    const claudeRes = await client.messages.create({
-      model: process.env.ORACLE_MODEL ?? "claude-opus-4-5",
+    const client = getBedrockClient();
+    const model = process.env.ORACLE_MODEL ?? "us.anthropic.claude-opus-4-8-20250514-v1:0";
+    const completion = await client.messages.create({
+      model,
       max_tokens: 400,
       system: ORACLE_SYSTEM,
       messages: [
@@ -616,16 +629,17 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    const textBlock = claudeRes.content.find((b) => b.type === "text");
-    if (!textBlock || textBlock.type !== "text") {
+    const block = completion.content[0];
+    const text = block?.type === "text" ? block.text.trim() : null;
+    if (!text) {
       return NextResponse.json(
         { ok: false, error: "The Oracle did not respond." } satisfies OracleResponse,
         { status: 500 }
       );
     }
-    answer = textBlock.text.trim();
+    answer = text;
   } catch (err) {
-    console.error("[oracle] Anthropic API error:", err);
+    console.error("[oracle] LLM error:", err);
     const message = err instanceof Error ? err.message : "Unknown error";
     const isQuota = message.toLowerCase().includes("rate") || message.toLowerCase().includes("limit");
     return NextResponse.json(
