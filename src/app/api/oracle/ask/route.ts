@@ -621,6 +621,7 @@ export async function POST(req: NextRequest) {
     const modelPreference = [
       process.env.ORACLE_MODEL,
       "anthropic.claude-3-5-sonnet-20241022-v2:0",
+      "anthropic.claude-3-5-haiku-20241022-v1:0",
       "anthropic.claude-3-haiku-20240307-v1:0",
     ].filter(Boolean) as string[];
 
@@ -663,8 +664,11 @@ export async function POST(req: NextRequest) {
       error: errObj.error,
     });
     const lc = message.toLowerCase();
-    // Surface raw error in response so we can diagnose — remove once working
-    const userMsg = `Bedrock error: ${message}`;
+    const userMsg = lc.includes("rate") || lc.includes("throttl")
+      ? "The Oracle is overwhelmed. Try again in a moment."
+      : lc.includes("access") || lc.includes("denied") || lc.includes("not authorized")
+      ? "Oracle access denied — check AWS IAM permissions."
+      : `The Oracle could not be reached. (${message.slice(0, 120)})`;
     return NextResponse.json(
       { ok: false, error: userMsg } satisfies OracleResponse,
       { status: 503 }
