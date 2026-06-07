@@ -12,6 +12,7 @@ import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
 import { DailyTransmission } from "@/components/home/daily-transmission";
 import { YouTubePlayer } from "@/components/home/youtube-player";
+import { TopAscenders } from "@/components/home/top-ascenders";
 import { getQuoteReactionCounts } from "@/lib/queries/quote-reactions";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -296,6 +297,9 @@ export default async function HomePage() {
               Initiate+ · $10/mo · Answers cite actual episodes, transcripts, and lore
             </p>
           </div>
+
+          {/* ── TOP ASCENDERS ────────────────────────────────────────── */}
+          <TopAscenders />
 
           {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
           <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
