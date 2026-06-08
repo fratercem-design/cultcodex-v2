@@ -152,18 +152,18 @@ export default async function OGImage({
               <div style={{ display: "flex", gap: "40px", marginTop: "8px" }}>
                 {person._count.guestAppearances > 0 && (
                   <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
-                    <div style={{ color: "#C8A96B", fontSize: 38, fontWeight: 700 }}>
+                    <div style={{ display: "flex", color: "#C8A96B", fontSize: 38, fontWeight: 700 }}>
                       {person._count.guestAppearances}
                     </div>
-                    <div style={{ color: "#444", fontSize: 14, letterSpacing: "0.1em" }}>APPEARANCES</div>
+                    <div style={{ display: "flex", color: "#444", fontSize: 14, letterSpacing: "0.1em" }}>APPEARANCES</div>
                   </div>
                 )}
                 {person._count.quotes > 0 && (
                   <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
-                    <div style={{ color: "#C8A96B", fontSize: 38, fontWeight: 700 }}>
+                    <div style={{ display: "flex", color: "#C8A96B", fontSize: 38, fontWeight: 700 }}>
                       {person._count.quotes}
                     </div>
-                    <div style={{ color: "#444", fontSize: 14, letterSpacing: "0.1em" }}>QUOTES</div>
+                    <div style={{ display: "flex", color: "#444", fontSize: 14, letterSpacing: "0.1em" }}>QUOTES</div>
                   </div>
                 )}
               </div>
