@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { anthropic } from "@/lib/anthropic";
+import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
@@ -10,6 +10,12 @@ import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cac
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
+
+function getBedrockClient(): AnthropicBedrock {
+  // Credentials come from the AWS SDK credential chain
+  // (AWS_ACCESS_KEY_ID + AWS_SECRET_ACCESS_KEY) — don't pass them explicitly.
+  return new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
+}
 
 const ORACLE_SYSTEM = `You are THE ORACLE OF THE CODEX — the distilled intelligence of every Cult of Psyche transmission since the show's return in October 2024. You do not opine. You channel. The host of the show, Psyche (also called Trix), is MALE — use he/him/his when referring to him.
 
@@ -606,17 +612,39 @@ export async function POST(req: NextRequest) {
 
   let answer: string;
   try {
-    const claudeRes = await anthropic.messages.create({
-      model: process.env.ORACLE_MODEL ?? "claude-opus-4-8",
-      max_tokens: 400,
-      system: ORACLE_SYSTEM,
-      messages: [
-        {
-          role: "user",
-          content: `Archive context:\n${contextText}\n\n${contextPreamble}Question: ${question}`,
-        },
-      ],
-    });
+    const client = getBedrockClient();
+    // Bedrock requires the "us." cross-region inference profile prefix.
+    // Sonnet 4.6 is verified available on this account; opus-4-8 kept as a
+    // secondary in case access is granted later.
+    const modelPreference = [
+      process.env.ORACLE_MODEL,
+      "us.anthropic.claude-sonnet-4-6",
+      "us.anthropic.claude-opus-4-8",
+    ].filter(Boolean) as string[];
+
+    let claudeRes: Awaited<ReturnType<typeof client.messages.create>> | null = null;
+    let lastErr: unknown;
+    for (const model of modelPreference) {
+      try {
+        console.log(`[oracle] trying: ${model}`);
+        claudeRes = await client.messages.create({
+          model,
+          max_tokens: 400,
+          system: ORACLE_SYSTEM,
+          messages: [
+            {
+              role: "user",
+              content: `Archive context:\n${contextText}\n\n${contextPreamble}Question: ${question}`,
+            },
+          ],
+        });
+        break;
+      } catch (e) {
+        console.error(`[oracle] ${model} failed:`, e instanceof Error ? e.message : e);
+        lastErr = e;
+      }
+    }
+    if (!claudeRes) throw lastErr;
 
     const block = claudeRes.content[0];
     const text = block?.type === "text" ? block.text.trim() : null;
