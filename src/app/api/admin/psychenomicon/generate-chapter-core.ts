@@ -4,7 +4,31 @@
  * to avoid self-referencing HTTP fetches that fail on Railway.
  */
 import { prisma } from "@/lib/db";
+import OpenAI from "openai";
 import { anthropic } from "@/lib/anthropic";
+
+function getOpenRouterClient(): OpenAI {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) throw new Error("OPENROUTER_API_KEY not set");
+  const baseURL = process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
+  return new OpenAI({ apiKey, baseURL, defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" } });
+}
+
+// Bluesminds (the OpenRouter-compatible proxy) intermittently returns 5xx /
+// rate / credit errors. When it does, degrade gracefully to Anthropic rather
+// than failing the whole generation — this is what previously forced the
+// route onto Anthropic permanently.
+function isBluesmindsUnavailable(err: unknown): boolean {
+  const status = (err as { status?: number })?.status;
+  if (typeof status === "number" && (status === 402 || status === 429 || status >= 500)) return true;
+  const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+  return (
+    msg.includes("502") || msg.includes("503") || msg.includes("504") ||
+    msg.includes("429") || msg.includes("insufficient_quota") ||
+    msg.includes("credit balance") || msg.includes("overloaded") ||
+    msg.includes("econnreset") || msg.includes("etimedout") || msg.includes("timeout")
+  );
+}
 
 const SYSTEM_PROMPT = `You are the Archivist of the Psychenomicon.
 
@@ -184,17 +208,32 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
   "threads": [{"title": "thread title", "description": "what this thread tracks", "status": "active|emerging|resolved"}]
 }`;
 
-  const model = process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8";
+  const model = process.env.ENRICHMENT_MODEL ?? "gemini-3.5-flash";
   console.log(`[psychenomicon] CH.${nextChapterNumber} — model: ${model}`);
 
-  const response = await anthropic.messages.create({
-    model,
-    max_tokens: 8000,
-    thinking: { type: "adaptive" },
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userPrompt }],
-  });
-  const rawText = response.content.find((b) => b.type === "text")?.text?.trim() ?? "";
+  let rawText: string;
+  try {
+    const completion = await getOpenRouterClient().chat.completions.create({
+      model, max_tokens: 8000,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: userPrompt },
+      ],
+    });
+    rawText = completion.choices[0]?.message?.content?.trim() ?? "";
+  } catch (err) {
+    if (!isBluesmindsUnavailable(err)) throw err;
+    const fallbackModel = process.env.PSYCHENOMICON_FALLBACK_MODEL ?? "claude-opus-4-8";
+    console.warn(`  ⚠ Bluesminds unavailable — falling back to Anthropic (${fallbackModel})`);
+    const response = await anthropic.messages.create({
+      model: fallbackModel,
+      max_tokens: 8000,
+      thinking: { type: "adaptive" },
+      system: SYSTEM_PROMPT,
+      messages: [{ role: "user", content: userPrompt }],
+    });
+    rawText = response.content.find((b) => b.type === "text")?.text?.trim() ?? "";
+  }
 
   let generated: GeneratedChapter;
   try {
