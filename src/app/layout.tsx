@@ -142,6 +142,13 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className="dark">
+      <head>
+        {/* Episode thumbnails and channel avatars load from YouTube CDNs on
+            most archive pages — preconnect cuts their connection setup cost. */}
+        <link rel="preconnect" href="https://i.ytimg.com" />
+        <link rel="preconnect" href="https://yt3.ggpht.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+      </head>
       <body
         className={`${fontVariables} font-mono antialiased bg-void text-text-primary`}
         style={{ backgroundColor: "var(--term-bg)" }}

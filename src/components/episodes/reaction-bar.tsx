@@ -99,6 +99,8 @@ export function ReactionBar({
             onClick={() => handleReaction(type)}
             disabled={pending !== null}
             title={isAuthenticated ? label : "Sign in to react"}
+            aria-label={isAuthenticated ? `${label} reaction` : "Sign in to react"}
+            aria-pressed={isActive}
             className={`group flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-mono text-xs transition-all ${
               isActive
                 ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold"
