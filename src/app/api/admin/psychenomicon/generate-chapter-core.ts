@@ -4,7 +4,69 @@
  * to avoid self-referencing HTTP fetches that fail on Railway.
  */
 import { prisma } from "@/lib/db";
-import { anthropic } from "@/lib/anthropic";
+import OpenAI from "openai";
+import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
+
+function getOpenRouterClient(): OpenAI {
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) throw new Error("OPENROUTER_API_KEY not set");
+  const baseURL = process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
+  return new OpenAI({ apiKey, baseURL, defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" } });
+}
+
+function getBedrockClient(): AnthropicBedrock {
+  // Credentials come from the AWS SDK credential chain
+  // (AWS_ACCESS_KEY_ID + AWS_SECRET_ACCESS_KEY) — don't pass them explicitly.
+  return new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
+}
+
+// Generate via Claude on AWS Bedrock, trying inference profiles in order.
+// Bedrock requires the "us." cross-region inference profile prefix.
+async function generateViaBedrock(systemPrompt: string, userPrompt: string): Promise<string> {
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+    throw new Error("Bedrock fallback unavailable — AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY not set");
+  }
+  const client = getBedrockClient();
+  const modelPreference = [
+    process.env.PSYCHENOMICON_FALLBACK_MODEL,
+    "us.anthropic.claude-opus-4-8",
+    "us.anthropic.claude-sonnet-4-6",
+    "us.anthropic.claude-3-5-haiku-20241022-v1:0",
+  ].filter(Boolean) as string[];
+
+  let lastErr: unknown;
+  for (const model of modelPreference) {
+    try {
+      console.log(`[psychenomicon] Bedrock fallback — trying: ${model}`);
+      const completion = await client.messages.create({
+        model,
+        max_tokens: 8000,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userPrompt }],
+      });
+      return completion.content.find((b) => b.type === "text")?.text?.trim() ?? "";
+    } catch (e) {
+      console.error(`[psychenomicon] Bedrock ${model} failed:`, e instanceof Error ? e.message : e);
+      lastErr = e;
+    }
+  }
+  throw lastErr;
+}
+
+// Bluesminds (the OpenRouter-compatible proxy) intermittently returns 5xx /
+// rate / credit errors. When it does, degrade gracefully to Bedrock rather
+// than failing the whole generation.
+function isBluesmindsUnavailable(err: unknown): boolean {
+  const status = (err as { status?: number })?.status;
+  if (typeof status === "number" && (status === 402 || status === 429 || status >= 500)) return true;
+  const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+  return (
+    msg.includes("502") || msg.includes("503") || msg.includes("504") ||
+    msg.includes("429") || msg.includes("insufficient_quota") ||
+    msg.includes("credit balance") || msg.includes("overloaded") ||
+    msg.includes("econnreset") || msg.includes("etimedout") || msg.includes("timeout")
+  );
+}
 
 const SYSTEM_PROMPT = `You are the Archivist of the Psychenomicon.
 
@@ -184,17 +246,24 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
   "threads": [{"title": "thread title", "description": "what this thread tracks", "status": "active|emerging|resolved"}]
 }`;
 
-  const model = process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8";
+  const model = process.env.ENRICHMENT_MODEL ?? "gemini-3.5-flash";
   console.log(`[psychenomicon] CH.${nextChapterNumber} — model: ${model}`);
 
-  const response = await anthropic.messages.create({
-    model,
-    max_tokens: 8000,
-    thinking: { type: "adaptive" },
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userPrompt }],
-  });
-  const rawText = response.content.find((b) => b.type === "text")?.text?.trim() ?? "";
+  let rawText: string;
+  try {
+    const completion = await getOpenRouterClient().chat.completions.create({
+      model, max_tokens: 8000,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: userPrompt },
+      ],
+    });
+    rawText = completion.choices[0]?.message?.content?.trim() ?? "";
+  } catch (err) {
+    if (!isBluesmindsUnavailable(err)) throw err;
+    console.warn(`  ⚠ Bluesminds unavailable (${err instanceof Error ? err.message : err}) — falling back to AWS Bedrock`);
+    rawText = await generateViaBedrock(SYSTEM_PROMPT, userPrompt);
+  }
 
   let generated: GeneratedChapter;
   try {
