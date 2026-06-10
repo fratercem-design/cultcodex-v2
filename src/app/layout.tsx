@@ -18,13 +18,12 @@ import { ClientOverlays } from "@/components/layout/client-overlays";
 import { CRTOverlay } from "@/components/graphics/crt-overlay";
 import { SkipLink } from "@/components/ui/skip-link";
 import { jsonLdScript } from "@/lib/seo";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { CookieConsent } from "@/components/layout/cookie-consent";
 import "./globals.css";
 
-// Revert to force-dynamic to prevent build-time database queries.
-// The cache refactor (revalidate = 60) caused pages to attempt static generation
-// at build time, which fails when they call Prisma without a session.
-export const dynamic = "force-dynamic";
+// Layout data fetches (getCounts, getLiveChannels) are already wrapped in
+// .catch() and the user menu loads client-side — no server-side session reads.
+// revalidate=60 enables Next.js server-side ISR caching for the layout shell.
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
@@ -191,7 +190,7 @@ export default async function RootLayout({
             }),
           }}
         />
-        <GoogleAnalytics gaId="G-1ML217JXYV" />
+        <CookieConsent gaId="G-1ML217JXYV" />
       </body>
     </html>
   );

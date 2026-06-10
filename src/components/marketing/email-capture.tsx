@@ -92,12 +92,12 @@ export function EmailCapture({
 
   return (
     <div
-      className={`rounded-xl border border-accent-cyan/20 bg-gradient-to-b from-accent-cyan/5 to-surface px-6 py-8 text-center space-y-4 ${className}`}
+      className={`rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4 ${className}`}
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-cyan/60">
+      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
         {eyebrow}
       </p>
-      <p className="font-display text-xl font-bold text-white">{heading}</p>
+      <p className="font-display text-xl font-bold text-text-primary">{heading}</p>
       <p className="mx-auto max-w-md font-mono text-xs text-text-muted">{subheading}</p>
 
       <form onSubmit={handleSubmit} className="mx-auto flex max-w-md flex-col gap-2 sm:flex-row">
@@ -108,20 +108,20 @@ export function EmailCapture({
           placeholder="your@email.com"
           required
           disabled={status === "loading" || status === "success"}
-          className="flex-1 rounded-lg border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus:border-accent-cyan/50 focus:outline-none focus:ring-1 focus:ring-accent-cyan/30 disabled:opacity-50"
+          className="flex-1 rounded-lg border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
         />
         <button
           type="submit"
           disabled={status === "loading" || status === "success"}
-          className="rounded-lg border border-accent-cyan bg-accent-cyan/10 px-6 py-3 font-mono text-sm font-bold text-accent-cyan transition hover:bg-accent-cyan/20 disabled:opacity-50"
+          className="rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition hover:bg-accent-gold/25 disabled:opacity-50 whitespace-nowrap"
         >
-          {status === "loading" ? "…" : status === "success" ? "✓ Subscribed" : "Subscribe"}
+          {status === "loading" ? "…" : status === "success" ? "✓ Subscribed" : "Get the signal"}
         </button>
       </form>
 
       {message && (
         <p
-          className={`font-mono text-xs ${status === "success" ? "text-accent-cyan" : "text-red-400"}`}
+          className={`font-mono text-xs ${status === "success" ? "text-accent-gold" : "text-red-400"}`}
         >
           {message}
         </p>

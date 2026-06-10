@@ -107,6 +107,7 @@ model Episode {
   comments           CodexComment[]
   favorites          Favorite[]
   psychenomiconChapter PsychenomiconChapter?
+  transcriptRequests TranscriptRequest[]
 
   @@index([airDate])
   @@index([status])
@@ -367,6 +368,20 @@ model Subscriber {
   verified         Boolean  @default(false)
   createdAt        DateTime @default(now())
 
+  @@index([email])
+}
+
+model TranscriptRequest {
+  id          String   @id @default(cuid())
+  episodeId   String
+  email       String
+  createdAt   DateTime @default(now())
+  notifiedAt  DateTime?
+
+  episode     Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+
+  @@unique([episodeId, email])
+  @@index([episodeId])
   @@index([email])
 }
 
