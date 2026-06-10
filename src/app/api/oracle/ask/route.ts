@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import type { MessageParam, ToolResultBlockParam } from "@anthropic-ai/sdk/resources/messages";
-import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
@@ -860,13 +859,6 @@ function setTrialCookie(res: NextResponse, used: number, month: string): void {
 }
 
 // ─── POST handler ─────────────────────────────────────────────────────────────
-function getBedrockClient() {
-  // Let the AWS SDK credential chain pick up AWS_ACCESS_KEY_ID + AWS_SECRET_ACCESS_KEY
-  // from environment automatically — don't pass them explicitly.
-  return new AnthropicBedrock({
-    awsRegion: process.env.AWS_REGION ?? "us-east-1",
-  });
-}
 
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
@@ -882,7 +874,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const rl = rateLimit(`oracle:${clientKey(req, user?.id)}`, { limit: 15, windowMs: 60_000 });
   // Guard the expensive LLM + ElevenLabs path against rapid-fire calls.
   const rl = rateLimit(`oracle:${clientKey(req, user?.id)}`, {
     limit: 15,
@@ -918,8 +909,8 @@ export async function POST(req: NextRequest) {
         }
       : undefined;
 
-  // Verify AWS credentials are present
-  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+  // Verify Anthropic API key is present
+  if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json(
       { ok: false, error: "Oracle not configured." } satisfies OracleResponse,
       { status: 500 }
@@ -1008,59 +999,16 @@ export async function POST(req: NextRequest) {
   let citations: OracleCitation[];
 
   try {
-    const client = new Anthropic({ apiKey: anthropicKey });
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     const model = process.env.ORACLE_MODEL ?? "claude-opus-4-8";
     const result = await runOracleAgent(client, model, contextText, question, preFlightCitations, contextPreamble);
     answer = result.answer;
     citations = result.citations;
-
-    if (!answer) {
-    const client = getBedrockClient();
-    // Verified available on Bedrock us-east-1 (3.5-sonnet-v2 is end-of-life).
-    const modelPreference = [
-      process.env.ORACLE_MODEL,
-      "us.anthropic.claude-opus-4-8",
-      "us.anthropic.claude-sonnet-4-6",
-      "us.anthropic.claude-3-5-haiku-20241022-v1:0",
-    ].filter(Boolean) as string[];
-
-    let completion: Awaited<ReturnType<typeof client.messages.create>> | null = null;
-    let lastErr: unknown;
-    for (const model of modelPreference) {
-      try {
-        console.log(`[oracle] trying: ${model}`);
-        completion = await client.messages.create({
-          model,
-          max_tokens: 400,
-          system: ORACLE_SYSTEM,
-          messages: [{ role: "user", content: `Archive context:\n${contextText}\n\n${contextPreamble}Question: ${question}` }],
-        });
-        break;
-      } catch (e) {
-        console.error(`[oracle] ${model} failed:`, e instanceof Error ? e.message : e);
-        lastErr = e;
-      }
-    }
-    if (!completion) throw lastErr;
-
-    const block = completion.content[0];
-    const text = block?.type === "text" ? block.text.trim() : null;
-    if (!text) {
-      return NextResponse.json(
-        { ok: false, error: "The Oracle did not respond." } satisfies OracleResponse,
-        { status: 500 }
-      );
-    }
   } catch (err) {
     console.error("[oracle] agent error:", err);
-    const message = err instanceof Error ? err.message : "Unknown error";
-    const isQuota = message.toLowerCase().includes("rate") || message.toLowerCase().includes("limit");
-    answer = text;
-  } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    // Log full error with name/status for Railway logs
     const errObj = err as Record<string, unknown>;
-    console.error("[oracle] Bedrock error:", {
+    console.error("[oracle] error details:", {
       name: err instanceof Error ? err.name : "unknown",
       message,
       status: errObj.status,
@@ -1070,7 +1018,7 @@ export async function POST(req: NextRequest) {
     const userMsg = lc.includes("rate") || lc.includes("throttl")
       ? "The Oracle is overwhelmed. Try again in a moment."
       : lc.includes("access") || lc.includes("denied") || lc.includes("not authorized")
-      ? "Oracle access denied — check AWS IAM permissions."
+      ? "Oracle access denied — check API permissions."
       : `The Oracle could not be reached. (${message.slice(0, 120)})`;
     return NextResponse.json(
       { ok: false, error: userMsg } satisfies OracleResponse,

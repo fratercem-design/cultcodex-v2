@@ -35,7 +35,6 @@ const CANON_LABELS: Record<string, string> = {
 };
 
 export default async function StatsPage() {
-  const [stats, quotedPeople, topTopics, canonBreakdown] = await Promise.all([
   const [stats, quotedPeople, topTopics, canonBreakdown, calendarData, topGuests, topicTrend] = await Promise.all([
     getCounts(),
     getMostQuotedPeople(10),
