@@ -28,7 +28,9 @@ export async function POST(
     return NextResponse.json({ error: "Episode not found" }, { status: 404 });
   }
 
-  if (episode.transcriptRaw) {
+  // "no_captions" is a sentinel meaning the transcript is confirmed unavailable,
+  // not that one exists — still allow signups in case a source appears later.
+  if (episode.transcriptRaw && episode.transcriptRaw !== "no_captions") {
     return NextResponse.json({ error: "Transcript already available" }, { status: 409 });
   }
 

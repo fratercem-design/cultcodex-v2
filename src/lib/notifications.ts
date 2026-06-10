@@ -75,6 +75,63 @@ export async function notifySubscribers(title: string, videoId: string) {
   return { emailCount, pushCount };
 }
 
+/**
+ * Email everyone who asked to be notified when an episode's transcript lands
+ * (TranscriptRequest rows with notifiedAt = null). Stamps notifiedAt per
+ * successful send so re-runs never double-send. Safe to call after every
+ * transcript sync — no-ops when there are no pending requests.
+ */
+export async function notifyTranscriptReady(episodeId: string) {
+  const resend = getResend();
+  if (!resend) return { emailCount: 0 };
+
+  const pending = await prisma.transcriptRequest.findMany({
+    where: { episodeId, notifiedAt: null },
+    include: { episode: { select: { title: true, slug: true } } },
+  });
+  if (pending.length === 0) return { emailCount: 0 };
+
+  let emailCount = 0;
+  for (const request of pending) {
+    const episodeUrl = `https://cultcodex.me/episodes/${request.episode.slug}`;
+    try {
+      await resend.emails.send({
+        from: "CultCodex <notifications@cultcodex.me>",
+        to: request.email,
+        subject: `Transcript ready: ${request.episode.title}`,
+        html: `
+          <div style="background: #0a0a0a; color: #e0e0e0; padding: 32px; font-family: monospace;">
+            <h1 style="color: #C8A96B; font-size: 20px; margin-bottom: 16px;">
+              TRANSCRIPT DECODED
+            </h1>
+            <h2 style="color: #ffffff; font-size: 18px; margin-bottom: 8px;">
+              ${request.episode.title}
+            </h2>
+            <p style="color: #999; font-size: 14px; margin-bottom: 16px;">
+              The transcript you asked for is now in the archive — searchable, timestamped, and linked to the exact moment.
+            </p>
+            <a href="${episodeUrl}" style="display: inline-block; background: #C8A96B; color: #0a0a0a; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px;">
+              READ THE TRANSCRIPT
+            </a>
+            <p style="color: #666; font-size: 11px; margin-top: 24px;">
+              You're receiving this one-time notice because you asked to be notified when this episode was transcribed at cultcodex.me
+            </p>
+          </div>
+        `,
+      });
+      await prisma.transcriptRequest.update({
+        where: { id: request.id },
+        data: { notifiedAt: new Date() },
+      });
+      emailCount++;
+    } catch (err) {
+      console.error(`[notify] Failed to send transcript-ready email to ${request.email}:`, err);
+    }
+  }
+
+  return { emailCount };
+}
+
 export async function notifyNewEpisode(episode: {
   title: string;
   slug: string;
