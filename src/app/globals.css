@@ -399,6 +399,11 @@ textarea:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .crt-overlay { display: none; }
+  .term-blink,
+  .term-pulse,
+  .term-flicker {
+    animation: none;
+  }
 }
 .animation-delay-150 {
   animation-delay: 150ms;
