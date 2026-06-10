@@ -42,6 +42,7 @@ import { formatDuration } from "@/lib/format/duration";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { DecodeModePanel } from "@/components/episodes/decode-mode-panel";
 import { WhatYouMissed } from "@/components/episodes/what-you-missed";
+import { TranscriptNotify } from "@/components/episodes/transcript-notify";
 import { EpisodeCrossRef } from "@/components/episodes/episode-cross-ref";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { RandomEpisodeButton } from "@/components/archive/random-episode-button";
@@ -430,6 +431,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                             </p>
                           </div>
                         </div>
+                        <TranscriptNotify episodeSlug={episode.slug} />
                       </SectionCard>
                     )}
 

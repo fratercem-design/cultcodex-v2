@@ -147,6 +147,42 @@ export function faqPageJsonLd(items: FaqItem[]): Record<string, unknown> {
 }
 
 
+export interface ArticleJsonLdInput {
+  title: string;
+  description?: string | null;
+  slug: string;
+  path: string;
+  datePublished?: Date | null;
+  dateModified?: Date | null;
+  image?: string | null;
+  authorName?: string;
+}
+
+/** Build a schema.org Article for report and lore pages. */
+export function articleJsonLd(a: ArticleJsonLdInput): Record<string, unknown> {
+  const url = `${SITE_URL}${a.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: a.title,
+    description: a.description?.trim() || `${a.title} — CultCodex archive entry.`,
+    url,
+    ...(a.image ? { image: a.image.startsWith("http") ? a.image : `${SITE_URL}${a.image}` } : {}),
+    ...(a.datePublished ? { datePublished: a.datePublished.toISOString() } : {}),
+    ...(a.dateModified ? { dateModified: a.dateModified.toISOString() } : {}),
+    author: {
+      "@type": a.authorName ? "Person" : "Organization",
+      name: a.authorName ?? SITE_NAME,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    isPartOf: { "@type": "WebSite", name: SITE_NAME, url: SITE_URL },
+  };
+}
+
 export function buildMetadata({
   title,
   description,
