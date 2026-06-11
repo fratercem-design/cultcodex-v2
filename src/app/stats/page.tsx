@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import { getCounts } from "@/lib/queries/stats";

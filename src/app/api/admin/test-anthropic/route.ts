@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { anthropic as client } from "@/lib/anthropic";
 import { getCurrentUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -17,7 +17,6 @@ export async function GET() {
 
   const start = Date.now();
   try {
-    const client = new Anthropic({ apiKey });
     const msg = await client.messages.create({
       model: "claude-opus-4-8",
       max_tokens: 10,

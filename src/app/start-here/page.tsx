@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import {
@@ -131,7 +133,60 @@ export default async function StartHerePage() {
   return (
     <main id="main-content" className="mx-auto max-w-5xl px-4 py-12 space-y-20">
 
-      {/* ── 0. Six doorways (top — primary entry) ── */}
+      {/* ── 0. What is this? ── */}
+      <section className="max-w-3xl mx-auto space-y-8 text-center">
+        <div className="space-y-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+            ✦ &nbsp; CultCodex &nbsp; ✦
+          </p>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary leading-tight">
+            Start Here
+          </h1>
+          <p className="font-mono text-xs text-text-muted/70 tracking-wide">
+            What Cult of Psyche is · What this archive captures · Where to begin
+          </p>
+        </div>
+
+        <div className="space-y-4 text-left rounded-2xl border border-border bg-surface p-7">
+          <p className="text-sm text-text-muted leading-relaxed">
+            <span className="text-text-primary font-semibold">Cult of Psyche is a live streaming show.</span>{" "}
+            Unscripted, unfiltered panels between a host and rotating guests — exploring consciousness,
+            the occult, AI, human psychology, and whatever was happening that day. No script.
+            No editorial filter. Just the conversation and wherever it went.
+          </p>
+          <p className="text-sm text-text-muted leading-relaxed">
+            The show went dark for years. It came back in October 2024 — live streaming, rotating
+            guests, the same format, a different frequency. Guests became recurring figures, dynamics
+            became lore, conflicts became mythology.
+          </p>
+          <p className="text-sm text-text-muted leading-relaxed">
+            <span className="text-accent-gold font-semibold">CultCodex is what that became.</span>{" "}
+            Every transmission indexed. Every figure profiled. Every recurring pattern extracted.
+            The chaos turned into a searchable, navigable archive — with an AI layer that keeps
+            building the mythology from the inside.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+          {[
+            { n: stats.episodes.toLocaleString(), label: "Transmissions" },
+            { n: `${stats.totalHours.toLocaleString()}+`, label: "Hours" },
+            { n: stats.people.toLocaleString(), label: "Voices" },
+            { n: stats.segments.toLocaleString(), label: "Moments indexed" },
+            { n: stats.quotes.toLocaleString(), label: "Quotes" },
+            { n: stats.lore.toLocaleString(), label: "Lore entries" },
+          ].map((s) => (
+            <div key={s.label} className="rounded-lg border border-border bg-surface p-3 text-center">
+              <p className="font-mono text-lg font-bold text-accent-gold">{s.n}</p>
+              <p className="mt-0.5 font-mono text-[10px] text-text-muted">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <MysticalDivider />
+
+      {/* ── 1. Six doorways (primary entry) ── */}
       <section className="space-y-6">
         <div className="text-center space-y-1">
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
@@ -186,59 +241,6 @@ export default async function StartHerePage() {
           >
             Search directly →
           </Link>
-        </div>
-      </section>
-
-      <MysticalDivider />
-
-      {/* ── 1. What is this? ── */}
-      <section className="max-w-3xl mx-auto space-y-8 text-center">
-        <div className="space-y-2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
-            ✦ &nbsp; CultCodex &nbsp; ✦
-          </p>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary leading-tight">
-            Start Here
-          </h1>
-          <p className="font-mono text-xs text-text-muted/70 tracking-wide">
-            What Cult of Psyche is · What this archive captures · Where to begin
-          </p>
-        </div>
-
-        <div className="space-y-4 text-left rounded-2xl border border-border bg-surface p-7">
-          <p className="text-sm text-text-muted leading-relaxed">
-            <span className="text-text-primary font-semibold">Cult of Psyche is a live streaming show.</span>{" "}
-            Unscripted, unfiltered panels between a host and rotating guests — exploring consciousness,
-            the occult, AI, human psychology, and whatever was happening that day. No script.
-            No editorial filter. Just the conversation and wherever it went.
-          </p>
-          <p className="text-sm text-text-muted leading-relaxed">
-            The show went dark for years. It came back in October 2024 — live streaming, rotating
-            guests, the same format, a different frequency. Guests became recurring figures, dynamics
-            became lore, conflicts became mythology.
-          </p>
-          <p className="text-sm text-text-muted leading-relaxed">
-            <span className="text-accent-gold font-semibold">CultCodex is what that became.</span>{" "}
-            Every transmission indexed. Every figure profiled. Every recurring pattern extracted.
-            The chaos turned into a searchable, navigable archive — with an AI layer that keeps
-            building the mythology from the inside.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-          {[
-            { n: stats.episodes.toLocaleString(), label: "Transmissions" },
-            { n: `${stats.totalHours.toLocaleString()}+`, label: "Hours" },
-            { n: stats.people.toLocaleString(), label: "Voices" },
-            { n: stats.segments.toLocaleString(), label: "Moments indexed" },
-            { n: stats.quotes.toLocaleString(), label: "Quotes" },
-            { n: stats.lore.toLocaleString(), label: "Lore entries" },
-          ].map((s) => (
-            <div key={s.label} className="rounded-lg border border-border bg-surface p-3 text-center">
-              <p className="font-mono text-lg font-bold text-accent-gold">{s.n}</p>
-              <p className="mt-0.5 font-mono text-[10px] text-text-muted">{s.label}</p>
-            </div>
-          ))}
         </div>
       </section>
 

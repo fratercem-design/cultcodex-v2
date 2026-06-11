@@ -32,7 +32,7 @@ export function EpisodeCard({ episode, hideDescription = false }: EpisodeCardPro
         {episode.thumbnailUrl && (
           <Image
             src={episode.thumbnailUrl}
-            alt=""
+            alt={`Thumbnail for ${episode.title}`}
             fill
             unoptimized
             sizes="112px"

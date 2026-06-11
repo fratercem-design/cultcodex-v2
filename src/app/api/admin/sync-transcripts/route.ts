@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
+import { notifyTranscriptReady } from "@/lib/notifications";
 import { YoutubeTranscript } from "youtube-transcript";
 
 export const runtime = "nodejs";
@@ -235,6 +236,12 @@ export async function POST(req: NextRequest) {
             searchText: [ep.slug, rawText].join(" ").toLowerCase().slice(0, 10000),
           },
         });
+
+        // Email anyone who requested a transcript-ready notice for this episode.
+        // Never let a mail failure abort the sync run.
+        await notifyTranscriptReady(ep.id).catch((err) =>
+          console.error(`[sync-transcripts] notify failed for ${ep.slug}:`, err)
+        );
 
         results.push({
           episodeId: ep.id,

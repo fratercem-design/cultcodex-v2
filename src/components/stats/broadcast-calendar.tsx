@@ -30,7 +30,7 @@ export function BroadcastCalendar({ data }: Props) {
   startDay.setDate(startDay.getDate() - startDay.getDay());
 
   const weeks: Array<Array<{ date: string; count: number; inRange: boolean }>> = [];
-  let cursor = new Date(startDay);
+  const cursor = new Date(startDay);
 
   while (cursor <= today) {
     const week: Array<{ date: string; count: number; inRange: boolean }> = [];

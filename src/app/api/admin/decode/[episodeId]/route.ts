@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
-import Anthropic from "@anthropic-ai/sdk";
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+import { anthropic } from "@/lib/anthropic";
 
 const SYSTEM_PROMPT = `You are an expert in behavioral analysis, psychological profiling, and conversational power dynamics. Your task is to analyze a conversation transcript and extract:
 1. Psychological patterns

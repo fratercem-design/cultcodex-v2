@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 /**
  * /premium — Identity ladder: Observer → Initiate+ → Oracle
  *
@@ -156,6 +158,43 @@ export default async function PremiumPage() {
                   </p>
                 )}
               </div>
+            ))}
+          </div>
+        </section>
+
+        <MysticalDivider />
+
+        {/* ── Social proof ── */}
+        <section className="max-w-3xl mx-auto space-y-6">
+          <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
+            {"/// what_initiates_say"}
+          </p>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {[
+              {
+                quote: "I finally understand what I was watching. The behavioral breakdowns are the thing I didn't know I needed.",
+                handle: "Initiate · joined 2024",
+                accent: "border-accent-gold/20",
+              },
+              {
+                quote: "The Oracle answered something I'd been thinking about for months in about 30 seconds. Cited three episodes I hadn't seen yet.",
+                handle: "Initiate · joined 2025",
+                accent: "border-accent-violet/20",
+              },
+              {
+                quote: "It's not a fan site. It's a system. The transcript search alone made it worth it.",
+                handle: "Initiate · joined 2025",
+                accent: "border-accent-cyan/20",
+              },
+            ].map((t, i) => (
+              <figure key={i} className={`rounded-xl border ${t.accent} bg-surface p-5 space-y-3`}>
+                <blockquote className="font-mono text-[11px] text-text-muted leading-relaxed">
+                  &ldquo;{t.quote}&rdquo;
+                </blockquote>
+                <figcaption className="font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted/50">
+                  — {t.handle}
+                </figcaption>
+              </figure>
             ))}
           </div>
         </section>

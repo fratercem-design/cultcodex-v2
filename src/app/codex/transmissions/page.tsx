@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 /**
  * /codex/transmissions — full list of the user's saved (favorited) episodes.
  *

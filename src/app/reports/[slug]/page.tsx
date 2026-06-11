@@ -9,7 +9,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { formatDate } from "@/lib/format/date";
 import { cleanTitle } from "@/lib/format/text";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, articleJsonLd, jsonLdScript } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -234,6 +234,22 @@ export default async function GuestReportPage({ params }: Props) {
           )}
         </section>
       </main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            articleJsonLd({
+              title: `${person.displayName} — Guest Intelligence Report`,
+              description: `Behavioral intelligence report on ${person.displayName}: appearances, recurring patterns, key quotes, and frequent collaborators across the Cult of Psyche archive.`,
+              slug: person.slug,
+              path: `/reports/${person.slug}`,
+              datePublished: earliest,
+              dateModified: latest,
+              image: person.avatarUrl ?? null,
+            })
+          ),
+        }}
+      />
     </>
   );
 }
