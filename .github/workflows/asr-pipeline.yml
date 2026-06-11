@@ -1,0 +1,88 @@
+name: ASR Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: 'Episodes per step (download + transcribe)'
+        type: number
+        default: '20'
+      backend:
+        description: 'Transcription backend'
+        type: choice
+        options:
+          - elevenlabs
+          - whisper
+          - faster-whisper
+        default: elevenlabs
+      enrich:
+        description: 'Run Claude enrichment after import'
+        type: boolean
+        default: 'true'
+
+jobs:
+  asr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Export pending episodes
+        run: npx tsx scripts/asr-export-pending.ts --include-enriched
+
+      - name: Install Python dependencies
+        run: pip install -q yt-dlp elevenlabs python-dotenv
+
+      - name: Write YouTube cookies
+        if: ${{ secrets.YOUTUBE_COOKIES != '' }}
+        run: printf '%s' "$YOUTUBE_COOKIES" > scripts/cookies.txt
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+
+      - name: Download audio
+        run: python scripts/asr-download-audio.py --batch ${{ inputs.batch }}
+
+      - name: Transcribe audio
+        run: python scripts/asr-transcribe.py --batch ${{ inputs.batch }} --backend ${{ inputs.backend }}
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+
+      - name: Delete audio files
+        run: rm -f scripts/scrape/data/audio/*.mp3
+
+      - name: Import segments
+        id: import
+        run: |
+          output=$(npx tsx scripts/asr-import-segments.ts)
+          echo "$output"
+          last_line=$(echo "$output" | tail -n 1)
+          echo "result=$last_line" >> "$GITHUB_OUTPUT"
+
+      - name: Annotate import result
+        run: echo "::notice::${{ steps.import.outputs.result }}"
+
+      - name: Run Claude enrichment
+        if: ${{ inputs.enrich == 'true' }}
+        run: |
+          npx tsx scripts/enrich/enrich-from-db.ts
+          npx tsx scripts/enrich/import-enriched.ts
+
+      - name: Rebuild search text
+        run: npx tsx scripts/_rebuild-search-text.ts
