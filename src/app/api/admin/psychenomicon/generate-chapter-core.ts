@@ -5,7 +5,7 @@
  */
 import { prisma } from "@/lib/db";
 import OpenAI from "openai";
-import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
+import Anthropic from "@anthropic-ai/sdk";
 
 function getOpenRouterClient(): OpenAI {
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -14,39 +14,31 @@ function getOpenRouterClient(): OpenAI {
   return new OpenAI({ apiKey, baseURL, defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" } });
 }
 
-function getBedrockClient(): AnthropicBedrock {
-  // Credentials come from the AWS SDK credential chain
-  // (AWS_ACCESS_KEY_ID + AWS_SECRET_ACCESS_KEY) — don't pass them explicitly.
-  return new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
-}
-
-// Generate via Claude on AWS Bedrock, trying inference profiles in order.
-// Bedrock requires the "us." cross-region inference profile prefix.
+// Generate via Anthropic direct API as fallback when OpenRouter is unavailable.
 async function generateViaBedrock(systemPrompt: string, userPrompt: string): Promise<string> {
-  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
-    throw new Error("Bedrock fallback unavailable — AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY not set");
-  }
-  const client = getBedrockClient();
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error("Anthropic fallback unavailable — ANTHROPIC_API_KEY not set");
+  const client = new Anthropic({ apiKey });
   const modelPreference = [
     process.env.PSYCHENOMICON_FALLBACK_MODEL,
-    "us.anthropic.claude-opus-4-8",
-    "us.anthropic.claude-sonnet-4-6",
-    "us.anthropic.claude-3-5-haiku-20241022-v1:0",
+    "claude-opus-4-8",
+    "claude-sonnet-4-6",
   ].filter(Boolean) as string[];
 
   let lastErr: unknown;
   for (const model of modelPreference) {
     try {
-      console.log(`[psychenomicon] Bedrock fallback — trying: ${model}`);
+      console.log(`[psychenomicon] Anthropic fallback — trying: ${model}`);
       const completion = await client.messages.create({
         model,
         max_tokens: 8000,
         system: systemPrompt,
         messages: [{ role: "user", content: userPrompt }],
       });
-      return completion.content.find((b) => b.type === "text")?.text?.trim() ?? "";
+      const block = completion.content.find((b) => b.type === "text");
+      return block?.type === "text" ? block.text.trim() : "";
     } catch (e) {
-      console.error(`[psychenomicon] Bedrock ${model} failed:`, e instanceof Error ? e.message : e);
+      console.error(`[psychenomicon] Anthropic ${model} failed:`, e instanceof Error ? e.message : e);
       lastErr = e;
     }
   }
