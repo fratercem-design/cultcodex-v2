@@ -18,7 +18,7 @@ export const metadata: Metadata = buildMetadata({
 const MEDAL = ["①", "②", "③"];
 
 export default async function LeaderboardPage() {
-  const entries = await getLeaderboard(50);
+  const entries = await getLeaderboard(50).catch(() => []);
 
   return (
     <>
