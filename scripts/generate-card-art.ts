@@ -289,7 +289,6 @@ async function main() {
         n: 1,
         size: "1024x1792",
         quality: "standard",
-        response_format: "url",
       });
 
       const imageUrl = response.data?.[0]?.url;
