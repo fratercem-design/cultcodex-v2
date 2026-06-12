@@ -84,7 +84,6 @@ export async function POST(
   const message = await anthropic.messages.create({
     model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
     max_tokens: 2048,
-    thinking: { type: "adaptive" },
     system: SYSTEM_PROMPT,
     messages: [
       {

@@ -344,7 +344,6 @@ ${transcript}`;
       const response = await client.messages.create({
         model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
         max_tokens: 3000,
-        thinking: { type: "adaptive" },
         system: SYSTEM_PROMPT,
         messages: [{ role: "user", content: userMessage }],
       });
