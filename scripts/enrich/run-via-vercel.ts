@@ -1,21 +1,18 @@
 /**
- * Calls the live Vercel /api/admin/enrich-topics endpoint in a loop.
- * Vercel has DB access even when this sandbox does not.
+ * Calls the live /api/admin/enrich-topics endpoint in a loop.
  *
  * Usage:
  *   npx tsx scripts/enrich/run-via-vercel.ts [--batch N] [--min-episodes N]
  *
  * Env vars required (in .env or shell):
- *   ENRICH_SECRET      — must match the ENRICH_SECRET set on Vercel
- *   ANTHROPIC_API_KEY  — passed to Vercel in request body
- *   VERCEL_URL         — base URL, defaults to https://cultcodex.me
+ *   ENRICH_SECRET      — must match ENRICH_SECRET on the server
+ *   APP_URL            — base URL, defaults to https://cultcodex.me
  */
 import "dotenv/config";
 import * as https from "https";
 
-const BASE_URL = process.env.VERCEL_URL ?? "https://cultcodex.me";
+const BASE_URL = process.env.APP_URL ?? "https://cultcodex.me";
 const SECRET = process.env.ENRICH_SECRET ?? "";
-const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY ?? "";
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -33,7 +30,7 @@ async function callEnrich(batch: number, minEpisodes: number): Promise<{
   results: { title: string; ok: boolean; error?: string }[];
 }> {
   const url = `${BASE_URL}/api/admin/enrich-topics`;
-  const body = JSON.stringify({ batch, minEpisodes, anthropicKey: ANTHROPIC_KEY });
+  const body = JSON.stringify({ batch, minEpisodes });
 
   return new Promise((resolve, reject) => {
     const parsed = new URL(url);
@@ -68,10 +65,9 @@ async function callEnrich(batch: number, minEpisodes: number): Promise<{
 
 async function main() {
   if (!SECRET) { console.error("ENRICH_SECRET not set in .env"); process.exit(1); }
-  if (!ANTHROPIC_KEY) { console.error("ANTHROPIC_API_KEY not set in .env"); process.exit(1); }
 
   const { batch, minEpisodes } = parseArgs();
-  console.log(`\n── Enrich Topics via Vercel ──`);
+  console.log(`\n── Enrich Topics ──`);
   console.log(`   Endpoint: ${BASE_URL}/api/admin/enrich-topics`);
   console.log(`   Batch: ${batch} | Min episodes: ${minEpisodes}\n`);
 
@@ -79,7 +75,7 @@ async function main() {
   let totalProcessed = 0;
 
   while (true) {
-    process.stdout.write(`Round ${round}: calling Vercel... `);
+    process.stdout.write(`Round ${round}: calling endpoint... `);
     try {
       const res = await callEnrich(batch, minEpisodes);
       totalProcessed += res.processed;

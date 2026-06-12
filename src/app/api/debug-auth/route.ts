@@ -18,7 +18,8 @@ export async function GET() {
     GOOGLE_CLIENT_ID:     !!process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: !!process.env.GOOGLE_CLIENT_SECRET,
     DATABASE_URL:         !!process.env.DATABASE_URL,
-    ANTHROPIC_API_KEY:    !!process.env.ANTHROPIC_API_KEY,
+    AWS_ACCESS_KEY_ID:    !!process.env.AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY: !!process.env.AWS_SECRET_ACCESS_KEY,
     ENRICH_SECRET:        !!process.env.ENRICH_SECRET,
     STRIPE_SECRET_KEY:    !!process.env.STRIPE_SECRET_KEY,
     NODE_ENV:             process.env.NODE_ENV,
@@ -30,7 +31,7 @@ export async function GET() {
   if (!vars.GOOGLE_CLIENT_SECRET) issues.push("Missing GOOGLE_CLIENT_SECRET");
   if (!vars.DATABASE_URL) issues.push("Missing DATABASE_URL");
   if (!vars.AUTH_URL && !vars.NEXTAUTH_URL) issues.push("Missing AUTH_URL / NEXTAUTH_URL");
-  if (!vars.ANTHROPIC_API_KEY) issues.push("Missing ANTHROPIC_API_KEY — enrichment + Psychenomicon broken");
+  if (!vars.AWS_ACCESS_KEY_ID || !vars.AWS_SECRET_ACCESS_KEY) issues.push("Missing AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY — Bedrock (enrichment + Oracle + Psychenomicon) broken");
   if (!vars.ENRICH_SECRET) issues.push("Missing ENRICH_SECRET — enrichment API will reject all calls");
 
   return NextResponse.json({ vars, issues, ok: issues.length === 0 });

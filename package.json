@@ -80,7 +80,6 @@
     "seed": "npx tsx prisma/seed.ts"
   },
   "devDependencies": {
-    "@neondatabase/serverless": "^1.1.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",

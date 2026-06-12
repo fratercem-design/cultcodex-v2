@@ -22,7 +22,7 @@ function createPrismaClient(): PrismaClient {
     });
   }
   // connectionTimeoutMillis prevents generateStaticParams from hanging the
-  // Railway build if Neon is slow or the connection pool is exhausted.
+  // Railway build if the DB is slow or the connection pool is exhausted.
   const adapter = new PrismaPg({
     connectionString,
     connectionTimeoutMillis: 5000,

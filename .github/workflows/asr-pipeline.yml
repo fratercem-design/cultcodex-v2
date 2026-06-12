@@ -6,7 +6,7 @@ on:
       batch:
         description: 'Episodes per step (download + transcribe)'
         type: number
-        default: '20'
+        default: 20
       backend:
         description: 'Transcription backend'
         type: choice
@@ -18,7 +18,7 @@ on:
       enrich:
         description: 'Run Claude enrichment after import'
         type: boolean
-        default: 'true'
+        default: true
 
 jobs:
   asr:
@@ -51,8 +51,10 @@ jobs:
         run: pip install -q yt-dlp elevenlabs python-dotenv
 
       - name: Write YouTube cookies
-        if: ${{ secrets.YOUTUBE_COOKIES != '' }}
-        run: printf '%s' "$YOUTUBE_COOKIES" > scripts/cookies.txt
+        run: |
+          if [ -n "$YOUTUBE_COOKIES" ]; then
+            printf '%s' "$YOUTUBE_COOKIES" > scripts/cookies.txt
+          fi
         env:
           YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
 
@@ -79,7 +81,7 @@ jobs:
         run: echo "::notice::${{ steps.import.outputs.result }}"
 
       - name: Run Claude enrichment
-        if: ${{ inputs.enrich == 'true' }}
+        if: ${{ inputs.enrich }}
         run: |
           npx tsx scripts/enrich/enrich-from-db.ts
           npx tsx scripts/enrich/import-enriched.ts

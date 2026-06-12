@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
-import { anthropic } from "@/lib/anthropic";
+import { anthropic, bedrockModelId } from "@/lib/anthropic";
 
 const BATCH_SIZE = 40;
 
@@ -23,7 +23,7 @@ async function classifyBatch(
     .join("\n");
 
   const message = await anthropic.messages.create({
-    model: "claude-opus-4-8",
+    model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
     max_tokens: 512,
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: input }],

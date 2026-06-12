@@ -10,7 +10,7 @@
  *
  * Env vars:
  *   ENRICH_SECRET          — API auth key (required)
- *   VERCEL_URL             — defaults to https://cultcodex.me
+ *   APP_URL             — defaults to https://cultcodex.me
  *   YOUTUBE_COOKIES_FILE   — path to Netscape cookies file (required for CI)
  */
 import "dotenv/config";
@@ -20,7 +20,7 @@ import * as https from "https";
 import * as os from "os";
 import { execFileSync } from "child_process";
 
-const BASE_URL = (process.env.VERCEL_URL ?? "https://cultcodex.me").replace(/\/$/, "");
+const BASE_URL = (process.env.APP_URL ?? "https://cultcodex.me").replace(/\/$/, "");
 const SECRET = (process.env.ENRICH_SECRET ?? "").trim();
 const COOKIES_FILE = process.env.YOUTUBE_COOKIES_FILE ?? "";
 

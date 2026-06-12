@@ -15,8 +15,8 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { anthropic as defaultClient } from "@/lib/anthropic";
+import { bedrockModelId } from "@/lib/anthropic";
 import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
@@ -68,16 +68,8 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const batch: number = body.batch ?? 8;
   const minEpisodes: number = body.minEpisodes ?? 2;
-  const apiKey: string = body.anthropicKey ?? process.env.ANTHROPIC_API_KEY ?? "";
 
-  if (!apiKey) {
-    return NextResponse.json({ error: "No Anthropic API key" }, { status: 400 });
-  }
-
-  // Use a per-request client when the caller provides their own key
-  const client = body.anthropicKey && body.anthropicKey !== process.env.ANTHROPIC_API_KEY
-    ? new Anthropic({ apiKey: body.anthropicKey, baseURL: "https://api.anthropic.com" })
-    : defaultClient;
+  const client = defaultClient;
 
   // Fetch topics needing descriptions (with enough episodes)
   const allPending = await prisma.topic.findMany({
@@ -135,7 +127,7 @@ export async function POST(req: NextRequest) {
       });
 
       const response = await client.messages.create({
-        model: "claude-opus-4-8",
+        model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
         max_tokens: 300,
         system: SYSTEM_PROMPT,
         messages: [{ role: "user", content: msg }],

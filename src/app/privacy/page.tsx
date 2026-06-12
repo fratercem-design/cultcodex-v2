@@ -23,7 +23,7 @@ export default function PrivacyPage() {
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
 
         <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-4 py-3 font-mono text-[11px] text-text-muted">
-          Last updated: May 2025. This policy applies to cultcodex.me.
+          Last updated: June 2026. This policy applies to cultcodex.me.
         </div>
 
         <SectionCard title="Who We Are">
@@ -56,9 +56,12 @@ export default function PrivacyPage() {
             <div>
               <h3 className="font-mono text-xs uppercase tracking-wider text-accent-cyan mb-2">Usage Data</h3>
               <p className="text-text-muted">
-                We use Vercel Analytics (privacy-preserving, no cookies, no cross-site tracking)
-                to measure aggregate page views and performance metrics. No personally identifiable
-                information is collected in this process.
+                We use Google Analytics (via Google Tag Manager) to measure aggregate page views
+                and performance metrics. Analytics data is anonymised — no personally identifiable
+                information is sent to Google. You can opt out via the{" "}
+                <a href="https://tools.google.com/dlpage/gaoptout" className="text-accent-gold hover:underline" target="_blank" rel="noopener noreferrer">
+                  Google Analytics opt-out add-on
+                </a>.
               </p>
             </div>
             <div>
@@ -111,9 +114,12 @@ export default function PrivacyPage() {
             <ul className="space-y-2 list-disc list-inside">
               <li><span className="text-text-primary font-medium">Google OAuth</span> — sign-in authentication</li>
               <li><span className="text-text-primary font-medium">Stripe</span> — payment processing</li>
-              <li><span className="text-text-primary font-medium">Vercel</span> — hosting and analytics</li>
+              <li><span className="text-text-primary font-medium">Google Analytics / Tag Manager</span> — anonymised usage analytics</li>
+              <li><span className="text-text-primary font-medium">Railway</span> — application hosting</li>
+              <li><span className="text-text-primary font-medium">Neon</span> — database hosting (PostgreSQL)</li>
+              <li><span className="text-text-primary font-medium">Resend</span> — transactional and newsletter email</li>
               <li><span className="text-text-primary font-medium">Anthropic Claude</span> — AI enrichment of archive data (content only, not user data)</li>
-              <li><span className="text-text-primary font-medium">OpenAI Whisper</span> — transcript generation (audio content only, not user data)</li>
+              <li><span className="text-text-primary font-medium">ElevenLabs</span> — voice synthesis for Oracle audio (query text only, not user data)</li>
             </ul>
           </div>
         </SectionCard>
@@ -149,12 +155,12 @@ export default function PrivacyPage() {
         </SectionCard>
 
         <div className="flex items-center justify-center gap-4 text-xs">
-          <Link href="/terms" className="font-mono text-accent-gold hover:underline">
-            Terms of Service
-          </Link>
-          <span className="text-text-muted">|</span>
           <Link href="/content-policy" className="font-mono text-accent-gold hover:underline">
             Content Policy
+          </Link>
+          <span className="text-text-muted">|</span>
+          <Link href="/methodology" className="font-mono text-accent-gold hover:underline">
+            Methodology
           </Link>
           <span className="text-text-muted">|</span>
           <Link href="/corrections" className="font-mono text-accent-gold hover:underline">

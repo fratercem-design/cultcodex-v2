@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function VaultPage() {
-  const dbCards = await getAllCards();
+  const dbCards = await getAllCards().catch(() => []);
 
   const cards: VaultCard[] = dbCards.map((card, i) => ({
     id:          card.id,

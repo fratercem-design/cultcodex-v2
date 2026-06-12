@@ -5,7 +5,8 @@
  */
 import { prisma } from "@/lib/db";
 import OpenAI from "openai";
-import Anthropic from "@anthropic-ai/sdk";
+import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
+import { bedrockModelId } from "@/lib/anthropic";
 
 function getOpenRouterClient(): OpenAI {
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -14,11 +15,9 @@ function getOpenRouterClient(): OpenAI {
   return new OpenAI({ apiKey, baseURL, defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" } });
 }
 
-// Generate via Anthropic direct API as fallback when OpenRouter is unavailable.
+// Generate via AWS Bedrock as fallback when OpenRouter is unavailable.
 async function generateViaBedrock(systemPrompt: string, userPrompt: string): Promise<string> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("Anthropic fallback unavailable — ANTHROPIC_API_KEY not set");
-  const client = new Anthropic({ apiKey });
+  const client = new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
   const modelPreference = [
     process.env.PSYCHENOMICON_FALLBACK_MODEL,
     "claude-opus-4-8",
@@ -26,9 +25,10 @@ async function generateViaBedrock(systemPrompt: string, userPrompt: string): Pro
   ].filter(Boolean) as string[];
 
   let lastErr: unknown;
-  for (const model of modelPreference) {
+  for (const m of modelPreference) {
+    const model = bedrockModelId(m);
     try {
-      console.log(`[psychenomicon] Anthropic fallback — trying: ${model}`);
+      console.log(`[psychenomicon] Bedrock fallback — trying: ${model}`);
       const completion = await client.messages.create({
         model,
         max_tokens: 8000,
@@ -38,7 +38,7 @@ async function generateViaBedrock(systemPrompt: string, userPrompt: string): Pro
       const block = completion.content.find((b) => b.type === "text");
       return block?.type === "text" ? block.text.trim() : "";
     } catch (e) {
-      console.error(`[psychenomicon] Anthropic ${model} failed:`, e instanceof Error ? e.message : e);
+      console.error(`[psychenomicon] Bedrock ${model} failed:`, e instanceof Error ? e.message : e);
       lastErr = e;
     }
   }

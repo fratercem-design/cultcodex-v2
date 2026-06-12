@@ -13,14 +13,14 @@
  *
  * Env vars (from .env):
  *   ENRICH_SECRET   — API auth key
- *   VERCEL_URL      — defaults to https://cultcodex.me
+ *   APP_URL      — defaults to https://cultcodex.me
  */
 import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
 import * as https from "https";
 
-const BASE_URL = (process.env.VERCEL_URL ?? "https://cultcodex.me").replace(/\/$/, "");
+const BASE_URL = (process.env.APP_URL ?? "https://cultcodex.me").replace(/\/$/, "");
 const SECRET = (process.env.ENRICH_SECRET ?? "").trim();
 const RAW_FILE = path.join(__dirname, "scrape", "data", "youtube-raw-psychesnightmares.json");
 

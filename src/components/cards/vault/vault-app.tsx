@@ -66,21 +66,22 @@ function ZoomModal({
   );
 }
 
+function pickPack(cards: VaultCardType[]): VaultCardType[] {
+  const lowTier = cards.filter(c => (VAULT_RARITIES[c.rarity]?.tier ?? 2) <= 4);
+  const hiTier = cards.filter(c => (VAULT_RARITIES[c.rarity]?.tier ?? 2) >= 6);
+  const pick = (arr: VaultCardType[]) => arr[Math.floor(Math.random() * arr.length)];
+  const chosen: VaultCardType[] = [];
+  const used = new Set<string>();
+  const add = (c?: VaultCardType) => { if (c && !used.has(c.slug)) { used.add(c.slug); chosen.push(c); } };
+  while (chosen.length < 4) add(pick(lowTier.length ? lowTier : cards));
+  add(pick(hiTier.length ? hiTier : cards));
+  while (chosen.length < 5) add(pick(cards));
+  return chosen.slice(0, 5).sort((a, b) => (VAULT_RARITIES[a.rarity]?.tier ?? 2) - (VAULT_RARITIES[b.rarity]?.tier ?? 2));
+}
+
 function PackOpening({ cards, onClose }: { cards: VaultCardType[]; onClose: () => void }) {
   const [phase, setPhase] = useState<"sealed" | "opening" | "revealed">("sealed");
-
-  const pack = useMemo(() => {
-    const lowTier = cards.filter(c => (VAULT_RARITIES[c.rarity]?.tier ?? 2) <= 4);
-    const hiTier = cards.filter(c => (VAULT_RARITIES[c.rarity]?.tier ?? 2) >= 6);
-    const pick = (arr: VaultCardType[]) => arr[Math.floor(Math.random() * arr.length)];
-    const chosen: VaultCardType[] = [];
-    const used = new Set<string>();
-    const add = (c?: VaultCardType) => { if (c && !used.has(c.slug)) { used.add(c.slug); chosen.push(c); } };
-    while (chosen.length < 4) add(pick(lowTier.length ? lowTier : cards));
-    add(pick(hiTier.length ? hiTier : cards));
-    while (chosen.length < 5) add(pick(cards));
-    return chosen.slice(0, 5).sort((a, b) => (VAULT_RARITIES[a.rarity]?.tier ?? 2) - (VAULT_RARITIES[b.rarity]?.tier ?? 2));
-  }, [cards]);
+  const [pack, setPack] = useState<VaultCardType[]>(() => pickPack(cards));
 
   const rip = () => { setPhase("opening"); setTimeout(() => setPhase("revealed"), 650); };
 
@@ -108,7 +109,7 @@ function PackOpening({ cards, onClose }: { cards: VaultCardType[]; onClose: () =
       <div className="pack-cta">
         {phase === "revealed" && <>
           <button className="pack-rip ghost" onClick={onClose}>← Back to Vault</button>
-          <button className="pack-rip" onClick={() => setPhase("sealed")}>Open Another</button>
+          <button className="pack-rip" onClick={() => { setPack(pickPack(cards)); setPhase("sealed"); }}>Open Another</button>
         </>}
         {phase === "sealed" && <button className="pack-rip ghost" onClick={onClose}>← Back to Vault</button>}
       </div>
@@ -135,7 +136,7 @@ export function VaultApp({ cards }: { cards: VaultCardType[] }) {
   );
 
   const filtered = useMemo(() => {
-    let list = cards.filter(c =>
+    const list = cards.filter(c =>
       (type === "all" || c.cardType === type) &&
       (rarity === "all" || c.rarity === rarity) &&
       (!q || (c.title + " " + (c.subtitle ?? "") + " " + c.abilities.join(" ") + " " + (c.flavourText ?? "")).toLowerCase().includes(q.toLowerCase()))
@@ -183,7 +184,7 @@ export function VaultApp({ cards }: { cards: VaultCardType[] }) {
       <header className="masthead">
         <div className="brandline">
           <h1 className="wordmark">CULT<span className="dim">CODEX</span></h1>
-          <span className="tagline">// Trading Card Vault</span>
+          <span className="tagline">{'// Trading Card Vault'}</span>
         </div>
         <div className="sub-meta">
           <span className="rec"><span className="blip" /> SIGNAL LIVE</span>
