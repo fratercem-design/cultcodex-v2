@@ -1,8 +1,8 @@
 /**
  * POST /api/admin/enrich-episodes
  *
- * AI enrichment relay for unenriched episodes. Runs on Vercel where DB
- * is reachable. Processes one batch per call; loop externally until done.
+ * AI enrichment relay for unenriched episodes. Runs on Railway via AWS Bedrock.
+ * Processes one batch per call; loop externally until done.
  *
  * Auth: X-Enrich-Secret header must match ENRICH_SECRET env var.
  *
@@ -15,7 +15,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { anthropic as client } from "@/lib/anthropic";
+import { anthropic as client, bedrockModelId } from "@/lib/anthropic";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 
@@ -265,9 +265,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY ?? "";
-  if (!apiKey) {
-    return NextResponse.json({ error: "No Anthropic API key configured" }, { status: 500 });
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+    return NextResponse.json({ error: "Bedrock credentials not configured" }, { status: 500 });
   }
 
   const body = await req.json().catch(() => ({})) as {
@@ -282,6 +281,8 @@ export async function POST(req: NextRequest) {
   // Find episodes to enrich.
   // queuedOnly=true: process ONLY enrichmentQueued=true episodes (regardless of existing summaries — for re-enrichment)
   // default: unenriched episodes (no summaryShort, summaryFacts, OR summaryLong)
+  // Note: summaryFacts="—" is the placeholder written when a prior enrichment produced no content;
+  // these episodes are still shown as needing enrichment in the admin UI, so include them here.
   const whereClause = queuedOnly
     ? {
         enrichmentQueued: true,
@@ -290,7 +291,7 @@ export async function POST(req: NextRequest) {
     : {
         AND: [
           { OR: [{ summaryShort: null }, { summaryShort: "" }] },
-          { OR: [{ summaryFacts: null }, { summaryFacts: "" }] },
+          { OR: [{ summaryFacts: null }, { summaryFacts: "" }, { summaryFacts: "—" }] },
           { OR: [{ summaryLong: null }, { summaryLong: "" }] },
         ],
         ...(withTranscriptOnly ? { segments: { some: {} } } : {}),
@@ -343,9 +344,8 @@ Transcript:
 ${transcript}`;
 
       const response = await client.messages.create({
-        model: "claude-opus-4-8",
-        max_tokens: 3000,
-        thinking: { type: "adaptive" },
+        model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
+        max_tokens: 4096,
         system: SYSTEM_PROMPT,
         messages: [{ role: "user", content: userMessage }],
       });
