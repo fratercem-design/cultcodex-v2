@@ -19,8 +19,6 @@
 import "dotenv/config";
 import fs from "fs";
 import path from "path";
-import https from "https";
-import http from "http";
 import OpenAI from "openai";
 import { getPrisma, disconnect } from "./ingest/lib";
 
@@ -28,6 +26,21 @@ const prisma = getPrisma();
 
 const OUTPUT_DIR = path.join(process.cwd(), "public/cards/art");
 const RATE_LIMIT_MS = 13_000; // 13s between requests → ~4.6/min (safe under 5/min)
+
+// ── All 10 Mahavidyas — ensures complete set exists in DB ────────────────────
+
+const ALL_MAHAVIDYAS = [
+  { slug: "kali-the-devourer",      title: "Kālī",           subtitle: "The Devourer",           rarity: "LEGENDARY",    statA: 99, statB: 88, statC: 99, abilities: ["Ego Death", "Shadow Clear"],       flavourText: "She destroys what cannot be saved. Nothing else." },
+  { slug: "tara-the-liberator",     title: "Tārā",           subtitle: "She Who Carries Across",  rarity: "LEGENDARY",    statA: 96, statB: 91, statC: 77, abilities: ["Safe Passage", "Compassion Field"], flavourText: "She carries those who cannot carry themselves across the dark water." },
+  { slug: "tripura-sundari",        title: "Tripurā Sundarī",subtitle: "Beauty of the Three Worlds",rarity:"MYTHIC",      statA: 99, statB: 97, statC: 88, abilities: ["World Sight", "Triple Domain"],    flavourText: "She contains the three worlds and finds them aesthetically satisfying." },
+  { slug: "bhuvaneshvari",          title: "Bhuvaneshvarī",  subtitle: "Queen of the Universe",   rarity: "LEGENDARY",    statA: 97, statB: 88, statC: 91, abilities: ["Spatial Command", "World Hold"],   flavourText: "Space itself is her body. Distance is her devotion." },
+  { slug: "bhairavi-the-fierce",    title: "Bhairavī",       subtitle: "The Fierce One",          rarity: "LEGENDARY",    statA: 92, statB: 88, statC: 96, abilities: ["Cycle End", "Terror Field"],       flavourText: "She arrives at the end of cycles and begins the next." },
+  { slug: "chhinnamasta",           title: "Chinnamastā",    subtitle: "The Self-Severed",        rarity: "MYTHIC",       statA: 99, statB: 99, statC: 99, abilities: ["Self-Sacrifice", "Severed Voice"],  flavourText: "She cut her own head to feed her devotees. The head kept speaking.", maxSupply: 13 },
+  { slug: "dhumavati-the-widow",    title: "Dhūmāvatī",      subtitle: "Widow Goddess",           rarity: "ORACLE",       statA: 88, statB: 96, statC: 82, abilities: ["Void Accept", "Smoke Ward"],       flavourText: "She sits in smoke and owns what no one else will claim." },
+  { slug: "bagalamukhi-the-still",  title: "Bagalamukhi",    subtitle: "She Who Paralyzes",       rarity: "ORACLE",       statA: 88, statB: 96, statC: 85, abilities: ["Silence", "Troll Freeze"],         flavourText: "She doesn't argue. She simply stops the mouth." },
+  { slug: "matangi-the-outcast",    title: "Mātangī",        subtitle: "Patron of the Marginal",  rarity: "ANOMALY",      statA: 81, statB: 88, statC: 79, abilities: ["Outcast Bond", "Margin Signal"],   flavourText: "She is offered what is leftover. She finds it sufficient." },
+  { slug: "kamala-the-lotus",       title: "Kamalā",         subtitle: "Lotus of Abundance",      rarity: "TRANSMISSION", statA: 77, statB: 92, statC: 66, abilities: ["Abundance Field", "Lotus Bloom"],  flavourText: "Not all abundance is material. She distributes what is needed." },
+] as const;
 
 // ── CLI args ─────────────────────────────────────────────────────────────────
 
@@ -183,22 +196,34 @@ function buildPrompt(card: {
   }
 }
 
-// ── Image download ────────────────────────────────────────────────────────────
+// ── Ensure all 10 Mahavidyas exist in DB ─────────────────────────────────────
 
-function downloadImage(url: string, destPath: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const file = fs.createWriteStream(destPath);
-    const protocol = url.startsWith("https") ? https : http;
-    protocol.get(url, (response) => {
-      if (response.statusCode !== 200) {
-        reject(new Error(`HTTP ${response.statusCode} downloading ${url}`));
-        return;
-      }
-      response.pipe(file);
-      file.on("finish", () => { file.close(); resolve(); });
-      file.on("error", reject);
-    }).on("error", reject);
-  });
+async function ensureMahavidyas(): Promise<void> {
+  console.log("── Ensuring all 10 Mahavidyas exist ──");
+  for (const m of ALL_MAHAVIDYAS) {
+    const existing = await prisma.card.findUnique({ where: { slug: m.slug } });
+    if (!existing) {
+      await prisma.card.create({
+        data: {
+          slug: m.slug,
+          cardType: "MAHAVIDYA",
+          rarity: m.rarity as "LEGENDARY" | "MYTHIC" | "ORACLE" | "ANOMALY" | "TRANSMISSION",
+          title: m.title,
+          subtitle: m.subtitle,
+          flavourText: m.flavourText,
+          statA: m.statA,
+          statB: m.statB,
+          statC: m.statC,
+          abilities: [...m.abilities],
+          ...("maxSupply" in m ? { maxSupply: m.maxSupply } : {}),
+        },
+      });
+      console.log(`  + Created: ${m.slug} (${m.title})`);
+    } else {
+      console.log(`  ✓ Exists:  ${m.slug}`);
+    }
+  }
+  console.log();
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
@@ -212,6 +237,11 @@ async function main() {
   }
 
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+
+  // Ensure all 10 Mahavidyas are in the DB before generating
+  if (!SLUG_ARG && (!TYPE_ARG || TYPE_ARG.toUpperCase() === "MAHAVIDYA")) {
+    await ensureMahavidyas();
+  }
 
   const where: Record<string, unknown> = {};
   if (!REGEN_ALL) where.artUrl = null;
@@ -231,9 +261,9 @@ async function main() {
     return;
   }
 
-  const estimatedCost = (cards.length * 0.08).toFixed(2);
+  const estimatedCost = (cards.length * 0.04).toFixed(2);
   console.log(`Cards to process: ${cards.length}${LIMIT ? ` (limited to ${LIMIT})` : ""}`);
-  console.log(`Estimated cost: $${estimatedCost} (DALL-E 3 standard, 1024×1792)`);
+  console.log(`Estimated cost: ~$${estimatedCost} (gpt-image-1 medium, 1024×1536)`);
   if (DRY_RUN) console.log("DRY RUN — no API calls will be made\n");
   console.log();
 
@@ -283,20 +313,20 @@ async function main() {
     console.log(`  Prompt: ${prompt.slice(0, 120)}…`);
 
     try {
-      const response = await openai.images.generate({
-        model: "dall-e-3",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const response = await (openai.images.generate as any)({
+        model: "gpt-image-1",
         prompt,
         n: 1,
-        size: "1024x1792",
-        quality: "standard",
+        size: "1024x1536",
+        quality: "medium",
       });
 
-      const imageUrl = response.data?.[0]?.url;
-      if (!imageUrl) throw new Error("No URL in DALL-E response");
+      // gpt-image-1 returns base64-encoded PNG
+      const b64 = response.data?.[0]?.b64_json;
+      if (!b64) throw new Error("No image data in response");
 
-      console.log(`  ↓ Downloading…`);
-      await downloadImage(imageUrl, outputPath);
-
+      fs.writeFileSync(outputPath, Buffer.from(b64, "base64"));
       await prisma.card.update({ where: { id: card.id }, data: { artUrl } });
       console.log(`  ✓ Saved → public/cards/art/${card.slug}.png`);
       generated++;
