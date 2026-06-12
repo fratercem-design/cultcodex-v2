@@ -42,7 +42,11 @@
     "art:psychenomicon:prompts": "npx dotenvx run -- npx tsx scripts/psychenomicon-art/run.ts --skip-images",
     "art:psychenomicon:dry": "npx dotenvx run -- npx tsx scripts/psychenomicon-art/run.ts --dry-run",
     "clean:descriptions": "npx tsx scripts/clean-episode-descriptions.ts",
-    "clean:descriptions:apply": "npx tsx scripts/clean-episode-descriptions.ts --apply"
+    "clean:descriptions:apply": "npx tsx scripts/clean-episode-descriptions.ts --apply",
+    "art:cards": "npx tsx scripts/generate-card-art.ts",
+    "art:cards:dry": "npx tsx scripts/generate-card-art.ts --dry-run",
+    "art:cards:mahavidya": "npx tsx scripts/generate-card-art.ts --type MAHAVIDYA",
+    "art:cards:tarot": "npx tsx scripts/generate-card-art.ts --slug cop-maj-00 --all"
   },
   "dependencies": {
     "@anthropic-ai/bedrock-sdk": "^0.30.1",

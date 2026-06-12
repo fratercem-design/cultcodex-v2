@@ -1,0 +1,325 @@
+/**
+ * Generate unique illustrative images for trading cards via DALL-E 3.
+ *
+ * Images are saved to public/cards/art/[slug].png and artUrl is updated in DB.
+ * Portraits are 1024×1792 (DALL-E 3 portrait size) — ~52% art area fill on card.
+ *
+ * Usage:
+ *   npx tsx scripts/generate-card-art.ts                   # all cards without artUrl
+ *   npx tsx scripts/generate-card-art.ts --type MAHAVIDYA  # specific type only
+ *   npx tsx scripts/generate-card-art.ts --limit 5         # first N cards
+ *   npx tsx scripts/generate-card-art.ts --dry-run         # show prompts, no API calls
+ *   npx tsx scripts/generate-card-art.ts --all             # re-generate even existing
+ *   npx tsx scripts/generate-card-art.ts --slug kali-the-devourer  # single card
+ *
+ * Cost: ~$0.08 per image (DALL-E 3 standard 1024×1792)
+ *
+ * Rate limit: 5 images/min — script waits 13s between requests automatically.
+ */
+import "dotenv/config";
+import fs from "fs";
+import path from "path";
+import https from "https";
+import http from "http";
+import OpenAI from "openai";
+import { getPrisma, disconnect } from "./ingest/lib";
+
+const prisma = getPrisma();
+
+const OUTPUT_DIR = path.join(process.cwd(), "public/cards/art");
+const RATE_LIMIT_MS = 13_000; // 13s between requests → ~4.6/min (safe under 5/min)
+
+// ── CLI args ─────────────────────────────────────────────────────────────────
+
+const args = process.argv.slice(2);
+const DRY_RUN    = args.includes("--dry-run");
+const REGEN_ALL  = args.includes("--all");
+const TYPE_ARG   = args.find(a => a.startsWith("--type="))?.split("=")[1]
+                ?? (args.indexOf("--type") >= 0 ? args[args.indexOf("--type") + 1] : null);
+const LIMIT_ARG  = args.find(a => a.startsWith("--limit="))?.split("=")[1]
+                ?? (args.indexOf("--limit") >= 0 ? args[args.indexOf("--limit") + 1] : null);
+const SLUG_ARG   = args.find(a => a.startsWith("--slug="))?.split("=")[1]
+                ?? (args.indexOf("--slug") >= 0 ? args[args.indexOf("--slug") + 1] : null);
+const LIMIT      = LIMIT_ARG ? parseInt(LIMIT_ARG, 10) : undefined;
+
+// ── Rarity palette hints ──────────────────────────────────────────────────────
+
+const RARITY_PALETTE: Record<string, string> = {
+  STATIC:       "muted dark greys, faint teal glow",
+  SIGNAL:       "neon green, deep black, electric green accents",
+  TRANSMISSION: "deep violet, purple glow, transmission wave patterns",
+  ANOMALY:      "gold and deep crimson, anomalous radiant energy",
+  ORACLE:       "blood red, deep crimson, oracle fire, prophetic red light",
+  LEGENDARY:    "brilliant gold, amber, legendary warm aura, starfield",
+  MYTHIC:       "deep violet, electric purple, mythic cosmic scale, nebula",
+  FORBIDDEN:    "blood red and black, forbidden dark light, corrupted data, warning glyphs",
+};
+
+// ── Per-type prompt builders ─────────────────────────────────────────────────
+
+function buildMahavidyaPrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const iconography: Record<string, string> = {
+    "Kālī": "blue-black skin, four arms holding sword and severed head with the other two in abhaya and varada mudra, garland of severed heads, blood-red tongue protruding, standing atop a prostrate white-skinned Shiva, cremation ground, lightning sky, intense fierce expression",
+    "Bagalamukhi": "golden-yellow complexion, yellow garments and ornaments, grasps demon's tongue with left hand, club raised in right hand about to strike, seated on golden throne in a lotus lake, yellow lotuses, three eyes, serene powerful expression",
+    "Tārā": "deep blue body, three eyes, seated on a white corpse on lotus, matted hair with moon crest, garland of severed heads, tiger skin clothing, holding a sword, skull cup, lotus and scissors, fierce compassionate expression",
+    "Chinnamastā": "red complexion, naked, self-severed head held in left hand, three streams of blood from the neck — one flowing into her own severed mouth — two devotees kneeling at her feet drinking the other streams, standing on a copulating couple, cremation ground",
+    "Dhūmāvatī": "elderly widow, very pale grey skin, gaunt and withered, disheveled white hair, riding a crow-drawn chariot, crow banner, wears widow's white, hollow eyes, smoke and ash atmosphere, desolate landscape",
+    "Mātangī": "dark emerald green complexion, seated on a jeweled throne, holding a knife in one hand and a skull cup in another, surrounded by green parrots, outcast forest setting, beautiful fierce expression, dark sacred grove",
+    "Kamalā": "golden-rose complexion, seated on a fully bloomed pink lotus, two white elephants on either side raising trunks and pouring golden water over her, holding pink lotus flowers in two hands, other two hands in varada and abhaya mudras, radiant abundant beauty",
+    "Tripurā Sundarī": "lustrous red complexion radiant like a rising sun, seated on a lotus throne supported by Brahma, Vishnu, Rudra and Sadashiva as her footstool, four arms holding a noose, goad, sugarcane bow and arrows, crown with crescent moon, exquisitely beautiful",
+    "Bhuvaneshvarī": "red complexion like the sunrise, crescent moon crown, four arms — two in varada and abhaya mudra, holding noose and goad — wearing red silks, surrounded by cosmic space, stars and galaxies, serene queen expression",
+    "Bhairavī": "deep crimson complexion, seated on a white corpse or lotus, rising sun behind her, three eyes, garland of skulls, holding fire, skull cup, book and giving abhaya mudra, moon in hair, fierce majestic expression",
+  };
+
+  const icon = iconography[title] ?? `${title}, ${subtitle}, fierce divine goddess, multiple arms, divine weapons`;
+  const palette = RARITY_PALETTE[rarity] ?? "jewel tones, gold";
+
+  return `Traditional Hindu tantric goddess illustration of ${title} (${subtitle}). ${icon}. Intricate hand-painted style, sacred iconography, rich jewel tones with ${palette}, ornate gold jewelry and crown, sacred geometry and divine symbols framing the figure, dark cosmic background with subtle lotus and mandala motifs, extremely detailed, spiritual power emanating. Tarot card art, vertical portrait composition, high detail, devotional art inspired by traditional pata painting.`;
+}
+
+function buildVoicePrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "dark atmosphere";
+  return `Mystical stylized portrait of a figure named "${title}" — ${subtitle}. ${flavourText.slice(0, 80)}. Dark esoteric atmosphere, ${palette}, symbolic occult elements surrounding the figure, dark background with transmission wave patterns, cult archive aesthetic, tarot card illustration style, vertical portrait composition, highly detailed, digital painting.`;
+}
+
+function buildTransmissionPrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "deep purple";
+  return `Abstract atmospheric scene titled "${title}". ${subtitle}. ${flavourText.slice(0, 100)}. Broadcast waves, cosmic frequency patterns, transmission signal aesthetics, dark studio with neon accents, ${palette}, esoteric broadcast tower, mystical atmosphere, tarot card illustration style, vertical portrait composition, highly detailed digital art.`;
+}
+
+function buildLorePrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "dark ochre";
+  return `Mystical illustration of the concept "${title}" — "${subtitle}". ${flavourText.slice(0, 120)}. Sacred symbols and occult iconography, ancient manuscript aesthetic with modern dark twist, ${palette}, esoteric glyphs and sigils, atmospheric depth, tarot card illustration style, vertical portrait composition, highly detailed symbolic art.`;
+}
+
+function buildSignalPrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "neon green";
+  return `Abstract symbolic artwork representing the concept of "${title}". ${subtitle}. ${flavourText.slice(0, 100)}. Geometric signal patterns, frequency waves, cosmic data visualization, ${palette}, dark background with luminous energy patterns, esoteric information aesthetics, tarot card illustration style, vertical composition, highly detailed.`;
+}
+
+function buildOraclePrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "crimson and gold";
+  return `Prophetic oracle vision of "${title}" — "${subtitle}". ${flavourText.slice(0, 120)}. All-seeing eye, cosmic fire, prophetic imagery, mystic oracle surrounded by sacred symbols, ${palette}, dark mystical atmosphere, burning celestial light, tarot card illustration style, vertical portrait composition, extremely detailed.`;
+}
+
+function buildCipherPrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "teal and dark";
+  return `Cryptographic cipher artwork titled "${title}" — "${subtitle}". ${flavourText.slice(0, 100)}. Layered encoded symbols, sacred geometry, alchemical notation overlaid with digital code, ${palette}, mysterious dark atmosphere, arcane knowledge aesthetic, tarot card illustration style, vertical composition, highly detailed.`;
+}
+
+function buildRelicPrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "amber and shadow";
+  return `Ancient mystical relic artifact — "${title}" — "${subtitle}". ${flavourText.slice(0, 100)}. Detailed artifact illustration, ancient textures, museum-quality display against dark backdrop, ${palette}, sacred object with visible power emanating, runic inscriptions, tarot card illustration style, vertical composition, highly detailed.`;
+}
+
+function buildEntityPrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "cosmic dark";
+  return `Cosmic entity "${title}" — "${subtitle}". ${flavourText.slice(0, 120)}. Otherworldly being of immense power, cosmic form, sacred geometry body, ${palette}, void background with star formations and energy fields, overwhelming presence, tarot card illustration style, vertical portrait composition, extremely detailed digital art.`;
+}
+
+function buildProphecyPrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "golden prophecy";
+  return `Prophetic vision card — "${title}" — "${subtitle}". ${flavourText.slice(0, 120)}. Ancient prophecy scroll, celestial imagery, future-seeing eye, ${palette}, burning light of revelation, cosmic writing and sacred glyphs, dark mystical atmosphere, tarot card illustration style, vertical composition, highly detailed.`;
+}
+
+function buildMemberPrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "cult purple";
+  return `Cult member portrait — "${title}" — "${subtitle}". ${flavourText.slice(0, 100)}. Mysterious figure wearing occult symbolic clothing, sacred archive symbols as background, ${palette}, dark ritual atmosphere, identity partially obscured, sigil and transmission wave motifs, tarot card illustration style, vertical portrait, highly detailed.`;
+}
+
+function buildGlitchPrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "corrupt green";
+  return `Digital glitch art — "${title}" — "${subtitle}". ${flavourText.slice(0, 100)}. Corrupted data visualization, glitch effects, pixel dissolution, system error aesthetics, ${palette}, dark cyber atmosphere, fragmented reality, torn digital fabric, tarot card illustration style, vertical composition, highly detailed.`;
+}
+
+function buildAvatarPrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "spectral";
+  return `Mystical avatar form — "${title}" — "${subtitle}". ${flavourText.slice(0, 100)}. Symbolic archetypal figure, spectral energy body, ${palette}, cosmic background with signal frequency patterns, sacred geometric aura, powerful presence, tarot card illustration style, vertical portrait composition, highly detailed.`;
+}
+
+function buildIncidentPrompt(title: string, subtitle: string, flavourText: string, rarity: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "dark crimson";
+  return `Dark incident scene — "${title}" — "${subtitle}". ${flavourText.slice(0, 100)}. Dramatic and ominous atmosphere, event-capture aesthetic, ${palette}, dark esoteric iconography, aftermath energy, tarot card illustration style, vertical composition, highly detailed.`;
+}
+
+function buildMajorArcanaPrompt(title: string, subtitle: string, flavourText: string, rarity: string, cardType: string): string {
+  const palette = RARITY_PALETTE[rarity] ?? "dark mystical";
+  // Major arcana cards have a cyberpunk/tarot fusion aesthetic
+  return `Cyberpunk tarot card illustration — "${title}" — "${subtitle}". ${flavourText.slice(0, 150)}. Dark futuristic-occult fusion aesthetic, digital and sacred symbolism combined, ${palette}, arcane circuitry and sacred geometry merged, dark atmospheric background, powerful archetypal imagery, tarot card art style, vertical portrait composition, highly detailed digital painting.`;
+}
+
+function buildPrompt(card: {
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  flavourText: string | null;
+  cardType: string;
+  rarity: string;
+}): string {
+  const t = card.title;
+  const s = card.subtitle ?? "";
+  const f = card.flavourText ?? "";
+  const r = card.rarity;
+
+  // Tarot major arcana slugs start with "cop-maj-"
+  const isMajorArcana = card.slug.startsWith("cop-maj-");
+
+  switch (card.cardType) {
+    case "MAHAVIDYA":  return buildMahavidyaPrompt(t, s, f, r);
+    case "VOICE":      return buildVoicePrompt(t, s, f, r);
+    case "TRANSMISSION": return isMajorArcana ? buildMajorArcanaPrompt(t, s, f, r, "TRANSMISSION") : buildTransmissionPrompt(t, s, f, r);
+    case "LORE":       return isMajorArcana ? buildMajorArcanaPrompt(t, s, f, r, "LORE") : buildLorePrompt(t, s, f, r);
+    case "SIGNAL":     return isMajorArcana ? buildMajorArcanaPrompt(t, s, f, r, "SIGNAL") : buildSignalPrompt(t, s, f, r);
+    case "ORACLE":     return isMajorArcana ? buildMajorArcanaPrompt(t, s, f, r, "ORACLE") : buildOraclePrompt(t, s, f, r);
+    case "CIPHER":     return buildCipherPrompt(t, s, f, r);
+    case "RELIC":      return isMajorArcana ? buildMajorArcanaPrompt(t, s, f, r, "RELIC") : buildRelicPrompt(t, s, f, r);
+    case "ENTITY":     return isMajorArcana ? buildMajorArcanaPrompt(t, s, f, r, "ENTITY") : buildEntityPrompt(t, s, f, r);
+    case "PROPHECY":   return isMajorArcana ? buildMajorArcanaPrompt(t, s, f, r, "PROPHECY") : buildProphecyPrompt(t, s, f, r);
+    case "MEMBER":     return buildMemberPrompt(t, s, f, r);
+    case "GLITCH":     return isMajorArcana ? buildMajorArcanaPrompt(t, s, f, r, "GLITCH") : buildGlitchPrompt(t, s, f, r);
+    case "AVATAR":     return buildAvatarPrompt(t, s, f, r);
+    case "INCIDENT":   return isMajorArcana ? buildMajorArcanaPrompt(t, s, f, r, "INCIDENT") : buildIncidentPrompt(t, s, f, r);
+    default:           return buildMajorArcanaPrompt(t, s, f, r, card.cardType);
+  }
+}
+
+// ── Image download ────────────────────────────────────────────────────────────
+
+function downloadImage(url: string, destPath: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(destPath);
+    const protocol = url.startsWith("https") ? https : http;
+    protocol.get(url, (response) => {
+      if (response.statusCode !== 200) {
+        reject(new Error(`HTTP ${response.statusCode} downloading ${url}`));
+        return;
+      }
+      response.pipe(file);
+      file.on("finish", () => { file.close(); resolve(); });
+      file.on("error", reject);
+    }).on("error", reject);
+  });
+}
+
+// ── Main ──────────────────────────────────────────────────────────────────────
+
+async function main() {
+  console.log("═══ GENERATE CARD ART ═══\n");
+
+  if (!process.env.OPENAI_API_KEY) {
+    console.error("✗ OPENAI_API_KEY not set");
+    process.exit(1);
+  }
+
+  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+
+  const where: Record<string, unknown> = {};
+  if (!REGEN_ALL) where.artUrl = null;
+  if (TYPE_ARG) where.cardType = TYPE_ARG.toUpperCase();
+  if (SLUG_ARG) where.slug = SLUG_ARG;
+
+  const cards = await prisma.card.findMany({
+    where: where as Parameters<typeof prisma.card.findMany>[0]["where"],
+    select: { id: true, slug: true, title: true, subtitle: true, flavourText: true, cardType: true, rarity: true, artUrl: true },
+    orderBy: [{ cardType: "asc" }, { rarity: "desc" }, { title: "asc" }],
+    take: LIMIT,
+  });
+
+  if (cards.length === 0) {
+    console.log("No cards to process.");
+    await disconnect();
+    return;
+  }
+
+  const estimatedCost = (cards.length * 0.08).toFixed(2);
+  console.log(`Cards to process: ${cards.length}${LIMIT ? ` (limited to ${LIMIT})` : ""}`);
+  console.log(`Estimated cost: $${estimatedCost} (DALL-E 3 standard, 1024×1792)`);
+  if (DRY_RUN) console.log("DRY RUN — no API calls will be made\n");
+  console.log();
+
+  // Print breakdown by type
+  const byType = cards.reduce<Record<string, number>>((acc, c) => {
+    acc[c.cardType] = (acc[c.cardType] ?? 0) + 1;
+    return acc;
+  }, {});
+  for (const [type, count] of Object.entries(byType).sort()) {
+    console.log(`  ${type.padEnd(14)} ${count} cards`);
+  }
+  console.log();
+
+  if (DRY_RUN) {
+    console.log("── Prompt preview (first 5) ──");
+    for (const card of cards.slice(0, 5)) {
+      const prompt = buildPrompt(card);
+      console.log(`\n[${card.slug}] ${card.cardType} / ${card.rarity}`);
+      console.log(`  ${prompt.slice(0, 200)}…`);
+    }
+    await disconnect();
+    return;
+  }
+
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+  let generated = 0;
+  let failed = 0;
+
+  for (let i = 0; i < cards.length; i++) {
+    const card = cards[i];
+    const outputPath = path.join(OUTPUT_DIR, `${card.slug}.png`);
+    const artUrl = `/cards/art/${card.slug}.png`;
+
+    console.log(`[${i + 1}/${cards.length}] ${card.slug}`);
+    console.log(`  Type: ${card.cardType} | Rarity: ${card.rarity}`);
+
+    // Skip if file already exists and not re-generating
+    if (!REGEN_ALL && fs.existsSync(outputPath)) {
+      console.log(`  ↷ file exists, updating artUrl only`);
+      await prisma.card.update({ where: { id: card.id }, data: { artUrl } });
+      generated++;
+      continue;
+    }
+
+    const prompt = buildPrompt(card);
+    console.log(`  Prompt: ${prompt.slice(0, 120)}…`);
+
+    try {
+      const response = await openai.images.generate({
+        model: "dall-e-3",
+        prompt,
+        n: 1,
+        size: "1024x1792",
+        quality: "standard",
+        response_format: "url",
+      });
+
+      const imageUrl = response.data?.[0]?.url;
+      if (!imageUrl) throw new Error("No URL in DALL-E response");
+
+      console.log(`  ↓ Downloading…`);
+      await downloadImage(imageUrl, outputPath);
+
+      await prisma.card.update({ where: { id: card.id }, data: { artUrl } });
+      console.log(`  ✓ Saved → public/cards/art/${card.slug}.png`);
+      generated++;
+    } catch (err) {
+      console.error(`  ✗ ${err instanceof Error ? err.message : String(err)}`);
+      failed++;
+    }
+
+    // Rate limiting — wait between requests (except after last)
+    if (i < cards.length - 1) {
+      process.stdout.write(`  ⏳ waiting ${RATE_LIMIT_MS / 1000}s…`);
+      await new Promise(r => setTimeout(r, RATE_LIMIT_MS));
+      process.stdout.write(" done\n");
+    }
+  }
+
+  console.log(`\n═══ DONE ═══`);
+  console.log(`Generated: ${generated} | Failed: ${failed}`);
+  console.log(`Images saved to: ${OUTPUT_DIR}`);
+  console.log(`\nNext: commit public/cards/art/ to git, then deploy.`);
+
+  await disconnect();
+}
+
+main().catch(e => { console.error(e.message || e); process.exit(1); });
