@@ -2,6 +2,7 @@
 import { config } from "dotenv";
 config({ override: true });
 import Anthropic from "@anthropic-ai/sdk";
+import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import OpenAI from "openai";
 import { EnrichmentResultSchema, type EnrichmentResult } from "./schemas";
 
@@ -100,25 +101,30 @@ ${input.transcript}`;
 }
 
 // ── Provider setup ────────────────────────────────────────────────────────────
-// ENRICHMENT_PROVIDER=openai   → use OpenAI, fall back to OpenRouter free on credit/rate errors
+// ENRICHMENT_PROVIDER=bedrock    → AWS Bedrock (default)
+// ENRICHMENT_PROVIDER=anthropic  → Anthropic direct API
+// ENRICHMENT_PROVIDER=openai     → OpenAI, falls back to OpenRouter free on credit/rate errors
 // ENRICHMENT_PROVIDER=openrouter → OpenRouter only
-// ENRICHMENT_PROVIDER=anthropic  → Claude (default)
 // ENRICHMENT_MODEL overrides the default model for the chosen provider.
 
-let _anthropic: Anthropic | null = null;
+let _anthropic: Anthropic | AnthropicBedrock | null = null;
 let _openaiClient: OpenAI | null = null;
 let _openrouterClient: OpenAI | null = null;
 
-function getProvider(): "anthropic" | "openai" | "openrouter" {
-  return (process.env.ENRICHMENT_PROVIDER ?? "anthropic") as "anthropic" | "openai" | "openrouter";
+function getProvider(): "bedrock" | "anthropic" | "openai" | "openrouter" {
+  return (process.env.ENRICHMENT_PROVIDER ?? "bedrock") as "bedrock" | "anthropic" | "openai" | "openrouter";
 }
 
-function getAnthropicClient(): Anthropic {
+function getAnthropicClient(): Anthropic | AnthropicBedrock {
   if (_anthropic) return _anthropic;
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
-  const baseURL = process.env.ANTHROPIC_BASE_URL;
-  _anthropic = new Anthropic({ apiKey, ...(baseURL ? { baseURL } : {}) });
+  if (getProvider() === "bedrock") {
+    _anthropic = new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
+  } else {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
+    const baseURL = process.env.ANTHROPIC_BASE_URL;
+    _anthropic = new Anthropic({ apiKey, ...(baseURL ? { baseURL } : {}) });
+  }
   return _anthropic;
 }
 
@@ -170,18 +176,27 @@ async function callChatAPI(client: OpenAI, model: string, input: UserMessageInpu
   return text.trim();
 }
 
+function resolveEnrichModel(): string {
+  const raw = process.env.ENRICHMENT_MODEL ?? "claude-sonnet-4-6";
+  const provider = getProvider();
+  if (provider !== "bedrock") return raw;
+  if (raw.includes(":") || raw.startsWith("us.anthropic.") || raw.startsWith("anthropic.")) return raw;
+  return `us.anthropic.${raw}-v1:0`;
+}
+
 async function enrichWithAnthropic(input: UserMessageInput): Promise<string> {
   const client = getAnthropicClient();
-  const model = process.env.ENRICHMENT_MODEL ?? "claude-sonnet-4-20250514";
-  const response = await client.messages.create({
+  const model = resolveEnrichModel();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const response = await (client as any).messages.create({
     model,
     max_tokens: 4096,
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: buildUserMessage(input) }],
   });
-  const textBlock = response.content.find((b) => b.type === "text");
+  const textBlock = response.content.find((b: { type: string }) => b.type === "text");
   if (!textBlock || textBlock.type !== "text") throw new Error("No text response from Claude");
-  return textBlock.text.trim();
+  return (textBlock as { type: "text"; text: string }).text.trim();
 }
 
 export async function enrichEpisode(
@@ -190,7 +205,9 @@ export async function enrichEpisode(
   const provider = getProvider();
   let jsonText: string;
 
-  if (provider === "openai") {
+  if (provider === "bedrock" || provider === "anthropic") {
+    jsonText = await enrichWithAnthropic(input);
+  } else if (provider === "openai") {
     // Try OpenAI first; fall back to free OpenRouter model on credit/rate errors
     try {
       const model = process.env.ENRICHMENT_MODEL ?? "gpt-4o-mini";
@@ -216,8 +233,6 @@ export async function enrichEpisode(
         throw err;
       }
     }
-  } else {
-    jsonText = await enrichWithAnthropic(input);
   }
 
   // Strip accidental markdown fences

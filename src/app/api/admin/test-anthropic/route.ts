@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { anthropic as client } from "@/lib/anthropic";
+import { anthropic as client, bedrockModelId } from "@/lib/anthropic";
 import { getCurrentUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -10,15 +10,14 @@ export async function GET() {
     return NextResponse.json({ error: "Admin only" }, { status: 403 });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY ?? "";
-  if (!apiKey) {
-    return NextResponse.json({ error: "ANTHROPIC_API_KEY not set" }, { status: 500 });
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+    return NextResponse.json({ error: "AWS Bedrock credentials not set" }, { status: 500 });
   }
 
   const start = Date.now();
   try {
     const msg = await client.messages.create({
-      model: "claude-opus-4-8",
+      model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
       max_tokens: 10,
       messages: [{ role: "user", content: "Say OK" }],
     });

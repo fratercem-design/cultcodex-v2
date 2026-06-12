@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { anthropic as client } from "@/lib/anthropic";
+import { anthropic as client, bedrockModelId } from "@/lib/anthropic";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -88,8 +88,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
     return NextResponse.json({ error: "Oracle not configured" }, { status: 500 });
   }
 
@@ -109,7 +108,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const response = await client.messages.create({
-      model: process.env.ORACLE_MODEL ?? "claude-opus-4-8",
+      model: bedrockModelId(process.env.ORACLE_MODEL ?? "claude-opus-4-8"),
       max_tokens: 1024,
       system: SYSTEM,
       messages: [{ role: "user", content: buildPrompt(body) }],

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
-import { anthropic } from "@/lib/anthropic";
+import { anthropic, bedrockModelId } from "@/lib/anthropic";
 
 const SYSTEM_PROMPT = `You are an expert in behavioral analysis, psychological profiling, and conversational power dynamics. Your task is to analyze a conversation transcript and extract:
 1. Psychological patterns
@@ -82,7 +82,7 @@ export async function POST(
   }
 
   const message = await anthropic.messages.create({
-    model: "claude-opus-4-8",
+    model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
     max_tokens: 2048,
     thinking: { type: "adaptive" },
     system: SYSTEM_PROMPT,

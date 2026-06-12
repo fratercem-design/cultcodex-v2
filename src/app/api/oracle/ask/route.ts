@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
-import type { MessageParam, ToolResultBlockParam } from "@anthropic-ai/sdk/resources/messages";
+import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
+import type { MessageParam, Tool, ToolResultBlockParam } from "@anthropic-ai/sdk/resources/messages";
+import { bedrockModelId } from "@/lib/anthropic";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
@@ -64,7 +65,7 @@ export interface OracleSearchContext {
 
 // ─── Tool definitions ────────────────────────────────────────────────────────
 
-const ORACLE_TOOLS: Anthropic.Tool[] = [
+const ORACLE_TOOLS: Tool[] = [
   {
     name: "search_archive",
     description:
@@ -759,7 +760,7 @@ async function executeTool(name: string, input: Record<string, unknown>): Promis
 // ─── Agent loop ──────────────────────────────────────────────────────────────
 
 async function runOracleAgent(
-  client: Anthropic,
+  client: AnthropicBedrock,
   model: string,
   initialContextText: string,
   question: string,
@@ -910,8 +911,8 @@ export async function POST(req: NextRequest) {
         }
       : undefined;
 
-  // Verify Anthropic API key is present
-  if (!process.env.ANTHROPIC_API_KEY) {
+  // Verify Bedrock region is set (credentials come from AWS credential chain)
+  if (!process.env.AWS_REGION && !process.env.AWS_ACCESS_KEY_ID) {
     return NextResponse.json(
       { ok: false, error: "Oracle not configured." } satisfies OracleResponse,
       { status: 500 }
@@ -1000,8 +1001,8 @@ export async function POST(req: NextRequest) {
   let citations: OracleCitation[];
 
   try {
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const model = process.env.ORACLE_MODEL ?? "claude-opus-4-8";
+    const client = new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
+    const model = bedrockModelId(process.env.ORACLE_MODEL ?? "claude-opus-4-8");
     const result = await runOracleAgent(client, model, contextText, question, preFlightCitations, contextPreamble);
     answer = result.answer;
     citations = result.citations;

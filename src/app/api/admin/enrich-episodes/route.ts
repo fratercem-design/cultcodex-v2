@@ -15,7 +15,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { anthropic as client } from "@/lib/anthropic";
+import { anthropic as client, bedrockModelId } from "@/lib/anthropic";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 
@@ -265,9 +265,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY ?? "";
-  if (!apiKey) {
-    return NextResponse.json({ error: "No Anthropic API key configured" }, { status: 500 });
+  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+    return NextResponse.json({ error: "Bedrock credentials not configured" }, { status: 500 });
   }
 
   const body = await req.json().catch(() => ({})) as {
@@ -343,7 +342,7 @@ Transcript:
 ${transcript}`;
 
       const response = await client.messages.create({
-        model: "claude-opus-4-8",
+        model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
         max_tokens: 3000,
         thinking: { type: "adaptive" },
         system: SYSTEM_PROMPT,

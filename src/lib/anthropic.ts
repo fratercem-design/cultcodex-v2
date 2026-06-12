@@ -1,8 +1,10 @@
-import Anthropic from "@anthropic-ai/sdk";
+import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 
-// Pinned base URL prevents ANTHROPIC_BASE_URL env var from silently routing
-// API calls through a proxy that may not support all Claude models.
-export const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-  baseURL: "https://api.anthropic.com",
+export const anthropic = new AnthropicBedrock({
+  awsRegion: process.env.AWS_REGION ?? "us-east-1",
 });
+
+export function bedrockModelId(model: string): string {
+  if (model.includes(":") || model.startsWith("us.anthropic.") || model.startsWith("anthropic.")) return model;
+  return `us.anthropic.${model}-v1:0`;
+}
