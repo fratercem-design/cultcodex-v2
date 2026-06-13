@@ -57,7 +57,12 @@ const LIMIT_ARG  = args.find(a => a.startsWith("--limit="))?.split("=")[1]
                 ?? (args.indexOf("--limit") >= 0 ? args[args.indexOf("--limit") + 1] : null);
 const SLUG_ARG   = args.find(a => a.startsWith("--slug="))?.split("=")[1]
                 ?? (args.indexOf("--slug") >= 0 ? args[args.indexOf("--slug") + 1] : null);
-const LIMIT      = LIMIT_ARG ? parseInt(LIMIT_ARG, 10) : undefined;
+const LIMIT_RAW  = LIMIT_ARG ? parseInt(LIMIT_ARG, 10) : undefined;
+if (LIMIT_RAW !== undefined && (isNaN(LIMIT_RAW) || LIMIT_RAW <= 0)) {
+  console.error(`Invalid --limit value: "${LIMIT_ARG}". Must be a positive integer.`);
+  process.exit(1);
+}
+const LIMIT = LIMIT_RAW;
 
 // ── Rarity palette hints ──────────────────────────────────────────────────────
 
@@ -273,7 +278,7 @@ async function main() {
     return;
   }
 
-  const estimatedCost = (cards.length * 0.04).toFixed(2);
+  const estimatedCost = (cards.length * 0.08).toFixed(2);
   console.log(`Cards to process: ${cards.length}${LIMIT ? ` (limited to ${LIMIT})` : ""}`);
   console.log(`Estimated cost: ~$${estimatedCost} (gpt-image-1 medium, 1024×1536)`);
   if (DRY_RUN) console.log("DRY RUN — no API calls will be made\n");
@@ -304,6 +309,8 @@ async function main() {
 
   let generated = 0;
   let failed = 0;
+  // Track when the last real API call was made so we only sleep before calls, not skips.
+  let lastApiCallAt = 0;
 
   for (let i = 0; i < cards.length; i++) {
     const card = cards[i];
@@ -313,7 +320,7 @@ async function main() {
     console.log(`[${i + 1}/${cards.length}] ${card.slug}`);
     console.log(`  Type: ${card.cardType} | Rarity: ${card.rarity}`);
 
-    // Skip if file already exists and not re-generating
+    // Skip if file already exists and not re-generating (no API call — no rate limit needed)
     if (!REGEN_ALL && fs.existsSync(outputPath)) {
       console.log(`  ↷ file exists, updating artUrl only`);
       await prisma.card.update({ where: { id: card.id }, data: { artUrl } });
@@ -325,6 +332,7 @@ async function main() {
     // iconography non-deterministically even with a fully nameless prompt.
     // All such cards depict the same goddess, so reuse the one image that
     // passed (chhinnamasta.png) rather than fighting the filter.
+    // File copy = no API call, no rate limit needed — continue immediately.
     if (/innamasta/i.test(card.slug)) {
       const source = [...CHINNAMASTA_ART_SOURCES]
         .map(name => path.join(OUTPUT_DIR, name))
@@ -334,10 +342,18 @@ async function main() {
         await prisma.card.update({ where: { id: card.id }, data: { artUrl } });
         console.log(`  ⟳ Reused ${path.basename(source)} → ${card.slug}.png (filter-safe)`);
         generated++;
-        if (i < cards.length - 1) continue;
-        break;
+        continue;
       }
       console.log(`  ⚠ no existing Chinnamastā art to reuse — falling through to API`);
+    }
+
+    // Rate limit: enforce gap between consecutive API calls only
+    const msSinceLast = Date.now() - lastApiCallAt;
+    if (lastApiCallAt > 0 && msSinceLast < RATE_LIMIT_MS) {
+      const waitMs = RATE_LIMIT_MS - msSinceLast;
+      process.stdout.write(`  ⏳ waiting ${Math.ceil(waitMs / 1000)}s…`);
+      await new Promise(r => setTimeout(r, waitMs));
+      process.stdout.write(" done\n");
     }
 
     const prompt = buildPrompt(card);
@@ -361,16 +377,11 @@ async function main() {
       await prisma.card.update({ where: { id: card.id }, data: { artUrl } });
       console.log(`  ✓ Saved → public/cards/art/${card.slug}.png`);
       generated++;
+      lastApiCallAt = Date.now();
     } catch (err) {
       console.error(`  ✗ ${err instanceof Error ? err.message : String(err)}`);
       failed++;
-    }
-
-    // Rate limiting — wait between requests (except after last)
-    if (i < cards.length - 1) {
-      process.stdout.write(`  ⏳ waiting ${RATE_LIMIT_MS / 1000}s…`);
-      await new Promise(r => setTimeout(r, RATE_LIMIT_MS));
-      process.stdout.write(" done\n");
+      lastApiCallAt = Date.now(); // count failed calls against rate limit too
     }
   }
 

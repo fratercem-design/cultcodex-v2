@@ -23,6 +23,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
 
+// Sentinel written when AI returns no summaryFacts (e.g. title-only clips).
+// The re-enrichment where clause only re-queues these when enrichmentQueued=true
+// so transcript-less episodes don't loop indefinitely.
+const SUMMARY_FACTS_PLACEHOLDER = "—";
+
 // ── Zod schemas (mirror of scripts/enrich/schemas.ts) ────────────────────────
 
 const GuestSchema = z.object({
@@ -157,7 +162,9 @@ async function importEnrichment(
       summaryShort: data.summaryShort || undefined,
       // Always write summaryFacts so the episode is marked enriched even when
       // the AI returns nothing (e.g. short clips with no transcript content).
-      summaryFacts: data.summaryFacts || "—",
+      // "—" is the sentinel; the where clause excludes it only when enrichmentQueued=false
+      // so transcript-less episodes don't loop indefinitely (see whereClause below).
+      summaryFacts: data.summaryFacts || SUMMARY_FACTS_PLACEHOLDER,
       summaryThemes: data.summaryThemes || undefined,
       // Legacy: only preserved if model returned it and new fields are empty
       ...(data.summaryLong && !data.summaryFacts
@@ -291,7 +298,13 @@ export async function POST(req: NextRequest) {
     : {
         AND: [
           { OR: [{ summaryShort: null }, { summaryShort: "" }] },
-          { OR: [{ summaryFacts: null }, { summaryFacts: "" }, { summaryFacts: "—" }] },
+          { OR: [
+            { summaryFacts: null },
+            { summaryFacts: "" },
+            // Placeholder re-queues only when manually flagged — prevents infinite
+            // loop for transcript-less episodes that will always get no AI content.
+            { AND: [{ summaryFacts: SUMMARY_FACTS_PLACEHOLDER }, { enrichmentQueued: { not: false } }] },
+          ] },
           { OR: [{ summaryLong: null }, { summaryLong: "" }] },
         ],
         ...(withTranscriptOnly ? { segments: { some: {} } } : {}),

@@ -124,7 +124,7 @@ export default async function MemberProfilePage({ params }: Props) {
 
   const [cards, collectionStats, memberRank] = await Promise.all([
     member.codexShowCards ? getMemberCards(member.id) : Promise.resolve([]),
-    member.codexShowCards ? getUserCollectionStats(member.id).catch(() => null) : Promise.resolve(null),
+    member.codexShowCards ? getUserCollectionStats(member.id, { includeWallet: false }).catch(() => null) : Promise.resolve(null),
     getUserRank(member.id, true).catch(() => null),
   ]);
 
