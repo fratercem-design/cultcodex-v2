@@ -399,9 +399,6 @@ async function main() {
       console.error(`  ✗ ${err instanceof Error ? err.message : String(err)}`);
       failed++;
       lastApiCallAt = Date.now(); // count failed calls against rate limit too
-    } catch (err) {
-      console.error(`  ✗ ${err instanceof Error ? err.message : String(err)}`);
-      failed++;
     }
 
     // Rate limiting — wait between requests (except after last)
