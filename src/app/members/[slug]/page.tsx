@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { TradingCard } from "@/components/cards/trading-card";
 import type { TradingCardData } from "@/components/cards/trading-card";
+import { getUserCollectionStats } from "@/lib/queries/cards";
 import { BANNER_THEMES } from "@/lib/codex-page";
 import { RankBadge } from "@/components/rank/rank-badge";
 import { getUserRank } from "@/lib/rankings/get-user-rank";
@@ -121,8 +122,11 @@ export default async function MemberProfilePage({ params }: Props) {
     notFound();
   }
 
-  const cards = member.codexShowCards ? await getMemberCards(member.id) : [];
-  const memberRank = await getUserRank(member.id, true).catch(() => null);
+  const [cards, collectionStats, memberRank] = await Promise.all([
+    member.codexShowCards ? getMemberCards(member.id) : Promise.resolve([]),
+    member.codexShowCards ? getUserCollectionStats(member.id).catch(() => null) : Promise.resolve(null),
+    getUserRank(member.id, true).catch(() => null),
+  ]);
 
   const joinYear = new Date(member.createdAt).getFullYear();
   const joinMonth = new Date(member.createdAt).toLocaleDateString("en-US", { month: "long" });
@@ -221,14 +225,34 @@ export default async function MemberProfilePage({ params }: Props) {
               {member.memberTitle}
             </p>
           )}
-          <p className="mt-2 font-mono text-[10px] text-text-muted">
-            Member since {joinMonth} {joinYear}
-          </p>
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
+            <span
+              className="rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest"
+              style={{
+                borderColor: bannerTheme.accent + "50",
+                color: bannerTheme.accent,
+                background: "rgba(0,0,0,0.25)",
+              }}
+            >
+              {isAdmin ? "Admin" : isOracle ? "✦ Oracle Tier" : "Initiate+"}
+            </span>
+            <span className="font-mono text-[10px] text-text-muted">
+              Member since {joinMonth} {joinYear}
+            </span>
+          </div>
 
           {memberRank && (
-            <div className="mt-3 flex items-center justify-center">
-              <Link href="/leaderboard" title={`${memberRank.score.toLocaleString()} codex score`}>
+            <div className="mt-3 flex items-center justify-center gap-2">
+              <Link
+                href="/leaderboard"
+                title={`${memberRank.score.toLocaleString()} codex score`}
+                className="flex items-center gap-2"
+              >
                 <RankBadge rank={memberRank.progress.current} size="sm" />
+                <span className="font-mono text-[11px] font-bold" style={{ color: bannerTheme.accent }}>
+                  {memberRank.score.toLocaleString()}
+                  <span className="ml-1 font-normal text-text-muted">codex score</span>
+                </span>
               </Link>
             </div>
           )}
@@ -310,6 +334,16 @@ export default async function MemberProfilePage({ params }: Props) {
                 >
                   {"/// card archive"}
                 </p>
+                {collectionStats && collectionStats.ownedCount > 0 && (
+                  <span className="font-mono text-[10px] text-text-muted">
+                    {collectionStats.ownedCount.toLocaleString()} card
+                    {collectionStats.ownedCount === 1 ? "" : "s"}
+                    <span className="text-text-muted/50">
+                      {" · "}
+                      {collectionStats.completionPct}% of the archive
+                    </span>
+                  </span>
+                )}
                 <div
                   className="flex-1 border-t"
                   style={{ borderColor: bannerTheme.accent + "15" }}
@@ -320,6 +354,13 @@ export default async function MemberProfilePage({ params }: Props) {
                   <TradingCard key={`${card.id}-${card.isFoil}`} card={card} size="sm" noTilt />
                 ))}
               </div>
+              {isOwner && (
+                <p className="mt-4 text-center font-mono text-[10px] text-text-muted">
+                  <Link href="/cards" className="hover:text-text-primary transition-colors" style={{ color: bannerTheme.accent }}>
+                    Open your full collection →
+                  </Link>
+                </p>
+              )}
             </section>
           )}
 

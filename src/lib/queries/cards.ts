@@ -156,40 +156,73 @@ export async function openPack(userId: string, packSlug: string) {
 
 const DAILY_CREDITS = 25;
 
+/**
+ * Daily Signal Credits multiplier by subscription tier — a real, merchandised
+ * perk of the paid tiers (see subscription-tiers.ts features):
+ *   Observer (free) ×1 · Initiate+ ×2 · Oracle ×3.
+ * Mirrors isSubscribed()/hasSystemTier() in a single query.
+ */
+async function dailyCreditMultiplier(userId: string): Promise<number> {
+  const u = await prisma.codexUser.findUnique({
+    where: { id: userId },
+    select: {
+      role: true,
+      subscriptionStatus: true,
+      subscriptionTier: true,
+      currentPeriodEnd: true,
+      isLifetimeMember: true,
+    },
+  });
+  if (!u) return 1;
+  const active =
+    u.subscriptionStatus === "active" && !!u.currentPeriodEnd && u.currentPeriodEnd > new Date();
+  const isOracle =
+    u.role === "admin" ||
+    (u.isLifetimeMember && u.subscriptionTier === "system") ||
+    (active && u.subscriptionTier === "system");
+  if (isOracle) return 3;
+  const subscribed = u.role === "admin" || u.isLifetimeMember || active;
+  return subscribed ? 2 : 1;
+}
+
 export async function claimDailyReward(userId: string): Promise<{ granted: number; nextClaimAt: Date }> {
-  const wallet = await prisma.userWallet.findUnique({ where: { userId } });
+  const [wallet, multiplier] = await Promise.all([
+    prisma.userWallet.findUnique({ where: { userId } }),
+    dailyCreditMultiplier(userId),
+  ]);
   const now = new Date();
 
   if (wallet?.lastDailyClaimAt) {
     const msSinceLast = now.getTime() - wallet.lastDailyClaimAt.getTime();
     const hoursLeft = 24 - msSinceLast / 3_600_000;
     if (hoursLeft > 0) {
-      const nextClaim = new Date(wallet.lastDailyClaimAt.getTime() + 24 * 3_600_000);
       throw new Error(`Daily already claimed. Next claim in ${Math.ceil(hoursLeft)}h`);
     }
   }
+
+  const granted = DAILY_CREDITS * multiplier;
 
   await prisma.$transaction([
     prisma.userWallet.upsert({
       where: { userId },
       update: {
-        balance: { increment: DAILY_CREDITS },
-        totalEarned: { increment: DAILY_CREDITS },
+        balance: { increment: granted },
+        totalEarned: { increment: granted },
         lastDailyClaimAt: now,
       },
       create: {
         userId,
-        balance: DAILY_CREDITS,
-        totalEarned: DAILY_CREDITS,
+        balance: granted,
+        totalEarned: granted,
         lastDailyClaimAt: now,
       },
     }),
     prisma.creditTransaction.create({
-      data: { userId, amount: DAILY_CREDITS, reason: "daily_login" },
+      data: { userId, amount: granted, reason: "daily_login", metadata: { multiplier } },
     }),
   ]);
 
-  return { granted: DAILY_CREDITS, nextClaimAt: new Date(now.getTime() + 24 * 3_600_000) };
+  return { granted, nextClaimAt: new Date(now.getTime() + 24 * 3_600_000) };
 }
 
 // ─── Passive credit earning ───────────────────────────────────────────────────
