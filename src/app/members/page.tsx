@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/db";
 import Image from "next/image";
 import Link from "next/link";
+import { TIERS } from "@/lib/subscription-tiers";
 import type { Metadata } from "next";
 
 export const revalidate = 300;
@@ -127,6 +128,81 @@ export default async function MembersPage() {
               </span>
             </div>
           )}
+
+          {(oracleMembers.length > 0 || members.length > 0) && (
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+              {oracleMembers.length > 0 && (
+                <span className="rounded-full border border-accent-violet/30 bg-accent-violet/10 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-accent-violet">
+                  {oracleMembers.length} Oracle
+                </span>
+              )}
+              {members.length > 0 && (
+                <span className="rounded-full border border-accent-gold/30 bg-accent-gold/10 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-accent-gold">
+                  {members.length} Initiate+
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* What initiation unlocks — merchandise the offerings right on the roll,
+          pulled from the TIERS single source of truth so it never drifts. */}
+      <section className="border-b border-border bg-void">
+        <div className="mx-auto max-w-5xl px-4 py-10">
+          <div className="mb-6 text-center">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+              {"/// what_initiation_unlocks"}
+            </p>
+            <h2 className="mt-2 font-display text-xl font-bold text-text-primary">
+              Every name on this roll opened a door. Here&rsquo;s what&rsquo;s behind it.
+            </h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {TIERS.map((t) => {
+              const isGold = t.accent === "gold";
+              const ring = isGold ? "border-accent-gold/30" : "border-accent-violet/30";
+              const text = isGold ? "text-accent-gold" : "text-accent-violet";
+              const bg = isGold ? "from-accent-gold/5" : "from-accent-violet/5";
+              return (
+                <div
+                  key={t.slug}
+                  className={`relative flex flex-col rounded-xl border ${ring} bg-gradient-to-b ${bg} to-surface p-6`}
+                >
+                  {t.badge && (
+                    <span className={`absolute right-4 top-4 rounded-full border ${ring} bg-surface px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-widest ${text}`}>
+                      {t.badge}
+                    </span>
+                  )}
+                  <div className="flex items-baseline justify-between gap-3">
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">{t.role}</p>
+                      <h3 className={`font-display text-lg font-bold ${text}`}>{t.name}</h3>
+                    </div>
+                    <p className={`font-display text-2xl font-bold ${text}`}>
+                      ${t.priceMonthly}
+                      <span className="font-mono text-[10px] text-text-muted">/mo</span>
+                    </p>
+                  </div>
+                  <p className="mt-2 font-mono text-[11px] italic text-text-muted">&ldquo;{t.psychologyHook}&rdquo;</p>
+                  <ul className="mt-3 flex-1 space-y-1.5">
+                    {t.features.slice(0, 4).map((f) => (
+                      <li key={f} className="flex items-start gap-2 font-mono text-[11px] text-text-muted">
+                        <span className={`mt-0.5 shrink-0 ${text}`}>✦</span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href={`/premium#${t.slug}`}
+                    className={`mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold ${text} hover:underline`}
+                  >
+                    {t.slug === "access" ? "Become Initiate+" : "Ascend to Oracle"} →
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
@@ -253,28 +329,45 @@ function MemberCard({
     month: "short",
   });
 
-  // Rotate between gold and cyan accents for visual rhythm
-  const accent = index % 3 === 2 ? "cyan" : "gold";
+  // Oracle members carry the violet tier identity; Initiates rotate gold/cyan.
+  const accent: "violet" | "cyan" | "gold" = oracle
+    ? "violet"
+    : index % 3 === 2
+      ? "cyan"
+      : "gold";
 
-  const cardClassName = `group relative overflow-hidden rounded-xl border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg ${
-    accent === "cyan"
-      ? "border-accent-cyan/20 hover:border-accent-cyan/40 hover:shadow-accent-cyan/10"
-      : "border-accent-gold/20 hover:border-accent-gold/40 hover:shadow-accent-gold/10"
-  }`;
+  const ACCENT = {
+    gold: {
+      card: "border-accent-gold/20 hover:border-accent-gold/40 hover:shadow-accent-gold/10",
+      ring: "border-accent-gold/30",
+      ringBg: "border-accent-gold/30 bg-accent-gold/10",
+      text: "text-accent-gold",
+      soft: "text-accent-gold/60",
+    },
+    cyan: {
+      card: "border-accent-cyan/20 hover:border-accent-cyan/40 hover:shadow-accent-cyan/10",
+      ring: "border-accent-cyan/30",
+      ringBg: "border-accent-cyan/30 bg-accent-cyan/10",
+      text: "text-accent-cyan",
+      soft: "text-accent-cyan/60",
+    },
+    violet: {
+      card: "border-accent-violet/25 hover:border-accent-violet/50 hover:shadow-accent-violet/15",
+      ring: "border-accent-violet/40",
+      ringBg: "border-accent-violet/40 bg-accent-violet/10",
+      text: "text-accent-violet",
+      soft: "text-accent-violet/60",
+    },
+  }[accent];
+
+  const cardClassName = `group relative overflow-hidden rounded-xl border bg-surface p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg ${ACCENT.card}`;
 
   const inner = (
     <>
-      {/* Oracle badge */}
+      {/* Oracle badge — violet to match the Oracle tier identity */}
       {oracle && (
         <div className="absolute right-3 top-3">
-          <span
-            className="rounded-full px-2 py-0.5 font-mono text-[8px] uppercase tracking-widest"
-            style={{
-              border: "1px solid rgba(212,175,55,0.5)",
-              backgroundColor: "rgba(212,175,55,0.12)",
-              color: "rgba(212,175,55,0.9)",
-            }}
-          >
+          <span className="rounded-full border border-accent-violet/50 bg-accent-violet/15 px-2 py-0.5 font-mono text-[8px] uppercase tracking-widest text-accent-violet">
             ✦ Oracle
           </span>
         </div>
@@ -290,11 +383,7 @@ function MemberCard({
 
       <div className="flex items-center gap-3">
         {member.avatarUrl ? (
-          <div
-            className={`relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border-2 ${
-              accent === "cyan" ? "border-accent-cyan/30" : "border-accent-gold/30"
-            }`}
-          >
+          <div className={`relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border-2 ${ACCENT.ring}`}>
             <Image
               src={member.avatarUrl}
               alt={member.displayName}
@@ -304,13 +393,7 @@ function MemberCard({
             />
           </div>
         ) : (
-          <div
-            className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border-2 text-lg ${
-              accent === "cyan"
-                ? "border-accent-cyan/30 bg-accent-cyan/10"
-                : "border-accent-gold/30 bg-accent-gold/10"
-            }`}
-          >
+          <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border-2 text-lg ${ACCENT.ringBg}`}>
             {member.displayName.charAt(0).toUpperCase()}
           </div>
         )}
@@ -320,11 +403,7 @@ function MemberCard({
             {member.displayName}
           </p>
           {member.memberTitle ? (
-            <p
-              className={`truncate font-mono text-[11px] italic ${
-                accent === "cyan" ? "text-accent-cyan" : "text-accent-gold"
-              }`}
-            >
+            <p className={`truncate font-mono text-[11px] italic ${ACCENT.text}`}>
               {member.memberTitle}
             </p>
           ) : isAdmin ? (
@@ -334,7 +413,7 @@ function MemberCard({
             Member since {joinMonth} {joinYear}
           </p>
           {hasPage && (
-            <p className={`mt-1 font-mono text-[10px] ${accent === "cyan" ? "text-accent-cyan/60" : "text-accent-gold/60"}`}>
+            <p className={`mt-1 font-mono text-[10px] ${ACCENT.soft}`}>
               View page →
             </p>
           )}
