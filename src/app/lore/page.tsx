@@ -16,6 +16,7 @@ import {
   buildPaginationMeta,
 } from "@/lib/pagination";
 import type { CanonStatus } from "@/generated/prisma/client";
+import { collectionPageJsonLd, jsonLdScript } from "@/lib/seo";
 
 export const revalidate = 600;
 
@@ -79,6 +80,21 @@ export default async function LorePage({ searchParams }: LorePageProps) {
 
   return (
     <>
+    {page === 1 && sorted.length > 0 && (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            collectionPageJsonLd({
+              name: "Lore — CultCodex",
+              description: metadata.description,
+              path: "/lore",
+              items: sorted.map((e) => ({ name: e.title, path: `/lore/${e.slug}` })),
+            })
+          ),
+        }}
+      />
+    )}
     <PageHero
       title="LORE ARCHIVE"
       subtitle="Concepts, doctrines, myths, and memes"
