@@ -634,3 +634,13 @@ body {
   ) !important;
   text-shadow: var(--glow-neon);
 }
+
+/* /people/the-rest directory links — CSS hover replaces JS handlers so the
+   page can stay a Server Component (event handlers can't cross the RSC boundary). */
+.rest-person-link {
+  border: 1px solid var(--term-line);
+  transition: border-color 0.15s;
+}
+.rest-person-link:hover {
+  border-color: var(--neon-3);
+}

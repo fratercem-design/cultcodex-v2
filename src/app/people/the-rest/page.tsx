@@ -200,22 +200,15 @@ export default async function TheRestPage() {
                 <Link
                   key={p.id}
                   href={`/people/${p.slug}`}
+                  className="rest-person-link"
                   style={{
                     display: "flex",
                     alignItems: "center",
                     gap: 8,
                     padding: "8px 12px",
-                    border: "1px solid var(--term-line)",
                     borderRadius: 4,
                     textDecoration: "none",
-                    transition: "border-color 0.15s",
                   }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.borderColor = "var(--neon-3)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.borderColor = "var(--term-line)")
-                  }
                 >
                   <span
                     style={{
