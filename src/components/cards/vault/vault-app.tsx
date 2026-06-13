@@ -4,6 +4,15 @@ import Link from "next/link";
 import type { VaultCard as VaultCardType } from "./constants";
 import { VAULT_RARITIES, VAULT_CARD_TYPES, TYPE_ORDER } from "./constants";
 import { VaultCard } from "./card";
+import type { OwnedInfo } from "./card";
+
+interface CollectionStats {
+  ownedCount: number;
+  totalCards: number;
+  completionPct: number;
+  signalCredits: number;
+  lastDailyClaimAt: string | null;
+}
 
 const SORT_OPTIONS = [
   ["num", "№"], ["rarity", "Rarity"], ["power", "Power"],
@@ -117,13 +126,28 @@ function PackOpening({ cards, onClose }: { cards: VaultCardType[]; onClose: () =
   );
 }
 
-export function VaultApp({ cards }: { cards: VaultCardType[] }) {
+export function VaultApp({
+  cards,
+  ownership,
+  stats,
+}: {
+  cards: VaultCardType[];
+  ownership?: Record<string, OwnedInfo>;
+  stats?: CollectionStats;
+}) {
   const [type, setType] = useState("all");
   const [rarity, setRarity] = useState("all");
   const [sort, setSort] = useState<SortKey>("num");
   const [q, setQ] = useState("");
+  const [showOwned, setShowOwned] = useState(false);
   const [zoomIdx, setZoomIdx] = useState<number | null>(null);
   const [packOpen, setPackOpen] = useState(false);
+
+  const dailyAvailable = useMemo(
+    () => !stats?.lastDailyClaimAt ||
+      Date.now() - new Date(stats.lastDailyClaimAt).getTime() >= 24 * 3_600_000,
+    [stats?.lastDailyClaimAt]
+  );
 
   const rarityKeys = useMemo(
     () => Object.keys(VAULT_RARITIES).sort((a, b) => VAULT_RARITIES[a].tier - VAULT_RARITIES[b].tier),
@@ -139,6 +163,7 @@ export function VaultApp({ cards }: { cards: VaultCardType[] }) {
     const list = cards.filter(c =>
       (type === "all" || c.cardType === type) &&
       (rarity === "all" || c.rarity === rarity) &&
+      (!showOwned || (ownership && !!ownership[c.slug])) &&
       (!q || (c.title + " " + (c.subtitle ?? "") + " " + c.abilities.join(" ") + " " + (c.flavourText ?? "")).toLowerCase().includes(q.toLowerCase()))
     );
     const cmp: Record<SortKey, (a: VaultCardType, b: VaultCardType) => number> = {
@@ -160,6 +185,11 @@ export function VaultApp({ cards }: { cards: VaultCardType[] }) {
       .filter(t => by[t])
       .map(t => ({ head: t, cards: by[t] }));
   }, [filtered, sort, type]);
+
+  const ownedCount = useMemo(
+    () => ownership ? Object.keys(ownership).length : 0,
+    [ownership]
+  );
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -184,16 +214,67 @@ export function VaultApp({ cards }: { cards: VaultCardType[] }) {
       <header className="masthead">
         <div className="brandline">
           <h1 className="wordmark">CULT<span className="dim">CODEX</span></h1>
-          <span className="tagline">{'// Trading Card Vault'}</span>
+          <span className="tagline">{ownership ? "// MY SIGNAL ARCHIVE" : "// SIGNAL ARCHIVE"}</span>
         </div>
         <div className="sub-meta">
           <span className="rec"><span className="blip" /> SIGNAL LIVE</span>
-          <span><b>{cards.length}</b> CARDS ARCHIVED</span>
+          <span><b>{cards.length}</b> CARDS TOTAL</span>
           <span><b>{cardTypes.length}</b> TYPES</span>
           <span><b>8</b> RARITY TIERS</span>
-          <Link href="/cards" style={{ color: "var(--ink-dim)", textDecoration: "none" }}>← My Collection</Link>
+          {ownership && (
+            <span style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}>
+              <b>{ownedCount}</b> OWNED
+            </span>
+          )}
+          <Link href="/cards/packs" style={{ color: "var(--ink-dim)", textDecoration: "none" }}>PACK STORE →</Link>
+          <Link href="/cards/decks" style={{ color: "var(--ink-dim)", textDecoration: "none" }}>ARRAYS →</Link>
         </div>
       </header>
+
+      {/* Collection stats bar — logged-in users only */}
+      {stats && (
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 20,
+          padding: "10px 20px",
+          borderBottom: "1px solid var(--ln)",
+          background: "rgba(0,0,0,0.4)",
+          flexWrap: "wrap",
+          fontFamily: "var(--font-mono, monospace)",
+          fontSize: 10,
+          color: "var(--ink-dim)",
+          letterSpacing: "0.08em",
+        }}>
+          <span>{stats.ownedCount} <span style={{ opacity: 0.5 }}>/ {stats.totalCards}</span> COLLECTED</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 80, height: 4, background: "rgba(255,255,255,0.08)", borderRadius: 2, overflow: "hidden" }}>
+              <div style={{ width: `${stats.completionPct}%`, height: "100%", background: "var(--neon)", boxShadow: "var(--glow-neon)", transition: "width 600ms ease" }} />
+            </div>
+            <span style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}>{stats.completionPct}%</span>
+          </div>
+          <span>FOILS <b>{Object.values(ownership ?? {}).filter(o => o.isFoil).length}</b></span>
+          <div style={{ flex: 1 }} />
+          <span style={{ color: "var(--neon-4)", textShadow: "0 0 6px var(--neon-4)" }}>
+            ◈ {stats.signalCredits.toLocaleString()} credits
+          </span>
+          {dailyAvailable && (
+            <Link href="/cards/packs" style={{
+              fontFamily: "inherit",
+              fontSize: 10,
+              color: "var(--neon)",
+              border: "1px solid var(--neon)",
+              borderRadius: 3,
+              padding: "3px 10px",
+              textDecoration: "none",
+              textShadow: "var(--glow-neon)",
+              animation: "termBlink 2s step-end 4",
+            }}>
+              ▸ DAILY READY
+            </Link>
+          )}
+        </div>
+      )}
 
       <div className="controls">
         <div className="controls-in">
@@ -225,6 +306,13 @@ export function VaultApp({ cards }: { cards: VaultCardType[] }) {
             <span style={{ color: "var(--ink-dim)", fontSize: 12 }}>⌕</span>
             <input value={q} onChange={e => setQ(e.target.value)} placeholder="search the archive…" />
           </div>
+          {ownership && (
+            <div className="ctl-group">
+              <span className="ctl-label">View</span>
+              <button className={`pill ${!showOwned ? "active" : ""}`} onClick={() => setShowOwned(false)}>All</button>
+              <button className={`pill ${showOwned ? "active" : ""}`} onClick={() => setShowOwned(true)}>Owned</button>
+            </div>
+          )}
           <span className="count-tag"><b style={{ color: "#9fe6c0" }}>{filtered.length}</b> / {cards.length}</span>
           <button className="act-btn hot" onClick={() => setPackOpen(true)}>◈ Open Pack</button>
         </div>
@@ -242,7 +330,15 @@ export function VaultApp({ cards }: { cards: VaultCardType[] }) {
                   <span className="ct">{g.cards.length} CARDS</span>
                 </div>
               )}
-              {g.cards.map(c => <VaultCard key={c.slug} card={c} mode="grid" onZoom={openZoom} />)}
+              {g.cards.map(c => (
+                <VaultCard
+                  key={c.slug}
+                  card={c}
+                  mode="grid"
+                  onZoom={openZoom}
+                  owned={ownership ? (ownership[c.slug] ?? null) : undefined}
+                />
+              ))}
             </React.Fragment>
           ))}
         </div>
