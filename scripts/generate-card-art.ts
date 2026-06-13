@@ -27,6 +27,10 @@ const prisma = getPrisma();
 const OUTPUT_DIR = path.join(process.cwd(), "public/cards/art");
 const RATE_LIMIT_MS = 13_000; // 13s between requests → ~4.6/min (safe under 5/min)
 
+// Filenames of already-passed Chinnamastā art, in preference order. Any
+// Chinnamastā-variant card reuses the first one that exists on disk.
+const CHINNAMASTA_ART_SOURCES = ["chhinnamasta.png", "chinnamasta-the-severed.png", "chinnamasta-severed.png"];
+
 // ── All 10 Mahavidyas — ensures complete set exists in DB ────────────────────
 
 const ALL_MAHAVIDYAS = [
@@ -315,6 +319,25 @@ async function main() {
       await prisma.card.update({ where: { id: card.id }, data: { artUrl } });
       generated++;
       continue;
+    }
+
+    // Chinnamastā variants: OpenAI's safety filter rejects this goddess's
+    // iconography non-deterministically even with a fully nameless prompt.
+    // All such cards depict the same goddess, so reuse the one image that
+    // passed (chhinnamasta.png) rather than fighting the filter.
+    if (/innamasta/i.test(card.slug)) {
+      const source = [...CHINNAMASTA_ART_SOURCES]
+        .map(name => path.join(OUTPUT_DIR, name))
+        .find(p => p !== outputPath && fs.existsSync(p));
+      if (source) {
+        fs.copyFileSync(source, outputPath);
+        await prisma.card.update({ where: { id: card.id }, data: { artUrl } });
+        console.log(`  ⟳ Reused ${path.basename(source)} → ${card.slug}.png (filter-safe)`);
+        generated++;
+        if (i < cards.length - 1) continue;
+        break;
+      }
+      console.log(`  ⚠ no existing Chinnamastā art to reuse — falling through to API`);
     }
 
     const prompt = buildPrompt(card);
