@@ -164,6 +164,60 @@ export default async function PremiumPage() {
 
         <MysticalDivider />
 
+        {/* ── What Initiates actually do ── */}
+        <section className="max-w-5xl mx-auto space-y-6">
+          <div className="text-center space-y-1">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+              {"/// what_initiates_actually_do"}
+            </p>
+            <p className="font-display text-lg text-text-primary">
+              The abstract version is &ldquo;unlock the intelligence layer.&rdquo; Here&rsquo;s the concrete version.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                icon: "🎯",
+                title: "Find every time a guest appeared",
+                body: "Pull a returning figure's complete appearance history in one place — then jump straight to the moment in each stream where they enter.",
+              },
+              {
+                icon: "⏱",
+                title: "Land on the exact moment a dynamic shifted",
+                body: "The Key Moments timeline marks where a panel turned. Click once and the video seeks to that second — no scrubbing through three hours.",
+              },
+              {
+                icon: "🧩",
+                title: "Search by what happened, not just keywords",
+                body: "Query behavior and archetype — “where did an alliance break” — not only the words that were said. The archive understands the pattern.",
+              },
+              {
+                icon: "📜",
+                title: "Trace a piece of lore to its origin",
+                body: "Follow a running joke, symbol, or feud back through every episode it touches, with the transcript receipts at each step.",
+              },
+              {
+                icon: "🗂",
+                title: "Build your own case file",
+                body: "Save moments, guests, and topics into a Personal Codex that sits on top of the archive — your investigation, kept across sessions.",
+              },
+              {
+                icon: "🤖",
+                title: "Ask the Oracle and get cited answers",
+                body: "Put a question to AI trained on every transcript and get an answer grounded in real episodes — with the sources to check it yourself.",
+              },
+            ].map((c) => (
+              <div key={c.title} className="rounded-xl border border-accent-gold/15 bg-surface p-5 space-y-2">
+                <p className="text-xl">{c.icon}</p>
+                <h3 className="font-display text-sm font-bold text-text-primary leading-snug">{c.title}</h3>
+                <p className="font-mono text-[11px] text-text-muted leading-relaxed">{c.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <MysticalDivider />
+
         {/* ── Social proof ── */}
         <section className="max-w-3xl mx-auto space-y-6">
           <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">

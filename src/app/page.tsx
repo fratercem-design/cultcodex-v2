@@ -295,24 +295,67 @@ export default async function HomePage() {
                 Ask the Oracle →
               </Link>
             </div>
-            <div className="flex flex-wrap gap-2">
+            {/* Sample transmissions — show the answer format (grounded + cited),
+                not just empty prompt chips. Expandable so the section stays compact. */}
+            <div className="space-y-2">
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/50">
+                {"/// sample_transmissions"}
+              </p>
               {[
-                "What are Beetle's recurring patterns?",
-                "Who challenged the host and won?",
-                "What does the archive say about manipulation?",
-                "How has Tracy-X evolved over time?",
-              ].map((q) => (
-                <Link
+                {
+                  q: "What patterns show up when a panel turns hostile?",
+                  a: "Across the archive, hostile turns tend to follow a recognizable arc: a challenge to the host's framing, escalation when it isn't conceded, then a split as the rest of the panel picks sides. The Oracle names the episodes where this plays out and links you to the exact moment the shift happens.",
+                  cites: [
+                    { label: "panel conflict", q: "panel conflict" },
+                    { label: "escalation", q: "escalation" },
+                    { label: "key moments", q: "turning point" },
+                  ],
+                },
+                {
+                  q: "How do recurring guests change across appearances?",
+                  a: "It tracks every appearance a returning figure makes and contrasts their early and recent behavior — tone, alliances, the positions they argue. Each appearance is cited, so you watch the evolution yourself instead of taking the answer on faith.",
+                  cites: [
+                    { label: "recurring guests", q: "recurring guest" },
+                    { label: "evolution over time", q: "changed over time" },
+                  ],
+                },
+                {
+                  q: "What does the archive say about manipulation tactics?",
+                  a: "It pulls the moments where persuasion tips into manipulation — moving goalposts, reframing, playing to the audience — and names the episodes and speakers where each pattern recurs, with a transcript citation behind every claim.",
+                  cites: [
+                    { label: "manipulation", q: "manipulation" },
+                    { label: "rhetoric", q: "rhetoric tactics" },
+                  ],
+                },
+              ].map(({ q, a, cites }) => (
+                <details
                   key={q}
-                  href="/oracle"
-                  className="rounded-full border border-accent-violet/20 bg-surface px-3 py-1.5 font-mono text-[10px] text-text-muted hover:border-accent-violet/50 hover:text-accent-violet transition-colors"
+                  className="group rounded-lg border border-accent-violet/15 bg-surface/60 px-4 py-3 [&_summary::-webkit-details-marker]:hidden"
                 >
-                  {q}
-                </Link>
+                  <summary className="flex cursor-pointer items-center justify-between gap-3 font-mono text-[11px] text-text-primary/90 marker:hidden">
+                    <span>{q}</span>
+                    <span className="shrink-0 text-accent-violet/50 transition-transform group-open:rotate-45">＋</span>
+                  </summary>
+                  <div className="mt-3 space-y-3 border-t border-accent-violet/10 pt-3">
+                    <p className="font-mono text-[11px] leading-relaxed text-text-muted">{a}</p>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted/40">cites</span>
+                      {cites.map((c) => (
+                        <Link
+                          key={c.q}
+                          href={`/search?q=${encodeURIComponent(c.q)}`}
+                          className="rounded-full border border-accent-violet/20 bg-surface px-2.5 py-1 font-mono text-[10px] text-text-muted hover:border-accent-violet/50 hover:text-accent-violet transition-colors"
+                        >
+                          ↳ {c.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </details>
               ))}
             </div>
             <p className="font-mono text-[9px] text-text-muted/40 uppercase tracking-widest">
-              Initiate+ · $10/mo · Answers cite actual episodes, transcripts, and lore
+              Samples shown · the live Oracle cites exact episodes &amp; timestamps · Initiate+ $10/mo
             </p>
           </div>
 

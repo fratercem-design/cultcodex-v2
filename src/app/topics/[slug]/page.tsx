@@ -47,9 +47,34 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
 
+  const epCount = topic.episodes.length;
+  const peopleCount = topic.people.length;
+
+  // Keyword-targeted title: lead with the topic term (what people actually
+  // search), then add episode count + "Cult of Psyche" context for long-tail
+  // and entity queries. Only append the qualifier when the title is short
+  // enough to stay under ~60 chars once buildMetadata adds "— CultCodex".
+  const title =
+    epCount > 0 && topic.title.length <= 34
+      ? `${topic.title} — ${epCount} Cult of Psyche Episode${epCount === 1 ? "" : "s"}`
+      : topic.title;
+
+  // Meta description: never lead with insider "In the Psycheverse:" lore.
+  // Use the factual base of the description if it's substantial; otherwise
+  // synthesize a search-intent sentence from the topic's real counts.
+  const base = topic.description
+    ? splitDescription(topic.description).base.replace(/\s+/g, " ").trim()
+    : "";
+  const synthesized =
+    epCount > 0
+      ? `Explore ${topic.title} across ${epCount} Cult of Psyche episode${epCount === 1 ? "" : "s"}${peopleCount > 0 ? ` and ${peopleCount} voice${peopleCount === 1 ? "" : "s"}` : ""} — full transcripts, guest discussions, lore, and related topics.`
+      : `${topic.title} in the Cult of Psyche archive — transcripts, lore, related topics, and the people who keep returning to it.`;
+  let description = base.length >= 60 ? base : synthesized;
+  if (description.length > 160) description = `${description.slice(0, 157).trimEnd()}…`;
+
   return buildMetadata({
-    title: topic.title,
-    description: topic.description || null,
+    title,
+    description,
     path: `/topics/${topic.slug}`,
   });
 }
