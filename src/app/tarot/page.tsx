@@ -144,6 +144,16 @@ export default function TarotWaitlistPage() {
           </div>
         </Link>
 
+        {/* Two kinds of oracle — make the distinction explicit so neither gets lost */}
+        <p style={{ fontSize: 11, color: "var(--term-fg-faint)", lineHeight: 1.6, margin: "0 0 48px", letterSpacing: "0.03em" }}>
+          {"// "}Want answers in words, not cards?{" "}
+          <Link href="/oracle" style={{ color: "var(--neon-3)", textDecoration: "none" }}>
+            Ask the AI Oracle →
+          </Link>{" "}
+          — it searches every transcript and cites the exact episode. The Tarot above reads the same
+          archive through its symbols.
+        </p>
+
         {/* Stats strip */}
         <div style={{
           display: "flex",
@@ -307,7 +317,10 @@ export default function TarotWaitlistPage() {
         {/* Footer links */}
         <div style={{ marginTop: 40, display: "flex", gap: 24, flexWrap: "wrap" }}>
           <Link href="/tarot/oracle" style={{ fontSize: 10, color: "var(--neon-3)", textDecoration: "none", letterSpacing: "0.08em" }}>
-            ◆ OPEN ORACLE
+            ◆ TAROT READING
+          </Link>
+          <Link href="/oracle" style={{ fontSize: 10, color: "var(--term-fg-faint)", textDecoration: "none", letterSpacing: "0.08em" }}>
+            ✦ AI ORACLE
           </Link>
           <Link href="/cards" style={{ fontSize: 10, color: "var(--term-fg-faint)", textDecoration: "none", letterSpacing: "0.08em" }}>
             ← DIGITAL CARDS

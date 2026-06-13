@@ -276,6 +276,26 @@ export default async function OraclePage() {
           </section>
         )}
 
+        {/* Sibling divination tool — the Tarot reading is a distinct mode from AI Q&A */}
+        <section className="rounded-xl border border-accent-gold/15 bg-surface/40 px-6 py-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-1">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/50">
+              {"/// also_in_the_codex"}
+            </p>
+            <p className="max-w-md font-mono text-[11px] leading-relaxed text-text-muted">
+              Prefer your answers in symbols? The{" "}
+              <span className="text-accent-gold">Cult of Psyche Tarot</span> pulls a reading from the
+              same archive — 80 cards of its archetypes and recurring forces.
+            </p>
+          </div>
+          <Link
+            href="/tarot"
+            className="shrink-0 self-start inline-flex items-center gap-1.5 rounded-lg border border-accent-gold/40 bg-accent-gold/10 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/20 whitespace-nowrap"
+          >
+            Pull a Tarot reading →
+          </Link>
+        </section>
+
         <OrnamentalBreak className="mt-4 opacity-30 [&_svg]:!text-accent-violet/20" />
         <p className="mt-4 text-center font-serif text-xs text-text-muted/30 italic">
           What is remembered, lives.
