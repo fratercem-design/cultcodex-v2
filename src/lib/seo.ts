@@ -183,6 +183,46 @@ export function articleJsonLd(a: ArticleJsonLdInput): Record<string, unknown> {
   };
 }
 
+export interface ItemListEntry {
+  name: string;
+  /** Path (e.g. "/people/alice") or absolute URL. */
+  path: string;
+}
+
+/**
+ * Build a schema.org CollectionPage wrapping an ItemList for index/listing
+ * pages (people, topics, quotes, lore, reports). Surfaces the listing as a
+ * structured collection so crawlers understand it indexes many entities
+ * rather than being a single document. `items` should be the visible set on
+ * the page — keep it bounded (the first page) rather than the whole corpus.
+ */
+export function collectionPageJsonLd(opts: {
+  name: string;
+  description?: string | null;
+  path: string;
+  items: ItemListEntry[];
+}): Record<string, unknown> {
+  const url = `${SITE_URL}${opts.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: opts.name,
+    ...(opts.description?.trim() ? { description: opts.description.trim() } : {}),
+    url,
+    isPartOf: { "@type": "WebSite", name: SITE_NAME, url: SITE_URL },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: opts.items.length,
+      itemListElement: opts.items.map((item, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: item.name,
+        url: item.path.startsWith("http") ? item.path : `${SITE_URL}${item.path}`,
+      })),
+    },
+  };
+}
+
 export function buildMetadata({
   title,
   description,
