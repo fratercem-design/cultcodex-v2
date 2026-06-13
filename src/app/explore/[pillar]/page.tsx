@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 /**
  * /explore/[pillar] — SEO pillar / authority page.
  *

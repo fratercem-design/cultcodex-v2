@@ -4,8 +4,6 @@ import { ARCHETYPES } from "@/lib/archetypes";
 import { SYMBOLS } from "@/lib/symbols/data";
 import { PILLARS } from "@/lib/pillars/pillars";
 
-export const dynamic = "force-dynamic";
-
 // Regenerate at most once per hour
 export const revalidate = 3600;
 

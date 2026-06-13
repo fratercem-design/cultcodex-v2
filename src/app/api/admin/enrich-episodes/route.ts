@@ -1,8 +1,8 @@
 /**
  * POST /api/admin/enrich-episodes
  *
- * AI enrichment relay for unenriched episodes. Runs on Vercel where DB
- * is reachable. Processes one batch per call; loop externally until done.
+ * AI enrichment relay for unenriched episodes. Runs on Railway via AWS Bedrock.
+ * Processes one batch per call; loop externally until done.
  *
  * Auth: X-Enrich-Secret header must match ENRICH_SECRET env var.
  *
@@ -22,6 +22,11 @@ import { prisma } from "@/lib/db";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
+
+// Sentinel written when AI returns no summaryFacts (e.g. title-only clips).
+// The re-enrichment where clause only re-queues these when enrichmentQueued=true
+// so transcript-less episodes don't loop indefinitely.
+const SUMMARY_FACTS_PLACEHOLDER = "—";
 
 // ── Zod schemas (mirror of scripts/enrich/schemas.ts) ────────────────────────
 
@@ -157,7 +162,9 @@ async function importEnrichment(
       summaryShort: data.summaryShort || undefined,
       // Always write summaryFacts so the episode is marked enriched even when
       // the AI returns nothing (e.g. short clips with no transcript content).
-      summaryFacts: data.summaryFacts || "—",
+      // "—" is the sentinel; the where clause excludes it only when enrichmentQueued=false
+      // so transcript-less episodes don't loop indefinitely (see whereClause below).
+      summaryFacts: data.summaryFacts || SUMMARY_FACTS_PLACEHOLDER,
       summaryThemes: data.summaryThemes || undefined,
       // Legacy: only preserved if model returned it and new fields are empty
       ...(data.summaryLong && !data.summaryFacts
@@ -281,6 +288,8 @@ export async function POST(req: NextRequest) {
   // Find episodes to enrich.
   // queuedOnly=true: process ONLY enrichmentQueued=true episodes (regardless of existing summaries — for re-enrichment)
   // default: unenriched episodes (no summaryShort, summaryFacts, OR summaryLong)
+  // Note: summaryFacts="—" is the placeholder written when a prior enrichment produced no content;
+  // these episodes are still shown as needing enrichment in the admin UI, so include them here.
   const whereClause = queuedOnly
     ? {
         enrichmentQueued: true,
@@ -289,7 +298,13 @@ export async function POST(req: NextRequest) {
     : {
         AND: [
           { OR: [{ summaryShort: null }, { summaryShort: "" }] },
-          { OR: [{ summaryFacts: null }, { summaryFacts: "" }] },
+          { OR: [
+            { summaryFacts: null },
+            { summaryFacts: "" },
+            // Placeholder re-queues only when manually flagged — prevents infinite
+            // loop for transcript-less episodes that will always get no AI content.
+            { AND: [{ summaryFacts: SUMMARY_FACTS_PLACEHOLDER }, { enrichmentQueued: { not: false } }] },
+          ] },
           { OR: [{ summaryLong: null }, { summaryLong: "" }] },
         ],
         ...(withTranscriptOnly ? { segments: { some: {} } } : {}),
@@ -343,7 +358,7 @@ ${transcript}`;
 
       const response = await client.messages.create({
         model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
-        max_tokens: 3000,
+        max_tokens: 4096,
         system: SYSTEM_PROMPT,
         messages: [{ role: "user", content: userMessage }],
       });

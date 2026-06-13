@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
-import type { Rarity, CardType, Prisma } from "@/generated/prisma/client";
+import type { Rarity, CardType } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { rollRarity, rollFoil } from "@/lib/cards/rarity";
 
 // ─── Vault (all cards) ───────────────────────────────────────────────────────
@@ -24,10 +25,10 @@ export async function getUserCollection(userId: string) {
   });
 }
 
-export async function getUserCollectionStats(userId: string) {
+export async function getUserCollectionStats(userId: string, { includeWallet = true } = {}) {
   const [owned, wallet, total] = await Promise.all([
     prisma.ownedCard.count({ where: { userId } }),
-    prisma.userWallet.findUnique({ where: { userId } }),
+    includeWallet ? prisma.userWallet.findUnique({ where: { userId } }) : Promise.resolve(null),
     prisma.card.count({ where: { isActive: true } }),
   ]);
   return {
@@ -65,10 +66,6 @@ export async function openPack(userId: string, packSlug: string) {
   });
   if (!pack) throw new Error("Pack not found");
   if (!pack.isAvailable) throw new Error("Pack not available");
-
-  const wallet = await prisma.userWallet.findUnique({ where: { userId } });
-  const balance = wallet?.balance ?? 0;
-  if (balance < pack.cost) throw new Error(`Insufficient credits (need ${pack.cost}, have ${balance})`);
 
   // Group available cards by rarity
   const byRarity = new Map<Rarity, typeof pack.packCards[0]["card"][]>();
@@ -117,31 +114,42 @@ export async function openPack(userId: string, packSlug: string) {
 
   if (drawn.length === 0) throw new Error("No cards available in this pack");
 
-  // Transactionally: deduct credits, upsert owned cards, record purchase
-  await prisma.$transaction([
-    prisma.userWallet.upsert({
+  // Serializable transaction keeps the balance check + deduct atomic —
+  // prevents two concurrent pack opens from both passing when balance = cost.
+  await prisma.$transaction(async (tx) => {
+    const wallet = await tx.userWallet.findUnique({ where: { userId } });
+    const balance = wallet?.balance ?? 0;
+    if (balance < pack.cost) {
+      throw new Error(`Insufficient credits (need ${pack.cost}, have ${balance})`);
+    }
+
+    await tx.userWallet.upsert({
       where: { userId },
       update: { balance: { decrement: pack.cost }, totalSpent: { increment: pack.cost } },
       create: { userId, balance: -(pack.cost), totalSpent: pack.cost, totalEarned: 0 },
-    }),
-    prisma.creditTransaction.create({
+    });
+
+    await tx.creditTransaction.create({
       data: { userId, amount: -pack.cost, reason: "pack_purchase", metadata: { packSlug } },
-    }),
-    ...drawn.map(({ cardId, isFoil }) =>
-      prisma.ownedCard.upsert({
+    });
+
+    for (const { cardId, isFoil } of drawn) {
+      await tx.ownedCard.upsert({
         where: { userId_cardId_isFoil: { userId, cardId, isFoil } },
         update: { quantity: { increment: 1 }, isNew: true },
         create: { userId, cardId, isFoil, obtainedVia: "pack" },
-      })
-    ),
-    prisma.packPurchase.create({
+      });
+    }
+
+    await tx.packPurchase.create({
       data: { userId, packId: pack.id, cardsDrawn: drawn.map((d) => d.cardId), creditsCost: pack.cost },
-    }),
-    prisma.card.updateMany({
+    });
+
+    await tx.card.updateMany({
       where: { id: { in: drawn.map((d) => d.cardId) } },
       data: { totalMinted: { increment: 1 } },
-    }),
-  ]);
+    });
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
 
   // Return full card data for the opener UI
   const cards = await prisma.card.findMany({ where: { id: { in: drawn.map((d) => d.cardId) } } });
@@ -181,11 +189,29 @@ async function dailyCreditMultiplier(userId: string): Promise<number> {
     (u.isLifetimeMember && u.subscriptionTier === "system") ||
     (active && u.subscriptionTier === "system");
   if (isOracle) return 3;
+  const subscribed = u.isLifetimeMember || active;
   const subscribed = u.role === "admin" || u.isLifetimeMember || active;
   return subscribed ? 2 : 1;
 }
 
 export async function claimDailyReward(userId: string): Promise<{ granted: number; nextClaimAt: Date }> {
+  const multiplier = await dailyCreditMultiplier(userId);
+  const granted = DAILY_CREDITS * multiplier;
+  const now = new Date();
+
+  // Interactive transaction keeps the cooldown check + wallet write + credit
+  // record atomic — prevents double-payout from concurrent claim requests.
+  // Serializable isolation ensures concurrent readers can't both pass the check
+  // before either commits.
+  await prisma.$transaction(async (tx) => {
+    const wallet = await tx.userWallet.findUnique({ where: { userId } });
+
+    if (wallet?.lastDailyClaimAt) {
+      const msSinceLast = now.getTime() - wallet.lastDailyClaimAt.getTime();
+      const hoursLeft = 24 - msSinceLast / 3_600_000;
+      if (hoursLeft > 0) {
+        throw new Error(`Daily already claimed. Next claim in ${Math.ceil(hoursLeft)}h`);
+      }
   const [wallet, multiplier] = await Promise.all([
     prisma.userWallet.findUnique({ where: { userId } }),
     dailyCreditMultiplier(userId),
@@ -198,8 +224,8 @@ export async function claimDailyReward(userId: string): Promise<{ granted: numbe
     if (hoursLeft > 0) {
       throw new Error(`Daily already claimed. Next claim in ${Math.ceil(hoursLeft)}h`);
     }
-  }
 
+    const upserted = await tx.userWallet.upsert({
   const granted = DAILY_CREDITS * multiplier;
 
   await prisma.$transaction([
@@ -216,6 +242,19 @@ export async function claimDailyReward(userId: string): Promise<{ granted: numbe
         totalEarned: granted,
         lastDailyClaimAt: now,
       },
+      select: { id: true },
+    });
+
+    await tx.creditTransaction.create({
+      data: {
+        userId,
+        walletId: upserted.id,
+        amount: granted,
+        reason: "daily_login",
+        metadata: { multiplier },
+      },
+    });
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
     }),
     prisma.creditTransaction.create({
       data: { userId, amount: granted, reason: "daily_login", metadata: { multiplier } },

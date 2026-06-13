@@ -51,14 +51,19 @@ function DeadChatOverlay({ card }: { card: VaultCard }) {
   );
 }
 
+export interface OwnedInfo { quantity: number; isFoil: boolean; isNew: boolean }
+
 export function VaultCard({
   card,
   mode = "grid",
   onZoom,
+  owned,
 }: {
   card: VaultCard;
   mode?: "grid" | "zoom";
   onZoom?: (card: VaultCard) => void;
+  // undefined = guest (no ownership UI); null = logged-in but not owned; {...} = owned
+  owned?: OwnedInfo | null;
 }) {
   const R = VAULT_RARITIES[card.rarity] ?? VAULT_RARITIES.STATIC;
   const T = VAULT_CARD_TYPES[card.cardType] ?? { glyph: "◇", note: card.cardType };
@@ -94,6 +99,7 @@ export function VaultCard({
       className={`cc-wrap ${mode}`}
       ref={wrapRef}
       style={{
+        position: "relative",
         "--accent": R.color,
         "--glow": R.glow,
         "--mx": tilt.mx + "%",
@@ -179,6 +185,33 @@ export function VaultCard({
           <div className="cc-frame" />
         </div>
       </div>
+
+      {/* Ownership overlays — grid mode only */}
+      {mode === "grid" && owned !== undefined && (
+        <>
+          {owned ? (
+            <>
+              {owned.quantity > 1 && (
+                <div style={{ position: "absolute", bottom: 6, left: 6, fontFamily: "monospace", fontSize: 9, color: "rgba(255,255,255,0.5)", background: "rgba(0,0,0,0.82)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 2, padding: "1px 5px", zIndex: 20, pointerEvents: "none" }}>
+                  ×{owned.quantity}
+                </div>
+              )}
+              {owned.isFoil && (
+                <div style={{ position: "absolute", bottom: 6, right: 6, fontFamily: "monospace", fontSize: 8, color: R.color, textShadow: `0 0 6px ${R.color}`, letterSpacing: "0.08em", zIndex: 20, pointerEvents: "none" }}>
+                  ✦
+                </div>
+              )}
+              {owned.isNew && (
+                <div style={{ position: "absolute", top: 6, right: 6, fontFamily: "monospace", fontSize: 8, color: "#00ff9c", background: "rgba(0,255,156,0.15)", border: "1px solid rgba(0,255,156,0.45)", borderRadius: 2, padding: "1px 5px", letterSpacing: "0.1em", zIndex: 20, pointerEvents: "none" }}>
+                  NEW
+                </div>
+              )}
+            </>
+          ) : (
+            <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 5, borderRadius: 2, pointerEvents: "none" }} />
+          )}
+        </>
+      )}
     </div>
   );
 }

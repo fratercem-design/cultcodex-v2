@@ -56,14 +56,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing signature" }, { status: 400 });
   }
 
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error("[webhook] STRIPE_WEBHOOK_SECRET is not set — cannot verify signatures");
+    return NextResponse.json({ error: "Webhook not configured" }, { status: 500 });
+  }
+
   let event: Stripe.Event;
 
   try {
-    event = getStripe().webhooks.constructEvent(
-      body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET ?? ""
-    );
+    event = getStripe().webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
@@ -125,11 +127,17 @@ export async function POST(request: NextRequest) {
         const invoice = event.data.object as Stripe.Invoice;
         const subscriptionId = getInvoiceSubscriptionId(invoice);
         if (subscriptionId && invoice.customer) {
-          const subscription = await getStripe().subscriptions.retrieve(subscriptionId);
+          // Expand price so we can resolve tier — same as checkout.session.completed.
+          const subscription = await getStripe().subscriptions.retrieve(subscriptionId, {
+            expand: ["items.data.price"],
+          });
+          const priceId = subscription.items?.data?.[0]?.price?.id;
+          const tier = subscription.metadata?.tier || getTierByPriceId(priceId)?.slug || null;
           await prisma.codexUser.updateMany({
             where: { stripeCustomerId: invoice.customer as string },
             data: {
               subscriptionStatus: "active",
+              subscriptionTier: tier ?? undefined,
               currentPeriodEnd: getPeriodEnd(subscription),
             },
           });
@@ -156,6 +164,8 @@ export async function POST(request: NextRequest) {
             data: {
               subscriptionStatus: "canceled",
               subscriptionId: null,
+              subscriptionTier: null,
+              currentPeriodEnd: null,
             },
           });
         }

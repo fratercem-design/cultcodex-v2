@@ -25,6 +25,7 @@ const safeGroup = (p: Promise<GroupRow[]>) => p.catch(() => [] as GroupRow[]);
 const toMap = (rows: GroupRow[]) => new Map(rows.map((r) => [r.userId, r._count._all]));
 
 export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
+  const now = new Date();
   const members = await prisma.codexUser
     .findMany({
       where: {
@@ -32,7 +33,7 @@ export async function getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
         OR: [
           { role: "admin" },
           { isLifetimeMember: true },
-          { subscriptionStatus: "active" },
+          { subscriptionStatus: "active", currentPeriodEnd: { gte: now } },
         ],
       },
       select: {

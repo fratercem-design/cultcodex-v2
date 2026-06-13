@@ -69,7 +69,11 @@ export default function PackStorePage() {
     if (res.ok) {
       setClaimState("done");
       setClaimMsg(`+${json.granted} signal credits`);
-      setWallet((w) => w ? { ...w, signalCredits: w.signalCredits + json.granted } : w);
+      setWallet((w) =>
+        w
+          ? { ...w, signalCredits: w.signalCredits + json.granted }
+          : { signalCredits: json.granted, lastDailyClaimAt: new Date().toISOString() }
+      );
     } else {
       setClaimState("error");
       setClaimMsg(json.error ?? "Already claimed today");
