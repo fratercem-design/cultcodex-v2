@@ -190,6 +190,7 @@ async function dailyCreditMultiplier(userId: string): Promise<number> {
     (active && u.subscriptionTier === "system");
   if (isOracle) return 3;
   const subscribed = u.isLifetimeMember || active;
+  const subscribed = u.role === "admin" || u.isLifetimeMember || active;
   return subscribed ? 2 : 1;
 }
 
@@ -211,9 +212,24 @@ export async function claimDailyReward(userId: string): Promise<{ granted: numbe
       if (hoursLeft > 0) {
         throw new Error(`Daily already claimed. Next claim in ${Math.ceil(hoursLeft)}h`);
       }
+  const [wallet, multiplier] = await Promise.all([
+    prisma.userWallet.findUnique({ where: { userId } }),
+    dailyCreditMultiplier(userId),
+  ]);
+  const now = new Date();
+
+  if (wallet?.lastDailyClaimAt) {
+    const msSinceLast = now.getTime() - wallet.lastDailyClaimAt.getTime();
+    const hoursLeft = 24 - msSinceLast / 3_600_000;
+    if (hoursLeft > 0) {
+      throw new Error(`Daily already claimed. Next claim in ${Math.ceil(hoursLeft)}h`);
     }
 
     const upserted = await tx.userWallet.upsert({
+  const granted = DAILY_CREDITS * multiplier;
+
+  await prisma.$transaction([
+    prisma.userWallet.upsert({
       where: { userId },
       update: {
         balance: { increment: granted },
@@ -239,6 +255,11 @@ export async function claimDailyReward(userId: string): Promise<{ granted: numbe
       },
     });
   }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    }),
+    prisma.creditTransaction.create({
+      data: { userId, amount: granted, reason: "daily_login", metadata: { multiplier } },
+    }),
+  ]);
 
   return { granted, nextClaimAt: new Date(now.getTime() + 24 * 3_600_000) };
 }

@@ -63,6 +63,7 @@ if (LIMIT_RAW !== undefined && (isNaN(LIMIT_RAW) || LIMIT_RAW <= 0)) {
   process.exit(1);
 }
 const LIMIT = LIMIT_RAW;
+const LIMIT      = LIMIT_ARG ? parseInt(LIMIT_ARG, 10) : undefined;
 
 // ── Rarity palette hints ──────────────────────────────────────────────────────
 
@@ -279,6 +280,7 @@ async function main() {
   }
 
   const estimatedCost = (cards.length * 0.08).toFixed(2);
+  const estimatedCost = (cards.length * 0.04).toFixed(2);
   console.log(`Cards to process: ${cards.length}${LIMIT ? ` (limited to ${LIMIT})` : ""}`);
   console.log(`Estimated cost: ~$${estimatedCost} (gpt-image-1 medium, 1024×1536)`);
   if (DRY_RUN) console.log("DRY RUN — no API calls will be made\n");
@@ -324,10 +326,16 @@ async function main() {
     const outputPath = path.join(OUTPUT_DIR, `${safeSlug}.png`);
     const artUrl = `/cards/art/${safeSlug}.png`;
 
+  for (let i = 0; i < cards.length; i++) {
+    const card = cards[i];
+    const outputPath = path.join(OUTPUT_DIR, `${card.slug}.png`);
+    const artUrl = `/cards/art/${card.slug}.png`;
+
     console.log(`[${i + 1}/${cards.length}] ${card.slug}`);
     console.log(`  Type: ${card.cardType} | Rarity: ${card.rarity}`);
 
     // Skip if file already exists and not re-generating (no API call — no rate limit needed)
+    // Skip if file already exists and not re-generating
     if (!REGEN_ALL && fs.existsSync(outputPath)) {
       console.log(`  ↷ file exists, updating artUrl only`);
       await prisma.card.update({ where: { id: card.id }, data: { artUrl } });
@@ -350,6 +358,8 @@ async function main() {
         console.log(`  ⟳ Reused ${path.basename(source)} → ${card.slug}.png (filter-safe)`);
         generated++;
         continue;
+        if (i < cards.length - 1) continue;
+        break;
       }
       console.log(`  ⚠ no existing Chinnamastā art to reuse — falling through to API`);
     }
@@ -389,6 +399,16 @@ async function main() {
       console.error(`  ✗ ${err instanceof Error ? err.message : String(err)}`);
       failed++;
       lastApiCallAt = Date.now(); // count failed calls against rate limit too
+    } catch (err) {
+      console.error(`  ✗ ${err instanceof Error ? err.message : String(err)}`);
+      failed++;
+    }
+
+    // Rate limiting — wait between requests (except after last)
+    if (i < cards.length - 1) {
+      process.stdout.write(`  ⏳ waiting ${RATE_LIMIT_MS / 1000}s…`);
+      await new Promise(r => setTimeout(r, RATE_LIMIT_MS));
+      process.stdout.write(" done\n");
     }
   }
 
