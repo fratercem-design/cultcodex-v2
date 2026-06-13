@@ -18,6 +18,7 @@ import {
   buildPaginationMeta,
 } from "@/lib/pagination";
 import type { PersonType } from "@/generated/prisma/client";
+import { collectionPageJsonLd, jsonLdScript } from "@/lib/seo";
 
 export const revalidate = 600;
 
@@ -92,6 +93,21 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
 
   return (
     <>
+    {page === 1 && sorted.length > 0 && (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            collectionPageJsonLd({
+              name: "People — CultCodex",
+              description: metadata.description,
+              path: "/people",
+              items: sorted.map((p) => ({ name: p.displayName, path: `/people/${p.slug}` })),
+            })
+          ),
+        }}
+      />
+    )}
     <PageHero
       title="PEOPLE"
       subtitle="Guests, hosts, and figures of the archive"

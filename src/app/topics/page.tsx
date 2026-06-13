@@ -14,6 +14,7 @@ import {
   paginationArgs,
   buildPaginationMeta,
 } from "@/lib/pagination";
+import { collectionPageJsonLd, jsonLdScript } from "@/lib/seo";
 
 export const revalidate = 600;
 
@@ -69,6 +70,21 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
 
   return (
     <>
+    {page === 1 && sorted.length > 0 && (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            collectionPageJsonLd({
+              name: "Topics — CultCodex",
+              description: metadata.description,
+              path: "/topics",
+              items: sorted.map((t) => ({ name: t.title, path: `/topics/${t.slug}` })),
+            })
+          ),
+        }}
+      />
+    )}
     <PageHero
       title="TOPICS"
       subtitle="Key themes and recurring subjects"
