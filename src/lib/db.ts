@@ -21,13 +21,19 @@ function createPrismaClient(): PrismaClient {
       },
     });
   }
+  // `next build` spawns ~one static-generation worker per CPU (≈31 on Railway),
+  // each importing this module and opening its own pool. At max:5 that's ~155
+  // connections — past Postgres' max_connections (100) → "too many clients".
+  // Cap at 1 connection per worker during the build phase so parallel prerender
+  // stays well under budget; runtime keeps a real pool.
+  const isBuild = process.env.NEXT_PHASE === "phase-production-build";
   // connectionTimeoutMillis prevents generateStaticParams from hanging the
   // Railway build if the DB is slow or the connection pool is exhausted.
   const adapter = new PrismaPg({
     connectionString,
     connectionTimeoutMillis: 5000,
     idleTimeoutMillis: 10000,
-    max: 5,
+    max: isBuild ? 1 : 5,
   });
   return new PrismaClient({ adapter });
 }
