@@ -314,8 +314,15 @@ async function main() {
 
   for (let i = 0; i < cards.length; i++) {
     const card = cards[i];
-    const outputPath = path.join(OUTPUT_DIR, `${card.slug}.png`);
-    const artUrl = `/cards/art/${card.slug}.png`;
+    // Sanitize slug to prevent path traversal: allow only lowercase alphanumerics and hyphens.
+    const safeSlug = card.slug.replace(/[^a-z0-9-]/g, "");
+    if (!safeSlug || safeSlug !== card.slug) {
+      console.error(`  ✗ Skipping card with unsafe slug: "${card.slug}"`);
+      failed++;
+      continue;
+    }
+    const outputPath = path.join(OUTPUT_DIR, `${safeSlug}.png`);
+    const artUrl = `/cards/art/${safeSlug}.png`;
 
     console.log(`[${i + 1}/${cards.length}] ${card.slug}`);
     console.log(`  Type: ${card.cardType} | Rarity: ${card.rarity}`);

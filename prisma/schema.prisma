@@ -937,6 +937,7 @@ model Card {
 
   @@index([rarity])
   @@index([cardType])
+  @@index([isActive])
 }
 
 model CardPack {
