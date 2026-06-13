@@ -14,15 +14,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     prisma.episode.findMany({
       where: { status: "published" },
       select: { slug: true, updatedAt: true, thumbnailUrl: true },
-    }),
-    prisma.person.findMany({ select: { slug: true, updatedAt: true, avatarUrl: true } }),
-    prisma.loreEntry.findMany({ select: { slug: true, updatedAt: true } }),
-    prisma.topic.findMany({ select: { slug: true, updatedAt: true } }),
-    prisma.series.findMany({ select: { slug: true, updatedAt: true } }),
+    }).catch(() => []),
+    prisma.person.findMany({ select: { slug: true, updatedAt: true, avatarUrl: true } }).catch(() => []),
+    prisma.loreEntry.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
+    prisma.topic.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
+    prisma.series.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
     prisma.psychenomiconChapter.findMany({
       where: { status: "stable" },
       select: { slug: true, updatedAt: true },
-    }),
+    }).catch(() => []),
   ]);
 
   // Member pages are optional — schema drift on CodexUser columns must not break the build

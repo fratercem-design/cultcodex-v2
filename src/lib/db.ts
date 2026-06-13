@@ -11,15 +11,15 @@ function createPrismaClient(): PrismaClient {
   // connection is opened until the first query at runtime.
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
-    // Guard for local dev / CI without a DB — throw only if a query is
-    // actually attempted, so the build succeeds without DATABASE_URL.
-    return new Proxy({} as PrismaClient, {
-      get(_target, prop) {
-        throw new Error(
-          `DATABASE_URL is not set — cannot call prisma.${String(prop)}()`
-        );
-      },
-    });
+    // Guard for local dev / CI without a DB.
+    // Returns a two-level Proxy so that `prisma.model.findXxx().catch()` works:
+    // the outer Proxy returns a model-level Proxy, which returns a function for
+    // any method name; that function returns a rejected Promise so all existing
+    // `.catch(() => fallback)` guards keep working during static rendering.
+    const methodProxy = () =>
+      Promise.reject(new Error("DATABASE_URL is not set"));
+    const modelProxy = new Proxy({} as object, { get: () => methodProxy });
+    return new Proxy({} as PrismaClient, { get: () => modelProxy });
   }
   // connectionTimeoutMillis prevents generateStaticParams from hanging the
   // Railway build if the DB is slow or the connection pool is exhausted.

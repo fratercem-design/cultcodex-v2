@@ -36,13 +36,13 @@ const CANON_LABELS: Record<string, string> = {
 
 export default async function StatsPage() {
   const [stats, quotedPeople, topTopics, canonBreakdown, calendarData, topGuests, topicTrend] = await Promise.all([
-    getCounts(),
-    getMostQuotedPeople(10),
-    getTopTopicsByEpisodes(15),
-    getCanonBreakdown(),
-    getBroadcastCalendar(),
-    getTopGuestsByAppearances(20),
-    getTopicMonthlyTrend(6),
+    getCounts().catch(() => ({ episodes: 0, segments: 0, people: 0, topics: 0, lore: 0, quotes: 0, totalHours: 0, transcribedEpisodes: 0, transcribedPct: 0 })),
+    getMostQuotedPeople(10).catch(() => []),
+    getTopTopicsByEpisodes(15).catch(() => []),
+    getCanonBreakdown().catch(() => []),
+    getBroadcastCalendar().catch(() => ({}) as Record<string, number>),
+    getTopGuestsByAppearances(20).catch(() => []),
+    getTopicMonthlyTrend(6).catch(() => ({ months: [], topics: [] })),
   ]);
 
   const maxQuotes = Math.max(...quotedPeople.map((p) => p.count), 1);

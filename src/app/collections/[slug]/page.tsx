@@ -97,7 +97,7 @@ async function findRelatedEpisodes(topicIds: string[], excludeSlugs: string[]) {
       { episodeNumber: "desc" },
     ],
     take: 18,
-  });
+  }).catch(() => []);
   return rows.map(formatEpisodeForCard);
 }
 
@@ -107,7 +107,7 @@ async function findPinnedEpisodes(slugs: string[]) {
   const rows = await prisma.episode.findMany({
     where: { slug: { in: slugs } },
     include: buildEpisodeInclude(),
-  });
+  }).catch(() => []);
   const bySlug = new Map(rows.map((r) => [r.slug, r]));
   return slugs
     .map((s) => bySlug.get(s))
