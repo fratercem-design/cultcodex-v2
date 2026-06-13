@@ -27,13 +27,14 @@ const MEMBER_SELECT = {
 } as const;
 
 async function getOracleMembers() {
+  const now = new Date();
   return prisma.codexUser.findMany({
     where: {
       isPublicMember: true,
       OR: [
         { role: "admin" },
         { isLifetimeMember: true },
-        { subscriptionTier: "system", subscriptionStatus: "active" },
+        { subscriptionTier: "system", subscriptionStatus: "active", currentPeriodEnd: { gte: now } },
       ],
     },
     select: MEMBER_SELECT,
@@ -42,11 +43,13 @@ async function getOracleMembers() {
 }
 
 async function getPublicMembers() {
+  const now = new Date();
   return prisma.codexUser.findMany({
     where: {
       isPublicMember: true,
       subscriptionTier: "access",
       subscriptionStatus: "active",
+      currentPeriodEnd: { gte: now },
     },
     select: MEMBER_SELECT,
     orderBy: { createdAt: "asc" },
@@ -54,11 +57,12 @@ async function getPublicMembers() {
 }
 
 async function getTotalPremiumCount() {
+  const now = new Date();
   return prisma.codexUser.count({
     where: {
       OR: [
         { role: "admin" },
-        { subscriptionStatus: "active" },
+        { subscriptionStatus: "active", currentPeriodEnd: { gte: now } },
         { isLifetimeMember: true },
       ],
     },

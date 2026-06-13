@@ -67,10 +67,6 @@ export async function openPack(userId: string, packSlug: string) {
   if (!pack) throw new Error("Pack not found");
   if (!pack.isAvailable) throw new Error("Pack not available");
 
-  const wallet = await prisma.userWallet.findUnique({ where: { userId } });
-  const balance = wallet?.balance ?? 0;
-  if (balance < pack.cost) throw new Error(`Insufficient credits (need ${pack.cost}, have ${balance})`);
-
   // Group available cards by rarity
   const byRarity = new Map<Rarity, typeof pack.packCards[0]["card"][]>();
   for (const pc of pack.packCards) {
@@ -118,31 +114,42 @@ export async function openPack(userId: string, packSlug: string) {
 
   if (drawn.length === 0) throw new Error("No cards available in this pack");
 
-  // Transactionally: deduct credits, upsert owned cards, record purchase
-  await prisma.$transaction([
-    prisma.userWallet.upsert({
+  // Serializable transaction keeps the balance check + deduct atomic —
+  // prevents two concurrent pack opens from both passing when balance = cost.
+  await prisma.$transaction(async (tx) => {
+    const wallet = await tx.userWallet.findUnique({ where: { userId } });
+    const balance = wallet?.balance ?? 0;
+    if (balance < pack.cost) {
+      throw new Error(`Insufficient credits (need ${pack.cost}, have ${balance})`);
+    }
+
+    await tx.userWallet.upsert({
       where: { userId },
       update: { balance: { decrement: pack.cost }, totalSpent: { increment: pack.cost } },
       create: { userId, balance: -(pack.cost), totalSpent: pack.cost, totalEarned: 0 },
-    }),
-    prisma.creditTransaction.create({
+    });
+
+    await tx.creditTransaction.create({
       data: { userId, amount: -pack.cost, reason: "pack_purchase", metadata: { packSlug } },
-    }),
-    ...drawn.map(({ cardId, isFoil }) =>
-      prisma.ownedCard.upsert({
+    });
+
+    for (const { cardId, isFoil } of drawn) {
+      await tx.ownedCard.upsert({
         where: { userId_cardId_isFoil: { userId, cardId, isFoil } },
         update: { quantity: { increment: 1 }, isNew: true },
         create: { userId, cardId, isFoil, obtainedVia: "pack" },
-      })
-    ),
-    prisma.packPurchase.create({
+      });
+    }
+
+    await tx.packPurchase.create({
       data: { userId, packId: pack.id, cardsDrawn: drawn.map((d) => d.cardId), creditsCost: pack.cost },
-    }),
-    prisma.card.updateMany({
+    });
+
+    await tx.card.updateMany({
       where: { id: { in: drawn.map((d) => d.cardId) } },
       data: { totalMinted: { increment: 1 } },
-    }),
-  ]);
+    });
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
 
   // Return full card data for the opener UI
   const cards = await prisma.card.findMany({ where: { id: { in: drawn.map((d) => d.cardId) } } });
