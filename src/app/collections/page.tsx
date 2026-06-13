@@ -139,7 +139,7 @@ export default async function CollectionsPage() {
   const seriesCounts = await prisma.series.findMany({
     where: { slug: { in: SERIES_SLUGS } },
     select: { slug: true, _count: { select: { episodes: true } } },
-  });
+  }).catch(() => []);
   const countMap = new Map(seriesCounts.map((s) => [s.slug, s._count.episodes]));
   const totalCollectionEpisodes = seriesCounts.reduce((sum, s) => sum + s._count.episodes, 0);
 

@@ -16,8 +16,8 @@ export const metadata = {
 
 export default async function SeriesPage() {
   const [series, aggregates] = await Promise.all([
-    getSeries(),
-    getSeriesAggregates(),
+    getSeries().catch(() => []),
+    getSeriesAggregates().catch(() => ({ total: 0, totalEpisodes: 0 })),
   ]);
 
   const glanceItems = [

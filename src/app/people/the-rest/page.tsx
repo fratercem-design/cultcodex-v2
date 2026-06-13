@@ -38,51 +38,51 @@ const EPISODE_SELECT = {
 
 export default async function TheRestPage() {
   // All guests + mentioned without a profile (no bio, no lore)
-  const unprofiled = await prisma.person.findMany({
-    where: {
-      personType: { in: ["guest", "mentioned"] },
-      loreSummary: null,
-      shortBio: null,
-    },
-    orderBy: { displayName: "asc" },
-    select: {
-      id: true,
-      displayName: true,
-      slug: true,
-      personType: true,
-      guestAppearances: {
-        select: { episode: { select: EPISODE_SELECT } },
-        orderBy: { episode: { airDate: "desc" } },
-        take: 5,
+  const [unprofiled, profiled] = await Promise.all([
+    prisma.person.findMany({
+      where: {
+        personType: { in: ["guest", "mentioned"] },
+        loreSummary: null,
+        shortBio: null,
       },
-      mentions: {
-        select: { episode: { select: EPISODE_SELECT } },
-        orderBy: { episode: { airDate: "desc" } },
-        take: 3,
+      orderBy: { displayName: "asc" },
+      select: {
+        id: true,
+        displayName: true,
+        slug: true,
+        personType: true,
+        guestAppearances: {
+          select: { episode: { select: EPISODE_SELECT } },
+          orderBy: { episode: { airDate: "desc" } },
+          take: 5,
+        },
+        mentions: {
+          select: { episode: { select: EPISODE_SELECT } },
+          orderBy: { episode: { airDate: "desc" } },
+          take: 3,
+        },
+        quotes: {
+          select: { id: true, text: true, episode: { select: { id: true } } },
+          take: 2,
+        },
       },
-      quotes: {
-        select: { id: true, text: true, episode: { select: { id: true } } },
-        take: 2,
+    }).catch(() => []),
+    prisma.person.findMany({
+      where: {
+        personType: "guest",
+        OR: [{ loreSummary: { not: null } }, { shortBio: { not: null } }],
       },
-    },
-  });
-
-  // Profiled guests kept for a separate "notable guests" block
-  const profiled = await prisma.person.findMany({
-    where: {
-      personType: "guest",
-      OR: [{ loreSummary: { not: null } }, { shortBio: { not: null } }],
-    },
-    orderBy: [{ guestAppearances: { _count: "desc" } }, { displayName: "asc" }],
-    select: {
-      id: true,
-      displayName: true,
-      slug: true,
-      shortBio: true,
-      _count: { select: { guestAppearances: true } },
-    },
-    take: 60,
-  });
+      orderBy: [{ guestAppearances: { _count: "desc" } }, { displayName: "asc" }],
+      select: {
+        id: true,
+        displayName: true,
+        slug: true,
+        shortBio: true,
+        _count: { select: { guestAppearances: true } },
+      },
+      take: 60,
+    }).catch(() => []),
+  ]);
 
   // Aggregate episode list across all unprofiled (deduplicated, newest first)
   type EpRow = (typeof unprofiled)[0]["guestAppearances"][0]["episode"];

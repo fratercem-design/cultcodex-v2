@@ -71,9 +71,9 @@ async function getTotalPremiumCount() {
 
 export default async function MembersPage() {
   const [oracleMembers, members, totalCount] = await Promise.all([
-    getOracleMembers(),
-    getPublicMembers(),
-    getTotalPremiumCount(),
+    getOracleMembers().catch(() => []),
+    getPublicMembers().catch(() => []),
+    getTotalPremiumCount().catch(() => 0),
   ]);
 
   const allPublic = [...oracleMembers, ...members];

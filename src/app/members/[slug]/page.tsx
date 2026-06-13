@@ -103,7 +103,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${member.displayName} — CultCodex`,
       description: member.bio ?? `${member.displayName}'s personal codex.`,
-      ...(member.avatarUrl ? { images: [member.avatarUrl] } : {}),
     },
   };
 }
