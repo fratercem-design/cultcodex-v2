@@ -69,8 +69,11 @@ scripts/_download-list.json
 scripts/enrich/*.log
 scripts/enrich/run-log.txt
 
-# Claude Code local config
-.claude/
+# Claude Code config — track shared hook + settings, keep local overrides private
+.claude/*
+!.claude/settings.json
+!.claude/hooks/
+.claude/settings.local.json
 
 # Brainstorming visual companion (superpowers skill)
 .superpowers/
