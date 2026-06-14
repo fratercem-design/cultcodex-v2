@@ -280,7 +280,6 @@ async function main() {
   }
 
   const estimatedCost = (cards.length * 0.08).toFixed(2);
-  const estimatedCost = (cards.length * 0.04).toFixed(2);
   console.log(`Cards to process: ${cards.length}${LIMIT ? ` (limited to ${LIMIT})` : ""}`);
   console.log(`Estimated cost: ~$${estimatedCost} (gpt-image-1 medium, 1024×1536)`);
   if (DRY_RUN) console.log("DRY RUN — no API calls will be made\n");
@@ -325,11 +324,6 @@ async function main() {
     }
     const outputPath = path.join(OUTPUT_DIR, `${safeSlug}.png`);
     const artUrl = `/cards/art/${safeSlug}.png`;
-
-  for (let i = 0; i < cards.length; i++) {
-    const card = cards[i];
-    const outputPath = path.join(OUTPUT_DIR, `${card.slug}.png`);
-    const artUrl = `/cards/art/${card.slug}.png`;
 
     console.log(`[${i + 1}/${cards.length}] ${card.slug}`);
     console.log(`  Type: ${card.cardType} | Rarity: ${card.rarity}`);

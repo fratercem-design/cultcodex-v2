@@ -78,7 +78,7 @@ async function findRelatedTopics(matchers: string[]) {
     include: { _count: { select: { episodes: true } } },
     orderBy: [{ episodes: { _count: "desc" } }, { title: "asc" }],
     take: 24,
-  });
+  }).catch(() => []);
 }
 
 /** Pull episodes tied to the resolved topic ids, newest airDate first. */
