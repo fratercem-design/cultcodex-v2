@@ -1,4 +1,3 @@
-export const dynamic = "force-dynamic";
 
 import { Suspense } from "react";
 import Image from "next/image";
@@ -109,7 +108,7 @@ function PostCard({
 export default async function PostsPage({ searchParams }: PostsPageProps) {
   const { page: pageParam } = await searchParams;
 
-  const totalCount = await prisma.communityPost.count();
+  const totalCount = await prisma.communityPost.count().catch(() => 0);
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const page = parsePage(pageParam, totalPages);
   const { skip, take } = paginationArgs(page, PAGE_SIZE);
@@ -128,7 +127,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
       commentCount: true,
       publishedAt: true,
     },
-  });
+  }).catch(() => []);
 
   return (
     <div className="min-h-screen bg-void">

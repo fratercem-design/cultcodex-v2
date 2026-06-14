@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SYMBOLS } from "@/lib/symbols/data";
 import type { SymbolEntry } from "@/lib/symbols/data";
+import { SymbolGlyph } from "@/components/symbols/symbol-glyph";
 
 export const dynamic = "force-static";
 
@@ -94,15 +95,11 @@ export default async function SymbolDetailPage({
           {/* Hero glyph + name */}
           <header className="mb-10 space-y-5">
             <div
-              className="text-[120px] leading-none text-accent-gold"
-              style={{
-                textShadow:
-                  "0 0 40px rgba(200,169,107,0.5), 0 0 80px rgba(200,169,107,0.2)",
-                fontFamily: "var(--font-mono), monospace",
-              }}
+              className="text-accent-gold"
+              style={{ filter: "drop-shadow(0 0 28px rgba(200,169,107,0.45))" }}
               aria-hidden="true"
             >
-              {symbol.glyph}
+              <SymbolGlyph slug={symbol.slug} glyph={symbol.glyph} size={120} />
             </div>
 
             <div className="space-y-2">
@@ -190,8 +187,8 @@ export default async function SymbolDetailPage({
                         href={`/symbols/${related.slug}`}
                         className="group rounded-xl border border-border bg-surface p-4 hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-all flex flex-col gap-2"
                       >
-                        <span className="text-3xl font-mono text-accent-gold/60 group-hover:text-accent-gold transition-colors leading-none">
-                          {related.glyph}
+                        <span className="text-accent-gold/60 group-hover:text-accent-gold transition-colors">
+                          <SymbolGlyph slug={related.slug} glyph={related.glyph} size={32} />
                         </span>
                         <span className="font-mono text-xs text-text-primary group-hover:text-accent-gold transition-colors">
                           {related.name}

@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { SYMBOLS } from "@/lib/symbols/data";
 import type { SymbolEntry } from "@/lib/symbols/data";
+import { SymbolGlyph } from "@/components/symbols/symbol-glyph";
 
 export const dynamic = "force-static";
 
@@ -103,8 +104,8 @@ function SymbolCard({ symbol }: { symbol: SymbolEntry }) {
       className="group rounded-xl border border-border bg-surface p-5 hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-all duration-200 flex flex-col gap-3"
     >
       {/* Glyph */}
-      <div className="text-5xl leading-none text-accent-gold/70 group-hover:text-accent-gold transition-colors duration-200 font-mono">
-        {symbol.glyph}
+      <div className="text-accent-gold/70 group-hover:text-accent-gold transition-colors duration-200">
+        <SymbolGlyph slug={symbol.slug} glyph={symbol.glyph} size={48} />
       </div>
 
       {/* Name + tagline */}

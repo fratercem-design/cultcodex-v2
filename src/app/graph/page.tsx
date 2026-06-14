@@ -1,4 +1,3 @@
-export const dynamic = "force-dynamic";
 
 import { fetchRelationshipGraph } from "@/lib/queries/graph";
 import { RelationshipGraph } from "@/components/graph/relationship-graph";
