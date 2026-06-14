@@ -62,8 +62,11 @@ export default async function ChapterPage({ params }: PageProps) {
 
   if (!chapter) notFound();
 
-  // Adjacent chapters
-  const [prevChapter, nextChapter, allChapters] = await Promise.all([
+  // Adjacent chapters + a windowed slice for the timeline scrubber.
+  // The chronicle has thousands of chapters, so never load them all here —
+  // show a window of ~25 on each side of the current chapter.
+  const WINDOW = 25;
+  const [prevChapter, nextChapter, windowChapters, maxAgg] = await Promise.all([
     prisma.psychenomiconChapter.findFirst({
       where: { chapterNumber: { lt: chapter.chapterNumber } },
       orderBy: { chapterNumber: "desc" },
@@ -75,10 +78,14 @@ export default async function ChapterPage({ params }: PageProps) {
       select: { slug: true, chapterNumber: true, title: true },
     }),
     prisma.psychenomiconChapter.findMany({
+      where: { chapterNumber: { gte: chapter.chapterNumber - WINDOW, lte: chapter.chapterNumber + WINDOW } },
       orderBy: { chapterNumber: "asc" },
       select: { slug: true, chapterNumber: true, title: true, isMajorEvent: true },
     }),
-  ]).catch(() => [null, null, []] as [null, null, never[]]);
+    prisma.psychenomiconChapter.aggregate({ _max: { chapterNumber: true } }),
+  ]).catch(() => [null, null, [], { _max: { chapterNumber: null } }] as [null, null, never[], { _max: { chapterNumber: number | null } }]);
+
+  const maxChapterNumber = maxAgg._max.chapterNumber ?? chapter.chapterNumber;
 
   type ArchetypeEntry = { name: string; archetype: string; significance: string };
   const archetypes = (chapter.archetypesData as ArchetypeEntry[] | null) ?? [];
@@ -87,12 +94,12 @@ export default async function ChapterPage({ params }: PageProps) {
   type ArtImageUrls = { cover?: string; scene_01?: string; scene_02?: string; scene_03?: string };
   const artUrls = (chapter.artImageUrls as ArtImageUrls | null) ?? {};
 
-  const timelineNodes = allChapters.map((c, i) => ({
+  const timelineNodes = windowChapters.map((c) => ({
     slug: c.slug,
     chapterNumber: c.chapterNumber,
     title: c.title,
     isMajorEvent: c.isMajorEvent,
-    isNewest: i === allChapters.length - 1,
+    isNewest: c.chapterNumber === maxChapterNumber,
   }));
 
   return (

@@ -58,29 +58,31 @@ export default async function ThreadsIndexPage() {
     );
   }
 
-  const threads = await prisma.psychenomiconThread.findMany({
-    orderBy: [{ status: "asc" }, { updatedAt: "desc" }],
-    include: {
-      chapterLinks: {
-        include: {
-          chapter: {
-            select: { slug: true, chapterNumber: true, title: true, isMajorEvent: true },
-          },
-        },
-        orderBy: { chapter: { chapterNumber: "asc" } },
-      },
+  // ~2,000 threads exist — never load them all. Show the live ones
+  // (emerging + active) generously and sample resolved; the chapter links
+  // per card are capped with a real total via _count.
+  const TAKE: Record<(typeof STATUS_ORDER)[number], number> = { emerging: 40, active: 60, resolved: 12 };
+  const threadInclude = {
+    chapterLinks: {
+      take: 6,
+      orderBy: { chapter: { chapterNumber: "asc" as const } },
+      include: { chapter: { select: { slug: true, chapterNumber: true, title: true, isMajorEvent: true } } },
     },
-  }).catch(() => []);
-
-  const byStatus = Object.fromEntries(
-    STATUS_ORDER.map((s) => [s, threads.filter((t) => t.status === s)])
-  ) as Record<(typeof STATUS_ORDER)[number], typeof threads>;
-
-  const counts = {
-    emerging: byStatus.emerging.length,
-    active: byStatus.active.length,
-    resolved: byStatus.resolved.length,
+    _count: { select: { chapterLinks: true } },
   };
+
+  const [statusCounts, emerging, active, resolved] = await Promise.all([
+    prisma.psychenomiconThread.groupBy({ by: ["status"], _count: { _all: true } }).catch(() => [] as { status: string; _count: { _all: number } }[]),
+    prisma.psychenomiconThread.findMany({ where: { status: "emerging" }, orderBy: { updatedAt: "desc" }, take: TAKE.emerging, include: threadInclude }).catch(() => []),
+    prisma.psychenomiconThread.findMany({ where: { status: "active" }, orderBy: { updatedAt: "desc" }, take: TAKE.active, include: threadInclude }).catch(() => []),
+    prisma.psychenomiconThread.findMany({ where: { status: "resolved" }, orderBy: { updatedAt: "desc" }, take: TAKE.resolved, include: threadInclude }).catch(() => []),
+  ]);
+
+  const byStatus = { emerging, active, resolved } as Record<(typeof STATUS_ORDER)[number], typeof emerging>;
+
+  const countFor = (s: string) => statusCounts.find((r) => r.status === s)?._count._all ?? 0;
+  const counts = { emerging: countFor("emerging"), active: countFor("active"), resolved: countFor("resolved") };
+  const totalThreads = counts.emerging + counts.active + counts.resolved;
 
   return (
     <main className="min-h-screen bg-void">
@@ -91,7 +93,7 @@ export default async function ThreadsIndexPage() {
           </p>
           <h1 className="font-display text-2xl font-bold text-text-primary">Thread Registry</h1>
           <p className="text-xs text-text-muted">
-            {threads.length} thread{threads.length !== 1 ? "s" : ""} tracked &middot;&nbsp;
+            {totalThreads.toLocaleString()} thread{totalThreads !== 1 ? "s" : ""} tracked &middot;&nbsp;
             <span className="text-accent-gold">{counts.emerging} emerging</span>
             &nbsp;&middot;&nbsp;
             <span className="text-accent-violet">{counts.active} active</span>
@@ -106,12 +108,13 @@ export default async function ThreadsIndexPage() {
           const group = byStatus[status];
           if (group.length === 0) return null;
           const meta = STATUS_META[status];
+          const totalForStatus = counts[status];
           return (
             <section key={status} className="space-y-4">
               <div className="flex items-center gap-3">
                 <div className={`h-2 w-2 rounded-full flex-shrink-0 ${meta.dot}`} />
                 <p className={`font-mono text-[10px] uppercase tracking-[0.35em] ${meta.heading}`}>
-                  {meta.label} — {group.length}
+                  {meta.label} — {totalForStatus}{group.length < totalForStatus ? ` · showing ${group.length}` : ""}
                 </p>
                 <div className="h-px flex-1 bg-border" />
               </div>
@@ -138,13 +141,13 @@ export default async function ThreadsIndexPage() {
                       </p>
                     )}
 
-                    {thread.chapterLinks.length > 0 && (
+                    {thread._count.chapterLinks > 0 && (
                       <div className="space-y-1.5 pt-1 border-t border-border/60">
                         <p className="font-mono text-[8px] uppercase tracking-widest text-text-muted/50">
-                          {thread.chapterLinks.length} chapter{thread.chapterLinks.length !== 1 ? "s" : ""}
+                          {thread._count.chapterLinks} chapter{thread._count.chapterLinks !== 1 ? "s" : ""}
                         </p>
                         <div className="flex flex-wrap gap-1.5">
-                          {thread.chapterLinks.slice(0, 6).map(({ chapter: c }) => (
+                          {thread.chapterLinks.map(({ chapter: c }) => (
                             <span
                               key={c.slug}
                               className={`inline-flex items-center rounded border px-1.5 py-0.5 font-mono text-[8px] ${
@@ -156,9 +159,9 @@ export default async function ThreadsIndexPage() {
                               CH.{String(c.chapterNumber).padStart(3, "0")}
                             </span>
                           ))}
-                          {thread.chapterLinks.length > 6 && (
+                          {thread._count.chapterLinks > thread.chapterLinks.length && (
                             <span className="font-mono text-[8px] text-text-muted/50 self-center">
-                              +{thread.chapterLinks.length - 6} more
+                              +{thread._count.chapterLinks - thread.chapterLinks.length} more
                             </span>
                           )}
                         </div>
@@ -171,7 +174,7 @@ export default async function ThreadsIndexPage() {
           );
         })}
 
-        {threads.length === 0 && (
+        {totalThreads === 0 && (
           <p className="text-center text-sm text-text-muted italic py-16">
             No threads recorded yet. Generate a chapter to begin.
           </p>
