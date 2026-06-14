@@ -1,12 +1,13 @@
-export const dynamic = "force-dynamic";
+// The card catalog (~200 cards) is essentially static, so this page is
+// ISR-cached instead of force-dynamic — it no longer queries the DB per
+// request. Per-user ownership loads client-side via /api/cards/collection.
+export const revalidate = 3600;
 
 import type { Metadata } from "next";
-import { getCurrentUser } from "@/lib/auth";
-import { getAllCards, getUserCollection, getUserCollectionStats } from "@/lib/queries/cards";
+import { getAllCards } from "@/lib/queries/cards";
 import { CARD_SPECIALS } from "@/components/cards/vault/constants";
 import type { VaultCard } from "@/components/cards/vault/constants";
 import { VaultApp } from "@/components/cards/vault/vault-app";
-import type { OwnedInfo } from "@/components/cards/vault/card";
 import "./vault/vault.css";
 
 export const metadata: Metadata = {
@@ -16,10 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CardsPage() {
-  const [user, dbCards] = await Promise.all([
-    getCurrentUser(),
-    getAllCards().catch(() => []),
-  ]);
+  const dbCards = await getAllCards().catch(() => []);
 
   const cards: VaultCard[] = dbCards.map((card, i) => ({
     id:          card.id,
@@ -39,42 +37,5 @@ export default async function CardsPage() {
     special:     CARD_SPECIALS[card.slug],
   }));
 
-  if (!user) {
-    return <VaultApp cards={cards} />;
-  }
-
-  const [collection, stats] = await Promise.all([
-    getUserCollection(user.id).catch(() => []),
-    getUserCollectionStats(user.id).catch(() => null),
-  ]);
-
-  // Build slug → ownership map (merge foil + non-foil copies)
-  const ownership: Record<string, OwnedInfo> = {};
-  for (const oc of collection) {
-    const slug = oc.card.slug;
-    const existing = ownership[slug];
-    if (existing) {
-      existing.quantity += oc.quantity;
-      existing.isFoil = existing.isFoil || oc.isFoil;
-      existing.isNew = existing.isNew || oc.isNew;
-    } else {
-      ownership[slug] = { quantity: oc.quantity, isFoil: oc.isFoil, isNew: oc.isNew };
-    }
-  }
-
-  return (
-    <VaultApp
-      cards={cards}
-      ownership={ownership}
-      stats={stats ? {
-        ownedCount:       stats.ownedCount,
-        totalCards:       stats.totalCards,
-        completionPct:    stats.completionPct,
-        signalCredits:    stats.signalCredits,
-        lastDailyClaimAt: stats.lastDailyClaimAt
-          ? new Date(stats.lastDailyClaimAt as Date).toISOString()
-          : null,
-      } : undefined}
-    />
-  );
+  return <VaultApp cards={cards} />;
 }

@@ -128,13 +128,35 @@ function PackOpening({ cards, onClose }: { cards: VaultCardType[]; onClose: () =
 
 export function VaultApp({
   cards,
-  ownership,
-  stats,
+  ownership: initialOwnership,
+  stats: initialStats,
 }: {
   cards: VaultCardType[];
   ownership?: Record<string, OwnedInfo>;
   stats?: CollectionStats;
 }) {
+  // Ownership + stats are per-user and load client-side from
+  // /api/cards/collection, so this page can be ISR-cached. Any props
+  // (legacy callers) seed the initial state before the fetch resolves.
+  const [ownership, setOwnership] = useState<Record<string, OwnedInfo> | undefined>(initialOwnership);
+  const [stats, setStats] = useState<CollectionStats | undefined>(initialStats);
+
+  useEffect(() => {
+    if (initialOwnership) return; // server already provided it
+    let active = true;
+    fetch("/api/cards/collection")
+      .then((r) => r.json())
+      .then((d: { ownership: Record<string, OwnedInfo> | null; stats: CollectionStats | null }) => {
+        if (!active) return;
+        if (d.ownership) setOwnership(d.ownership);
+        if (d.stats) setStats(d.stats);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [initialOwnership]);
+
   const [type, setType] = useState("all");
   const [rarity, setRarity] = useState("all");
   const [sort, setSort] = useState<SortKey>("num");
@@ -175,7 +197,7 @@ export function VaultApp({
       power:  (a, b) => (b.statA + b.statB + b.statC) - (a.statA + a.statB + a.statC),
     };
     return [...list].sort(cmp[sort]);
-  }, [cards, type, rarity, sort, q]);
+  }, [cards, type, rarity, sort, q, showOwned, ownership]);
 
   const grouped = useMemo(() => {
     if (sort !== "num" || type !== "all") return [{ head: null as string | null, cards: filtered }];
