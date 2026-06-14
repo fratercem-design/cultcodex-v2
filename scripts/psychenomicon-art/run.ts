@@ -19,7 +19,7 @@
 import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 
 import { getPrisma, disconnect } from "../ingest/lib";
 import { analyzeChapter } from "./analyze";
@@ -110,7 +110,12 @@ async function main() {
   if (batch)       log(`  Batch limit: ${batch}`);
 
   const prisma = getPrisma();
-  const client = new Anthropic(); // reads ANTHROPIC_API_KEY from env
+  // Bluesminds (OpenAI-compatible). analyze.ts falls back to Bedrock if it flakes.
+  const client = new OpenAI({
+    apiKey: process.env.OPENROUTER_API_KEY,
+    baseURL: process.env.OPENROUTER_BASE_URL ?? "https://api.bluesminds.com/v1",
+    defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" },
+  });
 
   // ─── Fetch chapters from DB ────────────────────────────────────────────
 

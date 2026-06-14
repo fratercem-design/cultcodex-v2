@@ -4,9 +4,10 @@
 // One cover image + three scene images.
 // Uses the VISUAL_DNA prefix and QUALITY_SUFFIX from visual-bible.ts.
 
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import type { ChapterAnalysis, ChapterPrompts } from "./types";
 import { VISUAL_DNA, QUALITY_SUFFIX, ENTITY_DESCRIPTORS } from "./visual-bible";
+import { callLLM } from "./llm";
 
 const PROMPT_SYSTEM = `You are a cinematic prompt engineer for a premium AI art book — the Psychenomicon visual companion.
 Your task: write four image generation prompts for a chapter.
@@ -38,7 +39,7 @@ Scene 02: the crisis point — transformation, revelation, confrontation at its 
 Scene 03: aftermath or reversal — the world changed, the figure different, something seen that cannot be unseen`;
 
 export async function buildPrompts(
-  client: Anthropic,
+  client: OpenAI,
   analysis: ChapterAnalysis
 ): Promise<ChapterPrompts> {
   // Resolve entity descriptors — merge chapter-specific ones with the global bible
@@ -82,15 +83,7 @@ ${QUALITY_SUFFIX}
   let lastError = "";
 
   for (let attempt = 1; attempt <= 3; attempt++) {
-    const response = await client.messages.create({
-      model: "claude-opus-4-7",
-      max_tokens: 6000,
-      system: PROMPT_SYSTEM,
-      messages: [{ role: "user", content: userMessage }],
-    });
-
-    const text =
-      response.content[0].type === "text" ? response.content[0].text : "";
+    const text = await callLLM(client, PROMPT_SYSTEM, userMessage, 6000);
     // Strip markdown code fences if present
     const cleaned = text.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "").trim();
 

@@ -1,54 +1,70 @@
 // scripts/psychenomicon-art/images.ts
 //
-// Step 3: Send prompts to Pollinations AI and save the resulting PNG files.
-// No API key required. Retries up to 3× with exponential backoff.
+// Step 3: Generate images via Bluesminds (OpenAI-compatible /images/generations,
+// grok-imagine-image-lite) and save the resulting files. Pollinations was
+// dropped once its free endpoint started returning HTTP 402. Retries up to 3×
+// with exponential backoff to ride out Bluesminds' provider flakiness.
 
 import * as fs from "fs";
 import * as path from "path";
 import type { ChapterPrompts } from "./types";
 
-const POLLINATIONS_BASE = "https://image.pollinations.ai/prompt";
-const WIDTH = 1024;
-const HEIGHT = 1536;
-const MODEL = "flux"; // FLUX.1 via Pollinations
-const SEED_BASE = 42;
+const BLUESMINDS_BASE = process.env.OPENROUTER_BASE_URL ?? "https://api.bluesminds.com/v1";
+const IMAGE_MODEL = process.env.ART_IMAGE_MODEL ?? "grok-imagine-image-lite";
+const IMAGE_SIZE = process.env.ART_IMAGE_SIZE ?? "1024x1024";
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
- * Fetch a single image from Pollinations AI.
- * Returns the raw image buffer.
+ * Generate a single image via Bluesminds and return the raw image buffer.
+ * The `seed` arg is kept for signature stability but unused by grok-imagine.
  */
 async function fetchImage(
   prompt: string,
-  seed: number,
+  _seed: number,
   attempt = 1
 ): Promise<Buffer> {
-  const encoded = encodeURIComponent(prompt);
-  const url = `${POLLINATIONS_BASE}/${encoded}?width=${WIDTH}&height=${HEIGHT}&model=${MODEL}&seed=${seed}&nologo=true`;
+  const apiKey = process.env.OPENROUTER_API_KEY;
+  if (!apiKey) throw new Error("OPENROUTER_API_KEY not set");
 
   try {
-    const res = await fetch(url, {
-      headers: { Accept: "image/png,image/*" },
+    const res = await fetch(`${BLUESMINDS_BASE}/images/generations`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      // b64_json avoids grok's auth-gated asset URLs (which 403 on direct download).
+      body: JSON.stringify({ model: IMAGE_MODEL, prompt, n: 1, size: IMAGE_SIZE, response_format: "b64_json" }),
       signal: AbortSignal.timeout(120_000), // 2-minute timeout per image
     });
 
     if (!res.ok) {
-      throw new Error(`HTTP ${res.status} ${res.statusText} from Pollinations`);
+      throw new Error(`HTTP ${res.status} ${res.statusText} from Bluesminds images`);
     }
 
-    const arrayBuffer = await res.arrayBuffer();
-    return Buffer.from(arrayBuffer);
+    const json = (await res.json()) as { data?: Array<{ url?: string; b64_json?: string }> };
+    const item = json.data?.[0];
+    if (item?.b64_json) {
+      return Buffer.from(item.b64_json, "base64");
+    }
+    if (item?.url) {
+      const imgRes = await fetch(item.url, { signal: AbortSignal.timeout(120_000) });
+      if (!imgRes.ok) throw new Error(`image download HTTP ${imgRes.status} from ${item.url}`);
+      return Buffer.from(await imgRes.arrayBuffer());
+    }
+    throw new Error("Bluesminds returned no image url/b64");
   } catch (err) {
-    if (attempt >= 3) throw err;
-    const backoff = attempt * 4_000;
+    if (attempt >= 4) throw err;
+    // Bluesminds rate-limits image generation hard (429/502) — back off generously.
+    const backoff = attempt * 12_000;
     console.warn(
-      `  ↩  Pollinations attempt ${attempt} failed, retrying in ${backoff / 1000}s… (${String(err).slice(0, 80)})`
+      `  ↩  Bluesminds image attempt ${attempt} failed, retrying in ${backoff / 1000}s… (${String(err).slice(0, 80)})`
     );
     await sleep(backoff);
-    return fetchImage(prompt, seed, attempt + 1);
+    return fetchImage(prompt, _seed, attempt + 1);
   }
 }
 
@@ -96,13 +112,13 @@ export async function generateImages(
     }
 
     console.log(`  ⬇  Generating ${filename}…`);
-    const buffer = await fetchImage(prompt, SEED_BASE + seedOffset);
+    const buffer = await fetchImage(prompt, seedOffset);
     fs.writeFileSync(filePath, buffer);
     paths[key] = filePath;
     console.log(`  ✓ Saved ${filename} (${(buffer.length / 1024).toFixed(0)} KB)`);
 
-    // Polite delay between requests (Pollinations has implicit rate limits)
-    await sleep(2_000);
+    // Bluesminds image endpoint rate-limits aggressively — space requests out.
+    await sleep(Number(process.env.ART_IMAGE_DELAY_MS ?? 12_000));
   }
 
   return {
