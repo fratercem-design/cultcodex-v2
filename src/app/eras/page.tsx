@@ -50,7 +50,6 @@ async function getEraCounts(): Promise<Map<string, number>> {
   const rows = await prisma.episode.findMany({
     where: { status: "published", airDate: { not: null } },
     select: { airDate: true },
-  }).catch(() => []);
   }).catch(() => [] as { airDate: Date | null }[]);
 
   const counts = new Map<string, number>();
