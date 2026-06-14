@@ -104,11 +104,11 @@ export default async function EraDetailPage({
     : `${startYear} — ongoing`;
 
   const [stats, graphData] = await Promise.all([
-    fetchEraStats(era.id),
+    fetchEraStats(era.id).catch(() => null),
     fetchRelationshipGraph(2, {
       eraDateStart: dateStart,
       eraDateEnd: dateEnd ?? undefined,
-    }),
+    }).catch(() => ({ nodes: [], edges: [] })),
   ]);
 
   const accentClass = ERA_ACCENT[era.color] ?? ERA_ACCENT.muted;
