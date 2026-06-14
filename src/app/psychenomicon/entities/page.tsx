@@ -39,26 +39,35 @@ export default async function EntitiesPage() {
     );
   }
 
-  const entities = await prisma.psychenomiconEntity.findMany({
-    orderBy: { updatedAt: "desc" },
-    select: {
-      id: true,
-      slug: true,
-      name: true,
-      primaryArchetype: true,
-      status: true,
-      personSlug: true,
-      behaviorPatterns: true,
-      appearances: {
-        select: { chapterId: true },
+  // The roster holds ~1,500 entities — far too many to graph or render at
+  // once. Show the most-connected entities (by appearance count); the
+  // network graph and grid both operate on this bounded, relevant set.
+  const TOP_N = 60;
+  const [totalEntities, entities] = await Promise.all([
+    prisma.psychenomiconEntity.count().catch(() => 0),
+    prisma.psychenomiconEntity.findMany({
+      orderBy: { appearances: { _count: "desc" } },
+      take: TOP_N,
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        primaryArchetype: true,
+        status: true,
+        personSlug: true,
+        behaviorPatterns: true,
+        _count: { select: { appearances: true } },
+        appearances: {
+          select: { chapterId: true },
+        },
+        archetypeEvents: {
+          orderBy: { chapterNumber: "desc" },
+          take: 1,
+          select: { primaryArchetype: true, chapterNumber: true },
+        },
       },
-      archetypeEvents: {
-        orderBy: { chapterNumber: "desc" },
-        take: 1,
-        select: { primaryArchetype: true, chapterNumber: true },
-      },
-    },
-  }).catch(() => []);
+    }).catch(() => []),
+  ]);
 
   // Batch-fetch person avatars for entities with a linked person
   const personSlugs = entities.map((e) => e.personSlug).filter(Boolean) as string[];
@@ -77,7 +86,7 @@ export default async function EntitiesPage() {
     name: e.name,
     primaryArchetype: e.primaryArchetype,
     status: e.status,
-    appearanceCount: e.appearances.length,
+    appearanceCount: e._count.appearances,
     personSlug: e.personSlug,
     avatarUrl: e.personSlug ? avatarMap[e.personSlug] : null,
   }));
@@ -128,7 +137,7 @@ export default async function EntitiesPage() {
           </div>
           <p className="text-xs text-text-muted">
             {nodes.length > 0
-              ? `${nodes.length} entities tracked · ${edges.length} relationship edges`
+              ? `${totalEntities.toLocaleString()} entities tracked · showing the ${nodes.length} most-connected · ${edges.length} relationship edges`
               : "No entities recorded yet."
             }
           </p>
@@ -168,7 +177,7 @@ export default async function EntitiesPage() {
 
         {/* Entity grid */}
         <div className="space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// all_entities"}</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// most_connected_entities"}</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {entities.map((e) => {
               const latestEvent = e.archetypeEvents[0];
@@ -210,7 +219,7 @@ export default async function EntitiesPage() {
                   </div>
 
                   <div className="flex items-center justify-between text-[9px] font-mono text-text-muted">
-                    <span>{e.appearances.length} chapter{e.appearances.length !== 1 ? "s" : ""}</span>
+                    <span>{e._count.appearances} chapter{e._count.appearances !== 1 ? "s" : ""}</span>
                     {latestEvent && (
                       <span className="text-accent-gold/70">
                         CH.{String(latestEvent.chapterNumber).padStart(3, "0")} → {latestEvent.primaryArchetype}
