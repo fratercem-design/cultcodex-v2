@@ -3,8 +3,9 @@
 // Step 1: Call Claude to produce a structured symbolic analysis of a
 // Psychenomicon chapter. Returns a ChapterAnalysis object.
 
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import type { ChapterAnalysis } from "./types";
+import { callLLM } from "./llm";
 
 const ANALYSIS_SYSTEM_PROMPT = `You are the Visual Mythographer of the Psychenomicon — the esoteric graphic novel
 companion to the Cult of Psyche archive. Your role is to read a chapter and produce a precise symbolic
@@ -34,7 +35,7 @@ The JSON must match this exact structure:
 }`;
 
 export async function analyzeChapter(
-  client: Anthropic,
+  client: OpenAI,
   chapter: {
     title: string;
     slug: string;
@@ -68,20 +69,11 @@ export async function analyzeChapter(
     .filter(Boolean)
     .join("\n");
 
-  const response = await client.messages.create({
-    model: "claude-opus-4-7",
-    max_tokens: 2000,
-    system: ANALYSIS_SYSTEM_PROMPT,
-    messages: [
-      {
-        role: "user",
-        content: `Analyze this Psychenomicon chapter and return the symbolic analysis JSON:\n\n${chapterContent}`,
-      },
-    ],
-  });
-
-  const text =
-    response.content[0].type === "text" ? response.content[0].text : "";
+  const text = await callLLM(
+    client,
+    ANALYSIS_SYSTEM_PROMPT,
+    `Analyze this Psychenomicon chapter and return the symbolic analysis JSON:\n\n${chapterContent}`
+  );
 
   // Strip any accidental markdown fences
   const cleaned = text.replace(/^```json\s*/i, "").replace(/```\s*$/, "").trim();

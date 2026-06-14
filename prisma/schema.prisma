@@ -675,6 +675,20 @@ model PsychenomiconChapter {
   @@index([chapterNumber])
 }
 
+// Art image bytes stored directly in Postgres (Railway), served by
+// /api/psychenomicon-art/[slug]/[slot]. Avoids a separate object store.
+model PsychenomiconArtAsset {
+  id          String   @id @default(cuid())
+  chapterSlug String
+  slot        String // cover | scene_01 | scene_02 | scene_03
+  mimeType    String   @default("image/jpeg")
+  data        Bytes
+  createdAt   DateTime @default(now())
+
+  @@unique([chapterSlug, slot])
+  @@index([chapterSlug])
+}
+
 model PsychenomiconEntity {
   id         String  @id @default(cuid())
   name       String
