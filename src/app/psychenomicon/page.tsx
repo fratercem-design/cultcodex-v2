@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { ChapterCover } from "@/components/psychenomicon/chapter-cover";
 
 export const revalidate = 60;
 
@@ -25,6 +26,7 @@ type MajorRow = {
   chapterNumber: number;
   title: string;
   status: string;
+  artImageUrls: unknown;
   episode: { title: string } | null;
 };
 
@@ -76,12 +78,12 @@ export default async function PsychenomiconPage() {
     prisma.psychenomiconChapter.findMany({
       orderBy: { chapterNumber: "desc" },
       take: 8,
-      select: { slug: true, chapterNumber: true, title: true, status: true, isMajorEvent: true, emergingSignals: true, episode: { select: { title: true } } },
+      select: { slug: true, chapterNumber: true, title: true, status: true, isMajorEvent: true, emergingSignals: true, artImageUrls: true, episode: { select: { title: true } } },
     }).catch(() => []),
     prisma.psychenomiconChapter.findMany({
       where: { isMajorEvent: true },
       orderBy: { chapterNumber: "asc" },
-      select: { slug: true, chapterNumber: true, title: true, status: true, episode: { select: { title: true } } },
+      select: { slug: true, chapterNumber: true, title: true, status: true, artImageUrls: true, episode: { select: { title: true } } },
     }).catch(() => [] as MajorRow[]),
     prisma.psychenomiconEntity.findMany({
       where: { status: { not: "dormant" } },
@@ -209,7 +211,8 @@ export default async function PsychenomiconPage() {
                 {latest.map((c) => {
                   const s = c.status ?? "stable";
                   return (
-                    <Link key={c.slug} href={`/psychenomicon/chapters/${c.slug}`} className={`group flex items-center gap-4 rounded border px-4 py-3 transition-all ${c.isMajorEvent ? "border-accent-gold/30 bg-accent-gold/5 hover:bg-accent-gold/10" : "border-border bg-surface hover:border-accent-violet/30 hover:bg-accent-violet/5"}`}>
+                    <Link key={c.slug} href={`/psychenomicon/chapters/${c.slug}`} className={`group flex items-center gap-3 rounded border px-4 py-3 transition-all ${c.isMajorEvent ? "border-accent-gold/30 bg-accent-gold/5 hover:bg-accent-gold/10" : "border-border bg-surface hover:border-accent-violet/30 hover:bg-accent-violet/5"}`}>
+                      <ChapterCover art={c.artImageUrls} size={40} />
                       <span className={`font-mono text-[10px] w-16 flex-shrink-0 ${c.isMajorEvent ? "text-accent-gold" : "text-text-muted"}`}>CH.{String(c.chapterNumber).padStart(3, "0")}{c.isMajorEvent && " ✦"}</span>
                       <div className="flex-1 min-w-0">
                         <p className={`font-mono text-xs font-medium group-hover:text-accent-violet transition-colors ${c.isMajorEvent ? "text-accent-gold" : "text-text-primary"}`}>{c.title}</p>
@@ -232,6 +235,7 @@ export default async function PsychenomiconPage() {
                   <div className="space-y-1.5">
                     {g.rows.map((c) => (
                       <Link key={c.slug} href={`/psychenomicon/chapters/${c.slug}`} className="group flex items-center gap-3 rounded border border-accent-gold/20 bg-accent-gold/[0.03] px-4 py-2.5 hover:bg-accent-gold/10 transition-all">
+                        <ChapterCover art={c.artImageUrls} size={32} />
                         <span className="font-mono text-[10px] text-accent-gold w-16 flex-shrink-0">CH.{String(c.chapterNumber).padStart(3, "0")} ✦</span>
                         <span className="flex-1 min-w-0 truncate font-mono text-xs text-accent-gold/90 group-hover:text-accent-gold transition-colors">{c.title}</span>
                       </Link>

@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { ChapterCover } from "@/components/psychenomicon/chapter-cover";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/psychenomicon/chapters" },
@@ -25,6 +26,7 @@ type ChapterRow = {
   title: string;
   status: string;
   isMajorEvent: boolean;
+  artImageUrls: unknown;
   episode: { episodeNumber: number | null; title: string; airDate: Date | null } | null;
 };
 
@@ -71,7 +73,7 @@ export default async function ChaptersIndexPage({
       skip: (page - 1) * PER_PAGE,
       take: PER_PAGE,
       select: {
-        slug: true, chapterNumber: true, title: true, status: true, isMajorEvent: true,
+        slug: true, chapterNumber: true, title: true, status: true, isMajorEvent: true, artImageUrls: true,
         episode: { select: { episodeNumber: true, title: true, airDate: true } },
       },
     })
@@ -125,6 +127,7 @@ export default async function ChaptersIndexPage({
                     }`}
                   >
                     <span className={`h-1.5 w-1.5 rounded-full flex-shrink-0 ${STATUS_DOT[s] ?? STATUS_DOT.stable}`} />
+                    <ChapterCover art={c.artImageUrls} size={32} />
                     <span className={`font-mono text-[10px] w-16 flex-shrink-0 ${c.isMajorEvent ? "text-accent-gold" : "text-text-muted"}`}>
                       CH.{String(c.chapterNumber).padStart(3, "0")}{c.isMajorEvent && " ✦"}
                     </span>
