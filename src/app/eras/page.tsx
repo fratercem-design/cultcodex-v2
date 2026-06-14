@@ -51,7 +51,6 @@ async function getEraCounts(): Promise<Map<string, number>> {
     where: { status: "published", airDate: { not: null } },
     select: { airDate: true },
   }).catch(() => []);
-  }).catch(() => [] as { airDate: Date | null }[]);
 
   const counts = new Map<string, number>();
   for (const row of rows) {

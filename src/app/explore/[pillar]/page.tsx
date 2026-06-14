@@ -67,7 +67,7 @@ async function findRelatedTopics(matchers: string[]) {
     include: { _count: { select: { episodes: true } } },
     orderBy: [{ episodes: { _count: "desc" } }, { title: "asc" }],
     take: 30,
-  });
+  }).catch(() => []);
 }
 
 async function findRelatedEpisodes(topicIds: string[]) {
@@ -83,7 +83,7 @@ async function findRelatedEpisodes(topicIds: string[]) {
       { episodeNumber: "desc" },
     ],
     take: 24,
-  });
+  }).catch(() => []);
   return rows.map(formatEpisodeForCard);
 }
 

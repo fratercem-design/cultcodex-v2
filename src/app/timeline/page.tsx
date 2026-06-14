@@ -69,8 +69,8 @@ export default async function TimelinePage() {
         _count: { select: { segments: true, guests: true, quotes: true } },
       },
       orderBy: { airDate: "desc" },
-    }),
-    prisma.episode.count({ where: { airDate: null } }),
+    }).catch(() => []),
+    prisma.episode.count({ where: { airDate: null } }).catch(() => 0),
   ]);
   const yearGroups = groupByYear(episodes as TimelineEpisode[]);
   const years = [...yearGroups.keys()].sort((a, b) => b - a);
