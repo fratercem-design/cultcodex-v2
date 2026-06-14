@@ -10,7 +10,8 @@
 export function coverUrl(art: unknown): string | null {
   if (art && typeof art === "object" && !Array.isArray(art)) {
     const c = (art as Record<string, unknown>).cover;
-    if (typeof c === "string" && c.startsWith("http")) return c;
+    // Accept absolute URLs (legacy Supabase) and relative API paths (Railway DB).
+    if (typeof c === "string" && (c.startsWith("http") || c.startsWith("/"))) return c;
   }
   return null;
 }
