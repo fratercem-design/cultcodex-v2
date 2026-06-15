@@ -16,6 +16,35 @@ import { getPrisma, disconnect } from "../ingest/lib";
 const IMAGES_DIR = path.join(__dirname, "output", "images");
 const SLOTS = ["cover", "scene_01", "scene_02", "scene_03"] as const;
 
+type PrismaLike = ReturnType<typeof getPrisma>;
+
+/**
+ * Upsert a chapter's four images into Postgres and point its artImageUrls at
+ * the /api/psychenomicon-art route. Reusable by run.ts for inline publishing.
+ */
+export async function uploadChapterToRailway(
+  prisma: PrismaLike,
+  slug: string,
+  imagePaths: { cover: string; scene_01: string; scene_02: string; scene_03: string }
+): Promise<Record<string, string>> {
+  for (const slot of SLOTS) {
+    const data = fs.readFileSync(imagePaths[slot]);
+    await prisma.psychenomiconArtAsset.upsert({
+      where: { chapterSlug_slot: { chapterSlug: slug, slot } },
+      create: { chapterSlug: slug, slot, mimeType: "image/jpeg", data },
+      update: { data, mimeType: "image/jpeg" },
+    });
+  }
+  const artImageUrls = Object.fromEntries(
+    SLOTS.map((slot) => [slot, `/api/psychenomicon-art/${slug}/${slot}`])
+  );
+  await prisma.psychenomiconChapter.update({
+    where: { slug },
+    data: { artImageUrls, artGeneratedAt: new Date() },
+  });
+  return artImageUrls;
+}
+
 async function main() {
   const prisma = getPrisma();
   const onlySlug = process.argv.slice(2).find((a) => !a.startsWith("--"));
@@ -42,6 +71,12 @@ async function main() {
     }
 
     try {
+      await uploadChapterToRailway(prisma, slug, {
+        cover: path.join(dir, "cover.png"),
+        scene_01: path.join(dir, "scene_01.png"),
+        scene_02: path.join(dir, "scene_02.png"),
+        scene_03: path.join(dir, "scene_03.png"),
+      });
       for (const { slot, file } of files) {
         const data = fs.readFileSync(file);
         await prisma.psychenomiconArtAsset.upsert({
