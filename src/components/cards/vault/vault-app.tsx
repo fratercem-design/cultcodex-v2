@@ -12,6 +12,7 @@ interface CollectionStats {
   completionPct: number;
   signalCredits: number;
   lastDailyClaimAt: string | null;
+  collectionPower?: number;
 }
 
 const SORT_OPTIONS = [
@@ -255,6 +256,11 @@ export function VaultApp({
           </div>
           <span>FOILS <b>{Object.values(ownership ?? {}).filter(o => o.isFoil).length}</b></span>
           <div style={{ flex: 1 }} />
+          {(stats.collectionPower ?? 0) > 0 && (
+            <span style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}>
+              ⚡ {(stats.collectionPower ?? 0).toLocaleString()} power
+            </span>
+          )}
           <span style={{ color: "var(--neon-4)", textShadow: "0 0 6px var(--neon-4)" }}>
             ◈ {stats.signalCredits.toLocaleString()} credits
           </span>
