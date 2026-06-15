@@ -62,6 +62,7 @@ function parseArgs() {
   let skipImages = false;
   let skipUpload = false;
   let maxNew: number | undefined;
+  let stopAtTotal: number | undefined;
 
   let uploadOnly = false;
 
@@ -69,6 +70,7 @@ function parseArgs() {
     if (args[i] === "--chapter" && args[i + 1]) { chapterSlug = args[++i]; }
     if (args[i] === "--batch"   && args[i + 1]) { batch = parseInt(args[++i], 10); }
     if (args[i] === "--max-new" && args[i + 1]) { maxNew = parseInt(args[++i], 10); }
+    if (args[i] === "--stop-at-total" && args[i + 1]) { stopAtTotal = parseInt(args[++i], 10); }
     if (args[i] === "--force")        { force = true; }
     if (args[i] === "--dry-run")      { dryRun = true; skipImages = true; }
     if (args[i] === "--skip-images")  { skipImages = true; }
@@ -76,7 +78,22 @@ function parseArgs() {
     if (args[i] === "--upload-only")  { uploadOnly = true; }
   }
 
-  return { chapterSlug, batch, maxNew, force, dryRun, skipImages, skipUpload, uploadOnly };
+  return { chapterSlug, batch, maxNew, stopAtTotal, force, dryRun, skipImages, skipUpload, uploadOnly };
+}
+
+// Bluesminds credit exhaustion shows up as a 402 / balance / quota error on
+// image generation (the only Bluesminds-only step). When it does, the durable
+// runner should halt and stay halted rather than burn cycles retrying.
+function isCreditExhausted(err: unknown): boolean {
+  const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+  return (
+    msg.includes("402") ||
+    msg.includes("payment required") ||
+    msg.includes("insufficient_quota") ||
+    msg.includes("credit balance") ||
+    msg.includes("insufficient credit") ||
+    msg.includes("quota")
+  );
 }
 
 // ─── Helper: check if chapter already has output ─────────────────────────
@@ -101,7 +118,7 @@ function sleep(ms: number) {
 // ─── Main ─────────────────────────────────────────────────────────────────
 
 async function main() {
-  const { chapterSlug, batch, maxNew, force, dryRun, skipImages, skipUpload, uploadOnly } = parseArgs();
+  const { chapterSlug, batch, maxNew, stopAtTotal, force, dryRun, skipImages, skipUpload, uploadOnly } = parseArgs();
 
   // Ensure output directories exist
   fs.mkdirSync(PROMPTS_DIR, { recursive: true });
@@ -165,6 +182,25 @@ async function main() {
   // Graceful stop for the durable runner: `touch output/STOP` halts after the
   // current chapter (cost control without killing mid-write).
   const STOP_FILE = path.join(OUTPUT_DIR, "STOP");
+  const writeStop = (reason: string) => {
+    try { fs.writeFileSync(STOP_FILE, `${new Date().toISOString()} ${reason}\n`); } catch { /* best effort */ }
+  };
+
+  // Budget guard: once the whole archive has this many chapters with art, stop
+  // and stay stopped. Lets the durable runner do "N total" then quit.
+  const artBaseline =
+    stopAtTotal != null
+      ? await prisma.psychenomiconChapter.count({ where: { artGeneratedAt: { not: null } } })
+      : 0;
+  if (stopAtTotal != null) {
+    log(`Budget: ${artBaseline}/${stopAtTotal} chapters already have art.`);
+    if (artBaseline >= stopAtTotal) {
+      writeStop(`art total ${artBaseline} >= stop-at-total ${stopAtTotal}`);
+      log(`✅ Target of ${stopAtTotal} reached — wrote STOP, exiting.`);
+      await disconnect();
+      process.exit(0);
+    }
+  }
 
   for (const chapter of chapters) {
     if (fs.existsSync(STOP_FILE)) {
@@ -173,6 +209,11 @@ async function main() {
     }
     if (maxNew && processed >= maxNew) {
       log(`⏸  Reached --max-new ${maxNew} this run — stopping (resume later).`);
+      break;
+    }
+    if (stopAtTotal != null && artBaseline + processed >= stopAtTotal) {
+      writeStop(`art total reached stop-at-total ${stopAtTotal}`);
+      log(`✅ Reached ${stopAtTotal} total chapters with art — wrote STOP, halting.`);
       break;
     }
     const label = `CH.${String(chapter.chapterNumber).padStart(3, "0")} "${chapter.title}" (${chapter.slug})`;
@@ -303,7 +344,14 @@ async function main() {
     } catch (err) {
       logError(`Failed processing ${label}`, err);
       failed++;
-      // Continue with next chapter rather than aborting the whole batch
+      // Credit exhausted on Bluesminds → halt the durable runner for good so it
+      // stops re-triggering and burning failed retries against a dead balance.
+      if (isCreditExhausted(err)) {
+        writeStop("Bluesminds credit exhausted (402/quota)");
+        log("🛑 Bluesminds credit appears exhausted — wrote STOP, halting runner.");
+        break;
+      }
+      // Otherwise continue with the next chapter rather than aborting the batch.
     }
 
     // Polite gap between chapters to avoid hammering APIs

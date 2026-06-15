@@ -16,6 +16,10 @@ $outDir = Join-Path $art "output"
 $log    = Join-Path $art "daemon.log"
 $lock   = Join-Path $art "daemon.lock"
 $maxNew = if ($env:ART_MAX_NEW) { $env:ART_MAX_NEW } else { "50" }
+# Budget guard: stop for good once the archive has this many chapters with art.
+# Raise it (or set ART_STOP_AT_TOTAL) to push further; the runner also auto-stops
+# the moment Bluesminds returns a credit/402 error.
+$stopAt = if ($env:ART_STOP_AT_TOTAL) { $env:ART_STOP_AT_TOTAL } else { "300" }
 
 $env:Path = "C:\Program Files\nodejs;" + $env:Path
 Set-Location $proj
@@ -35,8 +39,8 @@ if (Test-Path $lock) {
 "" | Out-File -FilePath $lock -Encoding utf8
 
 try {
-  Log "=== run start (max-new $maxNew) ==="
-  & "C:\Program Files\nodejs\npx.cmd" tsx (Join-Path $art "run.ts") --max-new $maxNew *>> $log
+  Log "=== run start (max-new $maxNew, stop-at-total $stopAt) ==="
+  & "C:\Program Files\nodejs\npx.cmd" tsx (Join-Path $art "run.ts") --max-new $maxNew --stop-at-total $stopAt *>> $log
   Log "=== run end (exit $LASTEXITCODE) ==="
 } finally {
   Remove-Item $lock -Force -ErrorAction SilentlyContinue
