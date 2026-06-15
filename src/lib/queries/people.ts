@@ -36,6 +36,30 @@ export function buildPersonInclude() {
   } satisfies Prisma.PersonInclude;
 }
 
+/** Build a Prisma where-clause that returns only "profiled" people.
+ *  Hosts and recurring are always included; guests only if they have a bio or lore summary.
+ *  `mentioned` type is intentionally excluded — they appear in getSpecialMentions(). */
+function profiledWhere(type?: PersonType): Prisma.PersonWhereInput {
+  if (type === "host" || type === "recurring") return { personType: type };
+  if (type === "guest") {
+    return {
+      personType: "guest",
+      OR: [{ shortBio: { not: null } }, { loreSummary: { not: null } }],
+    };
+  }
+  // No type filter → hosts + recurring + profiled guests
+  return {
+    OR: [
+      { personType: "host" },
+      { personType: "recurring" },
+      {
+        personType: "guest",
+        OR: [{ shortBio: { not: null } }, { loreSummary: { not: null } }],
+      },
+    ],
+  };
+}
+
 export async function getPeople(options?: {
   type?: PersonType;
   take?: number;
@@ -44,7 +68,7 @@ export async function getPeople(options?: {
   const { type, take = 50, skip = 0 } = options ?? {};
 
   return prisma.person.findMany({
-    where: type ? { personType: type } : undefined,
+    where: profiledWhere(type),
     include: buildPersonInclude(),
     orderBy: { displayName: "asc" },
     take,
@@ -53,9 +77,27 @@ export async function getPeople(options?: {
 }
 
 export async function getPersonCount(type?: PersonType) {
-  return prisma.person.count({
-    where: type ? { personType: type } : undefined,
-  });
+  return prisma.person.count({ where: profiledWhere(type) });
+}
+
+/** Compact data for the Special Mentions strip — celebrities, one-offs, name-drops. */
+export async function getSpecialMentions() {
+  return prisma.person.findMany({
+    where: {
+      OR: [
+        { personType: "mentioned" },
+        { personType: "guest", shortBio: null, loreSummary: null },
+      ],
+    },
+    select: {
+      id: true,
+      displayName: true,
+      slug: true,
+      personType: true,
+      _count: { select: { guestAppearances: true, mentions: true } },
+    },
+    orderBy: { displayName: "asc" },
+  }).catch(() => []);
 }
 
 export async function getPersonBySlug(slug: string) {
