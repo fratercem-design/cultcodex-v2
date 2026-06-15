@@ -27,14 +27,28 @@ type MajorRow = {
   title: string;
   status: string;
   artImageUrls: unknown;
-  episode: { title: string } | null;
+  episode: { title: string; airDate: Date | null } | null;
 };
 
-function arcOf(chapterNumber: number): number {
-  return Math.floor((chapterNumber - 1) / 100);
+// The chronicle reads in broadcast order (episode air date). chapterNumber
+// is a stable id (and the slug), not the chronological rank — so the saga
+// is grouped by month, not by chapterNumber ranges.
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MONTHS_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+function monthKey(d: Date | null): string {
+  if (!d) return "undated";
+  const dt = new Date(d);
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}`;
 }
-function arcLabel(arc: number): string {
-  return `Arc ${arc + 1} · Ch ${arc * 100 + 1}–${arc * 100 + 100}`;
+function monthLabelShort(d: Date | null): string {
+  if (!d) return "Undated";
+  const dt = new Date(d);
+  return `${MONTHS[dt.getMonth()]} ${dt.getFullYear()}`;
+}
+function monthLabelLong(d: Date | null): string {
+  if (!d) return "Undated";
+  const dt = new Date(d);
+  return `${MONTHS_LONG[dt.getMonth()]} ${dt.getFullYear()}`;
 }
 
 function PsychenomiconGate({ isAuthenticated }: { isAuthenticated: boolean }) {
@@ -76,14 +90,14 @@ export default async function PsychenomiconPage() {
     prisma.psychenomiconChapter.count().catch(() => 0),
     prisma.psychenomiconEntity.count({ where: { status: { not: "dormant" } } }).catch(() => 0),
     prisma.psychenomiconChapter.findMany({
-      orderBy: { chapterNumber: "desc" },
+      orderBy: { episode: { airDate: "desc" } },
       take: 8,
       select: { slug: true, chapterNumber: true, title: true, status: true, isMajorEvent: true, emergingSignals: true, artImageUrls: true, episode: { select: { title: true } } },
     }).catch(() => []),
     prisma.psychenomiconChapter.findMany({
       where: { isMajorEvent: true },
-      orderBy: { chapterNumber: "asc" },
-      select: { slug: true, chapterNumber: true, title: true, status: true, artImageUrls: true, episode: { select: { title: true } } },
+      orderBy: { episode: { airDate: "asc" } },
+      select: { slug: true, chapterNumber: true, title: true, status: true, artImageUrls: true, episode: { select: { title: true, airDate: true } } },
     }).catch(() => [] as MajorRow[]),
     prisma.psychenomiconEntity.findMany({
       where: { status: { not: "dormant" } },
@@ -101,13 +115,13 @@ export default async function PsychenomiconPage() {
 
   const newest = latest[0] ?? null;
 
-  // Group major events into arcs (by hundreds) — the dynamic arc index.
-  const arcGroups: { arc: number; rows: MajorRow[] }[] = [];
+  // Group major events by month (chronological) — the dynamic chapter index.
+  const arcGroups: { key: string; label: string; short: string; rows: MajorRow[] }[] = [];
   for (const c of majors) {
-    const arc = arcOf(c.chapterNumber);
+    const key = monthKey(c.episode?.airDate ?? null);
     const last = arcGroups[arcGroups.length - 1];
-    if (last && last.arc === arc) last.rows.push(c);
-    else arcGroups.push({ arc, rows: [c] });
+    if (last && last.key === key) last.rows.push(c);
+    else arcGroups.push({ key, label: monthLabelLong(c.episode?.airDate ?? null), short: monthLabelShort(c.episode?.airDate ?? null), rows: [c] });
   }
 
   return (
@@ -160,12 +174,12 @@ export default async function PsychenomiconPage() {
           <aside className="hidden lg:block">
             <div className="sticky top-20 space-y-6">
               <div className="space-y-2">
-                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// arcs"}</p>
+                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// timeline"}</p>
                 <div className="rounded border border-border bg-surface p-2 space-y-0.5 max-h-[60vh] overflow-y-auto">
                   {arcGroups.map((g) => (
-                    <a key={g.arc} href={`#arc-${g.arc}`} className="flex items-center justify-between gap-2 rounded px-2 py-1.5 group hover:bg-accent-violet/5 transition-colors">
+                    <a key={g.key} href={`#m-${g.key}`} className="flex items-center justify-between gap-2 rounded px-2 py-1.5 group hover:bg-accent-violet/5 transition-colors">
                       <span className="font-mono text-[9px] text-text-muted group-hover:text-accent-violet transition-colors">
-                        Arc {g.arc + 1}
+                        {g.short}
                       </span>
                       <span className="font-mono text-[8px] text-text-muted/40">{g.rows.length}</span>
                     </a>
@@ -230,8 +244,8 @@ export default async function PsychenomiconPage() {
             <div className="space-y-4">
               <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">{"/// the_saga — major events in order"}</p>
               {arcGroups.map((g) => (
-                <div key={g.arc} id={`arc-${g.arc}`} className="space-y-2 scroll-mt-20">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-accent-gold/70 border-b border-accent-gold/10 pb-1">{arcLabel(g.arc)}</p>
+                <div key={g.key} id={`m-${g.key}`} className="space-y-2 scroll-mt-20">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-accent-gold/70 border-b border-accent-gold/10 pb-1">{g.label}</p>
                   <div className="space-y-1.5">
                     {g.rows.map((c) => (
                       <Link key={c.slug} href={`/psychenomicon/chapters/${c.slug}`} className="group flex items-center gap-3 rounded border border-accent-gold/20 bg-accent-gold/[0.03] px-4 py-2.5 hover:bg-accent-gold/10 transition-all">

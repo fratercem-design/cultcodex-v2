@@ -30,11 +30,14 @@ type ChapterRow = {
   episode: { episodeNumber: number | null; title: string; airDate: Date | null } | null;
 };
 
-function arcLabel(chapterNumber: number): string {
-  const arc = Math.floor((chapterNumber - 1) / 100);
-  const start = arc * 100 + 1;
-  const end = start + 99;
-  return `Arc ${arc + 1} — Chapters ${start}–${end}`;
+// Chapters are 1:1 with episodes; the chronicle is read in broadcast
+// order (episode air date), grouped by month. chapterNumber is just a
+// stable id (and the slug), not the chronological rank.
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+function monthLabel(airDate: Date | null): string {
+  if (!airDate) return "Undated";
+  const d = new Date(airDate);
+  return `${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 export default async function ChaptersIndexPage({
@@ -69,7 +72,7 @@ export default async function ChaptersIndexPage({
 
   const chapters: ChapterRow[] = await prisma.psychenomiconChapter
     .findMany({
-      orderBy: { chapterNumber: "asc" },
+      orderBy: { episode: { airDate: "asc" } },
       skip: (page - 1) * PER_PAGE,
       take: PER_PAGE,
       select: {
@@ -79,10 +82,10 @@ export default async function ChaptersIndexPage({
     })
     .catch(() => []);
 
-  // Group the page's chapters under arc headers.
+  // Group the page's chapters under month headers (chronological).
   const groups: { label: string; rows: ChapterRow[] }[] = [];
   for (const c of chapters) {
-    const label = arcLabel(c.chapterNumber);
+    const label = monthLabel(c.episode?.airDate ?? null);
     const last = groups[groups.length - 1];
     if (last && last.label === label) last.rows.push(c);
     else groups.push({ label, rows: [c] });
@@ -101,7 +104,7 @@ export default async function ChaptersIndexPage({
             </Link>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">The Chronicle</h1>
             <p className="text-xs text-text-muted">
-              {total.toLocaleString()} chapters, in order &middot; page {page} of {totalPages}
+              {total.toLocaleString()} chapters, in broadcast order &middot; page {page} of {totalPages}
             </p>
           </div>
         </div>
@@ -150,13 +153,13 @@ export default async function ChaptersIndexPage({
         <nav className="flex items-center justify-between gap-3 border-t border-border pt-6" aria-label="Pagination">
           {page > 1 ? (
             <Link href={pageHref(page - 1)} className="font-mono text-[11px] uppercase tracking-widest text-accent-violet hover:underline">
-              ← Newer arcs
+              ← Earlier
             </Link>
           ) : <span />}
           <span className="font-mono text-[10px] text-text-muted/50">{page} / {totalPages}</span>
           {page < totalPages ? (
             <Link href={pageHref(page + 1)} className="font-mono text-[11px] uppercase tracking-widest text-accent-violet hover:underline">
-              Older arcs →
+              Later →
             </Link>
           ) : <span />}
         </nav>
