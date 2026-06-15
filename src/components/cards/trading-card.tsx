@@ -8,6 +8,7 @@ import {
   CARD_TYPE_GLYPH,
   CARD_TYPE_LABEL,
   STAT_LABELS,
+  cardPoints,
 } from "@/lib/cards/rarity";
 import { GenerativeCardArt } from "@/lib/cards/card-art";
 import type { Rarity, CardType } from "@/generated/prisma/client";
@@ -29,6 +30,8 @@ export interface TradingCardData {
   isNew?: boolean;
   totalMinted?: number;
   maxSupply?: number | null;
+  bonusCredits?: number;
+  signalPower?: number;
 }
 
 interface TradingCardProps {
@@ -195,9 +198,20 @@ export function TradingCard({ card, size = "md", onClick, faceDown = false, noTi
             color: borderColor,
             letterSpacing: "0.08em",
             textShadow: glowShadow !== "none" ? glowShadow : undefined,
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
           }}>
             {RARITY_LABEL[card.rarity]}
             {isFoil && " ✦"}
+            <span style={{
+              fontSize: 8,
+              opacity: 0.7,
+              fontWeight: "bold",
+              letterSpacing: "0.04em",
+            }}>
+              ⚡{cardPoints(card.rarity, !!isFoil)}
+            </span>
           </span>
         </div>
 

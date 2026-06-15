@@ -77,6 +77,23 @@ async function main() {
         scene_02: path.join(dir, "scene_02.png"),
         scene_03: path.join(dir, "scene_03.png"),
       });
+      for (const { slot, file } of files) {
+        const data = fs.readFileSync(file);
+        await prisma.psychenomiconArtAsset.upsert({
+          where: { chapterSlug_slot: { chapterSlug: slug, slot } },
+          create: { chapterSlug: slug, slot, mimeType: "image/jpeg", data },
+          update: { data, mimeType: "image/jpeg" },
+        });
+      }
+
+      const artImageUrls = Object.fromEntries(
+        SLOTS.map((slot) => [slot, `/api/psychenomicon-art/${slug}/${slot}`])
+      );
+      await prisma.psychenomiconChapter.update({
+        where: { slug },
+        data: { artImageUrls, artGeneratedAt: new Date() },
+      });
+
       console.log(`✓ ${slug} — 4 images → Postgres, artImageUrls set`);
       uploaded++;
     } catch (e) {
