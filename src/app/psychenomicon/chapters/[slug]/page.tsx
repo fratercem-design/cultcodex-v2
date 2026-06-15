@@ -62,30 +62,38 @@ export default async function ChapterPage({ params }: PageProps) {
 
   if (!chapter) notFound();
 
-  // Adjacent chapters + a windowed slice for the timeline scrubber.
-  // The chronicle has thousands of chapters, so never load them all here —
-  // show a window of ~25 on each side of the current chapter.
-  const WINDOW = 25;
-  const [prevChapter, nextChapter, windowChapters, maxAgg] = await Promise.all([
-    prisma.psychenomiconChapter.findFirst({
-      where: { chapterNumber: { lt: chapter.chapterNumber } },
-      orderBy: { chapterNumber: "desc" },
-      select: { slug: true, chapterNumber: true, title: true },
-    }),
-    prisma.psychenomiconChapter.findFirst({
-      where: { chapterNumber: { gt: chapter.chapterNumber } },
-      orderBy: { chapterNumber: "asc" },
-      select: { slug: true, chapterNumber: true, title: true },
-    }),
-    prisma.psychenomiconChapter.findMany({
-      where: { chapterNumber: { gte: chapter.chapterNumber - WINDOW, lte: chapter.chapterNumber + WINDOW } },
-      orderBy: { chapterNumber: "asc" },
-      select: { slug: true, chapterNumber: true, title: true, isMajorEvent: true },
-    }),
-    prisma.psychenomiconChapter.aggregate({ _max: { chapterNumber: true } }),
-  ]).catch(() => [null, null, [], { _max: { chapterNumber: null } }] as [null, null, never[], { _max: { chapterNumber: number | null } }]);
+  // Adjacent + windowed chapters in BROADCAST order (episode air date).
+  // chapterNumber is a stable id, not the chronological rank, so neighbors
+  // are found by air date — not by adjacent numbers.
+  const curAir = chapter.episode?.airDate ?? null;
+  const WINDOW = 12;
+  type NeighborRow = { slug: string; chapterNumber: number; title: string; isMajorEvent: boolean };
+  const adjSelect = { slug: true, chapterNumber: true, title: true } as const;
+  const winSelect = { slug: true, chapterNumber: true, title: true, isMajorEvent: true } as const;
 
-  const maxChapterNumber = maxAgg._max.chapterNumber ?? chapter.chapterNumber;
+  const [prevChapter, nextChapter, before, after, newestRow] = await Promise.all([
+    curAir
+      ? prisma.psychenomiconChapter.findFirst({ where: { episode: { airDate: { lt: curAir } } }, orderBy: { episode: { airDate: "desc" } }, select: adjSelect })
+      : Promise.resolve(null),
+    curAir
+      ? prisma.psychenomiconChapter.findFirst({ where: { episode: { airDate: { gt: curAir } } }, orderBy: { episode: { airDate: "asc" } }, select: adjSelect })
+      : Promise.resolve(null),
+    curAir
+      ? prisma.psychenomiconChapter.findMany({ where: { episode: { airDate: { lt: curAir } } }, orderBy: { episode: { airDate: "desc" } }, take: WINDOW, select: winSelect })
+      : Promise.resolve([] as NeighborRow[]),
+    curAir
+      ? prisma.psychenomiconChapter.findMany({ where: { episode: { airDate: { gt: curAir } } }, orderBy: { episode: { airDate: "asc" } }, take: WINDOW, select: winSelect })
+      : Promise.resolve([] as NeighborRow[]),
+    prisma.psychenomiconChapter.findFirst({ orderBy: { episode: { airDate: "desc" } }, select: { slug: true } }),
+  ]).catch(() => [null, null, [] as NeighborRow[], [] as NeighborRow[], null] as [NeighborRow | null, NeighborRow | null, NeighborRow[], NeighborRow[], { slug: string } | null]);
+
+  // Chronological window: earlier (reversed to ascending) + current + later.
+  const windowChapters: NeighborRow[] = [
+    ...[...before].reverse(),
+    { slug: chapter.slug, chapterNumber: chapter.chapterNumber, title: chapter.title, isMajorEvent: chapter.isMajorEvent },
+    ...after,
+  ];
+  const newestSlug = newestRow?.slug ?? chapter.slug;
 
   type ArchetypeEntry = { name: string; archetype: string; significance: string };
   const archetypes = (chapter.archetypesData as ArchetypeEntry[] | null) ?? [];
@@ -99,7 +107,7 @@ export default async function ChapterPage({ params }: PageProps) {
     chapterNumber: c.chapterNumber,
     title: c.title,
     isMajorEvent: c.isMajorEvent,
-    isNewest: c.chapterNumber === maxChapterNumber,
+    isNewest: c.slug === newestSlug,
   }));
 
   return (
