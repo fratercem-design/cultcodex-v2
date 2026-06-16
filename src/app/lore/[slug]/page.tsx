@@ -23,16 +23,7 @@ import type { Metadata } from "next";
 export const revalidate = 600;
 
 export async function generateStaticParams() {
-  try {
-    const entries = await prisma.loreEntry.findMany({
-      select: { slug: true },
-      take: 300,
-      orderBy: { updatedAt: "desc" },
-    });
-    return entries.map((e) => ({ slug: e.slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 interface PageProps {
