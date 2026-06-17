@@ -14,20 +14,7 @@ import * as path from "path";
 import Anthropic from "@anthropic-ai/sdk";
 import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { getPrisma, disconnect } from "../ingest/lib";
-
-function makeClient(): Anthropic | AnthropicBedrock {
-  if (process.env.USE_BEDROCK === "true") {
-    return new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
-  }
-  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-}
-
-function getModel(): string {
-  if (process.env.USE_BEDROCK === "true") {
-    return process.env.ENRICHMENT_MODEL ?? "us.anthropic.claude-3-5-haiku-20241022-v1:0";
-  }
-  return process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
-}
+import { makeClient, resolveModel } from "../bedrock";
 
 const LOG_PATH = path.join(__dirname, "enrich-lore.log");
 
@@ -161,7 +148,7 @@ async function main() {
   log(`Unenriched lore entries: ${total} — processing batch of ${entries.length}`);
 
   const client = makeClient();
-  const model = getModel();
+  const model = await resolveModel(client, log);
 
   let success = 0;
   let failures = 0;
