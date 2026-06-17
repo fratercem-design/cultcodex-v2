@@ -9,7 +9,7 @@ import { getEpisodes, formatEpisodeForCard } from "@/lib/queries/episodes";
 import { getCounts } from "@/lib/queries/stats";
 import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
-import { getDailyTransmission } from "@/lib/queries/daily";
+import { getDailyTransmission, getDailyIllustratedChapter } from "@/lib/queries/daily";
 import { DailyTransmission } from "@/components/home/daily-transmission";
 import { YouTubePlayer } from "@/components/home/youtube-player";
 import { TopAscenders } from "@/components/home/top-ascenders";
@@ -54,7 +54,7 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest, dailyChapter] = await Promise.all([
     getCounts().catch(() => ({
       episodes: 0, segments: 0, people: 0, topics: 0,
       lore: 0, quotes: 0, totalHours: 0,
@@ -72,6 +72,7 @@ export default async function HomePage() {
     })),
     getCurrentUser().catch(() => null),
     prisma.weeklyDigest.findFirst({ where: { published: true }, orderBy: { weekOf: "desc" }, select: { title: true, blurb: true, weekOf: true } }).catch(() => null),
+    getDailyIllustratedChapter().catch(() => null),
   ]);
 
   // Redirect new users to complete onboarding before they see the main app
@@ -274,6 +275,33 @@ export default async function HomePage() {
             quoteReactions={dailyQuoteReactions}
             isAuthenticated={Boolean(currentUser)}
           />
+
+          {/* ── ILLUSTRATED CHAPTER OF THE DAY ───────────────────────── */}
+          {dailyChapter && (
+            <Link
+              href={`/psychenomicon/chapters/${dailyChapter.slug}`}
+              className="group block overflow-hidden rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface transition-colors hover:border-accent-violet/50"
+            >
+              <div className="flex items-stretch">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={dailyChapter.coverUrl}
+                  alt=""
+                  loading="lazy"
+                  className="h-32 w-24 flex-shrink-0 object-cover sm:h-40 sm:w-28"
+                />
+                <div className="flex flex-col justify-center gap-1.5 px-5 py-4">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">{"/// chapter_of_the_day"}</p>
+                  <h3 className="font-display text-lg font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-violet">
+                    {dailyChapter.title}
+                  </h3>
+                  <p className="font-mono text-[11px] text-text-muted">
+                    Psychenomicon · Chapter {dailyChapter.chapterNumber} — an illustrated transmission. Read it →
+                  </p>
+                </div>
+              </div>
+            </Link>
+          )}
 
           {/* ── ORACLE — AI SEARCH ───────────────────────────────────── */}
           <div className="rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface px-6 py-6 space-y-4">
