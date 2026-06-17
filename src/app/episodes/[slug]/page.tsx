@@ -12,7 +12,7 @@ import { getEraForEpisode } from "@/lib/eras";
 import { EraNeighbors } from "@/components/episodes/era-neighbors";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
-import { buildMetadata, episodeJsonLd, jsonLdScript } from "@/lib/seo";
+import { buildMetadata, episodeJsonLd, jsonLdScript, detailBreadcrumbJsonLd } from "@/lib/seo";
 import { AiNotice } from "@/components/ui/ai-notice";
 import { getConfidenceTier } from "@/lib/format/confidence-tier";
 import { renderWithTimestamps } from "@/lib/format/render-timestamps";
@@ -198,6 +198,17 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
             youtubeVideoId: episode.youtubeVideoId,
             duration: episode.duration,
           })
+        ),
+      }}
+    />
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: jsonLdScript(
+          detailBreadcrumbJsonLd(
+            { name: "Archive", path: "/episodes" },
+            { name: cleanTitle(episode.title), path: `/episodes/${episode.slug}` }
+          )
         ),
       }}
     />
