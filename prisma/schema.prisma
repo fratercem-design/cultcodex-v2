@@ -689,6 +689,31 @@ model PsychenomiconArtAsset {
   @@index([chapterSlug])
 }
 
+// A compiled, sellable Psychenomicon book edition (PDF bytes in Postgres).
+model BookEdition {
+  id          String   @id @default(cuid())
+  sku         String   @unique // e.g. "psychenomicon-vol-1"
+  title       String
+  mimeType    String   @default("application/pdf")
+  data        Bytes
+  pageCount   Int      @default(0)
+  chapterFrom Int      @default(0)
+  chapterTo   Int      @default(0)
+  generatedAt DateTime @default(now())
+}
+
+// One-time purchase entitlement (e.g. a book). Separate from subscriptions.
+model BookPurchase {
+  id              String   @id @default(cuid())
+  userId          String
+  sku             String
+  stripeSessionId String?
+  createdAt       DateTime @default(now())
+
+  @@unique([userId, sku])
+  @@index([userId])
+}
+
 model PsychenomiconEntity {
   id         String  @id @default(cuid())
   name       String

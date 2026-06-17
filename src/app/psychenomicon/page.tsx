@@ -139,6 +139,9 @@ export default async function PsychenomiconPage() {
             )}
           </div>
           <div className="flex flex-shrink-0 gap-2">
+            <Link href="/psychenomicon/book" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/40 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold transition-colors">
+              ◈ Volume I →
+            </Link>
             <Link href="/psychenomicon/chapters" className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface hover:border-accent-violet/30 px-4 py-2.5 font-mono text-xs text-text-muted hover:text-accent-violet transition-colors">
               Full chronicle →
             </Link>
