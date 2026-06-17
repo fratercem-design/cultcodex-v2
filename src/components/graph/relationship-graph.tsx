@@ -263,7 +263,7 @@ export function RelationshipGraph({ nodes, edges }: Props) {
             "radial-gradient(ellipse 70% 60% at 50% 40%, rgba(110,75,174,0.07) 0%, transparent 70%)",
         }}
       >
-        <p className="absolute top-3 left-4 z-10 font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/40 select-none">
+        <p className="absolute top-3 left-4 z-10 font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/60 select-none">
           {"/// relationship_map"}
           {selected && selectedNode ? ` — ${selectedNode.name}` : ""}
         </p>

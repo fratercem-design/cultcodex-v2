@@ -109,7 +109,7 @@ export default async function ArchetypePage({ params }: Props) {
 
         {/* Shareable card */}
         <div className="mb-12 space-y-3">
-          <p className="text-center font-mono text-[9px] uppercase tracking-[0.35em] text-text-muted/40">
+          <p className="text-center font-mono text-[9px] uppercase tracking-[0.35em] text-text-muted/60">
             {"/// share_your_archetype"}
           </p>
           <ShareArchetypeCard

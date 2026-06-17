@@ -241,7 +241,7 @@ export function ArchetypeCard({
                 const pct = (val / 10) * 100;
                 return (
                   <div key={a.key} className="flex items-center gap-1.5">
-                    <span className="font-mono text-[8px] text-text-muted/40 w-8 shrink-0">{a.label}</span>
+                    <span className="font-mono text-[8px] text-text-muted/60 w-8 shrink-0">{a.label}</span>
                     <div className="flex-1 h-0.5 bg-border rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full"

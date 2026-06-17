@@ -50,7 +50,7 @@ export function EraNeighbors({ era, previous, next }: Props) {
           />
         ) : (
           <div className="rounded-lg border border-dashed border-border/60 bg-surface/30 p-4 flex items-center justify-center">
-            <p className="font-mono text-[10px] text-text-muted/40 uppercase tracking-widest">
+            <p className="font-mono text-[10px] text-text-muted/60 uppercase tracking-widest">
               ← era origin
             </p>
           </div>
@@ -63,7 +63,7 @@ export function EraNeighbors({ era, previous, next }: Props) {
           />
         ) : (
           <div className="rounded-lg border border-dashed border-border/60 bg-surface/30 p-4 flex items-center justify-center">
-            <p className="font-mono text-[10px] text-text-muted/40 uppercase tracking-widest">
+            <p className="font-mono text-[10px] text-text-muted/60 uppercase tracking-widest">
               era edge →
             </p>
           </div>

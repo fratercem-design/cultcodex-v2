@@ -203,7 +203,7 @@ export function GenerateChapterButton({ episodes }: Props) {
                 />
                 <span className="font-mono text-[10px] text-text-muted truncate">
                   {epLabel(ep)}
-                  <span className="text-text-muted/40 ml-1">
+                  <span className="text-text-muted/60 ml-1">
                     {ep._count.segments > 0 ? `${ep._count.segments}s` : "raw"}
                   </span>
                 </span>

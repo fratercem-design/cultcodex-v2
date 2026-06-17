@@ -32,7 +32,7 @@ const ACCENT_DOT: Record<SectionAccent, string> = {
   cyan:   "bg-accent-cyan",
   violet: "bg-accent-violet",
   red:    "bg-red-400",
-  muted:  "bg-text-muted/40",
+  muted:  "bg-text-muted/60",
 };
 
 export function SectionCard({ title, className, ornament = false, accent, children }: SectionCardProps) {

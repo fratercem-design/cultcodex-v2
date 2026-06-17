@@ -139,7 +139,7 @@ export default async function OraclePage() {
         <section>
           <OracleConsole />
           {!canAccess && (
-            <p className="mt-3 text-center font-mono text-[10px] text-text-muted/40 uppercase tracking-widest">
+            <p className="mt-3 text-center font-mono text-[10px] text-text-muted/60 uppercase tracking-widest">
               Initiate+ — unlimited Oracle access ·{" "}
               <Link href="/premium" className="text-accent-gold/60 hover:text-accent-gold transition-colors">
                 $10/mo
@@ -269,7 +269,7 @@ export default async function OraclePage() {
                   See what opens →
                 </Link>
               </div>
-              <p className="font-mono text-[10px] text-text-muted/40">
+              <p className="font-mono text-[10px] text-text-muted/60">
                 Cancel any time · Instant access · Includes transcripts, Psychenomicon & more
               </p>
             </div>

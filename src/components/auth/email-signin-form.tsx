@@ -76,7 +76,7 @@ export function EmailSignInForm({ callbackUrl }: EmailSignInFormProps) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
-          className="w-full rounded border border-border bg-void px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/40 focus:border-accent-gold/60 focus:outline-none focus:ring-1 focus:ring-accent-gold/20 transition-colors disabled:opacity-50"
+          className="w-full rounded border border-border bg-void px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/60 focus:border-accent-gold/60 focus:outline-none focus:ring-1 focus:ring-accent-gold/20 transition-colors disabled:opacity-50"
           disabled={state === "loading"}
         />
       </div>

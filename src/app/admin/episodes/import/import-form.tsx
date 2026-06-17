@@ -149,7 +149,7 @@ export function ImportForm() {
             onChange={(e) => setCsvText(e.target.value)}
             placeholder={`title,episodeNumber,airDate,youtubeVideoId,summaryShort,status\nThe Void Speaks,42,2024-01-15,dQw4w9WgXcQ,A deep dive into the void,published`}
             rows={8}
-            className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted/40 focus:border-accent-gold focus:outline-none"
+            className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted/60 focus:border-accent-gold focus:outline-none"
           />
         </div>
 

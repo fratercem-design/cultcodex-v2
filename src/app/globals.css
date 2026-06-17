@@ -23,7 +23,7 @@
 
   /* Text */
   --color-text-primary: #F3EEDF;
-  --color-text-muted: #B6AE9B;
+  --color-text-muted: #C9C2B0;
 
   /* Borders — aligned to terminal palette */
   --color-border: #182135;    /* was #2A2D36 — now matches --term-line  */
@@ -100,7 +100,7 @@
   --bg-elevated: #0b0f18;
   --border: #182135;
   --text-primary: #F3EEDF;
-  --text-muted: #B6AE9B;
+  --text-muted: #C9C2B0;
   --accent-gold: #C8A96B;
   --accent-gold-dim: rgba(200, 169, 107, 0.15);
   --accent-violet: #9B6ED0;
@@ -127,7 +127,7 @@
   --secondary: #0b0f18;
   --secondary-foreground: #F3EEDF;
   --muted: #0b0f18;
-  --muted-foreground: #B6AE9B;
+  --muted-foreground: #C9C2B0;
   --accent: #9B6ED0;
   --accent-foreground: #F3EEDF;
   --destructive: #A94A4A;
@@ -137,7 +137,7 @@
   --chart-2: #9B6ED0;
   --chart-3: #5DB7D8;
   --chart-4: #A94A4A;
-  --chart-5: #B6AE9B;
+  --chart-5: #C9C2B0;
   --radius: 0.625rem;
   --sidebar: #07090f;
   --sidebar-foreground: #F3EEDF;
@@ -223,7 +223,7 @@ h1, h2, h3 {
   --secondary: #0b0f18;
   --secondary-foreground: #F3EEDF;
   --muted: #0b0f18;
-  --muted-foreground: #B6AE9B;
+  --muted-foreground: #C9C2B0;
   --accent: #9B6ED0;
   --accent-foreground: #F3EEDF;
   --destructive: #A94A4A;
@@ -234,7 +234,7 @@ h1, h2, h3 {
   --chart-2: #9B6ED0;
   --chart-3: #5DB7D8;
   --chart-4: #A94A4A;
-  --chart-5: #B6AE9B;
+  --chart-5: #C9C2B0;
   --sidebar: #07090f;
   --sidebar-foreground: #F3EEDF;
   --sidebar-primary: #C8A96B;

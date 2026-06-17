@@ -187,7 +187,7 @@ export default async function SignalsPage() {
                             )}
                           </span>
                           <span className="text-text-muted/30">·</span>
-                          <span className="font-mono text-[10px] text-text-muted/40">
+                          <span className="font-mono text-[10px] text-text-muted/60">
                             {new Date(proposal.createdAt).toLocaleDateString("en-US", {
                               month: "short",
                               day: "numeric",

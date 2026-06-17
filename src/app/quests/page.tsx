@@ -86,7 +86,7 @@ export default async function QuestsPage() {
                   {done ? (
                     <span className={`shrink-0 font-mono text-[9px] uppercase tracking-widest ${a.text}`}>✓ complete</span>
                   ) : (
-                    <span className="shrink-0 font-mono text-[9px] uppercase tracking-widest text-text-muted/40">locked</span>
+                    <span className="shrink-0 font-mono text-[9px] uppercase tracking-widest text-text-muted/60">locked</span>
                   )}
                 </div>
 

@@ -57,7 +57,7 @@ function DecodeModeLocked({ isAuthenticated }: DecodeModeLockedProps) {
         {!isAuthenticated && (
           <Link
             href="/api/auth/signin"
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2 font-mono text-xs text-text-muted hover:text-text-primary hover:border-text-muted/40 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2 font-mono text-xs text-text-muted hover:text-text-primary hover:border-text-muted/60 transition-colors"
           >
             Sign in first
           </Link>

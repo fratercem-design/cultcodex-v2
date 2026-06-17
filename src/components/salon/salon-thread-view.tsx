@@ -123,7 +123,7 @@ export function SalonThreadView({
             rows={4}
             maxLength={4000}
             disabled={status === "sending"}
-            className="w-full rounded-lg border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted/40 focus:border-accent-violet/60 focus:outline-none resize-y disabled:opacity-50"
+            className="w-full rounded-lg border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted/60 focus:border-accent-violet/60 focus:outline-none resize-y disabled:opacity-50"
           />
           <div className="flex items-center justify-between">
             <span className="font-mono text-[10px] text-text-muted/50">{content.length}/4000</span>

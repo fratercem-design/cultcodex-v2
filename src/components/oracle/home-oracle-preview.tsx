@@ -68,7 +68,7 @@ export function HomeOraclePreview() {
             placeholder="Ask anything about the archive…"
             disabled={state === "loading"}
             maxLength={300}
-            className="flex-1 rounded-lg border border-accent-violet/30 bg-void/60 px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/40 focus:border-accent-violet/60 focus:outline-none disabled:opacity-50 transition-colors"
+            className="flex-1 rounded-lg border border-accent-violet/30 bg-void/60 px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/60 focus:border-accent-violet/60 focus:outline-none disabled:opacity-50 transition-colors"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();

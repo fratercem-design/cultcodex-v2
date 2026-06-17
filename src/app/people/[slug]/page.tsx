@@ -420,7 +420,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
               <div className="rounded-lg border border-border bg-surface overflow-hidden">
                 <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
                   <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">{"/// codex_entry"}</p>
-                  <p className="font-mono text-[9px] text-text-muted/40 tracking-widest">PENDING</p>
+                  <p className="font-mono text-[9px] text-text-muted/60 tracking-widest">PENDING</p>
                 </div>
                 <div className="px-4 py-5 flex items-center gap-3">
                   <span className="font-mono text-sm text-text-muted/30">◈</span>
@@ -461,7 +461,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                         <span className="font-mono text-[9px] text-text-muted/50">
                           {group.episodes.length} ep{group.episodes.length !== 1 ? "s" : ""}
                         </span>
-                        <span className="ml-auto font-mono text-[9px] text-text-muted/40 group-hover:text-text-muted transition-colors">
+                        <span className="ml-auto font-mono text-[9px] text-text-muted/60 group-hover:text-text-muted transition-colors">
                           era →
                         </span>
                       </Link>
@@ -482,7 +482,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                   ))}
                   {unclassified.length > 0 && (
                     <div>
-                      <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-text-muted/40">
+                      <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-text-muted/60">
                         Unclassified
                       </p>
                       <div className="grid gap-3">
@@ -546,7 +546,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                   <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/70">
                     Era Presence
                   </p>
-                  <p className="font-mono text-[9px] text-text-muted/40">
+                  <p className="font-mono text-[9px] text-text-muted/60">
                     {eraPresence.length} era{eraPresence.length !== 1 ? "s" : ""}
                   </p>
                 </div>

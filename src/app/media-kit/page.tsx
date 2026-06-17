@@ -95,7 +95,7 @@ export default async function MediaKitPage() {
               </div>
             ))}
           </div>
-          <p className="font-mono text-[9px] text-text-muted/40 text-center">
+          <p className="font-mono text-[9px] text-text-muted/60 text-center">
             Figures update live from the archive database.
           </p>
         </section>

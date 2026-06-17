@@ -103,7 +103,7 @@ export default function MeowPage() {
       {/* Back link */}
       <Link
         href="/"
-        className="mt-16 font-mono text-[10px] tracking-widest text-text-muted/40 transition-colors hover:text-accent-cyan/60"
+        className="mt-16 font-mono text-[10px] tracking-widest text-text-muted/60 transition-colors hover:text-accent-cyan/60"
       >
         &larr; back to the void
       </Link>

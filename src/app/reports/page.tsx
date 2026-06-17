@@ -137,7 +137,7 @@ export default async function ReportsPage() {
                         </p>
                       </div>
                     </div>
-                    <p className={`mt-3 font-mono text-[10px] uppercase tracking-widest ${hasAccess ? "text-accent-cyan/70" : "text-text-muted/40"}`}>
+                    <p className={`mt-3 font-mono text-[10px] uppercase tracking-widest ${hasAccess ? "text-accent-cyan/70" : "text-text-muted/60"}`}>
                       {hasAccess ? "Open report →" : "🔒 Initiate+"}
                     </p>
                   </div>
@@ -184,7 +184,7 @@ export default async function ReportsPage() {
                     <span className={`text-lg ${ACCENT[r.accent]}`}>{r.glyph}</span>
                     <h3 className="font-display text-base font-bold text-text-primary">{r.title}</h3>
                   </div>
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted/40">{r.cadence}</span>
+                  <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">{r.cadence}</span>
                 </div>
                 <p className="font-mono text-[11px] text-text-muted leading-relaxed">{r.body}</p>
               </div>
