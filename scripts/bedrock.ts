@@ -95,8 +95,18 @@ async function ensureReady(log: Logger): Promise<void> {
   _provider = resolveProvider();
 
   if (_provider === "openrouter") {
+    const apiKey = (process.env.OPENROUTER_API_KEY ?? "").trim();
+    if (!apiKey) {
+      throw new Error(
+        "OPENROUTER_API_KEY is empty or missing.\n" +
+        "  Env vars loaded: " + Object.keys(process.env).filter(k => !k.startsWith("npm_")).join(", ") + "\n" +
+        "  Add  OPENROUTER_API_KEY=sk-or-...  as its own line in .env and re-run."
+      );
+    }
+    const masked = apiKey.length > 8 ? apiKey.slice(0, 8) + "..." + apiKey.slice(-4) : "(short)";
+    log(`Provider: OpenRouter — key: ${masked}`);
     _client = new OpenAI({
-      apiKey: process.env.OPENROUTER_API_KEY,
+      apiKey,
       baseURL: "https://openrouter.ai/api/v1",
       defaultHeaders: {
         "HTTP-Referer": "https://cultcodex.me",
