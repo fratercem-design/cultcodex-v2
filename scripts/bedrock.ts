@@ -133,10 +133,35 @@ export interface CompleteOptions {
   maxTokens: number;
 }
 
+function isRateLimit(err: unknown): boolean {
+  const status = (err as { status?: number } | null)?.status;
+  if (status === 429) return true;
+  const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+  return msg.includes("rate limit") || msg.includes("429") || msg.includes("too many requests");
+}
+
 /** Run one completion through the active provider and return the trimmed text. */
 export async function complete(opts: CompleteOptions, log: Logger = console.log): Promise<string> {
   await ensureReady(log);
 
+  // Free OpenRouter tiers cap req/min, so back off and retry on 429.
+  const maxAttempts = 5;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await runComplete(opts);
+    } catch (err) {
+      if (isRateLimit(err) && attempt < maxAttempts) {
+        const waitMs = 2000 * attempt;
+        log(`  (rate limited — waiting ${waitMs / 1000}s, attempt ${attempt}/${maxAttempts - 1})`);
+        await new Promise((r) => setTimeout(r, waitMs));
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
+async function runComplete(opts: CompleteOptions): Promise<string> {
   if (_provider === "openrouter") {
     const res = await (_client as OpenAI).chat.completions.create({
       model: _model!,
