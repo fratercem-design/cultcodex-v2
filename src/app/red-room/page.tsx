@@ -1,6 +1,5 @@
 export const dynamic = "force-dynamic";
 
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
 import { hasSystemTier } from "@/lib/subscription";
@@ -39,15 +38,13 @@ async function getRedRoomEpisodes() {
 
 export default async function RedRoomPage() {
   const user = await getCurrentUser();
+  const oracle = user ? await hasSystemTier(user.id) : false;
 
-  if (!user) {
-    redirect("/auth/signin?callbackUrl=/red-room");
-  }
-
-  const oracle = await hasSystemTier(user.id);
-
+  // Signed-out and non-Oracle visitors both see the teaser (with a taste of
+  // what's inside) rather than getting bounced to a context-free sign-in page.
   if (!oracle) {
-    return <RedRoomGate />;
+    const samples = await getRedRoomEpisodes();
+    return <RedRoomGate signedIn={!!user} samples={samples.slice(0, 3)} />;
   }
 
   const episodes = await getRedRoomEpisodes();
@@ -235,7 +232,13 @@ export default async function RedRoomPage() {
   );
 }
 
-function RedRoomGate() {
+function RedRoomGate({
+  signedIn,
+  samples,
+}: {
+  signedIn: boolean;
+  samples: Array<{ id: string; title: string }>;
+}) {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-6">
       <div className="text-center max-w-md">
@@ -249,17 +252,35 @@ function RedRoomGate() {
           className="font-display text-3xl font-bold mb-3"
           style={{ color: "rgba(200,80,80,0.8)" }}
         >
-          Oracle Access Required
+          {signedIn ? "Oracle Access Required" : "Enter the Red Room"}
         </h1>
         <p className="font-mono text-sm text-text-muted mb-6 leading-relaxed">
-          The Red Room is restricted to Oracle-tier members. This is where the unfiltered
-          analysis lives — no diplomatic phrasing, no softening.
+          The Red Room is where the unfiltered analysis lives — no diplomatic phrasing,
+          no softening. Oracle-tier members only.
         </p>
+        {samples.length > 0 && (
+          <div className="mb-6 text-left">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/70 mb-2">
+              A taste — transmissions inside:
+            </p>
+            <ul className="space-y-1.5">
+              {samples.map((s) => (
+                <li
+                  key={s.id}
+                  className="font-mono text-xs text-text-muted/80 truncate"
+                  style={{ filter: "blur(0.4px)" }}
+                >
+                  ◦ {s.title}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <Link
-          href="/premium"
+          href={signedIn ? "/premium" : "/auth/signin?callbackUrl=/red-room"}
           className="inline-block rounded px-6 py-3 font-mono text-sm font-bold bg-accent-gold text-void hover:bg-accent-gold/80 transition-colors"
         >
-          Become an Oracle →
+          {signedIn ? "Become an Oracle →" : "Sign in to unlock →"}
         </Link>
       </div>
     </div>
