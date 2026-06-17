@@ -145,7 +145,7 @@ export default async function EraDetailPage({
               <span className="font-mono text-[9px] text-text-muted/50 uppercase tracking-[0.4em]">
                 Era {String(eraIndex + 1).padStart(2, "0")}
               </span>
-              <span className="font-mono text-[9px] text-text-muted/40">
+              <span className="font-mono text-[9px] text-text-muted/60">
                 {rangeLabel}
               </span>
             </div>
@@ -250,7 +250,7 @@ export default async function EraDetailPage({
                   href={`/people/${guest.slug}`}
                   className="group flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3 hover:border-border/60 hover:bg-surface/80 transition-colors"
                 >
-                  <span className="font-mono text-[10px] text-text-muted/40 tabular-nums w-5 shrink-0">
+                  <span className="font-mono text-[10px] text-text-muted/60 tabular-nums w-5 shrink-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   {guest.avatarUrl ? (
@@ -278,7 +278,7 @@ export default async function EraDetailPage({
                         {guest.archetype}
                       </p>
                     ) : (
-                      <p className="font-mono text-[9px] text-text-muted/40">
+                      <p className="font-mono text-[9px] text-text-muted/60">
                         {guest.appearances} ep{guest.appearances !== 1 ? "s" : ""}
                       </p>
                     )}

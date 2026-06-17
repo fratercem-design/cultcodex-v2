@@ -217,7 +217,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
 
             {quote.episode && (
               <>
-                <span className="font-mono text-[10px] text-text-muted/40">·</span>
+                <span className="font-mono text-[10px] text-text-muted/60">·</span>
                 <Link
                   href={
                     quote.timestampSeconds != null
@@ -241,7 +241,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
 
             {era && (
               <>
-                <span className="font-mono text-[10px] text-text-muted/40">·</span>
+                <span className="font-mono text-[10px] text-text-muted/60">·</span>
                 <Link
                   href={`/eras/${era.id}`}
                   className="font-mono text-[10px] text-text-muted/70 hover:text-accent-gold transition-colors"
@@ -290,7 +290,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
                   >
                     <span
                       className={`shrink-0 tabular-nums ${
-                        isPivot ? "text-accent-gold" : "text-text-muted/40"
+                        isPivot ? "text-accent-gold" : "text-text-muted/60"
                       }`}
                     >
                       {formatSeconds(seg.startSeconds)}

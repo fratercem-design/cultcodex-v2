@@ -76,7 +76,7 @@ export function OracleExampleExchanges() {
         ))}
       </div>
 
-      <p className="text-center font-mono text-[10px] text-text-muted/40 pt-2">
+      <p className="text-center font-mono text-[10px] text-text-muted/60 pt-2">
         These are synthesized from the actual archive. Your questions will be too.
       </p>
     </div>

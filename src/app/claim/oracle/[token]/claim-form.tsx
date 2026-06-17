@@ -80,7 +80,7 @@ export function ClaimForm({ token, recipientName }: ClaimFormProps) {
           placeholder="Speak your name…"
           disabled={status === "submitting"}
           autoFocus
-          className="w-full bg-transparent border border-accent-gold/30 rounded-lg px-4 py-3 font-serif text-xl text-white placeholder:text-text-muted/40 focus:outline-none focus:border-accent-gold/70 focus:ring-1 focus:ring-accent-gold/30 transition-all"
+          className="w-full bg-transparent border border-accent-gold/30 rounded-lg px-4 py-3 font-serif text-xl text-white placeholder:text-text-muted/60 focus:outline-none focus:border-accent-gold/70 focus:ring-1 focus:ring-accent-gold/30 transition-all"
         />
         <p className="text-[10px] font-mono text-text-muted">
           This will appear on your profile and in the Hall of Founding Oracles.
@@ -120,7 +120,7 @@ export function ClaimForm({ token, recipientName }: ClaimFormProps) {
         {status === "submitting" ? "Sealing…" : "Seal My Name"}
       </button>
 
-      <p className="text-center text-[10px] font-mono text-text-muted/40">
+      <p className="text-center text-[10px] font-mono text-text-muted/60">
         You may change this at any time from your profile settings.
       </p>
     </form>

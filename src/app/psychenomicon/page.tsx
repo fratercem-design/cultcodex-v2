@@ -181,7 +181,7 @@ export default async function PsychenomiconPage() {
                       <span className="font-mono text-[9px] text-text-muted group-hover:text-accent-violet transition-colors">
                         {g.short}
                       </span>
-                      <span className="font-mono text-[8px] text-text-muted/40">{g.rows.length}</span>
+                      <span className="font-mono text-[8px] text-text-muted/60">{g.rows.length}</span>
                     </a>
                   ))}
                 </div>

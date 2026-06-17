@@ -53,7 +53,7 @@ export default async function AdminSignalsPage() {
                     <span className="font-mono text-[10px] text-text-muted/70">
                       {p.user.displayName} · {p.user.email}
                     </span>
-                    <span className="font-mono text-[10px] text-text-muted/40">
+                    <span className="font-mono text-[10px] text-text-muted/60">
                       {new Date(p.createdAt).toLocaleDateString()}
                     </span>
                   </div>

@@ -211,7 +211,7 @@ function SetTitleForm({ userId, currentTitle }: { userId: string; currentTitle: 
         name="title"
         defaultValue={currentTitle ?? ""}
         placeholder="Oracle"
-        className="w-24 rounded border border-border/50 bg-elevated/50 px-1.5 py-1 text-[10px] text-text-primary placeholder:text-text-muted/40 focus:border-accent-gold/40 focus:outline-none"
+        className="w-24 rounded border border-border/50 bg-elevated/50 px-1.5 py-1 text-[10px] text-text-primary placeholder:text-text-muted/60 focus:border-accent-gold/40 focus:outline-none"
       />
       <button
         type="submit"

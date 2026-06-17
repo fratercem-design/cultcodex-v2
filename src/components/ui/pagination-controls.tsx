@@ -55,7 +55,7 @@ export function PaginationControls({
             ← Prev
           </Link>
         ) : (
-          <span className="rounded border border-border/50 px-3 py-1 font-mono text-[11px] text-text-muted/40 cursor-not-allowed">
+          <span className="rounded border border-border/50 px-3 py-1 font-mono text-[11px] text-text-muted/60 cursor-not-allowed">
             ← Prev
           </span>
         )}
@@ -65,7 +65,7 @@ export function PaginationControls({
           n === null ? (
             <span
               key={`gap-${i}`}
-              className="px-1 font-mono text-[11px] text-text-muted/40"
+              className="px-1 font-mono text-[11px] text-text-muted/60"
             >
               …
             </span>
@@ -93,7 +93,7 @@ export function PaginationControls({
             Next →
           </Link>
         ) : (
-          <span className="rounded border border-border/50 px-3 py-1 font-mono text-[11px] text-text-muted/40 cursor-not-allowed">
+          <span className="rounded border border-border/50 px-3 py-1 font-mono text-[11px] text-text-muted/60 cursor-not-allowed">
             Next →
           </span>
         )}

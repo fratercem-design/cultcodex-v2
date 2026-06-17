@@ -124,7 +124,7 @@ export default async function RankPage() {
                   .map((l) => (
                     <div key={l.label} className="flex items-center justify-between px-5 py-2.5">
                       <span className="font-mono text-xs text-text-muted">
-                        {l.label} <span className="text-text-muted/40">× {l.count.toLocaleString()}</span>
+                        {l.label} <span className="text-text-muted/60">× {l.count.toLocaleString()}</span>
                       </span>
                       <span className="font-mono text-xs font-bold text-accent-gold">+{l.points.toLocaleString()}</span>
                     </div>
@@ -168,7 +168,7 @@ export default async function RankPage() {
                       )}
                     </div>
                     <p className="font-mono text-[11px] text-text-muted leading-relaxed">{r.blurb}</p>
-                    <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/40">
+                    <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">
                       {r.minScore === 0 ? "Starting rank" : `${r.minScore.toLocaleString()} codex score`}
                     </p>
                   </div>

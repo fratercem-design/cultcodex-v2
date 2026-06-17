@@ -129,7 +129,7 @@ export function TimelineExplorer({ items }: { items: TimelineItem[] }) {
             );
           })}
         </div>
-        <p className="mt-2 text-center font-mono text-[9px] uppercase tracking-widest text-text-muted/40">
+        <p className="mt-2 text-center font-mono text-[9px] uppercase tracking-widest text-text-muted/60">
           {visibleMonths.length} months · click a bar to inspect
         </p>
       </div>

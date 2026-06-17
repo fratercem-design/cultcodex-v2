@@ -215,7 +215,7 @@ export default async function WelcomeOraclePage() {
 
       {/* ── Choose your name from the dark ── */}
       <section className="mx-auto max-w-2xl px-6 pb-20 text-center space-y-6">
-        <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-text-muted/40">
+        <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-text-muted/60">
           {"/// name yourself"}
         </p>
         <h2

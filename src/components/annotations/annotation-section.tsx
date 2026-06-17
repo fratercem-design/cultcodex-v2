@@ -52,7 +52,7 @@ export async function AnnotationSection({ targetType, targetId, returnPath, labe
           {"/// community_annotations"}
         </span>
         {annotations.length > 0 && (
-          <span className="font-mono text-[10px] text-text-muted/40">{annotations.length}</span>
+          <span className="font-mono text-[10px] text-text-muted/60">{annotations.length}</span>
         )}
       </div>
 
@@ -75,7 +75,7 @@ export async function AnnotationSection({ targetType, targetId, returnPath, labe
               </form>
               <div className="min-w-0 flex-1 space-y-1.5">
                 <p className="text-sm text-text-primary leading-relaxed">{a.body}</p>
-                <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/40">
+                <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">
                   {a.user.displayName}
                   {a.user.memberTitle && <span className="text-accent-gold/40"> · {a.user.memberTitle}</span>}
                   {" · "}

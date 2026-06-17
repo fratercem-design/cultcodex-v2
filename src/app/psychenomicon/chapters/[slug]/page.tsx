@@ -258,7 +258,7 @@ export default async function ChapterPage({ params }: PageProps) {
                     ) : null
                   )}
                 </div>
-                <p className="font-mono text-[9px] text-text-muted/40 text-right">
+                <p className="font-mono text-[9px] text-text-muted/60 text-right">
                   AI-generated imagery · Psychenomicon Art Pipeline
                 </p>
               </div>

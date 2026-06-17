@@ -337,7 +337,7 @@ export default async function HomePage() {
                   <div className="mt-3 space-y-3 border-t border-accent-violet/10 pt-3">
                     <p className="font-mono text-[11px] leading-relaxed text-text-muted">{a}</p>
                     <div className="flex flex-wrap items-center gap-1.5">
-                      <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted/40">cites</span>
+                      <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">cites</span>
                       {cites.map((c) => (
                         <Link
                           key={c.q}
@@ -352,7 +352,7 @@ export default async function HomePage() {
                 </details>
               ))}
             </div>
-            <p className="font-mono text-[9px] text-text-muted/40 uppercase tracking-widest">
+            <p className="font-mono text-[9px] text-text-muted/60 uppercase tracking-widest">
               Samples shown · the live Oracle cites exact episodes &amp; timestamps · Initiate+ $10/mo
             </p>
           </div>

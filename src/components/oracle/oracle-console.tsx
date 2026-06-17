@@ -512,7 +512,7 @@ export function OracleConsole() {
           {/* ── Citations ── */}
           {citations.length > 0 && (
             <div className="space-y-2">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/40">
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/60">
                 {"/// archive_sources"}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -568,7 +568,7 @@ export function OracleConsole() {
                   placeholder="your@email.com"
                   value={captureEmail}
                   onChange={(e) => setCaptureEmail(e.target.value)}
-                  className="flex-1 rounded border border-accent-gold/30 bg-void px-3 py-2 font-mono text-xs text-text-primary placeholder-text-muted/40 focus:border-accent-gold/60 focus:outline-none"
+                  className="flex-1 rounded border border-accent-gold/30 bg-void px-3 py-2 font-mono text-xs text-text-primary placeholder-text-muted/60 focus:border-accent-gold/60 focus:outline-none"
                 />
                 <button
                   type="submit"

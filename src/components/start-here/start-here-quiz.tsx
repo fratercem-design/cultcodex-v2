@@ -96,7 +96,7 @@ export function StartHereQuiz() {
             <div
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 i < step
-                  ? "w-8 bg-text-muted/40"
+                  ? "w-8 bg-text-muted/60"
                   : i === step
                   ? `w-8 ${accent.replace("text-", "bg-")}`
                   : "w-4 bg-border"

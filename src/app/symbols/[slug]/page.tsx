@@ -205,7 +205,7 @@ export default async function SymbolDetailPage({
 
             {/* Keywords (for SEO, visually subtle) */}
             <section className="rounded-xl border border-border/50 bg-surface/40 px-5 py-4">
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/40 mb-2">
+              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/60 mb-2">
                 {"/// related_topics"}
               </p>
               <div className="flex flex-wrap gap-2">

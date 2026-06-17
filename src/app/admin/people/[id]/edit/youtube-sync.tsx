@@ -74,7 +74,7 @@ export function YouTubeSync({ personId, initialChannelUrl, initialAvatarUrl }: P
           value={channelUrl}
           onChange={(e) => { setChannelUrl(e.target.value); setStatus("idle"); }}
           placeholder="https://www.youtube.com/@handle  or  @handle"
-          className="flex-1 rounded border border-border bg-void px-3 py-1.5 font-mono text-xs text-text-primary placeholder:text-text-muted/40 focus:border-red-500/50 focus:outline-none"
+          className="flex-1 rounded border border-border bg-void px-3 py-1.5 font-mono text-xs text-text-primary placeholder:text-text-muted/60 focus:border-red-500/50 focus:outline-none"
           // Also surfaces value to the enclosing <form> so the server action saves it
           name="youtubeChannelUrl"
         />

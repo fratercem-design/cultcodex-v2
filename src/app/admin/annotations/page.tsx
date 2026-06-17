@@ -69,7 +69,7 @@ export default async function AdminAnnotationsPage() {
                     <span className="font-mono text-[10px] text-text-muted/70">
                       {a.user.displayName} · {a.user.email}
                     </span>
-                    <span className="font-mono text-[10px] text-text-muted/40">
+                    <span className="font-mono text-[10px] text-text-muted/60">
                       {new Date(a.createdAt).toLocaleDateString()}
                     </span>
                   </div>

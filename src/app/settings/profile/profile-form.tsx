@@ -421,7 +421,7 @@ export function ProfileForm({
                       onChange={(e) => updateLink(i, "label", e.target.value.slice(0, 40))}
                       placeholder="Label"
                       list="link-label-suggestions"
-                      className="w-28 rounded-lg border border-border bg-elevated px-2.5 py-2 font-mono text-[11px] text-text-primary placeholder:text-text-muted/40 focus:border-accent-violet/50 focus:outline-none"
+                      className="w-28 rounded-lg border border-border bg-elevated px-2.5 py-2 font-mono text-[11px] text-text-primary placeholder:text-text-muted/60 focus:border-accent-violet/50 focus:outline-none"
                     />
                   </div>
                   <input
@@ -429,7 +429,7 @@ export function ProfileForm({
                     value={link.url}
                     onChange={(e) => updateLink(i, "url", e.target.value.slice(0, 200))}
                     placeholder={LINK_PLACEHOLDERS[link.label] ?? "https://..."}
-                    className="flex-1 rounded-lg border border-border bg-elevated px-2.5 py-2 font-mono text-[11px] text-text-primary placeholder:text-text-muted/40 focus:border-accent-violet/50 focus:outline-none min-w-0"
+                    className="flex-1 rounded-lg border border-border bg-elevated px-2.5 py-2 font-mono text-[11px] text-text-primary placeholder:text-text-muted/60 focus:border-accent-violet/50 focus:outline-none min-w-0"
                   />
                   <button
                     onClick={() => removeLink(i)}

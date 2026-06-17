@@ -114,7 +114,7 @@ export default async function ErasPage() {
                       <span className="font-mono text-[9px] text-text-muted/50 uppercase tracking-[0.4em]">
                         Era {String(index + 1).padStart(2, "0")}
                       </span>
-                      <span className="font-mono text-[9px] text-text-muted/40">
+                      <span className="font-mono text-[9px] text-text-muted/60">
                         {rangeLabel}
                       </span>
                     </div>
@@ -164,7 +164,7 @@ export default async function ErasPage() {
 
         {/* Footer */}
         <div className="pt-6 border-t border-border flex items-center justify-between gap-4 flex-wrap">
-          <p className="font-mono text-[10px] text-text-muted/40">
+          <p className="font-mono text-[10px] text-text-muted/60">
             {totalEpisodes} episodes catalogued across {ERAS.length} eras
           </p>
           <Link

@@ -57,7 +57,7 @@ export function DailyTransmission({
             {formatDateHuman(date)} · transmission #{date.replace(/-/g, "")}
           </p>
         </div>
-        <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/40">
+        <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">
           rotates daily
         </p>
       </div>
@@ -99,7 +99,7 @@ export function DailyTransmission({
                 </span>
               </Link>
             )}
-            <span className="font-mono text-[10px] text-text-muted/40">·</span>
+            <span className="font-mono text-[10px] text-text-muted/60">·</span>
             <Link
               href={
                 quote.timestampSeconds != null
@@ -161,7 +161,7 @@ export function DailyTransmission({
               href="/psychenomicon/threads"
             />
           </div>
-          <p className="font-mono text-[9px] text-text-muted/40 uppercase tracking-widest pt-1">
+          <p className="font-mono text-[9px] text-text-muted/60 uppercase tracking-widest pt-1">
             past 7 days
           </p>
         </div>
@@ -207,7 +207,7 @@ export function DailyTransmission({
           </Link>
         ) : (
           <div className="rounded-xl border border-dashed border-border bg-void/40 p-5 flex items-center justify-center text-center">
-            <p className="font-mono text-[10px] text-text-muted/40">
+            <p className="font-mono text-[10px] text-text-muted/60">
               vault offline
             </p>
           </div>

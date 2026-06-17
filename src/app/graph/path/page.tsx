@@ -92,7 +92,7 @@ export default async function ConnectionPathPage({ searchParams }: PageProps) {
           />
           <div
             aria-hidden
-            className="hidden sm:flex items-center justify-center pb-2 font-mono text-2xl text-text-muted/40 select-none"
+            className="hidden sm:flex items-center justify-center pb-2 font-mono text-2xl text-text-muted/60 select-none"
           >
             →
           </div>
@@ -157,7 +157,7 @@ function PathInput({
         list="picker-people"
         autoComplete="off"
         spellCheck={false}
-        className="w-full rounded-lg border border-border bg-void px-3 py-2 font-mono text-sm text-text-primary placeholder-text-muted/40 focus:border-accent-violet focus:outline-none"
+        className="w-full rounded-lg border border-border bg-void px-3 py-2 font-mono text-sm text-text-primary placeholder-text-muted/60 focus:border-accent-violet focus:outline-none"
       />
     </label>
   );
@@ -192,7 +192,7 @@ function EmptyHint({
           </Link>
         ))}
       </div>
-      <p className="font-mono text-[10px] text-text-muted/40 uppercase tracking-widest">
+      <p className="font-mono text-[10px] text-text-muted/60 uppercase tracking-widest">
         try: {samples[0].displayName} → {samples[1].displayName}
       </p>
     </div>
@@ -268,7 +268,7 @@ function PathResult({
         </ol>
       </div>
 
-      <p className="font-mono text-[10px] text-text-muted/40 uppercase tracking-widest text-center">
+      <p className="font-mono text-[10px] text-text-muted/60 uppercase tracking-widest text-center">
         the chain connects through shared episodes — each link is real
       </p>
     </section>
@@ -310,7 +310,7 @@ function PathRow({ step, index }: { step: PathStep; index: number }) {
         href={`/people/${step.person.slug}`}
         className="group flex items-center gap-3"
       >
-        <span className="shrink-0 font-mono text-[10px] text-text-muted/40 w-5 tabular-nums">
+        <span className="shrink-0 font-mono text-[10px] text-text-muted/60 w-5 tabular-nums">
           {String(index).padStart(2, "0")}
         </span>
         {step.person.avatarUrl ? (

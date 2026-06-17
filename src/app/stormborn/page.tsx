@@ -73,13 +73,13 @@ export default function StormbornPage() {
       </div>
 
       {/* Footer */}
-      <p className="mt-16 font-mono text-[10px] tracking-wider text-text-muted/40">
+      <p className="mt-16 font-mono text-[10px] tracking-wider text-text-muted/60">
         This page exists because someone cared enough to look.
       </p>
 
       <Link
         href="/"
-        className="mt-6 font-mono text-[10px] tracking-widest text-text-muted/40 transition-colors hover:text-accent-violet/60"
+        className="mt-6 font-mono text-[10px] tracking-widest text-text-muted/60 transition-colors hover:text-accent-violet/60"
       >
         &larr; return to the archive
       </Link>

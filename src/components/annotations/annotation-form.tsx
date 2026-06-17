@@ -55,10 +55,10 @@ export function AnnotationForm({ targetType, targetId, returnPath }: Props) {
         minLength={10}
         maxLength={1500}
         placeholder="Add a connection, a correction, a piece of context the archive missed…"
-        className="w-full rounded-lg border border-accent-cyan/25 bg-void/60 px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/40 focus:border-accent-cyan/60 focus:outline-none resize-none"
+        className="w-full rounded-lg border border-accent-cyan/25 bg-void/60 px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/60 focus:border-accent-cyan/60 focus:outline-none resize-none"
       />
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[9px] text-text-muted/40">Submitted annotations are reviewed before they appear.</p>
+        <p className="font-mono text-[9px] text-text-muted/60">Submitted annotations are reviewed before they appear.</p>
         <button
           type="submit"
           disabled={submitting}

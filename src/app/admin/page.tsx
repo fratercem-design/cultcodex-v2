@@ -216,7 +216,7 @@ export default async function AdminDashboard() {
                     <div className="flex items-center justify-between mb-0.5">
                       <span className="font-mono text-[10px] text-text-muted truncate">
                         {m.label}
-                        {(m.scoreWeight ?? 1) === 0 && <span className="ml-1 text-text-muted/40">(cosmetic)</span>}
+                        {(m.scoreWeight ?? 1) === 0 && <span className="ml-1 text-text-muted/60">(cosmetic)</span>}
                       </span>
                       <span className={`font-mono text-[10px] font-bold ${textColor}`}>
                         {m.count > 0 ? m.count : "\u2714"} {m.count > 0 && `/ ${m.total}`}
