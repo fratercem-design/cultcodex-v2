@@ -34,8 +34,6 @@ function getModel(): string {
   return process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
 }
 
-import { getPrisma, disconnect } from "./ingest/lib";
-
 const LOG_PATH = path.join(__dirname, "clean-quotes-grammar.log");
 
 function log(msg: string) {
@@ -70,23 +68,16 @@ function parseArgs(): { batch: number; dryRun: boolean; force: boolean } {
   return { batch, dryRun, force };
 }
 
-// Simple heuristic to detect quotes that likely need cleaning
 function needsCleaning(text: string): boolean {
-  // filler words
   if (/\b(uh|um|umm|uhh)\b/i.test(text)) return true;
-  // stutter pattern (word-word at start)
   if (/\b(\w+)-\1\b/i.test(text)) return true;
-  // missing capital at start
   if (/^[a-z]/.test(text.trim())) return true;
-  // broken unicode
   if (/â€|Ã |Ã©|â€™|â€œ|â€/.test(text)) return true;
-  // double spaces
   if (/  /.test(text)) return true;
   return false;
 }
 
 async function cleanQuote(client: Anthropic | AnthropicBedrock, model: string, text: string): Promise<string> {
-async function cleanQuote(client: Anthropic, model: string, text: string): Promise<string> {
   const response = await client.messages.create({
     model,
     max_tokens: 400,
@@ -107,7 +98,7 @@ async function main() {
   const quotes = await prisma.quote.findMany({
     select: { id: true, text: true },
     orderBy: { createdAt: "asc" },
-    take: force ? batch : batch * 5, // fetch more so we can filter by heuristic
+    take: force ? batch : batch * 5,
   });
 
   const candidates = force
@@ -124,10 +115,6 @@ async function main() {
 
   const client = makeClient();
   const model = getModel();
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
-  const client = new Anthropic({ apiKey });
-  const model = process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
 
   let changed = 0;
   let unchanged = 0;
