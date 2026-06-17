@@ -78,3 +78,9 @@ scripts/enrich/run-log.txt
 # Brainstorming visual companion (superpowers skill)
 .superpowers/
 __pycache__/
+
+# Psychenomicon art runner runtime artifacts
+scripts/psychenomicon-art/daemon.lock
+scripts/psychenomicon-art/daemon.log
+scripts/psychenomicon-art/run-batch.log
+scripts/psychenomicon-art/output/STOP

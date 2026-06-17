@@ -136,16 +136,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
 export const revalidate = 600;
 
 export async function generateStaticParams() {
-  try {
-    const people = await prisma.person.findMany({
-      select: { slug: true },
-      take: 300,
-      orderBy: { updatedAt: "desc" },
-    });
-    return people.map((p) => ({ slug: p.slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 interface PageProps {

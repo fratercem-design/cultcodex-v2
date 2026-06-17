@@ -34,6 +34,8 @@ function getModel(): string {
   return process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
 }
 
+import { getPrisma, disconnect } from "./ingest/lib";
+
 const LOG_PATH = path.join(__dirname, "clean-quotes-grammar.log");
 
 function log(msg: string) {
@@ -84,6 +86,7 @@ function needsCleaning(text: string): boolean {
 }
 
 async function cleanQuote(client: Anthropic | AnthropicBedrock, model: string, text: string): Promise<string> {
+async function cleanQuote(client: Anthropic, model: string, text: string): Promise<string> {
   const response = await client.messages.create({
     model,
     max_tokens: 400,
@@ -121,6 +124,10 @@ async function main() {
 
   const client = makeClient();
   const model = getModel();
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
+  const client = new Anthropic({ apiKey });
+  const model = process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
 
   let changed = 0;
   let unchanged = 0;

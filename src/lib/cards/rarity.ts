@@ -1,5 +1,33 @@
 import type { Rarity, CardType } from "@/generated/prisma/client";
 
+/** Signal Power points awarded per card (foil = ×2) */
+export const RARITY_POINTS: Record<Rarity, number> = {
+  STATIC:       1,
+  SIGNAL:       5,
+  TRANSMISSION: 15,
+  ANOMALY:      40,
+  ORACLE:       100,
+  LEGENDARY:    300,
+  MYTHIC:       750,
+  FORBIDDEN:    2000,
+};
+
+/** Bonus Signal Credits returned to wallet when this rarity drops in a pack (foil = ×2) */
+export const RARITY_BONUS_CREDITS: Record<Rarity, number> = {
+  STATIC:       0,
+  SIGNAL:       0,
+  TRANSMISSION: 5,
+  ANOMALY:      15,
+  ORACLE:       40,
+  LEGENDARY:    100,
+  MYTHIC:       250,
+  FORBIDDEN:    500,
+};
+
+export function cardPoints(rarity: Rarity, isFoil: boolean): number {
+  return RARITY_POINTS[rarity] * (isFoil ? 2 : 1);
+}
+
 export const RARITY_LABEL: Record<Rarity, string> = {
   STATIC:       "STATIC",
   SIGNAL:       "SIGNAL",

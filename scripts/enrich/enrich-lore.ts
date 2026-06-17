@@ -29,6 +29,8 @@ function getModel(): string {
   return process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
 }
 
+import { getPrisma, disconnect } from "../ingest/lib";
+
 const LOG_PATH = path.join(__dirname, "enrich-lore.log");
 
 function log(msg: string) {
@@ -108,6 +110,7 @@ function parseArgs(): { batch: number; force: boolean } {
 
 async function generateEntry(
   client: Anthropic | AnthropicBedrock,
+  client: Anthropic,
   model: string,
   input: Parameters<typeof buildUserMessage>[0]
 ): Promise<{ summary: string; fullEntry: string }> {
@@ -162,6 +165,10 @@ async function main() {
 
   const client = makeClient();
   const model = getModel();
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
+  const client = new Anthropic({ apiKey });
+  const model = process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
 
   let success = 0;
   let failures = 0;

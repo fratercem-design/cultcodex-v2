@@ -25,7 +25,7 @@ import { getPrisma, disconnect } from "../ingest/lib";
 import { analyzeChapter } from "./analyze";
 import { buildPrompts } from "./prompts";
 import { generateImages } from "./images";
-import { uploadChapterArt } from "./upload";
+import { uploadChapterToRailway } from "./upload-railway";
 import type { ChapterArtOutput } from "./types";
 
 // ─── Output directories ────────────────────────────────────────────────────
@@ -61,12 +61,16 @@ function parseArgs() {
   let dryRun = false;
   let skipImages = false;
   let skipUpload = false;
+  let maxNew: number | undefined;
+  let stopAtTotal: number | undefined;
 
   let uploadOnly = false;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--chapter" && args[i + 1]) { chapterSlug = args[++i]; }
     if (args[i] === "--batch"   && args[i + 1]) { batch = parseInt(args[++i], 10); }
+    if (args[i] === "--max-new" && args[i + 1]) { maxNew = parseInt(args[++i], 10); }
+    if (args[i] === "--stop-at-total" && args[i + 1]) { stopAtTotal = parseInt(args[++i], 10); }
     if (args[i] === "--force")        { force = true; }
     if (args[i] === "--dry-run")      { dryRun = true; skipImages = true; }
     if (args[i] === "--skip-images")  { skipImages = true; }
@@ -74,15 +78,35 @@ function parseArgs() {
     if (args[i] === "--upload-only")  { uploadOnly = true; }
   }
 
-  return { chapterSlug, batch, force, dryRun, skipImages, skipUpload, uploadOnly };
+  return { chapterSlug, batch, maxNew, stopAtTotal, force, dryRun, skipImages, skipUpload, uploadOnly };
+}
+
+// Bluesminds credit exhaustion shows up as a 402 / balance / quota error on
+// image generation (the only Bluesminds-only step). When it does, the durable
+// runner should halt and stay halted rather than burn cycles retrying.
+function isCreditExhausted(err: unknown): boolean {
+  const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+  return (
+    msg.includes("402") ||
+    msg.includes("payment required") ||
+    msg.includes("insufficient_quota") ||
+    msg.includes("credit balance") ||
+    msg.includes("insufficient credit") ||
+    msg.includes("quota")
+  );
 }
 
 // ─── Helper: check if chapter already has output ─────────────────────────
 
 function hasExistingOutput(slug: string): boolean {
   const promptFile = path.join(PROMPTS_DIR, `${slug}.json`);
-  const coverFile  = path.join(IMAGES_DIR, slug, "cover.png");
-  return fs.existsSync(promptFile) && fs.existsSync(coverFile);
+  if (!fs.existsSync(promptFile)) return false;
+  // Require all four images — partial chapters must be reprocessed (the missing
+  // images get filled by generateImages, which skips ones already on disk).
+  for (const s of ["cover", "scene_01", "scene_02", "scene_03"]) {
+    if (!fs.existsSync(path.join(IMAGES_DIR, slug, `${s}.png`))) return false;
+  }
+  return true;
 }
 
 // ─── Sleep ────────────────────────────────────────────────────────────────
@@ -94,7 +118,7 @@ function sleep(ms: number) {
 // ─── Main ─────────────────────────────────────────────────────────────────
 
 async function main() {
-  const { chapterSlug, batch, force, dryRun, skipImages, skipUpload, uploadOnly } = parseArgs();
+  const { chapterSlug, batch, maxNew, stopAtTotal, force, dryRun, skipImages, skipUpload, uploadOnly } = parseArgs();
 
   // Ensure output directories exist
   fs.mkdirSync(PROMPTS_DIR, { recursive: true });
@@ -155,7 +179,43 @@ async function main() {
   let skipped = 0;
   let failed = 0;
 
+  // Graceful stop for the durable runner: `touch output/STOP` halts after the
+  // current chapter (cost control without killing mid-write).
+  const STOP_FILE = path.join(OUTPUT_DIR, "STOP");
+  const writeStop = (reason: string) => {
+    try { fs.writeFileSync(STOP_FILE, `${new Date().toISOString()} ${reason}\n`); } catch { /* best effort */ }
+  };
+
+  // Budget guard: once the whole archive has this many chapters with art, stop
+  // and stay stopped. Lets the durable runner do "N total" then quit.
+  const artBaseline =
+    stopAtTotal != null
+      ? await prisma.psychenomiconChapter.count({ where: { artGeneratedAt: { not: null } } })
+      : 0;
+  if (stopAtTotal != null) {
+    log(`Budget: ${artBaseline}/${stopAtTotal} chapters already have art.`);
+    if (artBaseline >= stopAtTotal) {
+      writeStop(`art total ${artBaseline} >= stop-at-total ${stopAtTotal}`);
+      log(`✅ Target of ${stopAtTotal} reached — wrote STOP, exiting.`);
+      await disconnect();
+      process.exit(0);
+    }
+  }
+
   for (const chapter of chapters) {
+    if (fs.existsSync(STOP_FILE)) {
+      log("⏹  STOP file present — halting gracefully.");
+      break;
+    }
+    if (maxNew && processed >= maxNew) {
+      log(`⏸  Reached --max-new ${maxNew} this run — stopping (resume later).`);
+      break;
+    }
+    if (stopAtTotal != null && artBaseline + processed >= stopAtTotal) {
+      writeStop(`art total reached stop-at-total ${stopAtTotal}`);
+      log(`✅ Reached ${stopAtTotal} total chapters with art — wrote STOP, halting.`);
+      break;
+    }
     const label = `CH.${String(chapter.chapterNumber).padStart(3, "0")} "${chapter.title}" (${chapter.slug})`;
 
     // Skip if already done and not forced (upload-only always re-uploads)
@@ -178,20 +238,16 @@ async function main() {
           skipped++;
           continue;
         }
-        log("  [1/1] Uploading to Supabase Storage…");
+        log("  [1/1] Storing images in Railway Postgres…");
         const localPaths = {
           cover:    path.join(chapterImagesDir, "cover.png"),
           scene_01: path.join(chapterImagesDir, "scene_01.png"),
           scene_02: path.join(chapterImagesDir, "scene_02.png"),
           scene_03: path.join(chapterImagesDir, "scene_03.png"),
         };
-        const artUrls = await uploadChapterArt(chapter.slug, localPaths, { dryRun });
         if (!dryRun) {
-          await prisma.psychenomiconChapter.update({
-            where: { slug: chapter.slug },
-            data: { artImageUrls: artUrls, artGeneratedAt: new Date() },
-          });
-          log(`  ✓  Art URLs saved to DB for ${chapter.slug}`);
+          await uploadChapterToRailway(prisma, chapter.slug, localPaths);
+          log(`  ✓  Art stored + artImageUrls set for ${chapter.slug}`);
         } else {
           log(`  [dry-run] Would save URLs to DB for ${chapter.slug}`);
         }
@@ -265,31 +321,18 @@ async function main() {
         fs.writeFileSync(promptsPath, JSON.stringify(fullOutput, null, 2));
         log(`     Images saved to ${path.relative(process.cwd(), chapterImagesDir)}/`);
 
-        // ── Step 4: Upload to Supabase Storage + write URLs to DB ─────────
-        if (!skipUpload) {
-          log("  [4/4] Uploading to Supabase Storage…");
-          const artUrls = await uploadChapterArt(
-            chapter.slug,
-            {
-              cover:    imagePaths.cover,
-              scene_01: imagePaths.scene_01,
-              scene_02: imagePaths.scene_02,
-              scene_03: imagePaths.scene_03,
-            },
-            { dryRun }
-          );
-
-          // Persist URLs into the DB so the Next.js app can read them
-          await prisma.psychenomiconChapter.update({
-            where: { slug: chapter.slug },
-            data: {
-              artImageUrls:   artUrls,
-              artGeneratedAt: new Date(),
-            },
+        // ── Step 4: Store images in Postgres (Railway) + write URLs to DB ──
+        if (!skipUpload && !dryRun) {
+          log("  [4/4] Storing images in Railway Postgres…");
+          await uploadChapterToRailway(prisma, chapter.slug, {
+            cover:    imagePaths.cover,
+            scene_01: imagePaths.scene_01,
+            scene_02: imagePaths.scene_02,
+            scene_03: imagePaths.scene_03,
           });
-          log(`  ✓  Art URLs saved to DB for ${chapter.slug}`);
+          log(`  ✓  Art stored + artImageUrls set for ${chapter.slug}`);
         } else {
-          log("  [4/4] Skipping upload (--skip-upload)");
+          log("  [4/4] Skipping upload (--skip-upload or --dry-run)");
         }
       } else {
         log("  [3/3] Skipping image generation (--skip-images or --dry-run)");
@@ -301,7 +344,14 @@ async function main() {
     } catch (err) {
       logError(`Failed processing ${label}`, err);
       failed++;
-      // Continue with next chapter rather than aborting the whole batch
+      // Credit exhausted on Bluesminds → halt the durable runner for good so it
+      // stops re-triggering and burning failed retries against a dead balance.
+      if (isCreditExhausted(err)) {
+        writeStop("Bluesminds credit exhausted (402/quota)");
+        log("🛑 Bluesminds credit appears exhausted — wrote STOP, halting runner.");
+        break;
+      }
+      // Otherwise continue with the next chapter rather than aborting the batch.
     }
 
     // Polite gap between chapters to avoid hammering APIs

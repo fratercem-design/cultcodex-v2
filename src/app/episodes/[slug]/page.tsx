@@ -58,17 +58,7 @@ import type { Metadata } from "next";
 export const revalidate = 300;
 
 export async function generateStaticParams() {
-  try {
-    const episodes = await prisma.episode.findMany({
-      where: {},
-      select: { slug: true },
-      take: 500,
-      orderBy: { airDate: "desc" },
-    });
-    return episodes.map((ep) => ({ slug: ep.slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 interface PageProps {

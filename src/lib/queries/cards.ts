@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
 import type { Rarity, CardType } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
-import { rollRarity, rollFoil } from "@/lib/cards/rarity";
+import { rollRarity, rollFoil, cardPoints, RARITY_BONUS_CREDITS } from "@/lib/cards/rarity";
 
 // ─── Vault (all cards) ───────────────────────────────────────────────────────
 
@@ -25,11 +25,23 @@ export async function getUserCollection(userId: string) {
   });
 }
 
+export async function getCollectionPower(userId: string): Promise<number> {
+  const owned = await prisma.ownedCard.findMany({
+    where: { userId },
+    select: { card: { select: { rarity: true } }, isFoil: true, quantity: true },
+  });
+  return owned.reduce(
+    (sum, oc) => sum + cardPoints(oc.card.rarity as Rarity, oc.isFoil) * oc.quantity,
+    0
+  );
+}
+
 export async function getUserCollectionStats(userId: string, { includeWallet = true } = {}) {
-  const [owned, wallet, total] = await Promise.all([
+  const [owned, wallet, total, power] = await Promise.all([
     prisma.ownedCard.count({ where: { userId } }),
     includeWallet ? prisma.userWallet.findUnique({ where: { userId } }) : Promise.resolve(null),
     prisma.card.count({ where: { isActive: true } }),
+    getCollectionPower(userId),
   ]);
   return {
     ownedCount: owned,
@@ -37,6 +49,7 @@ export async function getUserCollectionStats(userId: string, { includeWallet = t
     completionPct: total > 0 ? Math.round((owned / total) * 100) : 0,
     signalCredits: wallet?.balance ?? 0,
     lastDailyClaimAt: wallet?.lastDailyClaimAt ?? null,
+    collectionPower: power,
   };
 }
 
@@ -84,7 +97,7 @@ export async function openPack(userId: string, packSlug: string) {
     allByRarity.get(r)!.push(c);
   }
 
-  const drawn: { cardId: string; isFoil: boolean }[] = [];
+  const drawn: { cardId: string; isFoil: boolean; rarity: Rarity }[] = [];
 
   for (let i = 0; i < pack.cardCount; i++) {
     const rarity = rollRarity({
@@ -109,7 +122,7 @@ export async function openPack(userId: string, packSlug: string) {
     if (pool.length === 0) continue;
 
     const card = pool[Math.floor(Math.random() * pool.length)];
-    drawn.push({ cardId: card.id, isFoil: rollFoil(rarity) });
+    drawn.push({ cardId: card.id, isFoil: rollFoil(rarity), rarity });
   }
 
   if (drawn.length === 0) throw new Error("No cards available in this pack");
@@ -149,14 +162,31 @@ export async function openPack(userId: string, packSlug: string) {
       where: { id: { in: drawn.map((d) => d.cardId) } },
       data: { totalMinted: { increment: 1 } },
     });
+
+    // Award bonus Signal Credits for rare pulls
+    const totalBonus = drawn.reduce(
+      (sum, d) => sum + RARITY_BONUS_CREDITS[d.rarity] * (d.isFoil ? 2 : 1),
+      0
+    );
+    if (totalBonus > 0) {
+      await tx.userWallet.update({
+        where: { userId },
+        data: { balance: { increment: totalBonus }, totalEarned: { increment: totalBonus } },
+      });
+      await tx.creditTransaction.create({
+        data: { userId, amount: totalBonus, reason: "pack_bonus", metadata: { packSlug } },
+      });
+    }
   }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
 
   // Return full card data for the opener UI
   const cards = await prisma.card.findMany({ where: { id: { in: drawn.map((d) => d.cardId) } } });
-  return drawn.map(({ cardId, isFoil }) => ({
+  return drawn.map(({ cardId, isFoil, rarity }) => ({
     ...cards.find((c) => c.id === cardId)!,
     isFoil,
     isNew: true,
+    bonusCredits: RARITY_BONUS_CREDITS[rarity] * (isFoil ? 2 : 1),
+    signalPower: cardPoints(rarity, isFoil),
   }));
 }
 
