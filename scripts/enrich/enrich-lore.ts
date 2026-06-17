@@ -17,19 +17,17 @@ import { getPrisma, disconnect } from "../ingest/lib";
 
 function makeClient(): Anthropic | AnthropicBedrock {
   if (process.env.USE_BEDROCK === "true") {
-    return new AnthropicBedrock();
+    return new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
   }
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 }
 
 function getModel(): string {
   if (process.env.USE_BEDROCK === "true") {
-    return process.env.ENRICHMENT_MODEL ?? "us.anthropic.claude-haiku-4-5-20251001-v1:0";
+    return process.env.ENRICHMENT_MODEL ?? "us.anthropic.claude-3-5-haiku-20241022-v1:0";
   }
   return process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
 }
-
-import { getPrisma, disconnect } from "../ingest/lib";
 
 const LOG_PATH = path.join(__dirname, "enrich-lore.log");
 
@@ -110,7 +108,6 @@ function parseArgs(): { batch: number; force: boolean } {
 
 async function generateEntry(
   client: Anthropic | AnthropicBedrock,
-  client: Anthropic,
   model: string,
   input: Parameters<typeof buildUserMessage>[0]
 ): Promise<{ summary: string; fullEntry: string }> {
@@ -165,10 +162,6 @@ async function main() {
 
   const client = makeClient();
   const model = getModel();
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
-  const client = new Anthropic({ apiKey });
-  const model = process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
 
   let success = 0;
   let failures = 0;
