@@ -14,7 +14,16 @@ import OpenAI from "openai";
 export type Provider = "openrouter" | "bedrock" | "anthropic";
 type Logger = (msg: string) => void;
 
-const DEFAULT_OPENROUTER_MODEL = "meta-llama/llama-3.3-70b-instruct:free";
+// Free OpenRouter models for enrichment, ordered most-capable → fallback. If one
+// is rate-limited-out or retired, complete() advances to the next. Pin a single
+// model with OPENROUTER_MODEL to skip the fallback chain.
+const FREE_OPENROUTER_CANDIDATES = [
+  "meta-llama/llama-3.3-70b-instruct:free",
+  "deepseek/deepseek-chat-v3-0324:free",
+  "google/gemini-2.0-flash-exp:free",
+  "qwen/qwen-2.5-72b-instruct:free",
+  "mistralai/mistral-7b-instruct:free",
+];
 
 function flag(name: string): boolean {
   const v = (process.env[name] ?? "").trim().toLowerCase();
@@ -89,6 +98,8 @@ async function probeBedrock(client: AnthropicBedrock, log: Logger): Promise<stri
 let _client: Anthropic | AnthropicBedrock | OpenAI | null = null;
 let _model: string | null = null;
 let _provider: Provider | null = null;
+let _orCandidates: string[] = [];
+let _orIdx = 0;
 
 async function ensureReady(log: Logger): Promise<void> {
   if (_client && _model) return;
@@ -113,8 +124,11 @@ async function ensureReady(log: Logger): Promise<void> {
         "X-Title": "CultCodex enrichment",
       },
     });
-    _model = process.env.OPENROUTER_MODEL ?? process.env.ENRICHMENT_MODEL ?? DEFAULT_OPENROUTER_MODEL;
-    log(`Provider: OpenRouter — model: ${_model}`);
+    const pinned = process.env.OPENROUTER_MODEL ?? process.env.ENRICHMENT_MODEL;
+    _orCandidates = pinned ? [pinned] : [...FREE_OPENROUTER_CANDIDATES];
+    _orIdx = 0;
+    _model = _orCandidates[0];
+    log(`Provider: OpenRouter — model: ${_model}${pinned ? "" : ` (+${_orCandidates.length - 1} free fallbacks)`}`);
     return;
   }
 
@@ -150,6 +164,32 @@ function isRateLimit(err: unknown): boolean {
   return msg.includes("rate limit") || msg.includes("429") || msg.includes("too many requests");
 }
 
+// A free model that's retired, has no endpoints, or hit its daily cap. Distinct
+// from a transient 429 — here we should switch models, not wait and retry.
+function isModelExhausted(err: unknown): boolean {
+  const status = (err as { status?: number } | null)?.status;
+  if (status === 402 || status === 404) return true;
+  const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+  return (
+    msg.includes("no endpoints") ||
+    msg.includes("not a valid model") ||
+    msg.includes("no allowed providers") ||
+    msg.includes("insufficient") ||
+    msg.includes("quota") ||
+    msg.includes("daily limit") ||
+    msg.includes("not found")
+  );
+}
+
+/** Move to the next free OpenRouter model. Returns false if none are left. */
+function advanceOpenRouterModel(log: Logger): boolean {
+  if (_provider !== "openrouter" || _orIdx >= _orCandidates.length - 1) return false;
+  _orIdx++;
+  _model = _orCandidates[_orIdx];
+  log(`  (switching to next free model: ${_model})`);
+  return true;
+}
+
 /** Run one completion through the active provider and return the trimmed text. */
 export async function complete(opts: CompleteOptions, log: Logger = console.log): Promise<string> {
   await ensureReady(log);
@@ -160,6 +200,10 @@ export async function complete(opts: CompleteOptions, log: Logger = console.log)
     try {
       return await runComplete(opts);
     } catch (err) {
+      if (isModelExhausted(err) && advanceOpenRouterModel(log)) {
+        attempt = 0; // fresh budget for the new model
+        continue;
+      }
       if (isRateLimit(err) && attempt < maxAttempts) {
         const waitMs = 2000 * attempt;
         log(`  (rate limited — waiting ${waitMs / 1000}s, attempt ${attempt}/${maxAttempts - 1})`);
