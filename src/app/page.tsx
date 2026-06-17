@@ -54,7 +54,7 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest, dailyChapter] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest, dailyChapter, bookEdition] = await Promise.all([
     getCounts().catch(() => ({
       episodes: 0, segments: 0, people: 0, topics: 0,
       lore: 0, quotes: 0, totalHours: 0,
@@ -73,6 +73,7 @@ export default async function HomePage() {
     getCurrentUser().catch(() => null),
     prisma.weeklyDigest.findFirst({ where: { published: true }, orderBy: { weekOf: "desc" }, select: { title: true, blurb: true, weekOf: true } }).catch(() => null),
     getDailyIllustratedChapter().catch(() => null),
+    prisma.bookEdition.findUnique({ where: { sku: "psychenomicon-vol-1" }, select: { title: true, pageCount: true, chapterFrom: true, chapterTo: true } }).catch(() => null),
   ]);
 
   // Redirect new users to complete onboarding before they see the main app
@@ -297,6 +298,33 @@ export default async function HomePage() {
                   </h3>
                   <p className="font-mono text-[11px] text-text-muted">
                     Psychenomicon · Chapter {dailyChapter.chapterNumber} — an illustrated transmission. Read it →
+                  </p>
+                </div>
+              </div>
+            </Link>
+          )}
+
+          {/* ── THE BOOK — PSYCHENOMICON VOLUME I ─────────────────────── */}
+          {bookEdition && (
+            <Link
+              href="/psychenomicon/book"
+              className="group block overflow-hidden rounded-xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface transition-colors hover:border-accent-gold/60"
+            >
+              <div className="flex items-stretch">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/api/psychenomicon-art/chapter-${String(bookEdition.chapterFrom).padStart(3, "0")}/cover`}
+                  alt=""
+                  loading="lazy"
+                  className="h-32 w-24 flex-shrink-0 object-cover sm:h-40 sm:w-28"
+                />
+                <div className="flex flex-col justify-center gap-1.5 px-5 py-4">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/70">{"/// the_book · $19"}</p>
+                  <h3 className="font-display text-lg font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-gold">
+                    The Psychenomicon — Volume I
+                  </h3>
+                  <p className="font-mono text-[11px] text-text-muted">
+                    {bookEdition.chapterTo - bookEdition.chapterFrom + 1} illustrated chapters · {bookEdition.pageCount}-page PDF, yours to keep. Get it →
                   </p>
                 </div>
               </div>
