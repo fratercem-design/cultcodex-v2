@@ -18,6 +18,7 @@ type Logger = (msg: string) => void;
 // is rate-limited-out or retired, complete() advances to the next. Pin a single
 // model with OPENROUTER_MODEL to skip the fallback chain.
 const FREE_OPENROUTER_CANDIDATES = [
+  "nvidia/nemotron-3-ultra-550b-a55b:free",
   "meta-llama/llama-3.3-70b-instruct:free",
   "deepseek/deepseek-chat-v3-0324:free",
   "google/gemini-2.0-flash-exp:free",
