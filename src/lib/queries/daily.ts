@@ -54,6 +54,42 @@ function todayYMD(): string {
   return `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}-${String(now.getUTCDate()).padStart(2, "0")}`;
 }
 
+export interface DailyChapter {
+  slug: string;
+  title: string;
+  chapterNumber: number;
+  coverUrl: string;
+}
+
+/**
+ * Deterministic daily pick from the illustrated Psychenomicon chapters (those
+ * with generated art). Same chapter for everyone all day, rotates at UTC
+ * midnight. Returns null if no chapters have art yet.
+ */
+export async function getDailyIllustratedChapter(): Promise<DailyChapter | null> {
+  const where = { artGeneratedAt: { not: null } } as const;
+  const total = await prisma.psychenomiconChapter.count({ where });
+  if (total === 0) return null;
+
+  // Distinct multiplier so the pick doesn't rhyme with the daily quote/episode.
+  const offset = (todayDaySeed() * 5381) % total;
+  const [row] = await prisma.psychenomiconChapter.findMany({
+    where,
+    orderBy: { chapterNumber: "asc" },
+    skip: offset,
+    take: 1,
+    select: { slug: true, title: true, chapterNumber: true },
+  });
+  if (!row) return null;
+
+  return {
+    slug: row.slug,
+    title: row.title,
+    chapterNumber: row.chapterNumber,
+    coverUrl: `/api/psychenomicon-art/${row.slug}/cover`,
+  };
+}
+
 async function getDailyQuote(seed: number): Promise<DailyQuote | null> {
   // Only consider quotes that have a speaker AND an episode for a clean visual
   // Exclude quotes that are empty or consist only of censored placeholders like "[ __ ]"
