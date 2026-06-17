@@ -20,7 +20,7 @@ import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import { AnnotationSection } from "@/components/annotations/annotation-section";
 import type { Metadata } from "next";
 
-export const revalidate = 600;
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
   return [];
