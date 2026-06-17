@@ -114,6 +114,21 @@ export function breadcrumbListJsonLd(items: BreadcrumbItem[]): Record<string, un
   };
 }
 
+/**
+ * Convenience for the common Home > Section > Page detail breadcrumb.
+ * Builds absolute URLs from SITE_URL so callers pass paths only.
+ */
+export function detailBreadcrumbJsonLd(
+  section: { name: string; path: string },
+  page: { name: string; path: string }
+): Record<string, unknown> {
+  return breadcrumbListJsonLd([
+    { name: "Home", url: SITE_URL },
+    { name: section.name, url: `${SITE_URL}${section.path}` },
+    { name: page.name, url: `${SITE_URL}${page.path}` },
+  ]);
+}
+
 export function organizationJsonLd(): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
