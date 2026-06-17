@@ -17,6 +17,23 @@ import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
 import Anthropic from "@anthropic-ai/sdk";
+import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
+import { getPrisma, disconnect } from "./ingest/lib";
+
+function makeClient(): Anthropic | AnthropicBedrock {
+  if (process.env.USE_BEDROCK === "true") {
+    return new AnthropicBedrock();
+  }
+  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+}
+
+function getModel(): string {
+  if (process.env.USE_BEDROCK === "true") {
+    return process.env.ENRICHMENT_MODEL ?? "us.anthropic.claude-haiku-4-5-20251001-v1:0";
+  }
+  return process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
+}
+
 import { getPrisma, disconnect } from "./ingest/lib";
 
 const LOG_PATH = path.join(__dirname, "clean-quotes-grammar.log");
@@ -68,6 +85,7 @@ function needsCleaning(text: string): boolean {
   return false;
 }
 
+async function cleanQuote(client: Anthropic | AnthropicBedrock, model: string, text: string): Promise<string> {
 async function cleanQuote(client: Anthropic, model: string, text: string): Promise<string> {
   const response = await client.messages.create({
     model,
@@ -104,6 +122,8 @@ async function main() {
     return;
   }
 
+  const client = makeClient();
+  const model = getModel();
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
   const client = new Anthropic({ apiKey });
