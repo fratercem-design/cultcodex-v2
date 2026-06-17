@@ -120,6 +120,19 @@ export async function POST(request: NextRequest) {
             }
           }
         }
+
+        // One-time book purchase → grant a BookPurchase entitlement.
+        if (session.mode === "payment" && session.metadata?.bookSku && session.metadata?.codexUserId) {
+          const sku = session.metadata.bookSku;
+          const userId = session.metadata.codexUserId;
+          await prisma.bookPurchase
+            .upsert({
+              where: { userId_sku: { userId, sku } },
+              create: { userId, sku, stripeSessionId: session.id },
+              update: { stripeSessionId: session.id },
+            })
+            .catch((err) => console.error("[webhook] book entitlement failed:", err));
+        }
         break;
       }
 
