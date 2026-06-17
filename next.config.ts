@@ -115,6 +115,10 @@ const nextConfig: NextConfig = {
       ],
     },
   ],
+  // /premium is the canonical pricing page; catch people who type /pricing.
+  redirects: async () => [
+    { source: "/pricing", destination: "/premium", permanent: true },
+  ],
 };
 
 export default nextConfig;
