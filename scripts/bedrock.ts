@@ -1,33 +1,43 @@
 /**
- * Shared Anthropic / AWS Bedrock client helper for enrichment scripts.
+ * Shared AI client for enrichment scripts. Picks a provider in this order:
+ *   1. OpenRouter  — if OPENROUTER_API_KEY is set (or USE_OPENROUTER=true)
+ *   2. AWS Bedrock — if USE_BEDROCK=true (needs AWS_* creds)
+ *   3. Anthropic   — otherwise (ANTHROPIC_API_KEY)
  *
- * Set USE_BEDROCK=true to route through AWS Bedrock (needs AWS_ACCESS_KEY_ID,
- * AWS_SECRET_ACCESS_KEY, AWS_REGION). Otherwise uses the Anthropic direct API
- * with ANTHROPIC_API_KEY.
- *
- * On Bedrock, model availability varies per account/region, so resolveModel()
- * probes a list of candidates and returns the first one this account can call.
- * Set ENRICHMENT_MODEL to pin a specific model and skip probing.
+ * Every script goes through complete() so it doesn't care which backend runs.
+ * Pin a model with ENRICHMENT_MODEL (or OPENROUTER_MODEL for OpenRouter).
  */
 import Anthropic from "@anthropic-ai/sdk";
 import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
+import OpenAI from "openai";
 
-export type AIClient = Anthropic | AnthropicBedrock;
+export type Provider = "openrouter" | "bedrock" | "anthropic";
+type Logger = (msg: string) => void;
+
+const DEFAULT_OPENROUTER_MODEL = "meta-llama/llama-3.3-70b-instruct:free";
+
+function flag(name: string): boolean {
+  const v = (process.env[name] ?? "").trim().toLowerCase();
+  return v === "true" || v === "1" || v === "yes";
+}
 
 export function usingBedrock(): boolean {
-  return process.env.USE_BEDROCK === "true";
+  return flag("USE_BEDROCK");
 }
 
-export function makeClient(): AIClient {
-  if (usingBedrock()) {
-    return new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
-  }
-  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+export function usingOpenRouter(): boolean {
+  return flag("USE_OPENROUTER") || !!(process.env.OPENROUTER_API_KEY ?? "").trim();
 }
 
-// Bedrock candidates ordered cheap-and-widely-available → more capable.
-// Mix of inference-profile ids (us.*) and direct foundation-model ids so at
-// least one matches whatever the account has enabled.
+export function resolveProvider(): Provider {
+  if (usingOpenRouter()) return "openrouter";
+  if (usingBedrock()) return "bedrock";
+  return "anthropic";
+}
+
+// Bedrock candidates ordered cheap-and-widely-available → more capable. Mix of
+// inference-profile ids (us.*) and direct foundation-model ids so at least one
+// matches whatever the account has enabled.
 const BEDROCK_CANDIDATES = [
   "us.anthropic.claude-3-5-haiku-20241022-v1:0",
   "anthropic.claude-3-haiku-20240307-v1:0",
@@ -37,8 +47,6 @@ const BEDROCK_CANDIDATES = [
   "anthropic.claude-3-5-sonnet-20240620-v1:0",
 ];
 
-// Errors that mean "this model id won't work, try the next one" rather than a
-// transient failure we should treat as success.
 function isUnavailableError(err: unknown): boolean {
   const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
   return (
@@ -52,23 +60,7 @@ function isUnavailableError(err: unknown): boolean {
   );
 }
 
-/**
- * Returns a usable model id. Direct Anthropic API uses the default below
- * (or ENRICHMENT_MODEL). Bedrock probes BEDROCK_CANDIDATES with a 1-token
- * ping and returns the first that responds, unless ENRICHMENT_MODEL pins one.
- */
-export async function resolveModel(
-  client: AIClient,
-  log: (msg: string) => void = console.log
-): Promise<string> {
-  if (!usingBedrock()) {
-    return process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
-  }
-
-  if (process.env.ENRICHMENT_MODEL) {
-    return process.env.ENRICHMENT_MODEL;
-  }
-
+async function probeBedrock(client: AnthropicBedrock, log: Logger): Promise<string> {
   for (const model of BEDROCK_CANDIDATES) {
     try {
       await client.messages.create({
@@ -76,7 +68,6 @@ export async function resolveModel(
         max_tokens: 1,
         messages: [{ role: "user", content: "hi" }],
       });
-      log(`Bedrock model selected: ${model}`);
       return model;
     } catch (err) {
       if (isUnavailableError(err)) {
@@ -84,14 +75,90 @@ export async function resolveModel(
         continue;
       }
       // Non-availability error (rate limit, etc.) → model exists, use it.
-      log(`Bedrock model selected: ${model} (probe hit a transient error, proceeding)`);
+      log(`  (probe of ${model} hit a transient error, using it)`);
       return model;
     }
   }
-
   throw new Error(
     "No Bedrock model available. Enable Claude model access in the AWS Bedrock " +
-      "console (region " + (process.env.AWS_REGION ?? "us-east-1") + "), or set " +
-      "ENRICHMENT_MODEL to a model id your account can use."
+      "console (region " + (process.env.AWS_REGION ?? "us-east-1") + "), set " +
+      "ENRICHMENT_MODEL to a usable id, or set OPENROUTER_API_KEY to use OpenRouter."
   );
+}
+
+let _client: Anthropic | AnthropicBedrock | OpenAI | null = null;
+let _model: string | null = null;
+let _provider: Provider | null = null;
+
+async function ensureReady(log: Logger): Promise<void> {
+  if (_client && _model) return;
+  _provider = resolveProvider();
+
+  if (_provider === "openrouter") {
+    _client = new OpenAI({
+      apiKey: process.env.OPENROUTER_API_KEY,
+      baseURL: "https://openrouter.ai/api/v1",
+      defaultHeaders: {
+        "HTTP-Referer": "https://cultcodex.me",
+        "X-Title": "CultCodex enrichment",
+      },
+    });
+    _model = process.env.OPENROUTER_MODEL ?? process.env.ENRICHMENT_MODEL ?? DEFAULT_OPENROUTER_MODEL;
+    log(`Provider: OpenRouter — model: ${_model}`);
+    return;
+  }
+
+  if (_provider === "bedrock") {
+    const client = new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
+    _client = client;
+    _model = process.env.ENRICHMENT_MODEL ?? (await probeBedrock(client, log));
+    log(`Provider: Bedrock — model: ${_model}`);
+    return;
+  }
+
+  _client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  _model = process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001";
+  log(`Provider: Anthropic — model: ${_model}`);
+}
+
+/** Initialise the client + model and log the chosen provider. Returns the model id. */
+export async function init(log: Logger = console.log): Promise<string> {
+  await ensureReady(log);
+  return _model!;
+}
+
+export interface CompleteOptions {
+  system: string;
+  user: string;
+  maxTokens: number;
+}
+
+/** Run one completion through the active provider and return the trimmed text. */
+export async function complete(opts: CompleteOptions, log: Logger = console.log): Promise<string> {
+  await ensureReady(log);
+
+  if (_provider === "openrouter") {
+    const res = await (_client as OpenAI).chat.completions.create({
+      model: _model!,
+      max_tokens: opts.maxTokens,
+      messages: [
+        { role: "system", content: opts.system },
+        { role: "user", content: opts.user },
+      ],
+    });
+    const text = res.choices[0]?.message?.content ?? "";
+    if (!text.trim()) throw new Error("No text response");
+    return text.trim();
+  }
+
+  // Anthropic and Bedrock share the Messages API shape.
+  const res = await (_client as Anthropic).messages.create({
+    model: _model!,
+    max_tokens: opts.maxTokens,
+    system: opts.system,
+    messages: [{ role: "user", content: opts.user }],
+  });
+  const block = res.content.find((b) => b.type === "text");
+  if (!block || block.type !== "text") throw new Error("No text response");
+  return block.text.trim();
 }

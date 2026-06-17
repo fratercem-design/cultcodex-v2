@@ -11,10 +11,8 @@
 import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
-import Anthropic from "@anthropic-ai/sdk";
-import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { getPrisma, disconnect } from "../ingest/lib";
-import { makeClient, resolveModel } from "../bedrock";
+import { complete, init } from "../bedrock";
 
 const LOG_PATH = path.join(__dirname, "enrich-lore.log");
 
@@ -93,22 +91,20 @@ function parseArgs(): { batch: number; force: boolean } {
   return { batch, force };
 }
 
+function stripJsonFence(text: string): string {
+  // Some models wrap JSON in ```json fences despite instructions; strip them.
+  return text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
+}
+
 async function generateEntry(
-  client: Anthropic | AnthropicBedrock,
-  model: string,
   input: Parameters<typeof buildUserMessage>[0]
 ): Promise<{ summary: string; fullEntry: string }> {
-  const response = await client.messages.create({
-    model,
-    max_tokens: 600,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: buildUserMessage(input) }],
-  });
+  const text = await complete(
+    { system: SYSTEM_PROMPT, user: buildUserMessage(input), maxTokens: 600 },
+    log
+  );
 
-  const textBlock = response.content.find((b) => b.type === "text");
-  if (!textBlock || textBlock.type !== "text") throw new Error("No text response");
-
-  const parsed = JSON.parse(textBlock.text.trim());
+  const parsed = JSON.parse(stripJsonFence(text));
   if (!parsed.summary || !parsed.fullEntry) throw new Error("Missing summary or fullEntry in response");
   return { summary: String(parsed.summary), fullEntry: String(parsed.fullEntry) };
 }
@@ -147,8 +143,7 @@ async function main() {
 
   log(`Unenriched lore entries: ${total} — processing batch of ${entries.length}`);
 
-  const client = makeClient();
-  const model = await resolveModel(client, log);
+  await init(log);
 
   let success = 0;
   let failures = 0;
@@ -159,7 +154,7 @@ async function main() {
         .map((e) => e.episode.summaryShort)
         .filter((s): s is string => !!s && s.length > 20);
 
-      const result = await generateEntry(client, model, {
+      const result = await generateEntry({
         title: entry.title,
         category: entry.category,
         episodeTitles: entry.episodes.map((e) => e.episode.title),

@@ -16,10 +16,8 @@
 import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
-import Anthropic from "@anthropic-ai/sdk";
-import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { getPrisma, disconnect } from "./ingest/lib";
-import { makeClient, resolveModel } from "./bedrock";
+import { complete, init } from "./bedrock";
 
 const LOG_PATH = path.join(__dirname, "clean-quotes-grammar.log");
 
@@ -64,16 +62,8 @@ function needsCleaning(text: string): boolean {
   return false;
 }
 
-async function cleanQuote(client: Anthropic | AnthropicBedrock, model: string, text: string): Promise<string> {
-  const response = await client.messages.create({
-    model,
-    max_tokens: 400,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: text }],
-  });
-  const block = response.content.find((b) => b.type === "text");
-  if (!block || block.type !== "text") throw new Error("No text response");
-  return block.text.trim();
+async function cleanQuote(text: string): Promise<string> {
+  return complete({ system: SYSTEM_PROMPT, user: text, maxTokens: 400 }, log);
 }
 
 async function main() {
@@ -100,8 +90,7 @@ async function main() {
     return;
   }
 
-  const client = makeClient();
-  const model = await resolveModel(client, log);
+  await init(log);
 
   let changed = 0;
   let unchanged = 0;
@@ -109,7 +98,7 @@ async function main() {
 
   for (const q of candidates) {
     try {
-      const cleaned = await cleanQuote(client, model, q.text);
+      const cleaned = await cleanQuote(q.text);
 
       if (cleaned === q.text) {
         unchanged++;
