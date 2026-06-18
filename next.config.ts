@@ -66,7 +66,7 @@ const nextConfig: NextConfig = {
             // Images: self + inline data URIs + blob + any HTTPS (YouTube thumbnails, Google avatars, imgur).
             "img-src 'self' data: blob: https:",
             // Frames: YouTube + Cult of Psyche Arcanum Oracle.
-            "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://tarot-oracle-production.up.railway.app",
+            "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
             // Fetch/XHR: self + GA4 measurement beacon.
             "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com",
             // No plugins (Flash, etc.).
