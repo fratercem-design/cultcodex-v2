@@ -644,3 +644,168 @@ body {
 .rest-person-link:hover {
   border-color: var(--neon-3);
 }
+
+/* ═══════════════════════════════════════════════════════
+   APPEARANCE TOGGLES — user-controlled (see @/lib/appearance)
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Ambient visuals OFF: kill the matrix rain, CRT scanlines, grain, vignette ── */
+html.ambient-off .ambient-canvas,
+html.ambient-off .crt-overlay {
+  display: none !important;
+}
+html.ambient-off body::before,
+html.ambient-off body::after {
+  display: none !important;
+}
+
+/* ── High contrast: lift muted text toward white, flatten background to black,
+   strengthen borders. Overrides the root tokens that body + var()-driven
+   components consume, so it cascades site-wide. ── */
+html.high-contrast {
+  --text-primary: #ffffff;
+  --text-muted: #e9e3d3;
+  --color-text-primary: #ffffff;
+  --color-text-muted: #e9e3d3;
+  --foreground: #ffffff;
+  --muted-foreground: #e9e3d3;
+  --term-fg: #ffffff;
+  --term-fg-dim: #eaf3ef;
+  --term-fg-faint: #d6e4de;
+  --term-fg-mute: #bcd0c8;
+  --bg-void: #000000;
+  --term-bg: #000000;
+  --term-bg-1: #04060a;
+  --term-bg-2: #0a0e15;
+  --border: #44557e;
+  --term-line: #44557e;
+  --term-line-2: #50628e;
+}
+/* In high contrast, tone ambient noise down so text dominates (unless the user
+   already turned ambient off, which hides it entirely via the rules above). */
+html.high-contrast .ambient-canvas {
+  opacity: 0.4;
+}
+html.high-contrast body::before {
+  opacity: 0.3;
+}
+
+/* ── Floating control (bottom-left) ── */
+.appearance-controls {
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-family: var(--font-mono), "IBM Plex Mono", monospace;
+}
+
+.appearance-fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--term-panel) 88%, transparent);
+  border: 1px solid var(--term-line);
+  color: var(--accent-gold);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.appearance-fab:hover {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 8px rgba(200, 169, 107, 0.25);
+}
+.appearance-fab:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.appearance-panel {
+  width: 16rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--term-panel) 96%, transparent);
+  border: 1px solid var(--term-line);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.appearance-panel__title {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  color: var(--term-fg-mute);
+  padding: 0 0.25rem 0.35rem;
+}
+
+.appearance-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-primary);
+  transition: background-color 0.15s;
+}
+.appearance-switch:hover {
+  background: color-mix(in srgb, var(--accent-gold) 8%, transparent);
+}
+.appearance-switch:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: -2px;
+}
+.appearance-switch__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.appearance-switch__label {
+  font-size: 0.8rem;
+  color: var(--text-primary);
+}
+.appearance-switch__hint {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+.appearance-switch__track {
+  position: relative;
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  background: var(--term-bg-2);
+  border: 1px solid var(--term-line);
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.appearance-switch[aria-checked="true"] .appearance-switch__track {
+  background: var(--accent-gold-dim);
+  border-color: var(--accent-gold);
+}
+.appearance-switch__thumb {
+  position: absolute;
+  top: 50%;
+  left: 0.15rem;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 999px;
+  background: var(--term-fg-mute);
+  transform: translateY(-50%);
+  transition: transform 0.15s, background-color 0.15s;
+}
+.appearance-switch[aria-checked="true"] .appearance-switch__thumb {
+  transform: translate(1rem, -50%);
+  background: var(--accent-gold);
+}

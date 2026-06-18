@@ -142,6 +142,17 @@ export default async function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
+        {/* Apply persisted appearance prefs (ambient visuals / high contrast)
+            before first paint to avoid a flash. Mirrors @/lib/appearance. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var r=document.documentElement;" +
+              "if(localStorage.getItem('cc-ambient')==='off')r.classList.add('ambient-off');" +
+              "if(localStorage.getItem('cc-contrast')==='high')r.classList.add('high-contrast');" +
+              "}catch(e){}})();",
+          }}
+        />
         {/* Episode thumbnails and channel avatars load from YouTube CDNs on
             most archive pages — preconnect cuts their connection setup cost. */}
         <link rel="preconnect" href="https://i.ytimg.com" />

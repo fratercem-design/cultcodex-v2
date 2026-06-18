@@ -25,12 +25,18 @@ const CommandPalette = dynamic(
   { ssr: false }
 );
 
+const AppearanceControls = dynamic(
+  () => import("@/components/layout/appearance-controls").then((m) => m.AppearanceControls),
+  { ssr: false }
+);
+
 export function ClientOverlays() {
   return (
     <>
       <AmbientVisualSystem />
       <KonamiEasterEgg />
       <CommandPalette />
+      <AppearanceControls />
     </>
   );
 }

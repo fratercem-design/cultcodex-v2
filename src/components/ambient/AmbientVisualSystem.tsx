@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { getAmbient, subscribeAppearance } from "@/lib/appearance";
 
 // ─── Glyph pool: runic + katakana + occult + binary ───────────────────────────
 const GLYPHS = [
@@ -252,8 +253,14 @@ function applyGlitch(ctx: CanvasRenderingContext2D, w: number, h: number) {
 // ─── Component ────────────────────────────────────────────────────────────────
 export function AmbientVisualSystem() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // User toggle: when ambient visuals are off, the animation loop never starts.
+  const [enabled, setEnabled] = useState<boolean>(() => getAmbient() === "on");
+
+  useEffect(() => subscribeAppearance(() => setEnabled(getAmbient() === "on")), []);
 
   useEffect(() => {
+    // User disabled ambient visuals → don't run.
+    if (!enabled) return;
     // Respect reduced-motion preference
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -344,7 +351,7 @@ export function AmbientVisualSystem() {
       window.removeEventListener("mousemove", onMouse);
       document.removeEventListener("visibilitychange", onVis);
     };
-  }, []);
+  }, [enabled]);
 
   return (
     // mix-blend-mode: screen makes the near-black canvas background transparent
@@ -352,6 +359,7 @@ export function AmbientVisualSystem() {
     // pointer-events: none keeps all clicks/scroll passing through to content.
     <div
       aria-hidden="true"
+      className="ambient-canvas"
       style={{
         position: "fixed",
         inset: 0,
