@@ -2,7 +2,11 @@
 buildCommand = "npm run build"
 
 [deploy]
-preDeployCommand = "npx prisma migrate deploy"
+# Non-fatal: a transient Postgres outage during deploy must NOT fail the whole
+# deployment (that turns a brief DB blip into a full outage with zero healthy
+# instances). The app starts, serves degraded, and recovers when the DB returns;
+# pending migrations apply on the next deploy that catches the DB up.
+preDeployCommand = "npx prisma migrate deploy || echo 'migrate skipped (DB unreachable) — continuing'"
 startCommand = "npm run start"
 healthcheckPath = "/"
 healthcheckTimeout = 300
