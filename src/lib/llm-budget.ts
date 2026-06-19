@@ -37,8 +37,11 @@ function alertCapHit(bucket: string, cap: number): void {
   fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    // cultcodex.me isn't verified on Resend, so default to the sandbox sender
+    // (delivers to the account owner). Override with ALERT_FROM once the domain
+    // is verified.
     body: JSON.stringify({
-      from: "CultCodex Alerts <notifications@cultcodex.me>",
+      from: process.env.ALERT_FROM || "CultCodex Alerts <onboarding@resend.dev>",
       to,
       subject: `⚠️ CultCodex: "${bucket}" daily AI cap hit (possible attack)`,
       text,
