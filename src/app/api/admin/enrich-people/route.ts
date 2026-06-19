@@ -11,7 +11,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { anthropic as client, bedrockModelId } from "@/lib/anthropic";
+import { enrichComplete } from "@/lib/enrichment-llm";
 import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
@@ -173,17 +173,10 @@ ${episodeList}
 
 Write the dossier for ${person.displayName}.`;
 
-      const response = await client.messages.create({
-        model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
-        max_tokens: 1500,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: "user", content: userMessage }],
-      });
+      const responseText = await enrichComplete({ system: SYSTEM_PROMPT, user: userMessage, maxTokens: 1500 });
+      if (!responseText) throw new Error("No text response");
 
-      const textBlock = response.content.find((b) => b.type === "text");
-      if (!textBlock || textBlock.type !== "text") throw new Error("No text response");
-
-      const fullText = textBlock.text.trim();
+      const fullText = responseText.trim();
 
       // Extract shortBio from the first line (before the first ## header)
       const firstHashIndex = fullText.indexOf("##");

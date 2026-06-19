@@ -15,8 +15,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { anthropic as defaultClient } from "@/lib/anthropic";
-import { bedrockModelId } from "@/lib/anthropic";
+import { enrichComplete } from "@/lib/enrichment-llm";
 import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
@@ -68,8 +67,6 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const batch: number = body.batch ?? 8;
   const minEpisodes: number = body.minEpisodes ?? 2;
-
-  const client = defaultClient;
 
   // Fetch topics needing descriptions (with enough episodes)
   const allPending = await prisma.topic.findMany({
@@ -126,17 +123,10 @@ export async function POST(req: NextRequest) {
         sampleSummaries,
       });
 
-      const response = await client.messages.create({
-        model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
-        max_tokens: 300,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: "user", content: msg }],
-      });
+      const responseText = await enrichComplete({ system: SYSTEM_PROMPT, user: msg, maxTokens: 300 });
+      if (!responseText) throw new Error("No text response");
 
-      const text = response.content.find((b) => b.type === "text");
-      if (!text || text.type !== "text") throw new Error("No text response");
-
-      await prisma.topic.update({ where: { id: topic.id }, data: { description: text.text.trim() } });
+      await prisma.topic.update({ where: { id: topic.id }, data: { description: responseText.trim() } });
       results.push({ title: topic.title, ok: true });
     } catch (err) {
       results.push({ title: topic.title, ok: false, error: err instanceof Error ? err.message : String(err) });
