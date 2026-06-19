@@ -20,6 +20,32 @@ export type BudgetResult =
   | { ok: true; used: number; cap: number }
   | { ok: false; reason: "killswitch" | "daily_cap"; used: number; cap: number };
 
+// Fire a one-time email the moment a bucket crosses its cap (likely an attack
+// on low traffic). Fire-and-forget via Resend REST so it never blocks or breaks
+// the request path. Sends to ALERT_EMAIL (default the owner's inbox).
+function alertCapHit(bucket: string, cap: number): void {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return;
+  const to = process.env.ALERT_EMAIL || "psychetarotchannel@gmail.com";
+  const text =
+    `The "${bucket}" daily AI budget just hit its cap of ${cap}. Further ${bucket} ` +
+    `requests are blocked until 00:00 UTC — so cost is already contained.\n\n` +
+    `On low traffic this usually means abuse / an attack. Options:\n` +
+    `- Do nothing: the cap already bounds the spend.\n` +
+    `- Kill ALL paid AI instantly: set AI_KILLSWITCH=1 in Railway.\n` +
+    `- If it's legit demand, raise ${bucket.toUpperCase()}_DAILY_CAP in Railway.`;
+  fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: "CultCodex Alerts <notifications@cultcodex.me>",
+      to,
+      subject: `⚠️ CultCodex: "${bucket}" daily AI cap hit (possible attack)`,
+      text,
+    }),
+  }).catch(() => {});
+}
+
 /**
  * Atomically consume `units` from a named daily budget bucket. Returns ok=false
  * when the kill-switch is on or the bucket's daily cap is exceeded. Fails OPEN
@@ -41,6 +67,8 @@ export async function consumeLlmBudget(bucket: string, cap: number, units = 1): 
       units
     );
     const used = Number(rows[0]?.count ?? 0);
+    // Alert exactly once, on the request that crosses the cap.
+    if (used > cap && used - units <= cap) alertCapHit(bucket, cap);
     if (used > cap) return { ok: false, reason: "daily_cap", used, cap };
     return { ok: true, used, cap };
   } catch {
