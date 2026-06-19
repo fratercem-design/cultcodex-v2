@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { getEraById } from "@/lib/eras";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { consumeLlmBudget } from "@/lib/llm-budget";
 import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cache";
 
 export const runtime = "nodejs";
@@ -885,6 +886,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { ok: false, error: "The Oracle needs a moment. Try again shortly." } satisfies OracleResponse,
       { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
+    );
+  }
+
+  // Global daily ceiling on the expensive LLM + voice path. The free trial is
+  // cookie-gated (clearable), so cap total calls/day across everyone. Tune via
+  // ORACLE_DAILY_CAP; AI_KILLSWITCH=1 disables instantly.
+  const budget = await consumeLlmBudget("oracle", Number(process.env.ORACLE_DAILY_CAP ?? "500"));
+  if (!budget.ok) {
+    return NextResponse.json(
+      { ok: false, error: "The Oracle is resting. Try again later." } satisfies OracleResponse,
+      { status: 503, headers: { "Retry-After": "3600" } }
     );
   }
 

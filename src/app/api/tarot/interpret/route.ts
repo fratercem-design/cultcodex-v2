@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { anthropic as client, bedrockModelId } from "@/lib/anthropic";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { consumeLlmBudget } from "@/lib/llm-budget";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -86,6 +87,17 @@ export async function POST(req: NextRequest) {
   const rl = rateLimit(`tarot-interpret:${clientKey(req)}`, { limit: 10, windowMs: 60_000 });
   if (!rl.ok) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
+  // Global daily cap on this open, unauthenticated LLM endpoint — an IP-rotating
+  // attacker can't exceed the day's total. Tune via TAROT_DAILY_CAP; AI_KILLSWITCH=1
+  // disables it instantly. Bounds spend regardless of attack volume.
+  const budget = await consumeLlmBudget("tarot", Number(process.env.TAROT_DAILY_CAP ?? "300"));
+  if (!budget.ok) {
+    return NextResponse.json(
+      { error: "The Oracle is resting. Please try again later." },
+      { status: 503, headers: { "Retry-After": "3600" } }
+    );
   }
 
   if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
