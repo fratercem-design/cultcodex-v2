@@ -12,6 +12,7 @@ import { EntryBanner } from "@/components/layout/entry-banner";
 import { TerminalTopBar } from "@/components/layout/terminal-topbar";
 import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
 import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
+import { SiteFooter } from "@/components/layout/site-footer";
 import { getCounts } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
@@ -175,6 +176,7 @@ export default async function RootLayout({
             style={{ backgroundColor: "var(--term-bg)" }}
           >
             {children}
+            <SiteFooter />
           </div>
           <TerminalStatusBar feedCount={counts.episodes} />
         </div>
