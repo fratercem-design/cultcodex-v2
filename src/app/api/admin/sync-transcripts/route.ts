@@ -5,7 +5,7 @@ import { notifyTranscriptReady } from "@/lib/notifications";
 import { YoutubeTranscript } from "youtube-transcript";
 
 export const runtime = "nodejs";
-export const maxDuration = 600; // 10 min — enough headroom for 100 episodes
+export const maxDuration = 300;
 export const dynamic = "force-dynamic";
 
 const DELAY_MS = 2000; // 2s between requests — still polite, fits 100 in ~600s
