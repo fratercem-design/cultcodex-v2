@@ -1,8 +1,20 @@
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireAdmin } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import { notifyTranscriptReady } from "@/lib/notifications";
 import { YoutubeTranscript } from "youtube-transcript";
+
+// Gated by admin session OR ?key=base64url(HMAC-SHA256(AUTH_SECRET,"sync-transcripts"))
+function keyValid(req: NextRequest): boolean {
+  const key = req.nextUrl.searchParams.get("key");
+  const secret = process.env.AUTH_SECRET;
+  if (!key || !secret) return false;
+  const expected = createHmac("sha256", secret).update("sync-transcripts").digest("base64url");
+  const a = Buffer.from(key);
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -121,11 +133,12 @@ async function fetchTranscriptSupadata(
 }
 
 export async function POST(req: NextRequest) {
-  try {
-    await requireAdmin();
-  } catch {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  let allowed = keyValid(req);
+  if (!allowed) {
+    const user = await getCurrentUser().catch(() => null);
+    allowed = user?.role === "admin";
   }
+  if (!allowed) return NextResponse.json({ error: "Admin access required" }, { status: 403 });
 
   const supadataKey = process.env.SUPADATA_API_KEY;
   if (!supadataKey) {
