@@ -221,32 +221,32 @@ export default async function PremiumPage() {
         {/* ── Social proof ── */}
         <section className="max-w-3xl mx-auto space-y-6">
           <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
-            {"/// what_initiates_say"}
+            {"/// what_you_unlock"}
           </p>
           <div className="grid gap-4 sm:grid-cols-3">
             {[
               {
-                quote: "I finally understand what I was watching. The behavioral breakdowns are the thing I didn't know I needed.",
-                handle: "Initiate · joined 2024",
+                quote: "Behavioral breakdowns that turn 1,300+ hours of livestream into something you can actually navigate and understand.",
+                handle: "The Codex",
                 accent: "border-accent-gold/20",
               },
               {
-                quote: "The Oracle answered something I'd been thinking about for months in about 30 seconds. Cited three episodes I hadn't seen yet.",
-                handle: "Initiate · joined 2025",
+                quote: "Ask the Oracle anything and get an answer in seconds — cited to the exact episodes and quotes it drew from.",
+                handle: "The Oracle",
                 accent: "border-accent-violet/20",
               },
               {
-                quote: "It's not a fan site. It's a system. The transcript search alone made it worth it.",
-                handle: "Initiate · joined 2025",
+                quote: "Full transcript search across the entire archive. Find the moment, not just the video.",
+                handle: "Deep Search",
                 accent: "border-accent-cyan/20",
               },
             ].map((t, i) => (
               <figure key={i} className={`rounded-xl border ${t.accent} bg-surface p-5 space-y-3`}>
                 <blockquote className="font-mono text-[11px] text-text-muted leading-relaxed">
-                  &ldquo;{t.quote}&rdquo;
+                  {t.quote}
                 </blockquote>
-                <figcaption className="font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted/50">
-                  — {t.handle}
+                <figcaption className="font-mono text-[10px] uppercase tracking-[0.2em] text-accent-gold/60">
+                  {t.handle}
                 </figcaption>
               </figure>
             ))}
@@ -301,9 +301,14 @@ export default async function PremiumPage() {
                     <span className={`font-display text-5xl font-bold ${accentText}`}>${t.priceMonthly}</span>
                     <span className="font-mono text-sm text-text-muted">/month</span>
                   </div>
-                  <p className="mt-1 font-mono text-[10px] text-text-muted/70">
-                    or ${t.priceAnnual}/yr — save ${t.priceMonthly * 12 - t.priceAnnual}
-                  </p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="font-mono text-[10px] text-text-muted/70">
+                      or ${t.priceAnnual}/yr
+                    </span>
+                    <span className={`rounded-full border ${accentBorder} bg-surface px-2 py-0.5 font-mono text-[10px] font-bold ${accentText}`}>
+                      Save {Math.round((1 - t.priceAnnual / (t.priceMonthly * 12)) * 100)}%
+                    </span>
+                  </div>
                   <p className={`mt-1 font-mono text-[10px] ${accentText}/60`}>{t.tagline}</p>
 
                   <ul className="mt-6 space-y-2.5 flex-1">

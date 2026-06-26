@@ -18,7 +18,7 @@ async function ensureTable(): Promise<void> {
 
 export type BudgetResult =
   | { ok: true; used: number; cap: number }
-  | { ok: false; reason: "killswitch" | "daily_cap"; used: number; cap: number };
+  | { ok: false; reason: "killswitch" | "daily_cap" | "store_error"; used: number; cap: number };
 
 // Fire a one-time email the moment a bucket crosses its cap (likely an attack
 // on low traffic). Fire-and-forget via Resend REST so it never blocks or breaks
@@ -51,10 +51,12 @@ function alertCapHit(bucket: string, cap: number): void {
 
 /**
  * Atomically consume `units` from a named daily budget bucket. Returns ok=false
- * when the kill-switch is on or the bucket's daily cap is exceeded. Fails OPEN
- * on store errors (never breaks the site over a DB blip) — the per-endpoint
- * rate limits and Cloudflare edge rules still apply, and the kill-switch is the
- * hard manual stop.
+ * when the kill-switch is on, the bucket's daily cap is exceeded, or the counter
+ * store is unavailable. Fails CLOSED on store errors: the entire point of the cap
+ * is to bound spend during an abuse spike, so if we cannot account for the spend
+ * we must not authorize it. Callers should surface this as a transient 503.
+ * (Xata is always-on, so store-error false-positives are rare; the kill-switch
+ * remains the hard manual stop.)
  */
 export async function consumeLlmBudget(bucket: string, cap: number, units = 1): Promise<BudgetResult> {
   if (process.env.AI_KILLSWITCH === "1") return { ok: false, reason: "killswitch", used: 0, cap };
@@ -75,6 +77,7 @@ export async function consumeLlmBudget(bucket: string, cap: number, units = 1): 
     if (used > cap) return { ok: false, reason: "daily_cap", used, cap };
     return { ok: true, used, cap };
   } catch {
-    return { ok: true, used: 0, cap };
+    // Fail closed — cannot account for spend, so do not authorize it.
+    return { ok: false, reason: "store_error", used: 0, cap };
   }
 }

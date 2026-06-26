@@ -42,12 +42,17 @@ export async function POST(req: Request) {
     }
   }
 
-  await prisma.$transaction([
-    prisma.oracleInvite.update({
-      where: { token },
+  // Claim atomically: the conditional updateMany (token + claimed:false) is the
+  // single source of truth, so two concurrent requests for the same single-use
+  // invite cannot both mint a lifetime "system" membership. Only the request
+  // whose updateMany flips the row (count === 1) proceeds to grant access.
+  const granted = await prisma.$transaction(async (tx) => {
+    const claim = await tx.oracleInvite.updateMany({
+      where: { token, claimed: false },
       data: { claimed: true, claimedAt: new Date(), claimedBy: user.id },
-    }),
-    prisma.codexUser.update({
+    });
+    if (claim.count === 0) return false;
+    await tx.codexUser.update({
       where: { id: user.id },
       data: {
         isLifetimeMember: true,
@@ -57,8 +62,13 @@ export async function POST(req: Request) {
         memberTitle,
         isPublicMember: true,
       },
-    }),
-  ]);
+    });
+    return true;
+  });
+
+  if (!granted) {
+    return NextResponse.json({ error: "This invitation has already been claimed." }, { status: 409 });
+  }
 
   return NextResponse.json({ ok: true });
 }

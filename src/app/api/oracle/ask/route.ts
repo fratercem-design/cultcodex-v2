@@ -150,8 +150,12 @@ async function searchArchive(question: string, ctx?: OracleSearchContext) {
 
   const { terms, fullQuery } = extractTerms(question);
   const augmentedTerms = [...new Set([...terms, ...personTerms, ...archetypeTerms])];
-  const primaryQuery = augmentedTerms.slice(0, 3).join(" ") || fullQuery;
-  const fallbackQuery = augmentedTerms[0] ?? fullQuery;
+  // Match individual significant terms — NOT a multi-word phrase. `contains` is a
+  // substring match, so joining the top terms ("shadow work fear") almost never
+  // appears verbatim in a transcript and silently returns nothing. The top two
+  // tokens, OR'd across fields, is what actually retrieves grounded sources.
+  const primaryQuery = augmentedTerms[0] ?? fullQuery;
+  const fallbackQuery = augmentedTerms[1] ?? augmentedTerms[0] ?? fullQuery;
 
   const eraEpisodeFilter = era
     ? {
@@ -418,8 +422,9 @@ async function handleSearchArchive(
   const types = new Set(input.source_types ?? ["quotes", "transcripts", "episodes", "people", "lore", "psychenomicon"]);
   const q = input.query;
   const { terms, fullQuery } = extractTerms(q);
-  const primary = terms.slice(0, 3).join(" ") || fullQuery;
-  const fallback = terms[0] ?? fullQuery;
+  // Match individual terms, not a joined phrase — see note in searchArchive().
+  const primary = terms[0] ?? fullQuery;
+  const fallback = terms[1] ?? terms[0] ?? fullQuery;
 
   const parts: string[] = [];
   const citations: OracleCitation[] = [];
