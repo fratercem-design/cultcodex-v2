@@ -35,6 +35,10 @@ yarn-error.log*
 .env.local
 .env.production
 .env.vercel
+.env.vercel-prod
+
+# DB dumps (never commit — 642MB railway.dump bloated history once)
+dbmigrate/
 
 # Prisma
 prisma/migrations/**/migration_lock.toml
