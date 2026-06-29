@@ -16,6 +16,7 @@ import { isSubscribed } from "@/lib/subscription";
 import { semanticSearch } from "@/lib/queries/semantic";
 import { getEraById } from "@/lib/eras";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { consumeLlmBudget } from "@/lib/llm-budget";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -78,6 +79,25 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   });
 
   const parsedLimit = typeof limit === "number" ? Math.min(Math.max(Math.floor(limit), 1), 50) : 20;
+
+  // Denial-of-wallet guard: each concept is an OpenAI embedding call. A per-IP
+  // rate limit can't stop an IP-rotating attacker, so also charge the GLOBAL
+  // daily cap (one unit per concept). AI_KILLSWITCH=1 disables instantly.
+  const budget = await consumeLlmBudget(
+    "semantic",
+    Number(process.env.SEMANTIC_DAILY_CAP ?? "1000"),
+    parsedConcepts.length,
+  );
+  if (!budget.ok) {
+    const status = budget.reason === "store_error" ? 503 : 429;
+    const error =
+      budget.reason === "killswitch"
+        ? "Deep search is temporarily disabled."
+        : budget.reason === "store_error"
+          ? "Deep search is temporarily unavailable. Please try again."
+          : "Deep search is busy right now. Please try again later.";
+    return NextResponse.json({ error }, { status });
+  }
 
   let eraDateStart: Date | undefined;
   let eraDateEnd: Date | undefined;

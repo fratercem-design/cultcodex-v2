@@ -129,7 +129,7 @@ export default async function HomePage() {
               className="font-display text-3xl sm:text-5xl font-bold leading-tight text-white"
               style={{ textShadow: "0 0 60px rgba(212,175,55,0.3)" }}
             >
-              2,600+ transmissions.
+              The searchable memory of the Cult of Psyche.
               <br />
               <span className="text-accent-gold" style={{ textShadow: "0 0 40px rgba(212,175,55,0.6)" }}>
                 Every pattern — still decoding.
@@ -158,10 +158,10 @@ export default async function HomePage() {
               Enter the Codex →
             </Link>
             <Link
-              href="/premium"
+              href="/oracle"
               className="font-mono text-[11px] text-text-muted/50 hover:text-accent-gold/70 transition-colors underline underline-offset-4"
             >
-              Unlock full access — $10/mo
+              Ask the Oracle — 3 free →
             </Link>
           </div>
 

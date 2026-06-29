@@ -286,23 +286,26 @@ export async function earnCreditsForActivity(userId: string, reason: EarnReason,
   const todayStart = new Date();
   todayStart.setUTCHours(0, 0, 0, 0);
 
-  const todayCount = await prisma.creditTransaction.count({
-    where: { userId, reason, createdAt: { gte: todayStart } },
-  });
-  if (todayCount >= dailyCap) return { granted: 0, reason: "daily_cap" };
+  // The cap check and the mint must be one Serializable unit, or concurrent
+  // requests all read the same pre-cap count and each mint free Signal Credits
+  // (the spend currency). Mirrors openPack / claimDailyReward in this file.
+  return prisma.$transaction(async (tx) => {
+    const todayCount = await tx.creditTransaction.count({
+      where: { userId, reason, createdAt: { gte: todayStart } },
+    });
+    if (todayCount >= dailyCap) return { granted: 0, reason: "daily_cap" };
 
-  await prisma.$transaction([
-    prisma.userWallet.upsert({
+    await tx.userWallet.upsert({
       where: { userId },
       update: { balance: { increment: amount }, totalEarned: { increment: amount } },
       create: { userId, balance: amount, totalEarned: amount },
-    }),
-    prisma.creditTransaction.create({
+    });
+    await tx.creditTransaction.create({
       data: { userId, amount, reason, metadata: metadata ?? {} },
-    }),
-  ]);
+    });
 
-  return { granted: amount };
+    return { granted: amount };
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
 }
 
 // ─── Deck Builder ─────────────────────────────────────────────────────────────

@@ -48,6 +48,41 @@ async function viaOpenRouter({ system, user, maxTokens }: EnrichArgs): Promise<s
   throw lastErr;
 }
 
+// Free OpenAI-compatible tier (Groq / Mistral). Tried before paid Bedrock to
+// cut spend and add resilience. Each is skipped silently if its key is unset.
+async function viaOpenAICompatible(
+  { system, user, maxTokens }: EnrichArgs,
+  opts: { apiKey: string | undefined; baseURL: string; model: string; label: string }
+): Promise<string> {
+  if (!opts.apiKey) throw new Error(`${opts.label}: API key not set`);
+  const client = new OpenAI({ apiKey: opts.apiKey, baseURL: opts.baseURL });
+  const c = await client.chat.completions.create({
+    model: opts.model,
+    max_tokens: maxTokens,
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: user },
+    ],
+  });
+  return c.choices[0]?.message?.content ?? "";
+}
+
+const viaGroq = (args: EnrichArgs) =>
+  viaOpenAICompatible(args, {
+    apiKey: process.env.GROQ_API_KEY,
+    baseURL: "https://api.groq.com/openai/v1",
+    model: process.env.ENRICHMENT_GROQ_MODEL ?? "llama-3.3-70b-versatile",
+    label: "groq",
+  });
+
+const viaMistral = (args: EnrichArgs) =>
+  viaOpenAICompatible(args, {
+    apiKey: process.env.MISTRAL_API_KEY,
+    baseURL: "https://api.mistral.ai/v1",
+    model: process.env.ENRICHMENT_MISTRAL_MODEL ?? "mistral-small-latest",
+    label: "mistral",
+  });
+
 async function viaBedrock({ system, user, maxTokens }: EnrichArgs): Promise<string> {
   const client = new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
   // A KNOWN-enabled Bedrock model (Opus isn't enabled on this account).
@@ -62,14 +97,37 @@ async function viaBedrock({ system, user, maxTokens }: EnrichArgs): Promise<stri
   return tb && tb.type === "text" ? tb.text : "";
 }
 
+// Fallback ladder: try each tier in order, returning the first non-empty result.
+// Free tiers (Groq, Mistral) sit before paid Bedrock to cut spend; Bedrock is the
+// guaranteed backstop. Set ENRICHMENT_PROVIDER=bedrock to skip straight to it.
+type Tier = { name: string; run: (a: EnrichArgs) => Promise<string> };
+
+function ladder(): Tier[] {
+  if (process.env.ENRICHMENT_PROVIDER === "bedrock") {
+    return [{ name: "bedrock", run: viaBedrock }];
+  }
+  // Default ladder: cheap proxy → free Groq → free Mistral → paid Bedrock backstop.
+  return [
+    { name: "openrouter", run: viaOpenRouter },
+    { name: "groq", run: viaGroq },
+    { name: "mistral", run: viaMistral },
+    { name: "bedrock", run: viaBedrock },
+  ];
+}
+
 export async function enrichComplete(args: EnrichArgs): Promise<string> {
-  if (process.env.ENRICHMENT_PROVIDER === "openrouter") {
+  const tiers = ladder();
+  let lastErr: unknown;
+  for (const tier of tiers) {
     try {
-      return await viaOpenRouter(args);
+      const out = await tier.run(args);
+      if (out && out.trim()) return out;
+      // Empty output → treat as a miss and try the next tier.
+      lastErr = new Error(`${tier.name} returned empty output`);
     } catch (e) {
-      console.error("[enrich] OpenRouter failed, falling back to Bedrock:", e instanceof Error ? e.message : e);
-      return await viaBedrock(args);
+      lastErr = e;
+      console.error(`[enrich] ${tier.name} failed, trying next tier:`, e instanceof Error ? e.message : e);
     }
   }
-  return viaBedrock(args);
+  throw lastErr instanceof Error ? lastErr : new Error("all enrichment tiers failed");
 }
