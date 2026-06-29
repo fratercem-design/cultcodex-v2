@@ -19,7 +19,7 @@ jobs:
       YOUTUBE_CHANNEL_HANDLE: ${{ github.event.inputs.channel_handle || '@CultofPsyche' }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v6
         with:
