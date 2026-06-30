@@ -88,3 +88,6 @@ scripts/psychenomicon-art/daemon.lock
 scripts/psychenomicon-art/daemon.log
 scripts/psychenomicon-art/run-batch.log
 scripts/psychenomicon-art/output/STOP
+
+.vercel
+.env*
