@@ -16,6 +16,7 @@ import {
   paginationArgs,
   buildPaginationMeta,
 } from "@/lib/pagination";
+import { PERSON_TYPE_DOT } from "@/lib/people/person-type";
 import type { PersonType } from "@/generated/prisma/client";
 import { collectionPageJsonLd, jsonLdScript } from "@/lib/seo";
 
@@ -200,7 +201,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
                   title={`${p.personType === "mentioned" ? "Mentioned" : "One-off guest"}${count > 0 ? ` · ${count} appearance${count !== 1 ? "s" : ""}` : ""}`}
                 >
                   <span
-                    className={`h-1 w-1 rounded-full flex-shrink-0 ${p.personType === "mentioned" ? "bg-text-muted/30" : "bg-accent-cyan/40"}`}
+                    className={`h-1 w-1 rounded-full flex-shrink-0 ${PERSON_TYPE_DOT[p.personType]}`}
                   />
                   {p.displayName}
                 </span>

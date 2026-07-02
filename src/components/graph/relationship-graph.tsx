@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import type { GraphNode, GraphEdge } from "@/lib/queries/graph";
+import { PERSON_TYPE_HEX } from "@/lib/people/person-type";
 
 // ── SVG canvas dimensions ─────────────────────────────────────────────────────
 const W = 1000;
@@ -24,12 +25,7 @@ const ARCHETYPE_COLORS: Record<string, string> = {
   Loyalist: "#818cf8",
 };
 
-const TYPE_COLORS: Record<string, string> = {
-  host: "#D4AF37",
-  recurring: "#a78bfa",
-  guest: "#5DB7D8",
-  mentioned: "#475569",
-};
+const TYPE_COLORS: Record<string, string> = PERSON_TYPE_HEX;
 
 function nodeColor(node: GraphNode): string {
   if (node.archetype) {

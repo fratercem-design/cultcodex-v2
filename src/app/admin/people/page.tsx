@@ -4,6 +4,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import type { PersonType } from "@/generated/prisma/client";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { PERSON_TYPE_BADGE } from "@/lib/people/person-type";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import {
   DEFAULT_PAGE_SIZE,
@@ -68,12 +69,6 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
-  const typeVariant: Record<string, "green" | "purple" | "muted"> = {
-    host: "green",
-    recurring: "purple",
-    guest: "muted",
-    mentioned: "muted",
-  };
 
   return (
     <main id="main-content" className="p-8">
@@ -155,7 +150,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
                 <tr key={person.id} className="hover:bg-elevated/50 transition-colors">
                   <td className="px-3 py-2 text-xs text-text-primary">{person.displayName}</td>
                   <td className="px-3 py-2">
-                    <StatusBadge label={person.personType.replace("_", " ")} variant={typeVariant[person.personType] ?? "muted"} />
+                    <StatusBadge label={person.personType.replace("_", " ")} variant={PERSON_TYPE_BADGE[person.personType] ?? "muted"} />
                   </td>
                   <td className="px-3 py-2 font-mono text-xs text-text-muted">{person._count.guestAppearances}</td>
                   <td className="px-3 py-2 font-mono text-xs text-text-muted">{person._count.quotes}</td>
