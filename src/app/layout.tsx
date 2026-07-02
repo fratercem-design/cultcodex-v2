@@ -74,7 +74,8 @@ const vt323 = VT323({
 const SITE_DESCRIPTION =
   "The complete archive of the Cult of Psyche: 2,500+ transmissions, searchable transcripts, lore entries, guest profiles, relationship maps, and AI-powered exploration of every word ever spoken in the stream.";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://cultcodex.me";
+// `||` (not `??`) — an empty-string env var must also fall back, or `new URL("")` throws.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://cultcodex.me";
 
 // The shell no longer reads the session cookie during server render (the
 // user menu loads client-side), so the layout can be cached. Pages that
