@@ -25,7 +25,8 @@ import { accentFor } from "@/components/collections/collection-accents";
 
 export const revalidate = 600;
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://cultcodex.me";
+// `||` (not `??`) — an empty-string env var must also fall back to prod.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://cultcodex.me";
 
 export async function generateStaticParams() {
   return PILLARS.map((p) => ({ pillar: p.slug }));
