@@ -1,10 +1,10 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
-import { StatusBadge } from "@/components/ui/status-badge";
+import { StatusBadge, type BadgeVariant } from "@/components/ui/status-badge";
 
 interface HeroBadge {
   label: string;
-  variant: "green" | "purple" | "gold" | "muted";
+  variant: BadgeVariant;
 }
 
 interface EntityHeroProps {

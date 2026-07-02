@@ -33,6 +33,10 @@ import { ArchetypeTimeline } from "@/components/people/archetype-timeline";
 import { ArchetypeCard } from "@/components/people/archetype-card";
 import { PersonMediaSection, type PersonMediaItem } from "@/components/people/person-media-section";
 import { PersonCrossRef } from "@/components/people/person-cross-ref";
+import {
+  PERSON_TYPE_LABEL as PERSON_TYPE_LABELS,
+  PERSON_TYPE_BADGE as PERSON_TYPE_VARIANTS,
+} from "@/lib/people/person-type";
 import type { Metadata } from "next";
 
 // ── Lore Summary renderer ─────────────────────────────────────────────────────
@@ -181,20 +185,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ...(shouldNoIndex ? { robots: { index: false, follow: true } } : {}),
   };
 }
-
-const PERSON_TYPE_LABELS: Record<string, string> = {
-  host: "Host",
-  recurring: "Recurring",
-  guest: "Guest",
-  mentioned: "Mentioned",
-};
-
-const PERSON_TYPE_VARIANTS: Record<string, "green" | "purple" | "gold" | "muted"> = {
-  host: "gold",
-  recurring: "purple",
-  guest: "green",
-  mentioned: "muted",
-};
 
 export default async function PersonDetailPage({ params }: PageProps) {
   const { slug } = await params;

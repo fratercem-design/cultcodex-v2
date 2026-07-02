@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PersonSigil } from "@/components/ui/person-sigil";
+import { PERSON_TYPE_BADGE, PERSON_TYPE_LABEL } from "@/lib/people/person-type";
 import type { PersonType } from "@/generated/prisma/client";
 
 interface PersonCardProps {
@@ -16,14 +17,7 @@ interface PersonCardProps {
   };
 }
 
-const typeVariant: Record<PersonType, "green" | "purple" | "gold" | "muted"> = {
-  host: "gold",
-  recurring: "purple",
-  guest: "green",
-  mentioned: "muted",
-};
-
-/** Unproiled guests/mentioned → compiled "the rest" entry instead of individual page */
+/** Unprofiled guests/mentioned → compiled "the rest" entry instead of individual page */
 function personHref(p: PersonCardProps["person"]): string {
   const isProfiled = Boolean(p.loreSummary) || Boolean(p.shortBio);
   if (!isProfiled && (p.personType === "guest" || p.personType === "mentioned")) {
@@ -66,7 +60,7 @@ export function PersonCard({ person }: PersonCardProps) {
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent-gold/60 mr-1.5 align-middle" />
             {person.displayName}
           </h3>
-          <StatusBadge label={person.personType} variant={typeVariant[person.personType]} />
+          <StatusBadge label={PERSON_TYPE_LABEL[person.personType]} variant={PERSON_TYPE_BADGE[person.personType]} />
         </div>
         {person.shortBio && (
           <p className="mt-1 text-xs text-text-muted line-clamp-2">

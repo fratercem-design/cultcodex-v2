@@ -1,0 +1,610 @@
+﻿[
+    {
+        "sourceSlug":  "psychetrix",
+        "targetSlug":  "psyche-trix",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Psyche/Trix",
+        "target":  "Psyche (Trix)",
+        "moved":  {
+                      "guestAppearances":  8,
+                      "mentions":  0,
+                      "quotes":  10,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "vabeta",
+        "targetSlug":  "va-beta",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "VA/Beta",
+        "target":  "VA (Beta)",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "officer-alex-mcqueen",
+        "targetSlug":  "alexander-mcqueen",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Officer Alex McQueen",
+        "target":  "Alexander McQueen",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "alex-mcqueen",
+        "targetSlug":  "alexander-mcqueen",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Alex McQueen",
+        "target":  "Alexander McQueen",
+        "moved":  {
+                      "guestAppearances":  2,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "mcqueen",
+        "targetSlug":  "alexander-mcqueen",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "McQueen",
+        "target":  "Alexander McQueen",
+        "moved":  {
+                      "guestAppearances":  2,
+                      "mentions":  0,
+                      "quotes":  1,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "benny",
+        "targetSlug":  "benny-blanco",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Benny",
+        "target":  "Benny Blanco",
+        "moved":  {
+                      "guestAppearances":  9,
+                      "mentions":  0,
+                      "quotes":  1,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "electra",
+        "targetSlug":  "dj-electra",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Electra",
+        "target":  "DJ Electra",
+        "moved":  {
+                      "guestAppearances":  2,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "emma",
+        "targetSlug":  "emma-leviathan",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Emma",
+        "target":  "Emma Leviathan",
+        "moved":  {
+                      "guestAppearances":  10,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "leviathan",
+        "targetSlug":  "emma-leviathan",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Leviathan",
+        "target":  "Emma Leviathan",
+        "moved":  {
+                      "guestAppearances":  0,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "flirty",
+        "targetSlug":  "flirty-diamond",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Flirty",
+        "target":  "Flirty Diamond",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "diamond",
+        "targetSlug":  "flirty-diamond",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Diamond",
+        "target":  "Flirty Diamond",
+        "moved":  {
+                      "guestAppearances":  7,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "crucible-ghost",
+        "targetSlug":  "ghost",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Crucible Ghost",
+        "target":  "Ghost",
+        "moved":  {
+                      "guestAppearances":  4,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "jamie-rose",
+        "targetSlug":  "jamie",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Jamie Rose",
+        "target":  "Jamie",
+        "moved":  {
+                      "guestAppearances":  11,
+                      "mentions":  0,
+                      "quotes":  1,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "empress-janet",
+        "targetSlug":  "janet",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Empress Janet",
+        "target":  "Janet",
+        "moved":  {
+                      "guestAppearances":  5,
+                      "mentions":  0,
+                      "quotes":  1,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "janet-empress-janet",
+        "targetSlug":  "janet",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Janet (Empress Janet)",
+        "target":  "Janet",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "jd",
+        "targetSlug":  "jay-dog",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "JD",
+        "target":  "Jay Dog",
+        "moved":  {
+                      "guestAppearances":  0,
+                      "mentions":  0,
+                      "quotes":  1,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "michael-l",
+        "targetSlug":  "michael",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Michael L",
+        "target":  "Michael",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "marty",
+        "targetSlug":  "music-biz-marty",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Marty",
+        "target":  "Music Biz Marty",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "norca",
+        "targetSlug":  "norcal",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Norca",
+        "target":  "Norcal",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "prairie-paige",
+        "targetSlug":  "paige",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Prairie Paige",
+        "target":  "Paige",
+        "moved":  {
+                      "guestAppearances":  5,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "prairie-page",
+        "targetSlug":  "paige",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Prairie Page",
+        "target":  "Paige",
+        "moved":  {
+                      "guestAppearances":  3,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "prairie",
+        "targetSlug":  "paige",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Prairie",
+        "target":  "Paige",
+        "moved":  {
+                      "guestAppearances":  4,
+                      "mentions":  0,
+                      "quotes":  1,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "father-psyche",
+        "targetSlug":  "psyche",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Father Psyche",
+        "target":  "Psyche",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  5,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "psych",
+        "targetSlug":  "psyche",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Psych",
+        "target":  "Psyche",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "host-psyche",
+        "targetSlug":  "psyche",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Host/Psyche",
+        "target":  "Psyche",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "host-narrator",
+        "targetSlug":  "psyche",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Host/Narrator",
+        "target":  "Psyche",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "host-moderator",
+        "targetSlug":  "psyche",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Host/Moderator",
+        "target":  "Psyche",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "psyche-awakens",
+        "targetSlug":  "psyche",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Psyche Awakens",
+        "target":  "Psyche",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  1,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "random-guy-rando",
+        "targetSlug":  "rando",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Random Guy / Rando",
+        "target":  "Rando",
+        "moved":  {
+                      "guestAppearances":  0,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "rogue",
+        "targetSlug":  "rogue-nomad",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Rogue",
+        "target":  "Rogue Nomad",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "summer-dickerson",
+        "targetSlug":  "summer",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Summer Dickerson",
+        "target":  "Summer",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    },
+    {
+        "sourceSlug":  "tiger",
+        "targetSlug":  "tiger-butterfly",
+        "ok":  true,
+        "dryRun":  false,
+        "source":  "Tiger",
+        "target":  "Tiger Butterfly",
+        "moved":  {
+                      "guestAppearances":  1,
+                      "mentions":  0,
+                      "quotes":  0,
+                      "topics":  0,
+                      "lore":  0,
+                      "relatedEdges":  0,
+                      "media":  0,
+                      "annotations":  0,
+                      "digests":  0
+                  }
+    }
+]
