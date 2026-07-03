@@ -388,6 +388,11 @@ export async function POST(req: NextRequest) {
     const orphans = people
       .filter((x) => x._count.guestAppearances === 0 && x._count.mentions === 0 && x._count.quotes === 0)
       .map((x) => ({ slug: x.slug, type: x.personType, hasBio: !!x.shortBio, hasLore: !!x.loreSummary }));
+    // People whose avatar is a YouTube channel image — mislink-prone (a channel pic
+    // attached to the wrong person, e.g. the Shan Camp case). Eyeball these for wrong-gender/wrong-person.
+    const ytChannelAvatars = people
+      .filter((x) => x.avatarUrl && /ggpht\.com|(^|\/)yt3\./.test(x.avatarUrl))
+      .map((x) => ({ slug: x.slug, type: x.personType, name: x.displayName, avatarUrl: x.avatarUrl }));
 
     return NextResponse.json({
       op,
@@ -402,6 +407,7 @@ export async function POST(req: NextRequest) {
       profiledNoAvatar,
       prominentNoBio,
       orphans,
+      ytChannelAvatars,
     });
   }
 
