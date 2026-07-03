@@ -4,6 +4,7 @@
  *
  * op: "find-name"        — find all people matching a name fragment
  * op: "rename-person"    — rename a person by slug (displayName, shortBio references)
+ * op: "set-avatar"       — set/clear a person's avatar: { slug, avatarUrl } (empty→null, falls back to sigil)
  * op: "find-ambiguous"   — find people with only a single first-name (no surname) + low appearances
  * op: "list-dupes"       — find people whose displayName is very close to another's
  * op: "people-audit"     — full people-system audit (dupes, type anomalies, gaps, orphans)
@@ -247,6 +248,27 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ op, slug, oldName, newName, ok: true });
+  }
+
+  // ── set-avatar ───────────────────────────────────────────────────────────────
+  // { slug, avatarUrl } — set or clear a person's avatar. Empty/null avatarUrl
+  // clears it (null), so the UI falls back to the gender-neutral PersonSigil.
+  if (op === "set-avatar") {
+    const slug = String(body.slug ?? "").trim();
+    if (!slug) return NextResponse.json({ error: "slug required" }, { status: 400 });
+    const raw = body.avatarUrl;
+    const avatarUrl =
+      raw === null || raw === undefined || String(raw).trim() === "" ? null : String(raw).trim();
+
+    const person = await prisma.person.findUnique({
+      where: { slug },
+      select: { slug: true, displayName: true, avatarUrl: true },
+    });
+    if (!person) return NextResponse.json({ error: `No person with slug "${slug}"` }, { status: 404 });
+
+    const before = person.avatarUrl;
+    await prisma.person.update({ where: { slug }, data: { avatarUrl } });
+    return NextResponse.json({ op, slug, displayName: person.displayName, before, after: avatarUrl, ok: true });
   }
 
   // ── find-ambiguous ─────────────────────────────────────────────────────────
