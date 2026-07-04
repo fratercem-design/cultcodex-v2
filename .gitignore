@@ -30,12 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# Environment
-.env
-.env.local
-.env.production
-.env.vercel
-.env.vercel-prod
+# Environment — ignore ALL env files, allow only the checked-in template
+.env*
+!.env.example
 
 # DB dumps (never commit — 642MB railway.dump bloated history once)
 dbmigrate/
