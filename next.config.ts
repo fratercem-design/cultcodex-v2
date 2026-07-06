@@ -8,7 +8,7 @@ const { version } = JSON.parse(readFileSync(join(process.cwd(), "package.json"),
 // files in parent dirs (C:\Users\John Bates\ and C:\Users\John Bates\Projects\)
 // were causing Next to infer the wrong root and then fail to resolve
 // tailwindcss from there, which cascaded into Turbopack compile errors.
-// `process.cwd()` works because `next dev` is always launched from the
+// `process.cwd()` works because `next dev`is always launched from the
 // project root; matches the launch.json cwd setup.
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -33,19 +33,26 @@ const nextConfig: NextConfig = {
   },
   headers: async () => [
     {
+      source: "/(about|faq)",
+      headers: [
+        { key: "Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=604800, max-age=0, must-revalidate" },
+      ],
+    },
+    {
+      source: "/(people|episodes)",
+      headers: [
+        { key: "Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=604800, max-age=0, must-revalidate" },
+      ],
+    },
+    {
       source: "/:path*",
       headers: [
-        // Enforce HTTPS for 2 years; include subdomains; eligible for browser preload lists.
         { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
         { key: "X-Frame-Options", value: "SAMEORIGIN" },
         { key: "X-Content-Type-Options", value: "nosniff" },
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         { key: "X-DNS-Prefetch-Control", value: "on" },
-        // Prevents cross-origin docs sharing a browsing context group (Spectre mitigation).
-        // same-origin-allow-popups is used (vs same-origin) so Google OAuth redirect still works.
         { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
-        // Cross-origin images/fonts are loaded by design (Google Fonts, YouTube thumbs),
-        // so cross-origin is correct here.
         { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
         {
           key: "Permissions-Policy",
@@ -54,28 +61,16 @@ const nextConfig: NextConfig = {
         {
           key: "Content-Security-Policy",
           value: [
-            // Default: only same-origin resources.
             "default-src 'self'",
-            // Scripts: self + inline (required for Next.js hydration and JSON-LD) + GA4 + YouTube IFrame API.
-            // TODO: replace 'unsafe-inline' with per-request nonces once Next.js middleware is wired.
             "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.youtube.com https://s.ytimg.com",
-            // Styles: self + inline (Tailwind) + Google Fonts CSS.
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-            // Fonts: self + Google Fonts files.
             "font-src 'self' https://fonts.gstatic.com",
-            // Images: self + inline data URIs + blob + any HTTPS (YouTube thumbnails, Google avatars, imgur).
             "img-src 'self' data: blob: https:",
-            // Frames: YouTube + Cult of Psyche Arcanum Oracle.
             "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
-            // Fetch/XHR: self + GA4 measurement beacon.
             "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com",
-            // No plugins (Flash, etc.).
             "object-src 'none'",
-            // Prevent base-tag hijacking.
             "base-uri 'self'",
-            // Allow forms to submit to self or Stripe Checkout.
             "form-action 'self' https://checkout.stripe.com https://billing.stripe.com",
-            // Prevent this site from being embedded in foreign iframes.
             "frame-ancestors 'self'",
           ].join("; "),
         },
@@ -99,14 +94,12 @@ const nextConfig: NextConfig = {
         { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
       ],
     },
-    // Public images (logo, favicon, thumbnails served directly from /public)
     {
       source: "/:path*.(jpg|jpeg|png|webp|avif|gif|svg|ico)",
       headers: [
         { key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" },
       ],
     },
-    // Service worker — must never be cached so updates propagate immediately
     {
       source: "/sw.js",
       headers: [
@@ -115,7 +108,6 @@ const nextConfig: NextConfig = {
       ],
     },
   ],
-  // /premium is the canonical pricing page; catch people who type /pricing.
   redirects: async () => [
     { source: "/pricing", destination: "/premium", permanent: true },
   ],
