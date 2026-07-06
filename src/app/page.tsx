@@ -34,6 +34,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export const metadata = {
+  robots: { index: true, follow: true },
   alternates: { canonical: "/" },
   title: "CultCodex — The Archive of Cult of Psyche | Tarot, Consciousness & Open Panels",
   description:
