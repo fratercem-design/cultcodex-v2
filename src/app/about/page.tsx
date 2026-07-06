@@ -4,7 +4,6 @@ import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 
-export const revalidate = 86400;
 
 export const metadata: Metadata = buildMetadata({
   title: "About CultCodex — The Cult of Psyche Archive",

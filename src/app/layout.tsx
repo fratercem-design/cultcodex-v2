@@ -32,20 +32,20 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
-const inter = Inter({
+const inter = Inter({preload: false,
   variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
 });
 
-const ibmPlexMono = IBM_Plex_Mono({
+const ibmPlexMono = IBM_Plex_Mono({preload: false,
   variable: "--font-mono-fallback",
   weight: ["400", "500", "600"],
   subsets: ["latin"],
   display: "swap",
 });
 
-const playfairDisplay = Playfair_Display({
+const playfairDisplay = Playfair_Display({preload: false,
   variable: "--font-serif",
   subsets: ["latin"],
   display: "swap",
@@ -64,7 +64,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 // VT323 — CRT large-number font, exposed as --font-crt for opt-in use
 // (large stat counters, retro headers). Single weight is all VT323 ships.
-const vt323 = VT323({
+const vt323 = VT323({preload: false,
   variable: "--font-crt",
   weight: "400",
   subsets: ["latin"],
@@ -160,6 +160,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://i.ytimg.com" />
         <link rel="preconnect" href="https://yt3.ggpht.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+              <meta name="robots" content="index, follow" />
       </head>
       <body
         className={`${fontVariables} font-mono antialiased bg-void text-text-primary`}

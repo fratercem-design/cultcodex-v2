@@ -20,7 +20,7 @@ import { PERSON_TYPE_DOT } from "@/lib/people/person-type";
 import type { PersonType } from "@/generated/prisma/client";
 import { collectionPageJsonLd, jsonLdScript } from "@/lib/seo";
 
-export const revalidate = 600;
+export const revalidate = 3600;
 
 export const metadata = {
   alternates: { canonical: "/people" },

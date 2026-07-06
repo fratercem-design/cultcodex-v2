@@ -25,7 +25,7 @@ import {
 } from "@/lib/pagination";
 import { formatDate, formatRelativeDate } from "@/lib/format/date";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export const metadata = {
   alternates: { canonical: "/episodes" },
