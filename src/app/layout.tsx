@@ -89,6 +89,7 @@ export const metadata: Metadata = {
   // NOTE: no global `alternates.canonical` here. Setting it at the root made
   // every page inherit the homepage URL as its canonical, so Google treated
   // all routes as duplicates of `/`. Each page declares its own canonical.
+  robots: { index: true, follow: true },
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
@@ -160,8 +161,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://i.ytimg.com" />
         <link rel="preconnect" href="https://yt3.ggpht.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-              <meta name="robots" content="index, follow" />
-      </head>
+              </head>
       <body
         className={`${fontVariables} font-mono antialiased bg-void text-text-primary`}
         style={{ backgroundColor: "var(--term-bg)" }}
