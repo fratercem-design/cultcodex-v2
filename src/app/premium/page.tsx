@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
-import dynamic from "next/dynamic";
-
-const PremiumContent = dynamic(
-  () => import("@/components/premium/premium-content"),
-  { ssr: false }
-);
+import PremiumContent from "@/components/premium/premium-content-client";
 
 export const metadata: Metadata = buildMetadata({
   title: "Join the Archive — Choose Your Role",
