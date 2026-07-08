@@ -71,18 +71,7 @@ export function LiveBanner() {
     });
   }
 
-  if (status.alexandraMayers.isLive) {
-    entries.push({
-      key: "alexandraMayers",
-      label: "ALEXANDRA MAYERS",
-      title: status.alexandraMayers.title,
-      href: "/irl-newstime",
-      accentBg: "bg-violet-950/70",
-      accentBorder: "border-violet-500/30",
-      accentText: "text-violet-300",
-      dotColor: "bg-violet-400",
-    });
-  }
+  // Alexandra Mayers intentionally omitted — no live directory of her channels.
 
   const visible = entries.filter((e) => !dismissed.has(e.key));
   if (visible.length === 0) return null;
