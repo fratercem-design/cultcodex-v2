@@ -24,6 +24,12 @@ export function bedrockModelId(model: string): string {
   if (model.includes(":") || model.startsWith("us.anthropic.") || model.startsWith("anthropic.")) return model;
   // Known mapping
   if (BEDROCK_MODEL_MAP[model]) return BEDROCK_MODEL_MAP[model];
+  // Non-Anthropic input (gpt-4o, gemini-*, …) would fabricate an invalid Bedrock ID
+  // like `us.anthropic.gpt-4o-v1:0` and surface later as a deep runtime error.
+  // Fail fast at the seam so a misrouted *_MODEL env var is loud and immediate.
+  if (!model.startsWith("claude")) {
+    throw new Error(`bedrockModelId: "${model}" is not an Anthropic model — check the *_MODEL env var feeding this call`);
+  }
   // Model ID already contains a date (e.g. claude-haiku-4-5-20251001) — append version suffix
   return `us.anthropic.${model}-v1:0`;
 }

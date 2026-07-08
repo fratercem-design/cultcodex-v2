@@ -26,8 +26,11 @@ async function generateViaBedrock(systemPrompt: string, userPrompt: string): Pro
 
   let lastErr: unknown;
   for (const m of modelPreference) {
-    const model = bedrockModelId(m);
     try {
+      // Inside the try: bedrockModelId now throws on non-Anthropic input, and a
+      // bad PSYCHENOMICON_FALLBACK_MODEL must fall through to the next tier,
+      // not kill the whole ladder.
+      const model = bedrockModelId(m);
       console.log(`[psychenomicon] Bedrock fallback — trying: ${model}`);
       const completion = await client.messages.create({
         model,

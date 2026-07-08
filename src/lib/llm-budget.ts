@@ -32,8 +32,8 @@ function alertCapHit(bucket: string, cap: number): void {
     `requests are blocked until 00:00 UTC — so cost is already contained.\n\n` +
     `On low traffic this usually means abuse / an attack. Options:\n` +
     `- Do nothing: the cap already bounds the spend.\n` +
-    `- Kill ALL paid AI instantly: set AI_KILLSWITCH=1 in Railway.\n` +
-    `- If it's legit demand, raise ${bucket.toUpperCase()}_DAILY_CAP in Railway.`;
+    `- Kill ALL paid AI instantly: set AI_KILLSWITCH=1 in Vercel (project cultcodex-v2 → Settings → Environment Variables) and redeploy.\n` +
+    `- If it's legit demand, raise ${bucket.toUpperCase()}_DAILY_CAP in Vercel env vars and redeploy.`;
   fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },

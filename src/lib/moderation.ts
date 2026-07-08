@@ -12,7 +12,9 @@ export async function moderateComment(
 
   try {
     const response = await anthropic.messages.create({
-      model: bedrockModelId(process.env.ORACLE_MODEL ?? "claude-opus-4-5"),
+      // Own knob (was silently coupled to ORACLE_MODEL — retuning the oracle
+      // changed the moderation model). Binary spam checks only need haiku-class.
+      model: bedrockModelId(process.env.MODERATION_MODEL ?? "us.anthropic.claude-haiku-4-5-20251001-v1:0"),
       max_tokens: 50,
       messages: [
         {

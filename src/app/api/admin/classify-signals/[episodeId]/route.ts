@@ -23,7 +23,7 @@ async function classifyBatch(
     .join("\n");
 
   const message = await anthropic.messages.create({
-    model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
+    model: bedrockModelId(process.env.ENRICHMENT_FALLBACK_MODEL ?? "us.anthropic.claude-haiku-4-5-20251001-v1:0"),
     max_tokens: 512,
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: input }],

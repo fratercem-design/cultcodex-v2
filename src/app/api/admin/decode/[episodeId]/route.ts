@@ -82,7 +82,7 @@ export async function POST(
   }
 
   const message = await anthropic.messages.create({
-    model: bedrockModelId(process.env.ENRICHMENT_MODEL ?? "claude-opus-4-8"),
+    model: bedrockModelId(process.env.ENRICHMENT_FALLBACK_MODEL ?? "us.anthropic.claude-haiku-4-5-20251001-v1:0"),
     max_tokens: 2048,
     system: SYSTEM_PROMPT,
     messages: [
