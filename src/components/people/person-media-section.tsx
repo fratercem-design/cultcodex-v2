@@ -239,12 +239,15 @@ export function PersonMediaSection({ personName, videos, wiki }: Props) {
     byChannel.set(key, existing);
   }
 
-  // Stable channel order: irlnewstime first, then others alphabetically
-  const channelOrder = [...byChannel.keys()].sort((a, b) => {
-    if (a === "@irlnewstime") return -1;
-    if (b === "@irlnewstime") return 1;
-    return a.localeCompare(b);
-  });
+  // Stable channel order: irlnewstime first, then others alphabetically.
+  // Filter out @alexandramayers
+  const channelOrder = [...byChannel.keys()]
+    .filter((handle) => !["@alexandramayers", "@irlnewstime", "@ip2wikiinfo"].includes(handle))
+    .sort((a, b) => {
+      if (a === "@irlnewstime") return -1;
+      if (b === "@irlnewstime") return 1;
+      return a.localeCompare(b);
+    });
 
   return (
     <div className="space-y-6">
@@ -285,3 +288,4 @@ export function PersonMediaSection({ personName, videos, wiki }: Props) {
     </div>
   );
 }
+
