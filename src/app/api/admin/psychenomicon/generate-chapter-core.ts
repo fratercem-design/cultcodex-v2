@@ -41,7 +41,7 @@ async function generateViaBedrock(systemPrompt: string, userPrompt: string): Pro
       const block = completion.content.find((b) => b.type === "text");
       return block?.type === "text" ? block.text.trim() : "";
     } catch (e) {
-      console.error(`[psychenomicon] Bedrock ${model} failed:`, e instanceof Error ? e.message : e);
+      console.error(`[psychenomicon] Bedrock ${m} failed:`, e instanceof Error ? e.message : e);
       lastErr = e;
     }
   }
