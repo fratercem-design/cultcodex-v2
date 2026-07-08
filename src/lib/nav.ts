@@ -7,6 +7,7 @@ import type { LiveChannels } from "@/lib/queries/live-status";
 // from this file — there is no other nav definition in the codebase.
 //
 // To add, remove, or reorder items: edit this file only.
+//
 // The countKey badge values come from the getCounts() SiteCounts object passed
 // through the root layout → TerminalSidebar at render time.
 
@@ -36,7 +37,6 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     color: "rgba(239,68,68,0.75)",
     items: [
       { href: "/cult-live",    label: "CULT OF PSYCHE",   glyph: "◎", liveKey: "cultOfPsyche" },
-      { href: "/irl-newstime", label: "ALEXANDRA MAYERS", glyph: "◎", liveKey: "alexandraMayers" },
     ],
   },
   {
@@ -70,6 +70,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { href: "/archetype-quiz",label: "ARCHETYPE QUIZ",glyph: "◈" },
       { href: "/tarot",         label: "TAROT DECK",    glyph: "✦", accent: "neon-4" },
       { href: "/cards",         label: "SIGNAL ARCHIVE", glyph: "⧬", accent: "neon-4" },
+      { href: "/trollopedia",   label: "TROLLOPEDIA",   glyph: "♛", accent: "neon-4" },
     ],
   },
   {

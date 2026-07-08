@@ -13,12 +13,10 @@ export interface ExternalLink {
 
 const PERSON_LINKS: Record<string, ExternalLink[]> = {
   "alexandra-mayers": [
-    { label: "irlnewstime", url: "https://www.youtube.com/@irlnewstime", icon: "▶" },
-    { label: "AlexandraMayers", url: "https://www.youtube.com/@AlexandraMayers", icon: "▶" },
-    { label: "ip2wiki.info", url: "https://ip2wiki.info", icon: "🔗" },
+    { label: "ip2wiki.info", url: "https://ip2wiki.info", icon: "🔗" }
   ],
   "psyche": [
-    { label: "Cult of Psyche", url: "https://www.youtube.com/@cultofpsyche", icon: "▶" },
+    { label: "Cult of Psyche", url: "https://www.youtube.com/@cultofpsyche", icon: "▶" }
   ],
 };
 

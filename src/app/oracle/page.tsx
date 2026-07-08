@@ -6,6 +6,7 @@ import { MysticalDivider, OrnamentalBreak } from "@/components/graphics/mystical
 import { OracleConsole } from "@/components/oracle/oracle-console";
 import { OracleExampleExchanges } from "@/components/oracle/oracle-example-exchanges";
 import { OracleAmbience } from "@/components/oracle/oracle-ambience";
+import { LilithOracle } from "@/components/oracle/lilith-oracle";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -73,20 +74,15 @@ export default async function OraclePage() {
             className="relative h-44 w-44 sm:h-52 sm:w-52 rounded-full overflow-hidden animate-ring-pulse"
             style={{
               boxShadow: [
-                "0 0 0 3px #6E4BAE",
-                "0 0 0 6px #5DB7D8",
-                "0 0 0 9px rgba(110,75,174,0.15)",
-                "0 0 40px rgba(110,75,174,0.35)",
-                "0 0 80px rgba(93,183,216,0.15)",
+                "0 0 0 3px #A94A4A",
+                "0 0 0 6px #9B6ED0",
+                "0 0 0 9px rgba(169,74,74,0.18)",
+                "0 0 44px rgba(169,74,74,0.35)",
+                "0 0 90px rgba(155,110,208,0.22)",
               ].join(", "),
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/oracle-throne.jpg"
-              alt="The Oracle of the Codex"
-              className="h-full w-full object-cover object-top"
-            />
+            <LilithOracle />
           </div>
         </div>
 

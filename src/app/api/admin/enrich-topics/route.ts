@@ -15,6 +15,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { requireEnrichSecret } from "@/lib/admin-guard";
 import { enrichComplete } from "@/lib/enrichment-llm";
 import { prisma } from "@/lib/db";
 
@@ -59,10 +60,8 @@ function buildUserMessage(input: {
 
 export async function POST(req: NextRequest) {
   // Auth check
-  const secret = req.headers.get("x-enrich-secret");
-  if (!secret || secret !== process.env.ENRICH_SECRET) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = requireEnrichSecret(req);
+  if (denied) return denied;
 
   const body = await req.json().catch(() => ({}));
   const batch: number = body.batch ?? 8;

@@ -12,10 +12,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { enrichSecretMatches } from "@/lib/admin-guard";
 
 function isAdmin(req: NextRequest, user: { role: string } | null): boolean {
-  const secret = req.headers.get("x-enrich-secret");
-  if (secret && secret === process.env.ENRICH_SECRET) return true;
+  if (enrichSecretMatches(req)) return true;
   return user?.role === "admin";
 }
 

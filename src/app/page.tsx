@@ -22,6 +22,7 @@ import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { EmailCapture } from "@/components/marketing/email-capture";
+import { GiftSignup } from "@/components/marketing/gift-signup";
 import { jsonLdScript, organizationJsonLd } from "@/lib/seo";
 import {
   IconTransmission,
@@ -166,7 +167,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <EmailCapture compact source="hero" />
+          <GiftSignup source="gift:gospel" />
 
           <div className="w-full max-w-md">
             <SearchInput />

@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
-import dynamic from "next/dynamic";
-
-const PsychenomiconChronicle = dynamic(
-  () => import("@/components/psychenomicon/chronicle/psychenomicon-chronicle"),
-  { ssr: false }
-);
+import PsychenomiconChronicle from "@/components/psychenomicon/chronicle/psychenomicon-chronicle-client";
 
 export const metadata: Metadata = buildMetadata({
-  title: "The Psychenomicon \u2014 CULT CODEX",
+  title: "The Psychenomicon — CULT CODEX",
   description: "A living record of evolving patterns.",
   path: "/psychenomicon",
 });
