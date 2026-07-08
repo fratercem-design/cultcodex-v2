@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import type { OracleCitation, OracleResponse } from "@/app/api/oracle/ask/route";
+import { LilithOracle } from "@/components/oracle/lilith-oracle";
 
 type ConsoleState = "idle" | "loading" | "answered" | "error";
 
@@ -277,12 +278,7 @@ export function OracleConsole() {
               style={{ width: 220, height: 220, animationDelay: "0.5s" }} />
             {/* Oracle portrait — flashing glow */}
             <div className="relative h-28 w-28 rounded-full overflow-hidden animate-oracle-flash">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/oracle-throne.jpg"
-                alt="The Oracle"
-                className="h-full w-full object-cover object-top"
-              />
+              <LilithOracle />
             </div>
           </div>
           <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-violet/50 animate-pulse">
@@ -467,12 +463,7 @@ export function OracleConsole() {
                     transition: "box-shadow 0.6s ease",
                   }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/oracle-throne.jpg"
-                    alt="The Oracle"
-                    className="h-full w-full object-cover object-top"
-                  />
+                  <LilithOracle />
                   {/* Speaking indicator dot */}
                   {isPlaying && (
                     <div

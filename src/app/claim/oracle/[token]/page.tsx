@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { LilithOracle } from "@/components/oracle/lilith-oracle";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { ClaimForm } from "./claim-form";
@@ -57,13 +58,11 @@ export default async function ClaimOraclePage({ params }: PageProps) {
 
       {/* ── Throne Hero ───────────────────────────────────────── */}
       <div className="relative w-full overflow-hidden" style={{ height: "92vh", minHeight: 580 }}>
-        <Image
-          src="/oracle-throne.jpg"
-          alt=""
-          fill
-          className="object-cover object-center"
-          priority
-        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative aspect-square h-[62vh] max-h-[540px] rounded-full overflow-hidden">
+            <LilithOracle />
+          </div>
+        </div>
         {/* Radial + bottom vignette */}
         <div
           className="absolute inset-0"

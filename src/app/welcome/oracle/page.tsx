@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import Image from "next/image";
+import { LilithOracle } from "@/components/oracle/lilith-oracle";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { buildMetadata } from "@/lib/seo";
@@ -64,14 +65,11 @@ export default async function WelcomeOraclePage() {
 
       {/* ── Cinematic throne opener ── */}
       <section className="relative w-full" style={{ height: "92svh" }}>
-        <Image
-          src="/oracle-throne.jpg"
-          alt="The Oracle's throne"
-          fill
-          priority
-          className="object-cover object-center"
-          sizes="100vw"
-        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative aspect-square h-[62svh] max-h-[540px] rounded-full overflow-hidden">
+            <LilithOracle />
+          </div>
+        </div>
         {/* radial dark vignette */}
         <div
           className="absolute inset-0"
