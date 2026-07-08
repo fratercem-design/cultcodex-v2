@@ -210,6 +210,30 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({})) as Record<string, unknown>;
   const op = String(body.op ?? "");
 
+  // ── apply-subscriber-gift-migration ─────────────────────────────────────────
+  // One-shot idempotent DDL for the Gospel lead-magnet (migrations
+  // 20260707000000/1). Vercel builds don't run prisma migrate deploy and the
+  // prod DATABASE_URL is sensitive-flagged, so this is the operator path.
+  if (op === "apply-subscriber-gift-migration") {
+    const stmts = [
+      `ALTER TABLE "Subscriber" ADD COLUMN IF NOT EXISTS "name" TEXT`,
+      `ALTER TABLE "Subscriber" ADD COLUMN IF NOT EXISTS "source" TEXT`,
+      `ALTER TABLE "Subscriber" ADD COLUMN IF NOT EXISTS "giftStage" INTEGER NOT NULL DEFAULT 0`,
+      `ALTER TABLE "Subscriber" ADD COLUMN IF NOT EXISTS "lastEmailAt" TIMESTAMP(3)`,
+      `CREATE INDEX IF NOT EXISTS "Subscriber_giftStage_idx" ON "Subscriber"("giftStage")`,
+    ];
+    const steps: Array<{ sql: string; ok: boolean; error?: string }> = [];
+    for (const sql of stmts) {
+      try {
+        await prisma.$executeRawUnsafe(sql);
+        steps.push({ sql, ok: true });
+      } catch (err) {
+        steps.push({ sql, ok: false, error: err instanceof Error ? err.message : String(err) });
+      }
+    }
+    return NextResponse.json({ op, ok: steps.every((s) => s.ok), steps });
+  }
+
   // ── find-name ──────────────────────────────────────────────────────────────
   if (op === "find-name") {
     const name = String(body.name ?? "").trim();
