@@ -18,6 +18,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { requireEnrichSecret } from "@/lib/admin-guard";
 import { prisma } from "@/lib/db";
 import { embedBatch, segmentToEmbedText, vectorLiteral } from "@/lib/embeddings";
 
@@ -31,10 +32,8 @@ const DEFAULT_BATCH = 100;
 const OPENAI_BATCH_LIMIT = 2048;
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  const secret = req.headers.get("x-enrich-secret");
-  if (!secret || secret !== process.env.ENRICH_SECRET) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = requireEnrichSecret(req);
+  if (denied) return denied;
 
   let body: { batch?: number } = {};
   try {

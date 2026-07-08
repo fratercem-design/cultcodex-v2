@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { SYMBOLS } from "@/lib/symbols/data";
 import type { SymbolEntry } from "@/lib/symbols/data";
 import { SymbolGlyph } from "@/components/symbols/symbol-glyph";
+import { jsonLdScript } from "@/lib/seo";
 
 export const dynamic = "force-static";
 
@@ -75,7 +76,7 @@ export default async function SymbolDetailPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <main className="min-h-screen bg-void">
         <div className="mx-auto max-w-3xl px-4 py-8">

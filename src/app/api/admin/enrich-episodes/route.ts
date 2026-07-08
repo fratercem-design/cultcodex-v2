@@ -15,6 +15,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { requireEnrichSecret } from "@/lib/admin-guard";
 import { enrichComplete } from "@/lib/enrichment-llm";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
@@ -267,10 +268,8 @@ async function importEnrichment(
 // ── Handler ───────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-  const secret = req.headers.get("x-enrich-secret");
-  if (!secret || secret !== process.env.ENRICH_SECRET) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = requireEnrichSecret(req);
+  if (denied) return denied;
 
   if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
     return NextResponse.json({ error: "Bedrock credentials not configured" }, { status: 500 });

@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { enrichSecretMatches } from "@/lib/admin-guard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   // Accept either: ENRICH_SECRET header (CLI/curl) OR a signed-in admin session (browser)
-  const secret = req.headers.get("x-enrich-secret");
-  const secretOk = secret && secret === process.env.ENRICH_SECRET;
+  const secretOk = enrichSecretMatches(req);
 
   if (!secretOk) {
     const sessionUser = await getCurrentUser().catch(() => null);

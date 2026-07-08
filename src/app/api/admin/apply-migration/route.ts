@@ -8,6 +8,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { requireEnrichSecret } from "@/lib/admin-guard";
 import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
@@ -15,10 +16,8 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  const secret = req.headers.get("x-enrich-secret");
-  if (!secret || secret !== process.env.ENRICH_SECRET) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = requireEnrichSecret(req);
+  if (denied) return denied;
 
   const steps: Array<{ step: string; ok: boolean; error?: string }> = [];
 

@@ -8,6 +8,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { requireEnrichSecret } from "@/lib/admin-guard";
 import { prisma } from "@/lib/db";
 import type { CardType, Rarity } from "@/generated/prisma/client";
 
@@ -192,10 +193,8 @@ const CARDS = [
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  const secret = req.headers.get("x-enrich-secret");
-  if (!secret || secret !== process.env.ENRICH_SECRET) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = requireEnrichSecret(req);
+  if (denied) return denied;
 
   const log: string[] = [];
 
