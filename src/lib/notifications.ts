@@ -421,6 +421,130 @@ export async function sendOracleWelcomeEmail({
   });
 }
 
+/** Sequence email 0 — sent immediately at Initiate sign-up: delivers the Gospel. */
+export async function sendGospelDeliveryEmail({
+  recipientEmail,
+  recipientName,
+}: {
+  recipientEmail: string;
+  recipientName: string;
+}): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+  await resend.emails.send({
+    from: "Psyche — CultCodex <notifications@cultcodex.me>",
+    to: recipientEmail,
+    subject: `Your Gospel of Psyche's Nightmares, ${recipientName}`,
+    html: buildGospelEmailHtml({
+      name: recipientName,
+      kicker: "A free transmission · Initiate",
+      heading: "Your Gospel has",
+      accent: "arrived.",
+      paras: [
+        `The Gospel of Psyche's Nightmares is yours, ${recipientName} — a dark scripture pulled from the edge of the archive.`,
+        "Read it below. Your copy lives at this link forever, so you can return to it anytime.",
+      ],
+      ctaHref: "https://cultcodex.me/gift/gospel",
+      ctaLabel: "Open the Gospel",
+      note: `Prefer the raw file? <a href="https://cultcodex.me/gospel-of-psyches-nightmares.pdf" style="color:rgba(200,169,107,0.5);text-decoration:none;">Download the PDF directly</a>`,
+    }),
+  });
+}
+
+/** Sequence email 2 — sent a few days later: pulls the Initiate deeper into the archive. */
+export async function sendGospelDeeperEmail({
+  recipientEmail,
+  recipientName,
+}: {
+  recipientEmail: string;
+  recipientName: string;
+}): Promise<void> {
+  const resend = getResend();
+  if (!resend) return;
+  await resend.emails.send({
+    from: "Psyche — CultCodex <notifications@cultcodex.me>",
+    to: recipientEmail,
+    subject: `You've only seen the surface, ${recipientName}`,
+    html: buildGospelEmailHtml({
+      name: recipientName,
+      kicker: "The archive is still decoding",
+      heading: "There's more",
+      accent: "beneath it.",
+      paras: [
+        `Now that you're an Initiate, the Oracle answers anything from inside 2,600+ transmissions — behavioral patterns, guest dynamics, recurring moments, all cited to the source. Your first three questions are free.`,
+        "Not sure where to begin? Start where others started — the curated entry points into the archive.",
+      ],
+      ctaHref: "https://cultcodex.me/oracle",
+      ctaLabel: "Ask the Oracle",
+      note: `New here? <a href="https://cultcodex.me/start-here" style="color:rgba(200,169,107,0.5);text-decoration:none;">Start Here &rarr;</a>`,
+    }),
+  });
+}
+
+/** Shared dark editorial email shell for the Gospel sequence. */
+function buildGospelEmailHtml({
+  name,
+  kicker,
+  heading,
+  accent,
+  paras,
+  ctaHref,
+  ctaLabel,
+  note,
+}: {
+  name: string;
+  kicker: string;
+  heading: string;
+  accent: string;
+  paras: string[];
+  ctaHref: string;
+  ctaLabel: string;
+  note?: string;
+}): string {
+  const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const safeKicker = esc(kicker);
+  void name;
+  const paraRows = paras
+    .map(
+      (p, i) =>
+        `<p style="font-family:Georgia,serif;font-size:${i === 0 ? 15 : 14}px;color:rgba(255,255,255,${i === 0 ? 0.55 : 0.4});line-height:2.1;margin:0 0 16px;">${esc(p)}</p>`
+    )
+    .join("");
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${esc(heading)} ${esc(accent)}</title></head>
+<body style="margin:0;padding:0;background:#080810;color:#e0e0e0;font-family:'Courier New',monospace;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#080810;"><tr><td align="center" style="padding:40px 16px 64px;">
+  <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
+    <tr><td style="padding:2px;background:linear-gradient(135deg,rgba(155,110,208,0.35) 0%,rgba(200,169,107,0.10) 100%);border-radius:16px;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0c0c14;border-radius:14px;overflow:hidden;">
+      <tr><td align="center" style="padding:36px 40px 0;background:#0c0c14;">
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.3);letter-spacing:0.6em;text-transform:uppercase;margin:0;border:1px solid rgba(200,169,107,0.12);display:inline-block;padding:6px 18px;">${safeKicker}</p>
+      </td></tr>
+      <tr><td align="center" style="padding:26px 48px 8px;background:#0c0c14;">
+        <h1 style="font-family:Georgia,serif;font-size:36px;color:#ffffff;font-weight:400;margin:0;letter-spacing:0.03em;line-height:1.25;">${esc(heading)}<br><span style="color:#C8A96B;">${esc(accent)}</span></h1>
+      </td></tr>
+      <tr><td style="padding:26px 48px 0;background:#0c0c14;">${paraRows}</td></tr>
+      <tr><td align="center" style="padding:14px 40px 8px;background:#0c0c14;">
+        <p style="font-family:'Courier New',monospace;font-size:10px;color:rgba(200,169,107,0.18);margin:0;letter-spacing:14px;">✦ ✦ ✦</p>
+      </td></tr>
+      <tr><td align="center" style="padding:20px 40px 40px;background:#0c0c14;">
+        <a href="${ctaHref}" style="display:inline-block;padding:16px 52px;background:rgba(200,169,107,0.07);border:1px solid rgba(200,169,107,0.4);color:#C8A96B;text-decoration:none;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.45em;text-transform:uppercase;border-radius:3px;">${esc(ctaLabel)} &rarr;</a>
+        ${note ? `<p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(255,255,255,0.18);margin:16px 0 0;letter-spacing:0.05em;">${note}</p>` : ""}
+      </td></tr>
+      <tr><td align="center" style="padding:0 40px 36px;border-top:1px solid rgba(200,169,107,0.07);background:#0c0c14;">
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.18);letter-spacing:0.5em;text-transform:uppercase;margin:28px 0 6px;">CultCodex &nbsp;·&nbsp; The Living Archive &nbsp;·&nbsp; cultcodex.me</p>
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(255,255,255,0.1);margin:0;">Manage your subscription &mdash; <a href="https://cultcodex.me/settings" style="color:rgba(200,169,107,0.25);text-decoration:none;">cultcodex.me/settings</a></p>
+      </td></tr>
+    </table>
+    </td></tr>
+  </table>
+</td></tr></table>
+</body>
+</html>`;
+}
+
 function buildInitiateWelcomeHtml(name: string): string {
   const safeName = name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 

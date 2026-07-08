@@ -364,11 +364,16 @@ model LiveStatus {
 model Subscriber {
   id               String   @id @default(cuid())
   email            String?  @unique
+  name             String?
+  source           String?
+  giftStage        Int      @default(0)
+  lastEmailAt      DateTime?
   pushSubscription Json?
   verified         Boolean  @default(false)
   createdAt        DateTime @default(now())
 
   @@index([email])
+  @@index([giftStage])
 }
 
 model TranscriptRequest {
