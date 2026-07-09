@@ -11,6 +11,11 @@
  * op: "merge-people"     — merge duplicate person records: { pairs: [[sourceSlug, targetSlug]], dryRun? }
  * op: "set-person-type"  — recategorize: { changes: [{ slug, type }] }
  * op: "promote-recurring"— promote guests with ≥ threshold guest appearances: { threshold?, dryRun? }
+ * op: "unlink-episodes"  — detach mis-attributed episode links from a person:
+ *                          { slug, videoIds?: string[], episodeNumbers?: number[], types?: ("guest"|"mentioned")[], dryRun? }
+ * op: "reassign-quotes"  — move quotes off a wrong speaker (to another person or null):
+ *                          { fromSlug, toSlug?: string|null, quoteIds?: string[], matches?: [{ videoId, needle }], dryRun? }
+ * op: "set-alt-names"    — edit a person's altNames: { slug, altNames?: string[] (full replace), remove?: string[], add?: string[], dryRun? }
  */
 
 import { createHash, timingSafeEqual } from "node:crypto";
@@ -550,6 +555,124 @@ export async function POST(req: NextRequest) {
       dryRun,
       promoted: toPromote.map((c) => ({ slug: c.slug, guests: c._count.guestAppearances })),
     });
+  }
+
+  // ── unlink-episodes ────────────────────────────────────────────────────────
+  // Detach mis-attributed episode links (guest and/or mention) from a person,
+  // WITHOUT touching the episode or other people. For de-merges where a wrong
+  // episode got tagged to the wrong person.
+  if (op === "unlink-episodes") {
+    const slug = String(body.slug ?? "").trim();
+    const videoIds = Array.isArray(body.videoIds) ? body.videoIds.map(String) : [];
+    const episodeNumbers = Array.isArray(body.episodeNumbers) ? body.episodeNumbers.map(Number) : [];
+    const types = Array.isArray(body.types) && body.types.length
+      ? (body.types as string[]).filter((t) => t === "guest" || t === "mentioned")
+      : ["guest", "mentioned"];
+    const dryRun = body.dryRun !== false; // default TRUE
+    if (!slug) return NextResponse.json({ error: "slug required" }, { status: 400 });
+    if (!videoIds.length && !episodeNumbers.length)
+      return NextResponse.json({ error: "videoIds or episodeNumbers required" }, { status: 400 });
+
+    const person = await prisma.person.findUnique({ where: { slug }, select: { id: true, displayName: true } });
+    if (!person) return NextResponse.json({ error: `No person with slug "${slug}"` }, { status: 404 });
+
+    const eps = await prisma.episode.findMany({
+      where: {
+        OR: [
+          videoIds.length ? { youtubeVideoId: { in: videoIds } } : undefined,
+          episodeNumbers.length ? { episodeNumber: { in: episodeNumbers } } : undefined,
+        ].filter(Boolean) as object[],
+      },
+      select: { id: true, episodeNumber: true, title: true, youtubeVideoId: true },
+    });
+
+    const results = [];
+    for (const ep of eps) {
+      const g = types.includes("guest")
+        ? await prisma.episodeGuest.findUnique({ where: { episodeId_personId: { episodeId: ep.id, personId: person.id } } })
+        : null;
+      const m = types.includes("mentioned")
+        ? await prisma.episodeMentionedPerson.findUnique({ where: { episodeId_personId: { episodeId: ep.id, personId: person.id } } })
+        : null;
+      if (!dryRun) {
+        if (g) await prisma.episodeGuest.delete({ where: { episodeId_personId: { episodeId: ep.id, personId: person.id } } });
+        if (m) await prisma.episodeMentionedPerson.delete({ where: { episodeId_personId: { episodeId: ep.id, personId: person.id } } });
+      }
+      results.push({ videoId: ep.youtubeVideoId, episodeNumber: ep.episodeNumber, title: ep.title, removedGuest: !!g, removedMention: !!m });
+    }
+    return NextResponse.json({ op, slug, person: person.displayName, dryRun, results });
+  }
+
+  // ── reassign-quotes ────────────────────────────────────────────────────────
+  // Move quotes off a wrong speaker. toSlug omitted/null → speaker set to null
+  // (unattributed, safer than mis-attributed). Select by explicit quoteIds
+  // and/or by { videoId, needle } text matches scoped to the current speaker.
+  if (op === "reassign-quotes") {
+    const fromSlug = String(body.fromSlug ?? "").trim();
+    const toSlugRaw = body.toSlug;
+    const quoteIds = Array.isArray(body.quoteIds) ? body.quoteIds.map(String) : [];
+    const matches = Array.isArray(body.matches) ? (body.matches as Array<{ videoId: string; needle: string }>) : [];
+    const dryRun = body.dryRun !== false; // default TRUE
+    if (!fromSlug) return NextResponse.json({ error: "fromSlug required" }, { status: 400 });
+    if (!quoteIds.length && !matches.length)
+      return NextResponse.json({ error: "quoteIds or matches required" }, { status: 400 });
+
+    const from = await prisma.person.findUnique({ where: { slug: fromSlug }, select: { id: true, displayName: true } });
+    if (!from) return NextResponse.json({ error: `No person with slug "${fromSlug}"` }, { status: 404 });
+
+    let toId: string | null = null;
+    let toName: string | null = null;
+    if (toSlugRaw !== null && toSlugRaw !== undefined && String(toSlugRaw).trim() !== "") {
+      const to = await prisma.person.findUnique({ where: { slug: String(toSlugRaw).trim() }, select: { id: true, displayName: true } });
+      if (!to) return NextResponse.json({ error: `No target person with slug "${toSlugRaw}"` }, { status: 404 });
+      toId = to.id; toName = to.displayName;
+    }
+
+    const ids = new Set<string>(quoteIds);
+    for (const mm of matches) {
+      const ep = await prisma.episode.findFirst({ where: { youtubeVideoId: String(mm.videoId) }, select: { id: true } });
+      const qs = await prisma.quote.findMany({
+        where: { speakerPersonId: from.id, episodeId: ep?.id, text: { contains: String(mm.needle), mode: "insensitive" } },
+        select: { id: true },
+      });
+      for (const q of qs) ids.add(q.id);
+    }
+
+    // Only reassign quotes that currently belong to `from` (safety)
+    const targets = await prisma.quote.findMany({
+      where: { id: { in: [...ids] }, speakerPersonId: from.id },
+      select: { id: true, text: true, episodeId: true },
+    });
+    if (!dryRun && targets.length) {
+      await prisma.quote.updateMany({ where: { id: { in: targets.map((t) => t.id) } }, data: { speakerPersonId: toId } });
+    }
+    return NextResponse.json({
+      op, fromSlug, from: from.displayName, toSlug: toId ? String(toSlugRaw) : null, to: toName, dryRun,
+      count: targets.length,
+      quotes: targets.map((t) => ({ id: t.id, text: t.text.slice(0, 80) })),
+    });
+  }
+
+  // ── set-alt-names ──────────────────────────────────────────────────────────
+  // Edit a person's altNames. Provide `altNames` for a full replace, or
+  // `remove`/`add` arrays for a surgical edit. Case-sensitive exact match on remove.
+  if (op === "set-alt-names") {
+    const slug = String(body.slug ?? "").trim();
+    const dryRun = body.dryRun !== false; // default TRUE
+    if (!slug) return NextResponse.json({ error: "slug required" }, { status: 400 });
+    const person = await prisma.person.findUnique({ where: { slug }, select: { id: true, displayName: true, altNames: true } });
+    if (!person) return NextResponse.json({ error: `No person with slug "${slug}"` }, { status: 404 });
+
+    let after: string[];
+    if (Array.isArray(body.altNames)) {
+      after = [...new Set((body.altNames as unknown[]).map(String).map((s) => s.trim()).filter(Boolean))];
+    } else {
+      const remove = new Set((Array.isArray(body.remove) ? body.remove : []).map(String));
+      const add = (Array.isArray(body.add) ? body.add : []).map(String).map((s) => s.trim()).filter(Boolean);
+      after = [...new Set([...person.altNames.filter((n) => !remove.has(n)), ...add])];
+    }
+    if (!dryRun) await prisma.person.update({ where: { id: person.id }, data: { altNames: after } });
+    return NextResponse.json({ op, slug, person: person.displayName, dryRun, before: person.altNames, after });
   }
 
   return NextResponse.json({ error: `Unknown op: ${op}` }, { status: 400 });
