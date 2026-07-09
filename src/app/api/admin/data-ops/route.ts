@@ -16,6 +16,8 @@
  * op: "reassign-quotes"  — move quotes off a wrong speaker (to another person or null):
  *                          { fromSlug, toSlug?: string|null, quoteIds?: string[], matches?: [{ videoId, needle }], dryRun? }
  * op: "set-alt-names"    — edit a person's altNames: { slug, altNames?: string[] (full replace), remove?: string[], add?: string[], dryRun? }
+ * op: "corpus-extract"   — READ-ONLY: scan episode transcripts/summaries for a person's aliases and return
+ *                          keyword-context excerpts, paginated: { slug, terms?: string[], sinceDate?, page?, pageSize? }
  */
 
 import { createHash, timingSafeEqual } from "node:crypto";
@@ -673,6 +675,77 @@ export async function POST(req: NextRequest) {
     }
     if (!dryRun) await prisma.person.update({ where: { id: person.id }, data: { altNames: after } });
     return NextResponse.json({ op, slug, person: person.displayName, dryRun, before: person.altNames, after });
+  }
+
+  // ── corpus-extract ─────────────────────────────────────────────────────────
+  // READ-ONLY. Scan episodes whose transcript/summary/title mentions a person's
+  // aliases, return keyword-context excerpts. Paginated by airDate so each call
+  // stays under the serverless time budget. No writes.
+  if (op === "corpus-extract") {
+    const slug = String(body.slug ?? "").trim();
+    if (!slug) return NextResponse.json({ error: "slug required" }, { status: 400 });
+    const person = await prisma.person.findUnique({ where: { slug }, select: { displayName: true, altNames: true } });
+    if (!person) return NextResponse.json({ error: `No person with slug "${slug}"` }, { status: 404 });
+
+    const defaultTerms = [...new Set([person.displayName, ...person.altNames])]
+      .flatMap((n) => n.split("/"))
+      .map((s) => s.trim())
+      .filter((s) => s.length >= 4);
+    const terms = Array.isArray(body.terms) && body.terms.length ? (body.terms as string[]).map(String) : defaultTerms;
+    const sinceDate = body.sinceDate ? new Date(String(body.sinceDate)) : null;
+    const page = Math.max(0, Number(body.page ?? 0));
+    const pageSize = Math.min(40, Math.max(1, Number(body.pageSize ?? 20)));
+
+    const or = [];
+    for (const t of terms) {
+      or.push({ transcriptRaw: { contains: t, mode: "insensitive" as const } });
+      or.push({ summaryFacts: { contains: t, mode: "insensitive" as const } });
+      or.push({ title: { contains: t, mode: "insensitive" as const } });
+    }
+    const where: Record<string, unknown> = { OR: or };
+    if (sinceDate && !isNaN(sinceDate.getTime())) where.airDate = { gt: sinceDate };
+
+    const total = await prisma.episode.count({ where });
+    const eps = await prisma.episode.findMany({
+      where,
+      select: { episodeNumber: true, title: true, airDate: true, youtubeVideoId: true, summaryFacts: true, transcriptRaw: true },
+      orderBy: { airDate: "asc" },
+      skip: page * pageSize,
+      take: pageSize,
+    });
+
+    const alias = new RegExp(`(${terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "gi");
+    const strip = (s: string | null) => (s || "").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
+    const windows = (text: string) => {
+      const hits: string[] = []; const seen = new Set<string>(); let m: RegExpExecArray | null;
+      alias.lastIndex = 0;
+      while ((m = alias.exec(text)) && hits.length < 12) {
+        const s = Math.max(0, m.index - 180), e = Math.min(text.length, m.index + 200);
+        const snip = text.slice(s, e).trim(); const k = snip.slice(20, 70);
+        if (seen.has(k)) continue; seen.add(k); hits.push(`…${snip}…`);
+      }
+      return hits;
+    };
+
+    const results = eps.map((e) => {
+      const t = strip(e.transcriptRaw);
+      return {
+        episodeNumber: e.episodeNumber,
+        title: e.title,
+        airDate: e.airDate,
+        youtubeVideoId: e.youtubeVideoId,
+        transcriptChars: t.length,
+        summaryFacts: strip(e.summaryFacts).slice(0, 600),
+        excerpts: windows(t),
+      };
+    });
+
+    return NextResponse.json({
+      op, slug, person: person.displayName, terms,
+      sinceDate: sinceDate ? sinceDate.toISOString() : null,
+      total, page, pageSize, pages: Math.ceil(total / pageSize),
+      results,
+    });
   }
 
   return NextResponse.json({ error: `Unknown op: ${op}` }, { status: 400 });
