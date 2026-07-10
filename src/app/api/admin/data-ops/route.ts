@@ -25,6 +25,10 @@
  *                          falls back: { dryRun?, fields?: ("summaryShort"|"summaryLong")[], limit? }
  * op: "fix-content-typos" — whitelisted typo fixes (Codeex→Codex, Psychonomicon→Psychenomicon)
  *                          across Episode/LoreEntry/Person text fields; slugs untouched: { dryRun? }
+ * op: "apply-card-gift-migration" — idempotent DDL for the CardGift table (hand-distributed
+ *                          card editions; Vercel builds don't run prisma migrate deploy)
+ * op: "mint-card-gifts"   — mint single-use claim tokens for a card edition:
+ *                          { cardSlug, count, edition?, note?, dryRun? }. count:0 lists existing.
  */
 
 import { createHash, timingSafeEqual } from "node:crypto";
@@ -952,6 +956,91 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ op, dryRun, fixes: FIXES.map((f) => `${f.find}→${f.replacement}`), counts, samples });
+  }
+
+  // ── apply-card-gift-migration ───────────────────────────────────────────────
+  // Idempotent DDL for CardGift (single-use claim tokens for hand-distributed
+  // card editions). Same operator path as apply-subscriber-gift-migration.
+  if (op === "apply-card-gift-migration") {
+    const stmts = [
+      `CREATE TABLE IF NOT EXISTS "CardGift" (
+        "id" TEXT NOT NULL,
+        "token" TEXT NOT NULL,
+        "cardId" TEXT NOT NULL,
+        "serial" INTEGER NOT NULL,
+        "edition" TEXT NOT NULL DEFAULT 'founders',
+        "note" TEXT,
+        "claimed" BOOLEAN NOT NULL DEFAULT false,
+        "claimedAt" TIMESTAMP(3),
+        "claimedBy" TEXT,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT "CardGift_pkey" PRIMARY KEY ("id")
+      )`,
+      `CREATE UNIQUE INDEX IF NOT EXISTS "CardGift_token_key" ON "CardGift"("token")`,
+      `CREATE UNIQUE INDEX IF NOT EXISTS "CardGift_cardId_edition_serial_key" ON "CardGift"("cardId", "edition", "serial")`,
+      `CREATE INDEX IF NOT EXISTS "CardGift_cardId_idx" ON "CardGift"("cardId")`,
+      `DO $$ BEGIN
+        ALTER TABLE "CardGift" ADD CONSTRAINT "CardGift_cardId_fkey"
+          FOREIGN KEY ("cardId") REFERENCES "Card"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+      EXCEPTION WHEN duplicate_object THEN NULL; END $$`,
+    ];
+    const steps: Array<{ sql: string; ok: boolean; error?: string }> = [];
+    for (const sql of stmts) {
+      try {
+        await prisma.$executeRawUnsafe(sql);
+        steps.push({ sql: sql.slice(0, 60), ok: true });
+      } catch (err) {
+        steps.push({ sql: sql.slice(0, 60), ok: false, error: err instanceof Error ? err.message : String(err) });
+      }
+    }
+    return NextResponse.json({ op, ok: steps.every((s) => s.ok), steps });
+  }
+
+  // ── mint-card-gifts ─────────────────────────────────────────────────────────
+  // Mint single-use claim tokens for a card edition. Serials continue from the
+  // edition's current max. count:0 lists existing gifts without minting.
+  if (op === "mint-card-gifts") {
+    const cardSlug = String(body.cardSlug ?? "").trim();
+    if (!cardSlug) return NextResponse.json({ error: "cardSlug required" }, { status: 400 });
+    const count = Math.max(0, Math.min(100, Number(body.count ?? 0)));
+    const edition = String(body.edition ?? "founders").trim();
+    const note = body.note != null ? String(body.note) : null;
+    const dryRun = body.dryRun === true; // default APPLY (explicit mint); dryRun:true previews
+
+    const card = await prisma.card.findUnique({
+      where: { slug: cardSlug },
+      select: { id: true, title: true, slug: true, artUrl: true },
+    });
+    if (!card) return NextResponse.json({ error: `No card with slug "${cardSlug}"` }, { status: 404 });
+
+    const existing = await prisma.cardGift.findMany({
+      where: { cardId: card.id, edition },
+      orderBy: { serial: "asc" },
+      select: { serial: true, token: true, claimed: true, claimedAt: true, claimedBy: true, note: true },
+    });
+
+    if (count === 0 || dryRun) {
+      return NextResponse.json({
+        op, card: card.title, cardSlug, edition, dryRun,
+        wouldMint: count,
+        nextSerial: (existing[existing.length - 1]?.serial ?? 0) + 1,
+        existing: existing.map((g) => ({
+          serial: g.serial, claimed: g.claimed, claimedAt: g.claimedAt, note: g.note,
+          url: `https://cultcodex.me/claim/card/${g.token}`,
+        })),
+      });
+    }
+
+    const startSerial = (existing[existing.length - 1]?.serial ?? 0) + 1;
+    const minted: Array<{ serial: number; url: string }> = [];
+    for (let i = 0; i < count; i++) {
+      const gift = await prisma.cardGift.create({
+        data: { cardId: card.id, serial: startSerial + i, edition, note },
+        select: { serial: true, token: true },
+      });
+      minted.push({ serial: gift.serial, url: `https://cultcodex.me/claim/card/${gift.token}` });
+    }
+    return NextResponse.json({ op, card: card.title, cardSlug, edition, minted });
   }
 
   return NextResponse.json({ error: `Unknown op: ${op}` }, { status: 400 });

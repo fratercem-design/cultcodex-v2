@@ -978,10 +978,32 @@ model Card {
   packCards  PackCard[]
   ownedCards OwnedCard[]
   deckCards  DeckCard[]
+  gifts      CardGift[]
 
   @@index([rarity])
   @@index([cardType])
   @@index([isActive])
+}
+
+// Single-use gift/claim tokens for hand-distributed card editions (e.g. the
+// Founder's Edition drop). Table is created on prod via the idempotent
+// `apply-card-gift-migration` data-ops op — same path as subscriber-gift.
+model CardGift {
+  id        String    @id @default(cuid())
+  token     String    @unique @default(cuid())
+  cardId    String
+  serial    Int
+  edition   String    @default("founders")
+  note      String?
+  claimed   Boolean   @default(false)
+  claimedAt DateTime?
+  claimedBy String?
+  createdAt DateTime  @default(now())
+
+  card Card @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([cardId, edition, serial])
+  @@index([cardId])
 }
 
 model CardPack {
