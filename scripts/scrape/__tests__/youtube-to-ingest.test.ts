@@ -65,6 +65,18 @@ describe("transformVideo", () => {
     expect(result.summaryShort).toBe("Tonight we discuss the tarot and cosmic consciousness");
   });
 
+  it("leaves prose that merely MENTIONS StreamYard untouched", () => {
+    const video: YouTubeVideo = {
+      ...sampleVideo,
+      description:
+        "Psyche discusses his unexpected $93 charge from Streamyard and shares his experience with the platform. He also does a tarot reading.",
+    };
+    const result = transformVideo(video, 1);
+    expect(result.summaryShort).toBe(
+      "Psyche discusses his unexpected $93 charge from Streamyard and shares his experience with the platform. He also does a tarot reading.",
+    );
+  });
+
   it("drops summaries that are pure promo boilerplate", () => {
     const video: YouTubeVideo = {
       ...sampleVideo,

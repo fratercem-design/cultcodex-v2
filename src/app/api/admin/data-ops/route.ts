@@ -30,7 +30,7 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { cleanSummary, isJunkSummary } from "@/lib/content-hygiene";
+import { cleanSummary, isJunkSummary, isTemplateJunk } from "@/lib/content-hygiene";
 import type { PersonType } from "@/generated/prisma/client";
 
 export const runtime = "nodejs";
@@ -824,15 +824,16 @@ export async function POST(req: NextRequest) {
       for (const field of fields) {
         const raw = ep[field];
         if (!raw) continue;
+        const templateJunk = isTemplateJunk(raw);
         const cleaned = cleanSummary(raw);
-        if (cleaned === raw) continue;
+        if (!templateJunk && cleaned === raw) continue;
         changes.push({
           id: ep.id,
           episodeNumber: ep.episodeNumber,
           title: ep.title,
           field,
           before: raw,
-          after: isJunkSummary(cleaned) ? null : cleaned,
+          after: templateJunk || isJunkSummary(cleaned) ? null : cleaned,
         });
         if (limit && changes.length >= limit) break outer;
       }

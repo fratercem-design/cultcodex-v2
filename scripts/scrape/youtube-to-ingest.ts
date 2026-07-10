@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from "fs";
 import { join } from "path";
 import { parsePublishedDate } from "./lib";
-import { cleanSummary, isJunkSummary } from "../../src/lib/content-hygiene";
+import { cleanSummary, isJunkSummary, isTemplateJunk } from "../../src/lib/content-hygiene";
 import type { YouTubeVideo, YouTubeRaw } from "./types";
 import type { EpisodeRow } from "../ingest/schemas";
 
@@ -30,6 +30,7 @@ function extractSummary(description: string): string | undefined {
 
   // Strip sponsor/boilerplate prose (StreamYard promos, vidIQ, AI preambles)
   // so junk never enters the DB — same patterns data-ops uses to clean prod.
+  if (isTemplateJunk(candidate)) return undefined;
   const cleaned = cleanSummary(candidate);
   return isJunkSummary(cleaned) ? undefined : cleaned;
 }
