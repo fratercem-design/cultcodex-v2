@@ -1,4 +1,5 @@
 import { IconScroll } from "@/components/graphics/codex-icons";
+import Link from "next/link";
 
 interface SuggestCorrectionProps {
   entityType: "person" | "lore" | "episode" | "topic";
@@ -7,11 +8,7 @@ interface SuggestCorrectionProps {
 }
 
 export function SuggestCorrection({ entityType, entityTitle, className }: SuggestCorrectionProps) {
-  const subject = encodeURIComponent(`[Correction] ${entityType}: ${entityTitle}`);
-  const body = encodeURIComponent(
-    `I'd like to suggest a correction for the ${entityType} page "${entityTitle}" on CultCodex.\n\nWhat needs correcting:\n\nSuggested change:\n\nSource/context:\n`
-  );
-  const mailtoLink = `mailto:psychetarotchannel@gmail.com?subject=${subject}&body=${body}`;
+  const correctionHref = `/corrections?type=${entityType}&title=${encodeURIComponent(entityTitle)}`;
 
   return (
     <aside className={`rounded-lg border border-border/50 bg-surface/30 p-4 ${className ?? ""}`}>
@@ -25,12 +22,12 @@ export function SuggestCorrection({ entityType, entityTitle, className }: Sugges
             This page is auto-generated from stream content and AI analysis.
             Details may be approximate or reflect in-show discussion rather than fact.
           </p>
-          <a
-            href={mailtoLink}
+          <Link
+            href={correctionHref}
             className="inline-block font-mono text-[10px] text-accent-gold hover:text-accent-gold/80 hover:underline transition-colors"
           >
             Suggest a correction &rarr;
-          </a>
+          </Link>
         </div>
       </div>
     </aside>

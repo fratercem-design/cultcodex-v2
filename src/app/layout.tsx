@@ -90,6 +90,7 @@ export const metadata: Metadata = {
   // every page inherit the homepage URL as its canonical, so Google treated
   // all routes as duplicates of `/`. Each page declares its own canonical.
   robots: { index: true, follow: true },
+  other: { "build-commit": process.env.VERCEL_GIT_COMMIT_SHA ?? "dev" },
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },

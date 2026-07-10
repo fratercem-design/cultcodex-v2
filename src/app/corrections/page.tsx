@@ -9,7 +9,14 @@ export const metadata: Metadata = {
   description: "How to report errors or request changes in the Cult Codex archive",
 };
 
-export default function CorrectionsPage() {
+export default async function CorrectionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type?: string; title?: string }>;
+}) {
+  const { type, title } = await searchParams;
+  const bannerTitle = title ? title.slice(0, 120) : null;
+
   return (
     <>
       <PageHero
@@ -19,6 +26,11 @@ export default function CorrectionsPage() {
       label="corrections"
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
+        {bannerTitle && (
+          <div className="rounded-lg border border-border/50 bg-surface/30 px-4 py-3 font-mono text-xs text-text-muted">
+            Reporting: {type} &mdash; &ldquo;{bannerTitle}&rdquo;
+          </div>
+        )}
         <SectionCard title="Report an Error">
           <div className="space-y-3 text-sm text-text-primary leading-relaxed">
             <p>
