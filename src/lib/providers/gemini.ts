@@ -12,7 +12,7 @@ import {
 } from "./types";
 
 export class GeminiProvider implements ProviderInterface {
-  name: "gemini" = "gemini";
+  name = "gemini" as const;
   private apiKey: string;
   private baseUrl = "https://generativelanguage.googleapis.com/v1beta/models";
 

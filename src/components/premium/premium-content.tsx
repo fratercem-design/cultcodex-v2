@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 export default function PremiumContent() {
-  const [data, setData] = useState<any | null>(null);
+  const [data, setData] = useState<{ subscription?: { status?: string } } | null>(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     fetch("/api/premium/status")

@@ -12,7 +12,7 @@ import {
 } from "./types";
 
 export class MistralProvider implements ProviderInterface {
-  name: "mistral" = "mistral";
+  name = "mistral" as const;
   private apiKey: string;
   private baseUrl = "https://api.mistral.ai/v1";
 

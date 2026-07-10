@@ -12,7 +12,7 @@ import {
 } from "./types";
 
 export class CohereProvider implements ProviderInterface {
-  name: "cohere" = "cohere";
+  name = "cohere" as const;
   private apiKey: string;
   private baseUrl = "https://api.cohere.ai/v1";
 

@@ -12,7 +12,7 @@ import {
 } from "./types";
 
 export class HuggingFaceProvider implements ProviderInterface {
-  name: "huggingface" = "huggingface";
+  name = "huggingface" as const;
   private apiKey: string;
   private routerUrl = "https://router.huggingface.co/v1";
   private hfInferenceUrl = "https://router.huggingface.co/hf-inference";
