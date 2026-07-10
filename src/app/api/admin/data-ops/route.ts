@@ -20,11 +20,17 @@
  *                          keyword-context excerpts, paginated: { slug, terms?: string[], sinceDate?, page?, pageSize? }
  * op: "grant-admin"      — set a CodexUser's role to admin + lifetime system tier (mirrors /admin/grant-access):
  *                          { email, memberTitle?, dryRun? }
+ * op: "clean-episode-summaries" — scrub sponsor/boilerplate prose (StreamYard promos, vidIQ, AI
+ *                          preambles) from episode summaries; junk-only summaries → null so the UI
+ *                          falls back: { dryRun?, fields?: ("summaryShort"|"summaryLong")[], limit? }
+ * op: "fix-content-typos" — whitelisted typo fixes (Codeex→Codex, Psychonomicon→Psychenomicon)
+ *                          across Episode/LoreEntry/Person text fields; slugs untouched: { dryRun? }
  */
 
 import { createHash, timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { cleanSummary, isJunkSummary } from "@/lib/content-hygiene";
 import type { PersonType } from "@/generated/prisma/client";
 
 export const runtime = "nodejs";
@@ -784,6 +790,167 @@ export async function POST(req: NextRequest) {
       select: { id: true, email: true, displayName: true, role: true, isLifetimeMember: true, subscriptionStatus: true, subscriptionTier: true, memberTitle: true },
     });
     return NextResponse.json({ op, dryRun: false, before: { role: user.role, tier: user.subscriptionTier, memberTitle: user.memberTitle }, user: updated });
+  }
+
+  // ── clean-episode-summaries ─────────────────────────────────────────────────
+  // Scrub sponsor/boilerplate prose from episode summaries via the shared
+  // content-hygiene patterns. Summaries that are junk-only after cleaning are
+  // nulled so the UI falls back instead of rendering boilerplate.
+  if (op === "clean-episode-summaries") {
+    const dryRun = body.dryRun !== false;
+    const requested = Array.isArray(body.fields) ? (body.fields as string[]) : [];
+    const fields = (requested.length ? requested : ["summaryShort", "summaryLong"]).filter(
+      (f): f is "summaryShort" | "summaryLong" => f === "summaryShort" || f === "summaryLong"
+    );
+    if (!fields.length) return NextResponse.json({ error: "no valid fields" }, { status: 400 });
+    const limit = body.limit != null ? Math.max(1, Number(body.limit)) : null;
+
+    const eps = await prisma.episode.findMany({
+      where: { OR: fields.map((f) => ({ [f]: { not: null } })) },
+      select: { id: true, episodeNumber: true, title: true, summaryShort: true, summaryLong: true },
+      orderBy: { airDate: "asc" },
+    });
+
+    type SummaryChange = {
+      id: string;
+      episodeNumber: number | null;
+      title: string | null;
+      field: "summaryShort" | "summaryLong";
+      before: string;
+      after: string | null;
+    };
+    const changes: SummaryChange[] = [];
+    outer: for (const ep of eps) {
+      for (const field of fields) {
+        const raw = ep[field];
+        if (!raw) continue;
+        const cleaned = cleanSummary(raw);
+        if (cleaned === raw) continue;
+        changes.push({
+          id: ep.id,
+          episodeNumber: ep.episodeNumber,
+          title: ep.title,
+          field,
+          before: raw,
+          after: isJunkSummary(cleaned) ? null : cleaned,
+        });
+        if (limit && changes.length >= limit) break outer;
+      }
+    }
+
+    const nulled = changes.filter((c) => c.after === null).length;
+    if (!dryRun) {
+      for (const c of changes) {
+        await prisma.episode.update({ where: { id: c.id }, data: { [c.field]: c.after } });
+      }
+    }
+
+    return NextResponse.json({
+      op,
+      dryRun,
+      scanned: eps.length,
+      changed: changes.length,
+      nulled,
+      samples: changes.slice(0, 15).map((c) => ({
+        episodeNumber: c.episodeNumber,
+        title: c.title?.slice(0, 60),
+        field: c.field,
+        before: c.before.slice(0, 120),
+        after: c.after === null ? "(null)" : c.after.slice(0, 120),
+      })),
+    });
+  }
+
+  // ── fix-content-typos ───────────────────────────────────────────────────────
+  // Whitelisted, word-boundary typo replacements across content text fields.
+  // Slugs are deliberately untouched — URL stability over spelling.
+  if (op === "fix-content-typos") {
+    const dryRun = body.dryRun !== false;
+    const FIXES = [
+      { find: "Codeex", needle: /\bCodeex\b/g, replacement: "Codex" },
+      { find: "Psychonomicon", needle: /\bPsychonomicon\b/g, replacement: "Psychenomicon" },
+    ];
+    const applyFixes = (s: string) => FIXES.reduce((out, f) => out.replace(f.needle, f.replacement), s);
+    const excerpt = (s: string) => {
+      const i = FIXES.map((f) => s.search(f.needle)).filter((n) => n >= 0).sort((a, b) => a - b)[0] ?? 0;
+      return s.slice(Math.max(0, i - 40), i + 60);
+    };
+    const needleOr = FIXES.map((f) => f.find);
+
+    type TypoSample = { table: string; ref: string; field: string; before: string; after: string };
+    const samples: TypoSample[] = [];
+    const counts: Record<string, number> = { episode: 0, loreEntry: 0, person: 0 };
+
+    // Episodes
+    const epFields = ["summaryShort", "summaryLong"] as const;
+    const eps = await prisma.episode.findMany({
+      where: { OR: needleOr.flatMap((n) => epFields.map((f) => ({ [f]: { contains: n } }))) },
+      select: { id: true, episodeNumber: true, summaryShort: true, summaryLong: true },
+    });
+    for (const ep of eps) {
+      const data: Record<string, string> = {};
+      for (const f of epFields) {
+        const raw = ep[f];
+        if (!raw) continue;
+        const fixed = applyFixes(raw);
+        if (fixed === raw) continue;
+        data[f] = fixed;
+        if (samples.length < 10)
+          samples.push({ table: "episode", ref: `ep.${ep.episodeNumber ?? "?"}`, field: f, before: excerpt(raw), after: excerpt(fixed) });
+      }
+      if (Object.keys(data).length) {
+        counts.episode++;
+        if (!dryRun) await prisma.episode.update({ where: { id: ep.id }, data });
+      }
+    }
+
+    // Lore entries (title + body text; slug untouched)
+    const loreFields = ["title", "summary", "fullEntry", "searchText"] as const;
+    const lore = await prisma.loreEntry.findMany({
+      where: { OR: needleOr.flatMap((n) => loreFields.map((f) => ({ [f]: { contains: n } }))) },
+      select: { id: true, slug: true, title: true, summary: true, fullEntry: true, searchText: true },
+    });
+    for (const le of lore) {
+      const data: Record<string, string> = {};
+      for (const f of loreFields) {
+        const raw = le[f];
+        if (!raw) continue;
+        const fixed = applyFixes(raw);
+        if (fixed === raw) continue;
+        data[f] = fixed;
+        if (samples.length < 10)
+          samples.push({ table: "loreEntry", ref: le.slug, field: f, before: excerpt(raw), after: excerpt(fixed) });
+      }
+      if (Object.keys(data).length) {
+        counts.loreEntry++;
+        if (!dryRun) await prisma.loreEntry.update({ where: { id: le.id }, data });
+      }
+    }
+
+    // People
+    const personFields = ["shortBio", "loreSummary"] as const;
+    const people = await prisma.person.findMany({
+      where: { OR: needleOr.flatMap((n) => personFields.map((f) => ({ [f]: { contains: n } }))) },
+      select: { id: true, slug: true, shortBio: true, loreSummary: true },
+    });
+    for (const p of people) {
+      const data: Record<string, string> = {};
+      for (const f of personFields) {
+        const raw = p[f];
+        if (!raw) continue;
+        const fixed = applyFixes(raw);
+        if (fixed === raw) continue;
+        data[f] = fixed;
+        if (samples.length < 10)
+          samples.push({ table: "person", ref: p.slug, field: f, before: excerpt(raw), after: excerpt(fixed) });
+      }
+      if (Object.keys(data).length) {
+        counts.person++;
+        if (!dryRun) await prisma.person.update({ where: { id: p.id }, data });
+      }
+    }
+
+    return NextResponse.json({ op, dryRun, fixes: FIXES.map((f) => `${f.find}→${f.replacement}`), counts, samples });
   }
 
   return NextResponse.json({ error: `Unknown op: ${op}` }, { status: 400 });
