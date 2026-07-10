@@ -2,6 +2,10 @@
 
 # dependencies
 /node_modules
+# bun.lock is parked, not adopted: Vercel picks its install command from the
+# lockfile present in git, so committing this would silently switch the
+# production build npm -> bun. Remove this line only as a deliberate migration.
+bun.lock
 /.pnp
 .pnp.*
 .yarn/*
