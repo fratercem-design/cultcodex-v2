@@ -20,6 +20,7 @@ import { CRTOverlay } from "@/components/graphics/crt-overlay";
 import { SkipLink } from "@/components/ui/skip-link";
 import { jsonLdScript } from "@/lib/seo";
 import { CookieConsent } from "@/components/layout/cookie-consent";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 // Layout data fetches (getCounts, getLiveChannels) are already wrapped in
@@ -208,8 +209,8 @@ export default async function RootLayout({
           }}
         />
         <CookieConsent gaId="G-1ML217JXYV" />
+        <Analytics />
       </body>
     </html>
   );
 }
-
