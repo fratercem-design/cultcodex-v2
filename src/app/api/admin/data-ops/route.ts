@@ -652,7 +652,9 @@ export async function POST(req: NextRequest) {
     const people = await prisma.person.findMany({
       where: tier === "channel"
         ? { ...baseWhere, youtubeChannelUrl: { not: null } }
-        : { ...baseWhere, youtubeChannelUrl: null },
+        // search tier: only multi-token names — single-token names can never
+        // clear nameConfidence, so searching them is pure wasted quota.
+        : { ...baseWhere, youtubeChannelUrl: null, displayName: { contains: " " } },
       select: { id: true, slug: true, displayName: true, youtubeChannelUrl: true },
       orderBy: { guestAppearances: { _count: "desc" } },
       take: limit,
