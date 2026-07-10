@@ -66,6 +66,55 @@ function normName(s: string): string {
   return s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
 }
 
+// ── YouTube avatar helpers ───────────────────────────────────────────────────
+
+type YtThumbs = { high?: { url: string }; medium?: { url: string }; default?: { url: string } };
+interface YtChannelResponse { items?: Array<{ id: string; snippet: { title: string; thumbnails: YtThumbs } }> }
+interface YtSearchResponse { items?: Array<{ snippet?: { title?: string; channelTitle?: string; thumbnails?: YtThumbs } }> }
+
+function pickThumb(t: YtThumbs): string {
+  return t.high?.url ?? t.medium?.url ?? t.default?.url ?? "";
+}
+
+/** Extract @handle or channel ID from a YouTube URL or bare handle. */
+function parseChannelInput(input: string): { type: "handle" | "id"; value: string } | null {
+  const s = input.trim();
+  if (/^@[\w.-]+$/.test(s)) return { type: "handle", value: s };
+  const handleMatch = s.match(/youtube\.com\/@([\w.-]+)/);
+  if (handleMatch) return { type: "handle", value: `@${handleMatch[1]}` };
+  const idMatch = s.match(/youtube\.com\/channel\/(UC[\w-]+)/);
+  if (idMatch) return { type: "id", value: idMatch[1] };
+  const customMatch = s.match(/youtube\.com\/c\/([\w.-]+)/);
+  if (customMatch) return { type: "handle", value: `@${customMatch[1]}` };
+  return null;
+}
+
+/**
+ * Confidence that a YouTube channel title refers to this person.
+ *
+ * Deliberately does NOT use substring containment: "Doug" is a substring of
+ * "Doug's Gaming Corner" and "LD" of "LD Shadow Lady", which would staple a
+ * stranger's face onto a real person's profile. Single-token names can only
+ * ever reach "low" — they are inherently ambiguous and need human review.
+ */
+function nameConfidence(personName: string, channelTitle: string): "high" | "medium" | "low" | "none" {
+  const a = normName(personName);
+  const b = normName(channelTitle);
+  if (!a || !b) return "none";
+
+  const tokensA = a.split(" ").filter(Boolean);
+  const tokensB = b.split(" ").filter(Boolean);
+
+  if (a === b) return tokensA.length >= 2 ? "high" : "low";
+  if (tokensA.length < 2) return "none"; // single-token, inexact → never guess
+
+  const setB = new Set(tokensB);
+  const shared = tokensA.filter((t) => setB.has(t)).length;
+  const union = new Set([...tokensA, ...tokensB]).size;
+  if (shared >= 2 && union > 0 && shared / union >= 0.6) return "medium";
+  return "none";
+}
+
 const PERSON_SUMMARY_SELECT = {
   id: true,
   displayName: true,
@@ -546,6 +595,174 @@ export async function POST(req: NextRequest) {
       dryRun,
       count: affected.length,
       sample: affected.slice(0, 20).map((a) => ({ slug: a.slug, guests: a._count.guestAppearances })),
+    });
+  }
+
+  // ── avatar-audit ───────────────────────────────────────────────────────────
+  // Scopes the avatar backfill and its YouTube quota cost before spending any.
+  // channels.list (by handle/id) = 1 quota unit; search.list = 100 units.
+  if (op === "avatar-audit") {
+    const profiledNoAvatar = await prisma.person.findMany({
+      where: {
+        avatarUrl: null,
+        personType: { not: "mentioned" },
+        OR: [{ shortBio: { not: null } }, { loreSummary: { not: null } }],
+      },
+      select: { slug: true, displayName: true, youtubeChannelUrl: true, personType: true },
+      orderBy: { guestAppearances: { _count: "desc" } },
+    });
+
+    const withChannel = profiledNoAvatar.filter((p) => !!p.youtubeChannelUrl);
+    const needSearch = profiledNoAvatar.filter((p) => !p.youtubeChannelUrl);
+    const singleToken = needSearch.filter((p) => normName(p.displayName).split(" ").length < 2);
+
+    return NextResponse.json({
+      op,
+      profiledNoAvatar: profiledNoAvatar.length,
+      tierA_hasChannelUrl: withChannel.length,
+      tierA_quotaUnits: withChannel.length * 1,
+      tierB_needsSearch: needSearch.length,
+      tierB_quotaUnits: needSearch.length * 100,
+      tierB_singleTokenNames: singleToken.length,
+      dailyQuotaDefault: 10000,
+      sampleTierA: withChannel.slice(0, 10).map((p) => ({ slug: p.slug, url: p.youtubeChannelUrl })),
+      sampleSingleToken: singleToken.slice(0, 15).map((p) => p.displayName),
+    });
+  }
+
+  // ── sync-avatars ───────────────────────────────────────────────────────────
+  // Two-tier avatar backfill. dryRun default TRUE. Only "high" confidence is
+  // ever written by default — misattributing a face on a public archive about
+  // real people is the failure mode this op exists to prevent.
+  if (op === "sync-avatars") {
+    const apiKey = process.env.YOUTUBE_API_KEY;
+    if (!apiKey) return NextResponse.json({ error: "YOUTUBE_API_KEY not configured" }, { status: 500 });
+
+    const dryRun = body.dryRun !== false;
+    const tier = body.tier === "search" ? "search" : "channel";
+    const limit = Math.min(Math.max(1, Number(body.limit ?? 25)), 60);
+    const minConfidence = String(body.minConfidence ?? "high");
+
+    const baseWhere = {
+      avatarUrl: null,
+      personType: { not: "mentioned" as PersonType },
+      OR: [{ shortBio: { not: null } }, { loreSummary: { not: null } }],
+    };
+
+    const people = await prisma.person.findMany({
+      where: tier === "channel"
+        ? { ...baseWhere, youtubeChannelUrl: { not: null } }
+        : { ...baseWhere, youtubeChannelUrl: null },
+      select: { id: true, slug: true, displayName: true, youtubeChannelUrl: true },
+      orderBy: { guestAppearances: { _count: "desc" } },
+      take: limit,
+    });
+
+    const results: Array<Record<string, unknown>> = [];
+    let quotaSpent = 0;
+
+    for (const person of people) {
+      try {
+        let thumbnail = "";
+        let channelTitle = "";
+        let confidence = "none";
+
+        if (tier === "channel") {
+          const parsed = parseChannelInput(person.youtubeChannelUrl ?? "");
+          if (!parsed) {
+            results.push({ slug: person.slug, status: "unparseable_url", url: person.youtubeChannelUrl });
+            continue;
+          }
+          const qs = new URLSearchParams({
+            part: "snippet",
+            key: apiKey,
+            maxResults: "1",
+            ...(parsed.type === "handle" ? { forHandle: parsed.value } : { id: parsed.value }),
+          });
+          const res = await fetch(`https://www.googleapis.com/youtube/v3/channels?${qs}`);
+          quotaSpent += 1;
+          if (!res.ok) {
+            results.push({ slug: person.slug, status: "yt_error", code: res.status });
+            continue;
+          }
+          const data = (await res.json()) as YtChannelResponse;
+          const ch = data.items?.[0];
+          if (!ch) {
+            results.push({ slug: person.slug, status: "no_channel" });
+            continue;
+          }
+          thumbnail = pickThumb(ch.snippet.thumbnails);
+          channelTitle = ch.snippet.title;
+          // The operator already vouched for this channel URL — deterministic.
+          confidence = "high";
+        } else {
+          const qs = new URLSearchParams({
+            part: "snippet",
+            key: apiKey,
+            q: person.displayName,
+            type: "channel",
+            maxResults: "3",
+          });
+          const res = await fetch(`https://www.googleapis.com/youtube/v3/search?${qs}`);
+          quotaSpent += 100;
+          if (!res.ok) {
+            results.push({ slug: person.slug, status: "yt_error", code: res.status });
+            if (res.status === 403) break; // quota exhausted — stop burning calls
+            continue;
+          }
+          const data = (await res.json()) as YtSearchResponse;
+          for (const item of data.items ?? []) {
+            const title = item.snippet?.channelTitle ?? item.snippet?.title ?? "";
+            const thumb = pickThumb(item.snippet?.thumbnails ?? {});
+            if (!thumb) continue;
+            const c = nameConfidence(person.displayName, title);
+            if (c !== "none") {
+              thumbnail = thumb;
+              channelTitle = title;
+              confidence = c;
+              break;
+            }
+          }
+          if (!thumbnail) {
+            results.push({ slug: person.slug, name: person.displayName, status: "no_match" });
+            continue;
+          }
+        }
+
+        const rank = { high: 3, medium: 2, low: 1, none: 0 } as Record<string, number>;
+        const willWrite = rank[confidence] >= (rank[minConfidence] ?? 3);
+
+        if (willWrite && !dryRun) {
+          await prisma.person.update({ where: { id: person.id }, data: { avatarUrl: thumbnail } });
+        }
+
+        results.push({
+          slug: person.slug,
+          name: person.displayName,
+          status: willWrite ? (dryRun ? "would_write" : "written") : "needs_review",
+          confidence,
+          channelTitle,
+          avatarUrl: thumbnail,
+        });
+      } catch (err) {
+        results.push({ slug: person.slug, status: "error", error: err instanceof Error ? err.message.slice(0, 120) : String(err) });
+      }
+    }
+
+    const remaining = await prisma.person.count({ where: baseWhere });
+    return NextResponse.json({
+      op,
+      tier,
+      dryRun,
+      minConfidence,
+      processed: results.length,
+      quotaSpent,
+      written: results.filter((r) => r.status === "written").length,
+      wouldWrite: results.filter((r) => r.status === "would_write").length,
+      needsReview: results.filter((r) => r.status === "needs_review").length,
+      noMatch: results.filter((r) => r.status === "no_match").length,
+      remaining,
+      results,
     });
   }
 
