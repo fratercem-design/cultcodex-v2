@@ -18,6 +18,8 @@
  * op: "set-alt-names"    — edit a person's altNames: { slug, altNames?: string[] (full replace), remove?: string[], add?: string[], dryRun? }
  * op: "corpus-extract"   — READ-ONLY: scan episode transcripts/summaries for a person's aliases and return
  *                          keyword-context excerpts, paginated: { slug, terms?: string[], sinceDate?, page?, pageSize? }
+ * op: "grant-admin"      — set a CodexUser's role to admin + lifetime system tier (mirrors /admin/grant-access):
+ *                          { email, memberTitle?, dryRun? }
  */
 
 import { createHash, timingSafeEqual } from "node:crypto";
@@ -746,6 +748,42 @@ export async function POST(req: NextRequest) {
       total, page, pageSize, pages: Math.ceil(total / pageSize),
       results,
     });
+  }
+
+  // ── grant-admin ────────────────────────────────────────────────────────────
+  // Set a CodexUser's role to admin + lifetime system tier. Mirrors the existing
+  // /api/admin/grant-access route, but authed via x-maint-key so it can run
+  // without the (Vercel-sensitive) ENRICH_SECRET. Optional memberTitle flair.
+  if (op === "grant-admin") {
+    const email = String(body.email ?? "").trim().toLowerCase();
+    const memberTitle = body.memberTitle != null ? String(body.memberTitle).trim() : undefined;
+    const dryRun = body.dryRun === true; // default APPLY (explicit grant); pass dryRun:true to preview
+    if (!email) return NextResponse.json({ error: "email required" }, { status: 400 });
+
+    const user = await prisma.codexUser.findUnique({
+      where: { email },
+      select: { id: true, email: true, displayName: true, role: true, isLifetimeMember: true, subscriptionTier: true, memberTitle: true },
+    });
+    if (!user) return NextResponse.json({ error: `No CodexUser with email "${email}" — they must sign in to cultcodex once first` }, { status: 404 });
+
+    if (dryRun) {
+      return NextResponse.json({ op, email, dryRun: true, before: user, wouldSet: { role: "admin", isLifetimeMember: true, subscriptionTier: "system", ...(memberTitle ? { memberTitle } : {}) } });
+    }
+
+    const updated = await prisma.codexUser.update({
+      where: { id: user.id },
+      data: {
+        role: "admin",
+        isLifetimeMember: true,
+        subscriptionStatus: "active",
+        subscriptionTier: "system",
+        currentPeriodEnd: new Date("2099-01-01"),
+        isPublicMember: true,
+        ...(memberTitle ? { memberTitle } : {}),
+      },
+      select: { id: true, email: true, displayName: true, role: true, isLifetimeMember: true, subscriptionStatus: true, subscriptionTier: true, memberTitle: true },
+    });
+    return NextResponse.json({ op, dryRun: false, before: { role: user.role, tier: user.subscriptionTier, memberTitle: user.memberTitle }, user: updated });
   }
 
   return NextResponse.json({ error: `Unknown op: ${op}` }, { status: 400 });
