@@ -8,6 +8,7 @@ import {
   QuoteReactionBar,
   type QuoteReactionInitial,
 } from "@/components/quotes/quote-reaction-bar";
+import { ShareSignalButton } from "@/components/home/share-signal-button";
 
 interface Props {
   data: DailyTransmissionData;
@@ -124,6 +125,9 @@ export function DailyTransmission({
               />
             </div>
           )}
+          <div className="pl-5">
+            <ShareSignalButton hasQuote />
+          </div>
         </div>
       )}
 
