@@ -33,6 +33,7 @@ const COLUMNS: { heading: string; links: { label: string; href: string }[] }[] =
   {
     heading: "Support",
     links: [
+      { label: "Cult Master's Guide", href: "/guide" },
       { label: "Contact", href: "/contact" },
       { label: "Corrections", href: "/corrections" },
       { label: "Account Settings", href: "/settings" },
