@@ -1,8 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
-import { getCurrentUser } from "@/lib/auth";
-import { BookBuyButton } from "@/components/book/book-buy-button";
+import { BookCta } from "@/components/book/book-cta";
 
 const SKU = "psychenomicon-vol-1";
 const PRICE = 19;
@@ -15,26 +14,27 @@ export const metadata: Metadata = {
   alternates: { canonical: "/psychenomicon/book" },
 };
 
+// Fully shared content → statically rendered + ISR-cached (revalidate above).
+// The only per-user piece (own vs. buy) lives in <BookCta>, which resolves
+// ownership client-side so this page can be served from the CDN.
 export default async function BookPage() {
-  const user = await getCurrentUser().catch(() => null);
-
-  const [edition, owned, samples] = await Promise.all([
-    prisma.bookEdition.findUnique({
-      where: { sku: SKU },
-      select: { title: true, pageCount: true, chapterFrom: true, chapterTo: true },
-    }).catch(() => null),
-    user
-      ? prisma.bookPurchase.findUnique({ where: { userId_sku: { userId: user.id, sku: SKU } }, select: { id: true } }).catch(() => null)
-      : Promise.resolve(null),
-    prisma.psychenomiconChapter.findMany({
-      where: { artGeneratedAt: { not: null } },
-      orderBy: { chapterNumber: "asc" },
-      take: 3,
-      select: { slug: true },
-    }).catch(() => []),
+  const [edition, samples] = await Promise.all([
+    prisma.bookEdition
+      .findUnique({
+        where: { sku: SKU },
+        select: { title: true, pageCount: true, chapterFrom: true, chapterTo: true },
+      })
+      .catch(() => null),
+    prisma.psychenomiconChapter
+      .findMany({
+        where: { artGeneratedAt: { not: null } },
+        orderBy: { chapterNumber: "asc" },
+        take: 3,
+        select: { slug: true },
+      })
+      .catch(() => []),
   ]);
 
-  const isOwner = !!owned || user?.role === "admin";
   const chapterCount =
     edition && edition.chapterTo >= edition.chapterFrom
       ? edition.chapterTo - edition.chapterFrom + 1
@@ -43,7 +43,7 @@ export default async function BookPage() {
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
       <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
-        {"/// psychenomicon · the_book"}
+        "/// psychenomicon ·the_book"
       </p>
       <h1 className="mt-3 font-display text-4xl font-black tracking-tight text-text-primary">
         The Psychenomicon — Volume I
@@ -68,14 +68,7 @@ export default async function BookPage() {
       </div>
 
       <div className="mt-8 rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface p-6">
-        {isOwner ? (
-          <div className="space-y-3 text-center">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">{"/// psychenomicon · the_book"}</p>
-            <Link href={"/api/psychenomicon/book/" + SKU} className="inline-block w-full rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/25">Download the PDF →</Link>
-          </div>
-        ) : (
-          <BookBuyButton sku={SKU} signedIn={!!user} price={PRICE} />
-        )}
+        <BookCta sku={SKU} price={PRICE} />
         {!edition && (
           <p className="mt-3 font-mono text-[10px] text-text-muted text-center">(Edition is being compiled.)</p>
         )}
