@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { Bodoni_Moda, Cinzel } from "next/font/google";
+import { ThresholdHero } from "@/components/home/threshold-hero";
 import { EpisodeCard } from "@/components/archive/episode-card";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { GuestGrid } from "@/components/episodes/guest-grid";
@@ -33,6 +35,22 @@ import {
 } from "@/components/graphics/codex-icons";
 
 export const dynamic = "force-dynamic";
+
+// Threshold typography — Bodoni Moda (display italic) + Cinzel (sigil), scoped
+// to the hero so the rest of the site keeps its own type system.
+const thresholdDisplay = Bodoni_Moda({
+  subsets: ["latin"],
+  style: ["italic", "normal"],
+  weight: ["400", "500"],
+  variable: "--threshold-font-display",
+  display: "swap",
+});
+const thresholdSigil = Cinzel({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--threshold-font-sigil",
+  display: "swap",
+});
 
 export const metadata = {
   robots: { index: true, follow: true },
@@ -91,10 +109,27 @@ export default async function HomePage() {
   const featured = recentEpisodes[0];
   const isLive = liveStatus?.isLive ?? false;
 
+  // Threshold transmission stamp — TX-YYYYMMDD + a dotted date.
+  const now = new Date();
+  const y = now.getUTCFullYear();
+  const m = String(now.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(now.getUTCDate()).padStart(2, "0");
+  const txId = `TX-${y}${m}${d}`;
+  const dateLabel = `${y}.${m}.${d}`;
+
   return (
     <>
+      {/* ── THE THRESHOLD (Dossier Ch. II §01) ───────────────────────── */}
+      <ThresholdHero
+        txId={txId}
+        dateLabel={dateLabel}
+        episodeCount={stats.episodes}
+        transcribedPct={stats.transcribedPct}
+        fontClass={`${thresholdDisplay.variable} ${thresholdSigil.variable}`}
+      />
+
       {/* ── HERO ─────────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-[540px] sm:min-h-[620px] items-center justify-center overflow-hidden">
+      <section id="codex-enter" className="relative flex min-h-[540px] sm:min-h-[620px] items-center justify-center overflow-hidden scroll-mt-0">
         <Image src="/hero-bg.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-void" />
         <SacredGeometryOverlay />

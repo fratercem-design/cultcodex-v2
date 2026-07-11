@@ -43,7 +43,7 @@ export default async function BookPage() {
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
       <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
-        "/// psychenomicon ·the_book"
+        {"/// psychenomicon · the_book"}
       </p>
       <h1 className="mt-3 font-display text-4xl font-black tracking-tight text-text-primary">
         The Psychenomicon — Volume I
@@ -70,7 +70,7 @@ export default async function BookPage() {
       <div className="mt-8 rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface p-6">
         {isOwner ? (
           <div className="space-y-3 text-center">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">/// psychenomicon � the_book</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">{"/// psychenomicon · the_book"}</p>
             <Link href={"/api/psychenomicon/book/" + SKU} className="inline-block w-full rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/25">Download the PDF →</Link>
           </div>
         ) : (

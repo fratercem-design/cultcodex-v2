@@ -1,0 +1,341 @@
+/* ── The Threshold ────────────────────────────────────────────────────────
+   Full-viewport cinematic opening. Reuses the site's theme tokens; borrows
+   Bodoni Moda (display) + Cinzel (sigil) from next/font for the temple feel.
+   All entrance motion is pure-CSS and collapses under prefers-reduced-motion. */
+
+.threshold {
+  --thr-gold: var(--color-accent-gold, #c8a96b);
+  --thr-cyan: var(--color-accent-cyan, #5db7d8);
+  --thr-ember: var(--color-accent-crimson, #a94a4a);
+  --thr-bone: var(--color-text-primary, #f3eede);
+  --thr-dim: var(--color-text-muted, #c9c2b0);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 100svh;
+  padding: clamp(1.25rem, 4vh, 3rem) 1.25rem clamp(1.5rem, 4vh, 2.75rem);
+  overflow: hidden;
+  background:
+    radial-gradient(
+      120% 90% at 50% 38%,
+      rgba(200, 169, 107, 0.06) 0%,
+      rgba(10, 10, 15, 0) 55%
+    ),
+    var(--color-void, #0a0a0f);
+  text-align: center;
+}
+
+/* edge vignette — keeps the eye at the sigil */
+.threshold::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    130% 100% at 50% 45%,
+    transparent 55%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+/* ── top band ── */
+.threshold__band {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 3vw, 2rem);
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--thr-dim);
+  opacity: 0;
+  animation: thr-fade 0.9s ease 0.1s forwards;
+}
+
+.threshold__mono--dim {
+  opacity: 0.55;
+}
+
+.threshold__pip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--thr-cyan);
+}
+
+.threshold__pip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--thr-cyan);
+  box-shadow: 0 0 8px var(--thr-cyan);
+  animation: thr-pulse 2s ease-in-out infinite;
+}
+
+/* ── center stack ── */
+.threshold__center {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1rem, 3vh, 1.75rem);
+  margin: auto 0;
+}
+
+/* ── the sigil: glyph + two counter-rotating rings ── */
+.threshold__sigil {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(140px, 32vw, 220px);
+  height: clamp(140px, 32vw, 220px);
+  margin-bottom: clamp(0.5rem, 2vh, 1.25rem);
+  opacity: 0;
+  animation: thr-sigil-in 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) 0.25s forwards;
+}
+
+.threshold__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(200, 169, 107, 0.35);
+  border-top-color: var(--thr-gold);
+  border-right-color: rgba(200, 169, 107, 0.1);
+  animation: thr-spin 26s linear infinite;
+}
+
+.threshold__ring--inner {
+  inset: clamp(18px, 4vw, 30px);
+  border-color: rgba(93, 183, 216, 0.18);
+  border-bottom-color: var(--thr-cyan);
+  border-left-color: rgba(93, 183, 216, 0.08);
+  animation: thr-spin-rev 18s linear infinite;
+}
+
+.threshold__glyph {
+  font-family: var(--threshold-font-sigil), var(--font-serif), serif;
+  font-size: clamp(2.75rem, 9vw, 4.5rem);
+  line-height: 1;
+  color: var(--thr-gold);
+  text-shadow: 0 0 34px rgba(200, 169, 107, 0.45);
+  animation: thr-breathe 6s ease-in-out infinite;
+}
+
+/* ── title ── */
+.threshold__kicker {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--thr-dim);
+  opacity: 0;
+  animation: thr-rise 1s ease 0.6s forwards;
+}
+
+.threshold__title {
+  margin: 0;
+  font-family: var(--threshold-font-display), var(--font-serif), Georgia, serif;
+  font-size: clamp(3rem, 12vw, 7rem);
+  font-weight: 500;
+  line-height: 0.95;
+  color: var(--thr-bone);
+}
+
+.threshold__title em {
+  font-style: italic;
+  color: var(--thr-bone);
+  opacity: 0;
+  display: inline-block;
+  animation: thr-rise 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.78s forwards;
+  text-shadow: 0 0 48px rgba(243, 238, 222, 0.14);
+}
+
+/* ── meta row ── */
+.threshold__meta {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 3vw, 1.6rem);
+  margin: clamp(0.5rem, 2vh, 1rem) 0 0;
+  padding: 0;
+  opacity: 0;
+  animation: thr-rise 1s ease 1s forwards;
+}
+
+.threshold__meta div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.threshold__meta dt {
+  font-family: var(--font-mono, monospace);
+  font-size: 8px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--thr-dim);
+  opacity: 0.7;
+}
+
+.threshold__meta dd {
+  margin: 0;
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--thr-gold);
+}
+
+.threshold__meta-div {
+  width: 1px;
+  height: 22px;
+  background: rgba(200, 169, 107, 0.2);
+}
+
+/* ── enter affordance ── */
+.threshold__enter {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--thr-dim);
+  opacity: 0;
+  animation: thr-fade 1s ease 1.3s forwards;
+}
+
+.threshold__enter-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  transition: color 0.24s ease;
+}
+
+.threshold__enter-scroll {
+  display: none;
+}
+
+.threshold__enter-chevron {
+  font-size: 14px;
+  color: var(--thr-gold);
+  animation: thr-bob 2.4s ease-in-out infinite;
+}
+
+.threshold__enter:hover .threshold__enter-label,
+.threshold__enter:focus-visible .threshold__enter-label {
+  color: var(--thr-gold);
+}
+
+.threshold__enter:focus-visible {
+  outline: 1px solid var(--thr-gold);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* touch devices have no spacebar — swap the copy */
+@media (hover: none) {
+  .threshold__enter-key {
+    display: none;
+  }
+  .threshold__enter-scroll {
+    display: inline;
+  }
+}
+
+/* ── keyframes ── */
+@keyframes thr-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes thr-spin-rev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+@keyframes thr-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+@keyframes thr-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes thr-fade {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes thr-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes thr-sigil-in {
+  from {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes thr-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+/* ── the site is still when the OS asks it to be ── */
+@media (prefers-reduced-motion: reduce) {
+  .threshold__band,
+  .threshold__sigil,
+  .threshold__kicker,
+  .threshold__title em,
+  .threshold__meta,
+  .threshold__enter {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .threshold__ring,
+  .threshold__ring--inner,
+  .threshold__glyph,
+  .threshold__pip-dot,
+  .threshold__enter-chevron {
+    animation: none;
+  }
+}

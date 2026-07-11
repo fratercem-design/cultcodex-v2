@@ -12,7 +12,7 @@ import {
 } from "./types";
 
 export class GroqProvider implements ProviderInterface {
-  name: "groq" = "groq";
+  name = "groq" as const;
   private apiKey: string;
   private baseUrl = "https://api.groq.com/openai/v1";
 

@@ -12,7 +12,7 @@ import {
 } from "./types";
 
 export class OpenRouterProvider implements ProviderInterface {
-  name: "openrouter" = "openrouter";
+  name = "openrouter" as const;
   private apiKey: string;
   private baseUrl = "https://openrouter.ai/api/v1";
 
