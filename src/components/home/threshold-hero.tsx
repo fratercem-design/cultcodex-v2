@@ -50,20 +50,41 @@ export function ThresholdHero({
     }
   }, []);
 
-  // Keyboard: SPACE / ↓ / Enter cross the threshold — but only while it still
-  // owns the viewport, so we don't hijack the spacebar once the user is reading.
+  // Keyboard: SPACE / ↓ / Enter cross the threshold — but only while it's
+  // actually on screen. The app's scroll container isn't the window (the
+  // terminal shell scrolls `.terminal-main`, not `body`), so `window.scrollY`
+  // never changes and can't gate this — track real visibility instead via
+  // IntersectionObserver, which works regardless of which ancestor scrolls.
   useEffect(() => {
+    const node = rootRef.current;
+    if (!node) return;
+
+    const visible = { current: true };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible.current = entry.isIntersecting;
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(node);
+
     const onKey = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement | null)?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA") return;
-      if (window.scrollY > window.innerHeight * 0.5) return;
+      if (!visible.current) return;
+      const target = e.target as HTMLElement | null;
+      // Never hijack keys meant for a focused interactive control.
+      if (target?.closest("input, textarea, select, button, a, [contenteditable='true'], [role='button']")) {
+        return;
+      }
       if (e.key === " " || e.key === "ArrowDown" || e.key === "Enter") {
         e.preventDefault();
         enter();
       }
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      observer.disconnect();
+    };
   }, [enter]);
 
   return (
