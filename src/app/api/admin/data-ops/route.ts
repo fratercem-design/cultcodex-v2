@@ -768,6 +768,71 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // ── noise-audit ──────────────────────────────────────────────────────────────
+  // Surfaces placeholder / label records masquerading as people — generic role
+  // words ("Special Guest", "Panelist"), parenthetical labels ("(unnamed)"),
+  // and number/gibberish handles. Read-only. Buckets by deletion safety:
+  // a record is "safe delete" only if it's a label AND has 0 quotes AND 0 lore.
+  if (op === "noise-audit") {
+    // Generic role/label terms that are descriptors, not names.
+    const LABEL_TERMS = new Set([
+      "guest", "guests", "special guest", "special guests", "mystery guest", "guest speaker",
+      "panelist", "panelists", "panel", "panel member", "panel guest", "recurring panelist",
+      "recurring guest", "recurring guests", "recurring panel", "recurring panel guest",
+      "cohost", "co host", "co hosts", "host", "hosts", "guest host", "moderator", "mod",
+      "narrator", "viewer", "viewers", "audience", "chat", "chatter", "caller", "callers",
+      "someone", "somebody", "anonymous", "anon", "unknown", "unnamed", "various", "multiple",
+      "member", "members", "guest 1", "guest 2", "guest 3", "person", "people", "speaker",
+      "unidentified", "tbd", "na", "n a", "none", "test",
+    ]);
+    // Words that, if present as a token, strongly suggest a label rather than a name.
+    const LABEL_TOKENS = ["unnamed", "unknown", "unidentified", "anonymous", "recurring", "panelist"];
+
+    const people = await prisma.person.findMany({
+      select: PERSON_SUMMARY_SELECT,
+      orderBy: { displayName: "asc" },
+    });
+
+    const rows = people.map((p) => {
+      const n = normName(p.displayName);
+      const tokens = n.split(" ").filter(Boolean);
+      const isLabel = LABEL_TERMS.has(n);
+      const hasLabelToken = tokens.some((t) => LABEL_TOKENS.includes(t)) || /\(.*(unnamed|unknown|tbd).*\)/i.test(p.displayName);
+      const isNumberish = /^[0-9]+$/.test(n.replace(/\s/g, "")) || (tokens.length === 1 && /\d{3,}/.test(n));
+      const hasContent = p._count.quotes > 0 || p._count.loreConnections > 0;
+      const totalRefs = p._count.guestAppearances + p._count.mentions;
+      let bucket: string | null = null;
+      if (isLabel) bucket = "label";
+      else if (hasLabelToken) bucket = "label_token";
+      else if (isNumberish) bucket = "numberish";
+      if (!bucket) return null;
+      return {
+        slug: p.slug,
+        name: p.displayName,
+        type: p.personType,
+        bucket,
+        appearances: totalRefs,
+        quotes: p._count.quotes,
+        lore: p._count.loreConnections,
+        hasBio: !!p.shortBio,
+        safeDelete: bucket !== "numberish" && !hasContent && totalRefs <= 3,
+      };
+    }).filter(Boolean) as Array<Record<string, unknown>>;
+
+    return NextResponse.json({
+      op,
+      total: people.length,
+      flagged: rows.length,
+      safeDeleteCount: rows.filter((r) => r.safeDelete).length,
+      byBucket: {
+        label: rows.filter((r) => r.bucket === "label").length,
+        label_token: rows.filter((r) => r.bucket === "label_token").length,
+        numberish: rows.filter((r) => r.bucket === "numberish").length,
+      },
+      records: rows,
+    });
+  }
+
   // ── promote-recurring ──────────────────────────────────────────────────────
   if (op === "promote-recurring") {
     const threshold = Number(body.threshold ?? 3);
