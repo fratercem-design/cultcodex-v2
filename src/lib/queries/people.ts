@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { NOISE_PERSON_SLUGS } from "@/lib/people/noise-slugs";
 import type { Prisma, PersonType } from "@/generated/prisma/client";
 
 const EPISODE_CARD_SELECT = {
@@ -40,21 +41,28 @@ export function buildPersonInclude() {
  *  Hosts and recurring are always included; guests only if they have a bio or lore summary.
  *  `mentioned` type is intentionally excluded — they appear in getSpecialMentions(). */
 function profiledWhere(type?: PersonType): Prisma.PersonWhereInput {
-  if (type === "host" || type === "recurring") return { personType: type };
+  const notNoise = { slug: { notIn: [...NOISE_PERSON_SLUGS] } };
+  if (type === "host" || type === "recurring") return { personType: type, ...notNoise };
   if (type === "guest") {
     return {
       personType: "guest",
       OR: [{ shortBio: { not: null } }, { loreSummary: { not: null } }],
+      ...notNoise,
     };
   }
   // No type filter → hosts + recurring + profiled guests
   return {
-    OR: [
-      { personType: "host" },
-      { personType: "recurring" },
+    AND: [
+      notNoise,
       {
-        personType: "guest",
-        OR: [{ shortBio: { not: null } }, { loreSummary: { not: null } }],
+        OR: [
+          { personType: "host" },
+          { personType: "recurring" },
+          {
+            personType: "guest",
+            OR: [{ shortBio: { not: null } }, { loreSummary: { not: null } }],
+          },
+        ],
       },
     ],
   };
@@ -84,6 +92,7 @@ export async function getPersonCount(type?: PersonType) {
 export async function getSpecialMentions() {
   return prisma.person.findMany({
     where: {
+      slug: { notIn: [...NOISE_PERSON_SLUGS] },
       OR: [
         { personType: "mentioned" },
         { personType: "guest", shortBio: null, loreSummary: null },
