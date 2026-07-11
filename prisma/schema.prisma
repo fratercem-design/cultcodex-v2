@@ -1069,6 +1069,8 @@ model UserWallet {
   totalEarned      Int       @default(0)
   totalSpent       Int       @default(0)
   lastDailyClaimAt DateTime?
+  dailyStreak      Int       @default(0)
+  longestStreak    Int       @default(0)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 

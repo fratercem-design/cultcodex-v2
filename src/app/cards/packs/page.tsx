@@ -27,6 +27,8 @@ interface Pack {
 interface WalletData {
   signalCredits: number;
   lastDailyClaimAt: string | null;
+  dailyStreak?: number;
+  longestStreak?: number;
 }
 
 const ACCENT_VAR: Record<string, string> = {
@@ -68,12 +70,18 @@ export default function PackStorePage() {
     const json = await res.json();
     if (res.ok) {
       setClaimState("done");
-      setClaimMsg(`+${json.granted} signal credits`);
-      setWallet((w) =>
-        w
-          ? { ...w, signalCredits: w.signalCredits + json.granted }
-          : { signalCredits: json.granted, lastDailyClaimAt: new Date().toISOString() }
+      setClaimMsg(
+        json.streakBonus > 0
+          ? `+${json.granted} credits · 🔥 ${json.streak}-day streak`
+          : `+${json.granted} signal credits`
       );
+      const nowIso = new Date().toISOString();
+      setWallet((w) => ({
+        signalCredits: (w?.signalCredits ?? 0) + json.granted,
+        lastDailyClaimAt: nowIso,
+        dailyStreak: json.streak,
+        longestStreak: json.longestStreak,
+      }));
     } else {
       setClaimState("error");
       setClaimMsg(json.error ?? "Already claimed today");
@@ -158,6 +166,37 @@ export default function PackStorePage() {
             {wallet?.signalCredits.toLocaleString() ?? "--"}
           </span>
         </div>
+
+        {(wallet?.dailyStreak ?? 0) > 0 && (
+          <div style={{
+            border: "1px solid var(--term-line)",
+            borderRadius: 6,
+            padding: "12px 20px",
+            backgroundColor: "var(--term-bg-1)",
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+            minWidth: 110,
+          }}>
+            <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: "var(--term-fg-faint)", letterSpacing: "0.12em" }}>
+              STREAK
+            </span>
+            <span style={{
+              fontFamily: "var(--font-crt, var(--font-mono)), monospace",
+              fontSize: 28,
+              color: dailyAvailable() ? "var(--neon-4)" : "var(--neon-3)",
+              textShadow: dailyAvailable() ? "var(--glow-amber)" : "0 0 8px var(--neon-3)",
+              lineHeight: 1,
+            }}>
+              🔥{wallet?.dailyStreak}
+            </span>
+            {dailyAvailable() && (
+              <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: 8, color: "var(--term-fg-faint)" }}>
+                claim to keep it
+              </span>
+            )}
+          </div>
+        )}
 
         <button
           onClick={claimDaily}

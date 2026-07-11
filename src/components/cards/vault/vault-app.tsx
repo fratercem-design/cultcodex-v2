@@ -13,6 +13,8 @@ interface CollectionStats {
   signalCredits: number;
   lastDailyClaimAt: string | null;
   collectionPower?: number;
+  dailyStreak?: number;
+  longestStreak?: number;
 }
 
 const SORT_OPTIONS = [
@@ -259,6 +261,17 @@ export function VaultApp({
           {(stats.collectionPower ?? 0) > 0 && (
             <span style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}>
               ⚡ {(stats.collectionPower ?? 0).toLocaleString()} power
+            </span>
+          )}
+          {(stats.dailyStreak ?? 0) > 0 && (
+            <span
+              title={dailyAvailable ? "Claim today's signal to keep the streak alive" : "Streak locked in for today"}
+              style={{
+                color: dailyAvailable ? "var(--neon-4)" : "var(--neon-3)",
+                textShadow: dailyAvailable ? "0 0 6px var(--neon-4)" : "0 0 6px var(--neon-3)",
+              }}
+            >
+              🔥 {stats.dailyStreak} day{stats.dailyStreak === 1 ? "" : "s"}
             </span>
           )}
           <span style={{ color: "var(--neon-4)", textShadow: "0 0 6px var(--neon-4)" }}>

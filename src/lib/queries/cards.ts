@@ -49,6 +49,8 @@ export async function getUserCollectionStats(userId: string, { includeWallet = t
     completionPct: total > 0 ? Math.round((owned / total) * 100) : 0,
     signalCredits: wallet?.balance ?? 0,
     lastDailyClaimAt: wallet?.lastDailyClaimAt ?? null,
+    dailyStreak: wallet?.dailyStreak ?? 0,
+    longestStreak: wallet?.longestStreak ?? 0,
     collectionPower: power,
   };
 }
@@ -193,6 +195,10 @@ export async function openPack(userId: string, packSlug: string) {
 // ─── Daily reward ────────────────────────────────────────────────────────────
 
 const DAILY_CREDITS = 25;
+// Loss-aversion retention loop (Dossier Ch. VI): an escalating bonus for
+// consecutive-day claims, capped so it never dwarfs the base reward.
+const STREAK_BONUS_PER_DAY = 2;
+const STREAK_BONUS_CAP = 20;
 
 /**
  * Daily Signal Credits multiplier by subscription tier — a real, merchandised
@@ -223,25 +229,40 @@ async function dailyCreditMultiplier(userId: string): Promise<number> {
   return subscribed ? 2 : 1;
 }
 
-export async function claimDailyReward(userId: string): Promise<{ granted: number; nextClaimAt: Date }> {
+export async function claimDailyReward(userId: string): Promise<{
+  granted: number;
+  nextClaimAt: Date;
+  streak: number;
+  longestStreak: number;
+  streakBonus: number;
+}> {
   const multiplier = await dailyCreditMultiplier(userId);
-  const granted = DAILY_CREDITS * multiplier;
   const now = new Date();
 
-  // Interactive transaction keeps the cooldown check + wallet write + credit
-  // record atomic — prevents double-payout from concurrent claim requests.
-  // Serializable isolation ensures concurrent readers can't both pass the check
-  // before either commits.
-  await prisma.$transaction(async (tx) => {
+  // Interactive transaction keeps the cooldown check + streak computation +
+  // wallet write + credit record atomic — prevents double-payout (and a
+  // double-incremented streak) from concurrent claim requests. Serializable
+  // isolation ensures concurrent readers can't both pass the check before
+  // either commits.
+  const result = await prisma.$transaction(async (tx) => {
     const wallet = await tx.userWallet.findUnique({ where: { userId } });
+    const msSinceLast = wallet?.lastDailyClaimAt
+      ? now.getTime() - wallet.lastDailyClaimAt.getTime()
+      : null;
 
-    if (wallet?.lastDailyClaimAt) {
-      const msSinceLast = now.getTime() - wallet.lastDailyClaimAt.getTime();
+    if (msSinceLast !== null) {
       const hoursLeft = 24 - msSinceLast / 3_600_000;
       if (hoursLeft > 0) {
         throw new Error(`Daily already claimed. Next claim in ${Math.ceil(hoursLeft)}h`);
       }
     }
+
+    // Streak continues inside the 24-48h grace window; a longer gap resets it.
+    const streakContinues = msSinceLast !== null && msSinceLast <= 48 * 3_600_000;
+    const streak = streakContinues ? (wallet?.dailyStreak ?? 0) + 1 : 1;
+    const longestStreak = Math.max(streak, wallet?.longestStreak ?? 0);
+    const streakBonus = Math.min((streak - 1) * STREAK_BONUS_PER_DAY, STREAK_BONUS_CAP);
+    const granted = DAILY_CREDITS * multiplier + streakBonus;
 
     const upserted = await tx.userWallet.upsert({
       where: { userId },
@@ -249,12 +270,16 @@ export async function claimDailyReward(userId: string): Promise<{ granted: numbe
         balance: { increment: granted },
         totalEarned: { increment: granted },
         lastDailyClaimAt: now,
+        dailyStreak: streak,
+        longestStreak,
       },
       create: {
         userId,
         balance: granted,
         totalEarned: granted,
         lastDailyClaimAt: now,
+        dailyStreak: streak,
+        longestStreak,
       },
       select: { id: true },
     });
@@ -265,12 +290,14 @@ export async function claimDailyReward(userId: string): Promise<{ granted: numbe
         walletId: upserted.id,
         amount: granted,
         reason: "daily_login",
-        metadata: { multiplier },
+        metadata: { multiplier, streak, streakBonus },
       },
     });
+
+    return { granted, streak, longestStreak, streakBonus };
   }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
 
-  return { granted, nextClaimAt: new Date(now.getTime() + 24 * 3_600_000) };
+  return { ...result, nextClaimAt: new Date(now.getTime() + 24 * 3_600_000) };
 }
 
 // ─── Passive credit earning ───────────────────────────────────────────────────

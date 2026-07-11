@@ -72,6 +72,8 @@ export default async function CardsPage() {
         completionPct:    stats.completionPct,
         signalCredits:    stats.signalCredits,
         collectionPower:  stats.collectionPower,
+        dailyStreak:      stats.dailyStreak,
+        longestStreak:    stats.longestStreak,
         lastDailyClaimAt: stats.lastDailyClaimAt
           ? new Date(stats.lastDailyClaimAt as Date).toISOString()
           : null,
