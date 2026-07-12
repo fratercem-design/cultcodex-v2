@@ -57,7 +57,15 @@ function useTypewriter(text: string, active: boolean, speed = 16) {
   return displayed;
 }
 
-export function OracleConsole() {
+interface OracleConsoleProps {
+  /** Text to drop into the input — e.g. from a prompt-suggestion chip. */
+  prefillQuestion?: string;
+  /** Bump this to re-apply the same prefillQuestion again (e.g. same chip
+   * clicked twice in a row) — a plain string change wouldn't re-trigger. */
+  prefillNonce?: number;
+}
+
+export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsoleProps = {}) {
   const [question, setQuestion] = useState("");
   const [state, setState] = useState<ConsoleState>("idle");
   const [answer, setAnswer] = useState("");
@@ -79,8 +87,18 @@ export function OracleConsole() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const answerRef = useRef<HTMLDivElement | null>(null);
   const playButtonRef = useRef<HTMLButtonElement | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const displayedAnswer = useTypewriter(answer, typewriterActive, 16);
+
+  // A prompt-suggestion chip fills the input — bump prefillNonce to
+  // re-apply the same text (a plain string change wouldn't re-trigger).
+  useEffect(() => {
+    if (!prefillQuestion) return;
+    setQuestion(prefillQuestion);
+    textareaRef.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefillNonce]);
 
   // Auto-play audio when it arrives; detect browser block
   useEffect(() => {
@@ -216,6 +234,7 @@ export function OracleConsole() {
             aria-hidden="true"
           />
           <textarea
+            ref={textareaRef}
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Ask the Oracle anything about the archive…"
