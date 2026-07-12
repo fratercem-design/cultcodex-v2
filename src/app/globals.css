@@ -417,6 +417,20 @@ textarea:focus-visible {
   .term-flicker {
     animation: none;
   }
+
+  /* Sitewide backstop (Dossier Ch. VII vow #5 — "reduced motion is sacred,
+     no exceptions"). Several effects (pack-shake, foil shimmer, the Oracle's
+     loading-state flash, card reveals) are applied as raw inline `animation`
+     styles rather than through a shared class, so a per-class rule can't
+     reach them — this catches every animation/transition site-wide,
+     including inline ones, since only `!important` beats an un-important
+     inline style. State changes still happen; they just stop animating. */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 .animation-delay-150 {
   animation-delay: 150ms;
