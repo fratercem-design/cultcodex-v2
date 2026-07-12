@@ -9,12 +9,16 @@ import { useEffect, useRef, useState } from "react";
 import {
   getAmbient,
   getContrast,
+  getAudioPref,
   setAmbient,
   setContrast,
+  setAudioPref,
   subscribeAppearance,
   type AmbientPref,
   type ContrastPref,
+  type AudioPref,
 } from "@/lib/appearance";
+import { enableAmbient, disableAmbient, isAudioSupported } from "@/lib/audio/ambient-engine";
 
 function Switch({
   label,
@@ -50,6 +54,7 @@ export function AppearanceControls() {
   const [open, setOpen] = useState(false);
   const [ambient, setAmb] = useState<AmbientPref>("on");
   const [contrast, setCon] = useState<ContrastPref>("normal");
+  const [audio, setAud] = useState<AudioPref>("off");
   const rootRef = useRef<HTMLDivElement>(null);
 
   // Mirror persisted state (and any cross-tab changes) into local state.
@@ -57,10 +62,33 @@ export function AppearanceControls() {
     const sync = () => {
       setAmb(getAmbient());
       setCon(getContrast());
+      setAud(getAudioPref());
     };
     sync();
     return subscribeAppearance(sync);
   }, []);
+
+  // Audio enabled in a previous session → a stored preference is not itself
+  // a user gesture, so the browser won't let it resume on its own. Instead,
+  // pick it back up silently on the visitor's first genuine interaction with
+  // the page, wherever that happens to land.
+  useEffect(() => {
+    if (audio !== "on" || !isAudioSupported()) return;
+    const resume = () => enableAmbient();
+    window.addEventListener("pointerdown", resume, { once: true, capture: true });
+    window.addEventListener("keydown", resume, { once: true, capture: true });
+    return () => {
+      window.removeEventListener("pointerdown", resume, { capture: true });
+      window.removeEventListener("keydown", resume, { capture: true });
+    };
+  }, [audio]);
+
+  function toggleAudio() {
+    const next: AudioPref = audio === "on" ? "off" : "on";
+    setAudioPref(next);
+    if (next === "on") enableAmbient();
+    else disableAmbient();
+  }
 
   // Close on outside click / Escape when open.
   useEffect(() => {
@@ -96,6 +124,14 @@ export function AppearanceControls() {
             checked={contrast === "high"}
             onChange={() => setContrast(contrast === "high" ? "normal" : "high")}
           />
+          {isAudioSupported() && (
+            <Switch
+              label="Ambient audio"
+              hint="A low drone, tape hiss, reveal chimes — off by default"
+              checked={audio === "on"}
+              onChange={toggleAudio}
+            />
+          )}
         </div>
       )}
       <button

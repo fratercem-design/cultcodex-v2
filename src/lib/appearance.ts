@@ -8,9 +8,11 @@
 
 export type AmbientPref = "on" | "off";
 export type ContrastPref = "normal" | "high";
+export type AudioPref = "on" | "off";
 
 const AMBIENT_KEY = "cc-ambient";
 const CONTRAST_KEY = "cc-contrast";
+const AUDIO_KEY = "cc-audio";
 export const APPEARANCE_EVENT = "cc:appearance-change";
 
 export function getAmbient(): AmbientPref {
@@ -21,6 +23,14 @@ export function getAmbient(): AmbientPref {
 export function getContrast(): ContrastPref {
   if (typeof window === "undefined") return "normal";
   return window.localStorage.getItem(CONTRAST_KEY) === "high" ? "high" : "normal";
+}
+
+// Unlike visuals, audio defaults OFF — the dossier's own rule ("default off,
+// a single icon, click to enable"), and the only way it can play at all: the
+// browser's autoplay policy already blocks sound without a user gesture.
+export function getAudioPref(): AudioPref {
+  if (typeof window === "undefined") return "off";
+  return window.localStorage.getItem(AUDIO_KEY) === "on" ? "on" : "off";
 }
 
 function apply(): void {
@@ -38,6 +48,11 @@ export function setAmbient(v: AmbientPref): void {
 export function setContrast(v: ContrastPref): void {
   window.localStorage.setItem(CONTRAST_KEY, v);
   apply();
+  window.dispatchEvent(new CustomEvent(APPEARANCE_EVENT));
+}
+
+export function setAudioPref(v: AudioPref): void {
+  window.localStorage.setItem(AUDIO_KEY, v);
   window.dispatchEvent(new CustomEvent(APPEARANCE_EVENT));
 }
 

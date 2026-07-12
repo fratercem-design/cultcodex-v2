@@ -3,6 +3,8 @@
 import { useState, useCallback, type CSSProperties } from "react";
 import { TradingCard, type TradingCardData } from "./trading-card";
 import { RARITY_STYLE, RARITY_ORDER, cardPoints } from "@/lib/cards/rarity";
+import { getAudioPref } from "@/lib/appearance";
+import { playChime, playBell } from "@/lib/audio/ambient-engine";
 
 interface PackOpenerProps {
   packSlug: string;
@@ -52,10 +54,14 @@ export function PackOpener({ packSlug, packTitle, packAccentColor, onClose }: Pa
         setCards(sorted);
         setPhase("revealing");
         setLoading(false);
+        if (getAudioPref() === "on") playChime();
         // Auto-reveal cards one by one
-        sorted.forEach((_: TradingCardData, i: number) => {
+        sorted.forEach((card: TradingCardData, i: number) => {
           setTimeout(() => {
             setRevealed((prev) => new Set([...prev, i]));
+            if (getAudioPref() === "on" && RARITY_ORDER[card.rarity] >= RARITY_ORDER.MYTHIC) {
+              playBell();
+            }
           }, 400 + i * 600);
         });
       }, 800);
