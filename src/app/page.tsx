@@ -25,7 +25,8 @@ import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { EmailCapture } from "@/components/marketing/email-capture";
 import { GiftSignup } from "@/components/marketing/gift-signup";
-import { jsonLdScript, organizationJsonLd } from "@/lib/seo";
+import { organizationJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
 import {
   IconTransmission,
   IconPerson,
@@ -668,10 +669,7 @@ export default async function HomePage() {
 
       {/* WebSite + SearchAction JSON-LD is emitted once in the root layout —
           avoid a second, conflicting WebSite block here. */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(organizationJsonLd()) }}
-      />
+      <JsonLd data={organizationJsonLd()} />
     </>
   );
 }
