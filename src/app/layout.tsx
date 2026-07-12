@@ -20,7 +20,8 @@ import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
 import { CRTOverlay } from "@/components/graphics/crt-overlay";
 import { SkipLink } from "@/components/ui/skip-link";
-import { jsonLdScript } from "@/lib/seo";
+import { SITE_URL } from "@/lib/seo";
+import { JsonLd } from "@/components/JsonLd";
 import { CookieConsent } from "@/components/layout/cookie-consent";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
@@ -77,8 +78,8 @@ const vt323 = VT323({preload: false,
 const SITE_DESCRIPTION =
   "The complete archive of the Cult of Psyche: 2,500+ transmissions, searchable transcripts, lore entries, guest profiles, relationship maps, and AI-powered exploration of every word ever spoken in the stream.";
 
-// `||` (not `??`) — an empty-string env var must also fall back, or `new URL("")` throws.
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://cultcodex.me";
+// SITE_URL comes from @/lib/seo — single source of truth with a localhost guard,
+// so a stray dev value in NEXT_PUBLIC_SITE_URL can never become metadataBase.
 
 // The shell no longer reads the session cookie during server render (the
 // user menu loads client-side), so the layout can be cached. Pages that
@@ -192,24 +193,21 @@ export default async function RootLayout({
         <ClientOverlays />
         <CRTOverlay />
         {/* WebSite + SearchAction JSON-LD — enables sitelinks search box in Google */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: jsonLdScript({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              name: "CultCodex",
-              url: SITE_URL,
-              description: SITE_DESCRIPTION,
-              potentialAction: {
-                "@type": "SearchAction",
-                target: {
-                  "@type": "EntryPoint",
-                  urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
-                },
-                "query-input": "required name=search_term_string",
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "CultCodex",
+            url: SITE_URL,
+            description: SITE_DESCRIPTION,
+            potentialAction: {
+              "@type": "SearchAction",
+              target: {
+                "@type": "EntryPoint",
+                urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
               },
-            }),
+              "query-input": "required name=search_term_string",
+            },
           }}
         />
         <CookieConsent gaId="G-1ML217JXYV" />

@@ -3,8 +3,10 @@ import type { Metadata } from "next";
 const SITE_NAME = "CultCodex";
 const PRODUCTION_URL = "https://cultcodex.me";
 // Guard against localhost leaking into canonical/OG URLs via a build-time env var.
-// If NEXT_PUBLIC_SITE_URL is unset OR points to localhost/127.0.0.1, fall back to prod.
-const SITE_URL = (() => {
+// If NEXT_PUBLIC_SITE_URL is unset, empty, OR points to localhost/127.0.0.1, fall
+// back to prod. Exported as the single source of truth for absolute site URLs —
+// import this rather than reading NEXT_PUBLIC_SITE_URL directly.
+export const SITE_URL = (() => {
   const url = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
   if (!url || /localhost|127\.0\.0\.1|0\.0\.0\.0/.test(url)) return PRODUCTION_URL;
   return url;
@@ -135,6 +137,7 @@ export function organizationJsonLd(): Record<string, unknown> {
     "@type": "Organization",
     name: SITE_NAME,
     url: SITE_URL,
+    logo: `${SITE_URL}/logo.jpg`,
     description:
       "The definitive intelligence archive for the Cult of Psyche. 2,600+ episodes indexed with full transcripts, AI psychological breakdowns, guest profiles, and behavioral pattern maps.",
     sameAs: ["https://www.youtube.com/@CultofPsyche"],
