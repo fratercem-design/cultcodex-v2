@@ -541,6 +541,52 @@ body {
   display: flex;
 }
 
+/* ─── Mobile bottom nav (the sigil compass) ────────── */
+/* Base (hidden) rules must precede the max-width override below — same
+   specificity, so source order decides, and the override has to win. */
+:root {
+  --mobile-nav-height: 58px;
+}
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--mobile-nav-height);
+  z-index: 80;
+  align-items: stretch;
+  justify-content: space-around;
+  background: color-mix(in srgb, var(--term-bg-1) 94%, transparent);
+  border-top: 1px solid var(--term-line);
+  backdrop-filter: blur(8px);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.mobile-bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 44px;
+  min-height: 44px;
+  background: none;
+  border: none;
+  font-family: var(--font-mono), "IBM Plex Mono", monospace;
+  text-decoration: none;
+  cursor: pointer;
+}
+.mobile-bottom-nav__glyph {
+  font-size: 18px;
+  line-height: 1;
+}
+.mobile-bottom-nav__label {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 @media (max-width: 900px) {
   .terminal-grid {
     grid-template-columns: 1fr;
@@ -555,6 +601,19 @@ body {
   }
   .statusbar-right {
     display: none;
+  }
+
+  /* The sidebar vanishes above with no substitute — the bottom compass
+     (Dossier Ch. V: "the bottom of the screen is sacred") is the real
+     replacement, so reserve room for it and lift the appearance FAB clear. */
+  .terminal-main {
+    padding-bottom: var(--mobile-nav-height);
+  }
+  .mobile-bottom-nav {
+    display: flex;
+  }
+  .appearance-controls {
+    bottom: calc(1rem + var(--mobile-nav-height));
   }
 }
 
