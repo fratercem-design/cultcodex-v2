@@ -29,17 +29,17 @@ export async function GET() {
           justifyContent: "space-between",
           backgroundColor: "#080810",
           backgroundImage:
-            "radial-gradient(ellipse 90% 60% at 50% 0%, rgba(200,169,107,0.14), transparent 65%)",
+            "radial-gradient(ellipse 90% 60% at 50% 0%, rgba(200, 57, 46,0.14), transparent 65%)",
           fontFamily: "monospace",
           padding: "80px 72px",
           position: "relative",
         }}
       >
         {/* Corner brackets — echoes the terminal-shell chrome */}
-        <div style={{ position: "absolute", top: 32, left: 32, width: 28, height: 28, borderTop: "2px solid #C8A96B", borderLeft: "2px solid #C8A96B", opacity: 0.6 }} />
-        <div style={{ position: "absolute", top: 32, right: 32, width: 28, height: 28, borderTop: "2px solid #C8A96B", borderRight: "2px solid #C8A96B", opacity: 0.6 }} />
-        <div style={{ position: "absolute", bottom: 32, left: 32, width: 28, height: 28, borderBottom: "2px solid #C8A96B", borderLeft: "2px solid #C8A96B", opacity: 0.6 }} />
-        <div style={{ position: "absolute", bottom: 32, right: 32, width: 28, height: 28, borderBottom: "2px solid #C8A96B", borderRight: "2px solid #C8A96B", opacity: 0.6 }} />
+        <div style={{ position: "absolute", top: 32, left: 32, width: 28, height: 28, borderTop: "2px solid #C8392E", borderLeft: "2px solid #C8392E", opacity: 0.6 }} />
+        <div style={{ position: "absolute", top: 32, right: 32, width: 28, height: 28, borderTop: "2px solid #C8392E", borderRight: "2px solid #C8392E", opacity: 0.6 }} />
+        <div style={{ position: "absolute", bottom: 32, left: 32, width: 28, height: 28, borderBottom: "2px solid #C8392E", borderLeft: "2px solid #C8392E", opacity: 0.6 }} />
+        <div style={{ position: "absolute", bottom: 32, right: 32, width: 28, height: 28, borderBottom: "2px solid #C8392E", borderRight: "2px solid #C8392E", opacity: 0.6 }} />
 
         {/* Header */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
@@ -76,7 +76,7 @@ export async function GET() {
           {(quote?.speaker || episode) && (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
               {quote?.speaker && (
-                <div style={{ color: "#C8A96B", fontSize: 26, fontWeight: 700 }}>
+                <div style={{ color: "#C8392E", fontSize: 26, fontWeight: 700 }}>
                   {quote.speaker.displayName}
                 </div>
               )}
@@ -92,7 +92,7 @@ export async function GET() {
 
         {/* Footer branding */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
-          <div style={{ color: "#C8A96B", fontSize: 28, fontWeight: 700, letterSpacing: "0.22em" }}>
+          <div style={{ color: "#C8392E", fontSize: 28, fontWeight: 700, letterSpacing: "0.22em" }}>
             CULTCODEX.ME
           </div>
           <div style={{ color: "#444", fontSize: 16, letterSpacing: "0.08em" }}>

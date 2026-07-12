@@ -122,7 +122,7 @@ export default async function OGImage({
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-            <div style={{ color: "#C8A96B", fontSize: 22, fontWeight: 700, letterSpacing: "0.18em" }}>
+            <div style={{ color: "#C8392E", fontSize: 22, fontWeight: 700, letterSpacing: "0.18em" }}>
               CULTCODEX.ME
             </div>
             <div style={{ color: "#333", fontSize: 15, letterSpacing: "0.05em" }}>

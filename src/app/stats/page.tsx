@@ -23,7 +23,7 @@ export const metadata = {
 };
 
 const CANON_COLORS: Record<string, string> = {
-  canonical: "#C8A96B",
+  canonical: "#C8392E",
   speculative: "#00d9ff",
   community_myth: "#a855f7",
 };

@@ -65,7 +65,7 @@ export function GiftSignup({ source = "gift:gospel", className = "" }: GiftSignu
       <p className="relative font-mono text-[10px] uppercase tracking-[0.45em] text-accent-gold/70">
         ✦ &nbsp;A free transmission&nbsp; ✦
       </p>
-      <h2 className="relative mt-2 font-display text-2xl font-bold text-white sm:text-3xl" style={{ textShadow: "0 0 40px rgba(155,110,208,0.35)" }}>
+      <h2 className="relative mt-2 font-display text-2xl font-bold text-white sm:text-3xl" style={{ textShadow: "0 0 40px rgba(74, 45, 110,0.35)" }}>
         The Gospel of Psyche&rsquo;s Nightmares
       </h2>
       <p className="relative mx-auto mt-2 max-w-md font-serif text-sm italic leading-relaxed text-text-muted">

@@ -33,9 +33,9 @@ const BRAND_WORDS = [
 
 const PALETTE = [
   { name: "Void", hex: "#040608" },
-  { name: "Gold", hex: "#C8A96B" },
-  { name: "Cyan", hex: "#5DB7D8" },
-  { name: "Violet", hex: "#9B6ED0" },
+  { name: "Gold", hex: "#C8392E" },
+  { name: "Cyan", hex: "#62E4C8" },
+  { name: "Violet", hex: "#4A2D6E" },
   { name: "Crimson", hex: "#A94A4A" },
 ];
 

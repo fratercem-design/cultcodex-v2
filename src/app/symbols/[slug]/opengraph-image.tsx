@@ -39,7 +39,7 @@ export default async function OGImage({
             right: 0,
             height: 4,
             background:
-              "linear-gradient(90deg, #C8A96B 0%, #e8c98b 50%, #C8A96B 100%)",
+              "linear-gradient(90deg, #C8392E 0%, #DE8882 50%, #C8392E 100%)",
           }}
         />
 
@@ -53,7 +53,7 @@ export default async function OGImage({
             height: 400,
             borderRadius: "50%",
             background:
-              "radial-gradient(ellipse, rgba(200,169,107,0.12) 0%, transparent 70%)",
+              "radial-gradient(ellipse, rgba(200, 57, 46,0.12) 0%, transparent 70%)",
           }}
         />
 
@@ -71,11 +71,11 @@ export default async function OGImage({
           {/* Left: Glyph */}
           <div
             style={{
-              color: "#C8A96B",
+              color: "#C8392E",
               fontSize: 200,
               lineHeight: 1,
               flexShrink: 0,
-              filter: "drop-shadow(0 0 30px rgba(200,169,107,0.6))",
+              filter: "drop-shadow(0 0 30px rgba(200, 57, 46,0.6))",
             }}
           >
             {symbol.glyph}
@@ -92,7 +92,7 @@ export default async function OGImage({
           >
             <div
               style={{
-                color: "#C8A96B",
+                color: "#C8392E",
                 fontSize: 14,
                 fontWeight: 700,
                 letterSpacing: "0.3em",
@@ -132,12 +132,12 @@ export default async function OGImage({
             >
               <div
                 style={{
-                  color: "#C8A96B",
+                  color: "#C8392E",
                   fontSize: 13,
                   fontWeight: 700,
                   letterSpacing: "0.2em",
                   textTransform: "uppercase",
-                  border: "1px solid rgba(200,169,107,0.4)",
+                  border: "1px solid rgba(200, 57, 46,0.4)",
                   padding: "4px 12px",
                   borderRadius: 4,
                 }}
@@ -157,7 +157,7 @@ export default async function OGImage({
             right: 0,
             height: 2,
             background:
-              "linear-gradient(90deg, transparent 0%, #C8A96B 50%, transparent 100%)",
+              "linear-gradient(90deg, transparent 0%, #C8392E 50%, transparent 100%)",
           }}
         />
       </div>

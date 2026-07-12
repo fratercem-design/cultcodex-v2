@@ -12,9 +12,9 @@ export interface TimelineItem {
 }
 
 const ERA_HEX: Record<EraColor, string> = {
-  gold: "#C8A96B",
-  violet: "#9B6ED0",
-  cyan: "#5DB7D8",
+  gold: "#C8392E",
+  violet: "#4A2D6E",
+  cyan: "#62E4C8",
   crimson: "#A94A4A",
   muted: "#8a8478",
 };

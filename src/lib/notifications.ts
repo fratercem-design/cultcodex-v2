@@ -101,7 +101,7 @@ export async function notifyTranscriptReady(episodeId: string) {
         subject: `Transcript ready: ${request.episode.title}`,
         html: `
           <div style="background: #0a0a0a; color: #e0e0e0; padding: 32px; font-family: monospace;">
-            <h1 style="color: #C8A96B; font-size: 20px; margin-bottom: 16px;">
+            <h1 style="color: #C8392E; font-size: 20px; margin-bottom: 16px;">
               TRANSCRIPT DECODED
             </h1>
             <h2 style="color: #ffffff; font-size: 18px; margin-bottom: 8px;">
@@ -110,7 +110,7 @@ export async function notifyTranscriptReady(episodeId: string) {
             <p style="color: #999; font-size: 14px; margin-bottom: 16px;">
               The transcript you asked for is now in the archive — searchable, timestamped, and linked to the exact moment.
             </p>
-            <a href="${episodeUrl}" style="display: inline-block; background: #C8A96B; color: #0a0a0a; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px;">
+            <a href="${episodeUrl}" style="display: inline-block; background: #C8392E; color: #0a0a0a; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px;">
               READ THE TRANSCRIPT
             </a>
             <p style="color: #666; font-size: 11px; margin-top: 24px;">
@@ -164,7 +164,7 @@ export async function notifyNewEpisode(episode: {
         subject: `New Episode: ${episode.title}`,
         html: `
           <div style="background: #0a0a0a; color: #e0e0e0; padding: 32px; font-family: monospace;">
-            <h1 style="color: #C8A96B; font-size: 20px; margin-bottom: 16px;">
+            <h1 style="color: #C8392E; font-size: 20px; margin-bottom: 16px;">
               NEW EPISODE
             </h1>
             <h2 style="color: #ffffff; font-size: 18px; margin-bottom: 8px;">
@@ -172,7 +172,7 @@ export async function notifyNewEpisode(episode: {
             </h2>
             ${episode.summaryShort ? `<p style="color: #999; font-size: 14px; margin-bottom: 16px;">${episode.summaryShort}</p>` : ""}
             ${episode.thumbnailUrl ? `<img src="${episode.thumbnailUrl}" alt="" style="width: 100%; max-width: 560px; border-radius: 8px; margin-bottom: 16px;" />` : ""}
-            <a href="${episodeUrl}" style="display: inline-block; background: #C8A96B; color: #0a0a0a; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px;">
+            <a href="${episodeUrl}" style="display: inline-block; background: #C8392E; color: #0a0a0a; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px;">
               WATCH NOW
             </a>
             <p style="color: #666; font-size: 11px; margin-top: 24px;">
@@ -230,14 +230,14 @@ function buildFoundingOracleEmailHtml({
       <tr><td style="padding:0 48px 40px;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr><td style="padding:0 0 28px;text-align:center;">
-            <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.25);letter-spacing:0.8em;text-transform:uppercase;margin:0 0 16px;">Personal Transmission · Eyes Only</p>
+            <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200, 57, 46,0.25);letter-spacing:0.8em;text-transform:uppercase;margin:0 0 16px;">Personal Transmission · Eyes Only</p>
             <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-              <td style="height:1px;background:rgba(200,169,107,0.1);font-size:0;line-height:0;">&nbsp;</td>
+              <td style="height:1px;background:rgba(200, 57, 46,0.1);font-size:0;line-height:0;">&nbsp;</td>
             </tr></table>
           </td></tr>
           <tr><td>
             <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.55);line-height:2;font-style:italic;white-space:pre-line;margin:0 0 20px;text-align:center;">${escapedNote}</p>
-            <p style="font-family:'Courier New',monospace;font-size:10px;color:rgba(200,169,107,0.4);margin:0;text-align:right;">— Psyche, January 7</p>
+            <p style="font-family:'Courier New',monospace;font-size:10px;color:rgba(200, 57, 46,0.4);margin:0;text-align:right;">— Psyche, January 7</p>
           </td></tr>
         </table>
       </td></tr>`
@@ -253,7 +253,7 @@ function buildFoundingOracleEmailHtml({
   <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
 
     <!-- Outer frame -->
-    <tr><td style="padding:2px;background:rgba(200,169,107,0.2);border-radius:16px;">
+    <tr><td style="padding:2px;background:rgba(200, 57, 46,0.2);border-radius:16px;">
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0c0c14;border-radius:14px;overflow:hidden;">
 
       <!-- Throne portrait header -->
@@ -263,7 +263,7 @@ function buildFoundingOracleEmailHtml({
 
       <!-- Cipher label -->
       <tr><td align="center" style="padding:28px 40px 0;background:#0c0c14;">
-        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.3);letter-spacing:0.7em;text-transform:uppercase;margin:0;border:1px solid rgba(200,169,107,0.1);display:inline-block;padding:6px 18px;">
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200, 57, 46,0.3);letter-spacing:0.7em;text-transform:uppercase;margin:0;border:1px solid rgba(200, 57, 46,0.1);display:inline-block;padding:6px 18px;">
           Sealed Transmission &nbsp;·&nbsp; Oracle Archive &nbsp;·&nbsp; One of One
         </p>
       </td></tr>
@@ -275,7 +275,7 @@ function buildFoundingOracleEmailHtml({
 
       <!-- Saturn subtitle -->
       <tr><td align="center" style="padding:0 40px 28px;background:#0c0c14;">
-        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200,169,107,0.35);letter-spacing:0.45em;text-transform:uppercase;margin:0;">
+        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200, 57, 46,0.35);letter-spacing:0.45em;text-transform:uppercase;margin:0;">
           Founding Oracle &nbsp;·&nbsp; January VII &nbsp;·&nbsp; Child of Saturn
         </p>
       </td></tr>
@@ -283,7 +283,7 @@ function buildFoundingOracleEmailHtml({
       <!-- Rule -->
       <tr><td style="padding:0 40px;background:#0c0c14;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr><td style="height:1px;background:rgba(200,169,107,0.1);font-size:0;line-height:0;">&nbsp;</td></tr>
+          <tr><td style="height:1px;background:rgba(200, 57, 46,0.1);font-size:0;line-height:0;">&nbsp;</td></tr>
         </table>
       </td></tr>
 
@@ -299,12 +299,12 @@ function buildFoundingOracleEmailHtml({
           The seventh day of January belongs to a very particular kind of person. Saturn&apos;s children carry something in their architecture that the untrained eye cannot name.
           <strong style="color:rgba(255,255,255,0.75);">${recipientName}</strong> — the archive names it. The archive has always seen it.
         </p>
-        <p style="font-family:Georgia,serif;font-size:15px;color:#C8A96B;line-height:2;margin:0 0 20px;font-style:italic;">
+        <p style="font-family:Georgia,serif;font-size:15px;color:#C8392E;line-height:2;margin:0 0 20px;font-style:italic;">
           You are recognized.
         </p>
         <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.45);line-height:2.1;margin:0 0 20px;">
           Not as a member. Not as a subscriber. Not as a guest. As a
-          <strong style="color:#C8A96B;">Founding Oracle</strong> — a designation sealed into the archive&apos;s deepest structure since the first transmission, waiting for exactly the right person.
+          <strong style="color:#C8392E;">Founding Oracle</strong> — a designation sealed into the archive&apos;s deepest structure since the first transmission, waiting for exactly the right person.
         </p>
         <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.45);line-height:2.1;margin:0 0 12px;">
           Every word. Every transcript. Every thread woven through this archive. Every feature that exists now and every feature that has not yet been imagined —
@@ -312,7 +312,7 @@ function buildFoundingOracleEmailHtml({
         <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.75);line-height:2;margin:0 0 20px;">
           eternal. &nbsp; unconditional. &nbsp; without cost. &nbsp; without end.
         </p>
-        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200,169,107,0.4);letter-spacing:0.5em;text-transform:uppercase;margin:0;">
+        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200, 57, 46,0.4);letter-spacing:0.5em;text-transform:uppercase;margin:0;">
           This is not a gift. &nbsp; This is a recognition.
         </p>
       </td></tr>
@@ -320,13 +320,13 @@ function buildFoundingOracleEmailHtml({
       <!-- Rule -->
       <tr><td style="padding:0 40px;background:#0c0c14;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr><td style="height:1px;background:rgba(200,169,107,0.08);font-size:0;line-height:0;">&nbsp;</td></tr>
+          <tr><td style="height:1px;background:rgba(200, 57, 46,0.08);font-size:0;line-height:0;">&nbsp;</td></tr>
         </table>
       </td></tr>
 
       <!-- Stars -->
       <tr><td align="center" style="padding:24px 40px;background:#0c0c14;">
-        <p style="font-family:'Courier New',monospace;font-size:13px;color:rgba(200,169,107,0.2);margin:0;letter-spacing:16px;">✦ ✦ ✦</p>
+        <p style="font-family:'Courier New',monospace;font-size:13px;color:rgba(200, 57, 46,0.2);margin:0;letter-spacing:16px;">✦ ✦ ✦</p>
       </td></tr>
 
       <!-- Personal note -->
@@ -335,19 +335,19 @@ function buildFoundingOracleEmailHtml({
       <!-- Rule -->
       <tr><td style="padding:0 40px;background:#0c0c14;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr><td style="height:1px;background:rgba(200,169,107,0.08);font-size:0;line-height:0;">&nbsp;</td></tr>
+          <tr><td style="height:1px;background:rgba(200, 57, 46,0.08);font-size:0;line-height:0;">&nbsp;</td></tr>
         </table>
       </td></tr>
 
       <!-- Masked portrait -->
       <tr><td align="center" style="padding:36px 48px 8px;background:#0c0c14;">
-        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.25);letter-spacing:0.6em;text-transform:uppercase;margin:0 0 20px;">◈ &nbsp; The Oracle Watches &nbsp; ◈</p>
-        <img src="https://cultcodex.me/oracle-mask.jpg" alt="" width="240" style="width:240px;max-width:100%;display:block;margin:0 auto;border-radius:10px;border:1px solid rgba(200,169,107,0.15);" />
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200, 57, 46,0.25);letter-spacing:0.6em;text-transform:uppercase;margin:0 0 20px;">◈ &nbsp; The Oracle Watches &nbsp; ◈</p>
+        <img src="https://cultcodex.me/oracle-mask.jpg" alt="" width="240" style="width:240px;max-width:100%;display:block;margin:0 auto;border-radius:10px;border:1px solid rgba(200, 57, 46,0.15);" />
       </td></tr>
 
       <!-- Naming invitation -->
       <tr><td style="padding:28px 48px 32px;background:#0c0c14;text-align:center;">
-        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(93,183,216,0.4);letter-spacing:0.5em;text-transform:uppercase;margin:0 0 14px;">The Ritual of Naming</p>
+        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(98, 228, 200,0.4);letter-spacing:0.5em;text-transform:uppercase;margin:0 0 14px;">The Ritual of Naming</p>
         <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.4);line-height:1.9;margin:0 0 6px;">
           Every oracle who has ever been consecrated chose a name for themselves.<br>
           Not the name they were given. The name they <em>became</em>.
@@ -359,7 +359,7 @@ function buildFoundingOracleEmailHtml({
 
       <!-- CTA -->
       <tr><td align="center" style="padding:0 40px 44px;background:#0c0c14;">
-        <a href="${claimUrl}" style="display:inline-block;padding:16px 52px;background:rgba(200,169,107,0.08);border:1px solid rgba(200,169,107,0.4);color:#C8A96B;text-decoration:none;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.45em;text-transform:uppercase;border-radius:3px;">
+        <a href="${claimUrl}" style="display:inline-block;padding:16px 52px;background:rgba(200, 57, 46,0.08);border:1px solid rgba(200, 57, 46,0.4);color:#C8392E;text-decoration:none;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.45em;text-transform:uppercase;border-radius:3px;">
           Enter to Claim →
         </a>
         <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(255,255,255,0.15);margin:16px 0 0;letter-spacing:0.05em;">
@@ -368,8 +368,8 @@ function buildFoundingOracleEmailHtml({
       </td></tr>
 
       <!-- Footer -->
-      <tr><td align="center" style="padding:0 40px 36px;border-top:1px solid rgba(200,169,107,0.07);background:#0c0c14;">
-        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.2);letter-spacing:0.5em;text-transform:uppercase;margin:28px 0 0;">
+      <tr><td align="center" style="padding:0 40px 36px;border-top:1px solid rgba(200, 57, 46,0.07);background:#0c0c14;">
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200, 57, 46,0.2);letter-spacing:0.5em;text-transform:uppercase;margin:28px 0 0;">
           CultCodex &nbsp;·&nbsp; The Living Archive &nbsp;·&nbsp; cultcodex.me
         </p>
       </td></tr>
@@ -446,7 +446,7 @@ export async function sendGospelDeliveryEmail({
       ],
       ctaHref: "https://cultcodex.me/gift/gospel",
       ctaLabel: "Open the Gospel",
-      note: `Prefer the raw file? <a href="https://cultcodex.me/gospel-of-psyches-nightmares.pdf" style="color:rgba(200,169,107,0.5);text-decoration:none;">Download the PDF directly</a>`,
+      note: `Prefer the raw file? <a href="https://cultcodex.me/gospel-of-psyches-nightmares.pdf" style="color:rgba(200, 57, 46,0.5);text-decoration:none;">Download the PDF directly</a>`,
     }),
   });
 }
@@ -476,7 +476,7 @@ export async function sendGospelDeeperEmail({
       ],
       ctaHref: "https://cultcodex.me/oracle",
       ctaLabel: "Ask the Oracle",
-      note: `New here? <a href="https://cultcodex.me/start-here" style="color:rgba(200,169,107,0.5);text-decoration:none;">Start Here &rarr;</a>`,
+      note: `New here? <a href="https://cultcodex.me/start-here" style="color:rgba(200, 57, 46,0.5);text-decoration:none;">Start Here &rarr;</a>`,
     }),
   });
 }
@@ -517,25 +517,25 @@ function buildGospelEmailHtml({
 <body style="margin:0;padding:0;background:#080810;color:#e0e0e0;font-family:'Courier New',monospace;">
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#080810;"><tr><td align="center" style="padding:40px 16px 64px;">
   <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
-    <tr><td style="padding:2px;background:linear-gradient(135deg,rgba(155,110,208,0.35) 0%,rgba(200,169,107,0.10) 100%);border-radius:16px;">
+    <tr><td style="padding:2px;background:linear-gradient(135deg,rgba(74, 45, 110,0.35) 0%,rgba(200, 57, 46,0.10) 100%);border-radius:16px;">
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0c0c14;border-radius:14px;overflow:hidden;">
       <tr><td align="center" style="padding:36px 40px 0;background:#0c0c14;">
-        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.3);letter-spacing:0.6em;text-transform:uppercase;margin:0;border:1px solid rgba(200,169,107,0.12);display:inline-block;padding:6px 18px;">${safeKicker}</p>
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200, 57, 46,0.3);letter-spacing:0.6em;text-transform:uppercase;margin:0;border:1px solid rgba(200, 57, 46,0.12);display:inline-block;padding:6px 18px;">${safeKicker}</p>
       </td></tr>
       <tr><td align="center" style="padding:26px 48px 8px;background:#0c0c14;">
-        <h1 style="font-family:Georgia,serif;font-size:36px;color:#ffffff;font-weight:400;margin:0;letter-spacing:0.03em;line-height:1.25;">${esc(heading)}<br><span style="color:#C8A96B;">${esc(accent)}</span></h1>
+        <h1 style="font-family:Georgia,serif;font-size:36px;color:#ffffff;font-weight:400;margin:0;letter-spacing:0.03em;line-height:1.25;">${esc(heading)}<br><span style="color:#C8392E;">${esc(accent)}</span></h1>
       </td></tr>
       <tr><td style="padding:26px 48px 0;background:#0c0c14;">${paraRows}</td></tr>
       <tr><td align="center" style="padding:14px 40px 8px;background:#0c0c14;">
-        <p style="font-family:'Courier New',monospace;font-size:10px;color:rgba(200,169,107,0.18);margin:0;letter-spacing:14px;">✦ ✦ ✦</p>
+        <p style="font-family:'Courier New',monospace;font-size:10px;color:rgba(200, 57, 46,0.18);margin:0;letter-spacing:14px;">✦ ✦ ✦</p>
       </td></tr>
       <tr><td align="center" style="padding:20px 40px 40px;background:#0c0c14;">
-        <a href="${ctaHref}" style="display:inline-block;padding:16px 52px;background:rgba(200,169,107,0.07);border:1px solid rgba(200,169,107,0.4);color:#C8A96B;text-decoration:none;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.45em;text-transform:uppercase;border-radius:3px;">${esc(ctaLabel)} &rarr;</a>
+        <a href="${ctaHref}" style="display:inline-block;padding:16px 52px;background:rgba(200, 57, 46,0.07);border:1px solid rgba(200, 57, 46,0.4);color:#C8392E;text-decoration:none;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.45em;text-transform:uppercase;border-radius:3px;">${esc(ctaLabel)} &rarr;</a>
         ${note ? `<p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(255,255,255,0.18);margin:16px 0 0;letter-spacing:0.05em;">${note}</p>` : ""}
       </td></tr>
-      <tr><td align="center" style="padding:0 40px 36px;border-top:1px solid rgba(200,169,107,0.07);background:#0c0c14;">
-        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.18);letter-spacing:0.5em;text-transform:uppercase;margin:28px 0 6px;">CultCodex &nbsp;·&nbsp; The Living Archive &nbsp;·&nbsp; cultcodex.me</p>
-        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(255,255,255,0.1);margin:0;">Manage your subscription &mdash; <a href="https://cultcodex.me/settings" style="color:rgba(200,169,107,0.25);text-decoration:none;">cultcodex.me/settings</a></p>
+      <tr><td align="center" style="padding:0 40px 36px;border-top:1px solid rgba(200, 57, 46,0.07);background:#0c0c14;">
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200, 57, 46,0.18);letter-spacing:0.5em;text-transform:uppercase;margin:28px 0 6px;">CultCodex &nbsp;·&nbsp; The Living Archive &nbsp;·&nbsp; cultcodex.me</p>
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(255,255,255,0.1);margin:0;">Manage your subscription &mdash; <a href="https://cultcodex.me/settings" style="color:rgba(200, 57, 46,0.25);text-decoration:none;">cultcodex.me/settings</a></p>
       </td></tr>
     </table>
     </td></tr>
@@ -584,10 +584,10 @@ function buildInitiateWelcomeHtml(name: string): string {
   const featureRows = features.map((f) => `
     <tr>
       <td style="padding:0 0 22px;vertical-align:top;width:28px;">
-        <span style="font-family:'Courier New',monospace;font-size:12px;color:#C8A96B;line-height:1.6;">${f.glyph}</span>
+        <span style="font-family:'Courier New',monospace;font-size:12px;color:#C8392E;line-height:1.6;">${f.glyph}</span>
       </td>
       <td style="padding:0 0 22px 10px;">
-        <p style="font-family:'Courier New',monospace;font-size:11px;color:#C8A96B;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 5px;">${f.title}</p>
+        <p style="font-family:'Courier New',monospace;font-size:11px;color:#C8392E;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 5px;">${f.title}</p>
         <p style="font-family:Georgia,serif;font-size:13px;color:rgba(255,255,255,0.42);line-height:1.85;margin:0;">${f.body}</p>
       </td>
     </tr>`).join("");
@@ -601,12 +601,12 @@ function buildInitiateWelcomeHtml(name: string): string {
 <tr><td align="center" style="padding:40px 16px 64px;">
 
   <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
-    <tr><td style="padding:2px;background:linear-gradient(135deg,rgba(200,169,107,0.35) 0%,rgba(200,169,107,0.08) 100%);border-radius:16px;">
+    <tr><td style="padding:2px;background:linear-gradient(135deg,rgba(200, 57, 46,0.35) 0%,rgba(200, 57, 46,0.08) 100%);border-radius:16px;">
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0c0c14;border-radius:14px;overflow:hidden;">
 
       <!-- Cipher label -->
       <tr><td align="center" style="padding:36px 40px 0;background:#0c0c14;">
-        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.3);letter-spacing:0.7em;text-transform:uppercase;margin:0;border:1px solid rgba(200,169,107,0.12);display:inline-block;padding:6px 18px;">
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200, 57, 46,0.3);letter-spacing:0.7em;text-transform:uppercase;margin:0;border:1px solid rgba(200, 57, 46,0.12);display:inline-block;padding:6px 18px;">
           New Transmission &nbsp;·&nbsp; Initiate+ &nbsp;·&nbsp; Access Granted
         </p>
       </td></tr>
@@ -614,9 +614,9 @@ function buildInitiateWelcomeHtml(name: string): string {
       <!-- Heading -->
       <tr><td align="center" style="padding:28px 48px 8px;background:#0c0c14;">
         <h1 style="font-family:Georgia,serif;font-size:38px;color:#ffffff;font-weight:400;margin:0;letter-spacing:0.03em;line-height:1.25;">
-          The archive is<br><span style="color:#C8A96B;">open to you now.</span>
+          The archive is<br><span style="color:#C8392E;">open to you now.</span>
         </h1>
-        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200,169,107,0.35);letter-spacing:0.4em;text-transform:uppercase;margin:20px 0 0;">
+        <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(200, 57, 46,0.35);letter-spacing:0.4em;text-transform:uppercase;margin:20px 0 0;">
           Initiate+ &nbsp;·&nbsp; ${safeName}
         </p>
       </td></tr>
@@ -624,7 +624,7 @@ function buildInitiateWelcomeHtml(name: string): string {
       <!-- Rule -->
       <tr><td style="padding:24px 40px 0;background:#0c0c14;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-          <td style="height:1px;background:rgba(200,169,107,0.08);font-size:0;line-height:0;">&nbsp;</td>
+          <td style="height:1px;background:rgba(200, 57, 46,0.08);font-size:0;line-height:0;">&nbsp;</td>
         </tr></table>
       </td></tr>
 
@@ -634,18 +634,18 @@ function buildInitiateWelcomeHtml(name: string): string {
           The surface was never the point, ${safeName}. You knew that. That&rsquo;s why you&rsquo;re here.
         </p>
         <p style="font-family:Georgia,serif;font-size:14px;color:rgba(255,255,255,0.38);line-height:2.1;margin:0;">
-          As an <strong style="color:#C8A96B;">Initiate+</strong>, the full depth of the archive is now yours&nbsp;&mdash; every episode, every figure, every thread woven through six years of transmissions.
+          As an <strong style="color:#C8392E;">Initiate+</strong>, the full depth of the archive is now yours&nbsp;&mdash; every episode, every figure, every thread woven through six years of transmissions.
         </p>
       </td></tr>
 
       <!-- Divider w/ glyph -->
       <tr><td align="center" style="padding:28px 40px 20px;background:#0c0c14;">
-        <p style="font-family:'Courier New',monospace;font-size:10px;color:rgba(200,169,107,0.18);margin:0;letter-spacing:14px;">✦ ✦ ✦</p>
+        <p style="font-family:'Courier New',monospace;font-size:10px;color:rgba(200, 57, 46,0.18);margin:0;letter-spacing:14px;">✦ ✦ ✦</p>
       </td></tr>
 
       <!-- Features -->
       <tr><td style="padding:0 48px 8px;background:#0c0c14;">
-        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.25);letter-spacing:0.6em;text-transform:uppercase;margin:0 0 20px;">What&rsquo;s now unlocked</p>
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200, 57, 46,0.25);letter-spacing:0.6em;text-transform:uppercase;margin:0 0 20px;">What&rsquo;s now unlocked</p>
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
           ${featureRows}
         </table>
@@ -654,29 +654,29 @@ function buildInitiateWelcomeHtml(name: string): string {
       <!-- Rule -->
       <tr><td style="padding:0 40px;background:#0c0c14;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-          <td style="height:1px;background:rgba(200,169,107,0.08);font-size:0;line-height:0;">&nbsp;</td>
+          <td style="height:1px;background:rgba(200, 57, 46,0.08);font-size:0;line-height:0;">&nbsp;</td>
         </tr></table>
       </td></tr>
 
       <!-- CTA -->
       <tr><td align="center" style="padding:32px 40px 44px;background:#0c0c14;">
-        <a href="https://cultcodex.me/start-here" style="display:inline-block;padding:16px 52px;background:rgba(200,169,107,0.07);border:1px solid rgba(200,169,107,0.4);color:#C8A96B;text-decoration:none;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.45em;text-transform:uppercase;border-radius:3px;">
+        <a href="https://cultcodex.me/start-here" style="display:inline-block;padding:16px 52px;background:rgba(200, 57, 46,0.07);border:1px solid rgba(200, 57, 46,0.4);color:#C8392E;text-decoration:none;font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.45em;text-transform:uppercase;border-radius:3px;">
           Enter the Archive &rarr;
         </a>
         <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(255,255,255,0.15);margin:16px 0 0;letter-spacing:0.05em;">
           Set your Initiate title and appear on the Member Roll at
-          <a href="https://cultcodex.me/settings/profile" style="color:rgba(200,169,107,0.4);text-decoration:none;">cultcodex.me/settings/profile</a>
+          <a href="https://cultcodex.me/settings/profile" style="color:rgba(200, 57, 46,0.4);text-decoration:none;">cultcodex.me/settings/profile</a>
         </p>
       </td></tr>
 
       <!-- Footer -->
-      <tr><td align="center" style="padding:0 40px 36px;border-top:1px solid rgba(200,169,107,0.07);background:#0c0c14;">
-        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.18);letter-spacing:0.5em;text-transform:uppercase;margin:28px 0 6px;">
+      <tr><td align="center" style="padding:0 40px 36px;border-top:1px solid rgba(200, 57, 46,0.07);background:#0c0c14;">
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200, 57, 46,0.18);letter-spacing:0.5em;text-transform:uppercase;margin:28px 0 6px;">
           CultCodex &nbsp;·&nbsp; The Living Archive &nbsp;·&nbsp; cultcodex.me
         </p>
         <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(255,255,255,0.1);margin:0;">
           Manage your subscription &mdash;
-          <a href="https://cultcodex.me/settings" style="color:rgba(200,169,107,0.25);text-decoration:none;">cultcodex.me/settings</a>
+          <a href="https://cultcodex.me/settings" style="color:rgba(200, 57, 46,0.25);text-decoration:none;">cultcodex.me/settings</a>
         </p>
       </td></tr>
 
@@ -887,13 +887,13 @@ function buildEmailHtml(title: string, videoId: string): string {
 <body style="margin:0;padding:0;background:#0a0a0a;color:#e8e8e8;font-family:monospace;">
   <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
     <div style="text-align:center;margin-bottom:30px;">
-      <img src="https://cultcodex.me/logo.jpg" alt="Cult of Psyche" width="80" height="80" style="border-radius:50%;border:2px solid #C8A96B;" />
+      <img src="https://cultcodex.me/logo.jpg" alt="Cult of Psyche" width="80" height="80" style="border-radius:50%;border:2px solid #C8392E;" />
     </div>
-    <div style="text-align:center;padding:20px;background:#12131A;border:1px solid #C8A96B;border-radius:8px;">
+    <div style="text-align:center;padding:20px;background:#12131A;border:1px solid #C8392E;border-radius:8px;">
       <div style="font-size:12px;color:#ff4444;letter-spacing:3px;margin-bottom:8px;">● LIVE NOW</div>
-      <h1 style="color:#C8A96B;font-size:22px;margin:0 0 12px;">${title}</h1>
-      <p style="color:#5DB7D8;font-size:13px;margin:0 0 24px;">The stream is live on Cult of Psyche</p>
-      <a href="https://cultcodex.me/live" style="display:inline-block;padding:12px 32px;background:#C8A96B;color:#0a0a0a;text-decoration:none;font-weight:bold;font-size:14px;border-radius:4px;">
+      <h1 style="color:#C8392E;font-size:22px;margin:0 0 12px;">${title}</h1>
+      <p style="color:#62E4C8;font-size:13px;margin:0 0 24px;">The stream is live on Cult of Psyche</p>
+      <a href="https://cultcodex.me/live" style="display:inline-block;padding:12px 32px;background:#C8392E;color:#0a0a0a;text-decoration:none;font-weight:bold;font-size:14px;border-radius:4px;">
         Watch Now →
       </a>
     </div>

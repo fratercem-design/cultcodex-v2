@@ -7,9 +7,9 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const ACCENT_COLORS: Record<string, string> = {
-  violet: "#9B6ED0",
-  cyan: "#5DB7D8",
-  gold: "#C8A96B",
+  violet: "#4A2D6E",
+  cyan: "#62E4C8",
+  gold: "#C8392E",
   crimson: "#A94A4A",
 };
 
@@ -44,7 +44,7 @@ export default async function OGImage({
     );
   }
 
-  const accent = ACCENT_COLORS[p.accent] ?? "#C8A96B";
+  const accent = ACCENT_COLORS[p.accent] ?? "#C8392E";
 
   return new ImageResponse(
     (
@@ -96,7 +96,7 @@ export default async function OGImage({
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-            <div style={{ color: "#C8A96B", fontSize: 24, fontWeight: 700, letterSpacing: "0.15em" }}>
+            <div style={{ color: "#C8392E", fontSize: 24, fontWeight: 700, letterSpacing: "0.15em" }}>
               CULTCODEX.ME
             </div>
             <div style={{ color: "#444444", fontSize: 16, letterSpacing: "0.1em" }}>

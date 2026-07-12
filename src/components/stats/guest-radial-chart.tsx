@@ -20,7 +20,7 @@ interface Props {
 }
 
 const COLORS = [
-  "#C8A96B", "#C8A96B", "#C8A96B",           // top 3 gold
+  "#C8392E", "#C8392E", "#C8392E",           // top 3 gold
   "#a855f7", "#a855f7", "#a855f7",            // next 3 violet
   "#00d9ff", "#00d9ff", "#00d9ff",            // next 3 cyan
   "#ef4444", "#ef4444",                        // crimson

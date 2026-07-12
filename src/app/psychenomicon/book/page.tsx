@@ -43,7 +43,7 @@ export default async function BookPage() {
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
       <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
-        "/// psychenomicon ·the_book"
+        {"/// psychenomicon · the_book"}
       </p>
       <h1 className="mt-3 font-display text-4xl font-black tracking-tight text-text-primary">
         The Psychenomicon — Volume I

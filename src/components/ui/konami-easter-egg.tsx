@@ -101,7 +101,7 @@ export function KonamiEasterEgg() {
             <Link
               key={link.href}
               href={link.href}
-              className="group relative px-6 py-3 rounded-lg border border-border bg-surface/80 font-mono text-text-primary hover:text-accent-cyan transition-all duration-300 hover:border-accent-cyan hover:shadow-[0_0_20px_rgba(93,183,216,0.25)]"
+              className="group relative px-6 py-3 rounded-lg border border-border bg-surface/80 font-mono text-text-primary hover:text-accent-cyan transition-all duration-300 hover:border-accent-cyan hover:shadow-[0_0_20px_rgba(98, 228, 200,0.25)]"
             >
               <span className="text-lg">
                 {link.emoji} {link.label}
@@ -123,8 +123,8 @@ export function KonamiEasterEgg() {
         .konami-bg {
           background:
             radial-gradient(ellipse at 20% 50%, rgba(110, 75, 174, 0.15) 0%, transparent 60%),
-            radial-gradient(ellipse at 80% 50%, rgba(93, 183, 216, 0.1) 0%, transparent 60%),
-            radial-gradient(ellipse at 50% 80%, rgba(200, 169, 107, 0.08) 0%, transparent 50%);
+            radial-gradient(ellipse at 80% 50%, rgba(98, 228, 200, 0.1) 0%, transparent 60%),
+            radial-gradient(ellipse at 50% 80%, rgba(200, 57, 46, 0.08) 0%, transparent 50%);
           animation: konami-drift 8s ease-in-out infinite alternate;
         }
 

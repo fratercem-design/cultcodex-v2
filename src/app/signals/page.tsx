@@ -83,7 +83,7 @@ export default async function SignalsPage() {
           </p>
           <h1
             className="font-display text-4xl font-black tracking-tight text-accent-gold sm:text-5xl"
-            style={{ textShadow: "0 0 40px rgba(212,175,55,0.3)" }}
+            style={{ textShadow: "0 0 40px rgba(200, 57, 46,0.3)" }}
           >
             Signal Proposals
           </h1>

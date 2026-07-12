@@ -14,7 +14,7 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-// Violet (#9B6ED0) → cyan (#5DB7D8) gradient across bars
+// Violet (#4A2D6E) → cyan (#62E4C8) gradient across bars
 function barColor(index: number, total: number): string {
   const t = index / (total - 1);
   const r = Math.round(155 + (93 - 155) * t);
@@ -210,7 +210,7 @@ export function OracleConsole() {
             className="absolute -inset-px rounded-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 pointer-events-none"
             style={{
               background:
-                "linear-gradient(135deg, rgba(155,110,208,0.5) 0%, rgba(93,183,216,0.25) 50%, rgba(155,110,208,0.5) 100%)",
+                "linear-gradient(135deg, rgba(74, 45, 110,0.5) 0%, rgba(98, 228, 200,0.25) 50%, rgba(74, 45, 110,0.5) 100%)",
               filter: "blur(1px)",
             }}
             aria-hidden="true"
@@ -246,7 +246,7 @@ export function OracleConsole() {
             className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
             style={{
               background:
-                "linear-gradient(105deg, transparent 20%, rgba(155,110,208,0.06) 40%, rgba(155,110,208,0.14) 50%, rgba(155,110,208,0.06) 60%, transparent 80%)",
+                "linear-gradient(105deg, transparent 20%, rgba(74, 45, 110,0.06) 40%, rgba(74, 45, 110,0.14) 50%, rgba(74, 45, 110,0.06) 60%, transparent 80%)",
             }}
             aria-hidden="true"
           />
@@ -342,8 +342,8 @@ export function OracleConsole() {
                 aria-hidden="true"
                 style={{
                   background: isPlaying
-                    ? "radial-gradient(ellipse 80% 60% at 50% 30%, rgba(155,110,208,0.22) 0%, transparent 70%)"
-                    : "radial-gradient(ellipse 50% 40% at 50% 30%, rgba(155,110,208,0.07) 0%, transparent 70%)",
+                    ? "radial-gradient(ellipse 80% 60% at 50% 30%, rgba(74, 45, 110,0.22) 0%, transparent 70%)"
+                    : "radial-gradient(ellipse 50% 40% at 50% 30%, rgba(74, 45, 110,0.07) 0%, transparent 70%)",
                 }}
               />
 
@@ -370,11 +370,11 @@ export function OracleConsole() {
                     className="relative h-20 w-20 rounded-full flex items-center justify-center focus:outline-none transition-all duration-500"
                     style={{
                       background: isPlaying
-                        ? "radial-gradient(circle at 40% 40%, rgba(155,110,208,0.5) 0%, rgba(93,183,216,0.25) 55%, rgba(155,110,208,0.15) 100%)"
-                        : "radial-gradient(circle at 40% 40%, rgba(155,110,208,0.25) 0%, rgba(93,183,216,0.12) 55%, transparent 100%)",
+                        ? "radial-gradient(circle at 40% 40%, rgba(74, 45, 110,0.5) 0%, rgba(98, 228, 200,0.25) 55%, rgba(74, 45, 110,0.15) 100%)"
+                        : "radial-gradient(circle at 40% 40%, rgba(74, 45, 110,0.25) 0%, rgba(98, 228, 200,0.12) 55%, transparent 100%)",
                       boxShadow: isPlaying
-                        ? "0 0 0 2px rgba(155,110,208,0.7), 0 0 24px rgba(155,110,208,0.5), 0 0 50px rgba(93,183,216,0.2)"
-                        : "0 0 0 2px rgba(155,110,208,0.35), 0 0 14px rgba(155,110,208,0.2)",
+                        ? "0 0 0 2px rgba(74, 45, 110,0.7), 0 0 24px rgba(74, 45, 110,0.5), 0 0 50px rgba(98, 228, 200,0.2)"
+                        : "0 0 0 2px rgba(74, 45, 110,0.35), 0 0 14px rgba(74, 45, 110,0.2)",
                     }}
                     aria-label={isPlaying ? "Pause Oracle voice" : "Hear the Oracle speak"}
                   >
@@ -441,13 +441,13 @@ export function OracleConsole() {
               aria-hidden="true"
               style={{
                 background:
-                  "linear-gradient(135deg, rgba(155,110,208,0.14) 0%, transparent 35%, transparent 65%, rgba(93,183,216,0.07) 100%)",
+                  "linear-gradient(135deg, rgba(74, 45, 110,0.14) 0%, transparent 35%, transparent 65%, rgba(98, 228, 200,0.07) 100%)",
               }}
             />
             {/* Outer border */}
             <div
               className="absolute inset-0 rounded-xl pointer-events-none"
-              style={{ border: "1px solid rgba(155,110,208,0.28)" }}
+              style={{ border: "1px solid rgba(74, 45, 110,0.28)" }}
               aria-hidden="true"
             />
 
@@ -458,8 +458,8 @@ export function OracleConsole() {
                   className="relative h-20 w-20 rounded-full overflow-hidden"
                   style={{
                     boxShadow: isPlaying
-                      ? "0 0 0 2px #9B6ED0, 0 0 0 5px #5DB7D8, 0 0 24px rgba(155,110,208,0.55), 0 0 48px rgba(93,183,216,0.2)"
-                      : "0 0 0 2px rgba(155,110,208,0.5), 0 0 14px rgba(155,110,208,0.22)",
+                      ? "0 0 0 2px #4A2D6E, 0 0 0 5px #62E4C8, 0 0 24px rgba(74, 45, 110,0.55), 0 0 48px rgba(98, 228, 200,0.2)"
+                      : "0 0 0 2px rgba(74, 45, 110,0.5), 0 0 14px rgba(74, 45, 110,0.22)",
                     transition: "box-shadow 0.6s ease",
                   }}
                 >
@@ -468,7 +468,7 @@ export function OracleConsole() {
                   {isPlaying && (
                     <div
                       className="absolute bottom-1.5 right-1.5 h-2.5 w-2.5 rounded-full bg-accent-cyan animate-pulse"
-                      style={{ boxShadow: "0 0 6px #5DB7D8, 0 0 12px rgba(93,183,216,0.5)" }}
+                      style={{ boxShadow: "0 0 6px #62E4C8, 0 0 12px rgba(98, 228, 200,0.5)" }}
                     />
                   )}
                 </div>
@@ -617,7 +617,7 @@ function RitualLoader() {
       >
         <circle
           cx="48" cy="48" r="44"
-          stroke="rgba(155,110,208,0.18)"
+          stroke="rgba(74, 45, 110,0.18)"
           strokeWidth="1"
           strokeDasharray="4 8"
         />
@@ -627,7 +627,7 @@ function RitualLoader() {
             cx={48 + 44 * Math.cos((angle * Math.PI) / 180)}
             cy={48 + 44 * Math.sin((angle * Math.PI) / 180)}
             r="2"
-            fill="rgba(155,110,208,0.55)"
+            fill="rgba(74, 45, 110,0.55)"
           />
         ))}
       </svg>
@@ -642,7 +642,7 @@ function RitualLoader() {
       >
         <circle
           cx="36" cy="36" r="32"
-          stroke="rgba(93,183,216,0.18)"
+          stroke="rgba(98, 228, 200,0.18)"
           strokeWidth="1"
           strokeDasharray="2 6"
         />
@@ -652,7 +652,7 @@ function RitualLoader() {
             cx={36 + 32 * Math.cos((angle * Math.PI) / 180)}
             cy={36 + 32 * Math.sin((angle * Math.PI) / 180)}
             r="1.5"
-            fill="rgba(93,183,216,0.65)"
+            fill="rgba(98, 228, 200,0.65)"
           />
         ))}
       </svg>
@@ -663,9 +663,9 @@ function RitualLoader() {
           className="h-10 w-10 rounded-full animate-pulse"
           style={{
             background:
-              "radial-gradient(circle, rgba(155,110,208,0.55) 0%, rgba(93,183,216,0.22) 50%, transparent 80%)",
+              "radial-gradient(circle, rgba(74, 45, 110,0.55) 0%, rgba(98, 228, 200,0.22) 50%, transparent 80%)",
             boxShadow:
-              "0 0 20px rgba(155,110,208,0.45), 0 0 40px rgba(93,183,216,0.15)",
+              "0 0 20px rgba(74, 45, 110,0.45), 0 0 40px rgba(98, 228, 200,0.15)",
           }}
         />
       </div>

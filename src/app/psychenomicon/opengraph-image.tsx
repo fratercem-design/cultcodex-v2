@@ -27,7 +27,7 @@ export default function OGImage() {
             left: 0,
             right: 0,
             height: 4,
-            background: "linear-gradient(90deg, #C8A96B 0%, #e8c98b 50%, #C8A96B 100%)",
+            background: "linear-gradient(90deg, #C8392E 0%, #DE8882 50%, #C8392E 100%)",
           }}
         />
 
@@ -40,7 +40,7 @@ export default function OGImage() {
             width: 500,
             height: 500,
             borderRadius: "50%",
-            background: "radial-gradient(ellipse, rgba(200,169,107,0.1) 0%, transparent 70%)",
+            background: "radial-gradient(ellipse, rgba(200, 57, 46,0.1) 0%, transparent 70%)",
           }}
         />
 
@@ -49,7 +49,7 @@ export default function OGImage() {
           <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             <div
               style={{
-                color: "#C8A96B",
+                color: "#C8392E",
                 fontSize: 17,
                 fontWeight: 700,
                 letterSpacing: "0.28em",
@@ -86,7 +86,7 @@ export default function OGImage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
             <div
               style={{
-                color: "#C8A96B",
+                color: "#C8392E",
                 fontSize: 22,
                 fontWeight: 700,
                 letterSpacing: "0.18em",
@@ -98,7 +98,7 @@ export default function OGImage() {
             {/* Decorative symbol */}
             <div
               style={{
-                color: "rgba(200,169,107,0.18)",
+                color: "rgba(200, 57, 46,0.18)",
                 fontSize: 160,
                 lineHeight: 1,
               }}

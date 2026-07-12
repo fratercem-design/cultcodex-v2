@@ -17,9 +17,9 @@ export const metadata: Metadata = buildMetadata({
 });
 
 const ACCENT: Record<QuestAccent, { text: string; border: string; bar: string; hex: string }> = {
-  gold: { text: "text-accent-gold", border: "border-accent-gold/30", bar: "bg-accent-gold", hex: "#C8A96B" },
-  cyan: { text: "text-accent-cyan", border: "border-accent-cyan/30", bar: "bg-accent-cyan", hex: "#5DB7D8" },
-  violet: { text: "text-accent-violet", border: "border-accent-violet/30", bar: "bg-accent-violet", hex: "#9B6ED0" },
+  gold: { text: "text-accent-gold", border: "border-accent-gold/30", bar: "bg-accent-gold", hex: "#C8392E" },
+  cyan: { text: "text-accent-cyan", border: "border-accent-cyan/30", bar: "bg-accent-cyan", hex: "#62E4C8" },
+  violet: { text: "text-accent-violet", border: "border-accent-violet/30", bar: "bg-accent-violet", hex: "#4A2D6E" },
   crimson: { text: "text-accent-crimson", border: "border-accent-crimson/30", bar: "bg-accent-crimson", hex: "#A94A4A" },
 };
 

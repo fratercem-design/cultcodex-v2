@@ -27,7 +27,7 @@ export default function OGImage() {
             left: 0,
             right: 0,
             height: 4,
-            background: "linear-gradient(90deg, #7c3aed 0%, #9b6ed0 50%, #7c3aed 100%)",
+            background: "linear-gradient(90deg, #7c3aed 0%, #4A2D6E 50%, #7c3aed 100%)",
           }}
         />
 
@@ -50,7 +50,7 @@ export default function OGImage() {
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div
               style={{
-                color: "#9b6ed0",
+                color: "#4A2D6E",
                 fontSize: 17,
                 fontWeight: 700,
                 letterSpacing: "0.28em",
@@ -88,7 +88,7 @@ export default function OGImage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
             <div
               style={{
-                color: "#C8A96B",
+                color: "#C8392E",
                 fontSize: 22,
                 fontWeight: 700,
                 letterSpacing: "0.18em",
@@ -100,7 +100,7 @@ export default function OGImage() {
             {/* Large decorative glyph */}
             <div
               style={{
-                color: "rgba(155,110,208,0.25)",
+                color: "rgba(74, 45, 110,0.25)",
                 fontSize: 180,
                 lineHeight: 1,
                 fontWeight: 300,

@@ -63,7 +63,7 @@ export default async function LeaderboardPage() {
                   {/* Position */}
                   <div className="w-8 shrink-0 text-center">
                     {top3 ? (
-                      <span className="text-2xl text-accent-gold" style={{ textShadow: "0 0 12px rgba(212,175,55,0.5)" }}>
+                      <span className="text-2xl text-accent-gold" style={{ textShadow: "0 0 12px rgba(200, 57, 46,0.5)" }}>
                         {MEDAL[i]}
                       </span>
                     ) : (

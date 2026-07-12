@@ -61,7 +61,7 @@ export default function WelcomeInitiatePage() {
         </p>
         <h1
           className="font-serif text-4xl sm:text-5xl font-black text-accent-gold"
-          style={{ textShadow: "0 0 30px rgba(212,175,55,0.35)" }}
+          style={{ textShadow: "0 0 30px rgba(200, 57, 46,0.35)" }}
         >
           Welcome, Initiate.
         </h1>

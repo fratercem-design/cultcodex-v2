@@ -7,41 +7,54 @@
 /* ═══════════════════════════════════════════════════════
    SACRED TERMINAL — CultCodex Design System
    ═══════════════════════════════════════════════════════
-   Fonts:  Space Grotesk (display) + Inter (body) + IBM Plex Mono (system/meta)
-   Palette: Obsidian / Parchment / Gold / Violet / Cyan / Crimson
-   Rule: 80% obsidian+parchment, gold = prestige, violet = mystical,
-         cyan = system only, crimson = warnings only
+   Palette: Void / Ink / Bone / Ember / Sulphur / Phosphor / Bruise
+            (Visual Audit Dossier Ch. III — /dossier)
+   Allocation: ~70% void/ink, ~20% bone, ~7% ember, ~2% sulphur, ~1% phosphor.
+   Rule: ember = prestige/CTA, bruise = mystical (Oracle), phosphor = system-
+         state pips only (uplink/live/transcribed), crimson = warnings only
+         (kept distinct from ember so danger and brand-CTA don't collide).
+   Note: the neon/terminal tokens further down are a deliberately separate
+   CRT/terminal system for the cards/vault UI — the dossier calls for CRT
+   effects to stay on system surfaces and occult ornament on content surfaces,
+   so that palette is intentionally NOT unified with the one below.
    ═══════════════════════════════════════════════════════ */
 
 /* ─── Design Tokens (Tailwind v4 @theme) ───────────── */
 
 @theme inline {
-  /* Backgrounds — aligned to terminal palette */
-  --color-void: #0A0A0F;
-  --color-surface: #0a0e15;   /* was #12131A — now matches --term-panel */
-  --color-elevated: #0b0f18;  /* was #1A1C24 — now matches --term-bg-2  */
+  /* Backgrounds — dossier Void / Ink */
+  --color-void: #07060A;
+  --color-surface: #0C0B11;
+  --color-elevated: #141219;
 
-  /* Text */
-  --color-text-primary: #F3EEDF;
-  --color-text-muted: #C9C2B0;
+  /* Text — dossier Bone, with the dossier's own "parchment dim" for muted text */
+  --color-text-primary: #EBE3D2;
+  --color-text-muted: #9A907D;
 
-  /* Borders — aligned to terminal palette */
-  --color-border: #182135;    /* was #2A2D36 — now matches --term-line  */
+  /* Borders — dossier rule: "1px bone at 12% opacity", pre-composited to a
+     solid swatch (Tailwind's utility generator wants a solid color here) */
+  --color-border: #222122;
 
-  /* Accents — use with discipline */
-  --color-accent-gold: #C8A96B;
-  --color-accent-gold-dim: rgba(200, 169, 107, 0.15);
-  --color-accent-violet: #9B6ED0;
-  --color-accent-violet-dim: rgba(155, 110, 208, 0.13);
-  --color-accent-cyan: #5DB7D8;
-  --color-accent-cyan-dim: rgba(93, 183, 216, 0.15);
-  --color-accent-crimson: #A94A4A;
+  /* Accents — use with discipline. Names kept stable (accent-gold etc.) so
+     the existing Tailwind utility call sites repaint automatically; only the
+     underlying values move to the dossier palette. */
+  --color-accent-gold: #C8392E;               /* was gold #C8A96B — now Ember */
+  --color-accent-gold-dim: rgba(200, 57, 46, 0.15);
+  --color-accent-violet: #4A2D6E;             /* was violet #9B6ED0 — now Bruise */
+  --color-accent-violet-dim: rgba(74, 45, 110, 0.18);
+  --color-accent-cyan: #62E4C8;               /* was cyan #5DB7D8 — now Phosphor */
+  --color-accent-cyan-dim: rgba(98, 228, 200, 0.15);
+  --color-accent-crimson: #A94A4A;            /* unchanged — danger/error, kept
+                                                  distinct from the ember CTA */
+  --color-accent-sulphur: #D6A017;            /* new — dossier's rare/2% accent,
+                                                  available for future use */
+  --color-accent-sulphur-dim: rgba(214, 160, 23, 0.15);
 
   /* Legacy aliases for existing components */
-  --color-accent-green: #C8A96B;
-  --color-accent-green-dim: rgba(200, 169, 107, 0.15);
-  --color-accent-purple: #9B6ED0;
-  --color-accent-purple-dim: rgba(155, 110, 208, 0.13);
+  --color-accent-green: #C8392E;
+  --color-accent-green-dim: rgba(200, 57, 46, 0.15);
+  --color-accent-purple: #4A2D6E;
+  --color-accent-purple-dim: rgba(74, 45, 110, 0.18);
 
   /* shadcn/ui mappings */
   --color-background: var(--bg-void);
@@ -95,58 +108,58 @@
 
 :root {
   /* Sacred Terminal palette — bg-surface/elevated/border aligned to terminal */
-  --bg-void: #0A0A0F;
-  --bg-surface: #0a0e15;
-  --bg-elevated: #0b0f18;
-  --border: #182135;
-  --text-primary: #F3EEDF;
-  --text-muted: #C9C2B0;
-  --accent-gold: #C8A96B;
-  --accent-gold-dim: rgba(200, 169, 107, 0.15);
-  --accent-violet: #9B6ED0;
-  --accent-violet-dim: rgba(155, 110, 208, 0.13);
-  --accent-cyan: #5DB7D8;
-  --accent-cyan-dim: rgba(93, 183, 216, 0.15);
+  --bg-void: #07060A;
+  --bg-surface: #0C0B11;
+  --bg-elevated: #141219;
+  --border: #222122;
+  --text-primary: #EBE3D2;
+  --text-muted: #9A907D;
+  --accent-gold: #C8392E;
+  --accent-gold-dim: rgba(200, 57, 46, 0.15);
+  --accent-violet: #4A2D6E;
+  --accent-violet-dim: rgba(74, 45, 110, 0.18);
+  --accent-cyan: #62E4C8;
+  --accent-cyan-dim: rgba(98, 228, 200, 0.15);
   --accent-crimson: #A94A4A;
 
   /* Legacy aliases */
-  --accent-green: #C8A96B;
-  --accent-green-dim: rgba(200, 169, 107, 0.15);
-  --accent-purple: #9B6ED0;
-  --accent-purple-dim: rgba(155, 110, 208, 0.13);
+  --accent-green: #C8392E;
+  --accent-green-dim: rgba(200, 57, 46, 0.15);
+  --accent-purple: #4A2D6E;
+  --accent-purple-dim: rgba(74, 45, 110, 0.18);
 
   /* shadcn/ui base (light fallback, overridden by .dark) */
-  --background: #0A0A0F;
-  --foreground: #F3EEDF;
-  --card: #0a0e15;
-  --card-foreground: #F3EEDF;
-  --popover: #0b0f18;
-  --popover-foreground: #F3EEDF;
-  --primary: #C8A96B;
-  --primary-foreground: #0A0A0F;
-  --secondary: #0b0f18;
-  --secondary-foreground: #F3EEDF;
-  --muted: #0b0f18;
-  --muted-foreground: #C9C2B0;
-  --accent: #9B6ED0;
-  --accent-foreground: #F3EEDF;
+  --background: #07060A;
+  --foreground: #EBE3D2;
+  --card: #0C0B11;
+  --card-foreground: #EBE3D2;
+  --popover: #141219;
+  --popover-foreground: #EBE3D2;
+  --primary: #C8392E;
+  --primary-foreground: #07060A;
+  --secondary: #141219;
+  --secondary-foreground: #EBE3D2;
+  --muted: #141219;
+  --muted-foreground: #9A907D;
+  --accent: #4A2D6E;
+  --accent-foreground: #EBE3D2;
   --destructive: #A94A4A;
-  --input: #182135;
-  --ring: rgba(200, 169, 107, 0.3);
-  --chart-1: #C8A96B;
-  --chart-2: #9B6ED0;
-  --chart-3: #5DB7D8;
+  --input: #222122;
+  --ring: rgba(200, 57, 46, 0.3);
+  --chart-1: #C8392E;
+  --chart-2: #4A2D6E;
+  --chart-3: #62E4C8;
   --chart-4: #A94A4A;
-  --chart-5: #C9C2B0;
+  --chart-5: #9A907D;
   --radius: 0.625rem;
-  --sidebar: #07090f;
-  --sidebar-foreground: #F3EEDF;
-  --sidebar-primary: #C8A96B;
-  --sidebar-primary-foreground: #0A0A0F;
-  --sidebar-accent: #0b0f18;
-  --sidebar-accent-foreground: #F3EEDF;
-  --sidebar-border: #182135;
-  --sidebar-ring: rgba(200, 169, 107, 0.3);
+  --sidebar: #050408;
+  --sidebar-foreground: #EBE3D2;
+  --sidebar-primary: #C8392E;
+  --sidebar-primary-foreground: #07060A;
+  --sidebar-accent: #141219;
+  --sidebar-accent-foreground: #EBE3D2;
+  --sidebar-border: #222122;
+  --sidebar-ring: rgba(200, 57, 46, 0.3);
 }
 
 /* ─── Base Styles ──────────────────────────────────── */
@@ -174,29 +187,29 @@ h1, h2, h3 {
 /* ─── Utility Classes ──────────────────────────────── */
 
 @utility glow-gold {
-  box-shadow: 0 0 8px rgba(200, 169, 107, 0.3), 0 0 24px rgba(200, 169, 107, 0.1);
+  box-shadow: 0 0 8px rgba(200, 57, 46, 0.3), 0 0 24px rgba(200, 57, 46, 0.1);
 }
 
 @utility glow-violet {
-  box-shadow: 0 0 8px rgba(155, 110, 208, 0.3), 0 0 24px rgba(155, 110, 208, 0.1);
+  box-shadow: 0 0 8px rgba(74, 45, 110, 0.3), 0 0 24px rgba(74, 45, 110, 0.1);
 }
 
 @utility glow-cyan {
-  box-shadow: 0 0 8px rgba(93, 183, 216, 0.3), 0 0 24px rgba(93, 183, 216, 0.1);
+  box-shadow: 0 0 8px rgba(98, 228, 200, 0.3), 0 0 24px rgba(98, 228, 200, 0.1);
 }
 
 /* Legacy aliases for existing components */
 @utility glow-green {
-  box-shadow: 0 0 8px rgba(200, 169, 107, 0.3), 0 0 24px rgba(200, 169, 107, 0.1);
+  box-shadow: 0 0 8px rgba(200, 57, 46, 0.3), 0 0 24px rgba(200, 57, 46, 0.1);
 }
 
 @utility glow-purple {
-  box-shadow: 0 0 8px rgba(155, 110, 208, 0.3), 0 0 24px rgba(155, 110, 208, 0.1);
+  box-shadow: 0 0 8px rgba(74, 45, 110, 0.3), 0 0 24px rgba(74, 45, 110, 0.1);
 }
 
 @utility border-glow-green {
   border-color: var(--accent-gold);
-  box-shadow: 0 0 4px rgba(200, 169, 107, 0.2);
+  box-shadow: 0 0 4px rgba(200, 57, 46, 0.2);
 }
 
 @utility bg-scanline {
@@ -204,45 +217,45 @@ h1, h2, h3 {
     0deg,
     transparent,
     transparent 2px,
-    rgba(200, 169, 107, 0.02) 2px,
-    rgba(200, 169, 107, 0.02) 4px
+    rgba(200, 57, 46, 0.02) 2px,
+    rgba(200, 57, 46, 0.02) 4px
   );
 }
 
 /* ─── Dark mode (always active — .dark on <html>) ── */
 
 .dark {
-  --background: #0A0A0F;
-  --foreground: #F3EEDF;
-  --card: #0a0e15;
-  --card-foreground: #F3EEDF;
-  --popover: #0b0f18;
-  --popover-foreground: #F3EEDF;
-  --primary: #C8A96B;
-  --primary-foreground: #0A0A0F;
-  --secondary: #0b0f18;
-  --secondary-foreground: #F3EEDF;
-  --muted: #0b0f18;
-  --muted-foreground: #C9C2B0;
-  --accent: #9B6ED0;
-  --accent-foreground: #F3EEDF;
+  --background: #07060A;
+  --foreground: #EBE3D2;
+  --card: #0C0B11;
+  --card-foreground: #EBE3D2;
+  --popover: #141219;
+  --popover-foreground: #EBE3D2;
+  --primary: #C8392E;
+  --primary-foreground: #07060A;
+  --secondary: #141219;
+  --secondary-foreground: #EBE3D2;
+  --muted: #141219;
+  --muted-foreground: #9A907D;
+  --accent: #4A2D6E;
+  --accent-foreground: #EBE3D2;
   --destructive: #A94A4A;
-  --border: #182135;
-  --input: #182135;
-  --ring: rgba(200, 169, 107, 0.3);
-  --chart-1: #C8A96B;
-  --chart-2: #9B6ED0;
-  --chart-3: #5DB7D8;
+  --border: #222122;
+  --input: #222122;
+  --ring: rgba(200, 57, 46, 0.3);
+  --chart-1: #C8392E;
+  --chart-2: #4A2D6E;
+  --chart-3: #62E4C8;
   --chart-4: #A94A4A;
-  --chart-5: #C9C2B0;
-  --sidebar: #07090f;
-  --sidebar-foreground: #F3EEDF;
-  --sidebar-primary: #C8A96B;
-  --sidebar-primary-foreground: #0A0A0F;
-  --sidebar-accent: #0b0f18;
-  --sidebar-accent-foreground: #F3EEDF;
-  --sidebar-border: #182135;
-  --sidebar-ring: rgba(200, 169, 107, 0.3);
+  --chart-5: #9A907D;
+  --sidebar: #050408;
+  --sidebar-foreground: #EBE3D2;
+  --sidebar-primary: #C8392E;
+  --sidebar-primary-foreground: #07060A;
+  --sidebar-accent: #141219;
+  --sidebar-accent-foreground: #EBE3D2;
+  --sidebar-border: #222122;
+  --sidebar-ring: rgba(200, 57, 46, 0.3);
 }
 
 @layer base {
@@ -306,18 +319,18 @@ textarea:focus-visible {
 @keyframes oracle-flash {
   0%, 100% {
     box-shadow:
-      0 0 0 3px #9B6ED0,
-      0 0 0 6px #5DB7D8,
-      0 0 30px rgba(155,110,208,0.8),
-      0 0 60px rgba(93,183,216,0.4);
+      0 0 0 3px #4A2D6E,
+      0 0 0 6px #62E4C8,
+      0 0 30px rgba(74, 45, 110,0.8),
+      0 0 60px rgba(98, 228, 200,0.4);
     opacity: 1;
   }
   50% {
     box-shadow:
-      0 0 0 3px rgba(155,110,208,0.3),
-      0 0 0 6px rgba(93,183,216,0.15),
-      0 0 10px rgba(155,110,208,0.2),
-      0 0 20px rgba(93,183,216,0.1);
+      0 0 0 3px rgba(74, 45, 110,0.3),
+      0 0 0 6px rgba(98, 228, 200, 0.15),
+      0 0 10px rgba(74, 45, 110,0.2),
+      0 0 20px rgba(98, 228, 200,0.1);
     opacity: 0.7;
   }
 }
@@ -369,8 +382,8 @@ textarea:focus-visible {
   inset: 0;
   background:
     radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.45) 100%),
-    radial-gradient(ellipse at 50% 0%, rgba(93, 183, 216, 0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 100%, rgba(155, 110, 208, 0.04) 0%, transparent 50%);
+    radial-gradient(ellipse at 50% 0%, rgba(98, 228, 200, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(74, 45, 110, 0.04) 0%, transparent 50%);
 }
 
 /* Film grain — separate element so it can animate independently */
@@ -719,7 +732,7 @@ html.high-contrast body::before {
 }
 .appearance-fab:hover {
   border-color: var(--accent-gold);
-  box-shadow: 0 0 8px rgba(200, 169, 107, 0.25);
+  box-shadow: 0 0 8px rgba(200, 57, 46, 0.25);
 }
 .appearance-fab:focus-visible {
   outline: 2px solid var(--accent-gold);

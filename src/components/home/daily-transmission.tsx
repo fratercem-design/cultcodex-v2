@@ -44,7 +44,7 @@ export function DailyTransmission({
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212,175,55,0.08), transparent 70%)",
+            "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(200, 57, 46,0.08), transparent 70%)",
         }}
       />
 

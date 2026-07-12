@@ -6,7 +6,7 @@ import type { PersonType } from "@/generated/prisma/client";
  * mentioned = muted. Every surface (badges, sigils, dots, graph, admin)
  * derives from these maps — do not define local personType→color literals.
  *
- * Note: this theme aliases `accent-green` to the gold hex (#C8A96B), so
+ * Note: this theme aliases `accent-green` to the gold hex (#C8392E), so
  * "green" is NOT a distinct color here — guests use cyan for contrast
  * against gold hosts. Matches the relationship graph's existing palette.
  */
@@ -44,8 +44,8 @@ export const PERSON_TYPE_DOT: Record<PersonType, string> = {
 
 /** Raw hex per type for canvas/SVG surfaces (relationship graph). */
 export const PERSON_TYPE_HEX: Record<PersonType, string> = {
-  host: "#C8A96B",
-  recurring: "#9B6ED0",
-  guest: "#5DB7D8",
+  host: "#C8392E",
+  recurring: "#4A2D6E",
+  guest: "#62E4C8",
   mentioned: "#475569",
 };

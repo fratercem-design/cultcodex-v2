@@ -16,7 +16,7 @@ interface Props {
 }
 
 const TOPIC_COLORS = [
-  "#C8A96B", // gold
+  "#C8392E", // gold
   "#a855f7", // violet
   "#00d9ff", // cyan
   "#ef4444", // crimson

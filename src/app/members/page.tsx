@@ -95,7 +95,7 @@ export default async function MembersPage() {
           </p>
           <h1
             className="mt-3 font-display text-4xl font-bold tracking-tight text-accent-gold sm:text-5xl"
-            style={{ textShadow: "0 0 40px rgba(212,175,55,0.4)" }}
+            style={{ textShadow: "0 0 40px rgba(200, 57, 46,0.4)" }}
           >
             The Member Roll
           </h1>
@@ -116,7 +116,7 @@ export default async function MembersPage() {
             <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-accent-gold/20 bg-accent-gold/5 px-5 py-2">
               <span
                 className="font-display text-2xl font-bold text-accent-gold"
-                style={{ textShadow: "0 0 20px rgba(212,175,55,0.5)" }}
+                style={{ textShadow: "0 0 20px rgba(200, 57, 46,0.5)" }}
               >
                 {totalCount}
               </span>
@@ -215,14 +215,14 @@ export default async function MembersPage() {
             <div className="flex items-center gap-3 mb-5">
               <div
                 className="h-px flex-1"
-                style={{ background: "linear-gradient(to right, rgba(212,175,55,0.4), transparent)" }}
+                style={{ background: "linear-gradient(to right, rgba(200, 57, 46,0.4), transparent)" }}
               />
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/70">
                 ✦ Archive Contributors — Oracle Tier
               </p>
               <div
                 className="h-px flex-1"
-                style={{ background: "linear-gradient(to left, rgba(212,175,55,0.4), transparent)" }}
+                style={{ background: "linear-gradient(to left, rgba(200, 57, 46,0.4), transparent)" }}
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

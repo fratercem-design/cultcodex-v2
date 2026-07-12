@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const HEX: Record<string, string> = {
-  gold: "#C8A96B", cyan: "#5DB7D8", violet: "#9B6ED0", crimson: "#A94A4A",
+  gold: "#C8392E", cyan: "#62E4C8", violet: "#4A2D6E", crimson: "#A94A4A",
 };
 
 export default async function QuestRewardPage({ params }: Props) {
@@ -41,7 +41,7 @@ export default async function QuestRewardPage({ params }: Props) {
     : false;
   const progress = user ? await getSingleQuestProgress(user.id, isMember, slug) : null;
   const unlocked = progress?.done ?? false;
-  const hex = HEX[quest.accent] ?? "#C8A96B";
+  const hex = HEX[quest.accent] ?? "#C8392E";
 
   return (
     <>

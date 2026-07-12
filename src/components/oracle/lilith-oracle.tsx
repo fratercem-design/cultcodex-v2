@@ -7,9 +7,9 @@ interface LilithOracleProps {
   className?: string;
 }
 
-const GOLD = "#C8A96B";
-const VIOLET = "#9B6ED0";
-const CYAN = "#5DB7D8";
+const GOLD = "#C8392E";
+const VIOLET = "#4A2D6E";
+const CYAN = "#62E4C8";
 const CRIMSON = "#A94A4A";
 
 export function LilithOracle({ className }: LilithOracleProps) {
@@ -34,7 +34,7 @@ export function LilithOracle({ className }: LilithOracleProps) {
             <stop offset="0%" stopColor="#2A1030" />
             <stop offset="38%" stopColor="#180a1f" />
             <stop offset="72%" stopColor="#0d0710" />
-            <stop offset="100%" stopColor="#0A0A0F" />
+            <stop offset="100%" stopColor="#07060A" />
           </radialGradient>
           {/* Iris of the all-seeing eye */}
           <radialGradient id="lo-iris" cx="50%" cy="50%" r="50%">

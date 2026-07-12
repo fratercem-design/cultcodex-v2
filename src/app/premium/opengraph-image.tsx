@@ -7,8 +7,8 @@ export const contentType = "image/png";
 
 const TIERS = [
   { name: "OBSERVER", price: "Free", color: "#555555", desc: "Public transmissions" },
-  { name: "INITIATE+", price: "$10/mo", color: "#9b6ed0", desc: "Oracle + Psychenomicon" },
-  { name: "ORACLE", price: "$25/mo", color: "#C8A96B", desc: "Full system access" },
+  { name: "INITIATE+", price: "$10/mo", color: "#4A2D6E", desc: "Oracle + Psychenomicon" },
+  { name: "ORACLE", price: "$25/mo", color: "#C8392E", desc: "Full system access" },
 ];
 
 export default function OGImage() {
@@ -33,7 +33,7 @@ export default function OGImage() {
             left: 0,
             right: 0,
             height: 4,
-            background: "linear-gradient(90deg, #C8A96B 0%, #e8c98b 50%, #C8A96B 100%)",
+            background: "linear-gradient(90deg, #C8392E 0%, #DE8882 50%, #C8392E 100%)",
           }}
         />
 
@@ -51,7 +51,7 @@ export default function OGImage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div
                 style={{
-                  color: "#C8A96B",
+                  color: "#C8392E",
                   fontSize: 17,
                   fontWeight: 700,
                   letterSpacing: "0.28em",
@@ -85,7 +85,7 @@ export default function OGImage() {
 
             <div
               style={{
-                color: "#C8A96B",
+                color: "#C8392E",
                 fontSize: 22,
                 fontWeight: 700,
                 letterSpacing: "0.18em",

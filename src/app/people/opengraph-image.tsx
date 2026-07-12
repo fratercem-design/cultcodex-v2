@@ -35,7 +35,7 @@ export default function OGImage() {
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-            <div style={{ color: "#C8A96B", fontSize: 22, fontWeight: 700, letterSpacing: "0.18em" }}>CULTCODEX.ME</div>
+            <div style={{ color: "#C8392E", fontSize: 22, fontWeight: 700, letterSpacing: "0.18em" }}>CULTCODEX.ME</div>
             <div style={{ color: "rgba(34,211,238,0.2)", fontSize: 180, lineHeight: 1, fontWeight: 300 }}>◐</div>
           </div>
         </div>

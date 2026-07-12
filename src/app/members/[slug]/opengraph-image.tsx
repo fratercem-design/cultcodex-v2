@@ -85,7 +85,7 @@ export default async function OGImage({
 
   const rankGlyph = rankData?.progress.current.glyph ?? "◈";
   const rankTitle = rankData?.progress.current.title ?? "Initiate";
-  const rankHex = rankData?.progress.current.hex ?? "#5DB7D8";
+  const rankHex = rankData?.progress.current.hex ?? "#62E4C8";
   const score = rankData?.score ?? 0;
 
   // Derive background gradient from banner theme (strip CSS vars, use dark fallback)
@@ -344,7 +344,7 @@ export default async function OGImage({
               >
                 <div
                   style={{
-                    color: "#C8A96B",
+                    color: "#C8392E",
                     fontSize: 20,
                     fontWeight: 700,
                     letterSpacing: "0.18em",

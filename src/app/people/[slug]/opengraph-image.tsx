@@ -152,7 +152,7 @@ export default async function OGImage({
               <div style={{ display: "flex", gap: "40px", marginTop: "8px" }}>
                 {person._count.guestAppearances > 0 && (
                   <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
-                    <div style={{ display: "flex", color: "#C8A96B", fontSize: 38, fontWeight: 700 }}>
+                    <div style={{ display: "flex", color: "#C8392E", fontSize: 38, fontWeight: 700 }}>
                       {person._count.guestAppearances}
                     </div>
                     <div style={{ display: "flex", color: "#444", fontSize: 14, letterSpacing: "0.1em" }}>APPEARANCES</div>
@@ -160,7 +160,7 @@ export default async function OGImage({
                 )}
                 {person._count.quotes > 0 && (
                   <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
-                    <div style={{ display: "flex", color: "#C8A96B", fontSize: 38, fontWeight: 700 }}>
+                    <div style={{ display: "flex", color: "#C8392E", fontSize: 38, fontWeight: 700 }}>
                       {person._count.quotes}
                     </div>
                     <div style={{ display: "flex", color: "#444", fontSize: 14, letterSpacing: "0.1em" }}>QUOTES</div>
@@ -177,7 +177,7 @@ export default async function OGImage({
                 alignItems: "flex-end",
               }}
             >
-              <div style={{ color: "#C8A96B", fontSize: 22, fontWeight: 700, letterSpacing: "0.18em" }}>
+              <div style={{ color: "#C8392E", fontSize: 22, fontWeight: 700, letterSpacing: "0.18em" }}>
                 CULTCODEX.ME
               </div>
               <div style={{ color: "#333", fontSize: 15, letterSpacing: "0.05em" }}>

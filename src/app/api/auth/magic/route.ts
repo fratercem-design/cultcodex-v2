@@ -108,13 +108,13 @@ function buildMagicLinkHtml(url: string, ttlMinutes: number): string {
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#080810;">
 <tr><td align="center" style="padding:48px 16px 64px;">
   <table width="520" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;width:100%;">
-    <tr><td style="padding:2px;background:rgba(200,169,107,0.18);border-radius:14px;">
+    <tr><td style="padding:2px;background:rgba(200, 57, 46,0.18);border-radius:14px;">
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0c0c14;border-radius:12px;overflow:hidden;">
 
       <tr><td align="center" style="padding:36px 40px 24px;">
         <img src="https://cultcodex.me/logo.jpg" alt="CultCodex" width="60"
-          style="width:60px;border-radius:50%;border:2px solid rgba(200,169,107,0.5);display:block;margin:0 auto 20px;" />
-        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.4);
+          style="width:60px;border-radius:50%;border:2px solid rgba(200, 57, 46,0.5);display:block;margin:0 auto 20px;" />
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200, 57, 46,0.4);
           letter-spacing:0.7em;text-transform:uppercase;margin:0 0 10px;">CultCodex &nbsp;&bull;&nbsp; Access Granted</p>
         <h1 style="font-family:Georgia,serif;font-size:24px;color:#ffffff;font-weight:400;margin:0;">
           Your sign-in link
@@ -123,7 +123,7 @@ function buildMagicLinkHtml(url: string, ttlMinutes: number): string {
 
       <tr><td style="padding:0 40px;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr><td style="height:1px;background:rgba(200,169,107,0.08);font-size:0;line-height:0;">&nbsp;</td></tr>
+          <tr><td style="height:1px;background:rgba(200, 57, 46,0.08);font-size:0;line-height:0;">&nbsp;</td></tr>
         </table>
       </td></tr>
 
@@ -140,8 +140,8 @@ function buildMagicLinkHtml(url: string, ttlMinutes: number): string {
 
       <tr><td align="center" style="padding:0 40px 36px;">
         <a href="${url}"
-          style="display:inline-block;padding:14px 48px;background:rgba(200,169,107,0.1);
-          border:1px solid rgba(200,169,107,0.45);color:#C8A96B;text-decoration:none;
+          style="display:inline-block;padding:14px 48px;background:rgba(200, 57, 46,0.1);
+          border:1px solid rgba(200, 57, 46,0.45);color:#C8392E;text-decoration:none;
           font-family:'Courier New',monospace;font-size:11px;letter-spacing:0.4em;
           text-transform:uppercase;border-radius:4px;">
           Sign in to CultCodex &rarr;
@@ -149,12 +149,12 @@ function buildMagicLinkHtml(url: string, ttlMinutes: number): string {
         <p style="font-family:'Courier New',monospace;font-size:9px;color:rgba(255,255,255,0.15);
           margin:14px 0 0;letter-spacing:0.05em;">
           Or paste this link in your browser:<br/>
-          <span style="color:rgba(93,183,216,0.4);word-break:break-all;">${url}</span>
+          <span style="color:rgba(98, 228, 200,0.4);word-break:break-all;">${url}</span>
         </p>
       </td></tr>
 
-      <tr><td align="center" style="padding:0 40px 28px;border-top:1px solid rgba(200,169,107,0.06);">
-        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200,169,107,0.2);
+      <tr><td align="center" style="padding:0 40px 28px;border-top:1px solid rgba(200, 57, 46,0.06);">
+        <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200, 57, 46,0.2);
           letter-spacing:0.5em;text-transform:uppercase;margin:24px 0 0;">
           CultCodex &nbsp;&bull;&nbsp; cultcodex.me
         </p>

@@ -28,7 +28,7 @@ export const ARCHETYPES: QuizArchetype[] = [
     name: "The Oracle",
     glyph: "◉",
     color: "text-accent-gold",
-    hex: "#C8A96B",
+    hex: "#C8392E",
     tagline: "You see the pattern before anyone else has named it.",
     description:
       "The Oracle is the visionary who reads signals others dismiss as noise. You don't predict the future — you recognise what is already inevitable given the dynamics already in motion. People come to you for clarity because you can hold contradictory information without flinching and distil it into something usable. You are drawn to systems, patterns, and the question beneath the question. Knowledge is your native element; you breathe it like air.",
@@ -48,7 +48,7 @@ export const ARCHETYPES: QuizArchetype[] = [
     name: "The Alchemist",
     glyph: "▲",
     color: "text-accent-cyan",
-    hex: "#5DB7D8",
+    hex: "#62E4C8",
     tagline: "You turn the impossible into the inevitable.",
     description:
       "The Alchemist transforms. Where others see crisis, loss, or raw chaos, you see feedstock — the prima materia from which something better can be refined. You are a builder, a converter, a maker of new things from old substance. The laboratory is your natural habitat, whether it is literal or metaphorical. You are comfortable with mess, with uncertainty, with the long dark middle of a process that hasn't produced gold yet. You know it will because you understand the process.",

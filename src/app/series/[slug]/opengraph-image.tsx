@@ -78,7 +78,7 @@ export default async function OGImage({
             left: 0,
             right: 0,
             height: 4,
-            background: "linear-gradient(90deg, #C8A96B 0%, #e8c98b 50%, #C8A96B 100%)",
+            background: "linear-gradient(90deg, #C8392E 0%, #DE8882 50%, #C8392E 100%)",
           }}
         />
 
@@ -96,12 +96,12 @@ export default async function OGImage({
             <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
               <div
                 style={{
-                  color: "#C8A96B",
+                  color: "#C8392E",
                   fontSize: 18,
                   fontWeight: 700,
                   letterSpacing: "0.2em",
-                  backgroundColor: "rgba(200,169,107,0.08)",
-                  border: "1px solid rgba(200,169,107,0.2)",
+                  backgroundColor: "rgba(200, 57, 46,0.08)",
+                  border: "1px solid rgba(200, 57, 46,0.2)",
                   borderRadius: 3,
                   padding: "3px 10px",
                   alignSelf: "flex-start",
@@ -128,7 +128,7 @@ export default async function OGImage({
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-              <div style={{ color: "#C8A96B", fontSize: 22, fontWeight: 700, letterSpacing: "0.18em" }}>
+              <div style={{ color: "#C8392E", fontSize: 22, fontWeight: 700, letterSpacing: "0.18em" }}>
                 CULTCODEX.ME
               </div>
               <div style={{ color: "#333", fontSize: 15, letterSpacing: "0.05em" }}>
@@ -149,7 +149,7 @@ export default async function OGImage({
                 style={{
                   borderRadius: 8,
                   objectFit: "cover",
-                  border: "1px solid rgba(200,169,107,0.2)",
+                  border: "1px solid rgba(200, 57, 46,0.2)",
                 }}
               />
             </div>

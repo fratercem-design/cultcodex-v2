@@ -12,9 +12,9 @@ const GLYPHS = [
 ];
 
 const PALETTE = [
-  (a: number) => `rgba(93,183,216,${a})`,   // cyan
-  (a: number) => `rgba(155,110,208,${a})`,  // violet
-  (a: number) => `rgba(200,169,107,${a})`,  // gold
+  (a: number) => `rgba(98, 228, 200,${a})`,   // cyan
+  (a: number) => `rgba(74, 45, 110,${a})`,  // violet
+  (a: number) => `rgba(200, 57, 46,${a})`,  // gold
   (a: number) => `rgba(169,74,74,${a})`,    // crimson
 ] as const;
 
@@ -147,27 +147,27 @@ function drawGeometry(ctx: CanvasRenderingContext2D, t: number, w: number, h: nu
   // Outer ring
   ctx.beginPath();
   ctx.arc(0, 0, R * 1.3, 0, Math.PI * 2);
-  ctx.strokeStyle = "rgba(155,110,208,0.04)";
+  ctx.strokeStyle = "rgba(74, 45, 110,0.04)";
   ctx.lineWidth = 0.5;
   ctx.stroke();
 
   // Slow hexagon
   ctx.save(); ctx.rotate(t * 0.04);
-  poly(ctx, 6, R, "rgba(93,183,216,0.04)");
+  poly(ctx, 6, R, "rgba(98, 228, 200,0.04)");
   ctx.restore();
 
   // Two counter-rotating triangles (Star of David sigil)
   ctx.save(); ctx.rotate(t * 0.07);
-  poly(ctx, 3, R * 0.88, "rgba(200,169,107,0.055)");
+  poly(ctx, 3, R * 0.88, "rgba(200, 57, 46,0.055)");
   ctx.restore();
   ctx.save(); ctx.rotate(-t * 0.07 + Math.PI);
-  poly(ctx, 3, R * 0.88, "rgba(155,110,208,0.055)");
+  poly(ctx, 3, R * 0.88, "rgba(74, 45, 110,0.055)");
   ctx.restore();
 
   // Inner circle
   ctx.beginPath();
   ctx.arc(0, 0, R * 0.32, 0, Math.PI * 2);
-  ctx.strokeStyle = "rgba(200,169,107,0.07)";
+  ctx.strokeStyle = "rgba(200, 57, 46,0.07)";
   ctx.lineWidth = 0.5;
   ctx.stroke();
 
@@ -176,7 +176,7 @@ function drawGeometry(ctx: CanvasRenderingContext2D, t: number, w: number, h: nu
     const a = t * 0.06 + (i * Math.PI * 2) / 3;
     ctx.beginPath();
     ctx.arc(Math.cos(a) * R * 0.62, Math.sin(a) * R * 0.62, 1.5, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(93,183,216,0.28)";
+    ctx.fillStyle = "rgba(98, 228, 200,0.28)";
     ctx.fill();
   }
 
@@ -193,7 +193,7 @@ function drawGrid(ctx: CanvasRenderingContext2D, t: number, w: number, h: number
     const y = vpY + p * (h - vpY);
     ctx.beginPath();
     ctx.moveTo(0, y); ctx.lineTo(w, y);
-    ctx.strokeStyle = `rgba(93,183,216,${0.025 + 0.04 * (i / 10)})`;
+    ctx.strokeStyle = `rgba(98, 228, 200,${0.025 + 0.04 * (i / 10)})`;
     ctx.lineWidth = 0.5;
     ctx.stroke();
   }
@@ -202,7 +202,7 @@ function drawGrid(ctx: CanvasRenderingContext2D, t: number, w: number, h: number
   for (let i = 0; i <= 12; i++) {
     ctx.beginPath();
     ctx.moveTo(w / 2, vpY); ctx.lineTo((i / 12) * w, h);
-    ctx.strokeStyle = "rgba(155,110,208,0.025)";
+    ctx.strokeStyle = "rgba(74, 45, 110,0.025)";
     ctx.lineWidth = 0.5;
     ctx.stroke();
   }
@@ -212,7 +212,7 @@ function drawGrid(ctx: CanvasRenderingContext2D, t: number, w: number, h: number
   const sy = vpY + Math.pow(st, 2) * (h - vpY);
   ctx.beginPath();
   ctx.moveTo(0, sy); ctx.lineTo(w, sy);
-  ctx.strokeStyle = `rgba(93,183,216,${0.10 * (1 - st)})`;
+  ctx.strokeStyle = `rgba(98, 228, 200,${0.10 * (1 - st)})`;
   ctx.lineWidth = 0.8;
   ctx.stroke();
 
@@ -225,12 +225,12 @@ function drawMonoliths(ctx: CanvasRenderingContext2D, w: number, h: number) {
     const mx = m.xf * w;
     const mh = m.hf * h;
     const grad = ctx.createLinearGradient(mx, h - mh, mx, h);
-    grad.addColorStop(0, "rgba(155,110,208,0.0)");
-    grad.addColorStop(0.6, "rgba(155,110,208,0.02)");
-    grad.addColorStop(1, "rgba(155,110,208,0.05)");
+    grad.addColorStop(0, "rgba(74, 45, 110,0.0)");
+    grad.addColorStop(0.6, "rgba(74, 45, 110,0.02)");
+    grad.addColorStop(1, "rgba(74, 45, 110,0.05)");
     ctx.fillStyle = grad;
     ctx.fillRect(mx - m.w / 2, h - mh, m.w, mh);
-    ctx.strokeStyle = "rgba(93,183,216,0.04)";
+    ctx.strokeStyle = "rgba(98, 228, 200,0.04)";
     ctx.lineWidth = 0.5;
     ctx.strokeRect(mx - m.w / 2, h - mh, m.w, mh);
   }

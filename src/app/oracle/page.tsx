@@ -75,10 +75,10 @@ export default async function OraclePage() {
             style={{
               boxShadow: [
                 "0 0 0 3px #A94A4A",
-                "0 0 0 6px #9B6ED0",
+                "0 0 0 6px #4A2D6E",
                 "0 0 0 9px rgba(169,74,74,0.18)",
                 "0 0 44px rgba(169,74,74,0.35)",
-                "0 0 90px rgba(155,110,208,0.22)",
+                "0 0 90px rgba(74, 45, 110,0.22)",
               ].join(", "),
             }}
           >

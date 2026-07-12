@@ -32,7 +32,7 @@ export const RANKS: readonly Rank[] = [
     glyph: "◈",
     minScore: 0,
     color: "cyan",
-    hex: "#5DB7D8",
+    hex: "#62E4C8",
     blurb: "You've crossed the threshold. The archive is open before you.",
   },
   {
@@ -41,7 +41,7 @@ export const RANKS: readonly Rank[] = [
     glyph: "✦",
     minScore: 60,
     color: "violet",
-    hex: "#9B6ED0",
+    hex: "#4A2D6E",
     blurb: "You move through the codex with intent. Patterns begin to surface.",
   },
   {
@@ -50,7 +50,7 @@ export const RANKS: readonly Rank[] = [
     glyph: "◉",
     minScore: 220,
     color: "gold",
-    hex: "#C8A96B",
+    hex: "#C8392E",
     blurb: "You don't search the archive — you read it. The signal speaks through you.",
   },
   {

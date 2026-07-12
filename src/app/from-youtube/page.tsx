@@ -60,11 +60,11 @@ export default async function FromYouTubePage() {
             </div>
             <h1
               className="font-display text-4xl sm:text-6xl font-bold leading-tight text-white"
-              style={{ textShadow: "0 0 60px rgba(212,175,55,0.3)" }}
+              style={{ textShadow: "0 0 60px rgba(200, 57, 46,0.3)" }}
             >
               YouTube forgets.
               <br />
-              <span className="text-accent-gold" style={{ textShadow: "0 0 40px rgba(212,175,55,0.6)" }}>
+              <span className="text-accent-gold" style={{ textShadow: "0 0 40px rgba(200, 57, 46,0.6)" }}>
                 The Codex remembers.
               </span>
             </h1>

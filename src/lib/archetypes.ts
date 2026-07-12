@@ -30,7 +30,7 @@ export const ARCHETYPES: readonly Archetype[] = [
     slug: "trickster",
     name: "The Trickster",
     glyph: "☽",
-    color: "#5DB7D8",
+    color: "#62E4C8",
     summary: "You subvert expectation as ritual. The disruption you cause is its own kind of teaching.",
     extended:
       "The Trickster watches the stream the way a coyote watches a ceremony — not to destroy it, but to reveal what it requires to stay standing. They laugh at the sacred not to profane it but because they understand it better when it survives their laughter. The archive holds many Tricksters; they are the reason the mythology stays alive.",

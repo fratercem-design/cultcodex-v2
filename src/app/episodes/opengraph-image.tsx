@@ -19,12 +19,12 @@ export default function OGImage() {
           position: "relative",
         }}
       >
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: "linear-gradient(90deg, #C8A96B 0%, #e6c97a 50%, #C8A96B 100%)" }} />
-        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 700, height: 700, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(200,169,107,0.1) 0%, transparent 70%)" }} />
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: "linear-gradient(90deg, #C8392E 0%, #e6c97a 50%, #C8392E 100%)" }} />
+        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 700, height: 700, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(200, 57, 46,0.1) 0%, transparent 70%)" }} />
 
         <div style={{ display: "flex", flex: 1, padding: "52px 64px", flexDirection: "column", justifyContent: "space-between", position: "relative" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <div style={{ color: "#C8A96B", fontSize: 17, fontWeight: 700, letterSpacing: "0.28em", textTransform: "uppercase" }}>
+            <div style={{ color: "#C8392E", fontSize: 17, fontWeight: 700, letterSpacing: "0.28em", textTransform: "uppercase" }}>
               CULTCODEX.ME / EPISODES
             </div>
             <div style={{ color: "#f5f0e8", fontSize: 74, fontWeight: 700, lineHeight: 1.05 }}>
@@ -35,8 +35,8 @@ export default function OGImage() {
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-            <div style={{ color: "#C8A96B", fontSize: 22, fontWeight: 700, letterSpacing: "0.18em" }}>CULTCODEX.ME</div>
-            <div style={{ color: "rgba(200,169,107,0.2)", fontSize: 180, lineHeight: 1, fontWeight: 300 }}>▦</div>
+            <div style={{ color: "#C8392E", fontSize: 22, fontWeight: 700, letterSpacing: "0.18em" }}>CULTCODEX.ME</div>
+            <div style={{ color: "rgba(200, 57, 46,0.2)", fontSize: 180, lineHeight: 1, fontWeight: 300 }}>▦</div>
           </div>
         </div>
       </div>

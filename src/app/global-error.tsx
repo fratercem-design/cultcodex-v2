@@ -30,7 +30,7 @@ export default function GlobalError({
     <html lang="en" className="dark">
       <body
         style={{
-          backgroundColor: "#0a0a0f",
+          backgroundColor: "#07060A",
           color: "#c8c8d0",
           fontFamily: "monospace",
           display: "flex",

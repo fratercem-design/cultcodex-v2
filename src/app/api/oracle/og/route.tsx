@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 export const runtime = "nodejs";
 
 const VIOLET = "#6E4BAE";
-const CYAN = "#5DB7D8";
+const CYAN = "#62E4C8";
 const BONE = "#EBE3D2";
 const VOID = "#07060A";
 const MUTED = "#9A907D";

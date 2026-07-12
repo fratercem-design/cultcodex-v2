@@ -127,11 +127,11 @@ export function OracleAmbience() {
       className="fixed bottom-6 left-6 z-50 flex items-center gap-2 rounded-full px-4 py-2.5 font-mono text-[11px] uppercase tracking-widest transition-all duration-300 focus:outline-none border"
       style={{
         background: on
-          ? "linear-gradient(135deg, rgba(155,110,208,0.3) 0%, rgba(93,183,216,0.15) 100%)"
+          ? "linear-gradient(135deg, rgba(74, 45, 110,0.3) 0%, rgba(98, 228, 200,0.15) 100%)"
           : "rgba(8, 0, 18, 0.85)",
-        borderColor: on ? "rgba(155,110,208,0.7)" : "rgba(155,110,208,0.3)",
-        color: on ? "#9B6ED0" : "rgba(155,110,208,0.5)",
-        boxShadow: on ? "0 0 20px rgba(155,110,208,0.35)" : "none",
+        borderColor: on ? "rgba(74, 45, 110,0.7)" : "rgba(74, 45, 110,0.3)",
+        color: on ? "#4A2D6E" : "rgba(74, 45, 110,0.5)",
+        boxShadow: on ? "0 0 20px rgba(74, 45, 110,0.35)" : "none",
         backdropFilter: "blur(10px)",
       }}
     >

@@ -39,7 +39,7 @@ export default async function OGImage() {
             left: 0,
             right: 0,
             height: 4,
-            background: "linear-gradient(90deg, #C8A96B 0%, #e8c98b 50%, #C8A96B 100%)",
+            background: "linear-gradient(90deg, #C8392E 0%, #DE8882 50%, #C8392E 100%)",
           }}
         />
 
@@ -94,7 +94,7 @@ export default async function OGImage() {
 
             {(quote?.speaker || episode) && (
               <div style={{ display: "flex", alignItems: "center", gap: "14px", color: "#999", fontSize: 22 }}>
-                {quote?.speaker && <div style={{ color: "#C8A96B" }}>{quote.speaker.displayName}</div>}
+                {quote?.speaker && <div style={{ color: "#C8392E" }}>{quote.speaker.displayName}</div>}
                 {quote?.speaker && episode && <div style={{ color: "#555" }}>·</div>}
                 {episode && (
                   <div>
@@ -107,7 +107,7 @@ export default async function OGImage() {
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-            <div style={{ color: "#C8A96B", fontSize: 22, fontWeight: 700, letterSpacing: "0.18em" }}>
+            <div style={{ color: "#C8392E", fontSize: 22, fontWeight: 700, letterSpacing: "0.18em" }}>
               CULTCODEX.ME
             </div>
             <div style={{ color: "#333", fontSize: 15, letterSpacing: "0.05em" }}>

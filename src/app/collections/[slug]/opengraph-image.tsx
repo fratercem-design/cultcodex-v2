@@ -9,9 +9,9 @@ export const contentType = "image/png";
 const ACCENT_COLORS: Record<string, string> = {
   violet: "#9b59b6",
   cyan: "#00d9ff",
-  gold: "#C8A96B",
+  gold: "#C8392E",
   crimson: "#dc2626",
-  mixed: "#C8A96B",
+  mixed: "#C8392E",
 };
 
 export default async function OGImage({
@@ -42,7 +42,7 @@ export default async function OGImage({
 
   if (!collection) return new ImageResponse(fallback, { ...size });
 
-  const accentColor = ACCENT_COLORS[collection.accent] ?? "#C8A96B";
+  const accentColor = ACCENT_COLORS[collection.accent] ?? "#C8392E";
 
   return new ImageResponse(
     (
@@ -124,7 +124,7 @@ export default async function OGImage({
         >
           <div
             style={{
-              color: "#C8A96B",
+              color: "#C8392E",
               fontSize: 24,
               fontWeight: 700,
               letterSpacing: "0.15em",

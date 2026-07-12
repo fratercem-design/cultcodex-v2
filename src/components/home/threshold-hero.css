@@ -4,11 +4,11 @@
    All entrance motion is pure-CSS and collapses under prefers-reduced-motion. */
 
 .threshold {
-  --thr-gold: var(--color-accent-gold, #c8a96b);
-  --thr-cyan: var(--color-accent-cyan, #5db7d8);
+  --thr-gold: var(--color-accent-gold, #C8392E);
+  --thr-cyan: var(--color-accent-cyan, #62E4C8);
   --thr-ember: var(--color-accent-crimson, #a94a4a);
-  --thr-bone: var(--color-text-primary, #f3eede);
-  --thr-dim: var(--color-text-muted, #c9c2b0);
+  --thr-bone: var(--color-text-primary, #ebe3d2);
+  --thr-dim: var(--color-text-muted, #9a907d);
 
   position: relative;
   display: flex;
@@ -21,7 +21,7 @@
   background:
     radial-gradient(
       120% 90% at 50% 38%,
-      rgba(200, 169, 107, 0.06) 0%,
+      rgba(200, 57, 46, 0.06) 0%,
       rgba(10, 10, 15, 0) 55%
     ),
     var(--color-void, #0a0a0f);
@@ -106,17 +106,17 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 1px solid rgba(200, 169, 107, 0.35);
+  border: 1px solid rgba(200, 57, 46, 0.35);
   border-top-color: var(--thr-gold);
-  border-right-color: rgba(200, 169, 107, 0.1);
+  border-right-color: rgba(200, 57, 46, 0.1);
   animation: thr-spin 26s linear infinite;
 }
 
 .threshold__ring--inner {
   inset: clamp(18px, 4vw, 30px);
-  border-color: rgba(93, 183, 216, 0.18);
+  border-color: rgba(98, 228, 200, 0.18);
   border-bottom-color: var(--thr-cyan);
-  border-left-color: rgba(93, 183, 216, 0.08);
+  border-left-color: rgba(98, 228, 200, 0.08);
   animation: thr-spin-rev 18s linear infinite;
 }
 
@@ -125,7 +125,7 @@
   font-size: clamp(2.75rem, 9vw, 4.5rem);
   line-height: 1;
   color: var(--thr-gold);
-  text-shadow: 0 0 34px rgba(200, 169, 107, 0.45);
+  text-shadow: 0 0 34px rgba(200, 57, 46, 0.45);
   animation: thr-breathe 6s ease-in-out infinite;
 }
 
@@ -196,7 +196,7 @@
 .threshold__meta-div {
   width: 1px;
   height: 22px;
-  background: rgba(200, 169, 107, 0.2);
+  background: rgba(200, 57, 46, 0.2);
 }
 
 /* ── enter affordance ── */

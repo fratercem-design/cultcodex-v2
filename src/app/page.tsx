@@ -164,11 +164,11 @@ export default async function HomePage() {
             </div>
             <h1
               className="font-display text-3xl sm:text-5xl font-bold leading-tight text-white"
-              style={{ textShadow: "0 0 60px rgba(212,175,55,0.3)" }}
+              style={{ textShadow: "0 0 60px rgba(200, 57, 46,0.3)" }}
             >
               The searchable memory of the Cult of Psyche.
               <br />
-              <span className="text-accent-gold" style={{ textShadow: "0 0 40px rgba(212,175,55,0.6)" }}>
+              <span className="text-accent-gold" style={{ textShadow: "0 0 40px rgba(200, 57, 46,0.6)" }}>
                 Every pattern — still decoding.
               </span>
             </h1>

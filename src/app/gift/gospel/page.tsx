@@ -34,7 +34,7 @@ export default async function GiftGospelPage({
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-[520px]"
-        style={{ background: "radial-gradient(ellipse 60% 50% at 50% 15%, rgba(155,110,208,0.16) 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(ellipse 60% 50% at 50% 15%, rgba(74, 45, 110,0.16) 0%, transparent 70%)" }}
       />
 
       <header className="relative z-10 mx-auto flex max-w-2xl flex-col items-center px-4 pt-20 pb-6 text-center">
@@ -43,7 +43,7 @@ export default async function GiftGospelPage({
         </p>
         <h1
           className="mt-3 font-display text-4xl font-bold tracking-[0.04em] text-white sm:text-5xl"
-          style={{ textShadow: "0 0 50px rgba(155,110,208,0.4)" }}
+          style={{ textShadow: "0 0 50px rgba(74, 45, 110,0.4)" }}
         >
           {justSignedUp ? "Welcome, Initiate." : "Your Gospel awaits."}
         </h1>
