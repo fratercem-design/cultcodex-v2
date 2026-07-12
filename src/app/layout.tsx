@@ -13,6 +13,7 @@ import { TerminalTopBar } from "@/components/layout/terminal-topbar";
 import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
 import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
+import { RadialDialNav } from "@/components/layout/radial-dial-nav";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { getCounts } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
@@ -187,6 +188,7 @@ export default async function RootLayout({
           <TerminalStatusBar feedCount={counts.episodes} />
         </div>
         <MobileBottomNav />
+        <RadialDialNav />
         <ClientOverlays />
         <CRTOverlay />
         {/* WebSite + SearchAction JSON-LD — enables sitelinks search box in Google */}

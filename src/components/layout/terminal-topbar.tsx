@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { UserMenuLoader } from "@/components/auth/user-menu-loader";
 import { SearchTrigger } from "@/components/search/search-trigger";
 import { TerminalPathSeg } from "@/components/layout/terminal-path-seg";
-import { CodexSigil } from "@/components/graphics/codex-sigil";
+import { SigilLongPress } from "@/components/layout/sigil-long-press";
 
 /**
  * Terminal-style topbar (36px).
@@ -26,20 +25,8 @@ export function TerminalTopBar() {
         paddingRight: 12,
       }}
     >
-      {/* Brand */}
-      <Link
-        href="/"
-        aria-label="CultCodex — Overview"
-        className="font-mono text-[12px] font-semibold flex items-center gap-2"
-        style={{
-          color: "var(--neon)",
-          textShadow: "var(--glow-neon)",
-          letterSpacing: "0.12em",
-        }}
-      >
-        <CodexSigil size={18} glow title="CultCodex sigil" />
-        <span>CULTCODEX</span>
-      </Link>
+      {/* Brand — long-press opens the radial dial on touch devices */}
+      <SigilLongPress />
 
       {/* Center path */}
       <div className="hidden sm:flex flex-1 justify-center px-4 min-w-0">
