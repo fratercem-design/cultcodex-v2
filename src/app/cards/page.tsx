@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
-import { getAllCards, getUserCollection, getUserCollectionStats } from "@/lib/queries/cards";
+import { getAllCards, getUserCollection, getUserCollectionStats, getCollectionSets } from "@/lib/queries/cards";
 import { CARD_SPECIALS } from "@/components/cards/vault/constants";
 import type { VaultCard } from "@/components/cards/vault/constants";
 import { VaultApp } from "@/components/cards/vault/vault-app";
@@ -43,9 +43,10 @@ export default async function CardsPage() {
     return <VaultApp cards={cards} />;
   }
 
-  const [collection, stats] = await Promise.all([
+  const [collection, stats, sets] = await Promise.all([
     getUserCollection(user.id).catch(() => []),
     getUserCollectionStats(user.id).catch(() => null),
+    getCollectionSets(user.id).catch(() => []),
   ]);
 
   // Build slug → ownership map (merge foil + non-foil copies)
@@ -66,6 +67,7 @@ export default async function CardsPage() {
     <VaultApp
       cards={cards}
       ownership={ownership}
+      sets={sets}
       stats={stats ? {
         ownedCount:       stats.ownedCount,
         totalCards:       stats.totalCards,

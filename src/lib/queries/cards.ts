@@ -55,6 +55,111 @@ export async function getUserCollectionStats(userId: string, { includeWallet = t
   };
 }
 
+// ─── Card sets (grouped by CardType) ─────────────────────────────────────────
+// A "set" is every active card sharing a CardType — no separate curation/
+// schema needed, the grouping already exists in the data. Completing one
+// pays a one-time bonus, sized to the set (bigger set = bigger payout).
+
+const SET_BONUS_PER_CARD = 20;
+
+export interface CollectionSet {
+  cardType: CardType;
+  total: number;
+  owned: number;
+  completionPct: number;
+  isComplete: boolean;
+  bonusAmount: number;
+  claimed: boolean;
+}
+
+export async function getCollectionSets(userId: string): Promise<CollectionSet[]> {
+  const [totals, ownedRows, claims] = await Promise.all([
+    prisma.card.groupBy({
+      by: ["cardType"],
+      where: { isActive: true },
+      _count: { _all: true },
+    }),
+    prisma.ownedCard.findMany({
+      where: { userId },
+      select: { card: { select: { cardType: true } } },
+      distinct: ["cardId"],
+    }),
+    prisma.creditTransaction.findMany({
+      where: { userId, reason: "set_complete" },
+      select: { referenceId: true },
+    }),
+  ]);
+
+  const ownedCounts = new Map<CardType, number>();
+  for (const row of ownedRows) {
+    const t = row.card.cardType;
+    ownedCounts.set(t, (ownedCounts.get(t) ?? 0) + 1);
+  }
+  const claimedTypes = new Set(claims.map((c) => c.referenceId));
+
+  return totals
+    .map(({ cardType, _count }) => {
+      const total = _count._all;
+      const owned = Math.min(ownedCounts.get(cardType) ?? 0, total);
+      return {
+        cardType,
+        total,
+        owned,
+        completionPct: total > 0 ? Math.round((owned / total) * 100) : 0,
+        isComplete: total > 0 && owned >= total,
+        bonusAmount: total * SET_BONUS_PER_CARD,
+        claimed: claimedTypes.has(cardType),
+      };
+    })
+    .sort((a, b) => b.completionPct - a.completionPct);
+}
+
+/**
+ * Grants the one-time set-completion bonus. Re-verifies completion and
+ * idempotency server-side rather than trusting the client — a prior
+ * CreditTransaction with reason "set_complete" + this cardType as
+ * referenceId means it was already paid out.
+ */
+export async function claimSetBonus(
+  userId: string,
+  cardType: CardType
+): Promise<{ granted: number; alreadyClaimed: boolean; incomplete: boolean }> {
+  return prisma.$transaction(async (tx) => {
+    const [total, owned, existingClaim] = await Promise.all([
+      tx.card.count({ where: { isActive: true, cardType } }),
+      tx.ownedCard.count({ where: { userId, card: { cardType, isActive: true } } }),
+      tx.creditTransaction.findFirst({
+        where: { userId, reason: "set_complete", referenceId: cardType },
+        select: { id: true },
+      }),
+    ]);
+
+    if (existingClaim) return { granted: 0, alreadyClaimed: true, incomplete: false };
+    if (total === 0 || owned < total) return { granted: 0, alreadyClaimed: false, incomplete: true };
+
+    const granted = total * SET_BONUS_PER_CARD;
+    const wallet = await tx.userWallet.upsert({
+      where: { userId },
+      update: { balance: { increment: granted }, totalEarned: { increment: granted } },
+      create: { userId, balance: granted, totalEarned: granted },
+      select: { id: true },
+    });
+
+    await tx.creditTransaction.create({
+      data: {
+        userId,
+        walletId: wallet.id,
+        amount: granted,
+        reason: "set_complete",
+        referenceId: cardType,
+        metadata: { cardType, setSize: total },
+      },
+    });
+
+    return { granted, alreadyClaimed: false, incomplete: false };
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+}
+
 // ─── Packs ──────────────────────────────────────────────────────────────────
 
 export async function getActivePacks() {

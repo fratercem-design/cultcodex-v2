@@ -17,6 +17,16 @@ interface CollectionStats {
   longestStreak?: number;
 }
 
+interface CollectionSet {
+  cardType: string;
+  total: number;
+  owned: number;
+  completionPct: number;
+  isComplete: boolean;
+  bonusAmount: number;
+  claimed: boolean;
+}
+
 const SORT_OPTIONS = [
   ["num", "№"], ["rarity", "Rarity"], ["power", "Power"],
   ["sig", "Signal"], ["res", "Resonance"], ["ent", "Entropy"],
@@ -133,10 +143,12 @@ export function VaultApp({
   cards,
   ownership,
   stats,
+  sets,
 }: {
   cards: VaultCardType[];
   ownership?: Record<string, OwnedInfo>;
   stats?: CollectionStats;
+  sets?: CollectionSet[];
 }) {
   const [type, setType] = useState("all");
   const [rarity, setRarity] = useState("all");
@@ -145,6 +157,36 @@ export function VaultApp({
   const [showOwned, setShowOwned] = useState(false);
   const [zoomIdx, setZoomIdx] = useState<number | null>(null);
   const [packOpen, setPackOpen] = useState(false);
+  const [localSets, setLocalSets] = useState(sets ?? []);
+  const [claimingType, setClaimingType] = useState<string | null>(null);
+  const [claimMsg, setClaimMsg] = useState<string | null>(null);
+
+  const claimSet = useCallback(async (cardType: string) => {
+    if (claimingType) return;
+    setClaimingType(cardType);
+    setClaimMsg(null);
+    try {
+      const res = await fetch("/api/cards/sets/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cardType }),
+      });
+      const data = await res.json();
+      if (res.ok && data.granted > 0) {
+        setLocalSets((prev) => prev.map((s) => (s.cardType === cardType ? { ...s, claimed: true } : s)));
+        setClaimMsg(`+${data.granted} credits — ${cardType} set complete`);
+      } else if (data.alreadyClaimed) {
+        setLocalSets((prev) => prev.map((s) => (s.cardType === cardType ? { ...s, claimed: true } : s)));
+      } else {
+        setClaimMsg(data.error ?? "Not eligible yet.");
+      }
+    } catch {
+      setClaimMsg("Network error. Try again.");
+    } finally {
+      setClaimingType(null);
+      setTimeout(() => setClaimMsg(null), 4000);
+    }
+  }, [claimingType]);
 
   const dailyAvailable = useMemo(
     () => !stats?.lastDailyClaimAt ||
@@ -292,6 +334,84 @@ export function VaultApp({
               ▸ DAILY READY
             </Link>
           )}
+        </div>
+      )}
+
+      {/* Card sets — one per CardType, completing one pays a one-time bonus */}
+      {localSets.length > 0 && (
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            padding: "10px 20px",
+            borderBottom: "1px solid var(--ln)",
+            background: "rgba(0,0,0,0.25)",
+            overflowX: "auto",
+            fontFamily: "var(--font-mono, monospace)",
+          }}
+        >
+          {localSets.map((s) => {
+            const info = VAULT_CARD_TYPES[s.cardType];
+            const canClaim = s.isComplete && !s.claimed;
+            return (
+              <div
+                key={s.cardType}
+                style={{
+                  flexShrink: 0,
+                  minWidth: 150,
+                  border: `1px solid ${s.isComplete ? "var(--neon)" : "var(--ln)"}`,
+                  borderRadius: 4,
+                  padding: "6px 10px",
+                  fontSize: 9,
+                  color: "var(--ink-dim)",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 6 }}>
+                  <span style={{ color: "var(--ink)", letterSpacing: "0.06em" }}>
+                    {info?.glyph ?? "◆"} {info?.note ?? s.cardType}
+                  </span>
+                  <span style={{ opacity: 0.6 }}>{s.owned}/{s.total}</span>
+                </div>
+                <div style={{ marginTop: 5, width: "100%", height: 3, background: "rgba(255,255,255,0.08)", borderRadius: 2, overflow: "hidden" }}>
+                  <div
+                    style={{
+                      width: `${s.completionPct}%`,
+                      height: "100%",
+                      background: s.isComplete ? "var(--neon)" : "var(--neon-4)",
+                      boxShadow: s.isComplete ? "var(--glow-neon)" : undefined,
+                      transition: "width 600ms ease",
+                    }}
+                  />
+                </div>
+                {s.claimed ? (
+                  <div style={{ marginTop: 5, color: "var(--neon)", textAlign: "center" }}>✓ CLAIMED</div>
+                ) : canClaim ? (
+                  <button
+                    onClick={() => claimSet(s.cardType)}
+                    disabled={claimingType === s.cardType}
+                    style={{
+                      marginTop: 5,
+                      width: "100%",
+                      border: "1px solid var(--neon)",
+                      color: "var(--neon)",
+                      background: "transparent",
+                      borderRadius: 3,
+                      padding: "3px 0",
+                      cursor: "pointer",
+                      textShadow: "var(--glow-neon)",
+                    }}
+                  >
+                    {claimingType === s.cardType ? "…" : `CLAIM +${s.bonusAmount}`}
+                  </button>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {claimMsg && (
+        <div style={{ padding: "6px 20px", fontFamily: "var(--font-mono, monospace)", fontSize: 10, color: "var(--neon-4)" }}>
+          {claimMsg}
         </div>
       )}
 
