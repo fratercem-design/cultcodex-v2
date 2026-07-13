@@ -369,29 +369,29 @@ export async function toggleLiveStream(formData: FormData) {
   revalidatePath("/live");
 }
 
-export async function toggleAlexandraLive(formData: FormData) {
+export async function togglePsychesNightmaresLive(formData: FormData) {
   await requireAdmin();
 
   const current = await prisma.liveStatus.findUnique({
-    where: { id: "alexandra-mayers" },
+    where: { id: "psyches-nightmares" },
   });
 
   const isLive = current?.isLive ?? false;
 
   if (isLive) {
     await prisma.liveStatus.upsert({
-      where: { id: "alexandra-mayers" },
+      where: { id: "psyches-nightmares" },
       update: { isLive: false, endedAt: new Date() },
-      create: { id: "alexandra-mayers", isLive: false },
+      create: { id: "psyches-nightmares", isLive: false },
     });
   } else {
     const videoId = (formData.get("videoId") as string) || null;
-    const title = (formData.get("title") as string) || "Alexandra Mayers Live";
+    const title = (formData.get("title") as string) || "Psyche's Nightmares Live";
 
     await prisma.liveStatus.upsert({
-      where: { id: "alexandra-mayers" },
+      where: { id: "psyches-nightmares" },
       update: { isLive: true, videoId, title, startedAt: new Date(), endedAt: null },
-      create: { id: "alexandra-mayers", isLive: true, videoId, title, startedAt: new Date() },
+      create: { id: "psyches-nightmares", isLive: true, videoId, title, startedAt: new Date() },
     });
   }
 

@@ -11,13 +11,13 @@ interface ChannelStatus {
 
 interface AllLiveStatus {
   cultOfPsyche: ChannelStatus;
-  alexandraMayers: ChannelStatus;
+  psychesNightmares: ChannelStatus;
   nightmareFrequencies: ChannelStatus;
 }
 
 const EMPTY: AllLiveStatus = {
   cultOfPsyche: { isLive: false, videoId: null, title: null },
-  alexandraMayers: { isLive: false, videoId: null, title: null },
+  psychesNightmares: { isLive: false, videoId: null, title: null },
   nightmareFrequencies: { isLive: false, videoId: null, title: null },
 };
 
@@ -71,7 +71,7 @@ export function LiveBanner() {
     });
   }
 
-  // Alexandra Mayers intentionally omitted — no live directory of her channels.
+  // Psyche's Nightmares status is tracked; its banner is rolled into the cult banner above.
 
   const visible = entries.filter((e) => !dismissed.has(e.key));
   if (visible.length === 0) return null;

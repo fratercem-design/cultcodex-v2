@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { toggleLiveStream, toggleAlexandraLive, toggleNightmareFrequenciesLive } from "@/app/admin/actions";
+import { toggleLiveStream, togglePsychesNightmaresLive, toggleNightmareFrequenciesLive } from "@/app/admin/actions";
 import { useRouter } from "next/navigation";
 
 interface Props {
-  channel: "cultOfPsyche" | "alexandraMayers" | "nightmareFrequencies";
+  channel: "cultOfPsyche" | "psychesNightmares" | "nightmareFrequencies";
   isLive: boolean;
   currentVideoId?: string | null;
   currentTitle?: string | null;
@@ -14,8 +14,8 @@ interface Props {
 export function LiveToggleForm({ channel, isLive, currentVideoId, currentTitle }: Props) {
   const defaultTitle = channel === "cultOfPsyche"
     ? "Cult of Psyche Live Stream"
-    : channel === "alexandraMayers"
-      ? "Alexandra Mayers Live"
+    : channel === "psychesNightmares"
+      ? "Psyche's Nightmares Live"
       : "Nightmare Frequencies Live";
   const [videoId, setVideoId] = useState(currentVideoId ?? "");
   const [title, setTitle] = useState(currentTitle ?? defaultTitle);
@@ -35,8 +35,8 @@ export function LiveToggleForm({ channel, isLive, currentVideoId, currentTitle }
     startTransition(async () => {
       if (channel === "cultOfPsyche") {
         await toggleLiveStream(formData);
-      } else if (channel === "alexandraMayers") {
-        await toggleAlexandraLive(formData);
+      } else if (channel === "psychesNightmares") {
+        await togglePsychesNightmaresLive(formData);
       } else {
         await toggleNightmareFrequenciesLive(formData);
       }

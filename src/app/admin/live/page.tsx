@@ -6,9 +6,9 @@ import { LiveToggleForm } from "./live-toggle-form";
 export const dynamic = "force-dynamic";
 
 export default async function AdminLivePage() {
-  const [copStatus, amStatus, nfStatus] = await Promise.all([
+  const [copStatus, pnStatus, nfStatus] = await Promise.all([
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }),
-    prisma.liveStatus.findUnique({ where: { id: "alexandra-mayers" } }),
+    prisma.liveStatus.findUnique({ where: { id: "psyches-nightmares" } }),
     prisma.liveStatus.findUnique({ where: { id: "nightmare-frequencies" } }),
   ]);
 
@@ -53,37 +53,37 @@ export default async function AdminLivePage() {
         </div>
       </div>
 
-      {/* Alexandra Mayers */}
+      {/* Psyche's Nightmares */}
       <div>
         <h2 className="font-mono text-sm font-bold text-text-primary mb-4 uppercase tracking-widest">
-          Alexandra Mayers
+          Psyche&apos;s Nightmares <span className="text-text-muted">@psychesnightmares</span>
         </h2>
         <SectionCard title="Current Status">
           <div className="flex items-center gap-3 mb-4">
             <span
               className={`h-4 w-4 rounded-full ${
-                amStatus?.isLive ? "bg-red-500 animate-pulse" : "bg-text-muted"
+                pnStatus?.isLive ? "bg-red-500 animate-pulse" : "bg-text-muted"
               }`}
             />
             <span className="font-mono text-lg font-bold text-text-primary">
-              {amStatus?.isLive ? "LIVE" : "OFFLINE"}
+              {pnStatus?.isLive ? "LIVE" : "OFFLINE"}
             </span>
           </div>
-          {amStatus && (
+          {pnStatus && (
             <div className="space-y-1 font-mono text-xs text-text-muted">
-              {amStatus.videoId && <p>Video ID: {amStatus.videoId}</p>}
-              {amStatus.title && <p>Title: {amStatus.title}</p>}
-              {amStatus.startedAt && <p>Started: {formatDate(amStatus.startedAt)}</p>}
-              {amStatus.endedAt && <p>Ended: {formatDate(amStatus.endedAt)}</p>}
+              {pnStatus.videoId && <p>Video ID: {pnStatus.videoId}</p>}
+              {pnStatus.title && <p>Title: {pnStatus.title}</p>}
+              {pnStatus.startedAt && <p>Started: {formatDate(pnStatus.startedAt)}</p>}
+              {pnStatus.endedAt && <p>Ended: {formatDate(pnStatus.endedAt)}</p>}
             </div>
           )}
         </SectionCard>
         <div className="mt-4">
           <LiveToggleForm
-            channel="alexandraMayers"
-            isLive={amStatus?.isLive ?? false}
-            currentVideoId={amStatus?.videoId}
-            currentTitle={amStatus?.title}
+            channel="psychesNightmares"
+            isLive={pnStatus?.isLive ?? false}
+            currentVideoId={pnStatus?.videoId}
+            currentTitle={pnStatus?.title}
           />
         </div>
       </div>
