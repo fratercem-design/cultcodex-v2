@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, type CSSProperties } from "react";
+import { useState, useCallback, useEffect, type CSSProperties } from "react";
 
 type Mode = "hybrid" | "archive" | "arcana";
 type SpreadSlug = "single" | "three";
@@ -31,9 +31,9 @@ const MODES: { key: Mode; label: string; blurb: string }[] = [
   { key: "archive", label: "ARCHIVE", blurb: "The CultCodex deck only" },
   { key: "arcana", label: "ARCANA", blurb: "The 80-card Tarot only" },
 ];
-const SPREADS: { key: SpreadSlug; label: string; count: string }[] = [
-  { key: "single", label: "SINGLE SIGNAL", count: "1 card" },
-  { key: "three", label: "TRANSMISSION", count: "3 cards" },
+const SPREADS: { key: SpreadSlug; label: string; count: string; cost: number }[] = [
+  { key: "single", label: "SINGLE SIGNAL", count: "1 card", cost: 1 },
+  { key: "three", label: "TRANSMISSION", count: "3 cards", cost: 3 },
 ];
 
 const panel: CSSProperties = {
@@ -49,6 +49,16 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
   const [reading, setReading] = useState<Reading | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [signal, setSignal] = useState<number | null>(null);
+  const [grant, setGrant] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!signedIn) return;
+    fetch("/api/cards/signal")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((s) => { if (s && typeof s.signal === "number") { setSignal(s.signal); setGrant(s.grant); } })
+      .catch(() => {});
+  }, [signedIn]);
 
   const draw = useCallback(async () => {
     if (loading) return;
@@ -63,13 +73,17 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "The signal broke. Try again.");
-      setReading(json as Reading);
+      setReading(json.reading as Reading);
+      if (typeof json.signalRemaining === "number") setSignal(json.signalRemaining);
     } catch (e) {
       setError(e instanceof Error ? e.message : "The signal broke. Try again.");
     } finally {
       setLoading(false);
     }
   }, [mode, spread, question, loading]);
+
+  const selectedCost = SPREADS.find((s) => s.key === spread)?.cost ?? 1;
+  const insufficient = signedIn && signal !== null && signal < selectedCost;
 
   return (
     <main style={{ maxWidth: 860, margin: "0 auto", padding: "48px 20px 96px", color: "var(--term-fg)" }}>
@@ -84,6 +98,13 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
           The card does not predict. It reveals. Your collection is the deck; the signal beneath the noise is drawn from it.
         </p>
       </header>
+
+      {signedIn && signal !== null && (
+        <div style={{ textAlign: "center", fontFamily: "var(--font-mono)", fontSize: 12.5, color: "var(--neon)", marginBottom: 22, letterSpacing: "0.15em", textShadow: "var(--glow-neon)" }}>
+          ◈ SIGNAL {signal}{grant !== null ? ` / ${grant}` : ""}
+          <span style={{ color: "var(--term-fg-mute)", textShadow: "none", marginLeft: 8 }}>· resets at UTC midnight</span>
+        </div>
+      )}
 
       {/* Mode selector */}
       <section style={{ marginBottom: 18 }}>
@@ -105,7 +126,7 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
           {SPREADS.map((s) => (
             <button key={s.key} onClick={() => setSpread(s.key)} style={choice(spread === s.key)}>
               <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.15em" }}>{s.label}</span>
-              <span style={{ fontSize: 10.5, color: "var(--term-fg-dim)", marginTop: 3 }}>{s.count}</span>
+              <span style={{ fontSize: 10.5, color: "var(--term-fg-dim)", marginTop: 3 }}>{s.count} · {s.cost} ◈</span>
             </button>
           ))}
         </div>
@@ -126,8 +147,8 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
         />
       </section>
 
-      <button onClick={draw} disabled={loading || !signedIn} style={drawBtn(loading || !signedIn)}>
-        {loading ? "CONSULTING THE ARCHIVE…" : signedIn ? "◈ DRAW THE READING" : "SIGN IN TO DRAW"}
+      <button onClick={draw} disabled={loading || !signedIn || insufficient} style={drawBtn(loading || !signedIn || insufficient)}>
+        {loading ? "CONSULTING THE ARCHIVE…" : !signedIn ? "SIGN IN TO DRAW" : insufficient ? `NOT ENOUGH SIGNAL — NEED ${selectedCost} ◈` : `◈ DRAW · ${selectedCost} SIGNAL`}
       </button>
       {!signedIn && (
         <p style={{ textAlign: "center", fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--term-fg-dim)", marginTop: 12 }}>

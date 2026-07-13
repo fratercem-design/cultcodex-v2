@@ -8,7 +8,8 @@
  * from Reading.seed.
  */
 import { prisma } from "@/lib/db";
-import type { Prisma } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
+import { dailyGrant, spendSignalTx } from "./signal";
 
 export type ReadingMode = "arcana" | "archive" | "hybrid";
 
@@ -58,6 +59,7 @@ export interface DrawOptions {
   question?: string;
   seed?: string;             // default derived from userId + time
   ownedOnly?: boolean;       // draw only from cards the user owns
+  charge?: boolean;          // default true — spend the spread's Signal cost
 }
 
 export async function drawReading(opts: DrawOptions) {
@@ -106,14 +108,35 @@ export async function drawReading(opts: DrawOptions) {
     archetype: c.archetype,
   }));
 
-  return prisma.reading.create({
-    data: {
-      userId: opts.userId,
-      spreadId: spread?.id ?? null,
-      question: opts.question ?? null,
-      seed,
-      cards: { create: cardsData },
+  const createReading = (client: Prisma.TransactionClient | typeof prisma) =>
+    client.reading.create({
+      data: {
+        userId: opts.userId,
+        spreadId: spread?.id ?? null,
+        question: opts.question ?? null,
+        seed,
+        cards: { create: cardsData },
+      },
+      include: { cards: { orderBy: { position: "asc" } }, spread: true },
+    });
+
+  const cost = spread?.signalCost ?? 1;
+  if (opts.charge === false || cost <= 0) {
+    const reading = await createReading(prisma);
+    return { reading, signalRemaining: null as number | null };
+  }
+
+  // Spend Signal + persist the reading atomically — either both or neither.
+  const grant = await dailyGrant(opts.userId);
+  return prisma.$transaction(
+    async (tx) => {
+      const signalRemaining = await spendSignalTx(
+        tx, opts.userId, cost, grant, "reading_draw",
+        { spread: spread?.slug ?? spreadSlug, mode }
+      );
+      const reading = await createReading(tx);
+      return { reading, signalRemaining };
     },
-    include: { cards: { orderBy: { position: "asc" } }, spread: true },
-  });
+    { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
+  );
 }

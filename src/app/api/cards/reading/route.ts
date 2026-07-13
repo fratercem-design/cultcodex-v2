@@ -16,14 +16,14 @@ export async function POST(req: Request) {
   const question = typeof body.question === "string" ? body.question.slice(0, 500) : undefined;
 
   try {
-    const reading = await drawReading({
+    const { reading, signalRemaining } = await drawReading({
       userId: user.id,
       mode,
       spreadSlug: spread,
       question,
       ownedOnly: body.ownedOnly === true,
     });
-    return NextResponse.json(reading);
+    return NextResponse.json({ reading, signalRemaining });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Reading failed";
     console.error("[cards/reading] error:", err);
