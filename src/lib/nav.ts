@@ -84,4 +84,11 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { href: "/premium",    label: "INITIATE+",   glyph: "✦" },
     ],
   },
+  {
+    title: "SISTER SITES",
+    color: "var(--accent-violet)",
+    items: [
+      { href: "https://matangi.vercel.app", label: "MA MATANGI", glyph: "◬", external: true },
+    ],
+  },
 ];
