@@ -445,6 +445,13 @@ const MOTIF_FN: Record<CardType, (props: MotifProps) => string> = {
   MAHAVIDYA:    mahavidyaMotif,
   AVATAR:       avatarMotif,
   INCIDENT:     incidentMotif,
+  QUOTE:        transmissionMotif,
+  EPISODE:      transmissionMotif,
+  DEITY:        mahavidyaMotif,
+  LOCATION:     loreMotif,
+  RITUAL:       oracleMotif,
+  SYMBOL:       cipherMotif,
+  EVENT:        incidentMotif,
 };
 
 // ── Background generators ────────────────────────────────────────────────────

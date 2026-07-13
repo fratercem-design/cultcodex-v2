@@ -77,6 +77,13 @@ export const CARD_TYPE_GLYPH: Record<CardType, string> = {
   MAHAVIDYA:    "ॐ",
   AVATAR:       "♆",
   INCIDENT:     "⚠",
+  QUOTE:        "❝",
+  EPISODE:      "▶",
+  DEITY:        "☉",
+  LOCATION:     "⌖",
+  RITUAL:       "☥",
+  SYMBOL:       "◬",
+  EVENT:        "✷",
 };
 
 export const CARD_TYPE_LABEL: Record<CardType, string> = {
@@ -94,6 +101,13 @@ export const CARD_TYPE_LABEL: Record<CardType, string> = {
   MAHAVIDYA:    "MAHAVIDYA",
   AVATAR:       "AVATAR",
   INCIDENT:     "INCIDENT",
+  QUOTE:        "QUOTE",
+  EPISODE:      "EPISODE",
+  DEITY:        "DEITY",
+  LOCATION:     "LOCATION",
+  RITUAL:       "RITUAL",
+  SYMBOL:       "SYMBOL",
+  EVENT:        "EVENT",
 };
 
 export const CARD_TYPE_COLOR: Record<CardType, string> = {
@@ -111,6 +125,13 @@ export const CARD_TYPE_COLOR: Record<CardType, string> = {
   MAHAVIDYA:    "#FF9800",
   AVATAR:       "#B39DDB",
   INCIDENT:     "#EF5350",
+  QUOTE:        "#B0BEC5",
+  EPISODE:      "#4DB6AC",
+  DEITY:        "#FFD54F",
+  LOCATION:     "#A1887F",
+  RITUAL:       "#BA68C8",
+  SYMBOL:       "#90CAF9",
+  EVENT:        "#FF8A65",
 };
 
 /** Given pack rarity weights, return a random rarity. */
@@ -234,4 +255,11 @@ export const STAT_LABELS: Record<CardType, [string, string, string]> = {
   MAHAVIDYA:    ["POWER",      "DEVOTION",   "TRANSFORMATION"],
   AVATAR:       ["CHARISMA",   "RITUAL",     "MADNESS"],
   INCIDENT:     ["IMPACT",     "CHAOS",      "MEMORY"],
+  QUOTE:        ["RESONANCE",  "TRUTH",      "REACH"],
+  EPISODE:      ["WEIGHT",     "REACH",      "CANON"],
+  DEITY:        ["POWER",      "MYSTERY",    "REACH"],
+  LOCATION:     ["DEPTH",      "MEMORY",     "PULL"],
+  RITUAL:       ["POTENCY",    "REPETITION", "EFFECT"],
+  SYMBOL:       ["MEANING",    "REACH",      "AGE"],
+  EVENT:        ["IMPACT",     "SCALE",      "MEMORY"],
 };
