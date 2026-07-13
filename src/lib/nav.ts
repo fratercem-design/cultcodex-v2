@@ -90,6 +90,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { href: "https://matangi.vercel.app", label: "MA MATANGI", glyph: "◬", external: true },
       { href: "https://dreamweave-darktales.vercel.app", label: "DREAMWEAVE", glyph: "☾", external: true },
+      { href: "https://living-grimoire.vercel.app", label: "LIVING GRIMOIRE", glyph: "▤", external: true },
     ],
   },
 ];
