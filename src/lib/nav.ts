@@ -70,6 +70,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { href: "/archetype-quiz",label: "ARCHETYPE QUIZ",glyph: "◈" },
       { href: "/tarot",         label: "TAROT DECK",    glyph: "✦", accent: "neon-4" },
       { href: "/cards",         label: "SIGNAL ARCHIVE", glyph: "⧬", accent: "neon-4" },
+      { href: "/cards/reading", label: "DRAW A READING", glyph: "☾", accent: "neon-4" },
       { href: "/trollopedia",   label: "TROLLOPEDIA",   glyph: "♛", accent: "neon-4" },
     ],
   },
