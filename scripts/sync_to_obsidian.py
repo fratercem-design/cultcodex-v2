@@ -533,41 +533,56 @@ def sync_lore(conn, limit, dry_run):
 
         # Episodes
         cur2 = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur2.execute("""
-            SELECT e.title, e.slug, e."airDate", e."episodeNumber"
-            FROM "EpisodeLore" el
-            JOIN "Episode" e ON el."episodeId" = e.id
-            WHERE el."loreEntryId" = %s
-            ORDER BY e."airDate" ASC NULLS LAST
-        """, (row['id'],))
-        episodes = cur2.fetchall()
+        try:
+            cur2.execute("""
+                SELECT e.title, e.slug, e."airDate", e."episodeNumber"
+                FROM "EpisodeLore" el
+                JOIN "Episode" e ON el."episodeId" = e.id
+                WHERE el."loreEntryId" = %s
+                ORDER BY e."airDate" ASC NULLS LAST
+            """, (row['id'],))
+            episodes = cur2.fetchall()
+        finally:
+            cur2.close()
 
         # People
-        cur2.execute("""
-            SELECT p."displayName", p.slug
-            FROM "PersonLore" pl
-            JOIN "Person" p ON pl."personId" = p.id
-            WHERE pl."loreEntryId" = %s
-        """, (row['id'],))
-        people = cur2.fetchall()
+        cur2 = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        try:
+            cur2.execute("""
+                SELECT p."displayName", p.slug
+                FROM "PersonLore" pl
+                JOIN "Person" p ON pl."personId" = p.id
+                WHERE pl."loreEntryId" = %s
+            """, (row['id'],))
+            people = cur2.fetchall()
+        finally:
+            cur2.close()
 
         # Topics
-        cur2.execute("""
-            SELECT t.title, t.slug
-            FROM "LoreTopic" lt
-            JOIN "Topic" t ON lt."topicId" = t.id
-            WHERE lt."loreEntryId" = %s
-        """, (row['id'],))
-        topics = cur2.fetchall()
+        cur2 = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        try:
+            cur2.execute("""
+                SELECT t.title, t.slug
+                FROM "LoreTopic" lt
+                JOIN "Topic" t ON lt."topicId" = t.id
+                WHERE lt."loreEntryId" = %s
+            """, (row['id'],))
+            topics = cur2.fetchall()
+        finally:
+            cur2.close()
 
         # Related lore
-        cur2.execute("""
-            SELECT le.title, le.slug
-            FROM "RelatedLore" rl
-            JOIN "LoreEntry" le ON rl."loreBId" = le.id
-            WHERE rl."loreAId" = %s
-        """, (row['id'],))
-        related = cur2.fetchall()
+        cur2 = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        try:
+            cur2.execute("""
+                SELECT le.title, le.slug
+                FROM "RelatedLore" rl
+                JOIN "LoreEntry" le ON rl."loreBId" = le.id
+                WHERE rl."loreAId" = %s
+            """, (row['id'],))
+            related = cur2.fetchall()
+        finally:
+            cur2.close()
 
         lines = []
         lines.append("---")
@@ -604,6 +619,7 @@ def sync_lore(conn, limit, dry_run):
             lines.append("")
             for e in episodes:
                 ep_str = f"Ep {e['episodeNumber']}" if e['episodeNumber'] else ""
+
                 lines.append(f"- [[{e['title']}]] {ep_str}")
             lines.append("")
 
@@ -637,10 +653,6 @@ def sync_lore(conn, limit, dry_run):
 
     cur.close()
     return count
-
-
-# -- Sync: Topics ---
-
 def sync_topics(conn, limit, dry_run):
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     query = """

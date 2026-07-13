@@ -237,3 +237,26 @@ Admin-only page to trigger seed scripts for the four archetype sets.
 - Entity cards show magenta glitch animation
 - All existing card functionality (pack opening, daily credits, collection stats) still works
 - No TypeScript errors, no broken Prisma queries
+
+---
+
+## Addendum — Roast Verdict & Reshape (2026-07-01)
+
+A five-persona adversarial review (Contrarian, Expansionist, First-Principles, Researcher, Buyer) ruled **RESHAPE, high confidence**. Scores: 3/8/5/4/6 out of 10. This addendum is binding on Phase 1+ direction.
+
+### What the council refuted
+
+1. **"Cards as growth/revenue driver" is refuted by market data.** Free AI tarot is saturated (33+ tools, several unlimited-free); collect-only digital collectibles have a documented collapse pattern (NBA Top Shot: −99.98% from peak monthly sales); AI-subscription annual retention runs ~30% worse than non-AI. Cards are a **retention perk and tier-upsell for existing subscribers** — success metric is churn reduction and Initiate+→Oracle upgrades, never new-signup counts.
+2. **"Pay/pull to unlock" corrupts the divination value prop.** A seeker who notices their readings draw from a paywalled partial pool experiences a slot machine, not an oracle. **Cards are earned, never pulled-for-pay** — episode drops, lore trivia, stream attendance, prophecy fulfillment. (The existing soulbound MEMBER mechanic already points this way; extend that philosophy to acquisition generally.)
+3. **Partial-deck framing must be occult-coherent:** "the cards that have chosen you" — deepening, never "unlock accuracy." Copy that implies more cards = better guidance is forbidden.
+4. **The reading engine is the actual moat.** No competing product does lore-aware readings referencing the user's specific cards and real episodes. Buyer persona's stay-reason verbatim: readings that "actually reference the specific cards I collected and episodes I remember." Conversely her cancel-click: a card batch that reads as templated AI filler. Fewer, better cards > volume.
+5. **Drops happen on stream.** Card reveals as live segments = content + product launch + lore expansion in one, using production that already exists (pack-opening is the highest-retention format on YouTube).
+6. **Scarcity/retention tension (First-Principles):** issuing cards drives retention but inflates supply, eroding collectibility. Mitigation: rarity tiers already in schema + episodic provenance (card tied to the moment it dropped) + founder's-edition marks. Restraint is the scarcity mechanism — publish drop-cadence rules and keep them.
+
+### Gate before further build
+
+**Do not build Increment 1 (Signal economy + reading engine + collection UI) until the 48-hour claim test returns a verdict.** The regamify schema (Increments 0/0.5) is already live on Xata as of 2026-06-25 — the test gates the *build investment*, not the schema. Test spec: `docs/superpowers/specs/2026-07-01-card-claim-test.md`. The Contrarian's top-ranked cause of death was not market failure but non-shipping/over-building — the test costs zero build hours and validates collect-desire directly. The test verdict also feeds the open scope decision (author divination for the 204 live archive cards vs. seed the 80-card tarot deck): a GREEN on lore-card claiming favors the 204-card archive deck, which is the differentiated product anyway.
+
+### Upside doors (Expansionist, for the roadmap parking lot)
+
+Physical print run once ~78 cards exist (draw-counts = demand data for which to print); share-your-spread social images; Oracle-tier canon contribution votes; the collect-then-divine engine as white-label infrastructure for other occult creators.
