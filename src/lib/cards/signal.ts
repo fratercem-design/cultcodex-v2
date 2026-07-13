@@ -8,6 +8,7 @@
  */
 import { prisma } from "@/lib/db";
 import type { Prisma } from "@/generated/prisma/client";
+import { levelProgress } from "./progression";
 
 export const DAILY_SIGNAL_BASE = 10;
 
@@ -44,6 +45,9 @@ export interface SignalState {
   signal: number;
   grant: number;
   resetAt: string; // ISO — next UTC midnight
+  level: number;
+  xpInto: number;
+  xpNeed: number;
 }
 
 /**
@@ -55,8 +59,10 @@ export async function getSignalState(userId: string): Promise<SignalState> {
   const today = utcDayStart();
   const wallet = await prisma.userWallet.findUnique({
     where: { userId },
-    select: { signal: true, signalResetAt: true },
+    select: { signal: true, signalResetAt: true, xp: true, level: true },
   });
+  const lp = levelProgress(wallet?.xp ?? 0);
+  const prog = { level: lp.level, xpInto: lp.into, xpNeed: lp.need };
   const needsReset = !wallet || !wallet.signalResetAt || wallet.signalResetAt < today;
   if (needsReset) {
     const w = await prisma.userWallet.upsert({
@@ -65,9 +71,9 @@ export async function getSignalState(userId: string): Promise<SignalState> {
       create: { userId, signal: grant, signalResetAt: new Date() },
       select: { signal: true },
     });
-    return { signal: w.signal, grant, resetAt: nextUtcMidnight().toISOString() };
+    return { signal: w.signal, grant, resetAt: nextUtcMidnight().toISOString(), ...prog };
   }
-  return { signal: wallet.signal, grant, resetAt: nextUtcMidnight().toISOString() };
+  return { signal: wallet.signal, grant, resetAt: nextUtcMidnight().toISOString(), ...prog };
 }
 
 /**

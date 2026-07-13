@@ -51,14 +51,22 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
   const [error, setError] = useState<string | null>(null);
   const [signal, setSignal] = useState<number | null>(null);
   const [grant, setGrant] = useState<number | null>(null);
+  const [level, setLevel] = useState<number | null>(null);
+  const [xp, setXp] = useState<{ into: number; need: number } | null>(null);
 
-  useEffect(() => {
-    if (!signedIn) return;
+  const refreshSignal = useCallback(() => {
     fetch("/api/cards/signal")
       .then((r) => (r.ok ? r.json() : null))
-      .then((s) => { if (s && typeof s.signal === "number") { setSignal(s.signal); setGrant(s.grant); } })
+      .then((s) => {
+        if (s && typeof s.signal === "number") {
+          setSignal(s.signal); setGrant(s.grant); setLevel(s.level);
+          setXp({ into: s.xpInto, need: s.xpNeed });
+        }
+      })
       .catch(() => {});
-  }, [signedIn]);
+  }, []);
+
+  useEffect(() => { if (signedIn) refreshSignal(); }, [signedIn, refreshSignal]);
 
   const draw = useCallback(async () => {
     if (loading) return;
@@ -75,12 +83,13 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
       if (!res.ok) throw new Error(json.error ?? "The signal broke. Try again.");
       setReading(json.reading as Reading);
       if (typeof json.signalRemaining === "number") setSignal(json.signalRemaining);
+      refreshSignal(); // refresh level/XP (a draw awards XP)
     } catch (e) {
       setError(e instanceof Error ? e.message : "The signal broke. Try again.");
     } finally {
       setLoading(false);
     }
-  }, [mode, spread, question, loading]);
+  }, [mode, spread, question, loading, refreshSignal]);
 
   const selectedCost = SPREADS.find((s) => s.key === spread)?.cost ?? 1;
   const insufficient = signedIn && signal !== null && signal < selectedCost;
@@ -100,9 +109,21 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
       </header>
 
       {signedIn && signal !== null && (
-        <div style={{ textAlign: "center", fontFamily: "var(--font-mono)", fontSize: 12.5, color: "var(--neon)", marginBottom: 22, letterSpacing: "0.15em", textShadow: "var(--glow-neon)" }}>
-          ◈ SIGNAL {signal}{grant !== null ? ` / ${grant}` : ""}
-          <span style={{ color: "var(--term-fg-mute)", textShadow: "none", marginLeft: 8 }}>· resets at UTC midnight</span>
+        <div style={{ textAlign: "center", marginBottom: 22 }}>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 12.5, letterSpacing: "0.15em" }}>
+            {level !== null && <span style={{ color: "var(--accent-gold)" }}>LVL {level}</span>}
+            <span style={{ color: "var(--neon)", textShadow: "var(--glow-neon)", marginLeft: level !== null ? 14 : 0 }}>
+              ◈ SIGNAL {signal}{grant !== null ? ` / ${grant}` : ""}
+            </span>
+          </div>
+          {xp && (
+            <div style={{ maxWidth: 260, margin: "8px auto 0", height: 3, background: "var(--term-line)", borderRadius: 2, overflow: "hidden" }}>
+              <div style={{ width: `${Math.min(100, Math.round((xp.into / Math.max(1, xp.need)) * 100))}%`, height: "100%", background: "var(--accent-gold)" }} />
+            </div>
+          )}
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--term-fg-mute)", marginTop: 5 }}>
+            {xp ? `${xp.into}/${xp.need} XP · ` : ""}Signal resets at UTC midnight
+          </div>
         </div>
       )}
 

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { drawReading, type ReadingMode } from "@/lib/cards/reading";
 import { recomputeAffinity } from "@/lib/cards/affinity";
+import { awardXp, XP_REWARD } from "@/lib/cards/progression";
 
 const MODES: ReadingMode[] = ["arcana", "archive", "hybrid"];
 
@@ -24,8 +25,9 @@ export async function POST(req: Request) {
       question,
       ownedOnly: body.ownedOnly === true,
     });
-    // Refresh the self-discovery profile from the new draw (non-fatal).
+    // Progression side-effects (non-fatal): refresh affinity + award XP.
     await recomputeAffinity(user.id).catch(() => {});
+    await awardXp(user.id, XP_REWARD.reading_draw, "reading_draw").catch(() => {});
     return NextResponse.json({ reading, signalRemaining });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Reading failed";
