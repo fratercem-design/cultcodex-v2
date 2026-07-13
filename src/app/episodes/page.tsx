@@ -11,8 +11,7 @@ import { TimelineView } from "@/components/archive/timeline-view";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { EraTag } from "@/components/ui/era-tag";
 import {
-  getEpisodes,
-  formatEpisodeForCard,
+  getEpisodeCards,
   getEpisodeCount,
 } from "@/lib/queries/episodes";
 import { getEpisodeAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
@@ -84,8 +83,7 @@ export default async function EpisodesPage({
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
-  const episodes = await getEpisodes({ take, skip, orderBy, order, eraId: activeEraId });
-  const cards = episodes.map(formatEpisodeForCard);
+  const cards = await getEpisodeCards({ take, skip, orderBy, order, eraId: activeEraId });
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 

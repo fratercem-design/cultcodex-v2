@@ -88,6 +88,38 @@ export async function getPersonCount(type?: PersonType) {
   return prisma.person.count({ where: profiledWhere(type) });
 }
 
+/**
+ * Lean people list for the /people directory cards. buildPersonInclude() loads
+ * EVERY guest appearance and up to 200 mentions — each with a full episode card
+ * select — per person, when the directory only renders scalar fields plus
+ * appearance/mention COUNTS. This select fetches exactly that.
+ * Use getPeople/getPersonBySlug when full relations are actually needed.
+ */
+export async function getPeopleCards(options?: {
+  type?: PersonType;
+  take?: number;
+  skip?: number;
+}) {
+  const { type, take = 50, skip = 0 } = options ?? {};
+
+  return prisma.person.findMany({
+    where: profiledWhere(type),
+    select: {
+      id: true,
+      displayName: true,
+      slug: true,
+      shortBio: true,
+      loreSummary: true,
+      avatarUrl: true,
+      personType: true,
+      _count: { select: { guestAppearances: true, mentions: true, loreConnections: true } },
+    },
+    orderBy: { displayName: "asc" },
+    take,
+    skip,
+  });
+}
+
 /** Compact data for the Special Mentions strip — celebrities, one-offs, name-drops. */
 export async function getSpecialMentions() {
   return prisma.person.findMany({

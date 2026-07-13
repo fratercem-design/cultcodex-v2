@@ -8,7 +8,7 @@ import { EpisodeCard } from "@/components/archive/episode-card";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SearchInput } from "@/components/search/search-input";
-import { getEpisodes, formatEpisodeForCard } from "@/lib/queries/episodes";
+import { getEpisodeCards } from "@/lib/queries/episodes";
 import { getCounts } from "@/lib/queries/stats";
 import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
@@ -81,7 +81,7 @@ export default async function HomePage() {
       lore: 0, quotes: 0, totalHours: 0,
       transcribedEpisodes: 0, transcribedPct: 0,
     })),
-    getEpisodes({ take: 5, orderBy: "airDate", order: "desc" }).catch(() => []),
+    getEpisodeCards({ take: 5, orderBy: "airDate", order: "desc" }).catch(() => []),
     getQuotes({ take: 2 }).catch(() => []),
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }).catch(() => null),
     getTopTopicsByEpisodes(10).catch(() => []),
@@ -106,7 +106,8 @@ export default async function HomePage() {
     ? await getQuoteReactionCounts(dailyTransmission.quote.id, currentUser?.id).catch(() => undefined)
     : undefined;
 
-  const recentCards = recentEpisodes.map(formatEpisodeForCard);
+  // getEpisodeCards returns card-shaped data directly (lean select, no segments)
+  const recentCards = recentEpisodes;
   const featured = recentEpisodes[0];
   const isLive = liveStatus?.isLive ?? false;
 
@@ -460,14 +461,7 @@ export default async function HomePage() {
                   {/* summaryShort intentionally omitted — AI summaries read as filler in this context */}
                   <GuestGrid
                     bare
-                    guests={featured.guests
-                      .filter((g) => g.person.personType !== "host")
-                      .map((g) => ({
-                        displayName: g.person.displayName,
-                        slug: g.person.slug,
-                        avatarUrl: g.person.avatarUrl,
-                        personType: g.person.personType,
-                      }))}
+                    guests={featured.guests.filter((g) => g.personType !== "host")}
                   />
                 </div>
               </Link>

@@ -5,7 +5,7 @@ import { PersonCard } from "@/components/archive/person-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
 import { PaginationControls } from "@/components/ui/pagination-controls";
-import { getPeople, getPersonCount, getSpecialMentions } from "@/lib/queries/people";
+import { getPeopleCards, getPersonCount, getSpecialMentions } from "@/lib/queries/people";
 import { getPeopleAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
 import { formatRelativeDate } from "@/lib/format/date";
 import { IconPerson, IconMicrophone, IconRecurring, IconMask } from "@/components/graphics/codex-icons";
@@ -68,19 +68,19 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
-  const people = await getPeople({ take, skip, type: typeFilter });
+  const people = await getPeopleCards({ take, skip, type: typeFilter });
 
   const sorted = [...people].sort((a, b) => {
     if (currentSort === "za") {
       return b.displayName.localeCompare(a.displayName);
     }
     if (currentSort === "most") {
-      const aCount = a.guestAppearances.length + a.mentions.length;
-      const bCount = b.guestAppearances.length + b.mentions.length;
+      const aCount = a._count.guestAppearances + a._count.mentions;
+      const bCount = b._count.guestAppearances + b._count.mentions;
       return bCount - aCount;
     }
     if (currentSort === "lore") {
-      return b.loreConnections.length - a.loreConnections.length;
+      return b._count.loreConnections - a._count.loreConnections;
     }
     return a.displayName.localeCompare(b.displayName);
   });
@@ -162,7 +162,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
                   avatarUrl: person.avatarUrl,
                   personType: person.personType,
                   appearanceCount:
-                    person.guestAppearances.length + person.mentions.length,
+                    person._count.guestAppearances + person._count.mentions,
                 }}
               />
             ))}

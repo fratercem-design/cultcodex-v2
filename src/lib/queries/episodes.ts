@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db";
 import { cleanTitle } from "@/lib/format/text";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { getEraById } from "@/lib/eras";
-import type { Prisma, ContentStatus, ContentType } from "@/generated/prisma/client";
+import type { Prisma, ContentStatus, ContentType, PersonType } from "@/generated/prisma/client";
 
 // Type for episode with all relations loaded
 export type EpisodeWithRelations = Prisma.EpisodeGetPayload<{
@@ -76,6 +76,114 @@ function buildEraWhere(eraId?: string): Prisma.EpisodeWhereInput {
       ...(era.dateEnd !== null ? { lte: new Date(`${era.dateEnd}T23:59:59.999Z`) } : {}),
     },
   };
+}
+
+/** Guest info needed by card/hero surfaces (GuestGrid). */
+export interface EpisodeCardGuest {
+  displayName: string;
+  slug: string;
+  avatarUrl: string | null;
+  personType: PersonType;
+}
+
+export type EpisodeCardWithGuests = EpisodeCardData & { guests: EpisodeCardGuest[] };
+
+// List views only need card fields — NOT the full relations. buildEpisodeInclude()
+// loads every transcript segment (~1.7k rows/episode), plus quotes, lore and
+// mentions per row, so a 20-episode list pulled ~30k+ rows (profiled: 2s+ vs the
+// ~90ms DB round-trip baseline). This select fetches counts and names instead.
+const EPISODE_CARD_LIST_SELECT = {
+  id: true,
+  title: true,
+  slug: true,
+  episodeNumber: true,
+  airDate: true,
+  summaryShort: true,
+  thumbnailUrl: true,
+  status: true,
+  youtubeVideoId: true,
+  rumbleVideoId: true,
+  summaryFacts: true,
+  summaryLong: true, // only length-tested for hasSummary; still far cheaper than segments
+  isHumanReviewed: true,
+  humanReviewedAt: true,
+  guests: {
+    select: {
+      person: { select: { displayName: true, slug: true, avatarUrl: true, personType: true } },
+    },
+  },
+  topics: { select: { topic: { select: { title: true } } } },
+  _count: { select: { segments: true } },
+} satisfies Prisma.EpisodeSelect;
+
+/**
+ * Lean episode list for card surfaces (/episodes, homepage). Same filtering and
+ * ordering semantics as getEpisodes, but selects only what cards render.
+ * Use getEpisodes/getEpisodeBySlug when the full relations are actually needed.
+ */
+export async function getEpisodeCards(options?: {
+  status?: ContentStatus;
+  take?: number;
+  skip?: number;
+  orderBy?: "airDate" | "episodeNumber" | "title";
+  order?: "asc" | "desc";
+  eraId?: string;
+}): Promise<EpisodeCardWithGuests[]> {
+  const {
+    status,
+    take = 20,
+    skip = 0,
+    orderBy = "episodeNumber",
+    order = "desc",
+    eraId,
+  } = options ?? {};
+
+  const orderByClause =
+    orderBy === "airDate"
+      ? [{ airDate: { sort: order, nulls: "last" as const } }, { episodeNumber: order }]
+      : { [orderBy]: order };
+
+  const where: Prisma.EpisodeWhereInput = {
+    ...(status ? { status } : {}),
+    ...buildEraWhere(eraId),
+  };
+
+  const rows = await prisma.episode.findMany({
+    where: Object.keys(where).length > 0 ? where : undefined,
+    select: EPISODE_CARD_LIST_SELECT,
+    orderBy: orderByClause,
+    take,
+    skip,
+  });
+
+  return rows.map((episode) => ({
+    id: episode.id,
+    title: cleanTitle(episode.title),
+    slug: episode.slug,
+    episodeNumber: episode.episodeNumber,
+    airDate: episode.airDate,
+    summaryShort: episode.summaryShort,
+    thumbnailUrl: fixThumbnailUrl(episode.thumbnailUrl),
+    status: episode.status,
+    hasVideo: !!(episode.youtubeVideoId || episode.rumbleVideoId),
+    segmentCount: episode._count.segments,
+    hasSummary: !!(
+      (episode.summaryFacts && episode.summaryFacts.length > 0) ||
+      (episode.summaryLong && episode.summaryLong.length > 0)
+    ),
+    isHumanReviewed: episode.isHumanReviewed,
+    humanReviewedAt: episode.humanReviewedAt,
+    guestNames: episode.guests
+      .filter((g) => g.person.personType !== "host")
+      .map((g) => g.person.displayName),
+    topicNames: episode.topics.map((t) => t.topic.title),
+    guests: episode.guests.map((g) => ({
+      displayName: g.person.displayName,
+      slug: g.person.slug,
+      avatarUrl: g.person.avatarUrl,
+      personType: g.person.personType,
+    })),
+  }));
 }
 
 export async function getEpisodes(options?: {

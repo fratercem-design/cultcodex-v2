@@ -109,9 +109,10 @@ export function ThresholdHero({
         </div>
 
         <p className="threshold__kicker">You are entering</p>
-        <h1 className="threshold__title">
+        {/* p, not h1 — the page's real <h1> lives in the hero below; two h1s hurt SEO */}
+        <p className="threshold__title">
           <em>the Codex.</em>
-        </h1>
+        </p>
 
         <dl className="threshold__meta">
           <div>
