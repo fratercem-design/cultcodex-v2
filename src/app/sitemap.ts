@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { ARCHETYPES } from "@/lib/archetypes";
 import { SYMBOLS } from "@/lib/symbols/data";
 import { PILLARS } from "@/lib/pillars/pillars";
+import { LEXICON, lexiconSlug } from "@/app/lexicon/page";
 
 // Regenerate at most once per hour
 export const revalidate = 3600;
@@ -156,6 +157,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.8,
+    })),
+    // Per-term lexicon glossary pages (DefinedTerm long-tail), deduped by slug
+    ...[...new Set(LEXICON.map((t) => lexiconSlug(t.word)))].map((slug) => ({
+      url: `${baseUrl}/lexicon/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
     })),
   ];
 

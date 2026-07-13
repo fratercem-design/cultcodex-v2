@@ -1,5 +1,6 @@
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 /* ------------------------------------------------------------------ */
 /*  Term type                                                          */
 /* ------------------------------------------------------------------ */
-interface Term {
+export interface Term {
   word: string;
   aka?: string[];
   definition: string;
@@ -21,7 +22,7 @@ interface Term {
   category: Category;
 }
 
-type Category =
+export type Category =
   | "panelverse"
   | "streaming"
   | "community"
@@ -39,7 +40,7 @@ type Category =
  *   Crimson — Community & Slang (social dynamics)
  *   Pink    — Music & Performance (creative expression)
  */
-const CATEGORY_META: Record<
+export const CATEGORY_META: Record<
   Category,
   { label: string; color: string; dotColor: string; borderColor: string; bgHover: string; description: string }
 > = {
@@ -112,7 +113,7 @@ const CATEGORY_META: Record<
 /* ------------------------------------------------------------------ */
 /*  Lexicon entries                                                     */
 /* ------------------------------------------------------------------ */
-const LEXICON: Term[] = [
+export const LEXICON: Term[] = [
   // ── PANELVERSE ──────────────────────────────────────────────────
   {
     word: "Panelverse",
@@ -2616,6 +2617,28 @@ const LEXICON: Term[] = [
 ];
 
 /* ------------------------------------------------------------------ */
+/*  Slug helpers (shared with /lexicon/[term] and sitemap)             */
+/* ------------------------------------------------------------------ */
+
+/** URL slug for a lexicon term, e.g. "As Above, So Below" -> "as-above-so-below". */
+export function lexiconSlug(word: string): string {
+  return word
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Look up a term by its URL slug. Returns undefined if none match. */
+export function getLexiconTerm(slug: string): Term | undefined {
+  return LEXICON.find((t) => lexiconSlug(t.word) === slug);
+}
+
+/** Other terms in the same category, for internal linking. */
+export function relatedLexiconTerms(term: Term, limit = 6): Term[] {
+  return LEXICON.filter((t) => t.category === term.category && t.word !== term.word).slice(0, limit);
+}
+
+/* ------------------------------------------------------------------ */
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function LexiconPage() {
@@ -2741,7 +2764,7 @@ export default function LexiconPage() {
                           <dt className="flex items-start gap-2">
                             <span className={`w-2 h-2 rounded-full ${meta.dotColor} mt-1.5 shrink-0`} />
                             <span>
-                              <span className={`font-bold text-sm ${meta.color}`}>{term.word}</span>
+                              <Link href={`/lexicon/${lexiconSlug(term.word)}`} className={`font-bold text-sm ${meta.color} hover:underline`}>{term.word}</Link>
                               {term.aka && term.aka.length > 0 && (
                                 <span className="text-text-muted font-normal text-xs ml-2">
                                   aka {term.aka.join(", ")}
