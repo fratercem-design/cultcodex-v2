@@ -953,6 +953,13 @@ enum CardType {
   MAHAVIDYA
   AVATAR
   INCIDENT
+  QUOTE
+  EPISODE
+  DEITY
+  LOCATION
+  RITUAL
+  SYMBOL
+  EVENT
 }
 
 model Card {
@@ -972,6 +979,26 @@ model Card {
   totalMinted Int       @default(0)
   maxSupply   Int?
   isActive    Boolean   @default(true)
+
+  // ── Divinatory metadata (universal — any card type may participate in a reading) ──
+  uprightMeaning     String?  @db.Text
+  reversedMeaning    String?  @db.Text
+  divinationKeywords String[] @default([])
+  element            String?
+  planet             String?
+  archetype          String?
+  shadowAspect       String?  @db.Text
+  advice             String?  @db.Text
+  oraclePrompt       String?  @db.Text
+  meaningVersion     Int      @default(1)
+  divinationEligible Boolean  @default(false)
+  divinationStrength Int      @default(50)
+  oracleCategories   String[] @default([])
+  // ── Archive provenance / polymorphic source link ──
+  sourceType         String?
+  sourceRefId        String?
+  mythology          String?
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -983,6 +1010,9 @@ model Card {
   @@index([rarity])
   @@index([cardType])
   @@index([isActive])
+  @@index([divinationEligible])
+  @@index([sourceType, sourceRefId])
+  @@index([mythology])
 }
 
 // Single-use gift/claim tokens for hand-distributed card editions (e.g. the
@@ -1053,6 +1083,14 @@ model OwnedCard {
   obtainedVia String   @default("pack")
   obtainedAt  DateTime @default(now())
 
+  // ── Provenance + evolution ──
+  evolutionStage    Int     @default(0)
+  source            String  @default("pack")
+  method            String?
+  serialNumber      Int?
+  evolvedFromCardId String?
+  firstOwnerId      String?
+
   user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
   card Card      @relation(fields: [cardId], references: [id], onDelete: Cascade)
 
@@ -1071,6 +1109,13 @@ model UserWallet {
   lastDailyClaimAt DateTime?
   dailyStreak      Int       @default(0)
   longestStreak    Int       @default(0)
+  // ── Daily Signal economy + divination progression (regamify) ──
+  signal        Int       @default(0)
+  signalResetAt DateTime?
+  drawStreak    Int       @default(0)
+  lastDrawAt    DateTime?
+  xp            Int       @default(0)
+  level         Int       @default(1)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
@@ -1135,6 +1180,170 @@ model DeckCard {
 
   @@unique([deckId, cardId])
   @@index([deckId])
+}
+
+// ─── Regamify: Reading Persistence, Collections, Divination ──────────────────
+// Schema present in the live DB via the orphaned cards_regamify_foundation
+// migration; re-declared here so the generated client is typed for the reading
+// engine. ReadingCard snapshots meaning at draw time (immutability of history).
+
+model Spread {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  cardCount   Int      @default(1)
+  signalCost  Int      @default(1)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  positions SpreadPosition[]
+  readings  Reading[]
+}
+
+model SpreadPosition {
+  id       String  @id @default(cuid())
+  spreadId String
+  index    Int
+  name     String
+  meaning  String?
+  spread   Spread  @relation(fields: [spreadId], references: [id], onDelete: Cascade)
+
+  @@unique([spreadId, index])
+  @@index([spreadId])
+}
+
+model Reading {
+  id         String   @id @default(cuid())
+  userId     String
+  spreadId   String?
+  question   String?  @db.Text
+  seed       String
+  reflection String?  @db.Text
+  createdAt  DateTime @default(now())
+
+  spread Spread?       @relation(fields: [spreadId], references: [id])
+  cards  ReadingCard[]
+
+  @@index([userId, createdAt])
+}
+
+model ReadingCard {
+  id           String  @id @default(cuid())
+  readingId    String
+  cardId       String
+  position     Int
+  positionName String?
+  orientation  String
+  borrowed     Boolean @default(false)
+
+  drawnMeaningVersion Int
+  titleSnapshot       String?
+  uprightMeaning      String?  @db.Text
+  reversedMeaning     String?  @db.Text
+  advice              String?  @db.Text
+  oraclePrompt        String?  @db.Text
+  keywords            String[] @default([])
+  element             String?
+  archetype           String?
+
+  reading Reading @relation(fields: [readingId], references: [id], onDelete: Cascade)
+
+  @@index([readingId])
+  @@index([cardId])
+}
+
+model CardSet {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  name             String
+  description      String?
+  setType          String   @default("tarot")
+  mythology        String?
+  sortOrder        Int      @default(0)
+  rewardCredits    Int      @default(0)
+  rewardTitle      String?
+  rewardFoilCardId String?
+  unlocksSpread    String?
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  members     CardSetMember[]
+  completions UserSetCompletion[]
+
+  @@index([setType])
+}
+
+model CardSetMember {
+  id     String  @id @default(cuid())
+  setId  String
+  cardId String
+  set    CardSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+
+  @@unique([setId, cardId])
+  @@index([setId])
+  @@index([cardId])
+}
+
+model UserSetCompletion {
+  id            String   @id @default(cuid())
+  userId        String
+  setId         String
+  completedAt   DateTime @default(now())
+  rewardClaimed Boolean  @default(false)
+  set           CardSet  @relation(fields: [setId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, setId])
+  @@index([userId])
+}
+
+model CardInstance {
+  id             String   @id @default(cuid())
+  cardId         String
+  ownerId        String
+  firstOwnerId   String?
+  serialNumber   Int?
+  isFoil         Boolean  @default(false)
+  evolutionStage Int      @default(0)
+  source         String   @default("pack")
+  method         String?
+  evolvedFromId  String?
+  obtainedAt     DateTime @default(now())
+
+  @@index([ownerId])
+  @@index([cardId])
+}
+
+model OracleAffinity {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  dominantElement   String?
+  dominantPlanet    String?
+  dominantArchetype String?
+  mostDrawnSuit     String?
+  shadowPattern     String?
+  recurringCards    Json     @default("[]")
+  readingsCount     Int      @default(0)
+  updatedAt         DateTime @updatedAt
+}
+
+model SeasonalEvent {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  description  String?
+  startsAt     DateTime
+  endsAt       DateTime
+  rewardCardId String?
+  badge        String?
+  collectGoal  Json     @default("[]")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  @@index([isActive, startsAt, endsAt])
 }
 
 // ─── Signal Proposals ────────────────────────────────────
