@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { drawReading, type ReadingMode } from "@/lib/cards/reading";
+import { recomputeAffinity } from "@/lib/cards/affinity";
 
 const MODES: ReadingMode[] = ["arcana", "archive", "hybrid"];
 
@@ -23,6 +24,8 @@ export async function POST(req: Request) {
       question,
       ownedOnly: body.ownedOnly === true,
     });
+    // Refresh the self-discovery profile from the new draw (non-fatal).
+    await recomputeAffinity(user.id).catch(() => {});
     return NextResponse.json({ reading, signalRemaining });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Reading failed";

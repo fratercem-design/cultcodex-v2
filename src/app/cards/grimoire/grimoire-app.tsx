@@ -21,6 +21,15 @@ export interface GrimoireReading {
   reflection: string | null;
   cards: GrimoireCard[];
 }
+export interface Affinity {
+  dominantElement: string | null;
+  dominantPlanet: string | null;
+  dominantArchetype: string | null;
+  mostDrawnSuit: string | null;
+  shadowPattern: string | null;
+  readingsCount: number;
+  recurringCards: { title: string; count: number }[];
+}
 
 const panel: CSSProperties = {
   background: "var(--term-panel)",
@@ -36,7 +45,14 @@ function fmtDate(iso: string): string {
   }
 }
 
-export function GrimoireApp({ signedIn, readings }: { signedIn: boolean; readings: GrimoireReading[] }) {
+export function GrimoireApp({
+  signedIn, readings, affinity, threshold,
+}: {
+  signedIn: boolean;
+  readings: GrimoireReading[];
+  affinity: Affinity | null;
+  threshold: number;
+}) {
   return (
     <main style={{ maxWidth: 820, margin: "0 auto", padding: "48px 20px 96px", color: "var(--term-fg)" }}>
       <header style={{ textAlign: "center", marginBottom: 36 }}>
@@ -50,6 +66,10 @@ export function GrimoireApp({ signedIn, readings }: { signedIn: boolean; reading
           Every reading is kept as it was drawn — the meaning cannot change beneath you. Return, and mark what came true.
         </p>
       </header>
+
+      {signedIn && affinity && affinity.readingsCount > 0 && (
+        <AffinityPanel affinity={affinity} threshold={threshold} />
+      )}
 
       {!signedIn ? (
         <p style={{ textAlign: "center", fontFamily: "var(--font-mono)", fontSize: 13, color: "var(--term-fg-dim)" }}>
@@ -65,6 +85,62 @@ export function GrimoireApp({ signedIn, readings }: { signedIn: boolean; reading
         </div>
       )}
     </main>
+  );
+}
+
+function AffinityPanel({ affinity, threshold }: { affinity: Affinity; threshold: number }) {
+  if (affinity.readingsCount < threshold) {
+    const left = threshold - affinity.readingsCount;
+    return (
+      <div style={{ ...panel, padding: "16px 20px", marginBottom: 28, textAlign: "center" }}>
+        <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.25em", color: "var(--accent-violet)", marginBottom: 6 }}>
+          ORACLE AFFINITY — FORMING
+        </div>
+        <p style={{ fontFamily: "var(--font-serif)", fontSize: 15, color: "var(--term-fg-dim)" }}>
+          Your pattern is still emerging. Draw {left} more reading{left === 1 ? "" : "s"} to reveal your affinity.{" "}
+          <span style={{ color: "var(--term-fg-mute)" }}>({affinity.readingsCount}/{threshold})</span>
+        </p>
+      </div>
+    );
+  }
+  const tiles = [
+    { label: "ELEMENT", value: affinity.dominantElement },
+    { label: "PLANET", value: affinity.dominantPlanet },
+    { label: "ARCHETYPE", value: affinity.dominantArchetype },
+    { label: "DRAWS MOST", value: affinity.mostDrawnSuit },
+    { label: "SHADOW", value: affinity.shadowPattern },
+  ].filter((t) => t.value);
+  return (
+    <div style={{ ...panel, borderColor: "var(--accent-violet)", padding: "20px 22px", marginBottom: 30 }}>
+      <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: "0.3em", color: "var(--accent-violet)", marginBottom: 14, textAlign: "center" }}>
+        ◈ ORACLE AFFINITY
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(88px, 1fr))", gap: 12, marginBottom: affinity.recurringCards.length ? 16 : 0 }}>
+        {tiles.map((t) => (
+          <div key={t.label} style={{ textAlign: "center" }}>
+            <div style={{ fontFamily: "var(--font-mono)", fontSize: 9.5, letterSpacing: "0.15em", color: "var(--term-fg-mute)" }}>{t.label}</div>
+            <div style={{ fontFamily: "var(--font-serif)", fontSize: 17, color: "var(--term-fg)", marginTop: 3 }}>{t.value}</div>
+          </div>
+        ))}
+      </div>
+      {affinity.recurringCards.length > 0 && (
+        <div style={{ borderTop: "1px solid var(--term-line)", paddingTop: 12 }}>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 9.5, letterSpacing: "0.2em", color: "var(--term-fg-mute)", marginBottom: 8, textAlign: "center" }}>
+            RECURRING CARDS
+          </div>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
+            {affinity.recurringCards.map((c) => (
+              <span key={c.title} style={{ fontFamily: "var(--font-serif)", fontSize: 14, color: "var(--term-fg)", border: "1px solid var(--term-line)", borderRadius: 3, padding: "3px 10px" }}>
+                {c.title} <span style={{ color: "var(--accent-violet)", fontFamily: "var(--font-mono)", fontSize: 11 }}>×{c.count}</span>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+      <p style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--term-fg-mute)", textAlign: "center", marginTop: 14 }}>
+        from {affinity.readingsCount} readings
+      </p>
+    </div>
   );
 }
 

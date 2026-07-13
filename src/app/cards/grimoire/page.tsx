@@ -3,7 +3,8 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
 import { getUserReadings } from "@/lib/cards/reading";
-import { GrimoireApp, type GrimoireReading } from "./grimoire-app";
+import { getAffinity, AFFINITY_THRESHOLD } from "@/lib/cards/affinity";
+import { GrimoireApp, type GrimoireReading, type Affinity } from "./grimoire-app";
 
 export const metadata: Metadata = {
   title: "The Grimoire — Your Readings — CultCodex",
@@ -13,9 +14,25 @@ export const metadata: Metadata = {
 
 export default async function GrimoirePage() {
   const user = await getCurrentUser().catch(() => null);
-  if (!user) return <GrimoireApp signedIn={false} readings={[]} />;
+  if (!user) return <GrimoireApp signedIn={false} readings={[]} affinity={null} threshold={AFFINITY_THRESHOLD} />;
 
-  const rows = await getUserReadings(user.id).catch(() => []);
+  const [rows, aff] = await Promise.all([
+    getUserReadings(user.id).catch(() => []),
+    getAffinity(user.id).catch(() => null),
+  ]);
+  const affinity: Affinity | null = aff
+    ? {
+        dominantElement: aff.dominantElement,
+        dominantPlanet: aff.dominantPlanet,
+        dominantArchetype: aff.dominantArchetype,
+        mostDrawnSuit: aff.mostDrawnSuit,
+        shadowPattern: aff.shadowPattern,
+        readingsCount: aff.readingsCount,
+        recurringCards: Array.isArray(aff.recurringCards)
+          ? (aff.recurringCards as unknown as { title: string; count: number }[])
+          : [],
+      }
+    : null;
   const readings: GrimoireReading[] = rows.map((r) => ({
     id: r.id,
     createdAt: r.createdAt.toISOString(),
@@ -35,5 +52,5 @@ export default async function GrimoirePage() {
     })),
   }));
 
-  return <GrimoireApp signedIn readings={readings} />;
+  return <GrimoireApp signedIn readings={readings} affinity={affinity} threshold={AFFINITY_THRESHOLD} />;
 }
