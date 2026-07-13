@@ -140,3 +140,16 @@ export async function drawReading(opts: DrawOptions) {
     { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
   );
 }
+
+/** A user's reading history, newest first — the personal grimoire. */
+export async function getUserReadings(userId: string, limit = 60) {
+  return prisma.reading.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    include: {
+      spread: { select: { name: true } },
+      cards: { orderBy: { position: "asc" } },
+    },
+  });
+}
