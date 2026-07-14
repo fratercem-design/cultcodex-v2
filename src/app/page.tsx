@@ -359,7 +359,7 @@ export default async function HomePage() {
                   className="h-32 w-24 flex-shrink-0 object-cover sm:h-40 sm:w-28"
                 />
                 <div className="flex flex-col justify-center gap-1.5 px-5 py-4">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/70">{"/// the_book · $19"}</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/70">{"/// the_book · $5"}</p>
                   <h3 className="font-display text-lg font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-gold">
                     The Psychenomicon — Volume I
                   </h3>

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { BookCta } from "@/components/book/book-cta";
 
 const SKU = "psychenomicon-vol-1";
-const PRICE = 19;
+const PRICE = 5;
 
 export const revalidate = 3600;
 
