@@ -1356,8 +1356,10 @@ export async function POST(req: NextRequest) {
       orderBy: { chapterNumber: "asc" },
     });
 
+    // An episode counts as transcript-less when it has no segments and its raw
+    // transcript is empty or a short sync sentinel (e.g. "no_captions").
     const targets = chapters.filter(
-      (c) => !c.episode || (c.episode._count.segments === 0 && !c.episode.transcriptRaw?.trim())
+      (c) => !c.episode || (c.episode._count.segments === 0 && (c.episode.transcriptRaw?.trim().length ?? 0) < 100)
     );
 
     const listed = targets.map((c) => ({
