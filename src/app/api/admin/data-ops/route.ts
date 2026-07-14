@@ -32,6 +32,9 @@
  * op: "delete-no-transcript-chapters" — remove Psychenomicon chapters whose source episode
  *                          has no transcript (or no episode at all), plus their art assets
  *                          and archetype events: { dryRun? }
+ * op: "delete-no-transcript-episodes" — remove blank archive episodes with no transcript
+ *                          (no segments, no transcriptRaw). Engagement/chaptered episodes
+ *                          are skipped unless force:true: { dryRun?, force? }
  */
 
 import { createHash, timingSafeEqual } from "node:crypto";
@@ -1391,6 +1394,62 @@ export async function POST(req: NextRequest) {
       matched: targets.length,
       deleted, artAssetsDeleted, archetypeEventsDeleted,
       chapters: listed,
+    });
+  }
+
+  // ── delete-no-transcript-episodes ───────────────────────────────────────────
+  // Remove Episode rows with no transcript at all (no segments, no
+  // transcriptRaw) — blank archive entries with no source material.
+  // Episodes with engagement (comments/favorites/quotes) or a Psychenomicon
+  // chapter are skipped unless force:true. Join rows cascade; a linked
+  // chapter's episodeId goes null (chapter itself is preserved).
+  if (op === "delete-no-transcript-episodes") {
+    const dryRun = body.dryRun !== false;
+    const force = body.force === true;
+
+    const eps = await prisma.episode.findMany({
+      where: { segments: { none: {} } },
+      select: {
+        id: true, episodeNumber: true, title: true, slug: true, airDate: true,
+        status: true, youtubeVideoId: true, transcriptRaw: true, summaryShort: true,
+        psychenomiconChapter: { select: { chapterNumber: true } },
+        _count: { select: { quotes: true, comments: true, favorites: true, guests: true } },
+      },
+      orderBy: { airDate: "asc" },
+    });
+
+    const targets = eps.filter((e) => !e.transcriptRaw?.trim());
+    const guarded = targets.filter(
+      (e) => e.psychenomiconChapter || e._count.quotes > 0 || e._count.comments > 0 || e._count.favorites > 0
+    );
+    const deletable = force ? targets : targets.filter((e) => !guarded.includes(e));
+
+    const describe = (e: (typeof targets)[number]) => ({
+      episodeNumber: e.episodeNumber,
+      title: e.title,
+      slug: e.slug,
+      airDate: e.airDate,
+      status: e.status,
+      youtubeVideoId: e.youtubeVideoId,
+      hasSummary: !!e.summaryShort,
+      chapter: e.psychenomiconChapter?.chapterNumber ?? null,
+      refs: e._count,
+    });
+
+    let deleted = 0;
+    if (!dryRun && deletable.length > 0) {
+      deleted = (
+        await prisma.episode.deleteMany({ where: { id: { in: deletable.map((e) => e.id) } } })
+      ).count;
+    }
+
+    return NextResponse.json({
+      op, dryRun, force,
+      matched: targets.length,
+      guardedSkipped: force ? 0 : guarded.length,
+      deleted,
+      wouldDelete: deletable.map(describe),
+      guarded: (force ? [] : guarded).map(describe),
     });
   }
 
