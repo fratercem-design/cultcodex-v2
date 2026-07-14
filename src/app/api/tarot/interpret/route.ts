@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { anthropic as client, bedrockModelId } from "@/lib/anthropic";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
 import { consumeLlmBudget } from "@/lib/llm-budget";
+import { groqChat, groqConfigured } from "@/lib/free-llm";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -100,7 +101,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+  const hasBedrock = !!(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY);
+  if (!groqConfigured() && !hasBedrock) {
     return NextResponse.json({ error: "Oracle not configured" }, { status: 500 });
   }
 
@@ -118,26 +120,51 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid card count" }, { status: 400 });
   }
 
-  try {
+  const prompt = buildPrompt(body);
+
+  // Prefer free Groq for this single-shot creative-JSON task; fall back to
+  // Bedrock (Opus) if Groq is unset, errors, or returns unparseable output.
+  async function viaGroq(): Promise<string> {
+    return groqChat({ system: SYSTEM, user: prompt, maxTokens: 1024, json: true });
+  }
+  async function viaBedrock(): Promise<string> {
     const response = await client.messages.create({
       model: bedrockModelId(process.env.ORACLE_MODEL ?? "claude-opus-4-8"),
       max_tokens: 1024,
       system: SYSTEM,
-      messages: [{ role: "user", content: buildPrompt(body) }],
+      messages: [{ role: "user", content: prompt }],
     });
-
-    const text = response.content.find((b) => b.type === "text")?.text ?? "";
-    // Strip markdown code fences if Claude wraps the JSON
-    const cleaned = text.trim().replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "").trim();
-    const parsed = JSON.parse(cleaned) as InterpretResponse;
-
-    if (typeof parsed.overall !== "string" || !Array.isArray(parsed.cardReadings)) {
-      return NextResponse.json({ error: "The Oracle could not interpret this reading." }, { status: 503 });
-    }
-
-    return NextResponse.json(parsed);
-  } catch (err) {
-    console.error("[tarot/interpret] error:", err);
-    return NextResponse.json({ error: "The Oracle could not interpret this reading." }, { status: 503 });
+    return response.content.find((b) => b.type === "text")?.text ?? "";
   }
+
+  function parseReading(text: string): InterpretResponse | null {
+    // Strip markdown code fences if the model wraps the JSON.
+    const cleaned = text.trim().replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "").trim();
+    try {
+      const parsed = JSON.parse(cleaned) as InterpretResponse;
+      if (typeof parsed.overall === "string" && Array.isArray(parsed.cardReadings)) return parsed;
+    } catch {
+      /* fall through */
+    }
+    return null;
+  }
+
+  // Try providers in order; each may throw (API error) or return unparseable JSON.
+  const providers: Array<{ name: string; run: () => Promise<string>; enabled: boolean }> = [
+    { name: "groq", run: viaGroq, enabled: groqConfigured() },
+    { name: "bedrock", run: viaBedrock, enabled: hasBedrock },
+  ];
+
+  for (const p of providers) {
+    if (!p.enabled) continue;
+    try {
+      const parsed = parseReading(await p.run());
+      if (parsed) return NextResponse.json(parsed);
+      console.warn(`[tarot/interpret] ${p.name} returned unparseable output, trying next`);
+    } catch (err) {
+      console.error(`[tarot/interpret] ${p.name} error:`, err instanceof Error ? err.message : err);
+    }
+  }
+
+  return NextResponse.json({ error: "The Oracle could not interpret this reading." }, { status: 503 });
 }

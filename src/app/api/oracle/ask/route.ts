@@ -9,6 +9,7 @@ import { getEraById } from "@/lib/eras";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
 import { consumeLlmBudget } from "@/lib/llm-budget";
 import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cache";
+import { groqChat, groqConfigured } from "@/lib/free-llm";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -1033,16 +1034,48 @@ export async function POST(req: NextRequest) {
       status: errObj.status,
       error: errObj.error,
     });
-    const lc = message.toLowerCase();
-    const userMsg = lc.includes("rate") || lc.includes("throttl")
-      ? "The Oracle is overwhelmed. Try again in a moment."
-      : lc.includes("access") || lc.includes("denied") || lc.includes("not authorized")
-      ? "Oracle access denied — check API permissions."
-      : `The Oracle could not be reached. (${message.slice(0, 120)})`;
-    return NextResponse.json(
-      { ok: false, error: userMsg } satisfies OracleResponse,
-      { status: 503 }
-    );
+
+    // Bedrock failure fallback: answer from the already-gathered archive context
+    // via free Groq (no tools). Keeps the Oracle alive during throttling/outages
+    // instead of erroring out. Only the primary path uses Opus + tool-use.
+    if (groqConfigured()) {
+      try {
+        const groqAnswer = await groqChat({
+          system: ORACLE_SYSTEM,
+          user: `Archive context (pre-searched):\n${contextText}\n\n${contextPreamble}Question: ${question}`,
+          maxTokens: 1024,
+        });
+        if (groqAnswer.trim()) {
+          answer = groqAnswer.trim();
+          citations = preFlightCitations;
+        } else {
+          throw new Error("groq empty");
+        }
+      } catch (groqErr) {
+        console.error("[oracle] groq fallback failed:", groqErr instanceof Error ? groqErr.message : groqErr);
+        const lc = message.toLowerCase();
+        const userMsg = lc.includes("rate") || lc.includes("throttl")
+          ? "The Oracle is overwhelmed. Try again in a moment."
+          : lc.includes("access") || lc.includes("denied") || lc.includes("not authorized")
+          ? "Oracle access denied — check API permissions."
+          : `The Oracle could not be reached. (${message.slice(0, 120)})`;
+        return NextResponse.json(
+          { ok: false, error: userMsg } satisfies OracleResponse,
+          { status: 503 }
+        );
+      }
+    } else {
+      const lc = message.toLowerCase();
+      const userMsg = lc.includes("rate") || lc.includes("throttl")
+        ? "The Oracle is overwhelmed. Try again in a moment."
+        : lc.includes("access") || lc.includes("denied") || lc.includes("not authorized")
+        ? "Oracle access denied — check API permissions."
+        : `The Oracle could not be reached. (${message.slice(0, 120)})`;
+      return NextResponse.json(
+        { ok: false, error: userMsg } satisfies OracleResponse,
+        { status: 503 }
+      );
+    }
   }
 
   let audioBase64: string | null = null;
