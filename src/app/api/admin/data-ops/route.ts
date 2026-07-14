@@ -29,6 +29,9 @@
  *                          card editions; Vercel builds don't run prisma migrate deploy)
  * op: "mint-card-gifts"   — mint single-use claim tokens for a card edition:
  *                          { cardSlug, count, edition?, note?, dryRun? }. count:0 lists existing.
+ * op: "delete-no-transcript-chapters" — remove Psychenomicon chapters whose source episode
+ *                          has no transcript (or no episode at all), plus their art assets
+ *                          and archetype events: { dryRun? }
  */
 
 import { createHash, timingSafeEqual } from "node:crypto";
@@ -1325,6 +1328,70 @@ export async function POST(req: NextRequest) {
       minted.push({ serial: gift.serial, url: `https://cultcodex.me/claim/card/${gift.token}` });
     }
     return NextResponse.json({ op, card: card.title, cardSlug, edition, minted });
+  }
+
+  // ── delete-no-transcript-chapters ───────────────────────────────────────────
+  // Remove Psychenomicon chapters generated from episodes that have no
+  // transcript (no segments, no transcriptRaw) — ungrounded/blank entries.
+  // Also removes chapters with no episode link at all, their art assets
+  // (keyed by chapterSlug, no FK), and their archetype events (chapterId is
+  // SetNull on delete, which would strand junk events).
+  if (op === "delete-no-transcript-chapters") {
+    const dryRun = body.dryRun !== false;
+
+    const chapters = await prisma.psychenomiconChapter.findMany({
+      select: {
+        id: true, chapterNumber: true, title: true, slug: true,
+        episode: {
+          select: {
+            id: true, episodeNumber: true, title: true, airDate: true,
+            transcriptRaw: true, _count: { select: { segments: true } },
+          },
+        },
+        _count: { select: { entityAppearances: true, threadChapters: true, archetypeEvents: true } },
+      },
+      orderBy: { chapterNumber: "asc" },
+    });
+
+    const targets = chapters.filter(
+      (c) => !c.episode || (c.episode._count.segments === 0 && !c.episode.transcriptRaw?.trim())
+    );
+
+    const listed = targets.map((c) => ({
+      chapterNumber: c.chapterNumber,
+      title: c.title,
+      slug: c.slug,
+      episodeNumber: c.episode?.episodeNumber ?? null,
+      episodeTitle: c.episode?.title ?? null,
+      airDate: c.episode?.airDate ?? null,
+      reason: !c.episode ? "no episode" : "episode has no transcript",
+      refs: c._count,
+    }));
+
+    let deleted = 0;
+    let artAssetsDeleted = 0;
+    let archetypeEventsDeleted = 0;
+    if (!dryRun && targets.length > 0) {
+      const ids = targets.map((c) => c.id);
+      const slugs = targets.map((c) => c.slug);
+      archetypeEventsDeleted = (
+        await prisma.archetypeEvent.deleteMany({ where: { chapterId: { in: ids } } })
+      ).count;
+      artAssetsDeleted = (
+        await prisma.psychenomiconArtAsset.deleteMany({ where: { chapterSlug: { in: slugs } } })
+      ).count;
+      deleted = (
+        await prisma.psychenomiconChapter.deleteMany({ where: { id: { in: ids } } })
+      ).count; // entityAppearances + threadChapters cascade
+    }
+
+    return NextResponse.json({
+      op, dryRun,
+      scanned: chapters.length,
+      matched: targets.length,
+      deleted, artAssetsDeleted, archetypeEventsDeleted,
+      chapters: listed,
+    });
   }
 
   return NextResponse.json({ error: `Unknown op: ${op}` }, { status: 400 });
