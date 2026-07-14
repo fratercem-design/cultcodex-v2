@@ -62,14 +62,39 @@ console.log(`Whisper backend: ${WHISPER_BACKEND} (${WHISPER.model})`);
 const AUDIO_DIR = join(ROOT, "scripts/scrape/data/audio");
 const MAX_WHISPER_BYTES = 24 * 1024 * 1024; // 24MB to stay under 25MB limit
 
-// The 5 episodes to transcribe
-const TARGETS = [
-  { videoId: "bkW4JVDD564", slug: "psyche-awakens-tarot-is-live-53" },
-  { videoId: "3-zRpqciDvM", slug: "mystical-tarot-reading-unveiling-secrets-in-a-smoky-aura" },
-  { videoId: "bMGbxqtOSxY", slug: "free-panelverse-troll-decoder-ebook" },
-  { videoId: "3svecRHjfI4", slug: "monday-night-madness-open-panel-tarot-and-cats" },
-  { videoId: "31_k_nrg9d4", slug: "psyche-is-on-tonight" },
-];
+// CLI flags:
+//   --limit N   cap how many episodes to process this run (default: all)
+//   --dry-run   list what WOULD be transcribed, then exit (no API calls, no writes)
+const args = process.argv.slice(2);
+const DRY_RUN = args.includes("--dry-run");
+const limitArg = args.indexOf("--limit");
+const LIMIT = limitArg >= 0 ? parseInt(args[limitArg + 1], 10) || Infinity : Infinity;
+
+// Discover every published episode that has NO transcript segments yet but DOES
+// have a local audio file. Replaces the old hardcoded 5-episode list — this
+// sweeps the whole archive. Returns [{ videoId, slug }].
+async function discoverTargets() {
+  const { readdirSync } = await import("node:fs");
+  const localAudio = new Set(
+    readdirSync(AUDIO_DIR)
+      .filter((f) => f.endsWith(".mp3"))
+      .map((f) => f.slice(0, -4)) // strip ".mp3" → videoId
+  );
+
+  const { rows } = await db.query(`
+    SELECT e."youtubeVideoId" AS "videoId", e.slug
+    FROM "Episode" e
+    WHERE e.status = 'published'
+      AND e."youtubeVideoId" IS NOT NULL
+      AND NOT EXISTS (
+        SELECT 1 FROM "TranscriptSegment" ts WHERE ts."episodeId" = e.id
+      )
+    ORDER BY e."airDate" ASC
+  `);
+
+  // Only episodes we actually have audio for can be Whisper-transcribed here.
+  return rows.filter((r) => localAudio.has(r.videoId));
+}
 
 const db = new pg.Client({ connectionString: DATABASE_URL, ssl: { rejectUnauthorized: false } });
 
@@ -241,8 +266,24 @@ async function main() {
   await db.connect();
   console.log("Connected to DB");
 
-  for (const target of TARGETS) {
+  const all = await discoverTargets();
+  const targets = all.slice(0, LIMIT);
+  console.log(`Sweep: ${all.length} un-transcribed episode(s) with local audio` +
+    (LIMIT !== Infinity ? ` (processing ${targets.length} this run)` : "") + ".");
+
+  if (DRY_RUN) {
+    for (const t of targets) console.log(`  would transcribe: ${t.slug} (${t.videoId})`);
+    if (all.length > targets.length) console.log(`  …and ${all.length - targets.length} more not shown (--limit).`);
+    await db.end();
+    console.log("\nDry run — nothing written.");
+    return;
+  }
+
+  let done = 0;
+  for (const target of targets) {
     await processEpisode(target);
+    done++;
+    console.log(`  [${done}/${targets.length}] complete`);
   }
 
   await db.end();
