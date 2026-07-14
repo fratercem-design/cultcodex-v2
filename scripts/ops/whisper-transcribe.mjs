@@ -65,10 +65,39 @@ const MAX_WHISPER_BYTES = 24 * 1024 * 1024; // 24MB to stay under 25MB limit
 // CLI flags:
 //   --limit N   cap how many episodes to process this run (default: all)
 //   --dry-run   list what WOULD be transcribed, then exit (no API calls, no writes)
+//   --download  also include episodes with NO local audio; fetch via yt-dlp first
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes("--dry-run");
+const DOWNLOAD = args.includes("--download");
 const limitArg = args.indexOf("--limit");
 const LIMIT = limitArg >= 0 ? parseInt(args[limitArg + 1], 10) || Infinity : Infinity;
+
+// Fetch an episode's audio from YouTube as mp3 via yt-dlp. Returns true on success.
+// YouTube increasingly requires auth — set YT_DLP_COOKIES_BROWSER (chrome|edge|
+// firefox|brave) to pull your logged-in cookies, or YT_DLP_COOKIES_FILE for a
+// cookies.txt export. Without either, unauthenticated download is attempted.
+const COOKIES_BROWSER = env.YT_DLP_COOKIES_BROWSER; // e.g. "firefox"
+const COOKIES_FILE = env.YT_DLP_COOKIES_FILE;       // path to cookies.txt
+function downloadAudio(videoId) {
+  const out = join(AUDIO_DIR, `${videoId}.mp3`);
+  console.log(`  ↓ downloading audio via yt-dlp${COOKIES_BROWSER ? ` (cookies: ${COOKIES_BROWSER})` : COOKIES_FILE ? " (cookies file)" : ""}…`);
+  const cookieArgs = COOKIES_BROWSER
+    ? ["--cookies-from-browser", COOKIES_BROWSER]
+    : COOKIES_FILE
+    ? ["--cookies", COOKIES_FILE]
+    : [];
+  const r = spawnSync(
+    "yt-dlp",
+    [...cookieArgs, "-x", "--audio-format", "mp3", "--no-playlist", "-o", out,
+     `https://www.youtube.com/watch?v=${videoId}`],
+    { stdio: ["ignore", "pipe", "pipe"] }
+  );
+  if (r.status !== 0 || !existsSync(out)) {
+    console.log(`  ✗ download failed: ${(r.stderr?.toString() || "").trim().slice(-200)}`);
+    return false;
+  }
+  return true;
+}
 
 // Discover every published episode that has NO transcript segments yet but DOES
 // have a local audio file. Replaces the old hardcoded 5-episode list — this
@@ -92,8 +121,9 @@ async function discoverTargets() {
     ORDER BY e."airDate" ASC
   `);
 
-  // Only episodes we actually have audio for can be Whisper-transcribed here.
-  return rows.filter((r) => localAudio.has(r.videoId));
+  // Without --download, only episodes we already have audio for. With --download,
+  // include every un-transcribed episode (missing audio is fetched at process time).
+  return DOWNLOAD ? rows : rows.filter((r) => localAudio.has(r.videoId));
 }
 
 const db = new pg.Client({ connectionString: DATABASE_URL, ssl: { rejectUnauthorized: false } });
@@ -201,8 +231,10 @@ async function processEpisode(target) {
 
   const audioPath = join(AUDIO_DIR, `${videoId}.mp3`);
   if (!existsSync(audioPath)) {
-    console.log("  ✗ audio file not found, skipping");
-    return;
+    if (!DOWNLOAD || !downloadAudio(videoId)) {
+      console.log("  ✗ audio file not found, skipping" + (DOWNLOAD ? " (download failed)" : " (use --download to fetch)"));
+      return;
+    }
   }
 
   // Look up episode in DB
@@ -268,8 +300,8 @@ async function main() {
 
   const all = await discoverTargets();
   const targets = all.slice(0, LIMIT);
-  console.log(`Sweep: ${all.length} un-transcribed episode(s) with local audio` +
-    (LIMIT !== Infinity ? ` (processing ${targets.length} this run)` : "") + ".");
+  console.log(`Sweep: ${all.length} un-transcribed episode(s) ${DOWNLOAD ? "(audio fetched as needed)" : "with local audio"}` +
+    (LIMIT !== Infinity ? ` — processing ${targets.length} this run` : "") + ".");
 
   if (DRY_RUN) {
     for (const t of targets) console.log(`  would transcribe: ${t.slug} (${t.videoId})`);
