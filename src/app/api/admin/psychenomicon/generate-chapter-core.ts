@@ -174,7 +174,9 @@ export async function generateChapterForEpisode(episodeId: string): Promise<Chap
   });
 
   if (!episode) return { ok: false, status: 404, error: "Episode not found" };
-  if (episode.segments.length === 0 && !episode.transcriptRaw) {
+  // Raw transcripts under 100 chars are sync sentinels ("no_captions"), not
+  // real transcripts — generating from them produces ghost chapters about silence.
+  if (episode.segments.length === 0 && (episode.transcriptRaw?.trim().length ?? 0) < 100) {
     return { ok: false, status: 422, error: "No transcript available" };
   }
 
