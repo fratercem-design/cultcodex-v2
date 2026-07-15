@@ -1455,5 +1455,30 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // ── schema-probe ────────────────────────────────────────────────────────────
+  // READ-ONLY: identity facts about the connected database, for comparing
+  // environments (e.g. the stale CI DATABASE_URL vs real prod).
+  if (op === "schema-probe") {
+    const [db] = await prisma.$queryRawUnsafe<{ name: string }[]>(
+      `SELECT current_database() AS name`
+    ).catch(() => [{ name: "?" }]);
+    const episodes = await prisma.episode.count();
+    const chapters = await prisma.psychenomiconChapter.count();
+    const tables: Record<string, boolean> = {};
+    for (const t of ["CardGift", "Spread", "Reading", "CardSet", "SavedSearch"]) {
+      const [r] = await prisma.$queryRawUnsafe<{ exists: boolean }[]>(
+        `SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = '${t}') AS exists`
+      );
+      tables[t] = r.exists;
+    }
+    const [col] = await prisma.$queryRawUnsafe<{ exists: boolean }[]>(
+      `SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'Episode' AND column_name = 'enrichmentQueued') AS exists`
+    );
+    return NextResponse.json({
+      op, database: db?.name, episodes, chapters, tables,
+      episodeEnrichmentQueuedColumn: col.exists,
+    });
+  }
+
   return NextResponse.json({ error: `Unknown op: ${op}` }, { status: 400 });
 }
