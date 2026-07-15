@@ -1480,5 +1480,50 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // ── apply-saved-search-migration ────────────────────────────────────────────
+  // Idempotent DDL for the SavedSearch table + SearchKind enum, which never
+  // made it to prod (schema-probe 2026-07-14 showed the table missing while
+  // the /api/me/saved-searches routes are deployed). Same operator path as
+  // apply-card-gift-migration.
+  if (op === "apply-saved-search-migration") {
+    const stmts = [
+      `DO $$ BEGIN
+        CREATE TYPE "SearchKind" AS ENUM ('simple', 'deep', 'oracle');
+      EXCEPTION WHEN duplicate_object THEN NULL; END $$`,
+      `CREATE TABLE IF NOT EXISTS "SavedSearch" (
+        "id" TEXT NOT NULL,
+        "userId" TEXT NOT NULL,
+        "label" TEXT NOT NULL,
+        "kind" "SearchKind" NOT NULL,
+        "query" TEXT NOT NULL DEFAULT '',
+        "concepts" TEXT[],
+        "thresholds" DOUBLE PRECISION[],
+        "eraId" TEXT,
+        "personSlug" TEXT,
+        "archetype" TEXT,
+        "pinned" BOOLEAN NOT NULL DEFAULT false,
+        "lastRunAt" TIMESTAMP(3),
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL,
+        CONSTRAINT "SavedSearch_pkey" PRIMARY KEY ("id")
+      )`,
+      `CREATE INDEX IF NOT EXISTS "SavedSearch_userId_idx" ON "SavedSearch"("userId")`,
+      `DO $$ BEGIN
+        ALTER TABLE "SavedSearch" ADD CONSTRAINT "SavedSearch_userId_fkey"
+          FOREIGN KEY ("userId") REFERENCES "CodexUser"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+      EXCEPTION WHEN duplicate_object THEN NULL; END $$`,
+    ];
+    const steps: Array<{ sql: string; ok: boolean; error?: string }> = [];
+    for (const sql of stmts) {
+      try {
+        await prisma.$executeRawUnsafe(sql);
+        steps.push({ sql: sql.slice(0, 60), ok: true });
+      } catch (err) {
+        steps.push({ sql: sql.slice(0, 60), ok: false, error: err instanceof Error ? err.message : String(err) });
+      }
+    }
+    return NextResponse.json({ op, ok: steps.every((s) => s.ok), steps });
+  }
+
   return NextResponse.json({ error: `Unknown op: ${op}` }, { status: 400 });
 }
