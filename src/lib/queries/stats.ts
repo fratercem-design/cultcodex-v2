@@ -190,8 +190,19 @@ export async function getSeriesAggregates() {
   return { total, totalEpisodes };
 }
 
-/** Most recent updatedAt across core archive tables */
-export async function getArchiveLastUpdated(): Promise<Date | null> {
+/**
+ * Most recent updatedAt across core archive tables.
+ *
+ * None of Episode/Person/Quote/Topic/LoreEntry has an index on updatedAt, so this
+ * is 5 full-table sorts on every call — cheap to cache, expensive to run per-request.
+ * Cached like getCounts() above; same "archive-counts" tag so both refresh together
+ * once ingestion wires up revalidateTag.
+ *
+ * unstable_cache serializes its return value, so Dates come back as ISO strings —
+ * the cached fetcher returns a string, and the public function converts it back to
+ * a Date for callers (episodes/people/topics/lore/quotes glance bars).
+ */
+async function fetchArchiveLastUpdatedFromDB(): Promise<string | null> {
   const [ep, person, quote, topic, lore] = await Promise.all([
     prisma.episode.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
     prisma.person.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
@@ -204,5 +215,16 @@ export async function getArchiveLastUpdated(): Promise<Date | null> {
     .filter((d): d is Date => d != null);
 
   if (dates.length === 0) return null;
-  return dates.reduce((latest, d) => (d > latest ? d : latest));
+  return dates.reduce((latest, d) => (d > latest ? d : latest)).toISOString();
+}
+
+const getArchiveLastUpdatedCached = unstable_cache(
+  fetchArchiveLastUpdatedFromDB,
+  ["archive-last-updated"],
+  { revalidate: 300, tags: ["archive-counts"] }
+);
+
+export async function getArchiveLastUpdated(): Promise<Date | null> {
+  const iso = await getArchiveLastUpdatedCached();
+  return iso ? new Date(iso) : null;
 }
