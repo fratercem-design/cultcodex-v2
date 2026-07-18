@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buildMetadata } from "@/lib/seo";
-import { getCurrentUser } from "@/lib/auth";
-import { prisma } from "@/lib/db";
 import { TIERS, type TierSlug } from "@/lib/subscription-tiers";
-import { TierCheckoutButton } from "@/components/subscription/tier-checkout-button";
-import { ManageSubscription } from "@/components/subscription/manage-subscription";
+import { PremiumStatusProvider } from "@/components/subscription/premium-status-provider";
+import { PremiumManagePanel } from "@/components/subscription/premium-manage-panel";
+import { PremiumTierAction } from "@/components/subscription/premium-tier-action";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = buildMetadata({
   title: "Join the Archive — Choose Your Role",
@@ -21,42 +20,9 @@ const VERB: Record<TierSlug, string> = {
   system: "Ascend to",
 };
 
-export default async function PremiumPage() {
-  const user = await getCurrentUser();
-
-  let activeTier: TierSlug | null = null;
-  let status: string | null = null;
-  let periodEnd: Date | null = null;
-  let isAdmin = false;
-
-  if (user) {
-    const dbUser = await prisma.codexUser.findUnique({
-      where: { id: user.id },
-      select: {
-        role: true,
-        subscriptionStatus: true,
-        subscriptionTier: true,
-        currentPeriodEnd: true,
-        isLifetimeMember: true,
-      },
-    }).catch(() => null);
-
-    if (dbUser) {
-      isAdmin = dbUser.role === "admin";
-      status = dbUser.subscriptionStatus;
-      periodEnd = dbUser.currentPeriodEnd;
-      const active =
-        dbUser.isLifetimeMember ||
-        (dbUser.subscriptionStatus === "active" &&
-          !!dbUser.currentPeriodEnd &&
-          dbUser.currentPeriodEnd > new Date());
-      if (active && (dbUser.subscriptionTier === "access" || dbUser.subscriptionTier === "system")) {
-        activeTier = dbUser.subscriptionTier;
-      }
-    }
-  }
-
+export default function PremiumPage() {
   return (
+    <PremiumStatusProvider>
     <main id="main-content" className="mx-auto max-w-5xl px-4 py-16 space-y-14">
       {/* ── Threshold header ── */}
       <div className="text-center space-y-4">
@@ -72,20 +38,11 @@ export default async function PremiumPage() {
         </p>
       </div>
 
-      {(activeTier || isAdmin) && (
-        <div className="mx-auto max-w-sm">
-          <ManageSubscription
-            status={isAdmin ? null : status}
-            periodEnd={periodEnd ? periodEnd.toISOString() : null}
-            isAdmin={isAdmin}
-          />
-        </div>
-      )}
+      <PremiumManagePanel />
 
       {/* ── Tier cards ── */}
       <div className="grid gap-6 sm:grid-cols-2">
         {TIERS.map((tier) => {
-          const isCurrent = activeTier === tier.slug;
           const accentText = tier.accent === "violet" ? "text-accent-violet" : "text-accent-gold";
           const accentBorder = tier.accent === "violet" ? "border-accent-violet/25" : "border-accent-gold/25";
           const accentBg = tier.accent === "violet" ? "from-accent-violet/5" : "from-accent-gold/5";
@@ -124,23 +81,14 @@ export default async function PremiumPage() {
                 ))}
               </div>
 
-              {isCurrent ? (
-                <div
-                  className={`rounded-lg border ${accentBorder} bg-void/40 px-4 py-3 text-center font-mono text-xs font-bold ${accentText}`}
-                >
-                  ✦ Your current threshold ✦
-                </div>
-              ) : (
-                <TierCheckoutButton
-                  tier={tier.slug}
-                  role={tier.role}
-                  priceMonthly={tier.priceMonthly}
-                  priceAnnual={tier.priceAnnual}
-                  accent={tier.accent}
-                  requireSignIn={!user}
-                  verb={VERB[tier.slug]}
-                />
-              )}
+              <PremiumTierAction
+                tier={tier.slug}
+                role={tier.role}
+                priceMonthly={tier.priceMonthly}
+                priceAnnual={tier.priceAnnual}
+                accent={tier.accent}
+                verb={VERB[tier.slug]}
+              />
             </div>
           );
         })}
@@ -162,5 +110,6 @@ export default async function PremiumPage() {
         .
       </p>
     </main>
+    </PremiumStatusProvider>
   );
 }
