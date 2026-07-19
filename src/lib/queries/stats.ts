@@ -151,14 +151,15 @@ export async function getEpisodeAggregates() {
 }
 
 export async function getPeopleAggregates() {
-  const [total, hosts, recurring, guests] = await Promise.all([
+  const [total, hosts, recurring, guests, mentioned] = await Promise.all([
     prisma.person.count(),
     prisma.person.count({ where: { personType: "host" } }),
     prisma.person.count({ where: { personType: "recurring" } }),
     prisma.person.count({ where: { personType: "guest" } }),
+    prisma.person.count({ where: { personType: "mentioned" } }),
   ]);
 
-  return { total, hosts, recurring, guests };
+  return { total, hosts, recurring, guests, mentioned };
 }
 
 export async function getLoreAggregates() {

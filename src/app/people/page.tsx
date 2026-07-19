@@ -5,7 +5,7 @@ import { PersonCard } from "@/components/archive/person-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SortFilterBar } from "@/components/archive/sort-filter-bar";
 import { PaginationControls } from "@/components/ui/pagination-controls";
-import { getPeopleCards, getPersonCount, getSpecialMentions } from "@/lib/queries/people";
+import { getPeopleCards, getPersonCount, getSpecialMentions, type PeopleSort } from "@/lib/queries/people";
 import { getPeopleAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
 import { formatRelativeDate } from "@/lib/format/date";
 import { IconPerson, IconMicrophone, IconRecurring, IconMask } from "@/components/graphics/codex-icons";
@@ -50,7 +50,8 @@ interface PeoplePageProps {
 
 export default async function PeoplePage({ searchParams }: PeoplePageProps) {
   const params = await searchParams;
-  const currentSort = params.sort ?? "az";
+  // Default = Most Appearances: surfaces the actual cast, not the alphabet.
+  const currentSort = params.sort ?? "most";
   const currentFilter = params.filter;
 
   const typeFilter =
@@ -68,22 +69,13 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
-  const people = await getPeopleCards({ take, skip, type: typeFilter });
-
-  const sorted = [...people].sort((a, b) => {
-    if (currentSort === "za") {
-      return b.displayName.localeCompare(a.displayName);
-    }
-    if (currentSort === "most") {
-      const aCount = a._count.guestAppearances + a._count.mentions;
-      const bCount = b._count.guestAppearances + b._count.mentions;
-      return bCount - aCount;
-    }
-    if (currentSort === "lore") {
-      return b._count.loreConnections - a._count.loreConnections;
-    }
-    return a.displayName.localeCompare(b.displayName);
-  });
+  // Sorting is DB-level (peopleOrderBy) so it spans the whole result set —
+  // the old in-memory sort here only reordered the already-paginated slice.
+  const validSorts = ["az", "za", "most", "lore"] as const;
+  const sortMode = (validSorts as readonly string[]).includes(currentSort)
+    ? (currentSort as PeopleSort)
+    : "most";
+  const sorted = await getPeopleCards({ take, skip, type: typeFilter, sort: sortMode });
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
@@ -92,6 +84,8 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
     ...(aggregates.hosts > 0 ? [{ icon: <IconMicrophone size={14} />, label: `${aggregates.hosts} host${aggregates.hosts !== 1 ? "s" : ""}` }] : []),
     ...(aggregates.recurring > 0 ? [{ icon: <IconRecurring size={14} />, label: `${aggregates.recurring} recurring` }] : []),
     ...(aggregates.guests > 0 ? [{ icon: <IconMask size={14} />, label: `${aggregates.guests} guest${aggregates.guests !== 1 ? "s" : ""}` }] : []),
+    // Label the remainder so the category math visibly sums to the total
+    ...(aggregates.mentioned > 0 ? [{ icon: <IconPerson size={14} />, label: `${aggregates.mentioned} mentioned` }] : []),
     ...(lastUpdated ? [{ icon: "🔄", label: `Updated ${formatRelativeDate(lastUpdated)}` }] : []),
   ];
 

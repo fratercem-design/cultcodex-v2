@@ -40,17 +40,22 @@ export function buildPersonInclude() {
 /** Build a Prisma where-clause that returns only "profiled" people.
  *  Hosts and recurring are always included; guests only if they have a bio or lore summary.
  *  `mentioned` type is intentionally excluded — they appear in getSpecialMentions(). */
+/** Guests must have actually appeared (≥1 linked episode) or be lore-linked.
+ *  A bio alone is NOT a signal — enrichment auto-writes shortBio for nearly
+ *  every record, including 130 zero-appearance stubs (2026-07 people audit),
+ *  so a bio-based gate admits the whole entity dump. */
+const GUEST_ELIGIBLE: Prisma.PersonWhereInput = {
+  personType: "guest",
+  OR: [{ guestAppearances: { some: {} } }, { loreConnections: { some: {} } }],
+};
+
 function profiledWhere(type?: PersonType): Prisma.PersonWhereInput {
   const notNoise = { slug: { notIn: [...NOISE_PERSON_SLUGS] } };
   if (type === "host" || type === "recurring") return { personType: type, ...notNoise };
   if (type === "guest") {
-    return {
-      personType: "guest",
-      OR: [{ shortBio: { not: null } }, { loreSummary: { not: null } }],
-      ...notNoise,
-    };
+    return { ...GUEST_ELIGIBLE, ...notNoise };
   }
-  // No type filter → hosts + recurring + profiled guests
+  // No type filter → hosts + recurring + guests who appeared or carry lore
   return {
     AND: [
       notNoise,
@@ -58,10 +63,7 @@ function profiledWhere(type?: PersonType): Prisma.PersonWhereInput {
         OR: [
           { personType: "host" },
           { personType: "recurring" },
-          {
-            personType: "guest",
-            OR: [{ shortBio: { not: null } }, { loreSummary: { not: null } }],
-          },
+          GUEST_ELIGIBLE,
         ],
       },
     ],
@@ -95,12 +97,36 @@ export async function getPersonCount(type?: PersonType) {
  * appearance/mention COUNTS. This select fetches exactly that.
  * Use getPeople/getPersonBySlug when full relations are actually needed.
  */
+export type PeopleSort = "az" | "za" | "most" | "lore";
+
+/** DB-level orderBy per sort mode. Sorting MUST happen here, not in page
+ *  code — an in-memory sort after `take`/`skip` only reorders the current
+ *  page of an alphabetically-fetched slice, which is how "Most Appearances"
+ *  silently showed A→Z-paged results before. */
+function peopleOrderBy(sort: PeopleSort): Prisma.PersonOrderByWithRelationInput[] {
+  switch (sort) {
+    case "za":
+      return [{ displayName: "desc" }];
+    case "most":
+      return [
+        { guestAppearances: { _count: "desc" } },
+        { mentions: { _count: "desc" } },
+        { displayName: "asc" },
+      ];
+    case "lore":
+      return [{ loreConnections: { _count: "desc" } }, { displayName: "asc" }];
+    default:
+      return [{ displayName: "asc" }];
+  }
+}
+
 export async function getPeopleCards(options?: {
   type?: PersonType;
   take?: number;
   skip?: number;
+  sort?: PeopleSort;
 }) {
-  const { type, take = 50, skip = 0 } = options ?? {};
+  const { type, take = 50, skip = 0, sort = "most" } = options ?? {};
 
   return prisma.person.findMany({
     where: profiledWhere(type),
@@ -114,7 +140,7 @@ export async function getPeopleCards(options?: {
       personType: true,
       _count: { select: { guestAppearances: true, mentions: true, loreConnections: true } },
     },
-    orderBy: { displayName: "asc" },
+    orderBy: peopleOrderBy(sort),
     take,
     skip,
   });
