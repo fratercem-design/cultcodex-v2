@@ -28,6 +28,10 @@ export const BOILERPLATE_PATTERNS: RegExp[] = [
   // Short standalone CTA lines only — long prose lines that merely mention
   // subscribing are left alone (length caps keep this template-shaped)
   /^[^\n]{0,80}?(?:like and subscribe|subscribe for more|don't forget to (?:like|subscribe|comment)|join this channel)[^\n]{0,40}$/gim,
+  // Patreon/merch promo furniture — links always; prose only as short
+  // standalone CTA lines (same length-cap discipline as the subscribe rule)
+  /https?:\/\/(?:www\.)?patreon\.com\S*/gi,
+  /^[^\n]{0,80}?(?:support (?:me|us) on patreon|check out (?:my|our) merch|merch store|buy (?:my|our) merch)[^\n]{0,40}$/gim,
   // Lines that are only promo emoji
   /^\s*[📌🔗💬🔔🎙️😍🚀]+\s*$/gm,
 ];

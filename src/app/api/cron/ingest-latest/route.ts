@@ -16,6 +16,7 @@ import { revalidatePath } from "next/cache";
 import { google } from "googleapis";
 import { prisma } from "@/lib/db";
 import { ContentStatus } from "@/generated/prisma/client";
+import { cleanSummary, isJunkSummary, isTemplateJunk } from "@/lib/content-hygiene";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -58,13 +59,20 @@ function parseIsoDurationToDisplay(iso: string): string | null {
 
 function extractSummary(description: string): string | null {
   if (!description) return null;
-  const cleaned = description
+  const candidate = description
     .replace(/https?:\/\/\S+/g, "")
     .replace(/support the stream:?\s*/gi, "")
     .replace(/streaming software/gi, "")
     .replace(/support:?\s*/gi, "")
     .trim();
-  return cleaned.length > 10 ? cleaned.slice(0, 500) : null;
+  if (candidate.length <= 10) return null;
+  // Strip sponsor/boilerplate prose (StreamYard promos, vidIQ, CTA lines) via
+  // the shared content-hygiene seam — same patterns data-ops uses to clean
+  // prod. This route previously had its own strip list, which is how episodes
+  // №1751+ leaked "Check out StreamYard and get $10 discount!" summaries.
+  if (isTemplateJunk(candidate)) return null;
+  const cleaned = cleanSummary(candidate);
+  return isJunkSummary(cleaned) ? null : cleaned.slice(0, 500);
 }
 
 interface FetchedVideo {

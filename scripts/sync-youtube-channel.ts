@@ -21,6 +21,7 @@ import "dotenv/config";
 import { getYouTube, parseDuration } from "./scrape/lib";
 import { getPrisma, disconnect, slugify } from "./ingest/lib";
 import { ContentStatus, ContentType } from "../src/generated/prisma/enums";
+import { cleanSummary, isJunkSummary, isTemplateJunk } from "../src/lib/content-hygiene";
 
 const CHANNEL_HANDLE = process.env.YOUTUBE_CHANNEL_HANDLE ?? "@CultofPsyche";
 
@@ -244,12 +245,17 @@ async function main() {
 function extractSummary(description: string): string | undefined {
   if (!description) return undefined;
   const withoutUrls = description.replace(/https?:\/\/\S+/g, "").trim();
-  const cleaned = withoutUrls
+  const candidate = withoutUrls
     .replace(/support the stream:?\s*/gi, "")
     .replace(/streaming software/gi, "")
     .replace(/support:?\s*/gi, "")
     .trim();
-  return cleaned.length > 10 ? cleaned.slice(0, 500) : undefined;
+  if (candidate.length <= 10) return undefined;
+  // Shared content-hygiene seam — keeps StreamYard/vidIQ promo boilerplate
+  // out of the DB (same patterns as data-ops clean-episode-summaries).
+  if (isTemplateJunk(candidate)) return undefined;
+  const cleaned = cleanSummary(candidate);
+  return isJunkSummary(cleaned) ? undefined : cleaned.slice(0, 500);
 }
 
 main().catch((e) => {
