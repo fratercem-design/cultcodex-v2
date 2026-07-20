@@ -46,6 +46,7 @@ export const TIERS: Tier[] = [
     priceEnvVarAnnual: "STRIPE_PRICE_ACCESS_ANNUAL_ID",
     features: [
       "Read every word ever spoken — searchable, timestamped",
+      "100 Oracle questions a month — twenty-five times the free allowance",
       "Jump to any moment in any transmission, instantly",
       "Search by what's actually happening — not just keywords",
       "AI extracts behavioral patterns from every panel — what repeats, what shifts",
@@ -73,6 +74,7 @@ export const TIERS: Tier[] = [
     priceEnvVarAnnual: "STRIPE_PRICE_SYSTEM_ANNUAL_ID",
     features: [
       "Full Initiate+ access",
+      "Unlimited Oracle communion — no monthly meter",
       "Your own page woven permanently into the archive",
       "Your signal shapes what gets investigated next",
       "Propose what gets analyzed — your questions become the work",

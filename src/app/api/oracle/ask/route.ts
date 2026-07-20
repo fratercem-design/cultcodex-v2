@@ -4,10 +4,10 @@ import type { MessageParam, Tool, ToolResultBlockParam } from "@anthropic-ai/sdk
 import { bedrockModelId } from "@/lib/anthropic";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
-import { isSubscribed } from "@/lib/subscription";
+import { isSubscribed, hasSystemTier } from "@/lib/subscription";
 import { getEraById } from "@/lib/eras";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
-import { consumeLlmBudget } from "@/lib/llm-budget";
+import { consumeLlmBudget, consumeMonthlyMeter } from "@/lib/llm-budget";
 import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cache";
 import { groqChat, groqConfigured } from "@/lib/free-llm";
 
@@ -881,6 +881,28 @@ export async function POST(req: NextRequest) {
       { ok: false, error: "initiate_required" } satisfies OracleResponse,
       { status: 403 }
     );
+  }
+
+  // Initiate+ ($10) monthly meter — generous enough to be invisible to normal
+  // use (~100/mo, tune via INITIATE_MONTHLY_CAP), but aligns price with
+  // inference cost and gives heavy users a concrete upgrade trigger. Oracle
+  // tier (system) and admins are unmetered; hasSystemTier covers both.
+  if (canAccess && user && !(await hasSystemTier(user.id))) {
+    const meter = await consumeMonthlyMeter(
+      `oracle-u-${user.id}`,
+      Number(process.env.INITIATE_MONTHLY_CAP ?? "100")
+    );
+    if (!meter.ok) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "You've used all " + meter.cap + " Oracle questions in your Initiate+ month. " +
+            "They renew with your billing cycle — or Ascend to Oracle for unlimited communion.",
+        } satisfies OracleResponse,
+        { status: 403 }
+      );
+    }
   }
 
   // Guard the expensive LLM + ElevenLabs path against rapid-fire calls.

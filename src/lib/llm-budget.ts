@@ -81,3 +81,37 @@ export async function consumeLlmBudget(bucket: string, cap: number, units = 1): 
     return { ok: false, reason: "store_error", used: 0, cap };
   }
 }
+
+/**
+ * Monthly variant of consumeLlmBudget — same LlmBudget table, keyed on
+ * `bucket:YYYY-MM` instead of `bucket:YYYY-MM-DD`. Used for per-user tier
+ * meters (e.g. Initiate+ ~100 Oracle questions/month), where the window is
+ * the billing month, not the abuse-control day. No cap-hit alert email:
+ * a user hitting their tier meter is an upgrade prompt, not an attack.
+ *
+ * Fails OPEN on store errors, unlike the daily breaker: the daily global cap
+ * (checked separately) already bounds total spend, so denying a PAYING user
+ * their metered access over a transient counter error is the worse failure.
+ */
+export async function consumeMonthlyMeter(
+  bucket: string,
+  cap: number,
+  units = 1
+): Promise<{ ok: boolean; used: number; cap: number }> {
+  try {
+    await ensureTable();
+    const month = new Date().toISOString().slice(0, 7);
+    const key = `${bucket}:${month}`;
+    const rows = await prisma.$queryRawUnsafe<{ count: number }[]>(
+      `INSERT INTO "LlmBudget"(bucket_day, count) VALUES($1, $2)
+       ON CONFLICT(bucket_day) DO UPDATE SET count = "LlmBudget".count + $2
+       RETURNING count`,
+      key,
+      units
+    );
+    const used = Number(rows[0]?.count ?? 0);
+    return { ok: used <= cap, used, cap };
+  } catch {
+    return { ok: true, used: 0, cap };
+  }
+}

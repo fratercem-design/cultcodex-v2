@@ -107,7 +107,7 @@ export default async function OraclePage() {
           <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-accent-gold/30 bg-accent-gold/5 px-5 py-2">
             <span className="text-accent-gold text-sm">✦</span>
             <p className="font-mono text-[11px] text-accent-gold/80">
-              3 free questions — no account required to start
+              3 free questions every month — no account required to start
             </p>
           </div>
         )}

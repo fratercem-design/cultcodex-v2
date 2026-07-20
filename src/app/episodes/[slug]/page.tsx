@@ -511,9 +511,16 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   ) : (
                     <TerminalPanel header="TRANSCRIPT">
                       <PaywallGate
-                        previewSegments={episode.segments.slice(0, 5)}
+                        // First ~60s free (min 5, max 12 segments) — blurred
+                        // mid-flow. Teaser transcript converts better than a
+                        // hard wall: the reader is already inside the scene.
+                        previewSegments={(() => {
+                          const inFirstMinute = episode.segments.filter((s) => s.startSeconds < 60);
+                          return (inFirstMinute.length >= 5 ? inFirstMinute : episode.segments).slice(0, 12);
+                        })()}
                         totalCount={episode.segments.length}
                         isAuthenticated={!!user}
+                        episodeTitle={episode.title}
                       />
                     </TerminalPanel>
                   ),

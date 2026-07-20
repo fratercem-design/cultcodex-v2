@@ -14,12 +14,16 @@ interface PaywallGateProps {
   previewSegments: Segment[];
   totalCount: number;
   isAuthenticated: boolean;
+  /** Episode title for contextual CTA copy — "the rest of «title»" converts
+   *  better than a generic premium link. */
+  episodeTitle?: string;
 }
 
 export function PaywallGate({
   previewSegments,
   totalCount,
   isAuthenticated,
+  episodeTitle,
 }: PaywallGateProps) {
   return (
     <div className="relative">
@@ -74,8 +78,20 @@ export function PaywallGate({
             </h3>
             <p className="font-mono text-xs text-text-muted max-w-sm mx-auto leading-relaxed">
               Initiates see everything underneath.{" "}
-              <span className="text-text-primary">{totalCount.toLocaleString()} segments</span>{" "}
-              — searchable, timestamped, clickable. Sign in to become one.
+              {episodeTitle ? (
+                <>
+                  The other{" "}
+                  <span className="text-text-primary">
+                    {Math.max(0, totalCount - previewSegments.length).toLocaleString()} segments of &ldquo;{episodeTitle}&rdquo;
+                  </span>{" "}
+                  — searchable, timestamped, clickable. Sign in to become one.
+                </>
+              ) : (
+                <>
+                  <span className="text-text-primary">{totalCount.toLocaleString()} segments</span>{" "}
+                  — searchable, timestamped, clickable. Sign in to become one.
+                </>
+              )}
             </p>
             <div className="flex flex-wrap justify-center gap-3 pt-1">
               <Link

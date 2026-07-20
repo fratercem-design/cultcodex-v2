@@ -33,11 +33,14 @@ export function TierCheckoutButton({
 }: TierCheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [interval, setInterval] = useState<BillingInterval>("month");
+  // Annual is default-selected: annual cash up front + churn insurance beat
+  // the discount cost. Monthly stays one tap away.
+  const [interval, setInterval] = useState<BillingInterval>("year");
 
-  // Two months free framing: annual saved vs. 12× monthly.
+  // "Months free" framing ("get 12, pay for 10") converts better than flat
+  // dollar savings.
   const annualIfMonthly = priceMonthly * 12;
-  const savings = annualIfMonthly - priceAnnual;
+  const monthsFree = priceMonthly > 0 ? Math.round((annualIfMonthly - priceAnnual) / priceMonthly) : 0;
   const displayPrice = interval === "year" ? `$${priceAnnual}/yr` : `$${priceMonthly}/mo`;
 
   async function handleClick() {
@@ -97,7 +100,7 @@ export function TierCheckoutButton({
             interval === "year" ? activeToggle : "border-transparent text-text-muted hover:text-text-primary"
           }`}
         >
-          Annual{savings > 0 ? ` · save $${savings}` : ""}
+          Annual{monthsFree > 0 ? ` · ${monthsFree} months free` : ""}
         </button>
       </div>
 
