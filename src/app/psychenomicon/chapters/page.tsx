@@ -6,7 +6,7 @@ import { isSubscribed } from "@/lib/subscription";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ChapterCover } from "@/components/psychenomicon/chapter-cover";
-import { isFreePreviewChapter } from "@/lib/psychenomicon";
+import { getFreePreviewChapterNumbers } from "@/lib/psychenomicon";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/psychenomicon/chapters" },
@@ -50,6 +50,7 @@ export default async function ChaptersIndexPage({
   const canRead = !!user && (user.role === "admin" || (await isSubscribed(user.id).catch(() => false)));
 
   const sp = await searchParams;
+  const freeChapterNumbers = await getFreePreviewChapterNumbers();
   const total = await prisma.psychenomiconChapter.count().catch(() => 0);
   const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
   const page = Math.min(totalPages, Math.max(1, parseInt(sp.page ?? "1", 10) || 1));
@@ -114,7 +115,7 @@ export default async function ChaptersIndexPage({
             <div className="space-y-1.5">
               {g.rows.map((c) => {
                 const s = c.status ?? "stable";
-                const free = isFreePreviewChapter(c.chapterNumber);
+                const free = freeChapterNumbers.includes(c.chapterNumber);
                 return (
                   <Link
                     key={c.slug}

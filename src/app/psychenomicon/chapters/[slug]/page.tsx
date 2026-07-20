@@ -39,7 +39,7 @@ export default async function ChapterPage({ params }: PageProps) {
     .findUnique({ where: { slug }, select: { chapterNumber: true } })
     .catch(() => null);
   if (!gateRow) notFound();
-  const isFreePreview = isFreePreviewChapter(gateRow.chapterNumber);
+  const isFreePreview = await isFreePreviewChapter(gateRow.chapterNumber);
   const canRead = subscribed || isFreePreview;
 
   if (!canRead) {
