@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
+import { isFreePreviewChapter } from "@/lib/psychenomicon";
 import { LayerViewer } from "@/components/psychenomicon/layer-viewer";
 import { TimelineStrip } from "@/components/psychenomicon/timeline-strip";
 import { ScrollReveal } from "@/components/psychenomicon/scroll-reveal";
@@ -31,7 +32,15 @@ export default async function ChapterPage({ params }: PageProps) {
   const { slug } = await params;
 
   const user = await getCurrentUser();
-  const canRead = user ? await isSubscribed(user.id).catch(() => false) : false;
+  const subscribed = user ? await isSubscribed(user.id).catch(() => false) : false;
+
+  // Free-preview pipeline: a configured set of chapters is readable by anyone.
+  const gateRow = await prisma.psychenomiconChapter
+    .findUnique({ where: { slug }, select: { chapterNumber: true } })
+    .catch(() => null);
+  if (!gateRow) notFound();
+  const isFreePreview = isFreePreviewChapter(gateRow.chapterNumber);
+  const canRead = subscribed || isFreePreview;
 
   if (!canRead) {
     return (
@@ -112,6 +121,25 @@ export default async function ChapterPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-void">
+      {/* Free-preview banner for non-subscribers */}
+      {isFreePreview && !subscribed && (
+        <div className="border-b border-accent-gold/30 bg-accent-gold/5 px-4 py-2.5">
+          <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
+            <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold">
+              {"/// free_preview"}
+            </span>
+            <span className="font-mono text-[10px] text-text-muted">
+              This chapter is unsealed for all. The rest of the record awaits initiates.
+            </span>
+            <Link
+              href="/premium#access"
+              className="font-mono text-[10px] font-bold text-accent-gold hover:underline"
+            >
+              Become Initiate+ →
+            </Link>
+          </div>
+        </div>
+      )}
       {/* Chapter header */}
       <header className={`border-b py-10 px-4 ${chapter.isMajorEvent ? "border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-void" : "border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void"}`}>
         <div className="mx-auto max-w-3xl text-center space-y-3">

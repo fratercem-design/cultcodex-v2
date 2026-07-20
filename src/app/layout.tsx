@@ -15,6 +15,7 @@ import { TerminalStatusBar } from "@/components/layout/terminal-statusbar";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { RadialDialNav } from "@/components/layout/radial-dial-nav";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { ConsoleSigil } from "@/components/layout/console-sigil";
 import { getCounts } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
@@ -190,6 +191,7 @@ export default async function RootLayout({
         </div>
         <MobileBottomNav />
         <RadialDialNav />
+        <ConsoleSigil />
         <ClientOverlays />
         <CRTOverlay />
         {/* WebSite + SearchAction JSON-LD — enables sitelinks search box in Google */}

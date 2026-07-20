@@ -6,6 +6,7 @@ import { isSubscribed } from "@/lib/subscription";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ChapterCover } from "@/components/psychenomicon/chapter-cover";
+import { isFreePreviewChapter } from "@/lib/psychenomicon";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/psychenomicon/chapters" },
@@ -47,23 +48,6 @@ export default async function ChaptersIndexPage({
 }) {
   const user = await getCurrentUser();
   const canRead = !!user && (user.role === "admin" || (await isSubscribed(user.id).catch(() => false)));
-
-  if (!canRead) {
-    return (
-      <main className="min-h-screen bg-void">
-        <div className="mx-auto max-w-2xl px-4 py-24 text-center space-y-6">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">{"/// access_restricted"}</p>
-          <h2 className="font-display text-2xl font-bold text-accent-violet">The Chronicle</h2>
-          <p className="text-sm text-text-muted max-w-sm mx-auto leading-relaxed">
-            The complete chapter index is an Initiate+ feature. Every chapter drawn from real transcripts, in order.
-          </p>
-          <Link href="/premium#access" className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 hover:bg-accent-violet/20 px-5 py-2.5 font-mono text-xs font-bold text-accent-violet transition-colors">
-            Become Initiate+ — $10/mo →
-          </Link>
-        </div>
-      </main>
-    );
-  }
 
   const sp = await searchParams;
   const total = await prisma.psychenomiconChapter.count().catch(() => 0);
@@ -111,6 +95,17 @@ export default async function ChaptersIndexPage({
       </section>
 
       <div className="mx-auto max-w-4xl px-4 py-8 space-y-8">
+        {!canRead && (
+          <div className="rounded border border-accent-gold/30 bg-accent-gold/5 px-4 py-3 flex flex-wrap items-center justify-between gap-2">
+            <p className="font-mono text-[10px] text-text-muted">
+              <span className="uppercase tracking-[0.3em] text-accent-gold mr-2">{"/// free_preview"}</span>
+              A few chapters are unsealed for all. The full chronicle is Initiate+.
+            </p>
+            <Link href="/premium#access" className="font-mono text-[10px] font-bold text-accent-gold hover:underline">
+              Become Initiate+ — $10/mo →
+            </Link>
+          </div>
+        )}
         {groups.map((g) => (
           <section key={g.label} className="space-y-2">
             <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/70 sticky top-0 bg-void/90 backdrop-blur-sm py-1.5 z-10">
@@ -119,6 +114,7 @@ export default async function ChaptersIndexPage({
             <div className="space-y-1.5">
               {g.rows.map((c) => {
                 const s = c.status ?? "stable";
+                const free = isFreePreviewChapter(c.chapterNumber);
                 return (
                   <Link
                     key={c.slug}
@@ -141,6 +137,17 @@ export default async function ChaptersIndexPage({
                       <span className="font-mono text-[9px] text-text-muted/50 flex-shrink-0 hidden sm:inline">
                         EP.{String(c.episode.episodeNumber).padStart(3, "0")}
                       </span>
+                    )}
+                    {!canRead && (
+                      free ? (
+                        <span className="flex-shrink-0 rounded border border-accent-gold/40 bg-accent-gold/10 px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase text-accent-gold">
+                          Free
+                        </span>
+                      ) : (
+                        <span className="flex-shrink-0 font-mono text-[10px] text-text-muted/40" aria-label="Initiate+ only">
+                          🔒
+                        </span>
+                      )
                     )}
                   </Link>
                 );

@@ -27,6 +27,9 @@ const COLUMNS: { heading: string; links: { label: string; href: string }[] }[] =
       { label: "Search", href: "/search" },
       { label: "This Week", href: "/this-week" },
       { label: "Start Here", href: "/start-here" },
+      { label: "The Fun Wing", href: "/fun" },
+      { label: "Drama Files", href: "/drama" },
+      { label: "Articles", href: "/articles" },
       { label: "Premium", href: "/premium" },
     ],
   },
@@ -100,7 +103,15 @@ export function SiteFooter() {
 
         <div className="mt-10 flex flex-col gap-4 border-t border-accent-gold/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-mono text-[10px] uppercase tracking-wider text-text-muted">
-            © {year} Cult of Psyche · CultCodex
+            © {year} Cult of Psyche · CultCodex{" "}
+            {/* Easter egg: the door to the basement. Deliberately near-invisible. */}
+            <Link
+              href="/basement"
+              aria-label="ψ"
+              className="ml-1 select-none text-text-muted/20 transition-colors duration-500 hover:text-accent-violet"
+            >
+              ψ
+            </Link>
           </p>
           <nav aria-label="Channels" className="flex flex-wrap gap-x-4 gap-y-2">
             {CHANNELS.map((ch) => (
