@@ -92,3 +92,6 @@ scripts/psychenomicon-art/output/STOP
 
 .vercel
 .env*
+
+# cron/sync logs — committed once by mistake, ignored since
+logs/
