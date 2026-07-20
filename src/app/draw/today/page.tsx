@@ -1,29 +1,37 @@
-export const dynamic = "force-dynamic";
-
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
 
+// Recompute at most twice an hour so a new day's card appears shortly after
+// local midnight; within a day the pick is a pure function of the date, so
+// every visitor sees the same three cards. Shareable by design.
+export const revalidate = 1800;
+
 export const metadata: Metadata = {
-  alternates: { canonical: "/draw" },
-  title: "Draw from the Deck — CULT CODEX",
+  alternates: { canonical: "/draw/today" },
+  title: "Today's Draw — CULT CODEX",
   description:
-    "Pull three cards from the archive at random — a piece of lore, a real quote, and a prophecy. Reload to draw again. The Codex decides what you needed to see.",
+    "The Codex draws three cards for everyone, once a day — a piece of lore, a real quote, and a prophecy. The same for all who look, until midnight.",
 };
 
-// Pick one random row of a table by counting then skipping a random offset.
-// force-dynamic + a fresh offset each request = a new draw on every reload.
-async function randomOf<T>(count: number, take: (skip: number) => Promise<T | null>): Promise<T | null> {
-  if (count <= 0) return null;
-  // Deterministic-per-request randomness: seed off the DB clock, not Math.random
-  // (which is fine here — this is a server component, not the workflow sandbox).
-  const skip = Math.floor(Math.random() * count);
-  return take(skip);
+const TZ = "America/Los_Angeles";
+
+// YYYY-MM-DD in the show's timezone, and a stable integer day-number for seeding.
+function laToday(): { label: string; dayNumber: number } {
+  const label = new Date().toLocaleDateString("en-CA", { timeZone: TZ }); // e.g. 2026-07-20
+  const dayNumber = Math.floor(Date.parse(`${label}T00:00:00Z`) / 86_400_000);
+  return { label, dayNumber };
 }
 
-async function drawLore() {
+// Deterministic pick: index into a pool by a decorrelated seed.
+async function pickAt<T>(count: number, seed: number, take: (skip: number) => Promise<T | null>): Promise<T | null> {
+  if (count <= 0) return null;
+  return take(((seed % count) + count) % count);
+}
+
+async function loreOfDay(seed: number) {
   const count = await prisma.loreEntry.count({ where: { canonStatus: "humorous" } }).catch(() => 0);
-  return randomOf(count, (skip) =>
+  return pickAt(count, seed, (skip) =>
     prisma.loreEntry
       .findFirst({
         where: { canonStatus: "humorous" },
@@ -35,9 +43,9 @@ async function drawLore() {
   );
 }
 
-async function drawQuote() {
+async function quoteOfDay(seed: number) {
   const count = await prisma.quote.count({ where: { speakerPersonId: { not: null } } }).catch(() => 0);
-  return randomOf(count, (skip) =>
+  return pickAt(count, seed, (skip) =>
     prisma.quote
       .findFirst({
         where: { speakerPersonId: { not: null } },
@@ -54,9 +62,9 @@ async function drawQuote() {
   );
 }
 
-async function drawProphecy() {
+async function prophecyOfDay(seed: number) {
   const count = await prisma.loreEntry.count({ where: { category: "prophecy" } }).catch(() => 0);
-  return randomOf(count, (skip) =>
+  return pickAt(count, seed, (skip) =>
     prisma.loreEntry
       .findFirst({
         where: { category: "prophecy" },
@@ -68,42 +76,42 @@ async function drawProphecy() {
   );
 }
 
-export default async function DrawPage() {
-  const [lore, quote, prophecy] = await Promise.all([drawLore(), drawQuote(), drawProphecy()]);
+export default async function TodaysDrawPage() {
+  const { label, dayNumber } = laToday();
+  // Decorrelate the three picks so they don't move in lockstep day to day.
+  const [lore, quote, prophecy] = await Promise.all([
+    loreOfDay(dayNumber),
+    quoteOfDay(dayNumber * 7 + 3),
+    prophecyOfDay(dayNumber * 13 + 5),
+  ]);
+
+  const prettyDate = new Date(`${label}T12:00:00Z`).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
   return (
     <main className="min-h-screen bg-void">
-      <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
+      <section className="border-b border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-2xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">
-            {"/// three_cards · drawn_at_random"}
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold/60">
+            {"/// today's_draw · the_same_for_everyone"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
-            Draw from the Deck
+            Today&rsquo;s Draw
           </h1>
+          <p className="font-mono text-[11px] text-accent-gold/80">{prettyDate}</p>
           <p className="text-sm text-text-muted max-w-md mx-auto leading-relaxed">
-            The Codex reaches into itself and pulls three cards — a fragment of
-            lore, something someone actually said, and a prophecy. Reload the
-            page to draw again. It always knows.
+            Once a day the Codex draws for the whole cult at once. These three
+            cards are the same for everyone who looks, until midnight. Share
+            them; argue about them; return tomorrow for new ones.
           </p>
         </div>
       </section>
 
       <div className="mx-auto max-w-2xl px-4 py-10 space-y-5">
-        {/* Pointer to the shared daily draw */}
-        <Link
-          href="/draw/today"
-          className="group flex items-center justify-between gap-3 rounded border border-accent-gold/30 bg-accent-gold/5 px-4 py-2.5 hover:bg-accent-gold/10 transition-colors"
-        >
-          <p className="font-mono text-[10px] text-text-muted">
-            <span className="uppercase tracking-[0.3em] text-accent-gold mr-2">{"/// today's_draw"}</span>
-            Want the card everyone else is seeing?
-          </p>
-          <span className="font-mono text-[10px] font-bold text-accent-gold group-hover:underline">
-            See today&rsquo;s →
-          </span>
-        </Link>
-
         {/* Card I — Lore */}
         <article className="rounded-lg border border-accent-violet/20 bg-surface p-5 space-y-2">
           <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/60">
@@ -114,15 +122,13 @@ export default async function DrawPage() {
               <h2 className="font-display text-xl font-bold text-text-primary group-hover:text-accent-violet transition-colors">
                 {lore.title}
               </h2>
-              {lore.summary && (
-                <p className="text-sm text-text-muted leading-relaxed">{lore.summary}</p>
-              )}
+              {lore.summary && <p className="text-sm text-text-muted leading-relaxed">{lore.summary}</p>}
               <span className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-violet/50 group-hover:text-accent-violet transition-colors pt-1">
                 Follow this thread →
               </span>
             </Link>
           ) : (
-            <p className="text-sm text-text-muted">The deck came up empty. Draw again.</p>
+            <p className="text-sm text-text-muted">The deck kept its counsel today.</p>
           )}
         </article>
 
@@ -149,7 +155,7 @@ export default async function DrawPage() {
               )}
             </div>
           ) : (
-            <p className="text-sm text-text-muted">Silence. Draw again.</p>
+            <p className="text-sm text-text-muted">Silence today.</p>
           )}
         </article>
 
@@ -163,31 +169,26 @@ export default async function DrawPage() {
               <h2 className="font-display text-xl font-bold text-text-primary group-hover:text-accent-gold transition-colors">
                 {prophecy.title}
               </h2>
-              {prophecy.summary && (
-                <p className="text-sm text-text-muted leading-relaxed">{prophecy.summary}</p>
-              )}
+              {prophecy.summary && <p className="text-sm text-text-muted leading-relaxed">{prophecy.summary}</p>}
               <span className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-gold/50 group-hover:text-accent-gold transition-colors pt-1">
                 Read the whole omen →
               </span>
             </Link>
           ) : (
-            <p className="text-sm text-text-muted">The future declined to load. Draw again.</p>
+            <p className="text-sm text-text-muted">The future declined to appear today.</p>
           )}
         </article>
 
-        {/* Reroll */}
+        {/* Nav */}
         <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
           <Link
             href="/draw"
             prefetch={false}
             className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2.5 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors"
           >
-            ↻ Draw again
+            ↻ Draw your own three
           </Link>
-          <Link
-            href="/fun"
-            className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors"
-          >
+          <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors">
             ← The Fun Wing
           </Link>
         </div>

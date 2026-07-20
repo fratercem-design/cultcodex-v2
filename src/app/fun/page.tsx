@@ -18,6 +18,11 @@ const ATTRACTIONS: { label: string; href: string; blurb: string }[] = [
     blurb: "Three random cards from the archive. Reload to draw again.",
   },
   {
+    label: "Today's Draw",
+    href: "/draw/today",
+    blurb: "One shared draw a day — the same three cards for everyone.",
+  },
+  {
     label: "The Bestiary",
     href: "/bestiary",
     blurb: "A field guide to the entities the cult summoned into being.",
