@@ -13,6 +13,21 @@ export const metadata: Metadata = {
 
 const ATTRACTIONS: { label: string; href: string; blurb: string }[] = [
   {
+    label: "Draw from the Deck",
+    href: "/draw",
+    blurb: "Three random cards from the archive. Reload to draw again.",
+  },
+  {
+    label: "The Bestiary",
+    href: "/bestiary",
+    blurb: "A field guide to the entities the cult summoned into being.",
+  },
+  {
+    label: "The Prophecy Ledger",
+    href: "/prophecies",
+    blurb: "Every omen on record. Accuracy not guaranteed.",
+  },
+  {
     label: "The Drama Files",
     href: "/drama",
     blurb: "Case files on the least dignified moments in cult history.",
