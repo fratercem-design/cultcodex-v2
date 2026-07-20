@@ -10,6 +10,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { buildMetadata } from "@/lib/seo";
+import { isJunkPersonName } from "@/lib/content-hygiene";
 
 export const revalidate = 600;
 
@@ -71,8 +72,11 @@ export default async function ReportsPage() {
         _count: { select: { guestAppearances: true } },
       },
       orderBy: { guestAppearances: { _count: "desc" } },
-      take: 9,
+      // Over-fetch so junk extraction artifacts ("None", "Unknown") can be
+      // filtered out post-query without leaving the grid short.
+      take: 18,
     })
+    .then((rows) => rows.filter((p) => !isJunkPersonName(p.displayName)).slice(0, 9))
     .catch(() => [] as { slug: string; displayName: string; avatarUrl: string | null; _count: { guestAppearances: number } }[]);
 
   return (

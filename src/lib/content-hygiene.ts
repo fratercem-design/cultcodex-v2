@@ -34,7 +34,38 @@ export const BOILERPLATE_PATTERNS: RegExp[] = [
   /^[^\n]{0,80}?(?:support (?:me|us) on patreon|check out (?:my|our) merch|merch store|buy (?:my|our) merch)[^\n]{0,40}$/gim,
   // Lines that are only promo emoji
   /^\s*[📌🔗💬🔔🎙️😍🚀]+\s*$/gm,
+  // CashApp donation boilerplate — the channel's standing description
+  // ("$cultofpsyche Cashapp 🔥 The Cult of Psyche — Where Myth Wakes Up…")
+  // leaks into episode summaries verbatim. Template-anchored: a line must
+  // contain BOTH the cashapp handle context and "cashapp" to be stripped,
+  // so prose that merely discusses CashApp survives.
+  /^(?=.*\bcash\s?app\b)(?=.*cult\s?of\s?psyche).*$/gim,
+  // The channel tagline lines that ride along with the CashApp template
+  /^.*where myth wakes up (?:&|and) chaos takes notes.*$/gim,
+  /^.*enter as a skeptic,? leave as a storyline.*$/gim,
 ];
+
+/**
+ * Person rows that are extraction artifacts, not people. These leak from the
+ * AI enrichment pipeline when a transcript has no identifiable speaker and
+ * must never surface on public inventory pages (Reports, People, graph).
+ * Exact-match on trimmed displayName, case-insensitive.
+ */
+export const JUNK_PERSON_NAMES: string[] = [
+  "none",
+  "unknown",
+  "unknown speaker",
+  "n/a",
+  "various",
+  "multiple",
+  "multiple speakers",
+  "tbd",
+];
+
+export function isJunkPersonName(displayName: string | null | undefined): boolean {
+  if (!displayName) return true;
+  return JUNK_PERSON_NAMES.includes(displayName.trim().toLowerCase());
+}
 
 export function cleanSummary(raw: string): string {
   let text = raw;
