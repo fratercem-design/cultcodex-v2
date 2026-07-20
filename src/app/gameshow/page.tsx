@@ -5,6 +5,11 @@ import bankJson from "@/lib/data/gameshow-questions.json";
 
 const bank = bankJson as unknown as GameShowBank;
 
+// Fully static shell (the question bank is bundled, no per-request data) — matches
+// the other Fun Wing pages and avoids the dynamic-streaming path that left the
+// client board stuck in an unrevealed Suspense boundary.
+export const dynamic = "force-static";
+
 export const metadata: Metadata = {
   alternates: { canonical: "/gameshow" },
   title: "The Panelverse Game Show — CULT CODEX",
