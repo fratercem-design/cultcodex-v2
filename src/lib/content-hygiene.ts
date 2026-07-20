@@ -36,13 +36,14 @@ export const BOILERPLATE_PATTERNS: RegExp[] = [
   /^\s*[📌🔗💬🔔🎙️😍🚀]+\s*$/gm,
   // CashApp donation boilerplate — the channel's standing description
   // ("$cultofpsyche Cashapp 🔥 The Cult of Psyche — Where Myth Wakes Up…")
-  // leaks into episode summaries verbatim. Template-anchored: a line must
-  // contain BOTH the cashapp handle context and "cashapp" to be stripped,
-  // so prose that merely discusses CashApp survives.
-  /^(?=.*\bcash\s?app\b)(?=.*cult\s?of\s?psyche).*$/gim,
-  // The channel tagline lines that ride along with the CashApp template
-  /^.*where myth wakes up (?:&|and) chaos takes notes.*$/gim,
-  /^.*enter as a skeptic,? leave as a storyline.*$/gim,
+  // leaks into episode summaries verbatim, often GLUED ONTO legit prose in a
+  // single line. PHRASE-anchored (not line-anchored) on purpose: a prod
+  // dryRun on 2026-07-19 showed line-anchored variants nulling 11 legitimate
+  // summaries that merely quoted the tagline. Strip only the template spans.
+  /\$?cult\s?of\s?psyche\s+cash\s?app\s*[🔥💸]*\s*/gi,
+  /the cult of psyche\s*[—–-]+\s*where myth wakes up\s*(?:&|and)\s*chaos takes notes\.?/gi,
+  /tarot\.\s*prophecy\.\s*open panels\.\s*occult insight\.\s*unusual minds\.\s*/gi,
+  /enter as a skeptic,?\s*leave as a storyline\.?/gi,
 ];
 
 /**
