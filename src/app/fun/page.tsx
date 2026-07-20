@@ -13,6 +13,11 @@ export const metadata: Metadata = {
 
 const ATTRACTIONS: { label: string; href: string; blurb: string }[] = [
   {
+    label: "The Panelverse Game Show",
+    href: "/gameshow",
+    blurb: "100 questions, five rounds. Screen-share it and let chat play.",
+  },
+  {
     label: "Draw from the Deck",
     href: "/draw",
     blurb: "Three random cards from the archive. Reload to draw again.",

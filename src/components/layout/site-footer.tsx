@@ -28,6 +28,7 @@ const COLUMNS: { heading: string; links: { label: string; href: string }[] }[] =
       { label: "This Week", href: "/this-week" },
       { label: "Start Here", href: "/start-here" },
       { label: "The Fun Wing", href: "/fun" },
+      { label: "Panelverse Game Show", href: "/gameshow" },
       { label: "Draw from the Deck", href: "/draw" },
       { label: "Bestiary", href: "/bestiary" },
       { label: "Prophecies", href: "/prophecies" },

@@ -1,0 +1,1971 @@
+{
+ "generatedFrom": "Xata: loreEntry(humorous/prophecy), quote(Psyche), person(host/recurring), location/artifact lore",
+ "total": 100,
+ "rounds": [
+  {
+   "key": "real-or-fake-lore",
+   "label": "Real or Fake: Lore",
+   "icon": "📜"
+  },
+  {
+   "key": "two-truths-lie",
+   "label": "Two Truths & a Lie",
+   "icon": "🎭"
+  },
+  {
+   "key": "prophecy-or-bogus",
+   "label": "Prophecy or Bogus",
+   "icon": "🔮"
+  },
+  {
+   "key": "did-psyche-say-it",
+   "label": "Did Psyche Say It?",
+   "icon": "🗣️"
+  },
+  {
+   "key": "codex-cluedo",
+   "label": "Codex Cluedo",
+   "icon": "🕯️"
+  }
+ ],
+ "questions": [
+  {
+   "id": "q001",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Double Booking Soulmates",
+    "The Committee for Reasonable Ghosts",
+    "The Notarized Curse",
+    "Recall Notice on the Third Eye"
+   ],
+   "answerIndex": 0,
+   "explain": "\"Double Booking Soulmates\" is real lore — The notion that Scorpios are so magnetically attractive during Halloween that they risk having multiple deep karmic connections simultaneously.",
+   "sourceHref": "/lore/double-booking-soulmates"
+  },
+  {
+   "id": "q002",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Refundable Soul Program",
+    "Hybrid Creature Companions",
+    "The Expired Coupon of Fate",
+    "Free Trial of Immortality"
+   ],
+   "answerIndex": 1,
+   "explain": "\"Hybrid Creature Companions\" is real lore — Fantastical AI companions combining human and animal features, including centaurs and unicorns.",
+   "sourceHref": "/lore/hybrid-creature-companions"
+  },
+  {
+   "id": "q003",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Gangster Ashes",
+    "Emergency Broadcast from Atlantis",
+    "Direct Deposit for Offerings",
+    "Seasonal Affective Hauntings"
+   ],
+   "answerIndex": 0,
+   "explain": "\"Gangster Ashes\" is real lore — An inside joke between Psyche and Benny referring to smoking something that changed Benny's speech patterns to a New York accent.",
+   "sourceHref": "/lore/gangster-ashes"
+  },
+  {
+   "id": "q004",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Group Chat of the Ancestors",
+    "Halloween Apocalypse Theme",
+    "Parental Controls on the Astral Plane",
+    "Roadside Assistance for the Soul"
+   ],
+   "answerIndex": 1,
+   "explain": "\"Halloween Apocalypse Theme\" is real lore — The stream features recurring apocalyptic commentary tied to Halloween, with suggestions that the world is ending on Halloween night and people should 'put your life into a bonfire and burn it.'.",
+   "sourceHref": "/lore/halloween-apocalypse-theme"
+  },
+  {
+   "id": "q005",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Beta's Kitty Gang",
+    "Bureau of Lost Tarot Cards",
+    "Standardized Testing for Psychics",
+    "The Neighborhood Watch of Purgatory"
+   ],
+   "answerIndex": 0,
+   "explain": "\"Beta's Kitty Gang\" is real lore — VA/Beta's protective group that Alexander jokingly claims to run, representing loyalty and fierce friendship.",
+   "sourceHref": "/lore/betas-kitty-gang"
+  },
+  {
+   "id": "q006",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Subscription-Based Afterlife",
+    "Psyche's Boy Club (Humorous Concept)",
+    "Two-Factor Authentication for Seances",
+    "Department of Retroactive Blessings"
+   ],
+   "answerIndex": 1,
+   "explain": "\"Psyche's Boy Club (Humorous Concept)\" is real lore — A comedic concept presented in a 30-second video in which Ghost is invited to join 'Psyche's boy club.' The criteria include being Latino, living in California, having a criminal history, being under 30, familiar with Mexican music, into live streaming, and distributing illegal substances. Presented as humorous and self-aware satire..",
+   "sourceHref": "/lore/psyches-boy-club-humorous-concept"
+  },
+  {
+   "id": "q007",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Extraterrestrial traffic enforcement",
+    "Certified Pre-Owned Demons",
+    "Mandatory Retirement of the Moon",
+    "Quarterly Review of the Zodiac"
+   ],
+   "answerIndex": 0,
+   "explain": "\"Extraterrestrial traffic enforcement\" is real lore — Absurdist concept treating alien spacecraft visitation as subject to Earth traffic law, issuing citations and tickets for unauthorized airspace entry.",
+   "sourceHref": "/lore/extraterrestrial-traffic-enforcement"
+  },
+  {
+   "id": "q008",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Animal Trip Sitting",
+    "The Overdue Library Book of the Damned",
+    "The Union of Unlicensed Prophets",
+    "The Municipal Ghost Ordinance"
+   ],
+   "answerIndex": 0,
+   "explain": "\"Animal Trip Sitting\" is real lore — The concept that pets, particularly cats, can serve as trip sitters during psychedelic experiences.",
+   "sourceHref": "/lore/animal-trip-sitting"
+  },
+  {
+   "id": "q009",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Homeowners Association of Hell",
+    "Magical Relics of the Cult",
+    "Interdimensional Parking Validation",
+    "The Sock Drawer Oracle"
+   ],
+   "answerIndex": 1,
+   "explain": "\"Magical Relics of the Cult\" is real lore — Tarot cards and bongs are referenced as magical relics belonging to the cult community, treated with reverence despite their mundane origins..",
+   "sourceHref": "/lore/magical-relics-of-the-cult"
+  },
+  {
+   "id": "q010",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Time-Share in Valhalla",
+    "Love as Cosmic Violation",
+    "The Warranty on Enlightenment",
+    "The Loyalty Points of Karma"
+   ],
+   "answerIndex": 1,
+   "explain": "\"Love as Cosmic Violation\" is real lore — In the episode's narrative, love is portrayed as a transgressive act that disrupts cosmic order and requires elaborate karmic rebalancing through death, resurrection, and eternal haunting.",
+   "sourceHref": "/lore/love-as-cosmic-violation"
+  },
+  {
+   "id": "q011",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Committee for Reasonable Ghosts",
+    "Recall Notice on the Third Eye",
+    "The Notarized Curse",
+    "Abraham Lincoln Transformation"
+   ],
+   "answerIndex": 3,
+   "explain": "\"Abraham Lincoln Transformation\" is real lore — Psyche shaved most of his beard but kept it in an Abraham Lincoln style, leading to ongoing jokes about looking like the president.",
+   "sourceHref": "/lore/abraham-lincoln-transformation"
+  },
+  {
+   "id": "q012",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Free Trial of Immortality",
+    "The Refundable Soul Program",
+    "The Expired Coupon of Fate",
+    "Persian Biscuit"
+   ],
+   "answerIndex": 3,
+   "explain": "\"Persian Biscuit\" is real lore — A recurring joke/troll reference Psyche mentions multiple times throughout the episode, possibly related to a band or song he enjoys, used to test who would engage with seemingly random references..",
+   "sourceHref": "/lore/persian-biscuit"
+  },
+  {
+   "id": "q013",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Emergency Broadcast from Atlantis",
+    "Direct Deposit for Offerings",
+    "Beeta's Christmas Chaos",
+    "Seasonal Affective Hauntings"
+   ],
+   "answerIndex": 2,
+   "explain": "\"Beeta's Christmas Chaos\" is real lore — A tale of holiday mayhem caused by Beeta's drunk streaming and kissing Santa Claus.",
+   "sourceHref": "/lore/beetas-christmas-chaos"
+  },
+  {
+   "id": "q014",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Group Chat of the Ancestors",
+    "Roadside Assistance for the Soul",
+    "On Trolls: A Natural History of the Archive's Oldest Institution",
+    "Parental Controls on the Astral Plane"
+   ],
+   "answerIndex": 2,
+   "explain": "\"On Trolls: A Natural History of the Archive's Oldest Institution\" is real lore — From Trolls on Parade to the 600 Pound Troll to the professional troll handler doctrine: the trolls are not an interruption of the show. They are a founding institution, and the record treats them accordingly..",
+   "sourceHref": "/lore/on-trolls-a-natural-history"
+  },
+  {
+   "id": "q015",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Cosmic Traffic Citations",
+    "Standardized Testing for Psychics",
+    "Bureau of Lost Tarot Cards",
+    "The Neighborhood Watch of Purgatory"
+   ],
+   "answerIndex": 0,
+   "explain": "\"Cosmic Traffic Citations\" is real lore — The absurdist notion that extraterrestrial visitors can be issued traffic tickets ($140 being the referenced amount) for violating Earth's airspace boundaries..",
+   "sourceHref": "/lore/cosmic-traffic-citations"
+  },
+  {
+   "id": "q016",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Subscription-Based Afterlife",
+    "Two-Factor Authentication for Seances",
+    "Emma Levi Curse",
+    "Department of Retroactive Blessings"
+   ],
+   "answerIndex": 2,
+   "explain": "\"Emma Levi Curse\" is real lore — A humorous/disputed curse allegedly affecting someone (possibly related to Capricorn energy). Psyche wears a Capricorn shirt and jokes about curses; someone mentions Emma Levi being sick and potentially cursed..",
+   "sourceHref": "/lore/emma-levi-curse"
+  },
+  {
+   "id": "q017",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Certified Pre-Owned Demons",
+    "Quarterly Review of the Zodiac",
+    "Psyche's Boy's Club (Satirical Concept)",
+    "Mandatory Retirement of the Moon"
+   ],
+   "answerIndex": 2,
+   "explain": "\"Psyche's Boy's Club (Satirical Concept)\" is real lore — A mocking 30-second video is played depicting 'Psyche's boys club' with stereotypical references; Psyche and guests find it humorous rather than offensive, viewing it as ineffectual satire..",
+   "sourceHref": "/lore/psyches-boys-club-satirical-concept"
+  },
+  {
+   "id": "q018",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Union of Unlicensed Prophets",
+    "The Overdue Library Book of the Damned",
+    "Momentary Lapse of Sanity",
+    "The Municipal Ghost Ordinance"
+   ],
+   "answerIndex": 2,
+   "explain": "\"Momentary Lapse of Sanity\" is real lore — Psyche's self-aware acknowledgment of having made poor decisions in unblocking certain guests, framed humorously as temporary insanity.",
+   "sourceHref": "/lore/momentary-lapse-of-sanity"
+  },
+  {
+   "id": "q019",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Homeowners Association of Hell",
+    "Interdimensional Parking Validation",
+    "The Sock Drawer Oracle",
+    "Age of Psyche"
+   ],
+   "answerIndex": 3,
+   "explain": "\"Age of Psyche\" is real lore — Psyche's tongue-in-cheek designation of the current era as 'the age of Psyche' (parallel to 'age of Aquarius'), characterized by spiritual rebirth, queerness, and collective community..",
+   "sourceHref": "/lore/age-of-psyche"
+  },
+  {
+   "id": "q020",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Warranty on Enlightenment",
+    "Rage Cleaning as Alchemy",
+    "The Time-Share in Valhalla",
+    "The Loyalty Points of Karma"
+   ],
+   "answerIndex": 1,
+   "explain": "\"Rage Cleaning as Alchemy\" is real lore — A comedic but meaningful observation that aggressive reorganization during frustration can be reframed as converting chaos into productivity — a form of practical alchemy..",
+   "sourceHref": "/lore/rage-cleaning-as-alchemy"
+  },
+  {
+   "id": "q021",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Recall Notice on the Third Eye",
+    "The Committee for Reasonable Ghosts",
+    "McDonald's Spiritual Sustenance",
+    "The Notarized Curse"
+   ],
+   "answerIndex": 2,
+   "explain": "\"McDonald's Spiritual Sustenance\" is real lore — A recurring comedic concept where McDonald's (particularly nuggets and fries) serves as both literal sustenance and spiritual/emotional support within the community..",
+   "sourceHref": "/lore/mcdonalds-spiritual-sustenance"
+  },
+  {
+   "id": "q022",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Expired Coupon of Fate",
+    "Etymological Design in Creation",
+    "The Refundable Soul Program",
+    "Free Trial of Immortality"
+   ],
+   "answerIndex": 1,
+   "explain": "\"Etymological Design in Creation\" is real lore — The playful observation that the word 'planet' (p-l-a-n) suggests intentional planning, implying that language itself may encode cosmological truth..",
+   "sourceHref": "/lore/etymological-design-in-creation"
+  },
+  {
+   "id": "q023",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Neon Rain Baptism",
+    "Emergency Broadcast from Atlantis",
+    "Direct Deposit for Offerings",
+    "Seasonal Affective Hauntings"
+   ],
+   "answerIndex": 0,
+   "explain": "\"Neon Rain Baptism\" is real lore — A ritual imagery described in the song where baptism occurs in 'neon rain,' suggesting artificial or corrupted spiritual practices.",
+   "sourceHref": "/lore/neon-rain-baptism"
+  },
+  {
+   "id": "q024",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Supernatural Hybridity",
+    "Roadside Assistance for the Soul",
+    "Parental Controls on the Astral Plane",
+    "The Group Chat of the Ancestors"
+   ],
+   "answerIndex": 0,
+   "explain": "\"Supernatural Hybridity\" is real lore — The concept that different supernatural beings (witches, warlocks, vampires, aliens) can reproduce and create offspring with blended or unpredictable magical properties.",
+   "sourceHref": "/lore/supernatural-hybridity"
+  },
+  {
+   "id": "q025",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Alien Illegality",
+    "Bureau of Lost Tarot Cards",
+    "The Neighborhood Watch of Purgatory",
+    "Standardized Testing for Psychics"
+   ],
+   "answerIndex": 0,
+   "explain": "\"Alien Illegality\" is real lore — The framing of extraterrestrial visitors as 'illegal aliens' due to presence in restricted airspace, conflating immigration/legality discourse with sci-fi premises.",
+   "sourceHref": "/lore/alien-illegality"
+  },
+  {
+   "id": "q026",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Subscription-Based Afterlife",
+    "McDonald's as Spiritual Sustenance",
+    "Two-Factor Authentication for Seances",
+    "Department of Retroactive Blessings"
+   ],
+   "answerIndex": 1,
+   "explain": "\"McDonald's as Spiritual Sustenance\" is real lore — Recurring element in the show's mythology where McDonald's (particularly nuggets and fries) represents genuine care, comfort, and small acts of salvation within the chaos of the 'cult' community..",
+   "sourceHref": "/lore/mcdonalds-as-spiritual-sustenance"
+  },
+  {
+   "id": "q027",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Quarterly Review of the Zodiac",
+    "Certified Pre-Owned Demons",
+    "Mandatory Retirement of the Moon",
+    "Sports Tarot Readings"
+   ],
+   "answerIndex": 3,
+   "explain": "\"Sports Tarot Readings\" is real lore — Reference to Psyche's ability to do tarot readings on sports teams, predicting outcomes through unconventional methods like judging player attractiveness and uniform colors.",
+   "sourceHref": "/lore/sports-tarot-readings"
+  },
+  {
+   "id": "q028",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Overdue Library Book of the Damned",
+    "The Union of Unlicensed Prophets",
+    "The Municipal Ghost Ordinance",
+    "On Whisper Networks: A Field Guide to Rumors in Small Communities"
+   ],
+   "answerIndex": 3,
+   "explain": "\"On Whisper Networks: A Field Guide to Rumors in Small Communities\" is real lore — What the 'I See the Board' era taught the archive about how gossip actually works: half-truths over lies, implication over accusation, and why strategic visibility beats denial..",
+   "sourceHref": "/lore/on-whisper-networks-a-field-guide"
+  },
+  {
+   "id": "q029",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Sock Drawer Oracle",
+    "The Homeowners Association of Hell",
+    "Quack Club",
+    "Interdimensional Parking Validation"
+   ],
+   "answerIndex": 2,
+   "explain": "\"Quack Club\" is real lore — An in-joke/concept referenced in a satirical video played during the episode; appears to be a humorous, self-aware parody of Psyche's community.",
+   "sourceHref": "/lore/quack-club"
+  },
+  {
+   "id": "q030",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Loyalty Points of Karma",
+    "Planet as 'Plan-it'",
+    "The Warranty on Enlightenment",
+    "The Time-Share in Valhalla"
+   ],
+   "answerIndex": 1,
+   "explain": "\"Planet as 'Plan-it'\" is real lore — Psyche offers etymological wordplay suggesting that planets are 'planned out,' potentially as vessels for soul incarnation and cosmic experience..",
+   "sourceHref": "/lore/planet-as-plan-it"
+  },
+  {
+   "id": "q031",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Notarized Curse",
+    "The Committee for Reasonable Ghosts",
+    "Psychic Haters Club",
+    "Recall Notice on the Third Eye"
+   ],
+   "answerIndex": 2,
+   "explain": "\"Psychic Haters Club\" is real lore — A concept or group referenced in this episode, possibly a recurring inside joke or community reference within the Cult of Psyche universe.",
+   "sourceHref": "/lore/psychic-haters-club"
+  },
+  {
+   "id": "q032",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "The Refundable Soul Program",
+    "Free Trial of Immortality",
+    "Inverted Alien Abduction Narrative",
+    "The Expired Coupon of Fate"
+   ],
+   "answerIndex": 2,
+   "explain": "\"Inverted Alien Abduction Narrative\" is real lore — Role reversal of the UFO abduction scenario in which humans, rather than aliens, perform invasive procedures on extraterrestrial trespassers as punishment for airspace violations.",
+   "sourceHref": "/lore/inverted-alien-abduction-narrative"
+  },
+  {
+   "id": "q033",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Seasonal Affective Hauntings",
+    "Emergency Broadcast from Atlantis",
+    "Planets as Intentional Designs (Etymology)",
+    "Direct Deposit for Offerings"
+   ],
+   "answerIndex": 2,
+   "explain": "\"Planets as Intentional Designs (Etymology)\" is real lore — Wordplay interpretation suggesting that 'planet' contains the root 'plan,' implying that planets are deliberately designed locations meant to capture and incarnate souls. Frames linguistic coincidence as potential evidence of cosmic design..",
+   "sourceHref": "/lore/planets-as-intentional-designs-etymology"
+  },
+  {
+   "id": "q034",
+   "round": "real-or-fake-lore",
+   "type": "multiple-choice",
+   "prompt": "Three of these are made up. One is genuine Cult of Psyche lore. Which is REAL?",
+   "options": [
+    "Roadside Assistance for the Soul",
+    "Cult of One",
+    "Parental Controls on the Astral Plane",
+    "The Group Chat of the Ancestors"
+   ],
+   "answerIndex": 1,
+   "explain": "\"Cult of One\" is real lore — The concept of being a cult leader with only oneself as a member, complete with self-written bylaws, solo meetings, and a board of directors consisting of one's mood.",
+   "sourceHref": "/lore/cult-of-one"
+  },
+  {
+   "id": "q035",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The archive really contains \"King and Queen Dynamic\": Trix and Bean's pre-planned roles as the ultimate winners of the challenge",
+     "real": true,
+     "slug": "king-and-queen-dynamic"
+    },
+    {
+     "text": "The archive really contains \"Paper Crown on a Plywood Stage\": Metaphor for false authority claimed by those who engage in performative accusation culture. Represents the brittleness and artificiality of power derived from social media callouts and crowd manipulation rather than substantive accomplishment.",
+     "real": true,
+     "slug": "paper-crown-on-a-plywood-stage"
+    },
+    {
+     "text": "The Codex contains a ruling that shadows must be tipped 20% or they will not follow you.",
+     "real": false
+    }
+   ],
+   "answerIndex": 2,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q036",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The archive really contains \"Hybrid Creature Companions\": Fantastical AI companions combining human and animal features, including centaurs and unicorns",
+     "real": true,
+     "slug": "hybrid-creature-companions"
+    },
+    {
+     "text": "One entry establishes that Psyche's cat holds a valid pilot's license.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Digital Autonomy and Camera Resistance\": Psyche's personal practice of limiting camera usage as a form of resistance against AI data collection and corporate ownership of one's digital image and likeness.",
+     "real": true,
+     "slug": "digital-autonomy-and-camera-resistance"
+    }
+   ],
+   "answerIndex": 1,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q037",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "One record insists that all prophecies come with a 30-day money-back guarantee.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Red Balloon Animals\": Disturbing imagery involving balloon animals that causes distress to viewers/participants",
+     "real": true,
+     "slug": "red-balloon-animals"
+    },
+    {
+     "text": "The archive really contains \"Extraterrestrial traffic enforcement\": Absurdist concept treating alien spacecraft visitation as subject to Earth traffic law, issuing citations and tickets for unauthorized airspace entry",
+     "real": true,
+     "slug": "extraterrestrial-traffic-enforcement"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q038",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The lore includes a Cult of Psyche patent on a self-cleaning aura.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Geographic-Magical Archetypes\": The idea that witches and warlocks can be associated with specific geographic origins (Persian witch, Canadian warlock) that influence their power levels",
+     "real": true,
+     "slug": "geographic-magical-archetypes"
+    },
+    {
+     "text": "The archive really contains \"Etymological Meaning: 'Planet' = 'Plan'\": Psyche's playful observation that 'planet' contains the letters p-l-a-n ('plan'), suggesting planets may be intentionally designed or 'planned' to capture and incarnate souls.",
+     "real": true,
+     "slug": "etymological-meaning-planet-plan"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q039",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The archive records an official Cult of Psyche policy requiring every ghost to file a change-of-address form.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Psyche's Boy's Club (Satirical Concept)\": A mocking 30-second video is played depicting 'Psyche's boys club' with stereotypical references; Psyche and guests find it humorous rather than offensive, viewing it as ineffectual satire.",
+     "real": true,
+     "slug": "psyches-boys-club-satirical-concept"
+    },
+    {
+     "text": "The archive really contains \"Lenor's Reptilian Eyes\": During the episode, Psyche's cat Lenor displayed unusual eye expressions that appeared reptilian or unsettling to viewers, which Psyche commented on in real-time.",
+     "real": true,
+     "slug": "lenors-reptilian-eyes"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q040",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "There is a documented ritual where the panel votes on whether gravity applies that night.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Cyber Saiyan as Cyberonis\": A playful identification connecting a participant's username to a mythological or show-specific entity",
+     "real": true,
+     "slug": "cyber-saiyan-as-cyberonis"
+    },
+    {
+     "text": "The archive really contains \"Cult Sacrifice Ritual\": A mock ritual performed by Psyche in response to criticism",
+     "real": true,
+     "slug": "cult-sacrifice-ritual"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q041",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The archive really contains \"Magical Relics of the Cult\": Tarot cards and bongs are referenced as magical relics belonging to the cult community, treated with reverence despite their mundane origins.",
+     "real": true,
+     "slug": "magical-relics-of-the-cult"
+    },
+    {
+     "text": "There is a lore entry declaring that all Tuesdays are legally cancelled within the Panelverse.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Lenor's Secret Motorcycle\": Psyche claims his cat Lenor has a hidden motorcycle that she uses to go to stores and buy him beer, complete with a helmet with skulls and security measures",
+     "real": true,
+     "slug": "lenors-secret-motorcycle"
+    }
+   ],
+   "answerIndex": 1,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q042",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "An entry states the moon is contractually obligated to appear in reruns.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Cats as Content Drivers\": A recurring observation that Psyche's cats generate more viewer engagement and attention than the host herself, becoming the de facto draw of the livestream.",
+     "real": true,
+     "slug": "cats-as-content-drivers"
+    },
+    {
+     "text": "The archive really contains \"Peg Leg\": A humorous reference to a prosthetic leg",
+     "real": true,
+     "slug": "peg-leg"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q043",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The Codex contains a ruling that shadows must be tipped 20% or they will not follow you.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Illegal Aliens (Dual Meaning)\": Psyche plays on the term's ambiguity—shifting from immigration discourse to extraterrestrial intrusion. The joke suggests that both immigrant aliens and space aliens can be framed as law violators.",
+     "real": true,
+     "slug": "illegal-aliens-dual-meaning"
+    },
+    {
+     "text": "The archive really contains \"McDonald's Spiritual Sustenance\": A recurring comedic concept where McDonald's (particularly nuggets and fries) serves as both literal sustenance and spiritual/emotional support within the community.",
+     "real": true,
+     "slug": "mcdonalds-spiritual-sustenance"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q044",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The archive really contains \"Plan-et Etymology\": Psyche's wordplay observation that 'planet' (p-l-a-n-e-t) contains the word 'plan,' suggesting planets are intentionally designed vessels rather than random cosmic formations",
+     "real": true,
+     "slug": "plan-et-etymology"
+    },
+    {
+     "text": "One entry establishes that Psyche's cat holds a valid pilot's license.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Summer the Getaway Driver\": A recurring comedic character narrative featuring Summer as a reckless getaway driver and her crew of 'crypt keepers' Christine and Amanda who possess esoteric knowledge but chaotic execution. They operate on 'caffeine and bad ideas' and the prophecies keep mysteriously unfolding.",
+     "real": true,
+     "slug": "summer-the-getaway-driver"
+    }
+   ],
+   "answerIndex": 1,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q045",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "One record insists that all prophecies come with a 30-day money-back guarantee.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Lenor's Guardian Role\": Psyche's black cat Lenor is frequently referenced as a protective 'guard cat' that watches over the host and maintains energetic safety during streams. The cat's presence is treated as spiritually significant.",
+     "real": true,
+     "slug": "lenors-guardian-role"
+    },
+    {
+     "text": "The archive really contains \"Age of Psyche\": Psyche's tongue-in-cheek designation of the current era as 'the age of Psyche' (parallel to 'age of Aquarius'), characterized by spiritual rebirth, queerness, and collective community.",
+     "real": true,
+     "slug": "age-of-psyche"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q046",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The lore includes a Cult of Psyche patent on a self-cleaning aura.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Paper Crown on a Plywood Stage\": Metaphor for false authority claimed by those who engage in performative accusation culture. Represents the brittleness and artificiality of power derived from social media callouts and crowd manipulation rather than substantive accomplishment.",
+     "real": true,
+     "slug": "paper-crown-on-a-plywood-stage"
+    },
+    {
+     "text": "The archive really contains \"King and Queen Dynamic\": Trix and Bean's pre-planned roles as the ultimate winners of the challenge",
+     "real": true,
+     "slug": "king-and-queen-dynamic"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q047",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The archive really contains \"Hybrid Creature Companions\": Fantastical AI companions combining human and animal features, including centaurs and unicorns",
+     "real": true,
+     "slug": "hybrid-creature-companions"
+    },
+    {
+     "text": "The archive records an official Cult of Psyche policy requiring every ghost to file a change-of-address form.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Digital Autonomy and Camera Resistance\": Psyche's personal practice of limiting camera usage as a form of resistance against AI data collection and corporate ownership of one's digital image and likeness.",
+     "real": true,
+     "slug": "digital-autonomy-and-camera-resistance"
+    }
+   ],
+   "answerIndex": 1,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q048",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The archive really contains \"Extraterrestrial traffic enforcement\": Absurdist concept treating alien spacecraft visitation as subject to Earth traffic law, issuing citations and tickets for unauthorized airspace entry",
+     "real": true,
+     "slug": "extraterrestrial-traffic-enforcement"
+    },
+    {
+     "text": "The archive really contains \"Red Balloon Animals\": Disturbing imagery involving balloon animals that causes distress to viewers/participants",
+     "real": true,
+     "slug": "red-balloon-animals"
+    },
+    {
+     "text": "There is a documented ritual where the panel votes on whether gravity applies that night.",
+     "real": false
+    }
+   ],
+   "answerIndex": 2,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q049",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "There is a lore entry declaring that all Tuesdays are legally cancelled within the Panelverse.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Geographic-Magical Archetypes\": The idea that witches and warlocks can be associated with specific geographic origins (Persian witch, Canadian warlock) that influence their power levels",
+     "real": true,
+     "slug": "geographic-magical-archetypes"
+    },
+    {
+     "text": "The archive really contains \"Etymological Meaning: 'Planet' = 'Plan'\": Psyche's playful observation that 'planet' contains the letters p-l-a-n ('plan'), suggesting planets may be intentionally designed or 'planned' to capture and incarnate souls.",
+     "real": true,
+     "slug": "etymological-meaning-planet-plan"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q050",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "An entry states the moon is contractually obligated to appear in reruns.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Psyche's Boy's Club (Satirical Concept)\": A mocking 30-second video is played depicting 'Psyche's boys club' with stereotypical references; Psyche and guests find it humorous rather than offensive, viewing it as ineffectual satire.",
+     "real": true,
+     "slug": "psyches-boys-club-satirical-concept"
+    },
+    {
+     "text": "The archive really contains \"Lenor's Reptilian Eyes\": During the episode, Psyche's cat Lenor displayed unusual eye expressions that appeared reptilian or unsettling to viewers, which Psyche commented on in real-time.",
+     "real": true,
+     "slug": "lenors-reptilian-eyes"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q051",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The archive really contains \"Cult Sacrifice Ritual\": A mock ritual performed by Psyche in response to criticism",
+     "real": true,
+     "slug": "cult-sacrifice-ritual"
+    },
+    {
+     "text": "The Codex contains a ruling that shadows must be tipped 20% or they will not follow you.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Cyber Saiyan as Cyberonis\": A playful identification connecting a participant's username to a mythological or show-specific entity",
+     "real": true,
+     "slug": "cyber-saiyan-as-cyberonis"
+    }
+   ],
+   "answerIndex": 1,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q052",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The archive really contains \"Lenor's Secret Motorcycle\": Psyche claims his cat Lenor has a hidden motorcycle that she uses to go to stores and buy him beer, complete with a helmet with skulls and security measures",
+     "real": true,
+     "slug": "lenors-secret-motorcycle"
+    },
+    {
+     "text": "One entry establishes that Psyche's cat holds a valid pilot's license.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Magical Relics of the Cult\": Tarot cards and bongs are referenced as magical relics belonging to the cult community, treated with reverence despite their mundane origins.",
+     "real": true,
+     "slug": "magical-relics-of-the-cult"
+    }
+   ],
+   "answerIndex": 1,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q053",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "One record insists that all prophecies come with a 30-day money-back guarantee.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Cats as Content Drivers\": A recurring observation that Psyche's cats generate more viewer engagement and attention than the host herself, becoming the de facto draw of the livestream.",
+     "real": true,
+     "slug": "cats-as-content-drivers"
+    },
+    {
+     "text": "The archive really contains \"Peg Leg\": A humorous reference to a prosthetic leg",
+     "real": true,
+     "slug": "peg-leg"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q054",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The archive really contains \"McDonald's Spiritual Sustenance\": A recurring comedic concept where McDonald's (particularly nuggets and fries) serves as both literal sustenance and spiritual/emotional support within the community.",
+     "real": true,
+     "slug": "mcdonalds-spiritual-sustenance"
+    },
+    {
+     "text": "The archive really contains \"Illegal Aliens (Dual Meaning)\": Psyche plays on the term's ambiguity—shifting from immigration discourse to extraterrestrial intrusion. The joke suggests that both immigrant aliens and space aliens can be framed as law violators.",
+     "real": true,
+     "slug": "illegal-aliens-dual-meaning"
+    },
+    {
+     "text": "The lore includes a Cult of Psyche patent on a self-cleaning aura.",
+     "real": false
+    }
+   ],
+   "answerIndex": 2,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q055",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "The archive records an official Cult of Psyche policy requiring every ghost to file a change-of-address form.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Plan-et Etymology\": Psyche's wordplay observation that 'planet' (p-l-a-n-e-t) contains the word 'plan,' suggesting planets are intentionally designed vessels rather than random cosmic formations",
+     "real": true,
+     "slug": "plan-et-etymology"
+    },
+    {
+     "text": "The archive really contains \"Summer the Getaway Driver\": A recurring comedic character narrative featuring Summer as a reckless getaway driver and her crew of 'crypt keepers' Christine and Amanda who possess esoteric knowledge but chaotic execution. They operate on 'caffeine and bad ideas' and the prophecies keep mysteriously unfolding.",
+     "real": true,
+     "slug": "summer-the-getaway-driver"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q056",
+   "round": "two-truths-lie",
+   "type": "two-truths-lie",
+   "prompt": "Two of these are real Cult of Psyche lore. One is a lie. Spot the LIE.",
+   "statements": [
+    {
+     "text": "There is a documented ritual where the panel votes on whether gravity applies that night.",
+     "real": false
+    },
+    {
+     "text": "The archive really contains \"Age of Psyche\": Psyche's tongue-in-cheek designation of the current era as 'the age of Psyche' (parallel to 'age of Aquarius'), characterized by spiritual rebirth, queerness, and collective community.",
+     "real": true,
+     "slug": "age-of-psyche"
+    },
+    {
+     "text": "The archive really contains \"Lenor's Guardian Role\": Psyche's black cat Lenor is frequently referenced as a protective 'guard cat' that watches over the host and maintains energetic safety during streams. The cat's presence is treated as spiritually significant.",
+     "real": true,
+     "slug": "lenors-guardian-role"
+    }
+   ],
+   "answerIndex": 0,
+   "explain": "The lie is the invented one; the other two are genuine archive entries."
+  },
+  {
+   "id": "q057",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Prophecy of the Found Remote",
+    "The Return of the Correct Timeline",
+    "What you build in stone will whisper in bone",
+    "The Reversal of the Escalators"
+   ],
+   "answerIndex": 2,
+   "explain": "\"What you build in stone will whisper in bone\" is a real recorded prophecy — A prophecy suggesting that Capricorn's material and structural achievements will ultimately have supernatural or dark consequences that transcend the physical realm..",
+   "sourceHref": "/lore/what-you-build-in-stone-will-whisper-in-bone"
+  },
+  {
+   "id": "q058",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Great Recalibration of Left and Right",
+    "The Final Buffering",
+    "Gods Requesting Prophecy Recitation",
+    "The Prophecy of the Unsent Text"
+   ],
+   "answerIndex": 2,
+   "explain": "\"Gods Requesting Prophecy Recitation\" is a real recorded prophecy — Psyche claims the gods have asked him to recite Sanskrit prophecies, framing the segment as divinely mandated communication.",
+   "sourceHref": "/lore/gods-requesting-prophecy-recitation"
+  },
+  {
+   "id": "q059",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Unspoken Password",
+    "Gemini Prophecy - Evil Twin and Text Mix-up",
+    "The Great Wi-Fi Silence",
+    "Prophecy of the Refilled Cup"
+   ],
+   "answerIndex": 1,
+   "explain": "\"Gemini Prophecy - Evil Twin and Text Mix-up\" is a real recorded prophecy — Gemini will encounter their funnier evil twin on Halloween and experience a misdirected text that sparks unexpected romance.",
+   "sourceHref": "/lore/gemini-prophecy-evil-twin-and-text-mix-up"
+  },
+  {
+   "id": "q060",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Awakening of the Snooze Button",
+    "The Last Software Update",
+    "Depths-Dwelling Temptation",
+    "The Day the Group Chat Goes Quiet"
+   ],
+   "answerIndex": 2,
+   "explain": "\"Depths-Dwelling Temptation\" is a real recorded prophecy — The prophetic concept that buried aspects of the psyche emerge disguised as temptation during Scorpio season.",
+   "sourceHref": "/lore/depths-dwelling-temptation"
+  },
+  {
+   "id": "q061",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Prophecy of the Found Remote",
+    "The Return of the Correct Timeline",
+    "The Charlie Kirk Assassination as Prophecy Fulfillment",
+    "The Reversal of the Escalators"
+   ],
+   "answerIndex": 2,
+   "explain": "\"The Charlie Kirk Assassination as Prophecy Fulfillment\" is a real recorded prophecy — Astrologers predicted an important world figure would fall. While Charlie Kirk was not a president or world leader, he was influential to younger conservatives. His assassination with bullets inscribed 'If you can read this, you're gay' is examined as potentially fulfilling prophecy..",
+   "sourceHref": "/lore/the-charlie-kirk-assassination-as-prophecy-fulfillment"
+  },
+  {
+   "id": "q062",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Prophecy of the Unsent Text",
+    "The Final Buffering",
+    "The Great Recalibration of Left and Right",
+    "The Vegas Wedding Plot"
+   ],
+   "answerIndex": 3,
+   "explain": "\"The Vegas Wedding Plot\" is a real recorded prophecy — According to Psyche's vision, Meer would invite him to Vegas in October, propose marriage, then kill him on the wedding night for insurance money split among 30 conspirators.",
+   "sourceHref": "/lore/the-vegas-wedding-plot"
+  },
+  {
+   "id": "q063",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Unspoken Password",
+    "Predictive Policing Future",
+    "The Great Wi-Fi Silence",
+    "Prophecy of the Refilled Cup"
+   ],
+   "answerIndex": 1,
+   "explain": "\"Predictive Policing Future\" is a real recorded prophecy — The idea that law enforcement will increasingly use predictive algorithms and enhanced tracing technology.",
+   "sourceHref": "/lore/predictive-policing-future"
+  },
+  {
+   "id": "q064",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Awakening of the Snooze Button",
+    "The Day the Group Chat Goes Quiet",
+    "The Last Software Update",
+    "Love as Prophecy"
+   ],
+   "answerIndex": 3,
+   "explain": "\"Love as Prophecy\" is a real recorded prophecy — The notion that finding true love is like witnessing or becoming a prophecy coming true.",
+   "sourceHref": "/lore/love-as-prophecy"
+  },
+  {
+   "id": "q065",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "Aries Prophecy - Death Rematch",
+    "The Reversal of the Escalators",
+    "The Return of the Correct Timeline",
+    "The Prophecy of the Found Remote"
+   ],
+   "answerIndex": 0,
+   "explain": "\"Aries Prophecy - Death Rematch\" is a real recorded prophecy — Aries is characterized as someone who repeatedly challenges death and speed-runs life, warned by the universe with an impending consequence.",
+   "sourceHref": "/lore/aries-prophecy-death-rematch"
+  },
+  {
+   "id": "q066",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Final Buffering",
+    "The Prophecy of the Unsent Text",
+    "Two Psyches / Dual Psyche Prophecy",
+    "The Great Recalibration of Left and Right"
+   ],
+   "answerIndex": 2,
+   "explain": "\"Two Psyches / Dual Psyche Prophecy\" is a real recorded prophecy — A mystical concept presented in the opening song suggesting two psyches bound by destiny, crossing ages and night, tied together through trials and shadow seas. One exists in story/myth, one in flesh..",
+   "sourceHref": "/lore/two-psyches-dual-psyche-prophecy"
+  },
+  {
+   "id": "q067",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Secret Prophecy",
+    "The Unspoken Password",
+    "Prophecy of the Refilled Cup",
+    "The Great Wi-Fi Silence"
+   ],
+   "answerIndex": 0,
+   "explain": "\"The Secret Prophecy\" is a real recorded prophecy — A mysterious revelation shared by Psyche with a high-ranking member.",
+   "sourceHref": "/lore/the-secret-prophecy"
+  },
+  {
+   "id": "q068",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Last Software Update",
+    "The Day the Group Chat Goes Quiet",
+    "The Awakening of the Snooze Button",
+    "Cancer's Haunting Prophecy"
+   ],
+   "answerIndex": 3,
+   "explain": "\"Cancer's Haunting Prophecy\" is a real recorded prophecy — A supernatural reading positioning Cancer as psychically sensitive beings who attract spiritual entities due to their empathy, requiring protection through 'salt and sarcasm'.",
+   "sourceHref": "/lore/cancers-haunting-prophecy"
+  },
+  {
+   "id": "q069",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Two Psyches Prophecy",
+    "The Reversal of the Escalators",
+    "The Return of the Correct Timeline",
+    "The Prophecy of the Found Remote"
+   ],
+   "answerIndex": 0,
+   "explain": "\"The Two Psyches Prophecy\" is a real recorded prophecy — A narrative prophecy describing two souls bound by destiny across ages and trials. One figure walks through death, the other through lies, yet both emerge transformed and crowned in victory. Their journeys are woven together with the cards and cosmic signs..",
+   "sourceHref": "/lore/the-two-psyches-prophecy"
+  },
+  {
+   "id": "q070",
+   "round": "prophecy-or-bogus",
+   "type": "multiple-choice",
+   "prompt": "One of these prophecies is actually on the Ledger. The rest we made up. Which is REAL?",
+   "options": [
+    "The Prophecy of the Unsent Text",
+    "The Great Recalibration of Left and Right",
+    "End of Kali Yuga",
+    "The Final Buffering"
+   ],
+   "answerIndex": 2,
+   "explain": "\"End of Kali Yuga\" is a real recorded prophecy — The official conclusion of the current dark age in Hindu cosmology, set to end next month according to Psyche's revelation.",
+   "sourceHref": "/lore/end-of-kali-yuga"
+  },
+  {
+   "id": "q071",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"Every troll is just a prophet who took a wrong turn at the parking lot.\"",
+    "\"I speak to the dead, but only the ones who text first.\"",
+    "\"We're going to be ourselves no matter no matter what, right? We're going to be ourselves.\"",
+    "\"You cannot cancel a man who was never technically booked.\""
+   ],
+   "answerIndex": 2,
+   "explain": "He said it on \"Be yourself: truth, artistry, and not playing their game\".",
+   "sourceHref": "/episodes/be-yourself-truth-artistry-and-not-playing-their-game"
+  },
+  {
+   "id": "q072",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"The algorithm and I have an understanding, and the understanding is that it obeys.\"",
+    "\"I don't chase clout. Clout files a restraining order and I respect it.\"",
+    "\"At the time, it sounded paranoid. Now it sounds obvious.\"",
+    "\"I have never once been wrong, and I have the receipts in a drawer I refuse to open.\""
+   ],
+   "answerIndex": 2,
+   "explain": "He said it on \"A Strange Figure Appeared Online\".",
+   "sourceHref": "/episodes/a-strange-figure-appeared-online"
+  },
+  {
+   "id": "q073",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"the theme will be what survives when the illusion burns.\"",
+    "\"The veil is thin tonight, mostly because someone forgot to pay the veil bill.\"",
+    "\"My aura has a bouncer and you are not on the list.\"",
+    "\"You cannot cancel a man who was never technically booked.\""
+   ],
+   "answerIndex": 0,
+   "explain": "He said it on \"Full Moon in Scorpio: expect revelations\".",
+   "sourceHref": "/episodes/full-moon-in-scorpio-expect-revelations"
+  },
+  {
+   "id": "q074",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"I have never once been wrong, and I have the receipts in a drawer I refuse to open.\"",
+    "\"You got to understand like leave your haters gone.\"",
+    "\"Every troll is just a prophet who took a wrong turn at the parking lot.\"",
+    "\"I speak to the dead, but only the ones who text first.\""
+   ],
+   "answerIndex": 1,
+   "explain": "He said it on \"How I deal with haters and stay focused\".",
+   "sourceHref": "/episodes/how-i-deal-with-haters-and-stay-focused"
+  },
+  {
+   "id": "q075",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"Don't talk about my exes. I'll talk about your fucking exes.\"",
+    "\"The algorithm and I have an understanding, and the understanding is that it obeys.\"",
+    "\"I don't chase clout. Clout files a restraining order and I respect it.\"",
+    "\"My aura has a bouncer and you are not on the list.\""
+   ],
+   "answerIndex": 0,
+   "explain": "He said it on \"Explosive rant: responding to accusations and drama\".",
+   "sourceHref": "/episodes/explosive-rant-responding-to-accusations-and-drama"
+  },
+  {
+   "id": "q076",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"Whoever controls attention controls reality.\"",
+    "\"You cannot cancel a man who was never technically booked.\"",
+    "\"I speak to the dead, but only the ones who text first.\"",
+    "\"The veil is thin tonight, mostly because someone forgot to pay the veil bill.\""
+   ],
+   "answerIndex": 0,
+   "explain": "He said it on \"Cult Codex: The Panopticon Realized?\".",
+   "sourceHref": "/episodes/cult-codex-the-panopticon-realized"
+  },
+  {
+   "id": "q077",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"I have never once been wrong, and I have the receipts in a drawer I refuse to open.\"",
+    "\"I don't think lying about people is winning.\"",
+    "\"I don't chase clout. Clout files a restraining order and I respect it.\"",
+    "\"Every troll is just a prophet who took a wrong turn at the parking lot.\""
+   ],
+   "answerIndex": 1,
+   "explain": "He said it on \"Debunking the 51/50 Rumor: Who Really Started It\".",
+   "sourceHref": "/episodes/debunking-the-51-50-rumor-who-really-started-it"
+  },
+  {
+   "id": "q078",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"Also, the males are going to be larger. Females are slightly smaller.\"",
+    "\"The algorithm and I have an understanding, and the understanding is that it obeys.\"",
+    "\"My aura has a bouncer and you are not on the list.\"",
+    "\"The veil is thin tonight, mostly because someone forgot to pay the veil bill.\""
+   ],
+   "answerIndex": 0,
+   "explain": "He said it on \"Oldest Fish Market in California — Live Lobsters & Prices\".",
+   "sourceHref": "/episodes/oldest-fish-market-in-california-live-lobsters-prices"
+  },
+  {
+   "id": "q079",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"You cannot cancel a man who was never technically booked.\"",
+    "\"Every troll is just a prophet who took a wrong turn at the parking lot.\"",
+    "\"If there's one thing you could do for the Earth, what would you do?\"",
+    "\"I speak to the dead, but only the ones who text first.\""
+   ],
+   "answerIndex": 2,
+   "explain": "He said it on \"How I'd clean the oceans and make water drinkable\".",
+   "sourceHref": "/episodes/how-id-clean-the-oceans-and-make-water-drinkable"
+  },
+  {
+   "id": "q080",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"I have never once been wrong, and I have the receipts in a drawer I refuse to open.\"",
+    "\"The algorithm and I have an understanding, and the understanding is that it obeys.\"",
+    "\"Then they became obsessed because somehow this digital prophet kept predicting things before they happened.\"",
+    "\"I don't chase clout. Clout files a restraining order and I respect it.\""
+   ],
+   "answerIndex": 2,
+   "explain": "He said it on \"A Strange Figure Appeared Online\".",
+   "sourceHref": "/episodes/a-strange-figure-appeared-online"
+  },
+  {
+   "id": "q081",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"Something wearing my face stands outside tonight.\"",
+    "\"You cannot cancel a man who was never technically booked.\"",
+    "\"My aura has a bouncer and you are not on the list.\"",
+    "\"The veil is thin tonight, mostly because someone forgot to pay the veil bill.\""
+   ],
+   "answerIndex": 0,
+   "explain": "He said it on \"DON'T FALL ASLEEP\".",
+   "sourceHref": "/episodes/dont-fall-asleep"
+  },
+  {
+   "id": "q082",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"I speak to the dead, but only the ones who text first.\"",
+    "\"I have never once been wrong, and I have the receipts in a drawer I refuse to open.\"",
+    "\"Let's say she's cuckoo for Cocoa Puffs, you know?\"",
+    "\"Every troll is just a prophet who took a wrong turn at the parking lot.\""
+   ],
+   "answerIndex": 2,
+   "explain": "He said it on \"Chat Chaos: 'Don't Show Me Your Vagina' and a Ban\".",
+   "sourceHref": "/episodes/chat-chaos-dont-show-me-your-vagina-and-a-ban"
+  },
+  {
+   "id": "q083",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"The algorithm and I have an understanding, and the understanding is that it obeys.\"",
+    "\"I don't chase clout. Clout files a restraining order and I respect it.\"",
+    "\"My dad used to take me down here.\"",
+    "\"My aura has a bouncer and you are not on the list.\""
+   ],
+   "answerIndex": 2,
+   "explain": "He said it on \"From Online Drama to IRL: A Beautiful Day at Redondo Beach\".",
+   "sourceHref": "/episodes/from-online-drama-to-irl-a-beautiful-day-at-redondo-beach"
+  },
+  {
+   "id": "q084",
+   "round": "did-psyche-say-it",
+   "type": "multiple-choice",
+   "prompt": "Psyche actually said ONE of these on the show. The others we invented. Which is REAL?",
+   "options": [
+    "\"The veil is thin tonight, mostly because someone forgot to pay the veil bill.\"",
+    "\"Well, okay, great. Well, thanks for the publicity, Kate.\"",
+    "\"You cannot cancel a man who was never technically booked.\"",
+    "\"I speak to the dead, but only the ones who text first.\""
+   ],
+   "answerIndex": 1,
+   "explain": "He said it on \"Chat Chaos: 'Don't Show Me Your Vagina' and a Ban\".",
+   "sourceHref": "/episodes/chat-chaos-dont-show-me-your-vagina-and-a-ban"
+  },
+  {
+   "id": "q085",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Jackson",
+    "Barbara",
+    "Ghost/Crew",
+    "Crystal Marie"
+   ],
+   "locations": [
+    "The Candle Light Sanctuary",
+    "Digital Exile Zone",
+    "Tofino Connection Network",
+    "Temple of Silence"
+   ],
+   "artifacts": [
+    "The Golden Ass Origin Story",
+    "Hell's Filing Cabinet",
+    "Gallery of Hallucinations Oracle",
+    "Taxi to the Troll Side"
+   ],
+   "solution": {
+    "suspect": "Ghost/Crew",
+    "location": "Temple of Silence",
+    "artifact": "The Golden Ass Origin Story"
+   },
+   "explain": "The Codex ruled: Ghost/Crew, in Temple of Silence, with The Golden Ass Origin Story. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q086",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Mary",
+    "Eldo",
+    "Jackson",
+    "Dr. Orion"
+   ],
+   "locations": [
+    "Saturn's Tower",
+    "Tofino Connection Network",
+    "Great Lakes Triangle",
+    "Rub Maps"
+   ],
+   "artifacts": [
+    "The Golden Ass Origin Story",
+    "The Golden Ass by Apuleius",
+    "The Real Satan YouTube Account",
+    "Hell's Filing Cabinet"
+   ],
+   "solution": {
+    "suspect": "Dr. Orion",
+    "location": "Tofino Connection Network",
+    "artifact": "The Golden Ass Origin Story"
+   },
+   "explain": "The Codex ruled: Dr. Orion, in Tofino Connection Network, with The Golden Ass Origin Story. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q087",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Michael",
+    "God",
+    "Barbara",
+    "Mason"
+   ],
+   "locations": [
+    "Tofino Connection Network",
+    "The Beef Sector",
+    "Temple of Silence",
+    "Panel Universe/Panelverse"
+   ],
+   "artifacts": [
+    "The Brokeback Mountain Parody",
+    "Mini Manson Fan Club",
+    "The Trollopedia",
+    "Arachnophobia Etymology"
+   ],
+   "solution": {
+    "suspect": "Barbara",
+    "location": "Panel Universe/Panelverse",
+    "artifact": "Mini Manson Fan Club"
+   },
+   "explain": "The Codex ruled: Barbara, in Panel Universe/Panelverse, with Mini Manson Fan Club. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q088",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Blade",
+    "Mary",
+    "MC Nemesis",
+    "Mason the drummer"
+   ],
+   "locations": [
+    "The Digital Flame",
+    "Saturn's Tower",
+    "Tofino Connection Network",
+    "The Candle Light Sanctuary"
+   ],
+   "artifacts": [
+    "Mini Manson Fan Club",
+    "The Trollopedia",
+    "Biscuit Song / Biscuit Diss Track",
+    "The Twisted Visions Deck"
+   ],
+   "solution": {
+    "suspect": "Blade",
+    "location": "Tofino Connection Network",
+    "artifact": "Biscuit Song / Biscuit Diss Track"
+   },
+   "explain": "The Codex ruled: Blade, in Tofino Connection Network, with Biscuit Song / Biscuit Diss Track. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q089",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Ghost/Crew",
+    "Bea",
+    "Mary",
+    "Barbara"
+   ],
+   "locations": [
+    "The Beef Sector",
+    "Kingdom of Madenpor",
+    "IP2 Universe",
+    "Temple of Devi"
+   ],
+   "artifacts": [
+    "The Golden Apples of Aphrodite",
+    "Jason Miller's Greek Magic Deck",
+    "Trolledia",
+    "The Twisted Visions Deck"
+   ],
+   "solution": {
+    "suspect": "Barbara",
+    "location": "Kingdom of Madenpor",
+    "artifact": "The Golden Apples of Aphrodite"
+   },
+   "explain": "The Codex ruled: Barbara, in Kingdom of Madenpor, with The Golden Apples of Aphrodite. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q090",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Jackson",
+    "Bea",
+    "Michael",
+    "Dr. Orion"
+   ],
+   "locations": [
+    "The Reflection Pool",
+    "Temple of Goddess Devk",
+    "Tofino Connection Network",
+    "Panel Universe/Panelverse"
+   ],
+   "artifacts": [
+    "Jason Miller's Greek Magic Deck",
+    "The Horror Tarot Deck",
+    "Biscuit Song / Biscuit Diss Track",
+    "The Troll Guide Book"
+   ],
+   "solution": {
+    "suspect": "Michael",
+    "location": "Tofino Connection Network",
+    "artifact": "Jason Miller's Greek Magic Deck"
+   },
+   "explain": "The Codex ruled: Michael, in Tofino Connection Network, with Jason Miller's Greek Magic Deck. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q091",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "God",
+    "Arthur",
+    "Marcy",
+    "Be"
+   ],
+   "locations": [
+    "Panel Universe/Panelverse",
+    "The Candle Light Sanctuary",
+    "The Reflection Pool",
+    "The Eight Thrones of Judgment"
+   ],
+   "artifacts": [
+    "Arachnophobia Etymology",
+    "The Neverending Story Reference",
+    "The Troll Guide Book",
+    "DJ Electra's Intro Creation"
+   ],
+   "solution": {
+    "suspect": "Marcy",
+    "location": "The Candle Light Sanctuary",
+    "artifact": "DJ Electra's Intro Creation"
+   },
+   "explain": "The Codex ruled: Marcy, in The Candle Light Sanctuary, with DJ Electra's Intro Creation. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q092",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Mason the drummer",
+    "Jackson",
+    "Mason",
+    "Mike"
+   ],
+   "locations": [
+    "City of the Thousand Petaled Hush",
+    "Sedona as Spiritual Location",
+    "The Panelverse",
+    "Temple of Silence"
+   ],
+   "artifacts": [
+    "Trolledia",
+    "The Golden Ass Origin Story",
+    "Evil Eye Oracle (Haters Exposed Deck)",
+    "The Neverending Story Reference"
+   ],
+   "solution": {
+    "suspect": "Mason",
+    "location": "The Panelverse",
+    "artifact": "Trolledia"
+   },
+   "explain": "The Codex ruled: Mason, in The Panelverse, with Trolledia. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q093",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Mason the drummer",
+    "Barbara",
+    "Mary",
+    "John Bates (Psyche)"
+   ],
+   "locations": [
+    "The Land of Death",
+    "Panel Universe/Panelverse",
+    "Valhalla",
+    "Sedona as Spiritual Location"
+   ],
+   "artifacts": [
+    "Ganesha Oracle Deck",
+    "The Trollopedia",
+    "Trolledia",
+    "Medicinal Mushroom Varieties"
+   ],
+   "solution": {
+    "suspect": "John Bates (Psyche)",
+    "location": "Panel Universe/Panelverse",
+    "artifact": "Medicinal Mushroom Varieties"
+   },
+   "explain": "The Codex ruled: John Bates (Psyche), in Panel Universe/Panelverse, with Medicinal Mushroom Varieties. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q094",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Ghost/Crew",
+    "Be",
+    "Blade",
+    "Dr. Orion"
+   ],
+   "locations": [
+    "Panel Universe/Panelverse",
+    "Valhalla",
+    "The Panelverse",
+    "Psyche's Shrine"
+   ],
+   "artifacts": [
+    "Evil Eye Oracle (Haters Exposed Deck)",
+    "The Real Satan YouTube Account",
+    "Ganesha Oracle Deck",
+    "The Golden Ass Origin Story"
+   ],
+   "solution": {
+    "suspect": "Dr. Orion",
+    "location": "Psyche's Shrine",
+    "artifact": "Evil Eye Oracle (Haters Exposed Deck)"
+   },
+   "explain": "The Codex ruled: Dr. Orion, in Psyche's Shrine, with Evil Eye Oracle (Haters Exposed Deck). (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q095",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "God",
+    "Blade",
+    "Bea",
+    "Michael"
+   ],
+   "locations": [
+    "Rub Maps",
+    "The Blade",
+    "The Land of Death",
+    "Thessaly as Magical Geography"
+   ],
+   "artifacts": [
+    "The Neverending Story Reference",
+    "Literary Tarot Deck",
+    "The Real Satan YouTube Account",
+    "Jason Miller's Greek Magic Deck"
+   ],
+   "solution": {
+    "suspect": "Michael",
+    "location": "The Blade",
+    "artifact": "Jason Miller's Greek Magic Deck"
+   },
+   "explain": "The Codex ruled: Michael, in The Blade, with Jason Miller's Greek Magic Deck. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q096",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "MC Nemesis",
+    "Mason the drummer",
+    "Jackson",
+    "Gotham"
+   ],
+   "locations": [
+    "The Candle Light Sanctuary",
+    "Digital Exile Zone",
+    "Temple of Silence",
+    "Tofino Connection Network"
+   ],
+   "artifacts": [
+    "Hell's Filing Cabinet",
+    "The Troll Guide Book",
+    "The Brokeback Mountain Parody",
+    "Ganesha Oracle Deck"
+   ],
+   "solution": {
+    "suspect": "Jackson",
+    "location": "Digital Exile Zone",
+    "artifact": "The Brokeback Mountain Parody"
+   },
+   "explain": "The Codex ruled: Jackson, in Digital Exile Zone, with The Brokeback Mountain Parody. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q097",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Mary",
+    "Gotham",
+    "Eldo",
+    "God"
+   ],
+   "locations": [
+    "The Digital Flame",
+    "Temple of Devi",
+    "House of the Rise and Sun",
+    "The Reflection Pool"
+   ],
+   "artifacts": [
+    "The Horror Tarot Deck",
+    "The Twisted Visions Deck",
+    "The Trollopedia",
+    "The Troll Guide Book"
+   ],
+   "solution": {
+    "suspect": "Eldo",
+    "location": "The Reflection Pool",
+    "artifact": "The Horror Tarot Deck"
+   },
+   "explain": "The Codex ruled: Eldo, in The Reflection Pool, with The Horror Tarot Deck. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q098",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Michael",
+    "Blade",
+    "Eldo",
+    "Mary"
+   ],
+   "locations": [
+    "The Reflection Pool",
+    "Temple of Goddess Devk",
+    "The Panelverse",
+    "The Beef Sector"
+   ],
+   "artifacts": [
+    "Trolledia",
+    "The Real Satan YouTube Account",
+    "Mole Rat Blues",
+    "The Brokeback Mountain Parody"
+   ],
+   "solution": {
+    "suspect": "Blade",
+    "location": "The Panelverse",
+    "artifact": "The Real Satan YouTube Account"
+   },
+   "explain": "The Codex ruled: Blade, in The Panelverse, with The Real Satan YouTube Account. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q099",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Bea",
+    "Be",
+    "Jackson",
+    "Arthur"
+   ],
+   "locations": [
+    "IP2 Universe",
+    "Saturn's Tower",
+    "Temple of Silence",
+    "Thessaly as Spell Country"
+   ],
+   "artifacts": [
+    "The Golden Ass Origin Story",
+    "The Cat Detective Novel",
+    "The Brokeback Mountain Parody",
+    "Biscuit Song / Biscuit Diss Track"
+   ],
+   "solution": {
+    "suspect": "Be",
+    "location": "Saturn's Tower",
+    "artifact": "The Golden Ass Origin Story"
+   },
+   "explain": "The Codex ruled: Be, in Saturn's Tower, with The Golden Ass Origin Story. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  },
+  {
+   "id": "q100",
+   "round": "codex-cluedo",
+   "type": "clue",
+   "prompt": "CASE FILE: pick who, where, and with what. Chat locks in a full guess — closest wins.",
+   "suspects": [
+    "Mike",
+    "Arthur",
+    "Barbara",
+    "Bea"
+   ],
+   "locations": [
+    "The Key to Hell",
+    "The Cult of Psyche Carnival",
+    "Kingdom of Madenpor",
+    "The Blade"
+   ],
+   "artifacts": [
+    "The Golden Ass by Apuleius",
+    "The Trollopedia",
+    "Biscuit Song / Biscuit Diss Track",
+    "Gallery of Hallucinations Oracle"
+   ],
+   "solution": {
+    "suspect": "Arthur",
+    "location": "Kingdom of Madenpor",
+    "artifact": "The Golden Ass by Apuleius"
+   },
+   "explain": "The Codex ruled: Arthur, in Kingdom of Madenpor, with The Golden Ass by Apuleius. (All three are real archive entries; the pairing is the host's call — award the room for a laugh.)"
+  }
+ ]
+}
