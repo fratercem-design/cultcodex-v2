@@ -1414,3 +1414,20 @@ model Annotation {
   @@index([userId])
   @@index([status])
 }
+
+// ─── Game Show Leaderboard ─────────────────────────────
+// A submitted run from the Panelverse Game Show. Anonymous handle by default;
+// optional soft link to a CodexUser. Read for weekly/monthly/all-time boards.
+model GameScore {
+  id        String   @id @default(cuid())
+  handle    String   // display name chosen by the player (or user displayName)
+  userId    String?  // optional; no FK — anonymous runs allowed
+  score     Int      // headline metric (correct answers in the run)
+  correct   Int
+  total     Int
+  round     String?  // round key or "all"
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([score])
+}

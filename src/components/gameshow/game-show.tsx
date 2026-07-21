@@ -10,6 +10,7 @@ import {
   dailyIndex, isDailyDone, recordDaily, DAILY_BONUS_XP,
 } from "./progression";
 import { SparkBurst } from "./fx";
+import { Leaderboard } from "./leaderboard";
 import bankJson from "@/lib/data/gameshow-questions.json";
 
 const ROUND_COLOR: Record<string, string> = {
@@ -81,6 +82,7 @@ export function GameShow() {
   const [progress, setProgress] = useState<ProgressState>(() => ({ xp: 0, correct: 0, streak: 0, bestStreak: 0, archiveClicks: 0, byRound: {}, unlocked: [], lastDaily: "", dailyStreak: 0 }));
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [burst, setBurst] = useState<{ n: number; variant: "correct" | "wrong" | "gold" }>({ n: 0, variant: "correct" });
+  const [session, setSession] = useState({ correct: 0, total: 0 });
   const toastId = useRef(0);
   const sound = useSound();
 
@@ -115,6 +117,8 @@ export function GameShow() {
     if (isCorrect) sound.correct(); else if (isWrong) sound.wrong(); else sound.correct();
     // Effects burst — green shower on correct/host-reveal, red on a wrong pick.
     setBurst((b) => ({ n: b.n + 1, variant: isWrong ? "wrong" : "correct" }));
+    // Session run tally for the leaderboard (only counts locked-in picks).
+    if (selected != null && q.type !== "clue") setSession((s) => ({ correct: s.correct + (isCorrect ? 1 : 0), total: s.total + 1 }));
     const applyResult = (res: ReturnType<typeof recordAnswer>, dailyBonus = false) => {
       setProgress(res.state);
       if (dailyBonus && res.xpGained > 0) { setBurst((b) => ({ n: b.n + 1, variant: "gold" })); pushToast(`+${DAILY_BONUS_XP} XP — Daily Challenge`, "Come back tomorrow."); }
@@ -216,6 +220,8 @@ export function GameShow() {
             })}
           </div>
         </div>
+
+        <Leaderboard sessionCorrect={session.correct} sessionTotal={session.total} />
 
         <AchievementShelf unlocked={progress.unlocked} />
 
