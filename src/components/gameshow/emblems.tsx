@@ -178,10 +178,63 @@ export function GameShowHero({ size = 96, className, title }: EmblemProps) {
   );
 }
 
+/** Round 6 — Troll or Not. A bridge with a lurking pair of eyes beneath. */
+export function TrollEmblem(p: EmblemProps) {
+  return (
+    <Frame {...p}>
+      {/* bridge deck + arch */}
+      <line x1="24" y1="44" x2="76" y2="44" stroke="currentColor" strokeWidth="1.4" opacity="0.9" />
+      <path d="M30 44 Q30 56 42 56 M58 56 Q70 56 70 44" stroke="currentColor" strokeWidth="1.1" opacity="0.6" />
+      <path d="M42 56 Q50 50 58 56" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+      {/* railings */}
+      {[30, 40, 60, 70].map((x) => <line key={x} x1={x} y1="40" x2={x} y2="44" stroke="currentColor" strokeWidth="0.8" opacity="0.5" />)}
+      <line x1="28" y1="40" x2="72" y2="40" stroke="currentColor" strokeWidth="0.8" opacity="0.5" />
+      {/* lurking eyes under the bridge */}
+      <circle cx="46" cy="62" r="2.2" fill="currentColor" opacity="0.85" />
+      <circle cx="54" cy="62" r="2.2" fill="currentColor" opacity="0.85" />
+      <path d="M43 68 Q50 71 57 68" stroke="currentColor" strokeWidth="1" opacity="0.6" />
+    </Frame>
+  );
+}
+
+/** Round 7 — Who Is It? A hooded silhouette framed by a question. */
+export function WhoEmblem(p: EmblemProps) {
+  return (
+    <Frame {...p}>
+      <path d="M50 30 Q40 30 38 42 Q36 54 38 66 L62 66 Q64 54 62 42 Q60 30 50 30 Z" stroke="currentColor" strokeWidth="1.3" opacity="0.9" />
+      <path d="M42 44 Q50 40 58 44" stroke="currentColor" strokeWidth="0.8" opacity="0.5" />
+      {/* blank face + question mark */}
+      <path d="M46 50 Q46 47 50 47 Q54 47 54 50 Q54 53 50 54 L50 57" stroke="currentColor" strokeWidth="1.1" opacity="0.75" />
+      <circle cx="50" cy="61" r="1" fill="currentColor" opacity="0.75" />
+    </Frame>
+  );
+}
+
+/** Round 8 — General Trivia. A question mark set in a radiant star. */
+export function TriviaEmblem(p: EmblemProps) {
+  return (
+    <Frame {...p}>
+      {/* eight-point star */}
+      {Array.from({ length: 8 }).map((_, i) => {
+        const a = (i / 8) * Math.PI * 2 - Math.PI / 2;
+        const r = i % 2 === 0 ? 22 : 12;
+        return <line key={i} x1="50" y1="50" x2={50 + r * Math.cos(a)} y2={50 + r * Math.sin(a)} stroke="currentColor" strokeWidth={i % 2 === 0 ? 1 : 0.7} opacity="0.5" />;
+      })}
+      <circle cx="50" cy="50" r="15" stroke="currentColor" strokeWidth="1.2" opacity="0.85" />
+      {/* question mark */}
+      <path d="M45 45 Q45 40 50 40 Q56 40 56 45 Q56 49 50 51 L50 55" stroke="currentColor" strokeWidth="1.6" opacity="0.9" />
+      <circle cx="50" cy="60" r="1.4" fill="currentColor" opacity="0.9" />
+    </Frame>
+  );
+}
+
 export const ROUND_EMBLEMS: Record<string, (p: EmblemProps) => React.ReactElement> = {
   "real-or-fake-lore": LoreEmblem,
   "two-truths-lie": MasksEmblem,
   "prophecy-or-bogus": OrbEmblem,
   "did-psyche-say-it": VoiceEmblem,
   "codex-cluedo": ClueEmblem,
+  "troll-or-not": TrollEmblem,
+  "who-is-it": WhoEmblem,
+  "general-trivia": TriviaEmblem,
 };

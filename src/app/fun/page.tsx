@@ -33,6 +33,11 @@ const ATTRACTIONS: { label: string; href: string; blurb: string }[] = [
     blurb: "A field guide to the entities the cult summoned into being.",
   },
   {
+    label: "The Trollopedia",
+    href: "/trollopedia",
+    blurb: "The field guide to the trolls. Do not feed.",
+  },
+  {
     label: "The Prophecy Ledger",
     href: "/prophecies",
     blurb: "Every omen on record. Accuracy not guaranteed.",
