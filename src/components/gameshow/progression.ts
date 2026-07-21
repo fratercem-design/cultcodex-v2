@@ -37,7 +37,10 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: "archivist", label: "🗝 Archivist", hint: "Open 5 archive doorways." },
   { id: "oracles-favorite", label: "🔮 Oracle's Favorite", hint: "Reach the rank of Oracle." },
   { id: "chaos-incarnate", label: "💥 Chaos Incarnate", hint: "100 total correct." },
+  { id: "daily-devotee", label: "📿 Daily Devotee", hint: "A 7-day challenge streak." },
 ];
+
+export const DAILY_BONUS_XP = 50;
 
 export type ProgressState = {
   xp: number;
@@ -47,10 +50,28 @@ export type ProgressState = {
   archiveClicks: number;
   byRound: Record<string, number>;
   unlocked: string[];
+  lastDaily: string;   // YYYY-MM-DD of last completed daily challenge
+  dailyStreak: number; // consecutive days
 };
 
 const KEY = "cc_gameshow_v1";
-const EMPTY: ProgressState = { xp: 0, correct: 0, streak: 0, bestStreak: 0, archiveClicks: 0, byRound: {}, unlocked: [] };
+const EMPTY: ProgressState = { xp: 0, correct: 0, streak: 0, bestStreak: 0, archiveClicks: 0, byRound: {}, unlocked: [], lastDaily: "", dailyStreak: 0 };
+
+/** Local calendar day as YYYY-MM-DD. */
+export function todayKey(d = new Date()): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function dayNumber(key: string): number {
+  return Math.floor(Date.parse(`${key}T00:00:00Z`) / 86_400_000);
+}
+/** Deterministic daily question index — everyone gets the same one each day. */
+export function dailyIndex(total: number, key = todayKey()): number {
+  if (total <= 0) return 0;
+  return ((dayNumber(key) * 2654435761) % total + total) % total;
+}
+export function isDailyDone(s: ProgressState): boolean {
+  return s.lastDaily === todayKey();
+}
 
 export function load(): ProgressState {
   if (typeof window === "undefined") return { ...EMPTY };
@@ -93,6 +114,7 @@ function checkAchievements(s: ProgressState): string[] {
   want("archivist", s.archiveClicks >= 5);
   want("oracles-favorite", s.xp >= 700);
   want("chaos-incarnate", s.correct >= 100);
+  want("daily-devotee", s.dailyStreak >= 7);
   return add;
 }
 
@@ -117,6 +139,30 @@ export function recordAnswer(roundKey: string, correct: boolean): AnswerResult {
   const newAchievements = ACHIEVEMENTS.filter((a) => newIds.includes(a.id));
   const rankedUp = rankFor(s.xp).name !== prevRank ? rankFor(s.xp).name : null;
   return { state: s, newAchievements, rankedUp, xpGained };
+}
+
+/** Complete today's daily challenge. Awards bonus XP + advances the day streak. */
+export function recordDaily(correct: boolean): AnswerResult {
+  const s = load();
+  if (isDailyDone(s)) return { state: s, newAchievements: [], rankedUp: null, xpGained: 0 };
+  const prevRank = rankFor(s.xp).name;
+  const today = todayKey();
+  const yesterday = todayKey(new Date(Date.now() - 86_400_000));
+  s.dailyStreak = s.lastDaily === yesterday ? s.dailyStreak + 1 : 1;
+  s.lastDaily = today;
+  let xpGained = 0;
+  if (correct) {
+    xpGained = DAILY_BONUS_XP;
+    s.xp += DAILY_BONUS_XP;
+    s.correct += 1;
+    s.streak += 1;
+    s.bestStreak = Math.max(s.bestStreak, s.streak);
+  }
+  const newIds = checkAchievements(s);
+  s.unlocked = [...new Set([...s.unlocked, ...newIds])];
+  save(s);
+  const rankedUp = rankFor(s.xp).name !== prevRank ? rankFor(s.xp).name : null;
+  return { state: s, newAchievements: ACHIEVEMENTS.filter((a) => newIds.includes(a.id)), rankedUp, xpGained };
 }
 
 export function recordArchiveClick(): AnswerResult {

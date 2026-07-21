@@ -7,6 +7,7 @@ import { ROUND_ART, CORRECT_ART, WRONG_ART } from "./art-manifest";
 import {
   ROUND_META, ACHIEVEMENTS, type Achievement, type ProgressState,
   load as loadProgress, rankFor, recordAnswer, recordArchiveClick,
+  dailyIndex, isDailyDone, recordDaily, DAILY_BONUS_XP,
 } from "./progression";
 import { SparkBurst } from "./fx";
 import bankJson from "@/lib/data/gameshow-questions.json";
@@ -77,7 +78,7 @@ export function GameShow() {
   const [revealed, setRevealed] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
   const [muted, setMuted] = useState(false);
-  const [progress, setProgress] = useState<ProgressState>(() => ({ xp: 0, correct: 0, streak: 0, bestStreak: 0, archiveClicks: 0, byRound: {}, unlocked: [] }));
+  const [progress, setProgress] = useState<ProgressState>(() => ({ xp: 0, correct: 0, streak: 0, bestStreak: 0, archiveClicks: 0, byRound: {}, unlocked: [], lastDaily: "", dailyStreak: 0 }));
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [burst, setBurst] = useState<{ n: number; variant: "correct" | "wrong" | "gold" }>({ n: 0, variant: "correct" });
   const toastId = useRef(0);
@@ -92,9 +93,12 @@ export function GameShow() {
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 4200);
   }, []);
 
+  const dailyQ = useMemo(() => bank.questions[dailyIndex(bank.questions.length)], []);
   const pool = useMemo(
-    () => (roundKey && roundKey !== "__all" ? bank.questions.filter((q) => q.round === roundKey) : bank.questions),
-    [roundKey]
+    () => (roundKey === "__daily" ? [dailyQ]
+      : roundKey && roundKey !== "__all" ? bank.questions.filter((q) => q.round === roundKey)
+      : bank.questions),
+    [roundKey, dailyQ]
   );
   const q = pool[idx];
 
@@ -111,14 +115,19 @@ export function GameShow() {
     if (isCorrect) sound.correct(); else if (isWrong) sound.wrong(); else sound.correct();
     // Effects burst — green shower on correct/host-reveal, red on a wrong pick.
     setBurst((b) => ({ n: b.n + 1, variant: isWrong ? "wrong" : "correct" }));
-    // Progression only counts when the player actually locked in a pick.
-    if (selected != null && q.type !== "clue") {
-      const res = recordAnswer(q.round, isCorrect);
+    const applyResult = (res: ReturnType<typeof recordAnswer>, dailyBonus = false) => {
       setProgress(res.state);
+      if (dailyBonus && res.xpGained > 0) { setBurst((b) => ({ n: b.n + 1, variant: "gold" })); pushToast(`+${DAILY_BONUS_XP} XP — Daily Challenge`, "Come back tomorrow."); }
       if (res.rankedUp) { sound.levelup(); setBurst((b) => ({ n: b.n + 1, variant: "gold" })); pushToast(`⬆ Rank up — ${res.rankedUp}`, "The Codex takes notice."); }
       res.newAchievements.forEach((a: Achievement) => pushToast(a.label, "Achievement unlocked"));
+    };
+    if (roundKey === "__daily" && q.type !== "clue" && selected != null) {
+      applyResult(recordDaily(isCorrect), true);
+    } else if (selected != null && q.type !== "clue") {
+      // Progression only counts when the player actually locked in a pick.
+      applyResult(recordAnswer(q.round, isCorrect));
     }
-  }, [revealed, q, selected, sound, pushToast]);
+  }, [revealed, q, selected, sound, pushToast, roundKey]);
 
   const choose = useCallback((i: number) => { if (revealed) return; setSelected(i); sound.select(); }, [revealed, sound]);
 
@@ -154,6 +163,12 @@ export function GameShow() {
     return (
       <div id="rounds" className="mx-auto max-w-4xl px-4 py-10 space-y-8">
         <ProgressHud progress={progress} rank={rank} />
+
+        <DailyChallenge
+          done={isDailyDone(progress)}
+          streak={progress.dailyStreak}
+          onPlay={() => { setRoundKey("__daily"); goto(0); }}
+        />
 
         <div className="flex flex-wrap items-center justify-center gap-3">
           <button onClick={surprise} className="rounded-lg border border-accent-gold/50 bg-accent-gold/10 px-6 py-3 font-mono text-sm font-bold uppercase tracking-widest text-accent-gold hover:bg-accent-gold/20 hover:scale-[1.03] active:scale-[0.98] transition-all">
@@ -221,7 +236,7 @@ export function GameShow() {
       <div className="mb-6 flex items-center justify-between gap-3 border-b border-border pb-3">
         <button onClick={() => { setRoundKey(null); goto(0); }} className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-violet transition-colors">← Rounds</button>
         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet/60">
-          {ROUND_META[roundKey]?.name ?? bank.rounds.find((r) => r.key === roundKey)?.label ?? "The Whole Deck"} · {idx + 1}/{pool.length}
+          {roundKey === "__daily" ? "⚡ Daily Challenge" : ROUND_META[roundKey]?.name ?? bank.rounds.find((r) => r.key === roundKey)?.label ?? "The Whole Deck"} · {idx + 1}/{pool.length}
         </span>
         <div className="flex items-center gap-2">
           <button onClick={surprise} title="Surprise me" className="rounded border border-border px-2 py-1 font-mono text-xs text-text-muted hover:border-accent-gold/40 hover:text-accent-gold transition-colors">🎲</button>
@@ -234,6 +249,30 @@ export function GameShow() {
       {q && <QuestionCard key={q.id} q={q} revealed={revealed} selected={selected} onChoose={choose} onReveal={reveal} onNext={next} onArchive={onArchive} />}
       <Toasts toasts={toasts} />
       <SparkBurst trigger={burst.n} variant={burst.variant} />
+    </div>
+  );
+}
+
+function DailyChallenge({ done, streak, onPlay }: { done: boolean; streak: number; onPlay: () => void }) {
+  return (
+    <div className="relative overflow-hidden rounded-xl border border-accent-gold/40 bg-gradient-to-r from-accent-gold/10 via-surface to-surface p-5">
+      <div className="gs-drift pointer-events-none absolute inset-0 opacity-20" aria-hidden />
+      <div className="relative flex flex-wrap items-center justify-between gap-4">
+        <div className="min-w-0">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/70">
+            {"/// daily_challenge"}{streak > 0 && <span className="ml-2 text-accent-gold">🔥 {streak}-day streak</span>}
+          </p>
+          <h3 className="mt-1 font-display text-xl font-bold text-text-primary">Today&rsquo;s Impossible Question</h3>
+          <p className="mt-0.5 text-xs text-text-muted">One question. The same for every cultist today. Nail it for <span className="text-accent-gold font-bold">+{DAILY_BONUS_XP} XP</span> and the streak.</p>
+        </div>
+        {done ? (
+          <span className="flex-shrink-0 rounded-lg border border-emerald-400/40 bg-emerald-400/10 px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-emerald-400">✓ Done · back tomorrow</span>
+        ) : (
+          <button onClick={onPlay} className="flex-shrink-0 rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-6 py-3 font-display text-base font-bold text-accent-gold hover:bg-accent-gold/25 hover:scale-[1.04] active:scale-[0.98] transition-all shadow-[0_0_24px_-8px_rgba(200,57,46,0.6)]">
+            ⚡ Take the Challenge
+          </button>
+        )}
+      </div>
     </div>
   );
 }
