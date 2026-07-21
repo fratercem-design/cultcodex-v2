@@ -108,7 +108,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "CultCodex — The Living Archive",
     description: SITE_DESCRIPTION,
-    images: [{ url: "/social-share.jpg", width: 1200, height: 630 }],
+    images: [{ url: "/images/site/og.jpg", width: 1200, height: 630 }],
     siteName: "CultCodex",
     type: "website",
   },
@@ -116,7 +116,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "CultCodex — The Living Archive",
     description: SITE_DESCRIPTION,
-    images: ["/social-share.jpg"],
+    images: ["/images/site/og.jpg"],
   },
 };
 

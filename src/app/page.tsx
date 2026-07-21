@@ -133,7 +133,7 @@ export default async function HomePage() {
 
       {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section id="codex-enter" className="relative flex min-h-[540px] sm:min-h-[620px] items-center justify-center overflow-hidden scroll-mt-0">
-        <Image src="/hero-bg.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
+        <Image src="/images/site/hero.webp" alt="" fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-void" />
         <SacredGeometryOverlay />
         <FloatingParticles count={20} />
