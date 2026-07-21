@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ROUND_EMBLEMS } from "./emblems";
-import { ROUND_ART } from "./art-manifest";
+import { ROUND_ART, CORRECT_ART, WRONG_ART } from "./art-manifest";
 import bankJson from "@/lib/data/gameshow-questions.json";
 
 const ROUND_COLOR: Record<string, string> = {
@@ -257,8 +257,22 @@ function QuestionCard({
     return "idle";
   };
 
+  // Reveal-state backdrop: red only when a wrong pick was locked in; otherwise
+  // the reveal is the celebratory "here's the truth" — green.
+  const answerIdx = q.type === "clue" ? -1 : q.answerIndex;
+  const wasWrong = revealed && selected != null && selected !== answerIdx && q.type !== "clue";
+  const revealArt = revealed ? (wasWrong ? WRONG_ART : CORRECT_ART) : null;
+
   return (
-    <div className="space-y-6">
+    <div className="relative space-y-6">
+      {revealArt && (
+        <img
+          src={revealArt}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute -inset-x-8 -inset-y-6 -z-10 h-[calc(100%+3rem)] w-[calc(100%+4rem)] object-cover opacity-[0.14] blur-[1px] animate-[fadein_0.4s]"
+        />
+      )}
       <h2 className="font-display text-xl sm:text-2xl font-bold text-text-primary leading-tight">{q.prompt}</h2>
 
       {q.type === "multiple-choice" && (
@@ -299,8 +313,10 @@ function QuestionCard({
       )}
 
       {revealed ? (
-        <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-4 space-y-2 animate-[fadein_0.3s]">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">{"/// the_codex_rules"}</p>
+        <div className={`rounded-lg border p-4 space-y-2 animate-[fadein_0.3s] ${wasWrong ? "border-red-500/30 bg-red-500/5" : "border-emerald-400/25 bg-emerald-400/5"}`}>
+          <p className={`font-mono text-[9px] uppercase tracking-[0.3em] ${wasWrong ? "text-red-400" : "text-emerald-400"}`}>
+            {wasWrong ? "/// the_codex_disagrees" : "/// the_codex_rules"}
+          </p>
           <p className="text-sm text-text-muted leading-relaxed">{q.explain}</p>
           {"sourceHref" in q && q.sourceHref && (
             <Link href={q.sourceHref} className="inline-block font-mono text-[10px] text-accent-violet hover:underline">
