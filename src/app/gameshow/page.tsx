@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { GameShowLoader } from "@/components/gameshow/game-show-loader";
 import { GameShowHero } from "@/components/gameshow/emblems";
+import { HERO_ART } from "@/components/gameshow/art-manifest";
 
 export const dynamic = "force-static";
 
@@ -16,8 +17,15 @@ export const metadata: Metadata = {
 export default function GameShowPage() {
   return (
     <main className="min-h-screen bg-void">
-      <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
-        <div className="mx-auto max-w-3xl text-center space-y-3">
+      <section className="relative overflow-hidden border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
+        {HERO_ART && (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={HERO_ART} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-30" />
+            <div className="absolute inset-0 bg-gradient-to-b from-void/70 via-void/60 to-void" />
+          </>
+        )}
+        <div className="relative mx-auto max-w-3xl text-center space-y-3">
           <GameShowHero size={92} className="mx-auto text-accent-violet" title="Panelverse Game Show sigil" />
           <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">
             {"/// live_play · chat_answers_along"}

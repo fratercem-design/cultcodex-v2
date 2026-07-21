@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ROUND_EMBLEMS } from "./emblems";
+import { ROUND_ART } from "./art-manifest";
 import bankJson from "@/lib/data/gameshow-questions.json";
 
 const ROUND_COLOR: Record<string, string> = {
@@ -135,16 +136,24 @@ export function GameShow() {
           {bank.rounds.map((r) => {
             const count = bank.questions.filter((x) => x.round === r.key).length;
             const Emblem = ROUND_EMBLEMS[r.key];
+            const art = ROUND_ART[r.key];
             return (
               <button
                 key={r.key}
                 onClick={() => { setRoundKey(r.key); goto(0); }}
-                className="group flex items-center gap-4 rounded-lg border border-accent-violet/25 bg-surface p-5 text-left hover:border-accent-violet/60 hover:bg-accent-violet/5 hover:scale-[1.015] active:scale-[0.99] transition-all"
+                className="group relative overflow-hidden flex items-center gap-4 rounded-lg border border-accent-violet/25 bg-surface p-5 text-left hover:border-accent-violet/60 hover:bg-accent-violet/5 hover:scale-[1.015] active:scale-[0.99] transition-all"
               >
+                {art && (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={art} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-25 group-hover:opacity-40 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-void via-void/80 to-void/40" />
+                  </>
+                )}
                 {Emblem
-                  ? <Emblem size={44} className={`flex-shrink-0 ${ROUND_COLOR[r.key] ?? "text-accent-violet"} transition-transform group-hover:rotate-6`} />
-                  : <span className="text-3xl" aria-hidden>{r.icon}</span>}
-                <span>
+                  ? <Emblem size={44} className={`relative flex-shrink-0 ${ROUND_COLOR[r.key] ?? "text-accent-violet"} transition-transform group-hover:rotate-6`} />
+                  : <span className="relative text-3xl" aria-hidden>{r.icon}</span>}
+                <span className="relative">
                   <span className="block font-display text-lg font-bold text-text-primary group-hover:text-accent-violet transition-colors">{r.label}</span>
                   <span className="block font-mono text-[10px] uppercase tracking-widest text-text-muted/60">{count} questions</span>
                 </span>
