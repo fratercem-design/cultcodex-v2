@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ROUND_EMBLEMS } from "./emblems";
+import bankJson from "@/lib/data/gameshow-questions.json";
 
 const ROUND_COLOR: Record<string, string> = {
   "real-or-fake-lore": "text-accent-violet",
@@ -72,12 +73,13 @@ function useSound() {
   };
 }
 
-export function GameShow({ bank }: { bank: GameShowBank }) {
-  // Mount gate — SSR and first client render both show the same placeholder,
-  // so the interactive tree can't get stuck in a hydration/Suspense mismatch.
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+// The bank is imported here (client-side) rather than passed as a prop, so the
+// large question payload never crosses the server→client boundary — that huge
+// serialized prop was what forced the board into a never-revealing Suspense
+// boundary. Combined with the ssr:false loader, the board renders reliably.
+const bank = bankJson as unknown as GameShowBank;
 
+export function GameShow() {
   const [roundKey, setRoundKey] = useState<string | null>(null);
   const [idx, setIdx] = useState(0);
   const [revealed, setRevealed] = useState(false);
@@ -124,16 +126,6 @@ export function GameShow({ bank }: { bank: GameShowBank }) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [revealed, next, prev, reveal, choose, roundKey]);
-
-  if (!mounted) {
-    return (
-      <div className="mx-auto max-w-3xl px-4 py-16 text-center">
-        <p className="font-mono text-[11px] uppercase tracking-[0.4em] text-accent-violet/60 animate-pulse">
-          {"/// summoning_the_show…"}
-        </p>
-      </div>
-    );
-  }
 
   // ── Lobby ──
   if (!roundKey) {

@@ -1,21 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { GameShow, type GameShowBank } from "@/components/gameshow/game-show";
+import { GameShowLoader } from "@/components/gameshow/game-show-loader";
 import { GameShowHero } from "@/components/gameshow/emblems";
-import bankJson from "@/lib/data/gameshow-questions.json";
 
-const bank = bankJson as unknown as GameShowBank;
-
-// Fully static shell (the question bank is bundled, no per-request data) — matches
-// the other Fun Wing pages and avoids the dynamic-streaming path that left the
-// client board stuck in an unrevealed Suspense boundary.
 export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/gameshow" },
   title: "The Panelverse Game Show — CULT CODEX",
   description:
-    "A live game show for the Cult of Psyche audience — 100 questions across five rounds, drawn from the real archive. Screen-share it and let chat play along.",
+    "A live game show for the Cult of Psyche audience — 500 questions across eight rounds, drawn from the real archive. Screen-share it and let chat play along.",
   robots: { index: true, follow: true },
 };
 
@@ -32,14 +26,14 @@ export default function GameShowPage() {
             The Panelverse Game Show
           </h1>
           <p className="text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
-            One hundred questions, five rounds, every answer pulled from the real
-            Cult of Psyche archive. Pick a round, screen-share it, and let the
-            chat shout letters. The Codex keeps score in spirit.
+            Five hundred questions across eight rounds, every answer pulled from
+            the real Cult of Psyche archive. Pick a round, screen-share it, and
+            let the chat call letters. The Codex keeps score in spirit.
           </p>
         </div>
       </section>
 
-      <GameShow bank={bank} />
+      <GameShowLoader />
 
       <div className="mx-auto max-w-3xl px-4 pb-12 text-center">
         <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors">
