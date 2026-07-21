@@ -1,0 +1,1281 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["partialIndexes"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Episode {
+  id                   String                   @id @default(cuid())
+  title                String
+  slug                 String                   @unique
+  episodeNumber        Int?                     @unique
+  airDate              DateTime?
+  duration             String?
+  youtubeVideoId       String?
+  rumbleVideoId        String?
+  thumbnailUrl         String?
+  summaryShort         String?
+  summaryLong          String?
+  cutOfPsyche          String?
+  transcriptRaw        String?
+  transcriptHtml       String?
+  transcriptJson       Json?
+  searchText           String?
+  status               ContentStatus            @default(draft)
+  contentType          ContentType              @default(original)
+  seriesId             String?
+  createdAt            DateTime                 @default(now())
+  updatedAt            DateTime                 @updatedAt
+  decodeData           Json?
+  /// * Set by an admin after manually reading and verifying the AI summary
+  isHumanReviewed      Boolean                  @default(false)
+  humanReviewedAt      DateTime?
+  /// * Transcript-grounded recap: what happened, who appeared, notable moments with timestamps
+  summaryFacts         String?
+  /// * AI interpretive layer: recurring patterns, thematic significance, arc context
+  summaryThemes        String?
+  /// * Manually queued by admin for (re-)enrichment even if summaryLong already exists
+  enrichmentQueued     Boolean                  @default(false)
+  comments             CodexComment[]
+  series               Series?                  @relation(fields: [seriesId], references: [id])
+  guests               EpisodeGuest[]
+  loreEntries          EpisodeLore[]
+  mentionedPeople      EpisodeMentionedPerson[]
+  reactions            EpisodeReaction[]
+  topics               EpisodeTopic[]
+  favorites            Favorite[]
+  firstMentionOf       LoreEntry[]              @relation("firstMention")
+  firstAppearanceOf    Person[]                 @relation("firstAppearance")
+  psychenomiconChapter PsychenomiconChapter?
+  quotes               Quote[]
+  relatedFrom          RelatedEpisode[]         @relation("relatedFrom")
+  relatedTo            RelatedEpisode[]         @relation("relatedTo")
+  transcriptRequests   TranscriptRequest[]
+  segments             TranscriptSegment[]
+
+  @@index([airDate])
+  @@index([status])
+  @@index([episodeNumber])
+  @@index([seriesId])
+}
+
+model Series {
+  id            String        @id @default(cuid())
+  title         String
+  slug          String        @unique
+  description   String?
+  type          SeriesType    @default(other)
+  coverImageUrl String?
+  sortOrder     Int           @default(0)
+  status        ContentStatus @default(draft)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  episodes      Episode[]
+  mediaItems    MediaItem[]
+}
+
+model Person {
+  id                       String                   @id @default(cuid())
+  displayName              String
+  slug                     String                   @unique
+  altNames                 String[]
+  shortBio                 String?
+  loreSummary              String?
+  avatarUrl                String?
+  personType               PersonType               @default(guest)
+  searchText               String?
+  firstAppearanceEpisodeId String?
+  createdAt                DateTime                 @default(now())
+  updatedAt                DateTime                 @updatedAt
+  youtubeChannelUrl        String?
+  guestAppearances         EpisodeGuest[]
+  mentions                 EpisodeMentionedPerson[]
+  firstAppearanceEpisode   Episode?                 @relation("firstAppearance", fields: [firstAppearanceEpisodeId], references: [id])
+  loreConnections          PersonLore[]
+  topics                   PersonTopic[]
+  quotes                   Quote[]
+  relatedFrom              RelatedPerson[]          @relation("relatedPersonFrom")
+  relatedTo                RelatedPerson[]          @relation("relatedPersonTo")
+
+  @@index([personType])
+}
+
+model LoreEntry {
+  id                    String        @id @default(cuid())
+  title                 String
+  slug                  String        @unique
+  category              String?
+  summary               String?
+  fullEntry             String?
+  canonStatus           CanonStatus   @default(speculative)
+  searchText            String?
+  firstMentionEpisodeId String?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  episodes              EpisodeLore[]
+  firstMentionEpisode   Episode?      @relation("firstMention", fields: [firstMentionEpisodeId], references: [id])
+  topics                LoreTopic[]
+  people                PersonLore[]
+  relatedFrom           RelatedLore[] @relation("relatedLoreFrom")
+  relatedTo             RelatedLore[] @relation("relatedLoreTo")
+
+  @@index([canonStatus])
+}
+
+model Topic {
+  id          String         @id @default(cuid())
+  title       String
+  slug        String         @unique
+  description String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  episodes    EpisodeTopic[]
+  lore        LoreTopic[]
+  people      PersonTopic[]
+  savedBy     SavedTopic[]
+}
+
+model Quote {
+  id                  String             @id @default(cuid())
+  text                String
+  speakerPersonId     String?
+  episodeId           String?
+  transcriptSegmentId String?
+  timestampSeconds    Int?
+  context             String?
+  significance        String?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  episode             Episode?           @relation(fields: [episodeId], references: [id])
+  speaker             Person?            @relation(fields: [speakerPersonId], references: [id])
+  transcriptSegment   TranscriptSegment? @relation(fields: [transcriptSegmentId], references: [id])
+  quoteReactions      QuoteReaction[]
+  savedBy             SavedQuote[]
+
+  @@index([speakerPersonId])
+  @@index([episodeId])
+}
+
+model TranscriptSegment {
+  id           String   @id @default(cuid())
+  episodeId    String
+  startSeconds Int
+  endSeconds   Int
+  speakerLabel String?
+  text         String
+  searchText   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  quotes       Quote[]
+  episode      Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+
+  @@index([episodeId])
+  @@index([startSeconds])
+}
+
+model MediaItem {
+  id              String        @id @default(cuid())
+  title           String
+  slug            String        @unique
+  type            MediaType     @default(video)
+  youtubeVideoId  String?
+  transcriptRaw   String?
+  summary         String?
+  seriesId        String?
+  releaseDate     DateTime?
+  durationSeconds Int?
+  status          ContentStatus @default(draft)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  series          Series?       @relation(fields: [seriesId], references: [id])
+
+  @@index([seriesId])
+}
+
+model EpisodeGuest {
+  episodeId String
+  personId  String
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  person    Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@id([episodeId, personId])
+  @@index([personId])
+}
+
+model EpisodeMentionedPerson {
+  episodeId String
+  personId  String
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  person    Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@id([episodeId, personId])
+  @@index([personId])
+}
+
+model EpisodeLore {
+  episodeId   String
+  loreEntryId String
+  episode     Episode   @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  loreEntry   LoreEntry @relation(fields: [loreEntryId], references: [id], onDelete: Cascade)
+
+  @@id([episodeId, loreEntryId])
+  @@index([loreEntryId])
+}
+
+model EpisodeTopic {
+  episodeId String
+  topicId   String
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  topic     Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([episodeId, topicId])
+  @@index([topicId])
+}
+
+model PersonTopic {
+  personId String
+  topicId  String
+  person   Person @relation(fields: [personId], references: [id], onDelete: Cascade)
+  topic    Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([personId, topicId])
+  @@index([topicId])
+}
+
+model PersonLore {
+  personId    String
+  loreEntryId String
+  loreEntry   LoreEntry @relation(fields: [loreEntryId], references: [id], onDelete: Cascade)
+  person      Person    @relation(fields: [personId], references: [id], onDelete: Cascade)
+
+  @@id([personId, loreEntryId])
+  @@index([loreEntryId])
+}
+
+model LoreTopic {
+  loreEntryId String
+  topicId     String
+  loreEntry   LoreEntry @relation(fields: [loreEntryId], references: [id], onDelete: Cascade)
+  topic       Topic     @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([loreEntryId, topicId])
+  @@index([topicId])
+}
+
+model RelatedEpisode {
+  episodeAId String
+  episodeBId String
+  episodeA   Episode @relation("relatedFrom", fields: [episodeAId], references: [id], onDelete: Cascade)
+  episodeB   Episode @relation("relatedTo", fields: [episodeBId], references: [id], onDelete: Cascade)
+
+  @@id([episodeAId, episodeBId])
+}
+
+model RelatedPerson {
+  personAId String
+  personBId String
+  personA   Person @relation("relatedPersonFrom", fields: [personAId], references: [id], onDelete: Cascade)
+  personB   Person @relation("relatedPersonTo", fields: [personBId], references: [id], onDelete: Cascade)
+
+  @@id([personAId, personBId])
+}
+
+model RelatedLore {
+  loreAId String
+  loreBId String
+  loreA   LoreEntry @relation("relatedLoreFrom", fields: [loreAId], references: [id], onDelete: Cascade)
+  loreB   LoreEntry @relation("relatedLoreTo", fields: [loreBId], references: [id], onDelete: Cascade)
+
+  @@id([loreAId, loreBId])
+}
+
+model LiveStatus {
+  id        String    @id @default("singleton")
+  isLive    Boolean   @default(false)
+  videoId   String?
+  title     String?
+  startedAt DateTime?
+  endedAt   DateTime?
+  updatedAt DateTime  @updatedAt
+}
+
+model Subscriber {
+  id               String    @id @default(cuid())
+  email            String?   @unique
+  pushSubscription Json?
+  verified         Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  name             String?
+  source           String?
+  giftStage        Int       @default(0)
+  lastEmailAt      DateTime?
+
+  @@index([email])
+  @@index([giftStage])
+}
+
+model TranscriptRequest {
+  id         String    @id @default(cuid())
+  episodeId  String
+  email      String
+  createdAt  DateTime  @default(now())
+  notifiedAt DateTime?
+  episode    Episode   @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+
+  @@unique([episodeId, email])
+  @@index([episodeId])
+  @@index([email])
+}
+
+model CodexUser {
+  id                     String                  @id @default(cuid())
+  email                  String                  @unique
+  displayName            String
+  avatarUrl              String?
+  provider               String
+  role                   CodexUserRole           @default(user)
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  currentPeriodEnd       DateTime?
+  stripeCustomerId       String?                 @unique
+  subscriptionId         String?                 @unique
+  subscriptionStatus     String?
+  isPublicMember         Boolean                 @default(false)
+  memberTitle            String?
+  subscriptionTier       String?
+  bio                    String?
+  codexSlug              String?                 @unique
+  codexPagePublic        Boolean                 @default(true)
+  handle                 String?                 @unique
+  sigilGlyph             String?
+  onboardingCompleted    Boolean                 @default(false)
+  codexBanner            String?
+  codexLinks             Json?
+  codexShowCards         Boolean                 @default(false)
+  isLifetimeMember       Boolean                 @default(false)
+  userArchetype          String?
+  annotations            Annotation[]
+  chatMessages           ChatMessage[]
+  accounts               CodexAccount[]
+  comments               CodexComment[]
+  sessions               CodexSession[]
+  reports                CommentReport[]
+  decks                  Deck[]
+  reactions              EpisodeReaction[]
+  favorites              Favorite[]
+  notificationPreference NotificationPreference?
+  ownedCards             OwnedCard[]
+  packPurchases          PackPurchase[]
+  quoteReactions         QuoteReaction[]
+  salonPosts             SalonPost[]
+  savedQuotes            SavedQuote[]
+  savedTopics            SavedTopic[]
+  signalProposals        SignalProposal[]
+  wallet                 UserWallet?
+}
+
+model CodexSession {
+  id           String    @id @default(cuid())
+  sessionToken String    @unique
+  userId       String
+  expires      DateTime
+  user         CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CodexAccount {
+  id                String    @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  access_token      String?
+  refresh_token     String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  user              CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model EpisodeReaction {
+  userId       String
+  episodeId    String
+  reactionType ReactionType
+  createdAt    DateTime     @default(now())
+  episode      Episode      @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  user         CodexUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, episodeId, reactionType])
+  @@index([episodeId])
+}
+
+model CodexComment {
+  id            String          @id @default(cuid())
+  content       String
+  userId        String
+  episodeId     String
+  parentId      String?
+  flagged       Boolean         @default(false)
+  flaggedReason String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  episode       Episode         @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  parent        CodexComment?   @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies       CodexComment[]  @relation("CommentReplies")
+  user          CodexUser       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reports       CommentReport[]
+
+  @@index([episodeId])
+  @@index([userId])
+  @@index([parentId])
+}
+
+model CommentReport {
+  id        String       @id @default(cuid())
+  commentId String
+  userId    String
+  reason    String
+  createdAt DateTime     @default(now())
+  comment   CodexComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      CodexUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+}
+
+/// A discussion prompt/topic in the Salon. Authored by staff (admin).
+model SalonThread {
+  id        String      @id @default(cuid())
+  title     String
+  prompt    String
+  pinned    Boolean     @default(false)
+  closed    Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  posts     SalonPost[]
+
+  @@index([pinned, createdAt])
+}
+
+/// A member contribution within a Salon thread.
+model SalonPost {
+  id            String      @id @default(cuid())
+  threadId      String
+  userId        String
+  content       String
+  flagged       Boolean     @default(false)
+  flaggedReason String?
+  createdAt     DateTime    @default(now())
+  thread        SalonThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user          CodexUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([threadId, createdAt])
+  @@index([userId])
+}
+
+model ChatMessage {
+  id          String    @id @default(cuid())
+  userId      String
+  displayName String
+  avatarUrl   String?
+  content     String
+  createdAt   DateTime  @default(now())
+  user        CodexUser @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+}
+
+model NotificationPreference {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  emailNewEpisode Boolean   @default(false)
+  emailGoLive     Boolean   @default(false)
+  pushGoLive      Boolean   @default(false)
+  updatedAt       DateTime  @updatedAt
+  user            CodexUser @relation(fields: [userId], references: [id])
+}
+
+model Favorite {
+  id        String    @id @default(cuid())
+  userId    String
+  episodeId String
+  createdAt DateTime  @default(now())
+  episode   Episode   @relation(fields: [episodeId], references: [id])
+  user      CodexUser @relation(fields: [userId], references: [id])
+
+  @@unique([userId, episodeId])
+  @@index([userId])
+}
+
+model SavedTopic {
+  id        String    @id @default(cuid())
+  userId    String
+  topicId   String
+  createdAt DateTime  @default(now())
+  topic     Topic     @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, topicId])
+  @@index([userId])
+  @@index([topicId])
+}
+
+model SavedQuote {
+  id        String    @id @default(cuid())
+  userId    String
+  quoteId   String
+  createdAt DateTime  @default(now())
+  quote     Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, quoteId])
+  @@index([userId])
+  @@index([quoteId])
+}
+
+model PsychenomiconChapter {
+  id                 String                          @id @default(cuid())
+  chapterNumber      Int                             @unique
+  title              String
+  slug               String                          @unique
+  episodeId          String?                         @unique
+  canonText          String
+  interpretationText String
+  mythicText         String
+  emergingSignals    String[]
+  archetypesData     Json?
+  threadRefs         Json?
+  isMajorEvent       Boolean                         @default(false)
+  createdAt          DateTime                        @default(now())
+  updatedAt          DateTime                        @updatedAt
+  status             String                          @default("stable")
+  artImageUrls       Json?
+  artGeneratedAt     DateTime?
+  archetypeEvents    ArchetypeEvent[]
+  episode            Episode?                        @relation(fields: [episodeId], references: [id])
+  entityAppearances  PsychenomiconEntityAppearance[]
+  threadChapters     PsychenomiconThreadChapter[]
+
+  @@index([chapterNumber])
+}
+
+model PsychenomiconArtAsset {
+  id          String   @id @default(cuid())
+  chapterSlug String
+  slot        String
+  mimeType    String   @default("image/jpeg")
+  data        Bytes
+  createdAt   DateTime @default(now())
+
+  @@unique([chapterSlug, slot])
+  @@index([chapterSlug])
+}
+
+model BookEdition {
+  id          String   @id @default(cuid())
+  sku         String   @unique
+  title       String
+  mimeType    String   @default("application/pdf")
+  data        Bytes
+  pageCount   Int      @default(0)
+  chapterFrom Int      @default(0)
+  chapterTo   Int      @default(0)
+  generatedAt DateTime @default(now())
+}
+
+model BookPurchase {
+  id              String   @id @default(cuid())
+  userId          String
+  sku             String
+  stripeSessionId String?
+  createdAt       DateTime @default(now())
+
+  @@unique([userId, sku])
+  @@index([userId])
+}
+
+model PsychenomiconEntity {
+  id               String                          @id @default(cuid())
+  name             String
+  slug             String                          @unique
+  personSlug       String?
+  primaryArchetype String?
+  archetypeHistory Json?
+  radarData        Json?
+  behaviorPatterns String[]
+  status           String                          @default("active")
+  createdAt        DateTime                        @default(now())
+  updatedAt        DateTime                        @updatedAt
+  archetypeState   Json?
+  archetypeEvents  ArchetypeEvent[]
+  appearances      PsychenomiconEntityAppearance[]
+
+  @@index([status])
+}
+
+model ArchetypeEvent {
+  id                  String                @id @default(cuid())
+  entityId            String
+  chapterId           String?
+  chapterNumber       Int
+  primaryArchetype    String
+  secondaryArchetypes String[]
+  confidenceScore     Float                 @default(1.0)
+  triggerEvent        String?
+  createdAt           DateTime              @default(now())
+  chapter             PsychenomiconChapter? @relation(fields: [chapterId], references: [id])
+  entity              PsychenomiconEntity   @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@index([entityId])
+  @@index([chapterNumber])
+}
+
+model PsychenomiconThread {
+  id           String                       @id @default(cuid())
+  title        String
+  slug         String                       @unique
+  description  String?
+  status       String                       @default("active")
+  createdAt    DateTime                     @default(now())
+  updatedAt    DateTime                     @updatedAt
+  chapterLinks PsychenomiconThreadChapter[]
+
+  @@index([status])
+}
+
+model PsychenomiconEntityAppearance {
+  id           String               @id @default(cuid())
+  chapterId    String
+  entityId     String
+  archetypeAt  String?
+  significance String?
+  chapter      PsychenomiconChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  entity       PsychenomiconEntity  @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@unique([chapterId, entityId])
+  @@index([chapterId])
+  @@index([entityId])
+}
+
+model PsychenomiconThreadChapter {
+  chapterId String
+  threadId  String
+  chapter   PsychenomiconChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  thread    PsychenomiconThread  @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@id([chapterId, threadId])
+}
+
+model PersonMedia {
+  id            String    @id @default(cuid())
+  personSlug    String
+  source        String
+  sourceId      String?
+  sourceUrl     String
+  title         String
+  description   String?
+  thumbnailUrl  String?
+  publishedAt   DateTime?
+  durationStr   String?
+  viewCount     Int?
+  rawContent    String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  channelHandle String?
+
+  @@unique([source, sourceId], where: raw("(\"sourceId\" IS NOT NULL)"))
+  @@index([personSlug, source])
+  @@index([publishedAt])
+}
+
+model CommunityPost {
+  id            String    @id @default(cuid())
+  youtubePostId String    @unique
+  text          String
+  imageUrls     String[]
+  likeCount     Int?
+  commentCount  Int?
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([publishedAt])
+}
+
+model OracleChunk {
+  id          String                @id @default(cuid())
+  sourceType  OracleChunkSource
+  sourceId    String
+  content     String
+  searchText  String
+  embedding   Unsupported("vector")
+  metadata    Json
+  contentHash String
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@index([sourceType])
+  @@index([sourceId])
+  @@index([contentHash])
+}
+
+model OracleInvite {
+  id             String    @id @default(cuid())
+  token          String    @unique @default(cuid())
+  recipientName  String
+  recipientEmail String?
+  personalNote   String?
+  claimed        Boolean   @default(false)
+  claimedAt      DateTime?
+  claimedBy      String?
+  createdAt      DateTime  @default(now())
+}
+
+model QuoteReaction {
+  id           String       @id @default(cuid())
+  userId       String
+  quoteId      String
+  reactionType ReactionType
+  createdAt    DateTime     @default(now())
+  quote        Quote        @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  user         CodexUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, quoteId, reactionType])
+  @@index([quoteId])
+  @@index([userId])
+}
+
+model Card {
+  id                 String      @id @default(cuid())
+  slug               String      @unique
+  title              String
+  subtitle           String?
+  cardType           CardType
+  rarity             Rarity
+  entitySlug         String?
+  entityType         String?
+  imageUrl           String?
+  foilImageUrl       String?
+  statA              Int         @default(50)
+  statB              Int         @default(50)
+  statC              Int         @default(50)
+  statLabelA         String?
+  statLabelB         String?
+  statLabelC         String?
+  flavorText         String?
+  abilities          String[]    @default([])
+  isActive           Boolean     @default(true)
+  weightStatic       Float       @default(40)
+  weightSignal       Float       @default(30)
+  weightTransmission Float       @default(20)
+  weightAnomaly      Float       @default(8)
+  weightOracle       Float       @default(2)
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  artUrl             String?
+  flavourText        String?
+  totalMinted        Int         @default(0)
+  maxSupply          Int?
+  personality        String?
+  advice             String?
+  archetype          String?
+  divinationEligible Boolean     @default(false)
+  divinationKeywords String[]    @default([])
+  divinationStrength Int         @default(50)
+  element            String?
+  meaningVersion     Int         @default(1)
+  mythology          String?
+  oracleCategories   String[]    @default([])
+  oraclePrompt       String?
+  planet             String?
+  reversedMeaning    String?
+  shadowAspect       String?
+  sourceRefId        String?
+  sourceType         String?
+  uprightMeaning     String?
+  deckCards          DeckCard[]
+  ownedCards         OwnedCard[]
+  packCards          PackCard[]
+
+  @@index([rarity])
+  @@index([cardType])
+  @@index([isActive])
+  @@index([divinationEligible])
+  @@index([sourceType, sourceRefId])
+  @@index([mythology])
+  @@index([entitySlug])
+}
+
+model CardPack {
+  id                 String         @id @default(cuid())
+  slug               String         @unique
+  name               String
+  description        String?
+  imageUrl           String?
+  price              Int            @default(0)
+  cardCount          Int            @default(5)
+  isActive           Boolean        @default(true)
+  sortOrder          Int            @default(0)
+  isAvailable        Boolean        @default(true)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  cost               Int            @default(100)
+  weightStatic       Float          @default(50)
+  weightSignal       Float          @default(30)
+  weightTransmission Float          @default(14)
+  weightAnomaly      Float          @default(5)
+  weightOracle       Float          @default(1)
+  weightLegendary    Float          @default(0.5)
+  weightMythic       Float          @default(0.1)
+  weightForbidden    Float          @default(0.0)
+  artTheme           String?
+  packCards          PackCard[]
+  packPurchases      PackPurchase[]
+}
+
+model PackCard {
+  id     String   @id @default(cuid())
+  packId String
+  cardId String
+  weight Float    @default(1.0)
+  card   Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  pack   CardPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+
+  @@unique([packId, cardId])
+  @@index([packId])
+}
+
+model OwnedCard {
+  id                String    @id @default(cuid())
+  userId            String
+  cardId            String
+  isFoil            Boolean   @default(false)
+  isNew             Boolean   @default(true)
+  quantity          Int       @default(1)
+  obtainedAt        DateTime  @default(now())
+  obtainedVia       String    @default("pack")
+  evolutionStage    Int       @default(0)
+  evolvedFromCardId String?
+  firstOwnerId      String?
+  method            String?
+  serialNumber      Int?
+  source            String    @default("pack")
+  card              Card      @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  user              CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cardId, isFoil])
+  @@index([userId])
+  @@index([cardId])
+}
+
+model UserWallet {
+  id               String              @id @default(cuid())
+  userId           String              @unique
+  signalCredits    Int                 @default(0)
+  balance          Int                 @default(0)
+  lastDailyClaimAt DateTime?
+  updatedAt        DateTime            @updatedAt
+  totalEarned      Int                 @default(0)
+  totalSpent       Int                 @default(0)
+  createdAt        DateTime            @default(now())
+  drawStreak       Int                 @default(0)
+  lastDrawAt       DateTime?
+  level            Int                 @default(1)
+  longestStreak    Int                 @default(0)
+  signal           Int                 @default(0)
+  signalResetAt    DateTime?
+  xp               Int                 @default(0)
+  dailyStreak      Int                 @default(0)
+  transactions     CreditTransaction[]
+  user             CodexUser           @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CreditTransaction {
+  id          String      @id @default(cuid())
+  walletId    String?
+  amount      Int
+  reason      String
+  referenceId String?
+  createdAt   DateTime    @default(now())
+  userId      String?
+  metadata    Json        @default("{}")
+  wallet      UserWallet? @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, reason, createdAt])
+  @@index([createdAt])
+  @@index([walletId])
+}
+
+model PackPurchase {
+  id           String    @id @default(cuid())
+  userId       String
+  packId       String
+  creditsSpent Int
+  createdAt    DateTime  @default(now())
+  cardsDrawn   String[]  @default([])
+  creditsCost  Int       @default(0)
+  pack         CardPack  @relation(fields: [packId], references: [id], onDelete: Cascade)
+  user         CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([packId])
+}
+
+model Deck {
+  id          String     @id @default(cuid())
+  userId      String
+  name        String
+  description String?
+  isPublic    Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  user        CodexUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deckCards   DeckCard[]
+
+  @@index([userId])
+}
+
+model DeckCard {
+  id     String @id @default(cuid())
+  deckId String
+  cardId String
+  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  deck   Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
+
+  @@unique([deckId, cardId])
+  @@index([deckId])
+}
+
+model Spread {
+  id          String           @id @default(cuid())
+  slug        String           @unique
+  name        String
+  description String?
+  cardCount   Int              @default(1)
+  signalCost  Int              @default(1)
+  isActive    Boolean          @default(true)
+  sortOrder   Int              @default(0)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  readings    Reading[]
+  positions   SpreadPosition[]
+}
+
+model SpreadPosition {
+  id       String  @id @default(cuid())
+  spreadId String
+  index    Int
+  name     String
+  meaning  String?
+  spread   Spread  @relation(fields: [spreadId], references: [id], onDelete: Cascade)
+
+  @@unique([spreadId, index])
+  @@index([spreadId])
+}
+
+model Reading {
+  id         String        @id @default(cuid())
+  userId     String
+  spreadId   String?
+  question   String?
+  seed       String
+  reflection String?
+  createdAt  DateTime      @default(now())
+  spread     Spread?       @relation(fields: [spreadId], references: [id])
+  cards      ReadingCard[]
+
+  @@index([userId, createdAt])
+}
+
+model ReadingCard {
+  id                  String   @id @default(cuid())
+  readingId           String
+  cardId              String
+  position            Int
+  positionName        String?
+  orientation         String
+  borrowed            Boolean  @default(false)
+  drawnMeaningVersion Int
+  titleSnapshot       String?
+  uprightMeaning      String?
+  reversedMeaning     String?
+  advice              String?
+  oraclePrompt        String?
+  keywords            String[] @default([])
+  element             String?
+  archetype           String?
+  reading             Reading  @relation(fields: [readingId], references: [id], onDelete: Cascade)
+
+  @@index([readingId])
+  @@index([cardId])
+}
+
+model CardSet {
+  id               String              @id @default(cuid())
+  slug             String              @unique
+  name             String
+  description      String?
+  setType          String              @default("tarot")
+  mythology        String?
+  sortOrder        Int                 @default(0)
+  rewardCredits    Int                 @default(0)
+  rewardTitle      String?
+  rewardFoilCardId String?
+  unlocksSpread    String?
+  isActive         Boolean             @default(true)
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  members          CardSetMember[]
+  completions      UserSetCompletion[]
+
+  @@index([setType])
+}
+
+model CardSetMember {
+  id     String  @id @default(cuid())
+  setId  String
+  cardId String
+  set    CardSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+
+  @@unique([setId, cardId])
+  @@index([setId])
+  @@index([cardId])
+}
+
+model UserSetCompletion {
+  id            String   @id @default(cuid())
+  userId        String
+  setId         String
+  completedAt   DateTime @default(now())
+  rewardClaimed Boolean  @default(false)
+  set           CardSet  @relation(fields: [setId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, setId])
+  @@index([userId])
+}
+
+model CardInstance {
+  id             String   @id @default(cuid())
+  cardId         String
+  ownerId        String
+  firstOwnerId   String?
+  serialNumber   Int?
+  isFoil         Boolean  @default(false)
+  evolutionStage Int      @default(0)
+  source         String   @default("pack")
+  method         String?
+  evolvedFromId  String?
+  obtainedAt     DateTime @default(now())
+
+  @@index([ownerId])
+  @@index([cardId])
+}
+
+model OracleAffinity {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  dominantElement   String?
+  dominantPlanet    String?
+  dominantArchetype String?
+  mostDrawnSuit     String?
+  shadowPattern     String?
+  recurringCards    Json     @default("[]")
+  readingsCount     Int      @default(0)
+  updatedAt         DateTime @updatedAt
+}
+
+model SeasonalEvent {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  description  String?
+  startsAt     DateTime
+  endsAt       DateTime
+  rewardCardId String?
+  badge        String?
+  collectGoal  Json     @default("[]")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  @@index([isActive, startsAt, endsAt])
+}
+
+model SignalProposal {
+  id        String    @id @default(cuid())
+  userId    String
+  question  String
+  context   String?
+  status    String    @default("open")
+  votes     Int       @default(1)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model StripeWebhookEvent {
+  id          String   @id
+  type        String
+  processedAt DateTime @default(now())
+
+  @@index([processedAt])
+}
+
+model WeeklyDigest {
+  id         String   @id @default(cuid())
+  weekOf     DateTime @unique
+  title      String
+  blurb      String?
+  published  Boolean  @default(false)
+  quoteIds   String[] @default([])
+  episodeIds String[] @default([])
+  personIds  String[] @default([])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([weekOf])
+}
+
+model Annotation {
+  id         String    @id @default(cuid())
+  userId     String
+  targetType String
+  targetId   String
+  body       String
+  status     String    @default("pending")
+  votes      Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  user       CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([targetType, targetId, status])
+  @@index([userId])
+  @@index([status])
+}
+
+model LlmBudget {
+  bucket_day String @id
+  count      Int    @default(0)
+}
+
+enum ContentStatus {
+  draft
+  published
+  archived
+  unavailable
+}
+
+enum PersonType {
+  guest
+  host
+  mentioned
+  recurring
+}
+
+enum CanonStatus {
+  canonical
+  speculative
+  community_myth
+  disputed
+  humorous
+}
+
+enum SeriesType {
+  music_video
+  panel
+  tarot
+  story
+  documentary
+  other
+}
+
+enum MediaType {
+  video
+  audio
+  article
+}
+
+enum ContentType {
+  livestream
+  original
+  short
+  clip
+}
+
+enum CodexUserRole {
+  user
+  moderator
+  admin
+}
+
+enum ReactionType {
+  fire
+  eye
+  moon
+  skull
+  wildcard
+}
+
+enum OracleChunkSource {
+  transcript
+  episode_summary
+  quote
+  lore
+  topic
+  person
+  psy_chapter
+  psy_thread
+  psy_entity
+}
+
+enum Rarity {
+  STATIC
+  SIGNAL
+  TRANSMISSION
+  ANOMALY
+  ORACLE
+  LEGENDARY
+  MYTHIC
+  FORBIDDEN
+}
+
+enum CardType {
+  VOICE
+  TRANSMISSION
+  LORE
+  SIGNAL
+  ORACLE
+  CIPHER
+  RELIC
+  ENTITY
+  PROPHECY
+  MEMBER
+  GLITCH
+  MAHAVIDYA
+  AVATAR
+  INCIDENT
+  QUOTE
+  EPISODE
+  DEITY
+  LOCATION
+  RITUAL
+  SYMBOL
+  EVENT
+}
