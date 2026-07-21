@@ -95,3 +95,6 @@ scripts/psychenomicon-art/output/STOP
 
 # cron/sync logs — committed once by mistake, ignored since
 logs/
+modify_schema.py
+prisma/*.bak
+prisma/migrations.backup/
