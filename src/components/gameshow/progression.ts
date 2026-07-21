@@ -14,7 +14,7 @@ export const ROUND_META: Record<string, RoundMeta> = {
   "troll-or-not": { name: "Troll Tribunal", tag: "👹 TROLLS", desc: "The Trollopedia is real. Spot the true troll among the frauds." },
   "who-is-it": { name: "Legendary Guests", tag: "🕵 PEOPLE", desc: "A real bio from the archive. Name the cult member it describes." },
   "general-trivia": { name: "Occult Trivia", tag: "🧠 CRAFT", desc: "Tarot, astrology, the esoteric — how deep does your craft run?" },
-  "guess-the-episode": { name: "Guess the Episode", tag: "🎬 MULTIMEDIA", desc: "A real thumbnail. Four titles. Which chaos does it belong to?" },
+  "name-that-realm": { name: "Name That Realm", tag: "🖼️ MULTIMEDIA", desc: "Real artwork from the archive. Which corner of the Cult is it?" },
   "real-title": { name: "Real Title or Fake?", tag: "🤯 ABSURD", desc: "The real episode titles are unhinged. Can you spot the genuine one?" },
   "finish-the-lore": { name: "Finish the Lore", tag: "✍️ FILL-IN", desc: "Complete a real (and deeply strange) lore title. Trust the chaos." },
 };

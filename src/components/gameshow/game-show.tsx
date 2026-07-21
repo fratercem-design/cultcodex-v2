@@ -22,7 +22,7 @@ const ROUND_COLOR: Record<string, string> = {
   "troll-or-not": "text-accent-cyan",
   "who-is-it": "text-accent-violet",
   "general-trivia": "text-accent-gold",
-  "guess-the-episode": "text-accent-cyan",
+  "name-that-realm": "text-accent-cyan",
   "real-title": "text-accent-gold",
   "finish-the-lore": "text-accent-violet",
 };

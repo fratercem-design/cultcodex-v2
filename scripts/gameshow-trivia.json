@@ -1,53 +1,761 @@
 [
-  { "q": "How many cards are in a standard tarot deck?", "opts": ["78", "52", "72", "64"], "a": 0, "ex": "A tarot deck has 78 cards: 22 Major Arcana + 56 Minor Arcana." },
-  { "q": "How many cards make up the Major Arcana?", "opts": ["22", "16", "21", "12"], "a": 0, "ex": "The Major Arcana runs from 0 (The Fool) to XXI (The World) — 22 cards." },
-  { "q": "Which tarot card is numbered 0?", "opts": ["The Fool", "The Magician", "The World", "Death"], "a": 0, "ex": "The Fool is card 0, beginning the Major Arcana's journey." },
-  { "q": "Which planet rules Scorpio in modern astrology?", "opts": ["Pluto", "Mars", "Saturn", "Venus"], "a": 0, "ex": "Modern astrology assigns Pluto to Scorpio (Mars is its traditional ruler)." },
-  { "q": "How many signs are in the Western zodiac?", "opts": ["12", "10", "13", "8"], "a": 0, "ex": "Twelve zodiac signs, one per ~30 degrees of the ecliptic." },
-  { "q": "What are the four suits of the tarot's Minor Arcana?", "opts": ["Wands, Cups, Swords, Pentacles", "Hearts, Clubs, Spades, Diamonds", "Fire, Water, Air, Earth", "Rods, Bowls, Blades, Coins"], "a": 0, "ex": "Wands, Cups, Swords, and Pentacles (a.k.a. Coins)." },
-  { "q": "Which element is associated with the suit of Cups?", "opts": ["Water", "Fire", "Air", "Earth"], "a": 0, "ex": "Cups map to Water — emotion, intuition, relationships." },
-  { "q": "The 'Hermetic' tradition takes its name from which figure?", "opts": ["Hermes Trismegistus", "Hermes of Olympus", "Saint Hermas", "Herminius"], "a": 0, "ex": "Hermes Trismegistus, the legendary author of the Hermetic texts." },
-  { "q": "\"As above, so below\" comes from which text?", "opts": ["The Emerald Tablet", "The Book of Thoth", "The Kybalion", "The Necronomicon"], "a": 0, "ex": "The maxim is from the Emerald Tablet of Hermes Trismegistus." },
-  { "q": "How many spheres (Sephirot) are on the Kabbalistic Tree of Life?", "opts": ["10", "7", "12", "22"], "a": 0, "ex": "Ten Sephirot, connected by 22 paths." },
-  { "q": "Which tarot card depicts a figure hanging upside-down?", "opts": ["The Hanged Man", "The Tower", "The Devil", "Judgement"], "a": 0, "ex": "The Hanged Man (XII) — suspension, surrender, new perspective." },
-  { "q": "In numerology, which is a 'master number' of intuition?", "opts": ["11", "7", "3", "9"], "a": 0, "ex": "11 is a master number linked to intuition and insight." },
-  { "q": "Which zodiac sign is symbolized by the scales?", "opts": ["Libra", "Virgo", "Gemini", "Aquarius"], "a": 0, "ex": "Libra, the scales — balance and justice." },
-  { "q": "Mercury rules which pair of zodiac signs?", "opts": ["Gemini and Virgo", "Taurus and Libra", "Aries and Scorpio", "Cancer and Leo"], "a": 0, "ex": "Mercury rules both Gemini and Virgo." },
-  { "q": "What is a group of witches traditionally called?", "opts": ["A coven", "A circle", "A conclave", "A congregation"], "a": 0, "ex": "A coven — classically said to number thirteen." },
-  { "q": "Which crystal is associated with amplifying energy and clarity?", "opts": ["Clear quartz", "Obsidian", "Turquoise", "Jade"], "a": 0, "ex": "Clear quartz — the 'master healer', prized for amplification." },
-  { "q": "A point-up pentagram traditionally represents what?", "opts": ["Spirit over the four elements", "The five wounds", "The five senses only", "Chaos"], "a": 0, "ex": "Point-up: spirit presiding over earth, air, fire, and water." },
-  { "q": "Which tarot suit corresponds to Fire?", "opts": ["Wands", "Swords", "Cups", "Pentacles"], "a": 0, "ex": "Wands — Fire: drive, creativity, will." },
-  { "q": "'Mercury retrograde' refers to Mercury appearing to do what?", "opts": ["Move backward across the sky", "Disappear entirely", "Turn red", "Collide with the Moon"], "a": 0, "ex": "An apparent backward (retrograde) motion from Earth's vantage." },
-  { "q": "Which Major Arcana card is numbered XIII?", "opts": ["Death", "The Tower", "Temperance", "The Devil"], "a": 0, "ex": "XIII is Death — endings and transformation, rarely literal." },
-  { "q": "The 'third eye' chakra is located where?", "opts": ["Between the eyebrows", "At the throat", "At the crown", "At the heart"], "a": 0, "ex": "Ajna, the brow chakra, sits between the eyebrows." },
-  { "q": "How many chakras are there in the common Western system?", "opts": ["7", "5", "9", "12"], "a": 0, "ex": "Seven main chakras from root to crown." },
-  { "q": "Which sign is represented by the twins?", "opts": ["Gemini", "Pisces", "Aries", "Cancer"], "a": 0, "ex": "Gemini, the twins — duality and communication." },
-  { "q": "A 'grimoire' is a book of what?", "opts": ["Magic spells and rituals", "Dream interpretations only", "Saints' lives", "Astronomical tables"], "a": 0, "ex": "A grimoire is a textbook of magic." },
-  { "q": "Which Greek oracle was dedicated to Apollo?", "opts": ["Delphi", "Dodona", "Siwa", "Cumae"], "a": 0, "ex": "The Oracle at Delphi, home of the Pythia." },
-  { "q": "A reversed tarot card differs from upright by what?", "opts": ["Its orientation when drawn", "Its color", "Its number", "Its suit"], "a": 0, "ex": "Reversed = drawn upside-down, often shifting the meaning." },
-  { "q": "Which metal is alchemically associated with the Moon?", "opts": ["Silver", "Gold", "Iron", "Copper"], "a": 0, "ex": "Silver ↔ Moon; gold ↔ Sun in classical alchemy." },
-  { "q": "'Zodiac' derives from a Greek term meaning what?", "opts": ["Circle of little animals", "Path of the sun", "Ring of stars", "Wheel of fate"], "a": 0, "ex": "From 'zodiakos kyklos' — circle of little animals/figures." },
-  { "q": "Which card represents sudden upheaval and shock?", "opts": ["The Tower", "The Star", "The Sun", "The Hermit"], "a": 0, "ex": "The Tower (XVI) — sudden, destructive revelation." },
-  { "q": "Ophiuchus, the '13th sign', represents what?", "opts": ["The serpent-bearer", "The scorpion", "The archer", "The ram"], "a": 0, "ex": "Ophiuchus, the serpent-bearer, straddles the ecliptic." },
-  { "q": "What is scrying?", "opts": ["Divination by gazing into a surface", "Reading tea leaves", "Casting runes", "Palm reading"], "a": 0, "ex": "Scrying — seeking visions in a crystal ball, mirror, or water." },
-  { "q": "Which element is associated with Swords?", "opts": ["Air", "Fire", "Water", "Earth"], "a": 0, "ex": "Swords ↔ Air: intellect, conflict, truth." },
-  { "q": "The Wheel of the Year has how many sabbats?", "opts": ["8", "4", "12", "6"], "a": 0, "ex": "Eight sabbats: solstices, equinoxes, and cross-quarter days." },
-  { "q": "Which sign is ruled by the Sun?", "opts": ["Leo", "Cancer", "Aries", "Sagittarius"], "a": 0, "ex": "Leo is the Sun's domicile." },
-  { "q": "Which sign is ruled by the Moon?", "opts": ["Cancer", "Leo", "Taurus", "Pisces"], "a": 0, "ex": "Cancer is ruled by the Moon." },
-  { "q": "A 'sigil' in magic is best described as what?", "opts": ["A symbol charged with intent", "A spoken chant", "A protective circle", "A sacred number"], "a": 0, "ex": "A sigil is a designed symbol encoding a desire or entity." },
-  { "q": "The Lovers card is associated with which theme?", "opts": ["Choice and union", "Death and rebirth", "Wealth", "Travel"], "a": 0, "ex": "The Lovers (VI) — relationships, values, and pivotal choice." },
-  { "q": "Which altar tool represents the element Earth?", "opts": ["A pentacle or salt", "A candle", "A wand", "A chalice"], "a": 0, "ex": "The pentacle (and salt) represent Earth." },
-  { "q": "Tarot most likely originated in the 15th century in which country?", "opts": ["Italy", "Egypt", "France", "England"], "a": 0, "ex": "Tarot began as Italian playing cards (tarocchi) in the 1400s." },
-  { "q": "Which planet is associated with discipline and limitation?", "opts": ["Saturn", "Jupiter", "Venus", "Mercury"], "a": 0, "ex": "Saturn — structure, boundaries, hard lessons." },
-  { "q": "Which planet is associated with expansion and luck?", "opts": ["Jupiter", "Mars", "Saturn", "Neptune"], "a": 0, "ex": "Jupiter — growth, abundance, fortune." },
-  { "q": "In palmistry, the 'heart line' reveals what?", "opts": ["Emotional life", "Lifespan", "Career", "Intelligence"], "a": 0, "ex": "The heart line is read for matters of emotion and love." },
-  { "q": "The ouroboros depicts a serpent doing what?", "opts": ["Eating its own tail", "Coiled around a tree", "Swallowing the sun", "Shedding its skin"], "a": 0, "ex": "Ouroboros — a serpent eating its tail: eternal cycles." },
-  { "q": "Which Major Arcana card is numbered XXI, the final one?", "opts": ["The World", "The Sun", "Judgement", "The Star"], "a": 0, "ex": "The World (XXI) completes the Major Arcana." },
-  { "q": "Runes are letters of which alphabet family?", "opts": ["Futhark", "Ogham", "Cyrillic", "Coptic"], "a": 0, "ex": "The runic alphabets are known as Futhark." },
-  { "q": "Which incense is classically burned for cleansing?", "opts": ["Sage", "Cinnamon", "Rose", "Vanilla"], "a": 0, "ex": "Sage (smudging) is the classic cleansing herb." },
-  { "q": "The 'astral plane' refers to what?", "opts": ["A non-physical realm of travel and spirits", "The night sky", "A star map", "The brainstem"], "a": 0, "ex": "The astral plane — a subtle realm reached in projection." },
-  { "q": "Which sign is symbolized by the water-bearer?", "opts": ["Aquarius", "Pisces", "Cancer", "Capricorn"], "a": 0, "ex": "Aquarius — the water-bearer (an air sign)." },
-  { "q": "How many court cards are in each tarot suit?", "opts": ["4", "3", "5", "2"], "a": 0, "ex": "Four: Page, Knight, Queen, King." },
-  { "q": "The word 'occult' literally means what?", "opts": ["Hidden", "Evil", "Ancient", "Forbidden"], "a": 0, "ex": "From Latin 'occultus' — hidden or concealed knowledge." },
-  { "q": "Which tarot card shows a lantern-bearing figure alone?", "opts": ["The Hermit", "The Emperor", "The Chariot", "Strength"], "a": 0, "ex": "The Hermit (IX) — solitude, introspection, guidance." }
+ {
+  "q": "How many cards are in a standard tarot deck?",
+  "opts": [
+   "78",
+   "52",
+   "72",
+   "64"
+  ],
+  "a": 0,
+  "ex": "A tarot deck has 78 cards: 22 Major Arcana + 56 Minor Arcana."
+ },
+ {
+  "q": "How many cards make up the Major Arcana?",
+  "opts": [
+   "22",
+   "16",
+   "21",
+   "12"
+  ],
+  "a": 0,
+  "ex": "The Major Arcana runs from 0 (The Fool) to XXI (The World) — 22 cards."
+ },
+ {
+  "q": "Which tarot card is numbered 0?",
+  "opts": [
+   "The Fool",
+   "The Magician",
+   "The World",
+   "Death"
+  ],
+  "a": 0,
+  "ex": "The Fool is card 0, beginning the Major Arcana's journey."
+ },
+ {
+  "q": "Which planet rules Scorpio in modern astrology?",
+  "opts": [
+   "Pluto",
+   "Mars",
+   "Saturn",
+   "Venus"
+  ],
+  "a": 0,
+  "ex": "Modern astrology assigns Pluto to Scorpio (Mars is its traditional ruler)."
+ },
+ {
+  "q": "How many signs are in the Western zodiac?",
+  "opts": [
+   "12",
+   "10",
+   "13",
+   "8"
+  ],
+  "a": 0,
+  "ex": "Twelve zodiac signs, one per ~30 degrees of the ecliptic."
+ },
+ {
+  "q": "What are the four suits of the tarot's Minor Arcana?",
+  "opts": [
+   "Wands, Cups, Swords, Pentacles",
+   "Hearts, Clubs, Spades, Diamonds",
+   "Fire, Water, Air, Earth",
+   "Rods, Bowls, Blades, Coins"
+  ],
+  "a": 0,
+  "ex": "Wands, Cups, Swords, and Pentacles (a.k.a. Coins)."
+ },
+ {
+  "q": "Which element is associated with the suit of Cups?",
+  "opts": [
+   "Water",
+   "Fire",
+   "Air",
+   "Earth"
+  ],
+  "a": 0,
+  "ex": "Cups map to Water — emotion, intuition, relationships."
+ },
+ {
+  "q": "The 'Hermetic' tradition takes its name from which figure?",
+  "opts": [
+   "Hermes Trismegistus",
+   "Hermes of Olympus",
+   "Saint Hermas",
+   "Herminius"
+  ],
+  "a": 0,
+  "ex": "Hermes Trismegistus, the legendary author of the Hermetic texts."
+ },
+ {
+  "q": "\"As above, so below\" comes from which text?",
+  "opts": [
+   "The Emerald Tablet",
+   "The Book of Thoth",
+   "The Kybalion",
+   "The Necronomicon"
+  ],
+  "a": 0,
+  "ex": "The maxim is from the Emerald Tablet of Hermes Trismegistus."
+ },
+ {
+  "q": "How many spheres (Sephirot) are on the Kabbalistic Tree of Life?",
+  "opts": [
+   "10",
+   "7",
+   "12",
+   "22"
+  ],
+  "a": 0,
+  "ex": "Ten Sephirot, connected by 22 paths."
+ },
+ {
+  "q": "Which tarot card depicts a figure hanging upside-down?",
+  "opts": [
+   "The Hanged Man",
+   "The Tower",
+   "The Devil",
+   "Judgement"
+  ],
+  "a": 0,
+  "ex": "The Hanged Man (XII) — suspension, surrender, new perspective."
+ },
+ {
+  "q": "In numerology, which is a 'master number' of intuition?",
+  "opts": [
+   "11",
+   "7",
+   "3",
+   "9"
+  ],
+  "a": 0,
+  "ex": "11 is a master number linked to intuition and insight."
+ },
+ {
+  "q": "Which zodiac sign is symbolized by the scales?",
+  "opts": [
+   "Libra",
+   "Virgo",
+   "Gemini",
+   "Aquarius"
+  ],
+  "a": 0,
+  "ex": "Libra, the scales — balance and justice."
+ },
+ {
+  "q": "Mercury rules which pair of zodiac signs?",
+  "opts": [
+   "Gemini and Virgo",
+   "Taurus and Libra",
+   "Aries and Scorpio",
+   "Cancer and Leo"
+  ],
+  "a": 0,
+  "ex": "Mercury rules both Gemini and Virgo."
+ },
+ {
+  "q": "What is a group of witches traditionally called?",
+  "opts": [
+   "A coven",
+   "A circle",
+   "A conclave",
+   "A congregation"
+  ],
+  "a": 0,
+  "ex": "A coven — classically said to number thirteen."
+ },
+ {
+  "q": "Which crystal is associated with amplifying energy and clarity?",
+  "opts": [
+   "Clear quartz",
+   "Obsidian",
+   "Turquoise",
+   "Jade"
+  ],
+  "a": 0,
+  "ex": "Clear quartz — the 'master healer', prized for amplification."
+ },
+ {
+  "q": "A point-up pentagram traditionally represents what?",
+  "opts": [
+   "Spirit over the four elements",
+   "The five wounds",
+   "The five senses only",
+   "Chaos"
+  ],
+  "a": 0,
+  "ex": "Point-up: spirit presiding over earth, air, fire, and water."
+ },
+ {
+  "q": "Which tarot suit corresponds to Fire?",
+  "opts": [
+   "Wands",
+   "Swords",
+   "Cups",
+   "Pentacles"
+  ],
+  "a": 0,
+  "ex": "Wands — Fire: drive, creativity, will."
+ },
+ {
+  "q": "'Mercury retrograde' refers to Mercury appearing to do what?",
+  "opts": [
+   "Move backward across the sky",
+   "Disappear entirely",
+   "Turn red",
+   "Collide with the Moon"
+  ],
+  "a": 0,
+  "ex": "An apparent backward (retrograde) motion from Earth's vantage."
+ },
+ {
+  "q": "Which Major Arcana card is numbered XIII?",
+  "opts": [
+   "Death",
+   "The Tower",
+   "Temperance",
+   "The Devil"
+  ],
+  "a": 0,
+  "ex": "XIII is Death — endings and transformation, rarely literal."
+ },
+ {
+  "q": "The 'third eye' chakra is located where?",
+  "opts": [
+   "Between the eyebrows",
+   "At the throat",
+   "At the crown",
+   "At the heart"
+  ],
+  "a": 0,
+  "ex": "Ajna, the brow chakra, sits between the eyebrows."
+ },
+ {
+  "q": "How many chakras are there in the common Western system?",
+  "opts": [
+   "7",
+   "5",
+   "9",
+   "12"
+  ],
+  "a": 0,
+  "ex": "Seven main chakras from root to crown."
+ },
+ {
+  "q": "Which sign is represented by the twins?",
+  "opts": [
+   "Gemini",
+   "Pisces",
+   "Aries",
+   "Cancer"
+  ],
+  "a": 0,
+  "ex": "Gemini, the twins — duality and communication."
+ },
+ {
+  "q": "A 'grimoire' is a book of what?",
+  "opts": [
+   "Magic spells and rituals",
+   "Dream interpretations only",
+   "Saints' lives",
+   "Astronomical tables"
+  ],
+  "a": 0,
+  "ex": "A grimoire is a textbook of magic."
+ },
+ {
+  "q": "Which Greek oracle was dedicated to Apollo?",
+  "opts": [
+   "Delphi",
+   "Dodona",
+   "Siwa",
+   "Cumae"
+  ],
+  "a": 0,
+  "ex": "The Oracle at Delphi, home of the Pythia."
+ },
+ {
+  "q": "A reversed tarot card differs from upright by what?",
+  "opts": [
+   "Its orientation when drawn",
+   "Its color",
+   "Its number",
+   "Its suit"
+  ],
+  "a": 0,
+  "ex": "Reversed = drawn upside-down, often shifting the meaning."
+ },
+ {
+  "q": "Which metal is alchemically associated with the Moon?",
+  "opts": [
+   "Silver",
+   "Gold",
+   "Iron",
+   "Copper"
+  ],
+  "a": 0,
+  "ex": "Silver ↔ Moon; gold ↔ Sun in classical alchemy."
+ },
+ {
+  "q": "'Zodiac' derives from a Greek term meaning what?",
+  "opts": [
+   "Circle of little animals",
+   "Path of the sun",
+   "Ring of stars",
+   "Wheel of fate"
+  ],
+  "a": 0,
+  "ex": "From 'zodiakos kyklos' — circle of little animals/figures."
+ },
+ {
+  "q": "Which card represents sudden upheaval and shock?",
+  "opts": [
+   "The Tower",
+   "The Star",
+   "The Sun",
+   "The Hermit"
+  ],
+  "a": 0,
+  "ex": "The Tower (XVI) — sudden, destructive revelation."
+ },
+ {
+  "q": "Ophiuchus, the '13th sign', represents what?",
+  "opts": [
+   "The serpent-bearer",
+   "The scorpion",
+   "The archer",
+   "The ram"
+  ],
+  "a": 0,
+  "ex": "Ophiuchus, the serpent-bearer, straddles the ecliptic."
+ },
+ {
+  "q": "What is scrying?",
+  "opts": [
+   "Divination by gazing into a surface",
+   "Reading tea leaves",
+   "Casting runes",
+   "Palm reading"
+  ],
+  "a": 0,
+  "ex": "Scrying — seeking visions in a crystal ball, mirror, or water."
+ },
+ {
+  "q": "Which element is associated with Swords?",
+  "opts": [
+   "Air",
+   "Fire",
+   "Water",
+   "Earth"
+  ],
+  "a": 0,
+  "ex": "Swords ↔ Air: intellect, conflict, truth."
+ },
+ {
+  "q": "The Wheel of the Year has how many sabbats?",
+  "opts": [
+   "8",
+   "4",
+   "12",
+   "6"
+  ],
+  "a": 0,
+  "ex": "Eight sabbats: solstices, equinoxes, and cross-quarter days."
+ },
+ {
+  "q": "Which sign is ruled by the Sun?",
+  "opts": [
+   "Leo",
+   "Cancer",
+   "Aries",
+   "Sagittarius"
+  ],
+  "a": 0,
+  "ex": "Leo is the Sun's domicile."
+ },
+ {
+  "q": "Which sign is ruled by the Moon?",
+  "opts": [
+   "Cancer",
+   "Leo",
+   "Taurus",
+   "Pisces"
+  ],
+  "a": 0,
+  "ex": "Cancer is ruled by the Moon."
+ },
+ {
+  "q": "A 'sigil' in magic is best described as what?",
+  "opts": [
+   "A symbol charged with intent",
+   "A spoken chant",
+   "A protective circle",
+   "A sacred number"
+  ],
+  "a": 0,
+  "ex": "A sigil is a designed symbol encoding a desire or entity."
+ },
+ {
+  "q": "The Lovers card is associated with which theme?",
+  "opts": [
+   "Choice and union",
+   "Death and rebirth",
+   "Wealth",
+   "Travel"
+  ],
+  "a": 0,
+  "ex": "The Lovers (VI) — relationships, values, and pivotal choice."
+ },
+ {
+  "q": "Which altar tool represents the element Earth?",
+  "opts": [
+   "A pentacle or salt",
+   "A candle",
+   "A wand",
+   "A chalice"
+  ],
+  "a": 0,
+  "ex": "The pentacle (and salt) represent Earth."
+ },
+ {
+  "q": "Tarot most likely originated in the 15th century in which country?",
+  "opts": [
+   "Italy",
+   "Egypt",
+   "France",
+   "England"
+  ],
+  "a": 0,
+  "ex": "Tarot began as Italian playing cards (tarocchi) in the 1400s."
+ },
+ {
+  "q": "Which planet is associated with discipline and limitation?",
+  "opts": [
+   "Saturn",
+   "Jupiter",
+   "Venus",
+   "Mercury"
+  ],
+  "a": 0,
+  "ex": "Saturn — structure, boundaries, hard lessons."
+ },
+ {
+  "q": "Which planet is associated with expansion and luck?",
+  "opts": [
+   "Jupiter",
+   "Mars",
+   "Saturn",
+   "Neptune"
+  ],
+  "a": 0,
+  "ex": "Jupiter — growth, abundance, fortune."
+ },
+ {
+  "q": "In palmistry, the 'heart line' reveals what?",
+  "opts": [
+   "Emotional life",
+   "Lifespan",
+   "Career",
+   "Intelligence"
+  ],
+  "a": 0,
+  "ex": "The heart line is read for matters of emotion and love."
+ },
+ {
+  "q": "The ouroboros depicts a serpent doing what?",
+  "opts": [
+   "Eating its own tail",
+   "Coiled around a tree",
+   "Swallowing the sun",
+   "Shedding its skin"
+  ],
+  "a": 0,
+  "ex": "Ouroboros — a serpent eating its tail: eternal cycles."
+ },
+ {
+  "q": "Which Major Arcana card is numbered XXI, the final one?",
+  "opts": [
+   "The World",
+   "The Sun",
+   "Judgement",
+   "The Star"
+  ],
+  "a": 0,
+  "ex": "The World (XXI) completes the Major Arcana."
+ },
+ {
+  "q": "Runes are letters of which alphabet family?",
+  "opts": [
+   "Futhark",
+   "Ogham",
+   "Cyrillic",
+   "Coptic"
+  ],
+  "a": 0,
+  "ex": "The runic alphabets are known as Futhark."
+ },
+ {
+  "q": "Which incense is classically burned for cleansing?",
+  "opts": [
+   "Sage",
+   "Cinnamon",
+   "Rose",
+   "Vanilla"
+  ],
+  "a": 0,
+  "ex": "Sage (smudging) is the classic cleansing herb."
+ },
+ {
+  "q": "The 'astral plane' refers to what?",
+  "opts": [
+   "A non-physical realm of travel and spirits",
+   "The night sky",
+   "A star map",
+   "The brainstem"
+  ],
+  "a": 0,
+  "ex": "The astral plane — a subtle realm reached in projection."
+ },
+ {
+  "q": "Which sign is symbolized by the water-bearer?",
+  "opts": [
+   "Aquarius",
+   "Pisces",
+   "Cancer",
+   "Capricorn"
+  ],
+  "a": 0,
+  "ex": "Aquarius — the water-bearer (an air sign)."
+ },
+ {
+  "q": "How many court cards are in each tarot suit?",
+  "opts": [
+   "4",
+   "3",
+   "5",
+   "2"
+  ],
+  "a": 0,
+  "ex": "Four: Page, Knight, Queen, King."
+ },
+ {
+  "q": "The word 'occult' literally means what?",
+  "opts": [
+   "Hidden",
+   "Evil",
+   "Ancient",
+   "Forbidden"
+  ],
+  "a": 0,
+  "ex": "From Latin 'occultus' — hidden or concealed knowledge."
+ },
+ {
+  "q": "Which tarot card shows a lantern-bearing figure alone?",
+  "opts": [
+   "The Hermit",
+   "The Emperor",
+   "The Chariot",
+   "Strength"
+  ],
+  "a": 0,
+  "ex": "The Hermit (IX) — solitude, introspection, guidance."
+ },
+ {
+  "q": "In Cult of Psyche lore, the go-to method for de-escalating chat drama is to…",
+  "opts": [
+   "Bring out the cat",
+   "Ban everyone",
+   "Play a jingle",
+   "Read a prophecy"
+  ],
+  "a": 0,
+  "ex": "When the outside gets loud, browse the Codex and pet the cat."
+ },
+ {
+  "q": "What is the name of Psyche's cat, star of countless streams?",
+  "opts": [
+   "Trixs",
+   "Whiskers",
+   "Mr. Bigglesworth",
+   "Salem"
+  ],
+  "a": 0,
+  "ex": "Trixs — unfalsifiable feline sincerity."
+ },
+ {
+  "q": "In cult lore, 'Restricted Airspace' is enforced against whom?",
+  "opts": [
+   "Extraterrestrials",
+   "The FAA",
+   "The moon",
+   "Chat mods"
+  ],
+  "a": 0,
+  "ex": "Restricted Airspace: extraterrestrial traffic enforcement, naturally."
+ },
+ {
+  "q": "What is the Trollopedia?",
+  "opts": [
+   "The archive's field guide to trolls",
+   "A pizza brand",
+   "A tarot deck",
+   "A prophecy"
+  ],
+  "a": 0,
+  "ex": "The complete catalogue of the cult's oldest institution: the trolls."
+ },
+ {
+  "q": "How does the archive catalogue the worst chat catastrophes?",
+  "opts": [
+   "The Drama Files",
+   "The Complaint Box",
+   "The Banned List",
+   "The Sad Folder"
+  ],
+  "a": 0,
+  "ex": "Case files, catalogued with the seriousness they do not deserve."
+ },
+ {
+  "q": "In the game show, what appears when you answer correctly?",
+  "opts": [
+   "/// the_codex_rules",
+   "Nice one",
+   "Correct!",
+   "Ding"
+  ],
+  "a": 0,
+  "ex": "And when wrong: /// the_codex_disagrees."
+ },
+ {
+  "q": "Which tagline describes the Cult of Psyche experience?",
+  "opts": [
+   "Enter as a skeptic, leave as a storyline",
+   "Subscribe now",
+   "Trust the process",
+   "Wake up sheeple"
+  ],
+  "a": 0,
+  "ex": "Where myth wakes up and chaos takes notes."
+ },
+ {
+  "q": "The Psychenomicon is best described as…",
+  "opts": [
+   "A living chronicle of the show's evolving patterns",
+   "A cookbook",
+   "A legal document",
+   "A weather report"
+  ],
+  "a": 0,
+  "ex": "A living record of evolving patterns, chapter by chapter."
+ },
+ {
+  "q": "Which outside troll faction infamously raided a stream with threats?",
+  "opts": [
+   "IP2",
+   "The Avengers",
+   "Anonymous",
+   "The HOA"
+  ],
+  "a": 0,
+  "ex": "The IP2 infiltration night — resolved, per lore, by cats."
+ },
+ {
+  "q": "What happened when Psyche raided Christine's stream?",
+  "opts": [
+   "He got banned",
+   "He got a sponsorship",
+   "Nothing",
+   "He won a prize"
+  ],
+  "a": 0,
+  "ex": "The Christine Raid Incident — raid, then banhammer, then a full rebuttal."
+ },
+ {
+  "q": "In the archive's cosmology, trolls are considered…",
+  "opts": [
+   "A founding institution",
+   "A glitch",
+   "Guests of honor",
+   "Mythical only"
+  ],
+  "a": 0,
+  "ex": "'Trolls on Parade' was episode 3 — they predate most of the lore."
+ },
+ {
+  "q": "What is the rank progression in the Panelverse Game Show?",
+  "opts": [
+   "Initiate → Acolyte → Keeper → Oracle → Mythwalker",
+   "Bronze → Silver → Gold",
+   "Level 1 → 100",
+   "Noob → Pro"
+  ],
+  "a": 0,
+  "ex": "Climb by answering correctly."
+ },
+ {
+  "q": "What hides behind a near-invisible glyph in the CultCodex footer?",
+  "opts": [
+   "The Basement",
+   "A 404",
+   "A shop",
+   "Nothing"
+  ],
+  "a": 0,
+  "ex": "The ψ glyph opens the suppressed-files Basement."
+ },
+ {
+  "q": "What does the cult's AI feature let you consult?",
+  "opts": [
+   "The Oracle",
+   "A chatbot",
+   "A hotline",
+   "A magic 8-ball"
+  ],
+  "a": 0,
+  "ex": "Ask the Oracle — the archive's AI divination."
+ },
+ {
+  "q": "A 'Full Poltergeist' rating in the Drama Files means…",
+  "opts": [
+   "Maximum chaos",
+   "Minor issue",
+   "A ghost sighting",
+   "A refund"
+  ],
+  "a": 0,
+  "ex": "The highest tier of catalogued cult drama."
+ },
+ {
+  "q": "The Cult of Psyche archive lives at which site?",
+  "opts": [
+   "cultcodex.me",
+   "cult.tv",
+   "psyche.org",
+   "occult.io"
+  ],
+  "a": 0,
+  "ex": "CultCodex — the searchable archive of the Cult of Psyche."
+ },
+ {
+  "q": "The daily game-show challenge rewards you with…",
+  "opts": [
+   "+50 XP and a streak",
+   "A sticker",
+   "Nothing",
+   "A refund"
+  ],
+  "a": 0,
+  "ex": "One shared question a day, +50 XP, and the Daily Devotee badge."
+ },
+ {
+  "q": "What is the leaderboard in the game show called?",
+  "opts": [
+   "The Hall of Oracles",
+   "The Chart",
+   "The Wall",
+   "The Rankings"
+  ],
+  "a": 0,
+  "ex": "Weekly, monthly, and all-time boards of the top cultists."
+ }
 ]

@@ -162,14 +162,30 @@ for (let i = 0; i < 110; i++) {
   questions.push({ id: nid(), round: "who-is-it", type: "multiple-choice", prompt: `From the archive: "${bio}" — WHO is this?`, options: opts.map((o) => o.t), answerIndex: opts.findIndex((o) => o.real), explain: `It's ${p.displayName}${p.personType ? ` (${p.personType})` : ""}.`, sourceHref: `/people/${p.slug}` });
 }
 
-// R8 Guess the Episode (MULTIMEDIA — real thumbnail, pick the title) (130)
-const epS = shuffle(raw.episodes);
-const epTitles = raw.episodes.map((e) => e.title);
-for (let i = 0; i < 130; i++) {
-  const e = epS[i % epS.length]; if (uses(e.title) >= MAX_USE) continue; bump(e.title);
-  const decoys = shuffle(epTitles.filter((t) => t !== e.title)).slice(0, 3);
-  const opts = shuffle([{ t: e.title, real: true }, ...decoys.map((d) => ({ t: d, real: false }))]);
-  questions.push({ id: nid(), round: "guess-the-episode", type: "multiple-choice", image: e.thumbnailUrl, prompt: "🎬 This is a real episode thumbnail. Which title belongs to it?", options: opts.map((o) => o.t), answerIndex: opts.findIndex((o) => o.real), explain: `This is "${e.title}".`, sourceHref: `/episodes/${e.slug}` });
+// R8 Name That Realm (MULTIMEDIA — real Canva art served by the site, pick what it depicts)
+// Uses images we host (always load), not deleted YouTube thumbnails.
+const REALMS: { img: string; answer: string; href?: string }[] = [
+  { img: "/images/trollopedia/hero.webp", answer: "The Trollopedia", href: "/trollopedia" },
+  { img: "/images/quotes/hero.webp", answer: "The Quotes Archive", href: "/quotes" },
+  { img: "/images/psychenomicon/hero.webp", answer: "The Psychenomicon", href: "/psychenomicon" },
+  { img: "/images/people/hero.webp", answer: "The Cast", href: "/people" },
+  { img: "/images/gameshow/deck.webp", answer: "The Oracle Deck", href: "/tarot" },
+  { img: "/images/gameshow/hall.webp", answer: "The Hall of Oracles", href: "/gameshow" },
+  { img: "/images/site/hero.webp", answer: "CultCodex Itself", href: "/" },
+  { img: "/images/gameshow/rounds/two-truths-lie.webp", answer: "Two Truths & a Lie" },
+  { img: "/images/gameshow/rounds/prophecy-or-bogus.webp", answer: "Prophecy or Bogus" },
+  { img: "/images/gameshow/rounds/did-psyche-say-it.webp", answer: "Did Psyche Say It?" },
+  { img: "/images/gameshow/rounds/troll-or-not.webp", answer: "Troll or Not" },
+  { img: "/images/gameshow/rounds/codex-cluedo.webp", answer: "Codex Cluedo" },
+  { img: "/images/gameshow/rounds/who-is-it.webp", answer: "Who Is It?" },
+  { img: "/images/gameshow/rounds/general-trivia.webp", answer: "Occult Trivia" },
+  { img: "/images/gameshow/rounds/real-or-fake-lore.webp", answer: "The Lore Vault" },
+];
+const realmAnswers = REALMS.map((r) => r.answer);
+for (const r of shuffle(REALMS)) {
+  const decoys = shuffle(realmAnswers.filter((a) => a !== r.answer)).slice(0, 3);
+  const opts = shuffle([{ t: r.answer, real: true }, ...decoys.map((d) => ({ t: d, real: false }))]);
+  questions.push({ id: nid(), round: "name-that-realm", type: "multiple-choice", image: r.img, prompt: "🖼️ This artwork belongs to which corner of the Cult? Name the realm.", options: opts.map((o) => o.t), answerIndex: opts.findIndex((o) => o.real), explain: `That's ${r.answer}.`, sourceHref: r.href });
 }
 
 // R9 Real Title? (absurd episode titles — 1 real + 3 fake absurd) (90)
@@ -208,7 +224,7 @@ for (let i = 0; i < need; i++) {
 // Audit (trivia exempt; guess-the-episode title reuse capped at MAX_USE already).
 const cnt = new Map<string, number>();
 for (const q of questions as { round: string; options?: string[]; statements?: { text: string }[] }[]) {
-  if (q.round === "general-trivia" || q.round === "guess-the-episode") continue;
+  if (q.round === "general-trivia" || q.round === "name-that-realm") continue;
   const opts = q.options || (q.statements || []).map((s) => s.text);
   for (const o of opts) cnt.set(o, (cnt.get(o) ?? 0) + 1);
 }
@@ -226,7 +242,7 @@ const bank = {
     { key: "codex-cluedo", label: "Codex Cluedo", icon: "🕯️" },
     { key: "troll-or-not", label: "Troll or Not", icon: "🌉" },
     { key: "who-is-it", label: "Who Is It?", icon: "🕵️" },
-    { key: "guess-the-episode", label: "Guess the Episode", icon: "🎬" },
+    { key: "name-that-realm", label: "Name That Realm", icon: "🖼️" },
     { key: "real-title", label: "Real Title or Fake?", icon: "🤯" },
     { key: "finish-the-lore", label: "Finish the Lore", icon: "✍️" },
     { key: "general-trivia", label: "General Trivia", icon: "❓" },
