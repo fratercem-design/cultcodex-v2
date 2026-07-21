@@ -261,7 +261,10 @@ export function GameShow() {
 
 function DailyChallenge({ done, streak, onPlay }: { done: boolean; streak: number; onPlay: () => void }) {
   return (
-    <div className="relative overflow-hidden rounded-xl border border-accent-gold/40 bg-gradient-to-r from-accent-gold/10 via-surface to-surface p-5">
+    <div className="relative overflow-hidden rounded-xl border border-accent-gold/40 bg-surface p-5">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/gameshow/deck.webp" alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-30" />
+      <div className="absolute inset-0 bg-gradient-to-r from-void via-void/85 to-void/60" />
       <div className="gs-drift pointer-events-none absolute inset-0 opacity-20" aria-hidden />
       <div className="relative flex flex-wrap items-center justify-between gap-4">
         <div className="min-w-0">

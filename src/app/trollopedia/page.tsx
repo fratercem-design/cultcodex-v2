@@ -36,8 +36,11 @@ export default async function TrollopediaPage() {
 
   return (
     <main className="min-h-screen bg-void">
-      <section className="border-b border-accent-cyan/20 bg-gradient-to-b from-accent-cyan/5 to-void py-12 px-4">
-        <div className="mx-auto max-w-3xl text-center space-y-3">
+      <section className="relative overflow-hidden border-b border-accent-cyan/20 py-14 px-4">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/trollopedia/hero.webp" alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-30" />
+        <div className="absolute inset-0 bg-gradient-to-b from-void/75 via-void/70 to-void" />
+        <div className="relative mx-auto max-w-3xl text-center space-y-3">
           <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-cyan/60">
             {"/// field_guide · do_not_feed"}
           </p>

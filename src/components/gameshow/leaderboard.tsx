@@ -49,7 +49,11 @@ export function Leaderboard({ sessionCorrect, sessionTotal }: { sessionCorrect: 
   }, [handle, sessionCorrect, sessionTotal, submitState, range, fetchBoard]);
 
   return (
-    <div className="rounded-xl border border-accent-gold/25 bg-surface/60 p-5 space-y-4">
+    <div className="relative overflow-hidden rounded-xl border border-accent-gold/25 bg-surface/60 p-5">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/gameshow/hall.webp" alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-[0.14]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-void/85 via-void/80 to-void/90" />
+      <div className="relative space-y-4">
       <div className="flex items-center justify-between gap-3">
         <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/70">{"/// hall_of_oracles"}</p>
         <div className="flex gap-1">
@@ -101,6 +105,7 @@ export function Leaderboard({ sessionCorrect, sessionTotal }: { sessionCorrect: 
             </button>
           </div>
         )}
+      </div>
       </div>
     </div>
   );

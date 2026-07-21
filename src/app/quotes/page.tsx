@@ -98,7 +98,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
       <PageHero
         title="QUOTES"
         subtitle={subtitle}
-        backgroundImage="/long-form-background.jpg"
+        backgroundImage="/images/quotes/hero.webp"
       
       label="transmissions"
     />

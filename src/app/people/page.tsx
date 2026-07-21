@@ -112,7 +112,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
     <PageHero
       title="PEOPLE"
       subtitle="Guests, hosts, and figures of the archive"
-      backgroundImage="/wiki-page-header.jpg"
+      backgroundImage="/images/people/hero.webp"
       label="voices"
     />
     <EntityGlanceBar items={glanceItems} />

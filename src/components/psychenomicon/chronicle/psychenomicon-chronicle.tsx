@@ -74,8 +74,11 @@ export default function PsychenomiconChronicle() {
   return (
     <main className="min-h-screen bg-void">
       {/* Header */}
-      <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
-        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      <section className="relative overflow-hidden border-b border-accent-violet/20 py-12 px-4">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/psychenomicon/hero.webp" alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-25" />
+        <div className="absolute inset-0 bg-gradient-to-b from-void/80 via-void/70 to-void" />
+        <div className="relative mx-auto max-w-7xl flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="space-y-2">
             <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">⏈ THE PSYCHENOMICON ⏈</p>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">A Living Record of Evolving Patterns</h1>
