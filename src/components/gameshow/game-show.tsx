@@ -4,6 +4,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ROUND_EMBLEMS } from "./emblems";
 import { ROUND_ART, CORRECT_ART, WRONG_ART } from "./art-manifest";
+import {
+  ROUND_META, ACHIEVEMENTS, type Achievement, type ProgressState,
+  load as loadProgress, rankFor, recordAnswer, recordArchiveClick,
+} from "./progression";
 import bankJson from "@/lib/data/gameshow-questions.json";
 
 const ROUND_COLOR: Record<string, string> = {
@@ -17,26 +21,16 @@ const ROUND_COLOR: Record<string, string> = {
   "general-trivia": "text-accent-gold",
 };
 
-type MC = {
-  id: string; round: string; type: "multiple-choice";
-  prompt: string; options: string[]; answerIndex: number; explain: string; sourceHref?: string;
-};
-type TTL = {
-  id: string; round: string; type: "two-truths-lie";
-  prompt: string; statements: { text: string; real: boolean; slug?: string }[]; answerIndex: number; explain: string;
-};
-type Clue = {
-  id: string; round: string; type: "clue";
-  prompt: string; suspects: string[]; locations: string[]; artifacts: string[];
-  solution: { suspect: string; location: string; artifact: string }; explain: string;
-};
+type MC = { id: string; round: string; type: "multiple-choice"; prompt: string; options: string[]; answerIndex: number; explain: string; sourceHref?: string };
+type TTL = { id: string; round: string; type: "two-truths-lie"; prompt: string; statements: { text: string; real: boolean; slug?: string }[]; answerIndex: number; explain: string };
+type Clue = { id: string; round: string; type: "clue"; prompt: string; suspects: string[]; locations: string[]; artifacts: string[]; solution: { suspect: string; location: string; artifact: string }; explain: string };
 type Q = MC | TTL | Clue;
 type Round = { key: string; label: string; icon: string };
 export type GameShowBank = { total: number; rounds: Round[]; questions: Q[] };
+const bank = bankJson as unknown as GameShowBank;
 
 const LETTERS = ["A", "B", "C", "D", "E", "F"];
 
-/** Tiny Web Audio sound kit — no asset files. Lazily created on first gesture. */
 function useSound() {
   const ctxRef = useRef<AudioContext | null>(null);
   const mutedRef = useRef(false);
@@ -54,8 +48,7 @@ function useSound() {
     if (!ctx) return;
     if (ctx.state === "suspended") ctx.resume();
     freqs.forEach((f, i) => {
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
+      const o = ctx.createOscillator(); const g = ctx.createGain();
       o.type = type; o.frequency.value = f;
       const t0 = ctx.currentTime + i * 0.06;
       g.gain.setValueAtTime(0, t0);
@@ -69,16 +62,13 @@ function useSound() {
     select: () => tone([420], 0.08, "triangle", 0.05),
     correct: () => tone([523.25, 659.25, 783.99], 0.28, "sine", 0.09),
     wrong: () => tone([160, 120], 0.3, "sawtooth", 0.06),
+    levelup: () => tone([523, 659, 784, 1047], 0.4, "sine", 0.08),
     next: () => tone([300, 500], 0.1, "sine", 0.04),
     setMuted: (m: boolean) => { mutedRef.current = m; },
   };
 }
 
-// The bank is imported here (client-side) rather than passed as a prop, so the
-// large question payload never crosses the server→client boundary — that huge
-// serialized prop was what forced the board into a never-revealing Suspense
-// boundary. Combined with the ssr:false loader, the board renders reliably.
-const bank = bankJson as unknown as GameShowBank;
+type Toast = { id: number; text: string; sub?: string };
 
 export function GameShow() {
   const [roundKey, setRoundKey] = useState<string | null>(null);
@@ -86,12 +76,23 @@ export function GameShow() {
   const [revealed, setRevealed] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
   const [muted, setMuted] = useState(false);
+  const [progress, setProgress] = useState<ProgressState>(() => ({ xp: 0, correct: 0, streak: 0, bestStreak: 0, archiveClicks: 0, byRound: {}, unlocked: [] }));
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const toastId = useRef(0);
   const sound = useSound();
+
+  useEffect(() => { setProgress(loadProgress()); }, []);
   useEffect(() => { sound.setMuted(muted); }, [muted, sound]);
+
+  const pushToast = useCallback((text: string, sub?: string) => {
+    const id = ++toastId.current;
+    setToasts((t) => [...t, { id, text, sub }]);
+    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 4200);
+  }, []);
 
   const pool = useMemo(
     () => (roundKey && roundKey !== "__all" ? bank.questions.filter((q) => q.round === roundKey) : bank.questions),
-    [bank.questions, roundKey]
+    [roundKey]
   );
   const q = pool[idx];
 
@@ -102,18 +103,32 @@ export function GameShow() {
   const reveal = useCallback(() => {
     if (revealed || !q) return;
     setRevealed(true);
-    if (q.type === "clue") { sound.correct(); return; }
-    const answer = q.type === "multiple-choice" ? q.answerIndex : q.answerIndex;
-    if (selected == null) sound.correct();
-    else if (selected === answer) sound.correct();
-    else sound.wrong();
-  }, [revealed, q, selected, sound]);
+    const answer = q.type === "clue" ? -1 : q.answerIndex;
+    const isCorrect = q.type !== "clue" && selected != null && selected === answer;
+    const isWrong = q.type !== "clue" && selected != null && selected !== answer;
+    if (isCorrect) sound.correct(); else if (isWrong) sound.wrong(); else sound.correct();
+    // Progression only counts when the player actually locked in a pick.
+    if (selected != null && q.type !== "clue") {
+      const res = recordAnswer(q.round, isCorrect);
+      setProgress(res.state);
+      if (res.rankedUp) { sound.levelup(); pushToast(`⬆ Rank up — ${res.rankedUp}`, "The Codex takes notice."); }
+      res.newAchievements.forEach((a: Achievement) => pushToast(a.label, "Achievement unlocked"));
+    }
+  }, [revealed, q, selected, sound, pushToast]);
 
-  const choose = useCallback((i: number) => {
-    if (revealed) return;
-    setSelected(i);
-    sound.select();
-  }, [revealed, sound]);
+  const choose = useCallback((i: number) => { if (revealed) return; setSelected(i); sound.select(); }, [revealed, sound]);
+
+  const surprise = useCallback(() => {
+    // Deterministic-free random is fine on the client (not the workflow sandbox).
+    const n = Math.floor(Math.random() * bank.questions.length);
+    setRoundKey("__all"); setRevealed(false); setSelected(null); setIdx(n); sound.next();
+  }, [sound]);
+
+  const onArchive = useCallback(() => {
+    const res = recordArchiveClick();
+    setProgress(res.state);
+    res.newAchievements.forEach((a: Achievement) => pushToast(a.label, "Achievement unlocked"));
+  }, [pushToast]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -128,114 +143,156 @@ export function GameShow() {
     return () => window.removeEventListener("keydown", onKey);
   }, [revealed, next, prev, reveal, choose, roundKey]);
 
+  const rank = rankFor(progress.xp);
+
   // ── Lobby ──
   if (!roundKey) {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-10 space-y-6">
-        <div className="grid gap-3 sm:grid-cols-2">
-          {bank.rounds.map((r) => {
-            const count = bank.questions.filter((x) => x.round === r.key).length;
-            const Emblem = ROUND_EMBLEMS[r.key];
-            const art = ROUND_ART[r.key];
-            return (
-              <button
-                key={r.key}
-                onClick={() => { setRoundKey(r.key); goto(0); }}
-                className="group relative overflow-hidden flex items-center gap-4 rounded-lg border border-accent-violet/25 bg-surface p-5 text-left hover:border-accent-violet/60 hover:bg-accent-violet/5 hover:scale-[1.015] active:scale-[0.99] transition-all"
-              >
-                {art && (
-                  <>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={art} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-25 group-hover:opacity-40 transition-opacity" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-void via-void/80 to-void/40" />
-                  </>
-                )}
-                {Emblem
-                  ? <Emblem size={44} className={`relative flex-shrink-0 ${ROUND_COLOR[r.key] ?? "text-accent-violet"} transition-transform group-hover:rotate-6`} />
-                  : <span className="relative text-3xl" aria-hidden>{r.icon}</span>}
-                <span className="relative">
-                  <span className="block font-display text-lg font-bold text-text-primary group-hover:text-accent-violet transition-colors">{r.label}</span>
-                  <span className="block font-mono text-[10px] uppercase tracking-widest text-text-muted/60">{count} questions</span>
-                </span>
-              </button>
-            );
-          })}
-          <button
-            onClick={() => { setRoundKey("__all"); goto(0); }}
-            className="group flex items-center gap-4 rounded-lg border border-accent-gold/30 bg-accent-gold/5 p-5 text-left hover:border-accent-gold/60 hover:bg-accent-gold/10 hover:scale-[1.015] active:scale-[0.99] transition-all"
-          >
-            <span className="text-3xl transition-transform group-hover:rotate-12" aria-hidden>🎲</span>
-            <span>
-              <span className="block font-display text-lg font-bold text-text-primary group-hover:text-accent-gold transition-colors">The Whole Deck</span>
-              <span className="block font-mono text-[10px] uppercase tracking-widest text-text-muted/60">all {bank.total} questions</span>
-            </span>
+      <div id="rounds" className="mx-auto max-w-4xl px-4 py-10 space-y-8">
+        <ProgressHud progress={progress} rank={rank} />
+
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <button onClick={surprise} className="rounded-lg border border-accent-gold/50 bg-accent-gold/10 px-6 py-3 font-mono text-sm font-bold uppercase tracking-widest text-accent-gold hover:bg-accent-gold/20 hover:scale-[1.03] active:scale-[0.98] transition-all">
+            🎲 Surprise Me
+          </button>
+          <button onClick={() => { setRoundKey("__all"); goto(0); }} className="rounded-lg border border-accent-violet/50 bg-accent-violet/10 px-6 py-3 font-mono text-sm font-bold uppercase tracking-widest text-accent-violet hover:bg-accent-violet/20 hover:scale-[1.03] active:scale-[0.98] transition-all">
+            ▶ Play All {bank.total}
           </button>
         </div>
+
+        <div>
+          <p className="mb-3 text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/60">{"/// choose_your_round"}</p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {bank.rounds.map((r) => {
+              const count = bank.questions.filter((x) => x.round === r.key).length;
+              const Emblem = ROUND_EMBLEMS[r.key];
+              const art = ROUND_ART[r.key];
+              const meta = ROUND_META[r.key];
+              return (
+                <button
+                  key={r.key}
+                  onClick={() => { setRoundKey(r.key); goto(0); }}
+                  className="group relative overflow-hidden flex items-start gap-4 rounded-xl border border-accent-violet/25 bg-surface p-5 text-left hover:border-accent-violet/60 hover:scale-[1.015] active:scale-[0.99] transition-all"
+                >
+                  {art && (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={art} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-25 group-hover:opacity-40 transition-opacity duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-r from-void via-void/85 to-void/50" />
+                    </>
+                  )}
+                  {Emblem
+                    ? <Emblem size={44} className={`relative flex-shrink-0 ${ROUND_COLOR[r.key] ?? "text-accent-violet"} transition-transform group-hover:rotate-6`} />
+                    : <span className="relative text-3xl" aria-hidden>{r.icon}</span>}
+                  <span className="relative min-w-0 flex-1">
+                    <span className="flex items-center gap-2">
+                      <span className="font-display text-lg font-bold text-text-primary group-hover:text-accent-violet transition-colors">{meta?.name ?? r.label}</span>
+                    </span>
+                    {meta && <span className="mt-0.5 block font-mono text-[8px] uppercase tracking-[0.3em] text-accent-gold/70">{meta.tag}</span>}
+                    <span className="mt-1.5 block text-xs text-text-muted leading-relaxed">{meta?.desc}</span>
+                    <span className="mt-2 block font-mono text-[10px] uppercase tracking-widest text-text-muted/50">{count} questions</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <AchievementShelf unlocked={progress.unlocked} />
+
         <p className="text-center font-mono text-[10px] text-text-muted/60 leading-relaxed">
           Screen-share in OBS / StreamYard. Chat calls a letter; you tap it.
           <br className="hidden sm:block" />
           <span className="text-accent-violet">A–D / 1–4</span> select · <span className="text-accent-violet">Space</span> reveal &amp; advance · <span className="text-accent-violet">← →</span> navigate.
         </p>
+
+        <Toasts toasts={toasts} />
       </div>
     );
   }
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
+      <div className="mb-4"><ProgressHud progress={progress} rank={rank} compact /></div>
       <div className="mb-6 flex items-center justify-between gap-3 border-b border-border pb-3">
-        <button onClick={() => { setRoundKey(null); goto(0); }} className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-violet transition-colors">
-          ← Rounds
-        </button>
+        <button onClick={() => { setRoundKey(null); goto(0); }} className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-violet transition-colors">← Rounds</button>
         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet/60">
-          {bank.rounds.find((r) => r.key === roundKey)?.label ?? "The Whole Deck"} · {idx + 1}/{pool.length}
+          {ROUND_META[roundKey]?.name ?? bank.rounds.find((r) => r.key === roundKey)?.label ?? "The Whole Deck"} · {idx + 1}/{pool.length}
         </span>
         <div className="flex items-center gap-2">
-          <button onClick={() => setMuted((m) => !m)} title={muted ? "Unmute" : "Mute"} className="rounded border border-border px-2 py-1 font-mono text-xs text-text-muted hover:border-accent-violet/40 hover:text-accent-violet transition-colors">
-            {muted ? "🔇" : "🔊"}
-          </button>
+          <button onClick={surprise} title="Surprise me" className="rounded border border-border px-2 py-1 font-mono text-xs text-text-muted hover:border-accent-gold/40 hover:text-accent-gold transition-colors">🎲</button>
+          <button onClick={() => setMuted((m) => !m)} title={muted ? "Unmute" : "Mute"} className="rounded border border-border px-2 py-1 font-mono text-xs text-text-muted hover:border-accent-violet/40 hover:text-accent-violet transition-colors">{muted ? "🔇" : "🔊"}</button>
           <button onClick={prev} className="rounded border border-border px-2.5 py-1 font-mono text-xs text-text-muted hover:border-accent-violet/40 hover:text-accent-violet transition-colors">←</button>
           <button onClick={next} className="rounded border border-border px-2.5 py-1 font-mono text-xs text-text-muted hover:border-accent-violet/40 hover:text-accent-violet transition-colors">→</button>
         </div>
       </div>
 
-      {q && (
-        <QuestionCard
-          key={q.id}
-          q={q}
-          revealed={revealed}
-          selected={selected}
-          onChoose={choose}
-          onReveal={reveal}
-          onNext={next}
-        />
-      )}
+      {q && <QuestionCard key={q.id} q={q} revealed={revealed} selected={selected} onChoose={choose} onReveal={reveal} onNext={next} onArchive={onArchive} />}
+      <Toasts toasts={toasts} />
     </div>
   );
 }
 
-function OptionRow({
-  letter, text, onClick, state,
-}: {
-  letter: string; text: string; onClick?: () => void;
-  state: "idle" | "selected" | "correct" | "wrong" | "missed";
-}) {
+function ProgressHud({ progress, rank, compact }: { progress: ProgressState; rank: ReturnType<typeof rankFor>; compact?: boolean }) {
+  return (
+    <div className={`rounded-lg border border-accent-violet/20 bg-surface/60 ${compact ? "px-4 py-2" : "px-5 py-3.5"}`}>
+      <div className="flex items-center justify-between gap-3">
+        <span className="font-display text-sm font-bold text-accent-violet">{rank.name}</span>
+        <span className="font-mono text-[10px] text-text-muted">
+          {progress.xp} XP{rank.next ? ` · ${rank.toNext} to ${rank.next}` : " · max rank"}
+          {progress.streak > 1 && <span className="ml-2 text-accent-gold">🔥 {progress.streak}</span>}
+        </span>
+      </div>
+      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-void">
+        <div className="h-full rounded-full bg-gradient-to-r from-accent-violet to-accent-cyan transition-all duration-500" style={{ width: `${Math.round(rank.progress * 100)}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function AchievementShelf({ unlocked }: { unlocked: string[] }) {
+  const set = new Set(unlocked);
+  return (
+    <div className="rounded-lg border border-border bg-surface/40 p-4">
+      <p className="mb-3 font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/60">{`/// achievements · ${set.size}/${ACHIEVEMENTS.length}`}</p>
+      <div className="flex flex-wrap gap-2">
+        {ACHIEVEMENTS.map((a) => {
+          const got = set.has(a.id);
+          return (
+            <span key={a.id} title={a.hint} className={`rounded border px-2.5 py-1 font-mono text-[10px] transition-all ${got ? "border-accent-gold/40 bg-accent-gold/10 text-accent-gold" : "border-border bg-void text-text-muted/40"}`}>
+              {got ? a.label : "🔒 ???"}
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function Toasts({ toasts }: { toasts: Toast[] }) {
+  if (!toasts.length) return null;
+  return (
+    <div className="pointer-events-none fixed bottom-5 right-5 z-50 flex flex-col gap-2">
+      {toasts.map((t) => (
+        <div key={t.id} className="animate-[fadein_0.3s] rounded-lg border border-accent-gold/40 bg-void/95 px-4 py-2.5 shadow-[0_0_24px_-6px_rgba(200,57,46,0.6)]">
+          <p className="font-display text-sm font-bold text-accent-gold">{t.text}</p>
+          {t.sub && <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted">{t.sub}</p>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function OptionRow({ letter, text, onClick, state }: { letter: string; text: string; onClick?: () => void; state: "idle" | "selected" | "correct" | "wrong" | "missed" }) {
   const cls =
     state === "correct" ? "border-emerald-400/70 bg-emerald-400/10 text-text-primary shadow-[0_0_20px_-4px_rgba(52,211,153,0.5)] scale-[1.01]"
     : state === "wrong" ? "border-red-500/60 bg-red-500/10 text-text-muted animate-[shake_0.4s]"
     : state === "missed" ? "border-emerald-400/40 bg-emerald-400/5 text-text-muted"
     : state === "selected" ? "border-accent-violet/70 bg-accent-violet/10 text-text-primary"
     : "border-border bg-surface text-text-primary hover:border-accent-violet/50 hover:bg-accent-violet/5";
-  const badge =
-    state === "correct" || state === "missed" ? "text-emerald-400"
-    : state === "wrong" ? "text-red-400"
-    : state === "selected" ? "text-accent-violet" : "text-accent-violet/70";
+  const badge = state === "correct" || state === "missed" ? "text-emerald-400" : state === "wrong" ? "text-red-400" : state === "selected" ? "text-accent-violet" : "text-accent-violet/70";
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={!onClick}
-      className={`flex w-full items-start gap-3 rounded-lg border px-4 py-3 text-left transition-all duration-200 ${cls} ${onClick ? "cursor-pointer active:scale-[0.99]" : "cursor-default"}`}
-    >
+    <button type="button" onClick={onClick} disabled={!onClick} className={`flex w-full items-start gap-3 rounded-lg border px-4 py-3 text-left transition-all duration-200 ${cls} ${onClick ? "cursor-pointer active:scale-[0.99]" : "cursor-default"}`}>
       <span className={`font-mono text-sm font-bold ${badge}`}>{letter}</span>
       <span className="text-base sm:text-lg leading-snug">{text}</span>
       {state === "correct" && <span className="ml-auto text-emerald-400">✓</span>}
@@ -244,54 +301,31 @@ function OptionRow({
   );
 }
 
-function QuestionCard({
-  q, revealed, selected, onChoose, onReveal, onNext,
-}: {
-  q: Q; revealed: boolean; selected: number | null;
-  onChoose: (i: number) => void; onReveal: () => void; onNext: () => void;
-}) {
+function QuestionCard({ q, revealed, selected, onChoose, onReveal, onNext, onArchive }: { q: Q; revealed: boolean; selected: number | null; onChoose: (i: number) => void; onReveal: () => void; onNext: () => void; onArchive: () => void }) {
   const mcState = (i: number, answer: number): "idle" | "selected" | "correct" | "wrong" | "missed" => {
     if (!revealed) return selected === i ? "selected" : "idle";
     if (i === answer) return "correct";
     if (i === selected) return "wrong";
     return "idle";
   };
-
-  // Reveal-state backdrop: red only when a wrong pick was locked in; otherwise
-  // the reveal is the celebratory "here's the truth" — green.
   const answerIdx = q.type === "clue" ? -1 : q.answerIndex;
   const wasWrong = revealed && selected != null && selected !== answerIdx && q.type !== "clue";
   const revealArt = revealed ? (wasWrong ? WRONG_ART : CORRECT_ART) : null;
 
   return (
     <div className="relative space-y-6">
-      {revealArt && (
-        <img
-          src={revealArt}
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute -inset-x-8 -inset-y-6 -z-10 h-[calc(100%+3rem)] w-[calc(100%+4rem)] object-cover opacity-[0.14] blur-[1px] animate-[fadein_0.4s]"
-        />
-      )}
+      {revealArt && <img src={revealArt} alt="" aria-hidden className="pointer-events-none absolute -inset-x-8 -inset-y-6 -z-10 h-[calc(100%+3rem)] w-[calc(100%+4rem)] object-cover opacity-[0.14] blur-[1px] animate-[fadein_0.4s]" />}
       <h2 className="font-display text-xl sm:text-2xl font-bold text-text-primary leading-tight">{q.prompt}</h2>
 
       {q.type === "multiple-choice" && (
         <div className="space-y-2.5">
-          {q.options.map((opt, i) => (
-            <OptionRow key={i} letter={LETTERS[i]} text={opt}
-              onClick={revealed ? undefined : () => onChoose(i)}
-              state={mcState(i, q.answerIndex)} />
-          ))}
+          {q.options.map((opt, i) => <OptionRow key={i} letter={LETTERS[i]} text={opt} onClick={revealed ? undefined : () => onChoose(i)} state={mcState(i, q.answerIndex)} />)}
         </div>
       )}
 
       {q.type === "two-truths-lie" && (
         <div className="space-y-2.5">
-          {q.statements.map((s, i) => (
-            <OptionRow key={i} letter={LETTERS[i]} text={s.text}
-              onClick={revealed ? undefined : () => onChoose(i)}
-              state={mcState(i, q.answerIndex)} />
-          ))}
+          {q.statements.map((s, i) => <OptionRow key={i} letter={LETTERS[i]} text={s.text} onClick={revealed ? undefined : () => onChoose(i)} state={mcState(i, q.answerIndex)} />)}
           {revealed && <p className="font-mono text-[11px] uppercase tracking-widest text-red-400">↑ {LETTERS[q.answerIndex]} is the lie</p>}
         </div>
       )}
@@ -314,19 +348,15 @@ function QuestionCard({
 
       {revealed ? (
         <div className={`rounded-lg border p-4 space-y-2 animate-[fadein_0.3s] ${wasWrong ? "border-red-500/30 bg-red-500/5" : "border-emerald-400/25 bg-emerald-400/5"}`}>
-          <p className={`font-mono text-[9px] uppercase tracking-[0.3em] ${wasWrong ? "text-red-400" : "text-emerald-400"}`}>
-            {wasWrong ? "/// the_codex_disagrees" : "/// the_codex_rules"}
-          </p>
+          <p className={`font-mono text-[9px] uppercase tracking-[0.3em] ${wasWrong ? "text-red-400" : "text-emerald-400"}`}>{wasWrong ? "/// the_codex_disagrees" : "/// the_codex_rules"}</p>
           <p className="text-sm text-text-muted leading-relaxed">{q.explain}</p>
           {"sourceHref" in q && q.sourceHref && (
-            <Link href={q.sourceHref} className="inline-block font-mono text-[10px] text-accent-violet hover:underline">
-              See it in the archive →
+            <Link href={q.sourceHref} onClick={onArchive} className="inline-flex items-center gap-1.5 rounded border border-accent-violet/40 bg-accent-violet/10 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-accent-violet hover:bg-accent-violet/20 transition-colors">
+              🗝 Open the archive →
             </Link>
           )}
           <div className="pt-1">
-            <button onClick={onNext} className="rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors">
-              Next question →
-            </button>
+            <button onClick={onNext} className="rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors">Next question →</button>
           </div>
         </div>
       ) : (

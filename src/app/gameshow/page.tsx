@@ -10,43 +10,69 @@ export const metadata: Metadata = {
   alternates: { canonical: "/gameshow" },
   title: "The Panelverse Game Show — CULT CODEX",
   description:
-    "A live game show for the Cult of Psyche audience — 500 questions across eight rounds, drawn from the real archive. Screen-share it and let chat play along.",
+    "How well do you really know the Cult? 500 questions across 8 rounds, every answer hidden inside thousands of hours of real livestream archive. Play now.",
   robots: { index: true, follow: true },
 };
+
+const STATS = [
+  { n: "500", l: "Questions" },
+  { n: "8", l: "Rounds" },
+  { n: "1000s", l: "Archive Moments" },
+  { n: "∞", l: "Replayability" },
+];
 
 export default function GameShowPage() {
   return (
     <main className="min-h-screen bg-void">
-      <section className="relative overflow-hidden border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b border-accent-violet/20 py-16 px-4">
         {HERO_ART && (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={HERO_ART} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-30" />
-            <div className="absolute inset-0 bg-gradient-to-b from-void/70 via-void/60 to-void" />
+            <div className="absolute inset-0 bg-gradient-to-b from-void/75 via-void/70 to-void" />
           </>
         )}
-        <div className="relative mx-auto max-w-3xl text-center space-y-3">
-          <GameShowHero size={92} className="mx-auto text-accent-violet" title="Panelverse Game Show sigil" />
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">
-            {"/// live_play · chat_answers_along"}
-          </p>
-          <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
+        <div className="gs-drift pointer-events-none absolute inset-0 opacity-40" aria-hidden />
+
+        <div className="relative mx-auto max-w-3xl text-center space-y-5">
+          <GameShowHero size={84} className="mx-auto text-accent-violet" title="Panelverse Game Show sigil" />
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">{"/// the_ultimate_cult_trivia_experience"}</p>
+          <h1 className="font-display text-4xl sm:text-5xl font-bold text-text-primary leading-tight">
             The Panelverse Game Show
           </h1>
-          <p className="text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
-            Five hundred questions across eight rounds, every answer pulled from
-            the real Cult of Psyche archive. Pick a round, screen-share it, and
-            let the chat call letters. The Codex keeps score in spirit.
+          <p className="mx-auto max-w-xl text-base text-text-muted leading-relaxed">
+            How well do you <em className="text-accent-gold not-italic font-bold">really</em> know the Cult? Every
+            question comes from a real livestream. Every answer is hidden somewhere inside thousands of hours of chaos.
+            <br className="hidden sm:block" />
+            <span className="text-text-primary font-medium"> Can you survive eight rounds?</span>
           </p>
+
+          <div className="pt-2">
+            <Link
+              href="#rounds"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-8 py-4 font-display text-lg font-bold text-accent-gold hover:bg-accent-gold/25 hover:scale-[1.04] active:scale-[0.98] transition-all shadow-[0_0_32px_-8px_rgba(200,57,46,0.6)]"
+            >
+              ▶ Play Now
+            </Link>
+          </div>
+
+          {/* Stat strip */}
+          <div className="mx-auto grid max-w-lg grid-cols-4 gap-2 pt-6">
+            {STATS.map((s) => (
+              <div key={s.l} className="rounded-lg border border-border bg-surface/50 py-3">
+                <div className="font-display text-xl sm:text-2xl font-bold text-accent-cyan">{s.n}</div>
+                <div className="font-mono text-[8px] sm:text-[9px] uppercase tracking-widest text-text-muted">{s.l}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       <GameShowLoader />
 
       <div className="mx-auto max-w-3xl px-4 pb-12 text-center">
-        <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors">
-          ← The Fun Wing
-        </Link>
+        <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors">← The Fun Wing</Link>
       </div>
     </main>
   );
