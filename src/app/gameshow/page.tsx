@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { GameShow, type GameShowBank } from "@/components/gameshow/game-show";
+import { GameShowHero } from "@/components/gameshow/emblems";
 import bankJson from "@/lib/data/gameshow-questions.json";
 
 const bank = bankJson as unknown as GameShowBank;
@@ -23,6 +24,7 @@ export default function GameShowPage() {
     <main className="min-h-screen bg-void">
       <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
+          <GameShowHero size={92} className="mx-auto text-accent-violet" title="Panelverse Game Show sigil" />
           <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">
             {"/// live_play · chat_answers_along"}
           </p>

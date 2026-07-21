@@ -2,6 +2,16 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { ROUND_EMBLEMS } from "./emblems";
+
+// Per-round accent color (flows into the emblem via currentColor).
+const ROUND_COLOR: Record<string, string> = {
+  "real-or-fake-lore": "text-accent-violet",
+  "two-truths-lie": "text-accent-cyan",
+  "prophecy-or-bogus": "text-accent-gold",
+  "did-psyche-say-it": "text-accent-violet",
+  "codex-cluedo": "text-accent-gold",
+};
 
 type MC = {
   id: string; round: string; type: "multiple-choice";
@@ -55,13 +65,16 @@ export function GameShow({ bank }: { bank: GameShowBank }) {
         <div className="grid gap-3 sm:grid-cols-2">
           {bank.rounds.map((r) => {
             const count = bank.questions.filter((x) => x.round === r.key).length;
+            const Emblem = ROUND_EMBLEMS[r.key];
             return (
               <button
                 key={r.key}
                 onClick={() => { setRoundKey(r.key); setIdx(0); setRevealed(false); }}
                 className="group flex items-center gap-4 rounded-lg border border-accent-violet/25 bg-surface p-5 text-left hover:border-accent-violet/60 hover:bg-accent-violet/5 transition-all"
               >
-                <span className="text-3xl" aria-hidden>{r.icon}</span>
+                {Emblem
+                  ? <Emblem size={44} className={`flex-shrink-0 ${ROUND_COLOR[r.key] ?? "text-accent-violet"}`} />
+                  : <span className="text-3xl" aria-hidden>{r.icon}</span>}
                 <span>
                   <span className="block font-display text-lg font-bold text-text-primary group-hover:text-accent-violet transition-colors">{r.label}</span>
                   <span className="block font-mono text-[10px] uppercase tracking-widest text-text-muted/60">{count} questions</span>
