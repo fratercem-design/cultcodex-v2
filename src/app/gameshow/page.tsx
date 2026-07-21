@@ -10,13 +10,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/gameshow" },
   title: "The Panelverse Game Show — CULT CODEX",
   description:
-    "How well do you really know the Cult? 500 questions across 8 rounds, every answer hidden inside thousands of hours of real livestream archive. Play now.",
+    "How well do you really know the Cult? 1,000 questions across 11 rounds, every answer hidden inside thousands of hours of real livestream archive. Play now.",
   robots: { index: true, follow: true },
 };
 
 const STATS = [
-  { n: "500", l: "Questions" },
-  { n: "8", l: "Rounds" },
+  { n: "1000", l: "Questions" },
+  { n: "11", l: "Rounds" },
   { n: "1000s", l: "Archive Moments" },
   { n: "∞", l: "Replayability" },
 ];
@@ -45,7 +45,7 @@ export default function GameShowPage() {
             How well do you <em className="text-accent-gold not-italic font-bold">really</em> know the Cult? Every
             question comes from a real livestream. Every answer is hidden somewhere inside thousands of hours of chaos.
             <br className="hidden sm:block" />
-            <span className="text-text-primary font-medium"> Can you survive eight rounds?</span>
+            <span className="text-text-primary font-medium"> Can you survive eleven rounds?</span>
           </p>
 
           <div className="pt-2">
