@@ -8,6 +8,7 @@ import {
   ROUND_META, ACHIEVEMENTS, type Achievement, type ProgressState,
   load as loadProgress, rankFor, recordAnswer, recordArchiveClick,
 } from "./progression";
+import { SparkBurst } from "./fx";
 import bankJson from "@/lib/data/gameshow-questions.json";
 
 const ROUND_COLOR: Record<string, string> = {
@@ -78,6 +79,7 @@ export function GameShow() {
   const [muted, setMuted] = useState(false);
   const [progress, setProgress] = useState<ProgressState>(() => ({ xp: 0, correct: 0, streak: 0, bestStreak: 0, archiveClicks: 0, byRound: {}, unlocked: [] }));
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [burst, setBurst] = useState<{ n: number; variant: "correct" | "wrong" | "gold" }>({ n: 0, variant: "correct" });
   const toastId = useRef(0);
   const sound = useSound();
 
@@ -107,11 +109,13 @@ export function GameShow() {
     const isCorrect = q.type !== "clue" && selected != null && selected === answer;
     const isWrong = q.type !== "clue" && selected != null && selected !== answer;
     if (isCorrect) sound.correct(); else if (isWrong) sound.wrong(); else sound.correct();
+    // Effects burst — green shower on correct/host-reveal, red on a wrong pick.
+    setBurst((b) => ({ n: b.n + 1, variant: isWrong ? "wrong" : "correct" }));
     // Progression only counts when the player actually locked in a pick.
     if (selected != null && q.type !== "clue") {
       const res = recordAnswer(q.round, isCorrect);
       setProgress(res.state);
-      if (res.rankedUp) { sound.levelup(); pushToast(`⬆ Rank up — ${res.rankedUp}`, "The Codex takes notice."); }
+      if (res.rankedUp) { sound.levelup(); setBurst((b) => ({ n: b.n + 1, variant: "gold" })); pushToast(`⬆ Rank up — ${res.rankedUp}`, "The Codex takes notice."); }
       res.newAchievements.forEach((a: Achievement) => pushToast(a.label, "Achievement unlocked"));
     }
   }, [revealed, q, selected, sound, pushToast]);
@@ -229,6 +233,7 @@ export function GameShow() {
 
       {q && <QuestionCard key={q.id} q={q} revealed={revealed} selected={selected} onChoose={choose} onReveal={reveal} onNext={next} onArchive={onArchive} />}
       <Toasts toasts={toasts} />
+      <SparkBurst trigger={burst.n} variant={burst.variant} />
     </div>
   );
 }
@@ -313,7 +318,7 @@ function QuestionCard({ q, revealed, selected, onChoose, onReveal, onNext, onArc
   const revealArt = revealed ? (wasWrong ? WRONG_ART : CORRECT_ART) : null;
 
   return (
-    <div className="relative space-y-6">
+    <div className="relative space-y-6 animate-[cardin_0.35s_ease-out]">
       {revealArt && <img src={revealArt} alt="" aria-hidden className="pointer-events-none absolute -inset-x-8 -inset-y-6 -z-10 h-[calc(100%+3rem)] w-[calc(100%+4rem)] object-cover opacity-[0.14] blur-[1px] animate-[fadein_0.4s]" />}
       <h2 className="font-display text-xl sm:text-2xl font-bold text-text-primary leading-tight">{q.prompt}</h2>
 

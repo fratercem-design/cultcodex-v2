@@ -1023,3 +1023,16 @@ html.high-contrast body::before {
   to   { background-position: 0 600px, 0 -600px, 0 600px, 0 -600px, 0 0; }
 }
 @media (prefers-reduced-motion: reduce) { .gs-drift { animation: none; } }
+
+/* Panelverse Game Show — card entrance + emblem pulse */
+@keyframes cardin {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes gs-pulse {
+  0%, 100% { filter: drop-shadow(0 0 2px currentColor); }
+  50%      { filter: drop-shadow(0 0 8px currentColor); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-\[cardin_0\.35s_ease-out\] { animation: none !important; }
+}
