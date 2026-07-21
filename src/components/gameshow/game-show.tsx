@@ -22,9 +22,12 @@ const ROUND_COLOR: Record<string, string> = {
   "troll-or-not": "text-accent-cyan",
   "who-is-it": "text-accent-violet",
   "general-trivia": "text-accent-gold",
+  "guess-the-episode": "text-accent-cyan",
+  "real-title": "text-accent-gold",
+  "finish-the-lore": "text-accent-violet",
 };
 
-type MC = { id: string; round: string; type: "multiple-choice"; prompt: string; options: string[]; answerIndex: number; explain: string; sourceHref?: string };
+type MC = { id: string; round: string; type: "multiple-choice"; prompt: string; options: string[]; answerIndex: number; explain: string; sourceHref?: string; image?: string };
 type TTL = { id: string; round: string; type: "two-truths-lie"; prompt: string; statements: { text: string; real: boolean; slug?: string }[]; answerIndex: number; explain: string };
 type Clue = { id: string; round: string; type: "clue"; prompt: string; suspects: string[]; locations: string[]; artifacts: string[]; solution: { suspect: string; location: string; artifact: string }; explain: string };
 type Q = MC | TTL | Clue;
@@ -369,6 +372,12 @@ function QuestionCard({ q, revealed, selected, onChoose, onReveal, onNext, onArc
     <div className="relative space-y-6 animate-[cardin_0.35s_ease-out]">
       {revealArt && <img src={revealArt} alt="" aria-hidden className="pointer-events-none absolute -inset-x-8 -inset-y-6 -z-10 h-[calc(100%+3rem)] w-[calc(100%+4rem)] object-cover opacity-[0.14] blur-[1px] animate-[fadein_0.4s]" />}
       <h2 className="font-display text-xl sm:text-2xl font-bold text-text-primary leading-tight">{q.prompt}</h2>
+      {"image" in q && q.image && (
+        <div className="mx-auto max-w-xl overflow-hidden rounded-lg border border-accent-violet/30 shadow-[0_0_30px_-10px_rgba(74,45,110,0.8)]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={q.image} alt="Episode thumbnail clue" className="w-full object-cover" loading="lazy" />
+        </div>
+      )}
 
       {q.type === "multiple-choice" && (
         <div className="space-y-2.5">

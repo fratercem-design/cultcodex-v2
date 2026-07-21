@@ -1,13 +1,12 @@
 /**
- * Panelverse Game Show bank — 500 questions, 8 rounds, no duplicate answers.
- * Real content from prod (scripts/_gs3.json); decoys combinatorial+authored.
- * Every real answer used at most once; every decoy least-used-first under a
- * hard cap; the final audit throws if any option repeats too often or a decoy
- * collides with a real answer.
+ * Panelverse Game Show bank — 1000 questions, 11 rounds, no duplicate answers.
+ * Real content from prod (scripts/_gs4.json) + combinatorial decoys. Funnier,
+ * more absurd, with multimedia (episode-thumbnail) rounds and inside jokes.
  */
 import { readFileSync, writeFileSync } from "fs";
 
 type Lore = { title: string; slug: string; summary: string | null };
+type Ep = { title: string; slug: string; thumbnailUrl: string };
 type Raw = {
   humor: (Lore & { category: string })[];
   prophecies: Lore[];
@@ -17,10 +16,11 @@ type Raw = {
   artifacts: { title: string; slug: string }[];
   troll: (Lore & { canonStatus: string })[];
   people: { displayName: string; slug: string; shortBio: string | null; loreSummary: string | null; personType: string }[];
+  episodes: Ep[];
 };
-const raw: Raw = JSON.parse(readFileSync("scripts/_gs3.json", "utf8"));
+const raw: Raw = JSON.parse(readFileSync("scripts/_gs4.json", "utf8"));
 
-let _s = 424242;
+let _s = 90210;
 const rnd = () => { _s = (_s * 1103515245 + 12345) & 0x7fffffff; return _s / 0x7fffffff; };
 const shuffle = <T,>(a: T[]): T[] => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
 const pick = <T,>(a: T[], n: number): T[] => shuffle(a).slice(0, n);
@@ -49,28 +49,27 @@ for (const c of C) for (const d of D) FAKE_LORE.push(`${c} ${d}`);
 
 const E = ["Found Remote", "Unsent Text", "Correct Timeline", "Last Software Update", "Refilled Cup", "Snooze Button", "Quiet Group Chat", "Full Battery", "Green Traffic Light", "Matching Sock", "Cleared Notification", "Parked Car", "Unspoken Password", "Reversed Escalator", "Final Buffering", "Warm Leftover", "Answered Email", "Located Charger", "Silent Phone", "Empty Inbox"];
 const F = ["The Prophecy of the", "The Great", "The Coming of the", "The Return of the", "The Awakening of the", "The Fall of the"];
-const FAKE_PROPHECY: string[] = [];
-for (const f of F) for (const e of E) FAKE_PROPHECY.push(`${f} ${e}`);
+const FAKE_PROPHECY: string[] = []; for (const f of F) for (const e of E) FAKE_PROPHECY.push(`${f} ${e}`);
 
-// Fake troll-lore titles
 const TA = ["The Sock Puppet", "The Bridge", "The Basement", "The Discount", "The Off-Brand", "The Knockoff", "The Part-Time", "The Freelance", "The Corporate", "The Retired", "The Wholesale", "The Seasonal", "The Certified", "The Amateur", "The Regional"];
 const TB = ["Troll Militia", "Troll Union", "Troll Bracket", "Troll Cartel", "Troll Franchise", "Troll Syndicate", "Troll Chapter", "Troll Guild", "Troll Roster", "Troll Draft", "Troll Committee", "Troll Ledger", "Troll Bloodline", "Troll Rebrand", "Troll Onboarding"];
-const FAKE_TROLL: string[] = [];
-for (const a of TA) for (const b of TB) FAKE_TROLL.push(`${a} ${b}`);
+const FAKE_TROLL: string[] = []; for (const a of TA) for (const b of TB) FAKE_TROLL.push(`${a} ${b}`);
 
-// Fake person names (for Cluedo suspects + who-is-it decoys are REAL people; suspects fakes here)
 const FN = ["Marlo", "Dax", "Corwin", "Silas", "Bram", "Odette", "Vesper", "Cassian", "Lorne", "Thessaly", "Renfield", "Dorian", "Mireille", "Gideon", "Calliope", "Barnaby", "Isolde", "Rufus", "Perpetua", "Constantine"];
 const LN = ["Vane", "Crowe", "Ashdown", "Blackwood", "Mourne", "Sable", "Thorne", "Grimsby", "Ravensworth", "Nightingale", "Holloway", "Vex", "Marrow", "Cinder", "Hemlock"];
-const FAKE_PEOPLE: string[] = [];
-for (const f of FN) for (const l of LN) FAKE_PEOPLE.push(`${f} ${l}`);
+const FAKE_PEOPLE: string[] = []; for (const f of FN) for (const l of LN) FAKE_PEOPLE.push(`${f} ${l}`);
 
-// Fake locations / artifacts
 const LOC1 = ["The Hollow", "The Drowned", "The Whispering", "The Forgotten", "The Burning", "The Frozen", "The Endless", "The Sunken", "The Hidden", "The Screaming", "The Gilded", "The Shattered"];
 const LOC2 = ["Atrium", "Reliquary", "Concourse", "Undercroft", "Rookery", "Vestibule", "Causeway", "Aviary", "Catacomb", "Belfry", "Solarium", "Threshold"];
 const FAKE_LOC: string[] = []; for (const a of LOC1) for (const b of LOC2) FAKE_LOC.push(`${a} ${b}`);
 const ART1 = ["The Cracked", "The Weeping", "The Humming", "The Inverted", "The Borrowed", "The Unfinished", "The Counterfeit", "The Sealed", "The Melted", "The Whispering", "The Gilded", "The Forbidden"];
 const ART2 = ["Astrolabe", "Reliquary Box", "Hex Ledger", "Bone Flute", "Wax Cylinder", "Sigil Coin", "Tarot Fragment", "Oracle Bell", "Ash Vial", "Iron Key", "Salt Compass", "Mirror Shard"];
 const FAKE_ART: string[] = []; for (const a of ART1) for (const b of ART2) FAKE_ART.push(`${a} ${b}`);
+
+// Fake ABSURD episode titles (combinatorial) — for the "real title?" round.
+const EP_OPEN = ["I Can't Believe", "Why Is", "The Night", "URGENT:", "Confessions of", "My", "The Great", "Live:", "Nobody Tell", "Apology for", "The Return of", "Breaking:"];
+const EP_BODY = ["the Toaster Confessed", "a Goose Ran the Panel", "I Married the WiFi", "the Moon Called Collect", "My Plant Testified", "Everyone Turned Into Bees", "the Cat Filed a Lawsuit", "the Fridge Started Preaching", "a Ghost Left a Yelp Review", "the Printer Achieved Enlightenment", "My Roomba Joined a Cult", "the Sun Got Cancelled", "a Pigeon Demanded Rent", "the Group Chat Became Sentient", "My Aura Got Repossessed", "the Candle Unionized", "a Demon Missed the Meeting", "the Tarot Deck Called in Sick", "My Shadow Got a Restraining Order", "the Vibe Filed for Divorce"];
+const FAKE_EP: string[] = []; for (const o of EP_OPEN) for (const b of EP_BODY) FAKE_EP.push(`${o} ${b}`);
 
 const FAKE_QUOTES = [
   "I have never once been wrong, and I have the receipts in a drawer I refuse to open.",
@@ -95,140 +94,129 @@ const FAKE_QUOTES = [
   "Haters are just unpaid interns in my legacy.",
 ];
 
-// ── General trivia (authored, definite answers) ──
-type Triv = { q: string; opts: string[]; a: number; ex: string };
-const TRIVIA: Triv[] = [
-  { q: "How many cards are in a standard tarot deck?", opts: ["78", "52", "72", "64"], a: 0, ex: "A tarot deck has 78 cards: 22 Major Arcana + 56 Minor Arcana." },
-  { q: "How many cards make up the Major Arcana?", opts: ["22", "16", "21", "12"], a: 0, ex: "The Major Arcana runs from 0 (The Fool) to XXI (The World) — 22 cards." },
-  { q: "Which tarot card is numbered 0?", opts: ["The Fool", "The Magician", "The World", "Death"], a: 0, ex: "The Fool is card 0, beginning the Major Arcana's journey." },
-  { q: "Which planet rules the sign Scorpio in modern astrology?", opts: ["Pluto", "Mars", "Saturn", "Venus"], a: 0, ex: "Modern astrology assigns Pluto to Scorpio (Mars is its traditional ruler)." },
-  { q: "How many signs are in the Western zodiac?", opts: ["12", "10", "13", "8"], a: 0, ex: "Twelve zodiac signs, one per ~30° of the ecliptic." },
-  { q: "What are the four suits of the tarot's Minor Arcana?", opts: ["Wands, Cups, Swords, Pentacles", "Hearts, Clubs, Spades, Diamonds", "Fire, Water, Air, Earth", "Rods, Bowls, Blades, Coins"], a: 0, ex: "Wands, Cups, Swords, and Pentacles (a.k.a. Coins)." },
-  { q: "Which element is traditionally associated with the suit of Cups?", opts: ["Water", "Fire", "Air", "Earth"], a: 0, ex: "Cups map to Water — emotion, intuition, relationships." },
-  { q: "The 'Hermetic' tradition takes its name from which figure?", opts: ["Hermes Trismegistus", "Hermes of Olympus", "Saint Hermas", "Herminius"], a: 0, ex: "Hermes Trismegistus, the legendary author of the Hermetic texts." },
-  { q: "\"As above, so below\" comes from which text?", opts: ["The Emerald Tablet", "The Book of Thoth", "The Kybalion", "The Necronomicon"], a: 0, ex: "The maxim is from the Emerald Tablet of Hermes Trismegistus." },
-  { q: "How many spheres (Sephirot) are on the Kabbalistic Tree of Life?", opts: ["10", "7", "12", "22"], a: 0, ex: "Ten Sephirot, connected by 22 paths." },
-  { q: "Which tarot card traditionally depicts a figure hanging upside-down?", opts: ["The Hanged Man", "The Tower", "The Devil", "Judgement"], a: 0, ex: "The Hanged Man (XII) — suspension, surrender, new perspective." },
-  { q: "In numerology, which number is often called the 'master number' of intuition?", opts: ["11", "7", "3", "9"], a: 0, ex: "11 is a master number linked to intuition and insight." },
-  { q: "Which zodiac sign is symbolized by the scales?", opts: ["Libra", "Virgo", "Gemini", "Aquarius"], a: 0, ex: "Libra, the scales — balance and justice." },
-  { q: "The planet Mercury rules which pair of zodiac signs?", opts: ["Gemini and Virgo", "Taurus and Libra", "Aries and Scorpio", "Cancer and Leo"], a: 0, ex: "Mercury rules both Gemini and Virgo." },
-  { q: "What is a group of witches traditionally called?", opts: ["A coven", "A circle", "A conclave", "A congregation"], a: 0, ex: "A coven — classically said to number thirteen." },
-  { q: "Which crystal is most commonly associated with amplifying energy and clarity?", opts: ["Clear quartz", "Obsidian", "Turquoise", "Jade"], a: 0, ex: "Clear quartz — the 'master healer', prized for amplification." },
-  { q: "The pentagram with a single point upward traditionally represents what?", opts: ["Spirit over the four elements", "The five wounds", "The five senses only", "Chaos"], a: 0, ex: "Point-up: spirit presiding over earth, air, fire, and water." },
-  { q: "Which tarot suit corresponds to the element of Fire?", opts: ["Wands", "Swords", "Cups", "Pentacles"], a: 0, ex: "Wands — Fire: drive, creativity, will." },
-  { q: "'Mercury retrograde' refers to Mercury appearing to do what?", opts: ["Move backward across the sky", "Disappear entirely", "Turn red", "Collide with the Moon"], a: 0, ex: "An apparent backward (retrograde) motion from Earth's vantage." },
-  { q: "Which Major Arcana card is numbered XIII?", opts: ["Death", "The Tower", "Temperance", "The Devil"], a: 0, ex: "XIII is Death — endings and transformation, rarely literal." },
-  { q: "The 'third eye' chakra is located where?", opts: ["Between the eyebrows", "At the throat", "At the crown", "At the heart"], a: 0, ex: "Ajna, the brow chakra, sits between the eyebrows." },
-  { q: "How many chakras are there in the common Western system?", opts: ["7", "5", "9", "12"], a: 0, ex: "Seven main chakras from root to crown." },
-  { q: "Which sign is represented by the twins?", opts: ["Gemini", "Pisces", "Aries", "Cancer"], a: 0, ex: "Gemini, the twins — duality and communication." },
-  { q: "A 'grimoire' is a book of what?", opts: ["Magic spells and rituals", "Dream interpretations only", "Saints' lives", "Astronomical tables"], a: 0, ex: "A grimoire is a textbook of magic — spells, invocations, correspondences." },
-  { q: "Which oracle of ancient Greece was dedicated to Apollo?", opts: ["Delphi", "Dodona", "Siwa", "Cumae"], a: 0, ex: "The Oracle at Delphi, home of the Pythia." },
-  { q: "In tarot, an upright card versus a reversed card differs by what?", opts: ["Its orientation when drawn", "Its color", "Its number", "Its suit"], a: 0, ex: "Reversed = drawn upside-down, often shifting the meaning." },
-  { q: "Which metal is alchemically associated with the Moon?", opts: ["Silver", "Gold", "Iron", "Copper"], a: 0, ex: "Silver ↔ Moon; gold ↔ Sun in classical alchemy." },
-  { q: "The word 'zodiac' derives from a Greek term meaning what?", opts: ["Circle of little animals", "Path of the sun", "Ring of stars", "Wheel of fate"], a: 0, ex: "From 'zodiakos kyklos' — circle of little animals/figures." },
-  { q: "Which card traditionally represents sudden upheaval and shock?", opts: ["The Tower", "The Star", "The Sun", "The Hermit"], a: 0, ex: "The Tower (XVI) — sudden, destructive revelation." },
-  { q: "Ophiuchus, sometimes called the '13th sign', represents what?", opts: ["The serpent-bearer", "The scorpion", "The archer", "The ram"], a: 0, ex: "Ophiuchus, the serpent-bearer, straddles the ecliptic near Scorpius." },
-  { q: "What is scrying?", opts: ["Divination by gazing into a surface", "Reading tea leaves", "Casting runes", "Palm reading"], a: 0, ex: "Scrying — seeking visions in a crystal ball, mirror, or water." },
-  { q: "Which classical element is associated with the suit of Swords?", opts: ["Air", "Fire", "Water", "Earth"], a: 0, ex: "Swords ↔ Air: intellect, conflict, truth." },
-  { q: "The Wheel of the Year marks how many major seasonal festivals (sabbats)?", opts: ["8", "4", "12", "6"], a: 0, ex: "Eight sabbats: solstices, equinoxes, and the four cross-quarter days." },
-  { q: "Which sign is ruled by the Sun?", opts: ["Leo", "Cancer", "Aries", "Sagittarius"], a: 0, ex: "Leo is the Sun's domicile." },
-  { q: "Which sign is ruled by the Moon?", opts: ["Cancer", "Leo", "Taurus", "Pisces"], a: 0, ex: "Cancer is ruled by the Moon." },
-  { q: "A 'sigil' in magic is best described as what?", opts: ["A symbol charged with intent", "A spoken chant", "A protective circle", "A sacred number"], a: 0, ex: "A sigil is a designed symbol encoding a desire or entity." },
-  { q: "The tarot card The Lovers is most associated with which theme?", opts: ["Choice and union", "Death and rebirth", "Wealth", "Travel"], a: 0, ex: "The Lovers (VI) — relationships, values, and pivotal choice." },
-  { q: "Which is a traditional tool on a witch's altar for the element Earth?", opts: ["A pentacle or salt", "A candle", "A wand", "A chalice"], a: 0, ex: "The pentacle (and salt) represent Earth on the altar." },
-  { q: "'Tarot' most likely originated in the 15th century in which country?", opts: ["Italy", "Egypt", "France", "England"], a: 0, ex: "Tarot began as Italian playing cards (tarocchi) in the 1400s." },
-  { q: "Which planet is traditionally associated with discipline and limitation?", opts: ["Saturn", "Jupiter", "Venus", "Mercury"], a: 0, ex: "Saturn — structure, boundaries, hard lessons." },
-  { q: "Which planet is associated with expansion and luck?", opts: ["Jupiter", "Mars", "Saturn", "Neptune"], a: 0, ex: "Jupiter — growth, abundance, fortune." },
-  { q: "In palmistry, the 'heart line' primarily reveals what?", opts: ["Emotional life", "Lifespan", "Career", "Intelligence"], a: 0, ex: "The heart line is read for matters of emotion and love." },
-  { q: "The ouroboros depicts a serpent doing what?", opts: ["Eating its own tail", "Coiled around a tree", "Swallowing the sun", "Shedding its skin"], a: 0, ex: "Ouroboros — a serpent eating its tail: eternal cycles." },
-  { q: "Which Major Arcana card is numbered XXI, the final one?", opts: ["The World", "The Sun", "Judgement", "The Star"], a: 0, ex: "The World (XXI) completes the Major Arcana." },
-  { q: "Runes are the letters of which historical alphabet family?", opts: ["Futhark", "Ogham", "Cyrillic", "Coptic"], a: 0, ex: "The runic alphabets are known collectively as Futhark." },
-  { q: "Which incense is classically burned for protection and cleansing?", opts: ["Sage", "Cinnamon", "Rose", "Vanilla"], a: 0, ex: "Sage (smudging) is the classic cleansing/protection herb." },
-  { q: "The 'astral plane' in occult thought refers to what?", opts: ["A non-physical realm of travel and spirits", "The night sky", "A star map", "The subconscious brainstem"], a: 0, ex: "The astral plane — a subtle realm reached in projection." },
-  { q: "Which zodiac sign is symbolized by the water-bearer?", opts: ["Aquarius", "Pisces", "Cancer", "Capricorn"], a: 0, ex: "Aquarius — the water-bearer (an air sign, confusingly)." },
-  { q: "How many court cards are in each tarot suit?", opts: ["4", "3", "5", "2"], a: 0, ex: "Four: Page, Knight, Queen, King." },
-  { q: "The phrase 'occult' literally means what?", opts: ["Hidden", "Evil", "Ancient", "Forbidden"], a: 0, ex: "From Latin 'occultus' — hidden or concealed knowledge." },
-];
+const TRIVIA: { q: string; opts: string[]; a: number; ex: string }[] = JSON.parse(readFileSync("scripts/gameshow-trivia.json", "utf8"));
+
+// Fake completion words for finish-the-lore (funny nouns).
+const FILL_FAKE = ["Yoga", "Karaoke", "Refund", "Brunch", "Podcast", "Timeshare", "Subpoena", "Casserole", "Rebrand", "Playlist", "Coupon", "Zamboni", "Onboarding", "Smoothie", "Firmware", "Pilates", "Bake Sale", "Tax Audit", "Group Project", "Loyalty Program", "Warranty", "Hotline", "Rerun", "Sequel", "Merger", "Reunion Tour", "Focus Group", "Waitlist"];
 
 let id = 0;
-const nid = () => `q${String(++id).padStart(3, "0")}`;
+const nid = () => `q${String(++id).padStart(4, "0")}`;
 const questions: unknown[] = [];
-const mc = (round: string, prompt: string, real: string, decoys: string[], explain: string, sourceHref?: string, wrap = (s: string) => s) => {
+const mc = (round: string, prompt: string, real: string, decoys: string[], explain: string, sourceHref?: string, wrap = (s: string) => s, image?: string) => {
   const opts = shuffle([{ t: real, real: true }, ...decoys.map((d) => ({ t: d, real: false }))]);
-  questions.push({ id: nid(), round, type: "multiple-choice", prompt, options: opts.map((o) => wrap(o.t)), answerIndex: opts.findIndex((o) => o.real), explain, sourceHref });
+  questions.push({ id: nid(), round, type: "multiple-choice", prompt, options: opts.map((o) => wrap(o.t)), answerIndex: opts.findIndex((o) => o.real), explain, sourceHref, ...(image ? { image } : {}) });
 };
 
-// R1 Real or Fake: Lore (90)
+// R1 Real or Fake: Lore (130 — cycle reals up to MAX_USE)
 const loreS = shuffle(raw.humor);
-for (let i = 0; i < 90; i++) { const r = loreS[i]; bump(r.title); mc("real-or-fake-lore", "Three are made up. One is genuine Cult of Psyche lore. Which is REAL?", r.title, drawDecoys(FAKE_LORE, 3, new Set([r.title])), `"${r.title}" is real lore${r.summary ? ` — ${r.summary}` : ""}.`, `/lore/${r.slug}`); }
+for (let i = 0; i < 130; i++) { const r = loreS[i % loreS.length]; if (uses(r.title) >= MAX_USE) continue; bump(r.title); mc("real-or-fake-lore", "Three are made up. One is genuine Cult of Psyche lore. Which is REAL?", r.title, drawDecoys(FAKE_LORE, 3, new Set([r.title])), `"${r.title}" is real lore${r.summary ? ` — ${r.summary}` : ""}.`, `/lore/${r.slug}`); }
 
-// R2 Two Truths & a Lie (50)
-const LIE_SUBJ = ["all Tuesdays", "every ghost", "the panel", "each prophecy", "the third eye", "every curse", "the tarot deck", "each séance", "the astral plane", "every demon", "the moon", "each aura", "every shadow", "the crystal ball", "each tarot reader"];
-const LIE_PRED = ["must be renewed annually at the DMV", "are legally cancelled during retrograde", "require parking validation to proceed", "come with a 30-day money-back guarantee", "must carry liability insurance", "expire if left in a hot car", "are contractually obligated to appear in reruns", "must file a change-of-address form", "charge a checked-bag fee", "vote each night on whether gravity applies", "take weekends off after unionizing", "must be tipped 20 percent or they leave", "need a signed permission slip from the moon", "are subject to a self-cleaning aura patent", "get put on hold with the ancestors"];
-const LIES: string[] = []; for (const s of LIE_SUBJ) for (const p of LIE_PRED) LIES.push(`The archive rules that ${s} ${p}.`);
+// R2 Two Truths & a Lie (70)
+const LIE_S = ["all Tuesdays", "every ghost", "the panel", "each prophecy", "the third eye", "every curse", "the tarot deck", "each séance", "the astral plane", "every demon", "the moon", "each aura", "every shadow", "the crystal ball", "each tarot reader"];
+const LIE_P = ["must be renewed annually at the DMV", "are legally cancelled during retrograde", "require parking validation to proceed", "come with a 30-day money-back guarantee", "must carry liability insurance", "expire if left in a hot car", "are contractually obligated to appear in reruns", "must file a change-of-address form", "charge a checked-bag fee", "vote each night on whether gravity applies", "take weekends off after unionizing", "must be tipped 20 percent or they leave", "need a signed permission slip from the moon", "are subject to a self-cleaning aura patent", "get put on hold with the ancestors"];
+const LIES: string[] = []; for (const s of LIE_S) for (const p of LIE_P) LIES.push(`The archive rules that ${s} ${p}.`);
 const liePool = shuffle(LIES);
-const loreTTL = shuffle(raw.humor).filter((h) => h.summary && h.summary.length > 20).slice(90, 90 + 110);
-for (let i = 0; i < 50; i++) {
-  const a = loreTTL[i * 2], b = loreTTL[i * 2 + 1]; bump(a.title); bump(b.title);
-  const lie = liePool[i]; bump(lie);
+const loreTTL = shuffle(raw.humor.filter((h) => h.summary && h.summary.length > 20));
+for (let i = 0; i < 70; i++) {
+  const a = loreTTL[(i * 2) % loreTTL.length], b = loreTTL[(i * 2 + 1) % loreTTL.length];
+  if (uses(a.title) >= MAX_USE || uses(b.title) >= MAX_USE || a.slug === b.slug) continue;
+  bump(a.title); bump(b.title); const lie = liePool[i]; bump(lie);
   const stmts = shuffle([{ text: `"${a.title}" is real lore: ${a.summary}`, real: true, slug: a.slug }, { text: `"${b.title}" is real lore: ${b.summary}`, real: true, slug: b.slug }, { text: lie, real: false }]);
   questions.push({ id: nid(), round: "two-truths-lie", type: "two-truths-lie", prompt: "Two are real Cult of Psyche lore. One is a lie. Spot the LIE.", statements: stmts, answerIndex: stmts.findIndex((s) => !s.real), explain: "The lie is the invented one; the other two are genuine archive entries." });
 }
 
-// R3 Prophecy or Bogus (50)
+// R3 Prophecy or Bogus (60)
 const prophS = shuffle(raw.prophecies);
-for (let i = 0; i < 50; i++) { const r = prophS[i]; bump(r.title); mc("prophecy-or-bogus", "One prophecy is really on the Ledger. The rest we made up. Which is REAL?", r.title, drawDecoys(FAKE_PROPHECY, 3, new Set([r.title])), `"${r.title}" is a real recorded prophecy${r.summary ? ` — ${r.summary}` : ""}.`, `/lore/${r.slug}`); }
+for (let i = 0; i < 60; i++) { const r = prophS[i % prophS.length]; if (uses(r.title) >= MAX_USE) continue; bump(r.title); mc("prophecy-or-bogus", "One prophecy is really on the Ledger. The rest we made up. Which is REAL?", r.title, drawDecoys(FAKE_PROPHECY, 3, new Set([r.title])), `"${r.title}" is a real recorded prophecy${r.summary ? ` — ${r.summary}` : ""}.`, `/lore/${r.slug}`); }
 
-// R4 Did Psyche Say It? (50)
-const psyQ = shuffle(raw.quotes.filter((q) => q.speaker.displayName === "Psyche")).slice(0, 50);
+// R4 Did Psyche Say It? (90)
+const psyQ = shuffle(raw.quotes.filter((q) => q.speaker.displayName === "Psyche"));
 const notPsyche = raw.quotes.filter((q) => q.speaker.displayName !== "Psyche").map((q) => q.text);
-const qDecoy = [...FAKE_QUOTES, ...shuffle(notPsyche).slice(0, 160)];
-for (let i = 0; i < 50; i++) { const r = psyQ[i]; bump(r.text); mc("did-psyche-say-it", "Psyche really said ONE of these on the show. The others we invented. Which is REAL?", r.text, drawDecoys(qDecoy, 3, new Set([r.text])), r.episode ? `He said it on "${r.episode.title}".` : "Straight from the transcript.", r.episode ? `/episodes/${r.episode.slug}` : undefined, (s) => `"${s}"`); }
+const qDecoy = [...FAKE_QUOTES, ...shuffle(notPsyche).slice(0, 300)];
+for (let i = 0; i < 90; i++) { const r = psyQ[i % psyQ.length]; if (uses(r.text) >= MAX_USE) continue; bump(r.text); mc("did-psyche-say-it", "Psyche really said ONE of these on the show. The others we invented. Which is REAL?", r.text, drawDecoys(qDecoy, 3, new Set([r.text])), r.episode ? `He said it on "${r.episode.title}".` : "Straight from the transcript.", r.episode ? `/episodes/${r.episode.slug}` : undefined, (s) => `"${s}"`); }
 
-// R5 Codex Cluedo — FIXED: each column has one REAL answer among fakes; solution = the reals.
+// R5 Codex Cluedo (60)
 const castReal = shuffle(raw.cast); const locReal = shuffle(raw.locations.map((l) => l.title)); const artReal = shuffle(raw.artifacts.map((a) => a.title));
-for (let i = 0; i < 50; i++) {
-  const s = castReal[i]; bump(s); const l = locReal[i]; bump(l); const a = artReal[i]; bump(a);
+for (let i = 0; i < 60; i++) {
+  const s = castReal[i % castReal.length], l = locReal[i % locReal.length], a = artReal[i % artReal.length];
+  if (uses(s) >= MAX_USE || uses(l) >= MAX_USE || uses(a) >= MAX_USE) continue;
+  bump(s); bump(l); bump(a);
   const sPool = shuffle([s, ...drawDecoys(FAKE_PEOPLE, 3, new Set([s]))]);
   const lPool = shuffle([l, ...drawDecoys(FAKE_LOC, 3, new Set([l]))]);
   const aPool = shuffle([a, ...drawDecoys(FAKE_ART, 3, new Set([a]))]);
-  questions.push({ id: nid(), round: "codex-cluedo", type: "clue", prompt: "CASE FILE: in each column, exactly ONE is a real archive entry. Name the real suspect, place, and object.", suspects: sPool, locations: lPool, artifacts: aPool, solution: { suspect: s, location: l, artifact: a }, explain: `The real trio: ${s} (a real cast member), ${l} (a real location), and ${a} (a real artifact). The three fakes in each column are invented.` });
+  questions.push({ id: nid(), round: "codex-cluedo", type: "clue", prompt: "CASE FILE: in each column, exactly ONE is a real archive entry. Name the real suspect, place, and object.", suspects: sPool, locations: lPool, artifacts: aPool, solution: { suspect: s, location: l, artifact: a }, explain: `The real trio: ${s} (real cast), ${l} (real location), and ${a} (real artifact). The rest are invented.` });
 }
 
-// R6 Troll or Not (75) — real troll lore vs fake troll titles
+// R6 Troll or Not (100)
 const trollS = shuffle(raw.troll);
-for (let i = 0; i < 75; i++) { const r = trollS[i]; bump(r.title); mc("troll-or-not", "The Trollopedia is real. One of these is a genuine entry. Which is REAL troll lore?", r.title, drawDecoys(FAKE_TROLL, 3, new Set([r.title])), `"${r.title}" is real${r.summary ? ` — ${r.summary}` : " troll lore in the archive."}`, `/lore/${r.slug}`); }
+for (let i = 0; i < 100; i++) { const r = trollS[i % trollS.length]; if (uses(r.title) >= MAX_USE) continue; bump(r.title); mc("troll-or-not", "The Trollopedia is real. One of these is a genuine entry. Which is REAL troll lore?", r.title, drawDecoys(FAKE_TROLL, 3, new Set([r.title])), `"${r.title}" is real${r.summary ? ` — ${r.summary}` : " troll lore."}`, `/lore/${r.slug}`); }
 
-// R7 Who Is It? (85) — a real bio → which real person; decoys are other real people
-const peopleS = shuffle(raw.people.filter((p) => (p.shortBio || p.loreSummary || "").length > 15));
-const N7 = Math.min(85, peopleS.length);
+// R7 Who Is It? (110)
+const peopleS = shuffle(raw.people.filter((p) => (p.shortBio || p.loreSummary || "").length > 12));
 const castNamePool = [...new Set(raw.cast)];
-for (let i = 0; i < N7; i++) {
-  const p = peopleS[i]; bump(p.displayName);
+for (let i = 0; i < 110; i++) {
+  const p = peopleS[i % peopleS.length]; if (uses(p.displayName) >= MAX_USE) continue; bump(p.displayName);
   const bio = (p.shortBio || p.loreSummary || "").replace(/\s+/g, " ").trim();
   const decoys = drawDecoys(castNamePool, 3, new Set([p.displayName]));
   const opts = shuffle([{ t: p.displayName, real: true }, ...decoys.map((d) => ({ t: d, real: false }))]);
   questions.push({ id: nid(), round: "who-is-it", type: "multiple-choice", prompt: `From the archive: "${bio}" — WHO is this?`, options: opts.map((o) => o.t), answerIndex: opts.findIndex((o) => o.real), explain: `It's ${p.displayName}${p.personType ? ` (${p.personType})` : ""}.`, sourceHref: `/people/${p.slug}` });
 }
 
-// R8 General Trivia (fill to 500) — authored occult/tarot knowledge
+// R8 Guess the Episode (MULTIMEDIA — real thumbnail, pick the title) (130)
+const epS = shuffle(raw.episodes);
+const epTitles = raw.episodes.map((e) => e.title);
+for (let i = 0; i < 130; i++) {
+  const e = epS[i % epS.length]; if (uses(e.title) >= MAX_USE) continue; bump(e.title);
+  const decoys = shuffle(epTitles.filter((t) => t !== e.title)).slice(0, 3);
+  const opts = shuffle([{ t: e.title, real: true }, ...decoys.map((d) => ({ t: d, real: false }))]);
+  questions.push({ id: nid(), round: "guess-the-episode", type: "multiple-choice", image: e.thumbnailUrl, prompt: "🎬 This is a real episode thumbnail. Which title belongs to it?", options: opts.map((o) => o.t), answerIndex: opts.findIndex((o) => o.real), explain: `This is "${e.title}".`, sourceHref: `/episodes/${e.slug}` });
+}
+
+// R9 Real Title? (absurd episode titles — 1 real + 3 fake absurd) (90)
+const epForTitle = shuffle(raw.episodes);
+const fakeEpPool = shuffle(FAKE_EP);
+for (let i = 0; i < 90; i++) {
+  const e = epForTitle[i % epForTitle.length]; if (uses(e.title) >= MAX_USE) continue; bump(e.title);
+  const decoys = drawDecoys(fakeEpPool, 3, new Set([e.title]));
+  const opts = shuffle([{ t: e.title, real: true }, ...decoys.map((d) => ({ t: d, real: false }))]);
+  questions.push({ id: nid(), round: "real-title", type: "multiple-choice", prompt: "One of these is an ACTUAL Cult of Psyche episode title. The rest we made up. Which chaos is REAL?", options: opts.map((o) => o.t), answerIndex: opts.findIndex((o) => o.real), explain: `"${e.title}" is a real episode. Yes, really.`, sourceHref: `/episodes/${e.slug}` });
+}
+
+// R10 Finish the Lore (fill-in the last word of a real absurd title) (70)
+const fillPool = shuffle(FILL_FAKE);
+const fillCandidates = shuffle(raw.humor.filter((h) => h.title.trim().split(" ").length >= 3 && h.title.split(" ").every((w) => w.length < 16)));
+let fi = 0;
+for (let i = 0; i < 70 && fi < fillCandidates.length; i++, fi++) {
+  const h = fillCandidates[fi]; const words = h.title.trim().split(" "); const last = words[words.length - 1]; const stem = words.slice(0, -1).join(" ");
+  if (last.length < 3 || uses(last) >= MAX_USE) { i--; continue; }
+  bump(last);
+  const decoys = fillPool.filter((w) => w.toLowerCase() !== last.toLowerCase() && uses(w) < MAX_USE).slice(0, 3); decoys.forEach(bump);
+  if (decoys.length < 3) { i--; continue; }
+  const opts = shuffle([{ t: last, real: true }, ...decoys.map((d) => ({ t: d, real: false }))]);
+  questions.push({ id: nid(), round: "finish-the-lore", type: "multiple-choice", prompt: `Complete the real lore title: "${stem} ___"`, options: opts.map((o) => o.t), answerIndex: opts.findIndex((o) => o.real), explain: `The real entry is "${h.title}".`, sourceHref: `/lore/${h.slug}` });
+}
+
+// R11 General Trivia (fill to 1000)
 const trivS = shuffle(TRIVIA);
-const need8 = 500 - questions.length;
-for (let i = 0; i < need8; i++) {
+const need = 1000 - questions.length;
+for (let i = 0; i < need; i++) {
   const t = trivS[i % trivS.length];
   const opts = shuffle(t.opts.map((o, oi) => ({ t: o, real: oi === t.a })));
   questions.push({ id: nid(), round: "general-trivia", type: "multiple-choice", prompt: t.q, options: opts.map((o) => o.t), answerIndex: opts.findIndex((o) => o.real), explain: t.ex });
 }
 
-// ── Audit: no option repeats beyond MAX_USE (trivia exempt — a fixed knowledge set) ──
-const nonTrivia = (questions as { round: string; options?: string[]; statements?: { text: string }[] }[]).filter((q) => q.round !== "general-trivia");
+// Audit (trivia exempt; guess-the-episode title reuse capped at MAX_USE already).
 const cnt = new Map<string, number>();
-for (const q of nonTrivia) { const opts = q.options || (q.statements || []).map((s) => s.text); for (const o of opts) cnt.set(o, (cnt.get(o) ?? 0) + 1); }
+for (const q of questions as { round: string; options?: string[]; statements?: { text: string }[] }[]) {
+  if (q.round === "general-trivia" || q.round === "guess-the-episode") continue;
+  const opts = q.options || (q.statements || []).map((s) => s.text);
+  for (const o of opts) cnt.set(o, (cnt.get(o) ?? 0) + 1);
+}
 const over = [...cnt.entries()].filter(([, n]) => n > MAX_USE);
 if (over.length) throw new Error(`OVER CAP: ${over.slice(0, 5).map(([s, n]) => `${n}× ${s}`).join(" | ")}`);
 
 const bank = {
-  generatedFrom: "prod Xata + combinatorial decoys + authored trivia",
+  generatedFrom: "prod Xata (lore/prophecy/quotes/people/troll/episodes+thumbnails) + combinatorial decoys + authored trivia",
   total: questions.length,
   rounds: [
     { key: "real-or-fake-lore", label: "Real or Fake: Lore", icon: "📜" },
@@ -238,6 +226,9 @@ const bank = {
     { key: "codex-cluedo", label: "Codex Cluedo", icon: "🕯️" },
     { key: "troll-or-not", label: "Troll or Not", icon: "🌉" },
     { key: "who-is-it", label: "Who Is It?", icon: "🕵️" },
+    { key: "guess-the-episode", label: "Guess the Episode", icon: "🎬" },
+    { key: "real-title", label: "Real Title or Fake?", icon: "🤯" },
+    { key: "finish-the-lore", label: "Finish the Lore", icon: "✍️" },
     { key: "general-trivia", label: "General Trivia", icon: "❓" },
   ],
   questions,
