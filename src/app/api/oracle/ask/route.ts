@@ -1037,67 +1037,45 @@ export async function POST(req: NextRequest) {
   }
   const contextPreamble = contextLines.length > 0 ? `Context frame: ${contextLines.join(" | ")}\n\n` : "";
 
-  let answer: string;
-  let citations: OracleCitation[];
+  let answer: string | null = null;
+  let citations: OracleCitation[] = preFlightCitations;
 
-  try {
-    const client = new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
-    const model = bedrockModelId(process.env.ORACLE_MODEL ?? "claude-opus-4-8");
-    const result = await runOracleAgent(client, model, contextText, question, preFlightCitations, contextPreamble);
-    answer = result.answer;
-    citations = result.citations;
-  } catch (err) {
-    console.error("[oracle] agent error:", err);
-    const message = err instanceof Error ? err.message : String(err);
-    const errObj = err as Record<string, unknown>;
-    console.error("[oracle] error details:", {
-      name: err instanceof Error ? err.name : "unknown",
-      message,
-      status: errObj.status,
-      error: errObj.error,
-    });
-
-    // Bedrock failure fallback: answer from the already-gathered archive context
-    // via free Groq (no tools). Keeps the Oracle alive during throttling/outages
-    // instead of erroring out. Only the primary path uses Opus + tool-use.
-    if (groqConfigured()) {
-      try {
-        const groqAnswer = await groqChat({
-          system: ORACLE_SYSTEM,
-          user: `Archive context (pre-searched):\n${contextText}\n\n${contextPreamble}Question: ${question}`,
-          maxTokens: 1024,
-        });
-        if (groqAnswer.trim()) {
-          answer = groqAnswer.trim();
-          citations = preFlightCitations;
-        } else {
-          throw new Error("groq empty");
-        }
-      } catch (groqErr) {
-        console.error("[oracle] groq fallback failed:", groqErr instanceof Error ? groqErr.message : groqErr);
-        const lc = message.toLowerCase();
-        const userMsg = lc.includes("rate") || lc.includes("throttl")
-          ? "The Oracle is overwhelmed. Try again in a moment."
-          : lc.includes("access") || lc.includes("denied") || lc.includes("not authorized")
-          ? "Oracle access denied — check API permissions."
-          : `The Oracle could not be reached. (${message.slice(0, 120)})`;
-        return NextResponse.json(
-          { ok: false, error: userMsg } satisfies OracleResponse,
-          { status: 503 }
-        );
-      }
-    } else {
-      const lc = message.toLowerCase();
-      const userMsg = lc.includes("rate") || lc.includes("throttl")
-        ? "The Oracle is overwhelmed. Try again in a moment."
-        : lc.includes("access") || lc.includes("denied") || lc.includes("not authorized")
-        ? "Oracle access denied — check API permissions."
-        : `The Oracle could not be reached. (${message.slice(0, 120)})`;
-      return NextResponse.json(
-        { ok: false, error: userMsg } satisfies OracleResponse,
-        { status: 503 }
-      );
+  // FREE-FIRST: answer from the pre-gathered archive context via the free Groq
+  // tier (gpt-oss-120b by default). This keeps the Oracle's LLM bill at ~$0.
+  // The expensive agentic Bedrock/Opus path (multi-step tool retrieval) is now
+  // OPT-IN via ORACLE_USE_BEDROCK=true — flip it on once AWS Activate credits
+  // cover the cost and you want the premium tier to run on Claude.
+  if (groqConfigured()) {
+    try {
+      const groqAnswer = await groqChat({
+        system: ORACLE_SYSTEM,
+        user: `Archive context (pre-searched):\n${contextText}\n\n${contextPreamble}Question: ${question}`,
+        maxTokens: 1024,
+      });
+      if (groqAnswer.trim()) { answer = groqAnswer.trim(); citations = preFlightCitations; }
+    } catch (groqErr) {
+      console.error("[oracle] groq primary failed:", groqErr instanceof Error ? groqErr.message : groqErr);
     }
+  }
+
+  // Paid fallback — only if the free path came up empty AND Bedrock is enabled.
+  if (answer == null && process.env.ORACLE_USE_BEDROCK === "true") {
+    try {
+      const client = new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
+      const model = bedrockModelId(process.env.ORACLE_MODEL ?? "claude-opus-4-8");
+      const result = await runOracleAgent(client, model, contextText, question, preFlightCitations, contextPreamble);
+      answer = result.answer;
+      citations = result.citations;
+    } catch (err) {
+      console.error("[oracle] bedrock fallback error:", err instanceof Error ? err.message : err);
+    }
+  }
+
+  if (answer == null) {
+    return NextResponse.json(
+      { ok: false, error: "The Oracle is resting. Try again in a moment." } satisfies OracleResponse,
+      { status: 503 }
+    );
   }
 
   let audioBase64: string | null = null;
