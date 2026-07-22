@@ -12609,170 +12609,226 @@
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "The daily game-show challenge rewards you with…",
+   "prompt": "The Sun card generally signifies what?",
    "options": [
-    "Nothing",
-    "+50 XP and a streak",
-    "A sticker",
-    "A refund"
+    "Doom",
+    "Loss",
+    "Joy and success",
+    "Confusion"
    ],
-   "answerIndex": 1,
-   "explain": "One shared question a day, +50 XP, and the Daily Devotee badge.",
+   "answerIndex": 2,
+   "explain": "The Sun (XIX) — vitality, positivity, clarity.",
    "id": "q0737"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "How many cards make up the Major Arcana?",
+   "prompt": "What is the highest rank a player can reach in the game show?",
    "options": [
-    "22",
-    "12",
-    "16",
-    "21"
+    "Grandmaster",
+    "Sage",
+    "Legend",
+    "Mythwalker"
    ],
-   "answerIndex": 0,
-   "explain": "The Major Arcana runs from 0 (The Fool) to XXI (The World) — 22 cards.",
+   "answerIndex": 3,
+   "explain": "Initiate → Acolyte → Keeper → Oracle → Mythwalker.",
    "id": "q0738"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which Major Arcana card is numbered XXI, the final one?",
+   "prompt": "What are the two pillars often shown behind the High Priestess?",
    "options": [
-    "The Sun",
-    "Judgement",
-    "The Star",
-    "The World"
+    "Yin and Yang",
+    "Boaz and Jachin",
+    "Sun and Moon",
+    "Alpha and Omega"
    ],
-   "answerIndex": 3,
-   "explain": "The World (XXI) completes the Major Arcana.",
+   "answerIndex": 1,
+   "explain": "The temple pillars Boaz (B) and Jachin (J).",
    "id": "q0739"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "The Wheel of the Year has how many sabbats?",
+   "prompt": "How many spheres (Sephirot) are on the Kabbalistic Tree of Life?",
    "options": [
-    "8",
+    "22",
     "12",
-    "6",
-    "4"
+    "7",
+    "10"
    ],
-   "answerIndex": 0,
-   "explain": "Eight sabbats: solstices, equinoxes, and cross-quarter days.",
+   "answerIndex": 3,
+   "explain": "Ten Sephirot, connected by 22 paths.",
    "id": "q0740"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which metal is alchemically associated with the Moon?",
+   "prompt": "The 'anima mundi' translates to what?",
    "options": [
-    "Iron",
-    "Gold",
-    "Silver",
-    "Copper"
+    "Star seed",
+    "World soul",
+    "First light",
+    "Dark matter"
    ],
-   "answerIndex": 2,
-   "explain": "Silver ↔ Moon; gold ↔ Sun in classical alchemy.",
+   "answerIndex": 1,
+   "explain": "The 'world soul' — a living spirit of the cosmos.",
    "id": "q0741"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "In the game show, what appears when you answer correctly?",
+   "prompt": "Which is a real (humorous) Cult of Psyche lore concept?",
    "options": [
-    "/// the_codex_rules",
-    "Ding",
-    "Nice one",
-    "Correct!"
+    "Mandatory Fun Fridays",
+    "Restricted Airspace",
+    "Casual Cosmos",
+    "The Weekly Standup"
    ],
-   "answerIndex": 0,
-   "explain": "And when wrong: /// the_codex_disagrees.",
+   "answerIndex": 1,
+   "explain": "Restricted Airspace — enforced against extraterrestrials.",
    "id": "q0742"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which sign is represented by the twins?",
+   "prompt": "Which planet is associated with discipline and limitation?",
    "options": [
-    "Gemini",
-    "Aries",
-    "Cancer",
-    "Pisces"
+    "Mercury",
+    "Jupiter",
+    "Venus",
+    "Saturn"
    ],
-   "answerIndex": 0,
-   "explain": "Gemini, the twins — duality and communication.",
+   "answerIndex": 3,
+   "explain": "Saturn — structure, boundaries, hard lessons.",
    "id": "q0743"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "What is the name of Psyche's cat, star of countless streams?",
+   "prompt": "The 'Hermetic' tradition takes its name from which figure?",
    "options": [
-    "Salem",
-    "Whiskers",
-    "Mr. Bigglesworth",
-    "Trixs"
+    "Hermes of Olympus",
+    "Herminius",
+    "Saint Hermas",
+    "Hermes Trismegistus"
    ],
    "answerIndex": 3,
-   "explain": "Trixs — unfalsifiable feline sincerity.",
+   "explain": "Hermes Trismegistus, the legendary author of the Hermetic texts.",
    "id": "q0744"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "What happened when Psyche raided Christine's stream?",
+   "prompt": "In Cult of Psyche lore, the go-to method for de-escalating chat drama is to…",
    "options": [
-    "Nothing",
-    "He got banned",
-    "He got a sponsorship",
-    "He won a prize"
+    "Ban everyone",
+    "Read a prophecy",
+    "Bring out the cat",
+    "Play a jingle"
    ],
-   "answerIndex": 1,
-   "explain": "The Christine Raid Incident — raid, then banhammer, then a full rebuttal.",
+   "answerIndex": 2,
+   "explain": "When the outside gets loud, browse the Codex and pet the cat.",
    "id": "q0745"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "\"As above, so below\" comes from which text?",
+   "prompt": "Which tarot card shows a lantern-bearing figure alone?",
    "options": [
-    "The Necronomicon",
-    "The Kybalion",
-    "The Emerald Tablet",
-    "The Book of Thoth"
+    "Strength",
+    "The Hermit",
+    "The Chariot",
+    "The Emperor"
    ],
-   "answerIndex": 2,
-   "explain": "The maxim is from the Emerald Tablet of Hermes Trismegistus.",
+   "answerIndex": 1,
+   "explain": "The Hermit (IX) — solitude, introspection, guidance.",
    "id": "q0746"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which zodiac sign is symbolized by the scales?",
+   "prompt": "Which element is associated with the suit of Cups?",
    "options": [
-    "Gemini",
-    "Aquarius",
-    "Virgo",
-    "Libra"
+    "Fire",
+    "Air",
+    "Water",
+    "Earth"
    ],
-   "answerIndex": 3,
-   "explain": "Libra, the scales — balance and justice.",
+   "answerIndex": 2,
+   "explain": "Cups map to Water — emotion, intuition, relationships.",
    "id": "q0747"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "The ouroboros depicts a serpent doing what?",
+   "prompt": "How many cards are in a standard tarot deck?",
    "options": [
-    "Eating its own tail",
-    "Shedding its skin",
-    "Coiled around a tree",
-    "Swallowing the sun"
+    "78",
+    "72",
+    "64",
+    "52"
    ],
    "answerIndex": 0,
-   "explain": "Ouroboros — a serpent eating its tail: eternal cycles.",
+   "explain": "A tarot deck has 78 cards: 22 Major Arcana + 56 Minor Arcana.",
    "id": "q0748"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What are the four suits of the tarot's Minor Arcana?",
+   "options": [
+    "Wands, Cups, Swords, Pentacles",
+    "Fire, Water, Air, Earth",
+    "Rods, Bowls, Blades, Coins",
+    "Hearts, Clubs, Spades, Diamonds"
+   ],
+   "answerIndex": 0,
+   "explain": "Wands, Cups, Swords, and Pentacles (a.k.a. Coins).",
+   "id": "q0749"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tarot card is numbered 0?",
+   "options": [
+    "The Fool",
+    "Death",
+    "The World",
+    "The Magician"
+   ],
+   "answerIndex": 0,
+   "explain": "The Fool is card 0, beginning the Major Arcana's journey.",
+   "id": "q0750"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the rank progression in the Panelverse Game Show?",
+   "options": [
+    "Noob → Pro",
+    "Level 1 → 100",
+    "Bronze → Silver → Gold",
+    "Initiate → Acolyte → Keeper → Oracle → Mythwalker"
+   ],
+   "answerIndex": 3,
+   "explain": "Climb by answering correctly.",
+   "id": "q0751"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which chakra is associated with the color green?",
+   "options": [
+    "Third eye",
+    "Sacral",
+    "Root",
+    "Heart"
+   ],
+   "answerIndex": 3,
+   "explain": "Anahata, the heart chakra — love, compassion.",
+   "id": "q0752"
   },
   {
    "round": "general-trivia",
@@ -12781,292 +12837,40 @@
    "options": [
     "Forbidden",
     "Hidden",
-    "Evil",
-    "Ancient"
+    "Ancient",
+    "Evil"
    ],
    "answerIndex": 1,
    "explain": "From Latin 'occultus' — hidden or concealed knowledge.",
-   "id": "q0749"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A 'sigil' in magic is best described as what?",
-   "options": [
-    "A protective circle",
-    "A symbol charged with intent",
-    "A sacred number",
-    "A spoken chant"
-   ],
-   "answerIndex": 1,
-   "explain": "A sigil is a designed symbol encoding a desire or entity.",
-   "id": "q0750"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tagline describes the Cult of Psyche experience?",
-   "options": [
-    "Enter as a skeptic, leave as a storyline",
-    "Trust the process",
-    "Subscribe now",
-    "Wake up sheeple"
-   ],
-   "answerIndex": 0,
-   "explain": "Where myth wakes up and chaos takes notes.",
-   "id": "q0751"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which element is associated with Swords?",
-   "options": [
-    "Fire",
-    "Air",
-    "Water",
-    "Earth"
-   ],
-   "answerIndex": 1,
-   "explain": "Swords ↔ Air: intellect, conflict, truth.",
-   "id": "q0752"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "'Zodiac' derives from a Greek term meaning what?",
-   "options": [
-    "Ring of stars",
-    "Wheel of fate",
-    "Circle of little animals",
-    "Path of the sun"
-   ],
-   "answerIndex": 2,
-   "explain": "From 'zodiakos kyklos' — circle of little animals/figures.",
    "id": "q0753"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which Major Arcana card is numbered XIII?",
+   "prompt": "Which zodiac element does Aquarius belong to?",
    "options": [
-    "Temperance",
-    "The Devil",
-    "The Tower",
-    "Death"
+    "Fire",
+    "Air",
+    "Earth",
+    "Water"
    ],
-   "answerIndex": 3,
-   "explain": "XIII is Death — endings and transformation, rarely literal.",
+   "answerIndex": 1,
+   "explain": "Aquarius is an air sign (despite the water-bearer).",
    "id": "q0754"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which sign is ruled by the Moon?",
+   "prompt": "Per the archive, the three Cult of Psyche channels include which of these?",
    "options": [
-    "Taurus",
-    "Cancer",
-    "Leo",
-    "Pisces"
+    "Psyche's Nightmares",
+    "Psyche Sports Hour",
+    "Psyche's Kitchen",
+    "Psyche Weather"
    ],
-   "answerIndex": 1,
-   "explain": "Cancer is ruled by the Moon.",
+   "answerIndex": 0,
+   "explain": "@cultofpsyche, @psychesnightmares, @nightmarefrequenciestv.",
    "id": "q0755"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which altar tool represents the element Earth?",
-   "options": [
-    "A wand",
-    "A candle",
-    "A pentacle or salt",
-    "A chalice"
-   ],
-   "answerIndex": 2,
-   "explain": "The pentacle (and salt) represent Earth.",
-   "id": "q0756"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which planet is associated with discipline and limitation?",
-   "options": [
-    "Venus",
-    "Saturn",
-    "Mercury",
-    "Jupiter"
-   ],
-   "answerIndex": 1,
-   "explain": "Saturn — structure, boundaries, hard lessons.",
-   "id": "q0757"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Cult of Psyche archive lives at which site?",
-   "options": [
-    "cultcodex.me",
-    "psyche.org",
-    "cult.tv",
-    "occult.io"
-   ],
-   "answerIndex": 0,
-   "explain": "CultCodex — the searchable archive of the Cult of Psyche.",
-   "id": "q0758"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In the archive's cosmology, trolls are considered…",
-   "options": [
-    "Mythical only",
-    "A glitch",
-    "Guests of honor",
-    "A founding institution"
-   ],
-   "answerIndex": 3,
-   "explain": "'Trolls on Parade' was episode 3 — they predate most of the lore.",
-   "id": "q0759"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What does the cult's AI feature let you consult?",
-   "options": [
-    "A chatbot",
-    "A hotline",
-    "A magic 8-ball",
-    "The Oracle"
-   ],
-   "answerIndex": 3,
-   "explain": "Ask the Oracle — the archive's AI divination.",
-   "id": "q0760"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the leaderboard in the game show called?",
-   "options": [
-    "The Hall of Oracles",
-    "The Wall",
-    "The Chart",
-    "The Rankings"
-   ],
-   "answerIndex": 0,
-   "explain": "Weekly, monthly, and all-time boards of the top cultists.",
-   "id": "q0761"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which crystal is associated with amplifying energy and clarity?",
-   "options": [
-    "Obsidian",
-    "Clear quartz",
-    "Turquoise",
-    "Jade"
-   ],
-   "answerIndex": 1,
-   "explain": "Clear quartz — the 'master healer', prized for amplification.",
-   "id": "q0762"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The 'astral plane' refers to what?",
-   "options": [
-    "A non-physical realm of travel and spirits",
-    "A star map",
-    "The brainstem",
-    "The night sky"
-   ],
-   "answerIndex": 0,
-   "explain": "The astral plane — a subtle realm reached in projection.",
-   "id": "q0763"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What are the four suits of the tarot's Minor Arcana?",
-   "options": [
-    "Wands, Cups, Swords, Pentacles",
-    "Hearts, Clubs, Spades, Diamonds",
-    "Fire, Water, Air, Earth",
-    "Rods, Bowls, Blades, Coins"
-   ],
-   "answerIndex": 0,
-   "explain": "Wands, Cups, Swords, and Pentacles (a.k.a. Coins).",
-   "id": "q0764"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is a group of witches traditionally called?",
-   "options": [
-    "A circle",
-    "A coven",
-    "A conclave",
-    "A congregation"
-   ],
-   "answerIndex": 1,
-   "explain": "A coven — classically said to number thirteen.",
-   "id": "q0765"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which element is associated with the suit of Cups?",
-   "options": [
-    "Water",
-    "Air",
-    "Fire",
-    "Earth"
-   ],
-   "answerIndex": 0,
-   "explain": "Cups map to Water — emotion, intuition, relationships.",
-   "id": "q0766"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tarot suit corresponds to Fire?",
-   "options": [
-    "Swords",
-    "Pentacles",
-    "Cups",
-    "Wands"
-   ],
-   "answerIndex": 3,
-   "explain": "Wands — Fire: drive, creativity, will.",
-   "id": "q0767"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which planet rules Scorpio in modern astrology?",
-   "options": [
-    "Pluto",
-    "Saturn",
-    "Venus",
-    "Mars"
-   ],
-   "answerIndex": 0,
-   "explain": "Modern astrology assigns Pluto to Scorpio (Mars is its traditional ruler).",
-   "id": "q0768"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A 'Full Poltergeist' rating in the Drama Files means…",
-   "options": [
-    "Minor issue",
-    "A ghost sighting",
-    "Maximum chaos",
-    "A refund"
-   ],
-   "answerIndex": 2,
-   "explain": "The highest tier of catalogued cult drama.",
-   "id": "q0769"
   },
   {
    "round": "general-trivia",
@@ -13080,931 +12884,35 @@
    ],
    "answerIndex": 0,
    "explain": "The heart line is read for matters of emotion and love.",
-   "id": "q0770"
+   "id": "q0756"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "How many court cards are in each tarot suit?",
+   "prompt": "Which zodiac element does Taurus belong to?",
    "options": [
-    "4",
-    "3",
-    "2",
-    "5"
-   ],
-   "answerIndex": 0,
-   "explain": "Four: Page, Knight, Queen, King.",
-   "id": "q0771"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A 'grimoire' is a book of what?",
-   "options": [
-    "Astronomical tables",
-    "Saints' lives",
-    "Magic spells and rituals",
-    "Dream interpretations only"
-   ],
-   "answerIndex": 2,
-   "explain": "A grimoire is a textbook of magic.",
-   "id": "q0772"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tarot card is numbered 0?",
-   "options": [
-    "Death",
-    "The World",
-    "The Magician",
-    "The Fool"
-   ],
-   "answerIndex": 3,
-   "explain": "The Fool is card 0, beginning the Major Arcana's journey.",
-   "id": "q0773"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In Cult of Psyche lore, the go-to method for de-escalating chat drama is to…",
-   "options": [
-    "Play a jingle",
-    "Read a prophecy",
-    "Ban everyone",
-    "Bring out the cat"
-   ],
-   "answerIndex": 3,
-   "explain": "When the outside gets loud, browse the Codex and pet the cat.",
-   "id": "q0774"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the Trollopedia?",
-   "options": [
-    "A prophecy",
-    "A pizza brand",
-    "A tarot deck",
-    "The archive's field guide to trolls"
-   ],
-   "answerIndex": 3,
-   "explain": "The complete catalogue of the cult's oldest institution: the trolls.",
-   "id": "q0775"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Psychenomicon is best described as…",
-   "options": [
-    "A legal document",
-    "A weather report",
-    "A cookbook",
-    "A living chronicle of the show's evolving patterns"
-   ],
-   "answerIndex": 3,
-   "explain": "A living record of evolving patterns, chapter by chapter.",
-   "id": "q0776"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which Greek oracle was dedicated to Apollo?",
-   "options": [
-    "Dodona",
-    "Delphi",
-    "Siwa",
-    "Cumae"
-   ],
-   "answerIndex": 1,
-   "explain": "The Oracle at Delphi, home of the Pythia.",
-   "id": "q0777"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is scrying?",
-   "options": [
-    "Divination by gazing into a surface",
-    "Reading tea leaves",
-    "Casting runes",
-    "Palm reading"
-   ],
-   "answerIndex": 0,
-   "explain": "Scrying — seeking visions in a crystal ball, mirror, or water.",
-   "id": "q0778"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many chakras are there in the common Western system?",
-   "options": [
-    "5",
-    "9",
-    "7",
-    "12"
-   ],
-   "answerIndex": 2,
-   "explain": "Seven main chakras from root to crown.",
-   "id": "q0779"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many cards are in a standard tarot deck?",
-   "options": [
-    "52",
-    "78",
-    "72",
-    "64"
-   ],
-   "answerIndex": 1,
-   "explain": "A tarot deck has 78 cards: 22 Major Arcana + 56 Minor Arcana.",
-   "id": "q0780"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the rank progression in the Panelverse Game Show?",
-   "options": [
-    "Bronze → Silver → Gold",
-    "Level 1 → 100",
-    "Noob → Pro",
-    "Initiate → Acolyte → Keeper → Oracle → Mythwalker"
-   ],
-   "answerIndex": 3,
-   "explain": "Climb by answering correctly.",
-   "id": "q0781"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which planet is associated with expansion and luck?",
-   "options": [
-    "Saturn",
-    "Neptune",
-    "Mars",
-    "Jupiter"
-   ],
-   "answerIndex": 3,
-   "explain": "Jupiter — growth, abundance, fortune.",
-   "id": "q0782"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which sign is symbolized by the water-bearer?",
-   "options": [
-    "Cancer",
-    "Capricorn",
-    "Pisces",
-    "Aquarius"
-   ],
-   "answerIndex": 3,
-   "explain": "Aquarius — the water-bearer (an air sign).",
-   "id": "q0783"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Mercury rules which pair of zodiac signs?",
-   "options": [
-    "Aries and Scorpio",
-    "Taurus and Libra",
-    "Gemini and Virgo",
-    "Cancer and Leo"
-   ],
-   "answerIndex": 2,
-   "explain": "Mercury rules both Gemini and Virgo.",
-   "id": "q0784"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many signs are in the Western zodiac?",
-   "options": [
-    "10",
-    "8",
-    "13",
-    "12"
-   ],
-   "answerIndex": 3,
-   "explain": "Twelve zodiac signs, one per ~30 degrees of the ecliptic.",
-   "id": "q0785"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The 'third eye' chakra is located where?",
-   "options": [
-    "At the crown",
-    "At the heart",
-    "Between the eyebrows",
-    "At the throat"
-   ],
-   "answerIndex": 2,
-   "explain": "Ajna, the brow chakra, sits between the eyebrows.",
-   "id": "q0786"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A point-up pentagram traditionally represents what?",
-   "options": [
-    "The five senses only",
-    "The five wounds",
-    "Chaos",
-    "Spirit over the four elements"
-   ],
-   "answerIndex": 3,
-   "explain": "Point-up: spirit presiding over earth, air, fire, and water.",
-   "id": "q0787"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The 'Hermetic' tradition takes its name from which figure?",
-   "options": [
-    "Hermes Trismegistus",
-    "Saint Hermas",
-    "Hermes of Olympus",
-    "Herminius"
-   ],
-   "answerIndex": 0,
-   "explain": "Hermes Trismegistus, the legendary author of the Hermetic texts.",
-   "id": "q0788"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which card represents sudden upheaval and shock?",
-   "options": [
-    "The Hermit",
-    "The Sun",
-    "The Tower",
-    "The Star"
-   ],
-   "answerIndex": 2,
-   "explain": "The Tower (XVI) — sudden, destructive revelation.",
-   "id": "q0789"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A reversed tarot card differs from upright by what?",
-   "options": [
-    "Its color",
-    "Its orientation when drawn",
-    "Its number",
-    "Its suit"
-   ],
-   "answerIndex": 1,
-   "explain": "Reversed = drawn upside-down, often shifting the meaning.",
-   "id": "q0790"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What hides behind a near-invisible glyph in the CultCodex footer?",
-   "options": [
-    "A 404",
-    "A shop",
-    "Nothing",
-    "The Basement"
-   ],
-   "answerIndex": 3,
-   "explain": "The ψ glyph opens the suppressed-files Basement.",
-   "id": "q0791"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In numerology, which is a 'master number' of intuition?",
-   "options": [
-    "3",
-    "9",
-    "11",
-    "7"
-   ],
-   "answerIndex": 2,
-   "explain": "11 is a master number linked to intuition and insight.",
-   "id": "q0792"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How does the archive catalogue the worst chat catastrophes?",
-   "options": [
-    "The Sad Folder",
-    "The Complaint Box",
-    "The Banned List",
-    "The Drama Files"
-   ],
-   "answerIndex": 3,
-   "explain": "Case files, catalogued with the seriousness they do not deserve.",
-   "id": "q0793"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which outside troll faction infamously raided a stream with threats?",
-   "options": [
-    "IP2",
-    "The Avengers",
-    "Anonymous",
-    "The HOA"
-   ],
-   "answerIndex": 0,
-   "explain": "The IP2 infiltration night — resolved, per lore, by cats.",
-   "id": "q0794"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Ophiuchus, the '13th sign', represents what?",
-   "options": [
-    "The serpent-bearer",
-    "The archer",
-    "The ram",
-    "The scorpion"
-   ],
-   "answerIndex": 0,
-   "explain": "Ophiuchus, the serpent-bearer, straddles the ecliptic.",
-   "id": "q0795"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Runes are letters of which alphabet family?",
-   "options": [
-    "Cyrillic",
-    "Futhark",
-    "Ogham",
-    "Coptic"
-   ],
-   "answerIndex": 1,
-   "explain": "The runic alphabets are known as Futhark.",
-   "id": "q0796"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Tarot most likely originated in the 15th century in which country?",
-   "options": [
-    "Italy",
-    "Egypt",
-    "England",
-    "France"
-   ],
-   "answerIndex": 0,
-   "explain": "Tarot began as Italian playing cards (tarocchi) in the 1400s.",
-   "id": "q0797"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In cult lore, 'Restricted Airspace' is enforced against whom?",
-   "options": [
-    "Chat mods",
-    "Extraterrestrials",
-    "The FAA",
-    "The moon"
-   ],
-   "answerIndex": 1,
-   "explain": "Restricted Airspace: extraterrestrial traffic enforcement, naturally.",
-   "id": "q0798"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Lovers card is associated with which theme?",
-   "options": [
-    "Travel",
-    "Wealth",
-    "Choice and union",
-    "Death and rebirth"
-   ],
-   "answerIndex": 2,
-   "explain": "The Lovers (VI) — relationships, values, and pivotal choice.",
-   "id": "q0799"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tarot card shows a lantern-bearing figure alone?",
-   "options": [
-    "The Hermit",
-    "The Chariot",
-    "The Emperor",
-    "Strength"
-   ],
-   "answerIndex": 0,
-   "explain": "The Hermit (IX) — solitude, introspection, guidance.",
-   "id": "q0800"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which sign is ruled by the Sun?",
-   "options": [
-    "Aries",
-    "Sagittarius",
-    "Leo",
-    "Cancer"
-   ],
-   "answerIndex": 2,
-   "explain": "Leo is the Sun's domicile.",
-   "id": "q0801"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which incense is classically burned for cleansing?",
-   "options": [
-    "Rose",
-    "Cinnamon",
-    "Vanilla",
-    "Sage"
-   ],
-   "answerIndex": 3,
-   "explain": "Sage (smudging) is the classic cleansing herb.",
-   "id": "q0802"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many spheres (Sephirot) are on the Kabbalistic Tree of Life?",
-   "options": [
-    "12",
-    "10",
-    "7",
-    "22"
-   ],
-   "answerIndex": 1,
-   "explain": "Ten Sephirot, connected by 22 paths.",
-   "id": "q0803"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tarot card depicts a figure hanging upside-down?",
-   "options": [
-    "The Tower",
-    "The Hanged Man",
-    "Judgement",
-    "The Devil"
-   ],
-   "answerIndex": 1,
-   "explain": "The Hanged Man (XII) — suspension, surrender, new perspective.",
-   "id": "q0804"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "'Mercury retrograde' refers to Mercury appearing to do what?",
-   "options": [
-    "Move backward across the sky",
-    "Disappear entirely",
-    "Turn red",
-    "Collide with the Moon"
-   ],
-   "answerIndex": 0,
-   "explain": "An apparent backward (retrograde) motion from Earth's vantage.",
-   "id": "q0805"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The daily game-show challenge rewards you with…",
-   "options": [
-    "A sticker",
-    "+50 XP and a streak",
-    "A refund",
-    "Nothing"
-   ],
-   "answerIndex": 1,
-   "explain": "One shared question a day, +50 XP, and the Daily Devotee badge.",
-   "id": "q0806"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many cards make up the Major Arcana?",
-   "options": [
-    "12",
-    "21",
-    "16",
-    "22"
-   ],
-   "answerIndex": 3,
-   "explain": "The Major Arcana runs from 0 (The Fool) to XXI (The World) — 22 cards.",
-   "id": "q0807"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which Major Arcana card is numbered XXI, the final one?",
-   "options": [
-    "The Star",
-    "The Sun",
-    "The World",
-    "Judgement"
-   ],
-   "answerIndex": 2,
-   "explain": "The World (XXI) completes the Major Arcana.",
-   "id": "q0808"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Wheel of the Year has how many sabbats?",
-   "options": [
-    "6",
-    "12",
-    "8",
-    "4"
-   ],
-   "answerIndex": 2,
-   "explain": "Eight sabbats: solstices, equinoxes, and cross-quarter days.",
-   "id": "q0809"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which metal is alchemically associated with the Moon?",
-   "options": [
-    "Iron",
-    "Copper",
-    "Gold",
-    "Silver"
-   ],
-   "answerIndex": 3,
-   "explain": "Silver ↔ Moon; gold ↔ Sun in classical alchemy.",
-   "id": "q0810"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In the game show, what appears when you answer correctly?",
-   "options": [
-    "Ding",
-    "Correct!",
-    "Nice one",
-    "/// the_codex_rules"
-   ],
-   "answerIndex": 3,
-   "explain": "And when wrong: /// the_codex_disagrees.",
-   "id": "q0811"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which sign is represented by the twins?",
-   "options": [
-    "Gemini",
-    "Pisces",
-    "Aries",
-    "Cancer"
-   ],
-   "answerIndex": 0,
-   "explain": "Gemini, the twins — duality and communication.",
-   "id": "q0812"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the name of Psyche's cat, star of countless streams?",
-   "options": [
-    "Trixs",
-    "Salem",
-    "Mr. Bigglesworth",
-    "Whiskers"
-   ],
-   "answerIndex": 0,
-   "explain": "Trixs — unfalsifiable feline sincerity.",
-   "id": "q0813"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What happened when Psyche raided Christine's stream?",
-   "options": [
-    "Nothing",
-    "He won a prize",
-    "He got banned",
-    "He got a sponsorship"
-   ],
-   "answerIndex": 2,
-   "explain": "The Christine Raid Incident — raid, then banhammer, then a full rebuttal.",
-   "id": "q0814"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "\"As above, so below\" comes from which text?",
-   "options": [
-    "The Kybalion",
-    "The Necronomicon",
-    "The Book of Thoth",
-    "The Emerald Tablet"
-   ],
-   "answerIndex": 3,
-   "explain": "The maxim is from the Emerald Tablet of Hermes Trismegistus.",
-   "id": "q0815"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which zodiac sign is symbolized by the scales?",
-   "options": [
-    "Gemini",
-    "Aquarius",
-    "Virgo",
-    "Libra"
-   ],
-   "answerIndex": 3,
-   "explain": "Libra, the scales — balance and justice.",
-   "id": "q0816"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The ouroboros depicts a serpent doing what?",
-   "options": [
-    "Coiled around a tree",
-    "Eating its own tail",
-    "Swallowing the sun",
-    "Shedding its skin"
-   ],
-   "answerIndex": 1,
-   "explain": "Ouroboros — a serpent eating its tail: eternal cycles.",
-   "id": "q0817"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The word 'occult' literally means what?",
-   "options": [
-    "Ancient",
-    "Evil",
-    "Hidden",
-    "Forbidden"
-   ],
-   "answerIndex": 2,
-   "explain": "From Latin 'occultus' — hidden or concealed knowledge.",
-   "id": "q0818"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A 'sigil' in magic is best described as what?",
-   "options": [
-    "A spoken chant",
-    "A protective circle",
-    "A sacred number",
-    "A symbol charged with intent"
-   ],
-   "answerIndex": 3,
-   "explain": "A sigil is a designed symbol encoding a desire or entity.",
-   "id": "q0819"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tagline describes the Cult of Psyche experience?",
-   "options": [
-    "Trust the process",
-    "Enter as a skeptic, leave as a storyline",
-    "Wake up sheeple",
-    "Subscribe now"
-   ],
-   "answerIndex": 1,
-   "explain": "Where myth wakes up and chaos takes notes.",
-   "id": "q0820"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which element is associated with Swords?",
-   "options": [
-    "Air",
     "Water",
-    "Fire",
-    "Earth"
-   ],
-   "answerIndex": 0,
-   "explain": "Swords ↔ Air: intellect, conflict, truth.",
-   "id": "q0821"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "'Zodiac' derives from a Greek term meaning what?",
-   "options": [
-    "Ring of stars",
-    "Wheel of fate",
-    "Circle of little animals",
-    "Path of the sun"
-   ],
-   "answerIndex": 2,
-   "explain": "From 'zodiakos kyklos' — circle of little animals/figures.",
-   "id": "q0822"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which Major Arcana card is numbered XIII?",
-   "options": [
-    "The Tower",
-    "The Devil",
-    "Death",
-    "Temperance"
-   ],
-   "answerIndex": 2,
-   "explain": "XIII is Death — endings and transformation, rarely literal.",
-   "id": "q0823"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which sign is ruled by the Moon?",
-   "options": [
-    "Cancer",
-    "Leo",
-    "Pisces",
-    "Taurus"
-   ],
-   "answerIndex": 0,
-   "explain": "Cancer is ruled by the Moon.",
-   "id": "q0824"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which altar tool represents the element Earth?",
-   "options": [
-    "A candle",
-    "A chalice",
-    "A wand",
-    "A pentacle or salt"
-   ],
-   "answerIndex": 3,
-   "explain": "The pentacle (and salt) represent Earth.",
-   "id": "q0825"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which planet is associated with discipline and limitation?",
-   "options": [
-    "Mercury",
-    "Venus",
-    "Saturn",
-    "Jupiter"
-   ],
-   "answerIndex": 2,
-   "explain": "Saturn — structure, boundaries, hard lessons.",
-   "id": "q0826"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Cult of Psyche archive lives at which site?",
-   "options": [
-    "psyche.org",
-    "cult.tv",
-    "occult.io",
-    "cultcodex.me"
-   ],
-   "answerIndex": 3,
-   "explain": "CultCodex — the searchable archive of the Cult of Psyche.",
-   "id": "q0827"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In the archive's cosmology, trolls are considered…",
-   "options": [
-    "Mythical only",
-    "Guests of honor",
-    "A founding institution",
-    "A glitch"
-   ],
-   "answerIndex": 2,
-   "explain": "'Trolls on Parade' was episode 3 — they predate most of the lore.",
-   "id": "q0828"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What does the cult's AI feature let you consult?",
-   "options": [
-    "The Oracle",
-    "A magic 8-ball",
-    "A hotline",
-    "A chatbot"
-   ],
-   "answerIndex": 0,
-   "explain": "Ask the Oracle — the archive's AI divination.",
-   "id": "q0829"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the leaderboard in the game show called?",
-   "options": [
-    "The Chart",
-    "The Rankings",
-    "The Wall",
-    "The Hall of Oracles"
-   ],
-   "answerIndex": 3,
-   "explain": "Weekly, monthly, and all-time boards of the top cultists.",
-   "id": "q0830"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which crystal is associated with amplifying energy and clarity?",
-   "options": [
-    "Turquoise",
-    "Jade",
-    "Clear quartz",
-    "Obsidian"
-   ],
-   "answerIndex": 2,
-   "explain": "Clear quartz — the 'master healer', prized for amplification.",
-   "id": "q0831"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The 'astral plane' refers to what?",
-   "options": [
-    "A non-physical realm of travel and spirits",
-    "The brainstem",
-    "The night sky",
-    "A star map"
-   ],
-   "answerIndex": 0,
-   "explain": "The astral plane — a subtle realm reached in projection.",
-   "id": "q0832"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What are the four suits of the tarot's Minor Arcana?",
-   "options": [
-    "Wands, Cups, Swords, Pentacles",
-    "Rods, Bowls, Blades, Coins",
-    "Fire, Water, Air, Earth",
-    "Hearts, Clubs, Spades, Diamonds"
-   ],
-   "answerIndex": 0,
-   "explain": "Wands, Cups, Swords, and Pentacles (a.k.a. Coins).",
-   "id": "q0833"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is a group of witches traditionally called?",
-   "options": [
-    "A conclave",
-    "A congregation",
-    "A circle",
-    "A coven"
-   ],
-   "answerIndex": 3,
-   "explain": "A coven — classically said to number thirteen.",
-   "id": "q0834"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which element is associated with the suit of Cups?",
-   "options": [
     "Air",
     "Earth",
-    "Water",
     "Fire"
    ],
    "answerIndex": 2,
-   "explain": "Cups map to Water — emotion, intuition, relationships.",
-   "id": "q0835"
+   "explain": "Taurus is an earth sign.",
+   "id": "q0757"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which tarot suit corresponds to Fire?",
+   "prompt": "Which practice finds meaning in numbers?",
    "options": [
-    "Pentacles",
-    "Wands",
-    "Cups",
-    "Swords"
+    "Tarot",
+    "Numerology",
+    "Astrology",
+    "Palmistry"
    ],
    "answerIndex": 1,
-   "explain": "Wands — Fire: drive, creativity, will.",
-   "id": "q0836"
+   "explain": "Numerology — the mysticism of numbers.",
+   "id": "q0758"
   },
   {
    "round": "general-trivia",
@@ -14013,40 +12921,26 @@
    "options": [
     "Mars",
     "Saturn",
-    "Venus",
-    "Pluto"
+    "Pluto",
+    "Venus"
    ],
-   "answerIndex": 3,
+   "answerIndex": 2,
    "explain": "Modern astrology assigns Pluto to Scorpio (Mars is its traditional ruler).",
-   "id": "q0837"
+   "id": "q0759"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "A 'Full Poltergeist' rating in the Drama Files means…",
+   "prompt": "Which sister site is dedicated to a Hindu goddess?",
    "options": [
-    "Minor issue",
-    "A ghost sighting",
-    "A refund",
-    "Maximum chaos"
+    "Temple of Ma Matangi",
+    "Cultos",
+    "The Grimoire",
+    "Dreamweave"
    ],
-   "answerIndex": 3,
-   "explain": "The highest tier of catalogued cult drama.",
-   "id": "q0838"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In palmistry, the 'heart line' reveals what?",
-   "options": [
-    "Lifespan",
-    "Career",
-    "Intelligence",
-    "Emotional life"
-   ],
-   "answerIndex": 3,
-   "explain": "The heart line is read for matters of emotion and love.",
-   "id": "q0839"
+   "answerIndex": 0,
+   "explain": "Matangi — a devotional site.",
+   "id": "q0760"
   },
   {
    "round": "general-trivia",
@@ -14054,615 +12948,27 @@
    "prompt": "How many court cards are in each tarot suit?",
    "options": [
     "3",
-    "2",
     "5",
-    "4"
+    "4",
+    "2"
    ],
-   "answerIndex": 3,
+   "answerIndex": 2,
    "explain": "Four: Page, Knight, Queen, King.",
-   "id": "q0840"
+   "id": "q0761"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "A 'grimoire' is a book of what?",
+   "prompt": "Which sign is symbolized by the crab?",
    "options": [
-    "Dream interpretations only",
-    "Saints' lives",
-    "Magic spells and rituals",
-    "Astronomical tables"
-   ],
-   "answerIndex": 2,
-   "explain": "A grimoire is a textbook of magic.",
-   "id": "q0841"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tarot card is numbered 0?",
-   "options": [
-    "The Fool",
-    "Death",
-    "The Magician",
-    "The World"
-   ],
-   "answerIndex": 0,
-   "explain": "The Fool is card 0, beginning the Major Arcana's journey.",
-   "id": "q0842"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In Cult of Psyche lore, the go-to method for de-escalating chat drama is to…",
-   "options": [
-    "Ban everyone",
-    "Bring out the cat",
-    "Read a prophecy",
-    "Play a jingle"
-   ],
-   "answerIndex": 1,
-   "explain": "When the outside gets loud, browse the Codex and pet the cat.",
-   "id": "q0843"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the Trollopedia?",
-   "options": [
-    "The archive's field guide to trolls",
-    "A tarot deck",
-    "A prophecy",
-    "A pizza brand"
-   ],
-   "answerIndex": 0,
-   "explain": "The complete catalogue of the cult's oldest institution: the trolls.",
-   "id": "q0844"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Psychenomicon is best described as…",
-   "options": [
-    "A living chronicle of the show's evolving patterns",
-    "A weather report",
-    "A cookbook",
-    "A legal document"
-   ],
-   "answerIndex": 0,
-   "explain": "A living record of evolving patterns, chapter by chapter.",
-   "id": "q0845"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which Greek oracle was dedicated to Apollo?",
-   "options": [
-    "Siwa",
-    "Delphi",
-    "Cumae",
-    "Dodona"
-   ],
-   "answerIndex": 1,
-   "explain": "The Oracle at Delphi, home of the Pythia.",
-   "id": "q0846"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is scrying?",
-   "options": [
-    "Reading tea leaves",
-    "Casting runes",
-    "Divination by gazing into a surface",
-    "Palm reading"
-   ],
-   "answerIndex": 2,
-   "explain": "Scrying — seeking visions in a crystal ball, mirror, or water.",
-   "id": "q0847"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many chakras are there in the common Western system?",
-   "options": [
-    "9",
-    "7",
-    "5",
-    "12"
-   ],
-   "answerIndex": 1,
-   "explain": "Seven main chakras from root to crown.",
-   "id": "q0848"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many cards are in a standard tarot deck?",
-   "options": [
-    "72",
-    "78",
-    "64",
-    "52"
-   ],
-   "answerIndex": 1,
-   "explain": "A tarot deck has 78 cards: 22 Major Arcana + 56 Minor Arcana.",
-   "id": "q0849"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the rank progression in the Panelverse Game Show?",
-   "options": [
-    "Level 1 → 100",
-    "Noob → Pro",
-    "Initiate → Acolyte → Keeper → Oracle → Mythwalker",
-    "Bronze → Silver → Gold"
-   ],
-   "answerIndex": 2,
-   "explain": "Climb by answering correctly.",
-   "id": "q0850"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which planet is associated with expansion and luck?",
-   "options": [
-    "Mars",
-    "Saturn",
-    "Neptune",
-    "Jupiter"
-   ],
-   "answerIndex": 3,
-   "explain": "Jupiter — growth, abundance, fortune.",
-   "id": "q0851"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which sign is symbolized by the water-bearer?",
-   "options": [
-    "Capricorn",
     "Cancer",
-    "Aquarius",
+    "Scorpio",
+    "Capricorn",
     "Pisces"
    ],
-   "answerIndex": 2,
-   "explain": "Aquarius — the water-bearer (an air sign).",
-   "id": "q0852"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Mercury rules which pair of zodiac signs?",
-   "options": [
-    "Aries and Scorpio",
-    "Taurus and Libra",
-    "Gemini and Virgo",
-    "Cancer and Leo"
-   ],
-   "answerIndex": 2,
-   "explain": "Mercury rules both Gemini and Virgo.",
-   "id": "q0853"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many signs are in the Western zodiac?",
-   "options": [
-    "10",
-    "12",
-    "13",
-    "8"
-   ],
-   "answerIndex": 1,
-   "explain": "Twelve zodiac signs, one per ~30 degrees of the ecliptic.",
-   "id": "q0854"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The 'third eye' chakra is located where?",
-   "options": [
-    "Between the eyebrows",
-    "At the throat",
-    "At the crown",
-    "At the heart"
-   ],
    "answerIndex": 0,
-   "explain": "Ajna, the brow chakra, sits between the eyebrows.",
-   "id": "q0855"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A point-up pentagram traditionally represents what?",
-   "options": [
-    "Spirit over the four elements",
-    "Chaos",
-    "The five senses only",
-    "The five wounds"
-   ],
-   "answerIndex": 0,
-   "explain": "Point-up: spirit presiding over earth, air, fire, and water.",
-   "id": "q0856"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The 'Hermetic' tradition takes its name from which figure?",
-   "options": [
-    "Hermes of Olympus",
-    "Herminius",
-    "Hermes Trismegistus",
-    "Saint Hermas"
-   ],
-   "answerIndex": 2,
-   "explain": "Hermes Trismegistus, the legendary author of the Hermetic texts.",
-   "id": "q0857"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which card represents sudden upheaval and shock?",
-   "options": [
-    "The Sun",
-    "The Hermit",
-    "The Tower",
-    "The Star"
-   ],
-   "answerIndex": 2,
-   "explain": "The Tower (XVI) — sudden, destructive revelation.",
-   "id": "q0858"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A reversed tarot card differs from upright by what?",
-   "options": [
-    "Its number",
-    "Its suit",
-    "Its orientation when drawn",
-    "Its color"
-   ],
-   "answerIndex": 2,
-   "explain": "Reversed = drawn upside-down, often shifting the meaning.",
-   "id": "q0859"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What hides behind a near-invisible glyph in the CultCodex footer?",
-   "options": [
-    "A 404",
-    "Nothing",
-    "A shop",
-    "The Basement"
-   ],
-   "answerIndex": 3,
-   "explain": "The ψ glyph opens the suppressed-files Basement.",
-   "id": "q0860"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In numerology, which is a 'master number' of intuition?",
-   "options": [
-    "3",
-    "9",
-    "11",
-    "7"
-   ],
-   "answerIndex": 2,
-   "explain": "11 is a master number linked to intuition and insight.",
-   "id": "q0861"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How does the archive catalogue the worst chat catastrophes?",
-   "options": [
-    "The Complaint Box",
-    "The Sad Folder",
-    "The Drama Files",
-    "The Banned List"
-   ],
-   "answerIndex": 2,
-   "explain": "Case files, catalogued with the seriousness they do not deserve.",
-   "id": "q0862"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which outside troll faction infamously raided a stream with threats?",
-   "options": [
-    "IP2",
-    "Anonymous",
-    "The HOA",
-    "The Avengers"
-   ],
-   "answerIndex": 0,
-   "explain": "The IP2 infiltration night — resolved, per lore, by cats.",
-   "id": "q0863"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Ophiuchus, the '13th sign', represents what?",
-   "options": [
-    "The ram",
-    "The archer",
-    "The scorpion",
-    "The serpent-bearer"
-   ],
-   "answerIndex": 3,
-   "explain": "Ophiuchus, the serpent-bearer, straddles the ecliptic.",
-   "id": "q0864"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Runes are letters of which alphabet family?",
-   "options": [
-    "Cyrillic",
-    "Ogham",
-    "Coptic",
-    "Futhark"
-   ],
-   "answerIndex": 3,
-   "explain": "The runic alphabets are known as Futhark.",
-   "id": "q0865"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Tarot most likely originated in the 15th century in which country?",
-   "options": [
-    "England",
-    "France",
-    "Egypt",
-    "Italy"
-   ],
-   "answerIndex": 3,
-   "explain": "Tarot began as Italian playing cards (tarocchi) in the 1400s.",
-   "id": "q0866"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In cult lore, 'Restricted Airspace' is enforced against whom?",
-   "options": [
-    "The moon",
-    "Chat mods",
-    "The FAA",
-    "Extraterrestrials"
-   ],
-   "answerIndex": 3,
-   "explain": "Restricted Airspace: extraterrestrial traffic enforcement, naturally.",
-   "id": "q0867"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Lovers card is associated with which theme?",
-   "options": [
-    "Travel",
-    "Choice and union",
-    "Wealth",
-    "Death and rebirth"
-   ],
-   "answerIndex": 1,
-   "explain": "The Lovers (VI) — relationships, values, and pivotal choice.",
-   "id": "q0868"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tarot card shows a lantern-bearing figure alone?",
-   "options": [
-    "The Emperor",
-    "Strength",
-    "The Chariot",
-    "The Hermit"
-   ],
-   "answerIndex": 3,
-   "explain": "The Hermit (IX) — solitude, introspection, guidance.",
-   "id": "q0869"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which sign is ruled by the Sun?",
-   "options": [
-    "Aries",
-    "Cancer",
-    "Leo",
-    "Sagittarius"
-   ],
-   "answerIndex": 2,
-   "explain": "Leo is the Sun's domicile.",
-   "id": "q0870"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which incense is classically burned for cleansing?",
-   "options": [
-    "Cinnamon",
-    "Vanilla",
-    "Rose",
-    "Sage"
-   ],
-   "answerIndex": 3,
-   "explain": "Sage (smudging) is the classic cleansing herb.",
-   "id": "q0871"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many spheres (Sephirot) are on the Kabbalistic Tree of Life?",
-   "options": [
-    "10",
-    "7",
-    "12",
-    "22"
-   ],
-   "answerIndex": 0,
-   "explain": "Ten Sephirot, connected by 22 paths.",
-   "id": "q0872"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tarot card depicts a figure hanging upside-down?",
-   "options": [
-    "The Devil",
-    "The Tower",
-    "Judgement",
-    "The Hanged Man"
-   ],
-   "answerIndex": 3,
-   "explain": "The Hanged Man (XII) — suspension, surrender, new perspective.",
-   "id": "q0873"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "'Mercury retrograde' refers to Mercury appearing to do what?",
-   "options": [
-    "Collide with the Moon",
-    "Move backward across the sky",
-    "Disappear entirely",
-    "Turn red"
-   ],
-   "answerIndex": 1,
-   "explain": "An apparent backward (retrograde) motion from Earth's vantage.",
-   "id": "q0874"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The daily game-show challenge rewards you with…",
-   "options": [
-    "A refund",
-    "Nothing",
-    "A sticker",
-    "+50 XP and a streak"
-   ],
-   "answerIndex": 3,
-   "explain": "One shared question a day, +50 XP, and the Daily Devotee badge.",
-   "id": "q0875"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many cards make up the Major Arcana?",
-   "options": [
-    "12",
-    "22",
-    "16",
-    "21"
-   ],
-   "answerIndex": 1,
-   "explain": "The Major Arcana runs from 0 (The Fool) to XXI (The World) — 22 cards.",
-   "id": "q0876"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which Major Arcana card is numbered XXI, the final one?",
-   "options": [
-    "The Sun",
-    "Judgement",
-    "The Star",
-    "The World"
-   ],
-   "answerIndex": 3,
-   "explain": "The World (XXI) completes the Major Arcana.",
-   "id": "q0877"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Wheel of the Year has how many sabbats?",
-   "options": [
-    "6",
-    "12",
-    "4",
-    "8"
-   ],
-   "answerIndex": 3,
-   "explain": "Eight sabbats: solstices, equinoxes, and cross-quarter days.",
-   "id": "q0878"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which metal is alchemically associated with the Moon?",
-   "options": [
-    "Iron",
-    "Gold",
-    "Silver",
-    "Copper"
-   ],
-   "answerIndex": 2,
-   "explain": "Silver ↔ Moon; gold ↔ Sun in classical alchemy.",
-   "id": "q0879"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In the game show, what appears when you answer correctly?",
-   "options": [
-    "Correct!",
-    "Ding",
-    "Nice one",
-    "/// the_codex_rules"
-   ],
-   "answerIndex": 3,
-   "explain": "And when wrong: /// the_codex_disagrees.",
-   "id": "q0880"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which sign is represented by the twins?",
-   "options": [
-    "Pisces",
-    "Gemini",
-    "Cancer",
-    "Aries"
-   ],
-   "answerIndex": 1,
-   "explain": "Gemini, the twins — duality and communication.",
-   "id": "q0881"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the name of Psyche's cat, star of countless streams?",
-   "options": [
-    "Mr. Bigglesworth",
-    "Trixs",
-    "Whiskers",
-    "Salem"
-   ],
-   "answerIndex": 1,
-   "explain": "Trixs — unfalsifiable feline sincerity.",
-   "id": "q0882"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What happened when Psyche raided Christine's stream?",
-   "options": [
-    "Nothing",
-    "He got a sponsorship",
-    "He won a prize",
-    "He got banned"
-   ],
-   "answerIndex": 3,
-   "explain": "The Christine Raid Incident — raid, then banhammer, then a full rebuttal.",
-   "id": "q0883"
+   "explain": "Cancer, the crab — a water sign.",
+   "id": "q0762"
   },
   {
    "round": "general-trivia",
@@ -14676,595 +12982,273 @@
    ],
    "answerIndex": 2,
    "explain": "The maxim is from the Emerald Tablet of Hermes Trismegistus.",
-   "id": "q0884"
+   "id": "q0763"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which zodiac sign is symbolized by the scales?",
+   "prompt": "Tarot most likely originated in the 15th century in which country?",
    "options": [
-    "Libra",
-    "Aquarius",
-    "Virgo",
-    "Gemini"
+    "England",
+    "France",
+    "Italy",
+    "Egypt"
+   ],
+   "answerIndex": 2,
+   "explain": "Tarot began as Italian playing cards (tarocchi) in the 1400s.",
+   "id": "q0764"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The High Priestess is numbered which?",
+   "options": [
+    "III",
+    "I",
+    "II",
+    "V"
+   ],
+   "answerIndex": 2,
+   "explain": "The High Priestess (II) — intuition, mystery.",
+   "id": "q0765"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A pendulum used for yes/no answers is a form of what?",
+   "options": [
+    "Alchemy",
+    "Astronomy",
+    "Divination (radiesthesia)",
+    "Numerology"
+   ],
+   "answerIndex": 2,
+   "explain": "Dowsing/radiesthesia with a pendulum.",
+   "id": "q0766"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The daily game-show challenge is the same for whom?",
+   "options": [
+    "Nobody",
+    "Every cultist that day",
+    "Only the host",
+    "Only subscribers"
+   ],
+   "answerIndex": 1,
+   "explain": "One deterministic question a day, shared by all.",
+   "id": "q0767"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "'Mercury retrograde' refers to Mercury appearing to do what?",
+   "options": [
+    "Move backward across the sky",
+    "Disappear entirely",
+    "Turn red",
+    "Collide with the Moon"
    ],
    "answerIndex": 0,
-   "explain": "Libra, the scales — balance and justice.",
-   "id": "q0885"
+   "explain": "An apparent backward (retrograde) motion from Earth's vantage.",
+   "id": "q0768"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Star card generally signifies what?",
+   "options": [
+    "Anger",
+    "Hope and renewal",
+    "Endings",
+    "Debt"
+   ],
+   "answerIndex": 1,
+   "explain": "The Star (XVII) — hope, healing, inspiration.",
+   "id": "q0769"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
    "prompt": "The ouroboros depicts a serpent doing what?",
    "options": [
-    "Shedding its skin",
-    "Eating its own tail",
     "Swallowing the sun",
-    "Coiled around a tree"
+    "Coiled around a tree",
+    "Shedding its skin",
+    "Eating its own tail"
    ],
-   "answerIndex": 1,
+   "answerIndex": 3,
    "explain": "Ouroboros — a serpent eating its tail: eternal cycles.",
-   "id": "q0886"
+   "id": "q0770"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "The word 'occult' literally means what?",
+   "prompt": "Which zodiac element does Leo belong to?",
    "options": [
-    "Evil",
-    "Hidden",
-    "Ancient",
-    "Forbidden"
-   ],
-   "answerIndex": 1,
-   "explain": "From Latin 'occultus' — hidden or concealed knowledge.",
-   "id": "q0887"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A 'sigil' in magic is best described as what?",
-   "options": [
-    "A sacred number",
-    "A protective circle",
-    "A spoken chant",
-    "A symbol charged with intent"
-   ],
-   "answerIndex": 3,
-   "explain": "A sigil is a designed symbol encoding a desire or entity.",
-   "id": "q0888"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tagline describes the Cult of Psyche experience?",
-   "options": [
-    "Trust the process",
-    "Enter as a skeptic, leave as a storyline",
-    "Subscribe now",
-    "Wake up sheeple"
-   ],
-   "answerIndex": 1,
-   "explain": "Where myth wakes up and chaos takes notes.",
-   "id": "q0889"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which element is associated with Swords?",
-   "options": [
-    "Air",
-    "Water",
-    "Earth",
-    "Fire"
-   ],
-   "answerIndex": 0,
-   "explain": "Swords ↔ Air: intellect, conflict, truth.",
-   "id": "q0890"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "'Zodiac' derives from a Greek term meaning what?",
-   "options": [
-    "Path of the sun",
-    "Wheel of fate",
-    "Circle of little animals",
-    "Ring of stars"
-   ],
-   "answerIndex": 2,
-   "explain": "From 'zodiakos kyklos' — circle of little animals/figures.",
-   "id": "q0891"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which Major Arcana card is numbered XIII?",
-   "options": [
-    "The Tower",
-    "Temperance",
-    "Death",
-    "The Devil"
-   ],
-   "answerIndex": 2,
-   "explain": "XIII is Death — endings and transformation, rarely literal.",
-   "id": "q0892"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which sign is ruled by the Moon?",
-   "options": [
-    "Cancer",
-    "Pisces",
-    "Taurus",
-    "Leo"
-   ],
-   "answerIndex": 0,
-   "explain": "Cancer is ruled by the Moon.",
-   "id": "q0893"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which altar tool represents the element Earth?",
-   "options": [
-    "A wand",
-    "A candle",
-    "A pentacle or salt",
-    "A chalice"
-   ],
-   "answerIndex": 2,
-   "explain": "The pentacle (and salt) represent Earth.",
-   "id": "q0894"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which planet is associated with discipline and limitation?",
-   "options": [
-    "Mercury",
-    "Saturn",
-    "Jupiter",
-    "Venus"
-   ],
-   "answerIndex": 1,
-   "explain": "Saturn — structure, boundaries, hard lessons.",
-   "id": "q0895"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Cult of Psyche archive lives at which site?",
-   "options": [
-    "psyche.org",
-    "cultcodex.me",
-    "occult.io",
-    "cult.tv"
-   ],
-   "answerIndex": 1,
-   "explain": "CultCodex — the searchable archive of the Cult of Psyche.",
-   "id": "q0896"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In the archive's cosmology, trolls are considered…",
-   "options": [
-    "Guests of honor",
-    "Mythical only",
-    "A founding institution",
-    "A glitch"
-   ],
-   "answerIndex": 2,
-   "explain": "'Trolls on Parade' was episode 3 — they predate most of the lore.",
-   "id": "q0897"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What does the cult's AI feature let you consult?",
-   "options": [
-    "A hotline",
-    "A chatbot",
-    "The Oracle",
-    "A magic 8-ball"
-   ],
-   "answerIndex": 2,
-   "explain": "Ask the Oracle — the archive's AI divination.",
-   "id": "q0898"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the leaderboard in the game show called?",
-   "options": [
-    "The Rankings",
-    "The Chart",
-    "The Hall of Oracles",
-    "The Wall"
-   ],
-   "answerIndex": 2,
-   "explain": "Weekly, monthly, and all-time boards of the top cultists.",
-   "id": "q0899"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which crystal is associated with amplifying energy and clarity?",
-   "options": [
-    "Turquoise",
-    "Obsidian",
-    "Jade",
-    "Clear quartz"
-   ],
-   "answerIndex": 3,
-   "explain": "Clear quartz — the 'master healer', prized for amplification.",
-   "id": "q0900"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The 'astral plane' refers to what?",
-   "options": [
-    "A star map",
-    "The brainstem",
-    "The night sky",
-    "A non-physical realm of travel and spirits"
-   ],
-   "answerIndex": 3,
-   "explain": "The astral plane — a subtle realm reached in projection.",
-   "id": "q0901"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What are the four suits of the tarot's Minor Arcana?",
-   "options": [
-    "Rods, Bowls, Blades, Coins",
-    "Hearts, Clubs, Spades, Diamonds",
-    "Fire, Water, Air, Earth",
-    "Wands, Cups, Swords, Pentacles"
-   ],
-   "answerIndex": 3,
-   "explain": "Wands, Cups, Swords, and Pentacles (a.k.a. Coins).",
-   "id": "q0902"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is a group of witches traditionally called?",
-   "options": [
-    "A congregation",
-    "A circle",
-    "A conclave",
-    "A coven"
-   ],
-   "answerIndex": 3,
-   "explain": "A coven — classically said to number thirteen.",
-   "id": "q0903"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which element is associated with the suit of Cups?",
-   "options": [
-    "Earth",
     "Fire",
     "Air",
-    "Water"
-   ],
-   "answerIndex": 3,
-   "explain": "Cups map to Water — emotion, intuition, relationships.",
-   "id": "q0904"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tarot suit corresponds to Fire?",
-   "options": [
-    "Pentacles",
-    "Cups",
-    "Swords",
-    "Wands"
-   ],
-   "answerIndex": 3,
-   "explain": "Wands — Fire: drive, creativity, will.",
-   "id": "q0905"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which planet rules Scorpio in modern astrology?",
-   "options": [
-    "Mars",
-    "Venus",
-    "Saturn",
-    "Pluto"
-   ],
-   "answerIndex": 3,
-   "explain": "Modern astrology assigns Pluto to Scorpio (Mars is its traditional ruler).",
-   "id": "q0906"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A 'Full Poltergeist' rating in the Drama Files means…",
-   "options": [
-    "Minor issue",
-    "A refund",
-    "A ghost sighting",
-    "Maximum chaos"
-   ],
-   "answerIndex": 3,
-   "explain": "The highest tier of catalogued cult drama.",
-   "id": "q0907"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In palmistry, the 'heart line' reveals what?",
-   "options": [
-    "Career",
-    "Intelligence",
-    "Emotional life",
-    "Lifespan"
-   ],
-   "answerIndex": 2,
-   "explain": "The heart line is read for matters of emotion and love.",
-   "id": "q0908"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many court cards are in each tarot suit?",
-   "options": [
-    "2",
-    "4",
-    "3",
-    "5"
-   ],
-   "answerIndex": 1,
-   "explain": "Four: Page, Knight, Queen, King.",
-   "id": "q0909"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A 'grimoire' is a book of what?",
-   "options": [
-    "Saints' lives",
-    "Dream interpretations only",
-    "Astronomical tables",
-    "Magic spells and rituals"
-   ],
-   "answerIndex": 3,
-   "explain": "A grimoire is a textbook of magic.",
-   "id": "q0910"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tarot card is numbered 0?",
-   "options": [
-    "The Magician",
-    "Death",
-    "The World",
-    "The Fool"
-   ],
-   "answerIndex": 3,
-   "explain": "The Fool is card 0, beginning the Major Arcana's journey.",
-   "id": "q0911"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In Cult of Psyche lore, the go-to method for de-escalating chat drama is to…",
-   "options": [
-    "Play a jingle",
-    "Ban everyone",
-    "Bring out the cat",
-    "Read a prophecy"
-   ],
-   "answerIndex": 2,
-   "explain": "When the outside gets loud, browse the Codex and pet the cat.",
-   "id": "q0912"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the Trollopedia?",
-   "options": [
-    "A prophecy",
-    "A pizza brand",
-    "A tarot deck",
-    "The archive's field guide to trolls"
-   ],
-   "answerIndex": 3,
-   "explain": "The complete catalogue of the cult's oldest institution: the trolls.",
-   "id": "q0913"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Psychenomicon is best described as…",
-   "options": [
-    "A cookbook",
-    "A living chronicle of the show's evolving patterns",
-    "A legal document",
-    "A weather report"
-   ],
-   "answerIndex": 1,
-   "explain": "A living record of evolving patterns, chapter by chapter.",
-   "id": "q0914"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which Greek oracle was dedicated to Apollo?",
-   "options": [
-    "Siwa",
-    "Cumae",
-    "Delphi",
-    "Dodona"
-   ],
-   "answerIndex": 2,
-   "explain": "The Oracle at Delphi, home of the Pythia.",
-   "id": "q0915"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is scrying?",
-   "options": [
-    "Palm reading",
-    "Reading tea leaves",
-    "Divination by gazing into a surface",
-    "Casting runes"
-   ],
-   "answerIndex": 2,
-   "explain": "Scrying — seeking visions in a crystal ball, mirror, or water.",
-   "id": "q0916"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many chakras are there in the common Western system?",
-   "options": [
-    "9",
-    "12",
-    "7",
-    "5"
-   ],
-   "answerIndex": 2,
-   "explain": "Seven main chakras from root to crown.",
-   "id": "q0917"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many cards are in a standard tarot deck?",
-   "options": [
-    "52",
-    "64",
-    "72",
-    "78"
-   ],
-   "answerIndex": 3,
-   "explain": "A tarot deck has 78 cards: 22 Major Arcana + 56 Minor Arcana.",
-   "id": "q0918"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the rank progression in the Panelverse Game Show?",
-   "options": [
-    "Bronze → Silver → Gold",
-    "Initiate → Acolyte → Keeper → Oracle → Mythwalker",
-    "Level 1 → 100",
-    "Noob → Pro"
-   ],
-   "answerIndex": 1,
-   "explain": "Climb by answering correctly.",
-   "id": "q0919"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which planet is associated with expansion and luck?",
-   "options": [
-    "Mars",
-    "Saturn",
-    "Jupiter",
-    "Neptune"
-   ],
-   "answerIndex": 2,
-   "explain": "Jupiter — growth, abundance, fortune.",
-   "id": "q0920"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which sign is symbolized by the water-bearer?",
-   "options": [
-    "Aquarius",
-    "Cancer",
-    "Pisces",
-    "Capricorn"
+    "Water",
+    "Earth"
    ],
    "answerIndex": 0,
-   "explain": "Aquarius — the water-bearer (an air sign).",
-   "id": "q0921"
+   "explain": "Leo is a fire sign.",
+   "id": "q0771"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Mercury rules which pair of zodiac signs?",
+   "prompt": "The Bestiary of the Cult catalogues what?",
    "options": [
-    "Aries and Scorpio",
-    "Cancer and Leo",
-    "Taurus and Libra",
-    "Gemini and Virgo"
+    "Tarot cards",
+    "Episodes",
+    "Invented entities and characters",
+    "Real pets"
    ],
-   "answerIndex": 3,
-   "explain": "Mercury rules both Gemini and Virgo.",
-   "id": "q0922"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many signs are in the Western zodiac?",
-   "options": [
-    "13",
-    "12",
-    "8",
-    "10"
-   ],
-   "answerIndex": 1,
-   "explain": "Twelve zodiac signs, one per ~30 degrees of the ecliptic.",
-   "id": "q0923"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The 'third eye' chakra is located where?",
-   "options": [
-    "Between the eyebrows",
-    "At the crown",
-    "At the throat",
-    "At the heart"
-   ],
-   "answerIndex": 0,
-   "explain": "Ajna, the brow chakra, sits between the eyebrows.",
-   "id": "q0924"
+   "answerIndex": 2,
+   "explain": "From Satan's ex-wife to the Conspiring Goats.",
+   "id": "q0772"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
    "prompt": "A point-up pentagram traditionally represents what?",
    "options": [
-    "Spirit over the four elements",
-    "The five wounds",
+    "Chaos",
     "The five senses only",
-    "Chaos"
+    "Spirit over the four elements",
+    "The five wounds"
    ],
-   "answerIndex": 0,
+   "answerIndex": 2,
    "explain": "Point-up: spirit presiding over earth, air, fire, and water.",
-   "id": "q0925"
+   "id": "q0773"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "The 'Hermetic' tradition takes its name from which figure?",
+   "prompt": "Which tarot suit most concerns emotions and love?",
    "options": [
-    "Saint Hermas",
-    "Herminius",
-    "Hermes of Olympus",
-    "Hermes Trismegistus"
+    "Cups",
+    "Swords",
+    "Pentacles",
+    "Wands"
+   ],
+   "answerIndex": 0,
+   "explain": "Cups — the heart, relationships, feeling.",
+   "id": "q0774"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is a 'familiar' in witchcraft lore?",
+   "options": [
+    "A grimoire",
+    "A spell",
+    "An animal spirit companion",
+    "A close friend"
+   ],
+   "answerIndex": 2,
+   "explain": "A familiar aids a witch — classically a cat.",
+   "id": "q0775"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the first sign of the zodiac?",
+   "options": [
+    "Pisces",
+    "Leo",
+    "Capricorn",
+    "Aries"
    ],
    "answerIndex": 3,
-   "explain": "Hermes Trismegistus, the legendary author of the Hermetic texts.",
-   "id": "q0926"
+   "explain": "Aries opens the zodiac at the spring equinox.",
+   "id": "q0776"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A 'waxing' moon is doing what?",
+   "options": [
+    "Turning red",
+    "Growing toward full",
+    "Shrinking",
+    "Disappearing"
+   ],
+   "answerIndex": 1,
+   "explain": "Waxing = increasing illumination toward the full moon.",
+   "id": "q0777"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which zodiac element does Pisces belong to?",
+   "options": [
+    "Water",
+    "Fire",
+    "Air",
+    "Earth"
+   ],
+   "answerIndex": 0,
+   "explain": "Pisces is a water sign.",
+   "id": "q0778"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tarot suit most concerns work and money?",
+   "options": [
+    "Cups",
+    "Pentacles",
+    "Swords",
+    "Wands"
+   ],
+   "answerIndex": 1,
+   "explain": "Pentacles — the material world and finances.",
+   "id": "q0779"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which Major Arcana card is numbered XXI, the final one?",
+   "options": [
+    "Judgement",
+    "The Star",
+    "The World",
+    "The Sun"
+   ],
+   "answerIndex": 2,
+   "explain": "The World (XXI) completes the Major Arcana.",
+   "id": "q0780"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The 'astral plane' refers to what?",
+   "options": [
+    "The brainstem",
+    "A non-physical realm of travel and spirits",
+    "A star map",
+    "The night sky"
+   ],
+   "answerIndex": 1,
+   "explain": "The astral plane — a subtle realm reached in projection.",
+   "id": "q0781"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In numerology, which is a 'master number' of intuition?",
+   "options": [
+    "7",
+    "9",
+    "3",
+    "11"
+   ],
+   "answerIndex": 3,
+   "explain": "11 is a master number linked to intuition and insight.",
+   "id": "q0782"
   },
   {
    "round": "general-trivia",
@@ -15278,161 +13262,21 @@
    ],
    "answerIndex": 3,
    "explain": "The Tower (XVI) — sudden, destructive revelation.",
-   "id": "q0927"
+   "id": "q0783"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "A reversed tarot card differs from upright by what?",
+   "prompt": "What was Arthur infamous for in the 'Sweetie Impersonation Affair'?",
    "options": [
-    "Its color",
-    "Its orientation when drawn",
-    "Its suit",
-    "Its number"
-   ],
-   "answerIndex": 1,
-   "explain": "Reversed = drawn upside-down, often shifting the meaning.",
-   "id": "q0928"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What hides behind a near-invisible glyph in the CultCodex footer?",
-   "options": [
-    "Nothing",
-    "The Basement",
-    "A shop",
-    "A 404"
-   ],
-   "answerIndex": 1,
-   "explain": "The ψ glyph opens the suppressed-files Basement.",
-   "id": "q0929"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In numerology, which is a 'master number' of intuition?",
-   "options": [
-    "3",
-    "9",
-    "7",
-    "11"
+    "Baking a cake",
+    "Winning a tarot bet",
+    "Falling asleep on stream",
+    "Convincingly impersonating another streamer"
    ],
    "answerIndex": 3,
-   "explain": "11 is a master number linked to intuition and insight.",
-   "id": "q0930"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How does the archive catalogue the worst chat catastrophes?",
-   "options": [
-    "The Complaint Box",
-    "The Sad Folder",
-    "The Drama Files",
-    "The Banned List"
-   ],
-   "answerIndex": 2,
-   "explain": "Case files, catalogued with the seriousness they do not deserve.",
-   "id": "q0931"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which outside troll faction infamously raided a stream with threats?",
-   "options": [
-    "The HOA",
-    "IP2",
-    "The Avengers",
-    "Anonymous"
-   ],
-   "answerIndex": 1,
-   "explain": "The IP2 infiltration night — resolved, per lore, by cats.",
-   "id": "q0932"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Ophiuchus, the '13th sign', represents what?",
-   "options": [
-    "The archer",
-    "The serpent-bearer",
-    "The scorpion",
-    "The ram"
-   ],
-   "answerIndex": 1,
-   "explain": "Ophiuchus, the serpent-bearer, straddles the ecliptic.",
-   "id": "q0933"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Runes are letters of which alphabet family?",
-   "options": [
-    "Coptic",
-    "Cyrillic",
-    "Futhark",
-    "Ogham"
-   ],
-   "answerIndex": 2,
-   "explain": "The runic alphabets are known as Futhark.",
-   "id": "q0934"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Tarot most likely originated in the 15th century in which country?",
-   "options": [
-    "France",
-    "Italy",
-    "Egypt",
-    "England"
-   ],
-   "answerIndex": 1,
-   "explain": "Tarot began as Italian playing cards (tarocchi) in the 1400s.",
-   "id": "q0935"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In cult lore, 'Restricted Airspace' is enforced against whom?",
-   "options": [
-    "The moon",
-    "Extraterrestrials",
-    "The FAA",
-    "Chat mods"
-   ],
-   "answerIndex": 1,
-   "explain": "Restricted Airspace: extraterrestrial traffic enforcement, naturally.",
-   "id": "q0936"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Lovers card is associated with which theme?",
-   "options": [
-    "Choice and union",
-    "Death and rebirth",
-    "Travel",
-    "Wealth"
-   ],
-   "answerIndex": 0,
-   "explain": "The Lovers (VI) — relationships, values, and pivotal choice.",
-   "id": "q0937"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tarot card shows a lantern-bearing figure alone?",
-   "options": [
-    "The Chariot",
-    "The Hermit",
-    "Strength",
-    "The Emperor"
-   ],
-   "answerIndex": 1,
-   "explain": "The Hermit (IX) — solitude, introspection, guidance.",
-   "id": "q0938"
+   "explain": "He fooled Christine and others as 'Sweetie'.",
+   "id": "q0784"
   },
   {
    "round": "general-trivia",
@@ -15440,69 +13284,181 @@
    "prompt": "Which sign is ruled by the Sun?",
    "options": [
     "Leo",
-    "Sagittarius",
     "Aries",
+    "Sagittarius",
     "Cancer"
    ],
    "answerIndex": 0,
    "explain": "Leo is the Sun's domicile.",
-   "id": "q0939"
+   "id": "q0785"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which incense is classically burned for cleansing?",
+   "prompt": "What does 'esoteric' mean?",
    "options": [
-    "Vanilla",
-    "Sage",
-    "Cinnamon",
-    "Rose"
+    "Written down",
+    "Forbidden",
+    "Intended for an inner few",
+    "Ancient"
    ],
-   "answerIndex": 1,
-   "explain": "Sage (smudging) is the classic cleansing herb.",
-   "id": "q0940"
+   "answerIndex": 2,
+   "explain": "Knowledge meant for initiates, not the public.",
+   "id": "q0786"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "How many spheres (Sephirot) are on the Kabbalistic Tree of Life?",
+   "prompt": "In the Drama Files, the Cash App Tribunal opened with what interrupting?",
    "options": [
-    "10",
-    "7",
-    "22",
-    "12"
-   ],
-   "answerIndex": 0,
-   "explain": "Ten Sephirot, connected by 22 paths.",
-   "id": "q0941"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tarot card depicts a figure hanging upside-down?",
-   "options": [
-    "The Hanged Man",
-    "The Tower",
-    "The Devil",
-    "Judgement"
-   ],
-   "answerIndex": 0,
-   "explain": "The Hanged Man (XII) — suspension, surrender, new perspective.",
-   "id": "q0942"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "'Mercury retrograde' refers to Mercury appearing to do what?",
-   "options": [
-    "Disappear entirely",
-    "Turn red",
-    "Collide with the Moon",
-    "Move backward across the sky"
+    "A fire alarm",
+    "A power cut",
+    "A phone call",
+    "A malfunctioning text-to-speech"
    ],
    "answerIndex": 3,
-   "explain": "An apparent backward (retrograde) motion from Earth's vantage.",
-   "id": "q0943"
+   "explain": "The broken TTS recited an unrelated police roleplay — the evening's only coherent speaker.",
+   "id": "q0787"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In the Drama Files, what severity sits below 'Full Poltergeist'?",
+   "options": [
+    "Mild Breeze",
+    "Code Yellow",
+    "Level 2",
+    "Elevated Nonsense"
+   ],
+   "answerIndex": 3,
+   "explain": "Mild Disturbance → Elevated Nonsense → Full Poltergeist.",
+   "id": "q0788"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Fool's number, 0, symbolizes what?",
+   "options": [
+    "Nothingness only",
+    "Infinite potential / new beginnings",
+    "The end",
+    "Bad luck"
+   ],
+   "answerIndex": 1,
+   "explain": "Zero — unlimited potential at the journey's start.",
+   "id": "q0789"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Devil card is numbered which?",
+   "options": [
+    "XV",
+    "X",
+    "XIII",
+    "XVI"
+   ],
+   "answerIndex": 0,
+   "explain": "The Devil (XV) — bondage, temptation, materialism.",
+   "id": "q0790"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A 'Full Poltergeist' rating in the Drama Files means…",
+   "options": [
+    "A ghost sighting",
+    "A refund",
+    "Minor issue",
+    "Maximum chaos"
+   ],
+   "answerIndex": 3,
+   "explain": "The highest tier of catalogued cult drama.",
+   "id": "q0791"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What does 'as within, so without' express?",
+   "options": [
+    "A law of physics",
+    "A recipe",
+    "Weather forecasting",
+    "Inner and outer worlds mirror each other"
+   ],
+   "answerIndex": 3,
+   "explain": "A Hermetic principle of correspondence.",
+   "id": "q0792"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which element is associated with Pentacles?",
+   "options": [
+    "Air",
+    "Fire",
+    "Water",
+    "Earth"
+   ],
+   "answerIndex": 3,
+   "explain": "Pentacles ↔ Earth: money, body, the material.",
+   "id": "q0793"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which sign is symbolized by the water-bearer?",
+   "options": [
+    "Capricorn",
+    "Cancer",
+    "Aquarius",
+    "Pisces"
+   ],
+   "answerIndex": 2,
+   "explain": "Aquarius — the water-bearer (an air sign).",
+   "id": "q0794"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What happened when Psyche raided Christine's stream?",
+   "options": [
+    "He got a sponsorship",
+    "He won a prize",
+    "He got banned",
+    "Nothing"
+   ],
+   "answerIndex": 2,
+   "explain": "The Christine Raid Incident — raid, then banhammer, then a full rebuttal.",
+   "id": "q0795"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the name of Psyche's cat, star of countless streams?",
+   "options": [
+    "Salem",
+    "Whiskers",
+    "Trixs",
+    "Mr. Bigglesworth"
+   ],
+   "answerIndex": 2,
+   "explain": "Trixs — unfalsifiable feline sincerity.",
+   "id": "q0796"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is a 'Founder's Edition' in CultCodex lore?",
+   "options": [
+    "A premium tier",
+    "An old episode",
+    "A hand-minted oracle card",
+    "A troll rank"
+   ],
+   "answerIndex": 2,
+   "explain": "Ten were hand-minted after the collection build halted.",
+   "id": "q0797"
   },
   {
    "round": "general-trivia",
@@ -15516,133 +13472,217 @@
    ],
    "answerIndex": 2,
    "explain": "One shared question a day, +50 XP, and the Daily Devotee badge.",
-   "id": "q0944"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many cards make up the Major Arcana?",
-   "options": [
-    "16",
-    "21",
-    "22",
-    "12"
-   ],
-   "answerIndex": 2,
-   "explain": "The Major Arcana runs from 0 (The Fool) to XXI (The World) — 22 cards.",
-   "id": "q0945"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which Major Arcana card is numbered XXI, the final one?",
-   "options": [
-    "The World",
-    "The Sun",
-    "Judgement",
-    "The Star"
-   ],
-   "answerIndex": 0,
-   "explain": "The World (XXI) completes the Major Arcana.",
-   "id": "q0946"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Wheel of the Year has how many sabbats?",
-   "options": [
-    "8",
-    "4",
-    "12",
-    "6"
-   ],
-   "answerIndex": 0,
-   "explain": "Eight sabbats: solstices, equinoxes, and cross-quarter days.",
-   "id": "q0947"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which metal is alchemically associated with the Moon?",
-   "options": [
-    "Copper",
-    "Gold",
-    "Iron",
-    "Silver"
-   ],
-   "answerIndex": 3,
-   "explain": "Silver ↔ Moon; gold ↔ Sun in classical alchemy.",
-   "id": "q0948"
+   "id": "q0798"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
    "prompt": "In the game show, what appears when you answer correctly?",
    "options": [
-    "Ding",
     "Correct!",
+    "Ding",
     "/// the_codex_rules",
     "Nice one"
    ],
    "answerIndex": 2,
    "explain": "And when wrong: /// the_codex_disagrees.",
-   "id": "q0949"
+   "id": "q0799"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which sign is represented by the twins?",
+   "prompt": "The 'Akashic Records' are said to be what?",
    "options": [
-    "Gemini",
-    "Aries",
-    "Cancer",
-    "Pisces"
+    "A cosmic archive of all events",
+    "A star map",
+    "A vinyl collection",
+    "A tax ledger"
    ],
    "answerIndex": 0,
-   "explain": "Gemini, the twins — duality and communication.",
-   "id": "q0950"
+   "explain": "A metaphysical record of all that has happened.",
+   "id": "q0800"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "What is the name of Psyche's cat, star of countless streams?",
+   "prompt": "Which planet is associated with love and beauty?",
    "options": [
-    "Trixs",
-    "Mr. Bigglesworth",
-    "Salem",
-    "Whiskers"
-   ],
-   "answerIndex": 0,
-   "explain": "Trixs — unfalsifiable feline sincerity.",
-   "id": "q0951"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What happened when Psyche raided Christine's stream?",
-   "options": [
-    "He got banned",
-    "Nothing",
-    "He got a sponsorship",
-    "He won a prize"
-   ],
-   "answerIndex": 0,
-   "explain": "The Christine Raid Incident — raid, then banhammer, then a full rebuttal.",
-   "id": "q0952"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "\"As above, so below\" comes from which text?",
-   "options": [
-    "The Kybalion",
-    "The Book of Thoth",
-    "The Necronomicon",
-    "The Emerald Tablet"
+    "Neptune",
+    "Saturn",
+    "Mars",
+    "Venus"
    ],
    "answerIndex": 3,
-   "explain": "The maxim is from the Emerald Tablet of Hermes Trismegistus.",
-   "id": "q0953"
+   "explain": "Venus — love, beauty, harmony.",
+   "id": "q0801"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Panelverse Game Show pulls its questions from what?",
+   "options": [
+    "Wikipedia",
+    "A random generator",
+    "ChatGPT",
+    "The real livestream archive"
+   ],
+   "answerIndex": 3,
+   "explain": "Every answer is hidden inside thousands of hours of chaos.",
+   "id": "q0802"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A 'sigil' in magic is best described as what?",
+   "options": [
+    "A spoken chant",
+    "A sacred number",
+    "A protective circle",
+    "A symbol charged with intent"
+   ],
+   "answerIndex": 3,
+   "explain": "A sigil is a designed symbol encoding a desire or entity.",
+   "id": "q0803"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which practice interprets the lines of the hand?",
+   "options": [
+    "Palmistry",
+    "Scrying",
+    "Numerology",
+    "Astrology"
+   ],
+   "answerIndex": 0,
+   "explain": "Palmistry (chiromancy) reads the hand.",
+   "id": "q0804"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which metal is alchemically associated with the Moon?",
+   "options": [
+    "Gold",
+    "Iron",
+    "Copper",
+    "Silver"
+   ],
+   "answerIndex": 3,
+   "explain": "Silver ↔ Moon; gold ↔ Sun in classical alchemy.",
+   "id": "q0805"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In the game show, what happens on a wrong answer?",
+   "options": [
+    "The screen turns off",
+    "Nothing",
+    "A red X flashes and the Codex disagrees",
+    "You lose a life"
+   ],
+   "answerIndex": 2,
+   "explain": "Red burst + '/// the_codex_disagrees'.",
+   "id": "q0806"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which Major Arcana card is numbered XIII?",
+   "options": [
+    "The Tower",
+    "Death",
+    "The Devil",
+    "Temperance"
+   ],
+   "answerIndex": 1,
+   "explain": "XIII is Death — endings and transformation, rarely literal.",
+   "id": "q0807"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "According to lore, what de-escalated the IP2 infiltration night?",
+   "options": [
+    "A prophecy",
+    "A cat-filled open panel",
+    "Turning off chat",
+    "Calling the police"
+   ],
+   "answerIndex": 1,
+   "explain": "'GOOD VIBES ONLY' — a relaxed, cat-filled panel.",
+   "id": "q0808"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The 'third eye' chakra is located where?",
+   "options": [
+    "At the crown",
+    "At the throat",
+    "At the heart",
+    "Between the eyebrows"
+   ],
+   "answerIndex": 3,
+   "explain": "Ajna, the brow chakra, sits between the eyebrows.",
+   "id": "q0809"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which Greek oracle was dedicated to Apollo?",
+   "options": [
+    "Delphi",
+    "Dodona",
+    "Cumae",
+    "Siwa"
+   ],
+   "answerIndex": 0,
+   "explain": "The Oracle at Delphi, home of the Pythia.",
+   "id": "q0810"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A reversed tarot card differs from upright by what?",
+   "options": [
+    "Its color",
+    "Its orientation when drawn",
+    "Its suit",
+    "Its number"
+   ],
+   "answerIndex": 1,
+   "explain": "Reversed = drawn upside-down, often shifting the meaning.",
+   "id": "q0811"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is a group of witches traditionally called?",
+   "options": [
+    "A coven",
+    "A congregation",
+    "A conclave",
+    "A circle"
+   ],
+   "answerIndex": 0,
+   "explain": "A coven — classically said to number thirteen.",
+   "id": "q0812"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which is a traditional Wiccan greeting?",
+   "options": [
+    "Blessed be",
+    "Godspeed",
+    "Ave",
+    "Namaste"
+   ],
+   "answerIndex": 0,
+   "explain": "'Blessed be' — a common Wiccan blessing.",
+   "id": "q0813"
   },
   {
    "round": "general-trivia",
@@ -15651,278 +13691,110 @@
    "options": [
     "Libra",
     "Virgo",
-    "Gemini",
-    "Aquarius"
+    "Aquarius",
+    "Gemini"
    ],
    "answerIndex": 0,
    "explain": "Libra, the scales — balance and justice.",
-   "id": "q0954"
+   "id": "q0814"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "The ouroboros depicts a serpent doing what?",
+   "prompt": "The archive's essay 'The Cat Advantage' argues a cat on stream is what?",
    "options": [
-    "Shedding its skin",
-    "Coiled around a tree",
-    "Eating its own tail",
-    "Swallowing the sun"
+    "A distraction",
+    "A ratings gimmick",
+    "Unfalsifiable sincerity",
+    "Bad luck"
    ],
    "answerIndex": 2,
-   "explain": "Ouroboros — a serpent eating its tail: eternal cycles.",
-   "id": "q0955"
+   "explain": "Drama requires a co-author; the cat declines.",
+   "id": "q0815"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "The word 'occult' literally means what?",
+   "prompt": "Which chakra is associated with the color red?",
    "options": [
-    "Hidden",
-    "Evil",
-    "Ancient",
-    "Forbidden"
+    "Heart",
+    "Crown",
+    "Throat",
+    "Root"
    ],
-   "answerIndex": 0,
-   "explain": "From Latin 'occultus' — hidden or concealed knowledge.",
-   "id": "q0956"
+   "answerIndex": 3,
+   "explain": "Muladhara, the root chakra — grounding, survival.",
+   "id": "q0816"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "A 'sigil' in magic is best described as what?",
+   "prompt": "What is the 'rising sign' (ascendant)?",
    "options": [
-    "A sacred number",
-    "A spoken chant",
-    "A symbol charged with intent",
-    "A protective circle"
+    "The brightest star",
+    "The full moon sign",
+    "Your sun sign",
+    "The sign on the eastern horizon at birth"
    ],
-   "answerIndex": 2,
-   "explain": "A sigil is a designed symbol encoding a desire or entity.",
-   "id": "q0957"
+   "answerIndex": 3,
+   "explain": "The zodiac sign rising in the east at your birth.",
+   "id": "q0817"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which tagline describes the Cult of Psyche experience?",
+   "prompt": "The archive describes its trolls as its…",
    "options": [
-    "Enter as a skeptic, leave as a storyline",
-    "Subscribe now",
-    "Trust the process",
-    "Wake up sheeple"
-   ],
-   "answerIndex": 0,
-   "explain": "Where myth wakes up and chaos takes notes.",
-   "id": "q0958"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which element is associated with Swords?",
-   "options": [
-    "Water",
-    "Air",
-    "Fire",
-    "Earth"
+    "Biggest fans",
+    "Oldest institution",
+    "Worst enemies",
+    "Sponsors"
    ],
    "answerIndex": 1,
-   "explain": "Swords ↔ Air: intellect, conflict, truth.",
-   "id": "q0959"
+   "explain": "'Trolls on Parade' was episode 3.",
+   "id": "q0818"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "'Zodiac' derives from a Greek term meaning what?",
+   "prompt": "In cult lore, 'Restricted Airspace' is enforced against whom?",
    "options": [
-    "Ring of stars",
-    "Path of the sun",
-    "Wheel of fate",
-    "Circle of little animals"
-   ],
-   "answerIndex": 3,
-   "explain": "From 'zodiakos kyklos' — circle of little animals/figures.",
-   "id": "q0960"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which Major Arcana card is numbered XIII?",
-   "options": [
-    "Temperance",
-    "The Devil",
-    "Death",
-    "The Tower"
+    "The FAA",
+    "The moon",
+    "Extraterrestrials",
+    "Chat mods"
    ],
    "answerIndex": 2,
-   "explain": "XIII is Death — endings and transformation, rarely literal.",
-   "id": "q0961"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which sign is ruled by the Moon?",
-   "options": [
-    "Cancer",
-    "Pisces",
-    "Taurus",
-    "Leo"
-   ],
-   "answerIndex": 0,
-   "explain": "Cancer is ruled by the Moon.",
-   "id": "q0962"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which altar tool represents the element Earth?",
-   "options": [
-    "A chalice",
-    "A wand",
-    "A candle",
-    "A pentacle or salt"
-   ],
-   "answerIndex": 3,
-   "explain": "The pentacle (and salt) represent Earth.",
-   "id": "q0963"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which planet is associated with discipline and limitation?",
-   "options": [
-    "Jupiter",
-    "Mercury",
-    "Venus",
-    "Saturn"
-   ],
-   "answerIndex": 3,
-   "explain": "Saturn — structure, boundaries, hard lessons.",
-   "id": "q0964"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Cult of Psyche archive lives at which site?",
-   "options": [
-    "psyche.org",
-    "occult.io",
-    "cultcodex.me",
-    "cult.tv"
-   ],
-   "answerIndex": 2,
-   "explain": "CultCodex — the searchable archive of the Cult of Psyche.",
-   "id": "q0965"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In the archive's cosmology, trolls are considered…",
-   "options": [
-    "Guests of honor",
-    "A founding institution",
-    "A glitch",
-    "Mythical only"
-   ],
-   "answerIndex": 1,
-   "explain": "'Trolls on Parade' was episode 3 — they predate most of the lore.",
-   "id": "q0966"
+   "explain": "Restricted Airspace: extraterrestrial traffic enforcement, naturally.",
+   "id": "q0819"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
    "prompt": "What does the cult's AI feature let you consult?",
    "options": [
-    "A magic 8-ball",
     "A hotline",
+    "The Oracle",
     "A chatbot",
-    "The Oracle"
-   ],
-   "answerIndex": 3,
-   "explain": "Ask the Oracle — the archive's AI divination.",
-   "id": "q0967"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the leaderboard in the game show called?",
-   "options": [
-    "The Chart",
-    "The Wall",
-    "The Rankings",
-    "The Hall of Oracles"
-   ],
-   "answerIndex": 3,
-   "explain": "Weekly, monthly, and all-time boards of the top cultists.",
-   "id": "q0968"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which crystal is associated with amplifying energy and clarity?",
-   "options": [
-    "Obsidian",
-    "Jade",
-    "Clear quartz",
-    "Turquoise"
-   ],
-   "answerIndex": 2,
-   "explain": "Clear quartz — the 'master healer', prized for amplification.",
-   "id": "q0969"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The 'astral plane' refers to what?",
-   "options": [
-    "The brainstem",
-    "The night sky",
-    "A star map",
-    "A non-physical realm of travel and spirits"
-   ],
-   "answerIndex": 3,
-   "explain": "The astral plane — a subtle realm reached in projection.",
-   "id": "q0970"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What are the four suits of the tarot's Minor Arcana?",
-   "options": [
-    "Wands, Cups, Swords, Pentacles",
-    "Rods, Bowls, Blades, Coins",
-    "Hearts, Clubs, Spades, Diamonds",
-    "Fire, Water, Air, Earth"
-   ],
-   "answerIndex": 0,
-   "explain": "Wands, Cups, Swords, and Pentacles (a.k.a. Coins).",
-   "id": "q0971"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is a group of witches traditionally called?",
-   "options": [
-    "A conclave",
-    "A congregation",
-    "A coven",
-    "A circle"
-   ],
-   "answerIndex": 2,
-   "explain": "A coven — classically said to number thirteen.",
-   "id": "q0972"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which element is associated with the suit of Cups?",
-   "options": [
-    "Earth",
-    "Water",
-    "Fire",
-    "Air"
+    "A magic 8-ball"
    ],
    "answerIndex": 1,
-   "explain": "Cups map to Water — emotion, intuition, relationships.",
-   "id": "q0973"
+   "explain": "Ask the Oracle — the archive's AI divination.",
+   "id": "q0820"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "How does the archive catalogue the worst chat catastrophes?",
+   "options": [
+    "The Drama Files",
+    "The Sad Folder",
+    "The Complaint Box",
+    "The Banned List"
+   ],
+   "answerIndex": 0,
+   "explain": "Case files, catalogued with the seriousness they do not deserve.",
+   "id": "q0821"
   },
   {
    "round": "general-trivia",
@@ -15930,209 +13802,27 @@
    "prompt": "Which tarot suit corresponds to Fire?",
    "options": [
     "Swords",
-    "Pentacles",
+    "Cups",
     "Wands",
-    "Cups"
+    "Pentacles"
    ],
    "answerIndex": 2,
    "explain": "Wands — Fire: drive, creativity, will.",
-   "id": "q0974"
+   "id": "q0822"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which planet rules Scorpio in modern astrology?",
+   "prompt": "A 'talisman' is typically used for what?",
    "options": [
-    "Saturn",
-    "Pluto",
-    "Venus",
-    "Mars"
-   ],
-   "answerIndex": 1,
-   "explain": "Modern astrology assigns Pluto to Scorpio (Mars is its traditional ruler).",
-   "id": "q0975"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A 'Full Poltergeist' rating in the Drama Files means…",
-   "options": [
-    "A ghost sighting",
-    "Minor issue",
-    "A refund",
-    "Maximum chaos"
-   ],
-   "answerIndex": 3,
-   "explain": "The highest tier of catalogued cult drama.",
-   "id": "q0976"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In palmistry, the 'heart line' reveals what?",
-   "options": [
-    "Emotional life",
-    "Lifespan",
-    "Intelligence",
-    "Career"
-   ],
-   "answerIndex": 0,
-   "explain": "The heart line is read for matters of emotion and love.",
-   "id": "q0977"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many court cards are in each tarot suit?",
-   "options": [
-    "5",
-    "2",
-    "3",
-    "4"
-   ],
-   "answerIndex": 3,
-   "explain": "Four: Page, Knight, Queen, King.",
-   "id": "q0978"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A 'grimoire' is a book of what?",
-   "options": [
-    "Magic spells and rituals",
-    "Saints' lives",
-    "Astronomical tables",
-    "Dream interpretations only"
-   ],
-   "answerIndex": 0,
-   "explain": "A grimoire is a textbook of magic.",
-   "id": "q0979"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which tarot card is numbered 0?",
-   "options": [
-    "The World",
-    "Death",
-    "The Fool",
-    "The Magician"
+    "Cooking",
+    "Navigation",
+    "Attracting or protecting",
+    "Timekeeping"
    ],
    "answerIndex": 2,
-   "explain": "The Fool is card 0, beginning the Major Arcana's journey.",
-   "id": "q0980"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "In Cult of Psyche lore, the go-to method for de-escalating chat drama is to…",
-   "options": [
-    "Read a prophecy",
-    "Play a jingle",
-    "Ban everyone",
-    "Bring out the cat"
-   ],
-   "answerIndex": 3,
-   "explain": "When the outside gets loud, browse the Codex and pet the cat.",
-   "id": "q0981"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the Trollopedia?",
-   "options": [
-    "A tarot deck",
-    "A prophecy",
-    "A pizza brand",
-    "The archive's field guide to trolls"
-   ],
-   "answerIndex": 3,
-   "explain": "The complete catalogue of the cult's oldest institution: the trolls.",
-   "id": "q0982"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "The Psychenomicon is best described as…",
-   "options": [
-    "A living chronicle of the show's evolving patterns",
-    "A legal document",
-    "A cookbook",
-    "A weather report"
-   ],
-   "answerIndex": 0,
-   "explain": "A living record of evolving patterns, chapter by chapter.",
-   "id": "q0983"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "Which Greek oracle was dedicated to Apollo?",
-   "options": [
-    "Dodona",
-    "Siwa",
-    "Delphi",
-    "Cumae"
-   ],
-   "answerIndex": 2,
-   "explain": "The Oracle at Delphi, home of the Pythia.",
-   "id": "q0984"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is scrying?",
-   "options": [
-    "Casting runes",
-    "Palm reading",
-    "Divination by gazing into a surface",
-    "Reading tea leaves"
-   ],
-   "answerIndex": 2,
-   "explain": "Scrying — seeking visions in a crystal ball, mirror, or water.",
-   "id": "q0985"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many chakras are there in the common Western system?",
-   "options": [
-    "9",
-    "12",
-    "7",
-    "5"
-   ],
-   "answerIndex": 2,
-   "explain": "Seven main chakras from root to crown.",
-   "id": "q0986"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "How many cards are in a standard tarot deck?",
-   "options": [
-    "78",
-    "52",
-    "64",
-    "72"
-   ],
-   "answerIndex": 0,
-   "explain": "A tarot deck has 78 cards: 22 Major Arcana + 56 Minor Arcana.",
-   "id": "q0987"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "What is the rank progression in the Panelverse Game Show?",
-   "options": [
-    "Level 1 → 100",
-    "Initiate → Acolyte → Keeper → Oracle → Mythwalker",
-    "Noob → Pro",
-    "Bronze → Silver → Gold"
-   ],
-   "answerIndex": 1,
-   "explain": "Climb by answering correctly.",
-   "id": "q0988"
+   "explain": "A charged object for luck or protection.",
+   "id": "q0823"
   },
   {
    "round": "general-trivia",
@@ -16146,91 +13836,1239 @@
    ],
    "answerIndex": 0,
    "explain": "Jupiter — growth, abundance, fortune.",
-   "id": "q0989"
+   "id": "q0824"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Which sign is symbolized by the water-bearer?",
+   "prompt": "The Wheel of the Year has how many sabbats?",
    "options": [
+    "8",
+    "12",
+    "6",
+    "4"
+   ],
+   "answerIndex": 0,
+   "explain": "Eight sabbats: solstices, equinoxes, and cross-quarter days.",
+   "id": "q0825"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which crystal is associated with amplifying energy and clarity?",
+   "options": [
+    "Obsidian",
+    "Turquoise",
+    "Jade",
+    "Clear quartz"
+   ],
+   "answerIndex": 3,
+   "explain": "Clear quartz — the 'master healer', prized for amplification.",
+   "id": "q0826"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tarot card shows two figures and an angel?",
+   "options": [
+    "Judgement",
+    "The Lovers",
+    "The Star",
+    "The Sun"
+   ],
+   "answerIndex": 1,
+   "explain": "The Lovers (VI), watched over by an angel.",
+   "id": "q0827"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which altar tool represents the element Earth?",
+   "options": [
+    "A candle",
+    "A wand",
+    "A chalice",
+    "A pentacle or salt"
+   ],
+   "answerIndex": 3,
+   "explain": "The pentacle (and salt) represent Earth.",
+   "id": "q0828"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which card is numbered I in the Major Arcana?",
+   "options": [
+    "The High Priestess",
+    "The Empress",
+    "The Magician",
+    "The Fool"
+   ],
+   "answerIndex": 2,
+   "explain": "The Magician (I) — will, manifestation, skill.",
+   "id": "q0829"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "How many chakras are there in the common Western system?",
+   "options": [
+    "5",
+    "12",
+    "9",
+    "7"
+   ],
+   "answerIndex": 3,
+   "explain": "Seven main chakras from root to crown.",
+   "id": "q0830"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the leaderboard in the game show called?",
+   "options": [
+    "The Rankings",
+    "The Chart",
+    "The Wall",
+    "The Hall of Oracles"
+   ],
+   "answerIndex": 3,
+   "explain": "Weekly, monthly, and all-time boards of the top cultists.",
+   "id": "q0831"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Astrologically, what is a 'natal chart'?",
+   "options": [
+    "A moon calendar",
+    "A family tree",
+    "A map of the sky at your birth",
+    "A tarot spread"
+   ],
+   "answerIndex": 2,
+   "explain": "The positions of the planets at the moment of birth.",
+   "id": "q0832"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What does the 'Ask the Oracle' feature use?",
+   "options": [
+    "A crystal ball",
+    "Chat votes",
+    "AI over the transcripts",
+    "A hotline"
+   ],
+   "answerIndex": 2,
+   "explain": "AI-powered divination over the archive.",
+   "id": "q0833"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which sign is represented by the twins?",
+   "options": [
+    "Aries",
+    "Gemini",
     "Pisces",
-    "Aquarius",
-    "Capricorn",
     "Cancer"
    ],
    "answerIndex": 1,
-   "explain": "Aquarius — the water-bearer (an air sign).",
-   "id": "q0990"
+   "explain": "Gemini, the twins — duality and communication.",
+   "id": "q0834"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "Mercury rules which pair of zodiac signs?",
+   "prompt": "Which tarot card is The Wheel of Fortune numbered?",
    "options": [
-    "Taurus and Libra",
-    "Aries and Scorpio",
-    "Cancer and Leo",
-    "Gemini and Virgo"
+    "XV",
+    "XX",
+    "X",
+    "V"
+   ],
+   "answerIndex": 2,
+   "explain": "The Wheel of Fortune (X) — cycles and fate.",
+   "id": "q0835"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is scrying?",
+   "options": [
+    "Casting runes",
+    "Divination by gazing into a surface",
+    "Reading tea leaves",
+    "Palm reading"
+   ],
+   "answerIndex": 1,
+   "explain": "Scrying — seeking visions in a crystal ball, mirror, or water.",
+   "id": "q0836"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "How many cards make up the Major Arcana?",
+   "options": [
+    "12",
+    "16",
+    "22",
+    "21"
+   ],
+   "answerIndex": 2,
+   "explain": "The Major Arcana runs from 0 (The Fool) to XXI (The World) — 22 cards.",
+   "id": "q0837"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Ophiuchus, the '13th sign', represents what?",
+   "options": [
+    "The archer",
+    "The ram",
+    "The scorpion",
+    "The serpent-bearer"
    ],
    "answerIndex": 3,
-   "explain": "Mercury rules both Gemini and Virgo.",
-   "id": "q0991"
+   "explain": "Ophiuchus, the serpent-bearer, straddles the ecliptic.",
+   "id": "q0838"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Empress card most represents what?",
+   "options": [
+    "Death",
+    "Poverty",
+    "War",
+    "Abundance and nurturing"
+   ],
+   "answerIndex": 3,
+   "explain": "The Empress (III) — fertility, nature, care.",
+   "id": "q0839"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Psychenomicon is best described as…",
+   "options": [
+    "A cookbook",
+    "A weather report",
+    "A legal document",
+    "A living chronicle of the show's evolving patterns"
+   ],
+   "answerIndex": 3,
+   "explain": "A living record of evolving patterns, chapter by chapter.",
+   "id": "q0840"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which incense is classically burned for cleansing?",
+   "options": [
+    "Cinnamon",
+    "Rose",
+    "Sage",
+    "Vanilla"
+   ],
+   "answerIndex": 2,
+   "explain": "Sage (smudging) is the classic cleansing herb.",
+   "id": "q0841"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which is NOT one of the four classical elements?",
+   "options": [
+    "Air",
+    "Fire",
+    "Metal",
+    "Water"
+   ],
+   "answerIndex": 2,
+   "explain": "Classical Western elements: Fire, Water, Air, Earth (Metal is from Chinese Wu Xing).",
+   "id": "q0842"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
    "prompt": "How many signs are in the Western zodiac?",
    "options": [
-    "8",
-    "13",
     "10",
-    "12"
+    "13",
+    "12",
+    "8"
    ],
-   "answerIndex": 3,
+   "answerIndex": 2,
    "explain": "Twelve zodiac signs, one per ~30 degrees of the ecliptic.",
-   "id": "q0992"
+   "id": "q0843"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "The 'third eye' chakra is located where?",
+   "prompt": "Which sign is symbolized by the goat?",
    "options": [
-    "At the heart",
-    "At the throat",
-    "At the crown",
-    "Between the eyebrows"
-   ],
-   "answerIndex": 3,
-   "explain": "Ajna, the brow chakra, sits between the eyebrows.",
-   "id": "q0993"
-  },
-  {
-   "round": "general-trivia",
-   "type": "multiple-choice",
-   "prompt": "A point-up pentagram traditionally represents what?",
-   "options": [
-    "Spirit over the four elements",
-    "The five wounds",
-    "The five senses only",
-    "Chaos"
+    "Capricorn",
+    "Aries",
+    "Leo",
+    "Taurus"
    ],
    "answerIndex": 0,
-   "explain": "Point-up: spirit presiding over earth, air, fire, and water.",
-   "id": "q0994"
+   "explain": "Capricorn, the sea-goat.",
+   "id": "q0844"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Moon card generally signifies what?",
+   "options": [
+    "Certainty",
+    "Wealth",
+    "Illusion and the subconscious",
+    "Travel"
+   ],
+   "answerIndex": 2,
+   "explain": "The Moon (XVIII) — dreams, fear, illusion.",
+   "id": "q0845"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tagline describes the Cult of Psyche experience?",
+   "options": [
+    "Trust the process",
+    "Enter as a skeptic, leave as a storyline",
+    "Wake up sheeple",
+    "Subscribe now"
+   ],
+   "answerIndex": 1,
+   "explain": "Where myth wakes up and chaos takes notes.",
+   "id": "q0846"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The 'evil eye' is a belief in what?",
+   "options": [
+    "A tarot card",
+    "A rune",
+    "A planet",
+    "A curse cast by a malicious glare"
+   ],
+   "answerIndex": 3,
+   "explain": "A malevolent look believed to bring harm.",
+   "id": "q0847"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What hides behind a near-invisible glyph in the CultCodex footer?",
+   "options": [
+    "A shop",
+    "Nothing",
+    "The Basement",
+    "A 404"
+   ],
+   "answerIndex": 2,
+   "explain": "The ψ glyph opens the suppressed-files Basement.",
+   "id": "q0848"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "'Zodiac' derives from a Greek term meaning what?",
+   "options": [
+    "Circle of little animals",
+    "Path of the sun",
+    "Ring of stars",
+    "Wheel of fate"
+   ],
+   "answerIndex": 0,
+   "explain": "From 'zodiakos kyklos' — circle of little animals/figures.",
+   "id": "q0849"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Runes are letters of which alphabet family?",
+   "options": [
+    "Ogham",
+    "Futhark",
+    "Coptic",
+    "Cyrillic"
+   ],
+   "answerIndex": 1,
+   "explain": "The runic alphabets are known as Futhark.",
+   "id": "q0850"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which outside troll faction infamously raided a stream with threats?",
+   "options": [
+    "The HOA",
+    "The Avengers",
+    "IP2",
+    "Anonymous"
+   ],
+   "answerIndex": 2,
+   "explain": "The IP2 infiltration night — resolved, per lore, by cats.",
+   "id": "q0851"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A 'grimoire' is a book of what?",
+   "options": [
+    "Dream interpretations only",
+    "Magic spells and rituals",
+    "Astronomical tables",
+    "Saints' lives"
+   ],
+   "answerIndex": 1,
+   "explain": "A grimoire is a textbook of magic.",
+   "id": "q0852"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the Psychenomicon organized into?",
+   "options": [
+    "Tweets",
+    "Volumes only",
+    "Episodes",
+    "Chapters"
+   ],
+   "answerIndex": 3,
+   "explain": "A living chronicle, chapter by chapter.",
+   "id": "q0853"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What does the game show's 'Codex Cluedo' round ask you to name?",
+   "options": [
+    "The killer's motive",
+    "The real suspect, place, and object",
+    "The weather",
+    "The time of the crime"
+   ],
+   "answerIndex": 1,
+   "explain": "One real archive entry hides in each column.",
+   "id": "q0854"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Lovers card is associated with which theme?",
+   "options": [
+    "Travel",
+    "Choice and union",
+    "Death and rebirth",
+    "Wealth"
+   ],
+   "answerIndex": 1,
+   "explain": "The Lovers (VI) — relationships, values, and pivotal choice.",
+   "id": "q0855"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which sign is ruled by the Moon?",
+   "options": [
+    "Pisces",
+    "Taurus",
+    "Leo",
+    "Cancer"
+   ],
+   "answerIndex": 3,
+   "explain": "Cancer is ruled by the Moon.",
+   "id": "q0856"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What does 'gnosis' refer to?",
+   "options": [
+    "A star",
+    "A prayer",
+    "Spiritual knowledge through direct experience",
+    "A curse"
+   ],
+   "answerIndex": 2,
+   "explain": "Direct, experiential spiritual knowing.",
+   "id": "q0857"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Mercury rules which pair of zodiac signs?",
+   "options": [
+    "Gemini and Virgo",
+    "Cancer and Leo",
+    "Aries and Scorpio",
+    "Taurus and Libra"
+   ],
+   "answerIndex": 0,
+   "explain": "Mercury rules both Gemini and Virgo.",
+   "id": "q0858"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tarot card depicts a figure hanging upside-down?",
+   "options": [
+    "The Tower",
+    "The Hanged Man",
+    "Judgement",
+    "The Devil"
+   ],
+   "answerIndex": 1,
+   "explain": "The Hanged Man (XII) — suspension, surrender, new perspective.",
+   "id": "q0859"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is 'divination'?",
+   "options": [
+    "Seeking hidden knowledge by supernatural means",
+    "A prayer",
+    "A sacrifice",
+    "Dividing numbers"
+   ],
+   "answerIndex": 0,
+   "explain": "The practice of foretelling or discovering the unknown.",
+   "id": "q0860"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Cult of Psyche archive lives at which site?",
+   "options": [
+    "psyche.org",
+    "cultcodex.me",
+    "occult.io",
+    "cult.tv"
+   ],
+   "answerIndex": 1,
+   "explain": "CultCodex — the searchable archive of the Cult of Psyche.",
+   "id": "q0861"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which element is associated with Swords?",
+   "options": [
+    "Earth",
+    "Air",
+    "Fire",
+    "Water"
+   ],
+   "answerIndex": 1,
+   "explain": "Swords ↔ Air: intellect, conflict, truth.",
+   "id": "q0862"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which is a real occult text?",
+   "options": [
+    "The Manual of Moons",
+    "The Kybalion",
+    "The Big Book of Auras",
+    "The Vibe Codex"
+   ],
+   "answerIndex": 1,
+   "explain": "The Kybalion — a 1908 Hermetic text.",
+   "id": "q0863"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In the archive's cosmology, trolls are considered…",
+   "options": [
+    "Mythical only",
+    "A glitch",
+    "A founding institution",
+    "Guests of honor"
+   ],
+   "answerIndex": 2,
+   "explain": "'Trolls on Parade' was episode 3 — they predate most of the lore.",
+   "id": "q0864"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the Trollopedia?",
+   "options": [
+    "A tarot deck",
+    "A prophecy",
+    "A pizza brand",
+    "The archive's field guide to trolls"
+   ],
+   "answerIndex": 3,
+   "explain": "The complete catalogue of the cult's oldest institution: the trolls.",
+   "id": "q0865"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which planet is associated with war and drive?",
+   "options": [
+    "Jupiter",
+    "Venus",
+    "Mercury",
+    "Mars"
+   ],
+   "answerIndex": 3,
+   "explain": "Mars — action, aggression, drive.",
+   "id": "q0866"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Sun card generally signifies what?",
+   "options": [
+    "Doom",
+    "Confusion",
+    "Loss",
+    "Joy and success"
+   ],
+   "answerIndex": 3,
+   "explain": "The Sun (XIX) — vitality, positivity, clarity.",
+   "id": "q0867"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the highest rank a player can reach in the game show?",
+   "options": [
+    "Sage",
+    "Grandmaster",
+    "Legend",
+    "Mythwalker"
+   ],
+   "answerIndex": 3,
+   "explain": "Initiate → Acolyte → Keeper → Oracle → Mythwalker.",
+   "id": "q0868"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What are the two pillars often shown behind the High Priestess?",
+   "options": [
+    "Alpha and Omega",
+    "Sun and Moon",
+    "Boaz and Jachin",
+    "Yin and Yang"
+   ],
+   "answerIndex": 2,
+   "explain": "The temple pillars Boaz (B) and Jachin (J).",
+   "id": "q0869"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "How many spheres (Sephirot) are on the Kabbalistic Tree of Life?",
+   "options": [
+    "12",
+    "22",
+    "7",
+    "10"
+   ],
+   "answerIndex": 3,
+   "explain": "Ten Sephirot, connected by 22 paths.",
+   "id": "q0870"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The 'anima mundi' translates to what?",
+   "options": [
+    "World soul",
+    "Dark matter",
+    "First light",
+    "Star seed"
+   ],
+   "answerIndex": 0,
+   "explain": "The 'world soul' — a living spirit of the cosmos.",
+   "id": "q0871"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which is a real (humorous) Cult of Psyche lore concept?",
+   "options": [
+    "Restricted Airspace",
+    "Mandatory Fun Fridays",
+    "Casual Cosmos",
+    "The Weekly Standup"
+   ],
+   "answerIndex": 0,
+   "explain": "Restricted Airspace — enforced against extraterrestrials.",
+   "id": "q0872"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which planet is associated with discipline and limitation?",
+   "options": [
+    "Venus",
+    "Jupiter",
+    "Saturn",
+    "Mercury"
+   ],
+   "answerIndex": 2,
+   "explain": "Saturn — structure, boundaries, hard lessons.",
+   "id": "q0873"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
    "prompt": "The 'Hermetic' tradition takes its name from which figure?",
    "options": [
-    "Herminius",
-    "Hermes of Olympus",
     "Hermes Trismegistus",
-    "Saint Hermas"
+    "Hermes of Olympus",
+    "Saint Hermas",
+    "Herminius"
+   ],
+   "answerIndex": 0,
+   "explain": "Hermes Trismegistus, the legendary author of the Hermetic texts.",
+   "id": "q0874"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In Cult of Psyche lore, the go-to method for de-escalating chat drama is to…",
+   "options": [
+    "Bring out the cat",
+    "Read a prophecy",
+    "Play a jingle",
+    "Ban everyone"
+   ],
+   "answerIndex": 0,
+   "explain": "When the outside gets loud, browse the Codex and pet the cat.",
+   "id": "q0875"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tarot card shows a lantern-bearing figure alone?",
+   "options": [
+    "The Hermit",
+    "The Emperor",
+    "The Chariot",
+    "Strength"
+   ],
+   "answerIndex": 0,
+   "explain": "The Hermit (IX) — solitude, introspection, guidance.",
+   "id": "q0876"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which element is associated with the suit of Cups?",
+   "options": [
+    "Air",
+    "Earth",
+    "Fire",
+    "Water"
+   ],
+   "answerIndex": 3,
+   "explain": "Cups map to Water — emotion, intuition, relationships.",
+   "id": "q0877"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "How many cards are in a standard tarot deck?",
+   "options": [
+    "78",
+    "72",
+    "52",
+    "64"
+   ],
+   "answerIndex": 0,
+   "explain": "A tarot deck has 78 cards: 22 Major Arcana + 56 Minor Arcana.",
+   "id": "q0878"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What are the four suits of the tarot's Minor Arcana?",
+   "options": [
+    "Rods, Bowls, Blades, Coins",
+    "Wands, Cups, Swords, Pentacles",
+    "Fire, Water, Air, Earth",
+    "Hearts, Clubs, Spades, Diamonds"
+   ],
+   "answerIndex": 1,
+   "explain": "Wands, Cups, Swords, and Pentacles (a.k.a. Coins).",
+   "id": "q0879"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tarot card is numbered 0?",
+   "options": [
+    "The Fool",
+    "Death",
+    "The World",
+    "The Magician"
+   ],
+   "answerIndex": 0,
+   "explain": "The Fool is card 0, beginning the Major Arcana's journey.",
+   "id": "q0880"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the rank progression in the Panelverse Game Show?",
+   "options": [
+    "Bronze → Silver → Gold",
+    "Level 1 → 100",
+    "Noob → Pro",
+    "Initiate → Acolyte → Keeper → Oracle → Mythwalker"
+   ],
+   "answerIndex": 3,
+   "explain": "Climb by answering correctly.",
+   "id": "q0881"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which chakra is associated with the color green?",
+   "options": [
+    "Third eye",
+    "Root",
+    "Sacral",
+    "Heart"
+   ],
+   "answerIndex": 3,
+   "explain": "Anahata, the heart chakra — love, compassion.",
+   "id": "q0882"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The word 'occult' literally means what?",
+   "options": [
+    "Evil",
+    "Forbidden",
+    "Ancient",
+    "Hidden"
+   ],
+   "answerIndex": 3,
+   "explain": "From Latin 'occultus' — hidden or concealed knowledge.",
+   "id": "q0883"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which zodiac element does Aquarius belong to?",
+   "options": [
+    "Air",
+    "Earth",
+    "Water",
+    "Fire"
+   ],
+   "answerIndex": 0,
+   "explain": "Aquarius is an air sign (despite the water-bearer).",
+   "id": "q0884"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Per the archive, the three Cult of Psyche channels include which of these?",
+   "options": [
+    "Psyche's Kitchen",
+    "Psyche Weather",
+    "Psyche Sports Hour",
+    "Psyche's Nightmares"
+   ],
+   "answerIndex": 3,
+   "explain": "@cultofpsyche, @psychesnightmares, @nightmarefrequenciestv.",
+   "id": "q0885"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In palmistry, the 'heart line' reveals what?",
+   "options": [
+    "Career",
+    "Intelligence",
+    "Lifespan",
+    "Emotional life"
+   ],
+   "answerIndex": 3,
+   "explain": "The heart line is read for matters of emotion and love.",
+   "id": "q0886"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which zodiac element does Taurus belong to?",
+   "options": [
+    "Fire",
+    "Water",
+    "Earth",
+    "Air"
    ],
    "answerIndex": 2,
-   "explain": "Hermes Trismegistus, the legendary author of the Hermetic texts.",
-   "id": "q0995"
+   "explain": "Taurus is an earth sign.",
+   "id": "q0887"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which practice finds meaning in numbers?",
+   "options": [
+    "Palmistry",
+    "Astrology",
+    "Numerology",
+    "Tarot"
+   ],
+   "answerIndex": 2,
+   "explain": "Numerology — the mysticism of numbers.",
+   "id": "q0888"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which planet rules Scorpio in modern astrology?",
+   "options": [
+    "Venus",
+    "Mars",
+    "Pluto",
+    "Saturn"
+   ],
+   "answerIndex": 2,
+   "explain": "Modern astrology assigns Pluto to Scorpio (Mars is its traditional ruler).",
+   "id": "q0889"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which sister site is dedicated to a Hindu goddess?",
+   "options": [
+    "Temple of Ma Matangi",
+    "The Grimoire",
+    "Cultos",
+    "Dreamweave"
+   ],
+   "answerIndex": 0,
+   "explain": "Matangi — a devotional site.",
+   "id": "q0890"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "How many court cards are in each tarot suit?",
+   "options": [
+    "3",
+    "2",
+    "4",
+    "5"
+   ],
+   "answerIndex": 2,
+   "explain": "Four: Page, Knight, Queen, King.",
+   "id": "q0891"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which sign is symbolized by the crab?",
+   "options": [
+    "Capricorn",
+    "Pisces",
+    "Cancer",
+    "Scorpio"
+   ],
+   "answerIndex": 2,
+   "explain": "Cancer, the crab — a water sign.",
+   "id": "q0892"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "\"As above, so below\" comes from which text?",
+   "options": [
+    "The Kybalion",
+    "The Necronomicon",
+    "The Book of Thoth",
+    "The Emerald Tablet"
+   ],
+   "answerIndex": 3,
+   "explain": "The maxim is from the Emerald Tablet of Hermes Trismegistus.",
+   "id": "q0893"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Tarot most likely originated in the 15th century in which country?",
+   "options": [
+    "England",
+    "France",
+    "Italy",
+    "Egypt"
+   ],
+   "answerIndex": 2,
+   "explain": "Tarot began as Italian playing cards (tarocchi) in the 1400s.",
+   "id": "q0894"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The High Priestess is numbered which?",
+   "options": [
+    "III",
+    "I",
+    "II",
+    "V"
+   ],
+   "answerIndex": 2,
+   "explain": "The High Priestess (II) — intuition, mystery.",
+   "id": "q0895"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A pendulum used for yes/no answers is a form of what?",
+   "options": [
+    "Numerology",
+    "Alchemy",
+    "Divination (radiesthesia)",
+    "Astronomy"
+   ],
+   "answerIndex": 2,
+   "explain": "Dowsing/radiesthesia with a pendulum.",
+   "id": "q0896"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The daily game-show challenge is the same for whom?",
+   "options": [
+    "Every cultist that day",
+    "Only the host",
+    "Only subscribers",
+    "Nobody"
+   ],
+   "answerIndex": 0,
+   "explain": "One deterministic question a day, shared by all.",
+   "id": "q0897"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "'Mercury retrograde' refers to Mercury appearing to do what?",
+   "options": [
+    "Turn red",
+    "Move backward across the sky",
+    "Collide with the Moon",
+    "Disappear entirely"
+   ],
+   "answerIndex": 1,
+   "explain": "An apparent backward (retrograde) motion from Earth's vantage.",
+   "id": "q0898"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Star card generally signifies what?",
+   "options": [
+    "Hope and renewal",
+    "Endings",
+    "Debt",
+    "Anger"
+   ],
+   "answerIndex": 0,
+   "explain": "The Star (XVII) — hope, healing, inspiration.",
+   "id": "q0899"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The ouroboros depicts a serpent doing what?",
+   "options": [
+    "Swallowing the sun",
+    "Shedding its skin",
+    "Coiled around a tree",
+    "Eating its own tail"
+   ],
+   "answerIndex": 3,
+   "explain": "Ouroboros — a serpent eating its tail: eternal cycles.",
+   "id": "q0900"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which zodiac element does Leo belong to?",
+   "options": [
+    "Earth",
+    "Fire",
+    "Air",
+    "Water"
+   ],
+   "answerIndex": 1,
+   "explain": "Leo is a fire sign.",
+   "id": "q0901"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Bestiary of the Cult catalogues what?",
+   "options": [
+    "Invented entities and characters",
+    "Episodes",
+    "Tarot cards",
+    "Real pets"
+   ],
+   "answerIndex": 0,
+   "explain": "From Satan's ex-wife to the Conspiring Goats.",
+   "id": "q0902"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A point-up pentagram traditionally represents what?",
+   "options": [
+    "The five wounds",
+    "Chaos",
+    "Spirit over the four elements",
+    "The five senses only"
+   ],
+   "answerIndex": 2,
+   "explain": "Point-up: spirit presiding over earth, air, fire, and water.",
+   "id": "q0903"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tarot suit most concerns emotions and love?",
+   "options": [
+    "Pentacles",
+    "Wands",
+    "Cups",
+    "Swords"
+   ],
+   "answerIndex": 2,
+   "explain": "Cups — the heart, relationships, feeling.",
+   "id": "q0904"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is a 'familiar' in witchcraft lore?",
+   "options": [
+    "A spell",
+    "An animal spirit companion",
+    "A close friend",
+    "A grimoire"
+   ],
+   "answerIndex": 1,
+   "explain": "A familiar aids a witch — classically a cat.",
+   "id": "q0905"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the first sign of the zodiac?",
+   "options": [
+    "Aries",
+    "Capricorn",
+    "Pisces",
+    "Leo"
+   ],
+   "answerIndex": 0,
+   "explain": "Aries opens the zodiac at the spring equinox.",
+   "id": "q0906"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A 'waxing' moon is doing what?",
+   "options": [
+    "Shrinking",
+    "Disappearing",
+    "Turning red",
+    "Growing toward full"
+   ],
+   "answerIndex": 3,
+   "explain": "Waxing = increasing illumination toward the full moon.",
+   "id": "q0907"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which zodiac element does Pisces belong to?",
+   "options": [
+    "Earth",
+    "Air",
+    "Water",
+    "Fire"
+   ],
+   "answerIndex": 2,
+   "explain": "Pisces is a water sign.",
+   "id": "q0908"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tarot suit most concerns work and money?",
+   "options": [
+    "Pentacles",
+    "Wands",
+    "Swords",
+    "Cups"
+   ],
+   "answerIndex": 0,
+   "explain": "Pentacles — the material world and finances.",
+   "id": "q0909"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which Major Arcana card is numbered XXI, the final one?",
+   "options": [
+    "The Sun",
+    "The World",
+    "Judgement",
+    "The Star"
+   ],
+   "answerIndex": 1,
+   "explain": "The World (XXI) completes the Major Arcana.",
+   "id": "q0910"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The 'astral plane' refers to what?",
+   "options": [
+    "The brainstem",
+    "A star map",
+    "A non-physical realm of travel and spirits",
+    "The night sky"
+   ],
+   "answerIndex": 2,
+   "explain": "The astral plane — a subtle realm reached in projection.",
+   "id": "q0911"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In numerology, which is a 'master number' of intuition?",
+   "options": [
+    "7",
+    "9",
+    "11",
+    "3"
+   ],
+   "answerIndex": 2,
+   "explain": "11 is a master number linked to intuition and insight.",
+   "id": "q0912"
   },
   {
    "round": "general-trivia",
@@ -16238,13 +15076,391 @@
    "prompt": "Which card represents sudden upheaval and shock?",
    "options": [
     "The Tower",
-    "The Hermit",
     "The Star",
+    "The Hermit",
     "The Sun"
    ],
    "answerIndex": 0,
    "explain": "The Tower (XVI) — sudden, destructive revelation.",
-   "id": "q0996"
+   "id": "q0913"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What was Arthur infamous for in the 'Sweetie Impersonation Affair'?",
+   "options": [
+    "Baking a cake",
+    "Winning a tarot bet",
+    "Falling asleep on stream",
+    "Convincingly impersonating another streamer"
+   ],
+   "answerIndex": 3,
+   "explain": "He fooled Christine and others as 'Sweetie'.",
+   "id": "q0914"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which sign is ruled by the Sun?",
+   "options": [
+    "Aries",
+    "Sagittarius",
+    "Leo",
+    "Cancer"
+   ],
+   "answerIndex": 2,
+   "explain": "Leo is the Sun's domicile.",
+   "id": "q0915"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What does 'esoteric' mean?",
+   "options": [
+    "Ancient",
+    "Written down",
+    "Intended for an inner few",
+    "Forbidden"
+   ],
+   "answerIndex": 2,
+   "explain": "Knowledge meant for initiates, not the public.",
+   "id": "q0916"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In the Drama Files, the Cash App Tribunal opened with what interrupting?",
+   "options": [
+    "A fire alarm",
+    "A phone call",
+    "A malfunctioning text-to-speech",
+    "A power cut"
+   ],
+   "answerIndex": 2,
+   "explain": "The broken TTS recited an unrelated police roleplay — the evening's only coherent speaker.",
+   "id": "q0917"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In the Drama Files, what severity sits below 'Full Poltergeist'?",
+   "options": [
+    "Level 2",
+    "Mild Breeze",
+    "Elevated Nonsense",
+    "Code Yellow"
+   ],
+   "answerIndex": 2,
+   "explain": "Mild Disturbance → Elevated Nonsense → Full Poltergeist.",
+   "id": "q0918"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Fool's number, 0, symbolizes what?",
+   "options": [
+    "The end",
+    "Infinite potential / new beginnings",
+    "Nothingness only",
+    "Bad luck"
+   ],
+   "answerIndex": 1,
+   "explain": "Zero — unlimited potential at the journey's start.",
+   "id": "q0919"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Devil card is numbered which?",
+   "options": [
+    "XIII",
+    "XVI",
+    "X",
+    "XV"
+   ],
+   "answerIndex": 3,
+   "explain": "The Devil (XV) — bondage, temptation, materialism.",
+   "id": "q0920"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A 'Full Poltergeist' rating in the Drama Files means…",
+   "options": [
+    "A refund",
+    "A ghost sighting",
+    "Minor issue",
+    "Maximum chaos"
+   ],
+   "answerIndex": 3,
+   "explain": "The highest tier of catalogued cult drama.",
+   "id": "q0921"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What does 'as within, so without' express?",
+   "options": [
+    "A recipe",
+    "A law of physics",
+    "Weather forecasting",
+    "Inner and outer worlds mirror each other"
+   ],
+   "answerIndex": 3,
+   "explain": "A Hermetic principle of correspondence.",
+   "id": "q0922"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which element is associated with Pentacles?",
+   "options": [
+    "Earth",
+    "Fire",
+    "Water",
+    "Air"
+   ],
+   "answerIndex": 0,
+   "explain": "Pentacles ↔ Earth: money, body, the material.",
+   "id": "q0923"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which sign is symbolized by the water-bearer?",
+   "options": [
+    "Cancer",
+    "Pisces",
+    "Aquarius",
+    "Capricorn"
+   ],
+   "answerIndex": 2,
+   "explain": "Aquarius — the water-bearer (an air sign).",
+   "id": "q0924"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What happened when Psyche raided Christine's stream?",
+   "options": [
+    "He got banned",
+    "He won a prize",
+    "Nothing",
+    "He got a sponsorship"
+   ],
+   "answerIndex": 0,
+   "explain": "The Christine Raid Incident — raid, then banhammer, then a full rebuttal.",
+   "id": "q0925"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the name of Psyche's cat, star of countless streams?",
+   "options": [
+    "Salem",
+    "Mr. Bigglesworth",
+    "Whiskers",
+    "Trixs"
+   ],
+   "answerIndex": 3,
+   "explain": "Trixs — unfalsifiable feline sincerity.",
+   "id": "q0926"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is a 'Founder's Edition' in CultCodex lore?",
+   "options": [
+    "A hand-minted oracle card",
+    "An old episode",
+    "A troll rank",
+    "A premium tier"
+   ],
+   "answerIndex": 0,
+   "explain": "Ten were hand-minted after the collection build halted.",
+   "id": "q0927"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The daily game-show challenge rewards you with…",
+   "options": [
+    "A refund",
+    "+50 XP and a streak",
+    "A sticker",
+    "Nothing"
+   ],
+   "answerIndex": 1,
+   "explain": "One shared question a day, +50 XP, and the Daily Devotee badge.",
+   "id": "q0928"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In the game show, what appears when you answer correctly?",
+   "options": [
+    "Correct!",
+    "Ding",
+    "/// the_codex_rules",
+    "Nice one"
+   ],
+   "answerIndex": 2,
+   "explain": "And when wrong: /// the_codex_disagrees.",
+   "id": "q0929"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The 'Akashic Records' are said to be what?",
+   "options": [
+    "A vinyl collection",
+    "A star map",
+    "A tax ledger",
+    "A cosmic archive of all events"
+   ],
+   "answerIndex": 3,
+   "explain": "A metaphysical record of all that has happened.",
+   "id": "q0930"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which planet is associated with love and beauty?",
+   "options": [
+    "Venus",
+    "Neptune",
+    "Mars",
+    "Saturn"
+   ],
+   "answerIndex": 0,
+   "explain": "Venus — love, beauty, harmony.",
+   "id": "q0931"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Panelverse Game Show pulls its questions from what?",
+   "options": [
+    "ChatGPT",
+    "The real livestream archive",
+    "A random generator",
+    "Wikipedia"
+   ],
+   "answerIndex": 1,
+   "explain": "Every answer is hidden inside thousands of hours of chaos.",
+   "id": "q0932"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A 'sigil' in magic is best described as what?",
+   "options": [
+    "A sacred number",
+    "A protective circle",
+    "A spoken chant",
+    "A symbol charged with intent"
+   ],
+   "answerIndex": 3,
+   "explain": "A sigil is a designed symbol encoding a desire or entity.",
+   "id": "q0933"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which practice interprets the lines of the hand?",
+   "options": [
+    "Scrying",
+    "Palmistry",
+    "Numerology",
+    "Astrology"
+   ],
+   "answerIndex": 1,
+   "explain": "Palmistry (chiromancy) reads the hand.",
+   "id": "q0934"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which metal is alchemically associated with the Moon?",
+   "options": [
+    "Iron",
+    "Copper",
+    "Gold",
+    "Silver"
+   ],
+   "answerIndex": 3,
+   "explain": "Silver ↔ Moon; gold ↔ Sun in classical alchemy.",
+   "id": "q0935"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In the game show, what happens on a wrong answer?",
+   "options": [
+    "You lose a life",
+    "Nothing",
+    "A red X flashes and the Codex disagrees",
+    "The screen turns off"
+   ],
+   "answerIndex": 2,
+   "explain": "Red burst + '/// the_codex_disagrees'.",
+   "id": "q0936"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which Major Arcana card is numbered XIII?",
+   "options": [
+    "The Tower",
+    "Death",
+    "The Devil",
+    "Temperance"
+   ],
+   "answerIndex": 1,
+   "explain": "XIII is Death — endings and transformation, rarely literal.",
+   "id": "q0937"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "According to lore, what de-escalated the IP2 infiltration night?",
+   "options": [
+    "A prophecy",
+    "A cat-filled open panel",
+    "Turning off chat",
+    "Calling the police"
+   ],
+   "answerIndex": 1,
+   "explain": "'GOOD VIBES ONLY' — a relaxed, cat-filled panel.",
+   "id": "q0938"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The 'third eye' chakra is located where?",
+   "options": [
+    "At the crown",
+    "Between the eyebrows",
+    "At the heart",
+    "At the throat"
+   ],
+   "answerIndex": 1,
+   "explain": "Ajna, the brow chakra, sits between the eyebrows.",
+   "id": "q0939"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which Greek oracle was dedicated to Apollo?",
+   "options": [
+    "Cumae",
+    "Dodona",
+    "Delphi",
+    "Siwa"
+   ],
+   "answerIndex": 2,
+   "explain": "The Oracle at Delphi, home of the Pythia.",
+   "id": "q0940"
   },
   {
    "round": "general-trivia",
@@ -16258,48 +15474,832 @@
    ],
    "answerIndex": 0,
    "explain": "Reversed = drawn upside-down, often shifting the meaning.",
-   "id": "q0997"
+   "id": "q0941"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "What hides behind a near-invisible glyph in the CultCodex footer?",
+   "prompt": "What is a group of witches traditionally called?",
    "options": [
-    "Nothing",
-    "A shop",
-    "The Basement",
-    "A 404"
+    "A congregation",
+    "A conclave",
+    "A circle",
+    "A coven"
+   ],
+   "answerIndex": 3,
+   "explain": "A coven — classically said to number thirteen.",
+   "id": "q0942"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which is a traditional Wiccan greeting?",
+   "options": [
+    "Namaste",
+    "Ave",
+    "Blessed be",
+    "Godspeed"
    ],
    "answerIndex": 2,
-   "explain": "The ψ glyph opens the suppressed-files Basement.",
-   "id": "q0998"
+   "explain": "'Blessed be' — a common Wiccan blessing.",
+   "id": "q0943"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
-   "prompt": "In numerology, which is a 'master number' of intuition?",
+   "prompt": "Which zodiac sign is symbolized by the scales?",
    "options": [
-    "9",
-    "11",
-    "3",
-    "7"
+    "Virgo",
+    "Aquarius",
+    "Libra",
+    "Gemini"
+   ],
+   "answerIndex": 2,
+   "explain": "Libra, the scales — balance and justice.",
+   "id": "q0944"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The archive's essay 'The Cat Advantage' argues a cat on stream is what?",
+   "options": [
+    "Unfalsifiable sincerity",
+    "Bad luck",
+    "A distraction",
+    "A ratings gimmick"
+   ],
+   "answerIndex": 0,
+   "explain": "Drama requires a co-author; the cat declines.",
+   "id": "q0945"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which chakra is associated with the color red?",
+   "options": [
+    "Crown",
+    "Root",
+    "Heart",
+    "Throat"
    ],
    "answerIndex": 1,
-   "explain": "11 is a master number linked to intuition and insight.",
-   "id": "q0999"
+   "explain": "Muladhara, the root chakra — grounding, survival.",
+   "id": "q0946"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the 'rising sign' (ascendant)?",
+   "options": [
+    "The sign on the eastern horizon at birth",
+    "The brightest star",
+    "Your sun sign",
+    "The full moon sign"
+   ],
+   "answerIndex": 0,
+   "explain": "The zodiac sign rising in the east at your birth.",
+   "id": "q0947"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The archive describes its trolls as its…",
+   "options": [
+    "Sponsors",
+    "Worst enemies",
+    "Biggest fans",
+    "Oldest institution"
+   ],
+   "answerIndex": 3,
+   "explain": "'Trolls on Parade' was episode 3.",
+   "id": "q0948"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In cult lore, 'Restricted Airspace' is enforced against whom?",
+   "options": [
+    "The FAA",
+    "Extraterrestrials",
+    "The moon",
+    "Chat mods"
+   ],
+   "answerIndex": 1,
+   "explain": "Restricted Airspace: extraterrestrial traffic enforcement, naturally.",
+   "id": "q0949"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What does the cult's AI feature let you consult?",
+   "options": [
+    "A chatbot",
+    "A hotline",
+    "The Oracle",
+    "A magic 8-ball"
+   ],
+   "answerIndex": 2,
+   "explain": "Ask the Oracle — the archive's AI divination.",
+   "id": "q0950"
   },
   {
    "round": "general-trivia",
    "type": "multiple-choice",
    "prompt": "How does the archive catalogue the worst chat catastrophes?",
    "options": [
-    "The Banned List",
     "The Complaint Box",
     "The Sad Folder",
+    "The Banned List",
     "The Drama Files"
    ],
    "answerIndex": 3,
    "explain": "Case files, catalogued with the seriousness they do not deserve.",
+   "id": "q0951"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tarot suit corresponds to Fire?",
+   "options": [
+    "Cups",
+    "Pentacles",
+    "Wands",
+    "Swords"
+   ],
+   "answerIndex": 2,
+   "explain": "Wands — Fire: drive, creativity, will.",
+   "id": "q0952"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A 'talisman' is typically used for what?",
+   "options": [
+    "Attracting or protecting",
+    "Navigation",
+    "Cooking",
+    "Timekeeping"
+   ],
+   "answerIndex": 0,
+   "explain": "A charged object for luck or protection.",
+   "id": "q0953"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which planet is associated with expansion and luck?",
+   "options": [
+    "Jupiter",
+    "Mars",
+    "Saturn",
+    "Neptune"
+   ],
+   "answerIndex": 0,
+   "explain": "Jupiter — growth, abundance, fortune.",
+   "id": "q0954"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Wheel of the Year has how many sabbats?",
+   "options": [
+    "6",
+    "4",
+    "12",
+    "8"
+   ],
+   "answerIndex": 3,
+   "explain": "Eight sabbats: solstices, equinoxes, and cross-quarter days.",
+   "id": "q0955"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which crystal is associated with amplifying energy and clarity?",
+   "options": [
+    "Clear quartz",
+    "Turquoise",
+    "Jade",
+    "Obsidian"
+   ],
+   "answerIndex": 0,
+   "explain": "Clear quartz — the 'master healer', prized for amplification.",
+   "id": "q0956"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tarot card shows two figures and an angel?",
+   "options": [
+    "The Lovers",
+    "The Star",
+    "The Sun",
+    "Judgement"
+   ],
+   "answerIndex": 0,
+   "explain": "The Lovers (VI), watched over by an angel.",
+   "id": "q0957"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which altar tool represents the element Earth?",
+   "options": [
+    "A chalice",
+    "A pentacle or salt",
+    "A candle",
+    "A wand"
+   ],
+   "answerIndex": 1,
+   "explain": "The pentacle (and salt) represent Earth.",
+   "id": "q0958"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which card is numbered I in the Major Arcana?",
+   "options": [
+    "The Magician",
+    "The High Priestess",
+    "The Empress",
+    "The Fool"
+   ],
+   "answerIndex": 0,
+   "explain": "The Magician (I) — will, manifestation, skill.",
+   "id": "q0959"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "How many chakras are there in the common Western system?",
+   "options": [
+    "9",
+    "5",
+    "7",
+    "12"
+   ],
+   "answerIndex": 2,
+   "explain": "Seven main chakras from root to crown.",
+   "id": "q0960"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the leaderboard in the game show called?",
+   "options": [
+    "The Rankings",
+    "The Wall",
+    "The Hall of Oracles",
+    "The Chart"
+   ],
+   "answerIndex": 2,
+   "explain": "Weekly, monthly, and all-time boards of the top cultists.",
+   "id": "q0961"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Astrologically, what is a 'natal chart'?",
+   "options": [
+    "A map of the sky at your birth",
+    "A moon calendar",
+    "A tarot spread",
+    "A family tree"
+   ],
+   "answerIndex": 0,
+   "explain": "The positions of the planets at the moment of birth.",
+   "id": "q0962"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What does the 'Ask the Oracle' feature use?",
+   "options": [
+    "A crystal ball",
+    "AI over the transcripts",
+    "A hotline",
+    "Chat votes"
+   ],
+   "answerIndex": 1,
+   "explain": "AI-powered divination over the archive.",
+   "id": "q0963"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which sign is represented by the twins?",
+   "options": [
+    "Cancer",
+    "Aries",
+    "Pisces",
+    "Gemini"
+   ],
+   "answerIndex": 3,
+   "explain": "Gemini, the twins — duality and communication.",
+   "id": "q0964"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tarot card is The Wheel of Fortune numbered?",
+   "options": [
+    "V",
+    "XV",
+    "X",
+    "XX"
+   ],
+   "answerIndex": 2,
+   "explain": "The Wheel of Fortune (X) — cycles and fate.",
+   "id": "q0965"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is scrying?",
+   "options": [
+    "Reading tea leaves",
+    "Divination by gazing into a surface",
+    "Palm reading",
+    "Casting runes"
+   ],
+   "answerIndex": 1,
+   "explain": "Scrying — seeking visions in a crystal ball, mirror, or water.",
+   "id": "q0966"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "How many cards make up the Major Arcana?",
+   "options": [
+    "16",
+    "12",
+    "21",
+    "22"
+   ],
+   "answerIndex": 3,
+   "explain": "The Major Arcana runs from 0 (The Fool) to XXI (The World) — 22 cards.",
+   "id": "q0967"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Ophiuchus, the '13th sign', represents what?",
+   "options": [
+    "The scorpion",
+    "The serpent-bearer",
+    "The archer",
+    "The ram"
+   ],
+   "answerIndex": 1,
+   "explain": "Ophiuchus, the serpent-bearer, straddles the ecliptic.",
+   "id": "q0968"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Empress card most represents what?",
+   "options": [
+    "War",
+    "Death",
+    "Abundance and nurturing",
+    "Poverty"
+   ],
+   "answerIndex": 2,
+   "explain": "The Empress (III) — fertility, nature, care.",
+   "id": "q0969"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Psychenomicon is best described as…",
+   "options": [
+    "A legal document",
+    "A cookbook",
+    "A weather report",
+    "A living chronicle of the show's evolving patterns"
+   ],
+   "answerIndex": 3,
+   "explain": "A living record of evolving patterns, chapter by chapter.",
+   "id": "q0970"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which incense is classically burned for cleansing?",
+   "options": [
+    "Cinnamon",
+    "Sage",
+    "Rose",
+    "Vanilla"
+   ],
+   "answerIndex": 1,
+   "explain": "Sage (smudging) is the classic cleansing herb.",
+   "id": "q0971"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which is NOT one of the four classical elements?",
+   "options": [
+    "Air",
+    "Water",
+    "Fire",
+    "Metal"
+   ],
+   "answerIndex": 3,
+   "explain": "Classical Western elements: Fire, Water, Air, Earth (Metal is from Chinese Wu Xing).",
+   "id": "q0972"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "How many signs are in the Western zodiac?",
+   "options": [
+    "13",
+    "8",
+    "12",
+    "10"
+   ],
+   "answerIndex": 2,
+   "explain": "Twelve zodiac signs, one per ~30 degrees of the ecliptic.",
+   "id": "q0973"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which sign is symbolized by the goat?",
+   "options": [
+    "Leo",
+    "Aries",
+    "Capricorn",
+    "Taurus"
+   ],
+   "answerIndex": 2,
+   "explain": "Capricorn, the sea-goat.",
+   "id": "q0974"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Moon card generally signifies what?",
+   "options": [
+    "Certainty",
+    "Travel",
+    "Illusion and the subconscious",
+    "Wealth"
+   ],
+   "answerIndex": 2,
+   "explain": "The Moon (XVIII) — dreams, fear, illusion.",
+   "id": "q0975"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tagline describes the Cult of Psyche experience?",
+   "options": [
+    "Wake up sheeple",
+    "Enter as a skeptic, leave as a storyline",
+    "Subscribe now",
+    "Trust the process"
+   ],
+   "answerIndex": 1,
+   "explain": "Where myth wakes up and chaos takes notes.",
+   "id": "q0976"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The 'evil eye' is a belief in what?",
+   "options": [
+    "A rune",
+    "A planet",
+    "A tarot card",
+    "A curse cast by a malicious glare"
+   ],
+   "answerIndex": 3,
+   "explain": "A malevolent look believed to bring harm.",
+   "id": "q0977"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What hides behind a near-invisible glyph in the CultCodex footer?",
+   "options": [
+    "A shop",
+    "A 404",
+    "Nothing",
+    "The Basement"
+   ],
+   "answerIndex": 3,
+   "explain": "The ψ glyph opens the suppressed-files Basement.",
+   "id": "q0978"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "'Zodiac' derives from a Greek term meaning what?",
+   "options": [
+    "Ring of stars",
+    "Path of the sun",
+    "Circle of little animals",
+    "Wheel of fate"
+   ],
+   "answerIndex": 2,
+   "explain": "From 'zodiakos kyklos' — circle of little animals/figures.",
+   "id": "q0979"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Runes are letters of which alphabet family?",
+   "options": [
+    "Futhark",
+    "Cyrillic",
+    "Coptic",
+    "Ogham"
+   ],
+   "answerIndex": 0,
+   "explain": "The runic alphabets are known as Futhark.",
+   "id": "q0980"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which outside troll faction infamously raided a stream with threats?",
+   "options": [
+    "The Avengers",
+    "Anonymous",
+    "The HOA",
+    "IP2"
+   ],
+   "answerIndex": 3,
+   "explain": "The IP2 infiltration night — resolved, per lore, by cats.",
+   "id": "q0981"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "A 'grimoire' is a book of what?",
+   "options": [
+    "Dream interpretations only",
+    "Magic spells and rituals",
+    "Saints' lives",
+    "Astronomical tables"
+   ],
+   "answerIndex": 1,
+   "explain": "A grimoire is a textbook of magic.",
+   "id": "q0982"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the Psychenomicon organized into?",
+   "options": [
+    "Volumes only",
+    "Episodes",
+    "Tweets",
+    "Chapters"
+   ],
+   "answerIndex": 3,
+   "explain": "A living chronicle, chapter by chapter.",
+   "id": "q0983"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What does the game show's 'Codex Cluedo' round ask you to name?",
+   "options": [
+    "The real suspect, place, and object",
+    "The time of the crime",
+    "The killer's motive",
+    "The weather"
+   ],
+   "answerIndex": 0,
+   "explain": "One real archive entry hides in each column.",
+   "id": "q0984"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Lovers card is associated with which theme?",
+   "options": [
+    "Choice and union",
+    "Death and rebirth",
+    "Travel",
+    "Wealth"
+   ],
+   "answerIndex": 0,
+   "explain": "The Lovers (VI) — relationships, values, and pivotal choice.",
+   "id": "q0985"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which sign is ruled by the Moon?",
+   "options": [
+    "Cancer",
+    "Leo",
+    "Taurus",
+    "Pisces"
+   ],
+   "answerIndex": 0,
+   "explain": "Cancer is ruled by the Moon.",
+   "id": "q0986"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What does 'gnosis' refer to?",
+   "options": [
+    "Spiritual knowledge through direct experience",
+    "A curse",
+    "A star",
+    "A prayer"
+   ],
+   "answerIndex": 0,
+   "explain": "Direct, experiential spiritual knowing.",
+   "id": "q0987"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Mercury rules which pair of zodiac signs?",
+   "options": [
+    "Gemini and Virgo",
+    "Taurus and Libra",
+    "Aries and Scorpio",
+    "Cancer and Leo"
+   ],
+   "answerIndex": 0,
+   "explain": "Mercury rules both Gemini and Virgo.",
+   "id": "q0988"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which tarot card depicts a figure hanging upside-down?",
+   "options": [
+    "The Hanged Man",
+    "The Devil",
+    "The Tower",
+    "Judgement"
+   ],
+   "answerIndex": 0,
+   "explain": "The Hanged Man (XII) — suspension, surrender, new perspective.",
+   "id": "q0989"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is 'divination'?",
+   "options": [
+    "A prayer",
+    "Dividing numbers",
+    "Seeking hidden knowledge by supernatural means",
+    "A sacrifice"
+   ],
+   "answerIndex": 2,
+   "explain": "The practice of foretelling or discovering the unknown.",
+   "id": "q0990"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Cult of Psyche archive lives at which site?",
+   "options": [
+    "psyche.org",
+    "occult.io",
+    "cultcodex.me",
+    "cult.tv"
+   ],
+   "answerIndex": 2,
+   "explain": "CultCodex — the searchable archive of the Cult of Psyche.",
+   "id": "q0991"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which element is associated with Swords?",
+   "options": [
+    "Air",
+    "Water",
+    "Earth",
+    "Fire"
+   ],
+   "answerIndex": 0,
+   "explain": "Swords ↔ Air: intellect, conflict, truth.",
+   "id": "q0992"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which is a real occult text?",
+   "options": [
+    "The Manual of Moons",
+    "The Kybalion",
+    "The Big Book of Auras",
+    "The Vibe Codex"
+   ],
+   "answerIndex": 1,
+   "explain": "The Kybalion — a 1908 Hermetic text.",
+   "id": "q0993"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "In the archive's cosmology, trolls are considered…",
+   "options": [
+    "Mythical only",
+    "Guests of honor",
+    "A glitch",
+    "A founding institution"
+   ],
+   "answerIndex": 3,
+   "explain": "'Trolls on Parade' was episode 3 — they predate most of the lore.",
+   "id": "q0994"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the Trollopedia?",
+   "options": [
+    "The archive's field guide to trolls",
+    "A tarot deck",
+    "A prophecy",
+    "A pizza brand"
+   ],
+   "answerIndex": 0,
+   "explain": "The complete catalogue of the cult's oldest institution: the trolls.",
+   "id": "q0995"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "Which planet is associated with war and drive?",
+   "options": [
+    "Venus",
+    "Jupiter",
+    "Mercury",
+    "Mars"
+   ],
+   "answerIndex": 3,
+   "explain": "Mars — action, aggression, drive.",
+   "id": "q0996"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "The Sun card generally signifies what?",
+   "options": [
+    "Loss",
+    "Confusion",
+    "Doom",
+    "Joy and success"
+   ],
+   "answerIndex": 3,
+   "explain": "The Sun (XIX) — vitality, positivity, clarity.",
+   "id": "q0997"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What is the highest rank a player can reach in the game show?",
+   "options": [
+    "Grandmaster",
+    "Sage",
+    "Legend",
+    "Mythwalker"
+   ],
+   "answerIndex": 3,
+   "explain": "Initiate → Acolyte → Keeper → Oracle → Mythwalker.",
+   "id": "q0998"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "What are the two pillars often shown behind the High Priestess?",
+   "options": [
+    "Boaz and Jachin",
+    "Yin and Yang",
+    "Sun and Moon",
+    "Alpha and Omega"
+   ],
+   "answerIndex": 0,
+   "explain": "The temple pillars Boaz (B) and Jachin (J).",
+   "id": "q0999"
+  },
+  {
+   "round": "general-trivia",
+   "type": "multiple-choice",
+   "prompt": "How many spheres (Sephirot) are on the Kabbalistic Tree of Life?",
+   "options": [
+    "22",
+    "12",
+    "7",
+    "10"
+   ],
+   "answerIndex": 3,
+   "explain": "Ten Sephirot, connected by 22 paths.",
    "id": "q1000"
   }
  ]

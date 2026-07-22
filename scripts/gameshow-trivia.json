@@ -757,5 +757,676 @@
   ],
   "a": 0,
   "ex": "Weekly, monthly, and all-time boards of the top cultists."
+ },
+ {
+  "q": "Per the archive, the three Cult of Psyche channels include which of these?",
+  "opts": [
+   "Psyche's Nightmares",
+   "Psyche's Kitchen",
+   "Psyche Sports Hour",
+   "Psyche Weather"
+  ],
+  "a": 0,
+  "ex": "@cultofpsyche, @psychesnightmares, @nightmarefrequenciestv."
+ },
+ {
+  "q": "In the Drama Files, the Cash App Tribunal opened with what interrupting?",
+  "opts": [
+   "A malfunctioning text-to-speech",
+   "A fire alarm",
+   "A power cut",
+   "A phone call"
+  ],
+  "a": 0,
+  "ex": "The broken TTS recited an unrelated police roleplay — the evening's only coherent speaker."
+ },
+ {
+  "q": "What was Arthur infamous for in the 'Sweetie Impersonation Affair'?",
+  "opts": [
+   "Convincingly impersonating another streamer",
+   "Falling asleep on stream",
+   "Winning a tarot bet",
+   "Baking a cake"
+  ],
+  "a": 0,
+  "ex": "He fooled Christine and others as 'Sweetie'."
+ },
+ {
+  "q": "According to lore, what de-escalated the IP2 infiltration night?",
+  "opts": [
+   "A cat-filled open panel",
+   "Calling the police",
+   "Turning off chat",
+   "A prophecy"
+  ],
+  "a": 0,
+  "ex": "'GOOD VIBES ONLY' — a relaxed, cat-filled panel."
+ },
+ {
+  "q": "The archive's essay 'The Cat Advantage' argues a cat on stream is what?",
+  "opts": [
+   "Unfalsifiable sincerity",
+   "A ratings gimmick",
+   "A distraction",
+   "Bad luck"
+  ],
+  "a": 0,
+  "ex": "Drama requires a co-author; the cat declines."
+ },
+ {
+  "q": "What does the game show's 'Codex Cluedo' round ask you to name?",
+  "opts": [
+   "The real suspect, place, and object",
+   "The killer's motive",
+   "The time of the crime",
+   "The weather"
+  ],
+  "a": 0,
+  "ex": "One real archive entry hides in each column."
+ },
+ {
+  "q": "What is a 'Founder's Edition' in CultCodex lore?",
+  "opts": [
+   "A hand-minted oracle card",
+   "A premium tier",
+   "An old episode",
+   "A troll rank"
+  ],
+  "a": 0,
+  "ex": "Ten were hand-minted after the collection build halted."
+ },
+ {
+  "q": "The Bestiary of the Cult catalogues what?",
+  "opts": [
+   "Invented entities and characters",
+   "Real pets",
+   "Tarot cards",
+   "Episodes"
+  ],
+  "a": 0,
+  "ex": "From Satan's ex-wife to the Conspiring Goats."
+ },
+ {
+  "q": "Which is a real (humorous) Cult of Psyche lore concept?",
+  "opts": [
+   "Restricted Airspace",
+   "Mandatory Fun Fridays",
+   "The Weekly Standup",
+   "Casual Cosmos"
+  ],
+  "a": 0,
+  "ex": "Restricted Airspace — enforced against extraterrestrials."
+ },
+ {
+  "q": "In the game show, what happens on a wrong answer?",
+  "opts": [
+   "A red X flashes and the Codex disagrees",
+   "Nothing",
+   "You lose a life",
+   "The screen turns off"
+  ],
+  "a": 0,
+  "ex": "Red burst + '/// the_codex_disagrees'."
+ },
+ {
+  "q": "The Panelverse Game Show pulls its questions from what?",
+  "opts": [
+   "The real livestream archive",
+   "Wikipedia",
+   "A random generator",
+   "ChatGPT"
+  ],
+  "a": 0,
+  "ex": "Every answer is hidden inside thousands of hours of chaos."
+ },
+ {
+  "q": "What is the highest rank a player can reach in the game show?",
+  "opts": [
+   "Mythwalker",
+   "Grandmaster",
+   "Legend",
+   "Sage"
+  ],
+  "a": 0,
+  "ex": "Initiate → Acolyte → Keeper → Oracle → Mythwalker."
+ },
+ {
+  "q": "Which sister site is dedicated to a Hindu goddess?",
+  "opts": [
+   "Temple of Ma Matangi",
+   "The Grimoire",
+   "Dreamweave",
+   "Cultos"
+  ],
+  "a": 0,
+  "ex": "Matangi — a devotional site."
+ },
+ {
+  "q": "The archive describes its trolls as its…",
+  "opts": [
+   "Oldest institution",
+   "Worst enemies",
+   "Biggest fans",
+   "Sponsors"
+  ],
+  "a": 0,
+  "ex": "'Trolls on Parade' was episode 3."
+ },
+ {
+  "q": "What does the 'Ask the Oracle' feature use?",
+  "opts": [
+   "AI over the transcripts",
+   "A hotline",
+   "A crystal ball",
+   "Chat votes"
+  ],
+  "a": 0,
+  "ex": "AI-powered divination over the archive."
+ },
+ {
+  "q": "In the Drama Files, what severity sits below 'Full Poltergeist'?",
+  "opts": [
+   "Elevated Nonsense",
+   "Mild Breeze",
+   "Code Yellow",
+   "Level 2"
+  ],
+  "a": 0,
+  "ex": "Mild Disturbance → Elevated Nonsense → Full Poltergeist."
+ },
+ {
+  "q": "What is the Psychenomicon organized into?",
+  "opts": [
+   "Chapters",
+   "Episodes",
+   "Volumes only",
+   "Tweets"
+  ],
+  "a": 0,
+  "ex": "A living chronicle, chapter by chapter."
+ },
+ {
+  "q": "The daily game-show challenge is the same for whom?",
+  "opts": [
+   "Every cultist that day",
+   "Only subscribers",
+   "Only the host",
+   "Nobody"
+  ],
+  "a": 0,
+  "ex": "One deterministic question a day, shared by all."
+ },
+ {
+  "q": "Which planet is associated with love and beauty?",
+  "opts": [
+   "Venus",
+   "Mars",
+   "Saturn",
+   "Neptune"
+  ],
+  "a": 0,
+  "ex": "Venus — love, beauty, harmony."
+ },
+ {
+  "q": "Which planet is associated with war and drive?",
+  "opts": [
+   "Mars",
+   "Venus",
+   "Jupiter",
+   "Mercury"
+  ],
+  "a": 0,
+  "ex": "Mars — action, aggression, drive."
+ },
+ {
+  "q": "What is the first sign of the zodiac?",
+  "opts": [
+   "Aries",
+   "Pisces",
+   "Capricorn",
+   "Leo"
+  ],
+  "a": 0,
+  "ex": "Aries opens the zodiac at the spring equinox."
+ },
+ {
+  "q": "Which tarot card shows two figures and an angel?",
+  "opts": [
+   "The Lovers",
+   "The Sun",
+   "Judgement",
+   "The Star"
+  ],
+  "a": 0,
+  "ex": "The Lovers (VI), watched over by an angel."
+ },
+ {
+  "q": "The Empress card most represents what?",
+  "opts": [
+   "Abundance and nurturing",
+   "War",
+   "Death",
+   "Poverty"
+  ],
+  "a": 0,
+  "ex": "The Empress (III) — fertility, nature, care."
+ },
+ {
+  "q": "Which element is associated with Pentacles?",
+  "opts": [
+   "Earth",
+   "Air",
+   "Fire",
+   "Water"
+  ],
+  "a": 0,
+  "ex": "Pentacles ↔ Earth: money, body, the material."
+ },
+ {
+  "q": "A 'waxing' moon is doing what?",
+  "opts": [
+   "Growing toward full",
+   "Shrinking",
+   "Turning red",
+   "Disappearing"
+  ],
+  "a": 0,
+  "ex": "Waxing = increasing illumination toward the full moon."
+ },
+ {
+  "q": "Which sign is symbolized by the crab?",
+  "opts": [
+   "Cancer",
+   "Scorpio",
+   "Pisces",
+   "Capricorn"
+  ],
+  "a": 0,
+  "ex": "Cancer, the crab — a water sign."
+ },
+ {
+  "q": "Which sign is symbolized by the goat?",
+  "opts": [
+   "Capricorn",
+   "Aries",
+   "Taurus",
+   "Leo"
+  ],
+  "a": 0,
+  "ex": "Capricorn, the sea-goat."
+ },
+ {
+  "q": "The 'anima mundi' translates to what?",
+  "opts": [
+   "World soul",
+   "First light",
+   "Dark matter",
+   "Star seed"
+  ],
+  "a": 0,
+  "ex": "The 'world soul' — a living spirit of the cosmos."
+ },
+ {
+  "q": "Which is a traditional Wiccan greeting?",
+  "opts": [
+   "Blessed be",
+   "Godspeed",
+   "Namaste",
+   "Ave"
+  ],
+  "a": 0,
+  "ex": "'Blessed be' — a common Wiccan blessing."
+ },
+ {
+  "q": "What does 'esoteric' mean?",
+  "opts": [
+   "Intended for an inner few",
+   "Ancient",
+   "Written down",
+   "Forbidden"
+  ],
+  "a": 0,
+  "ex": "Knowledge meant for initiates, not the public."
+ },
+ {
+  "q": "The 'Akashic Records' are said to be what?",
+  "opts": [
+   "A cosmic archive of all events",
+   "A vinyl collection",
+   "A tax ledger",
+   "A star map"
+  ],
+  "a": 0,
+  "ex": "A metaphysical record of all that has happened."
+ },
+ {
+  "q": "Which card is numbered I in the Major Arcana?",
+  "opts": [
+   "The Magician",
+   "The Fool",
+   "The High Priestess",
+   "The Empress"
+  ],
+  "a": 0,
+  "ex": "The Magician (I) — will, manifestation, skill."
+ },
+ {
+  "q": "The High Priestess is numbered which?",
+  "opts": [
+   "II",
+   "I",
+   "III",
+   "V"
+  ],
+  "a": 0,
+  "ex": "The High Priestess (II) — intuition, mystery."
+ },
+ {
+  "q": "Which practice interprets the lines of the hand?",
+  "opts": [
+   "Palmistry",
+   "Scrying",
+   "Numerology",
+   "Astrology"
+  ],
+  "a": 0,
+  "ex": "Palmistry (chiromancy) reads the hand."
+ },
+ {
+  "q": "Which practice finds meaning in numbers?",
+  "opts": [
+   "Numerology",
+   "Palmistry",
+   "Tarot",
+   "Astrology"
+  ],
+  "a": 0,
+  "ex": "Numerology — the mysticism of numbers."
+ },
+ {
+  "q": "What is a 'familiar' in witchcraft lore?",
+  "opts": [
+   "An animal spirit companion",
+   "A close friend",
+   "A spell",
+   "A grimoire"
+  ],
+  "a": 0,
+  "ex": "A familiar aids a witch — classically a cat."
+ },
+ {
+  "q": "The 'evil eye' is a belief in what?",
+  "opts": [
+   "A curse cast by a malicious glare",
+   "A tarot card",
+   "A planet",
+   "A rune"
+  ],
+  "a": 0,
+  "ex": "A malevolent look believed to bring harm."
+ },
+ {
+  "q": "Which zodiac element does Leo belong to?",
+  "opts": [
+   "Fire",
+   "Water",
+   "Air",
+   "Earth"
+  ],
+  "a": 0,
+  "ex": "Leo is a fire sign."
+ },
+ {
+  "q": "Which zodiac element does Taurus belong to?",
+  "opts": [
+   "Earth",
+   "Fire",
+   "Air",
+   "Water"
+  ],
+  "a": 0,
+  "ex": "Taurus is an earth sign."
+ },
+ {
+  "q": "Which zodiac element does Aquarius belong to?",
+  "opts": [
+   "Air",
+   "Water",
+   "Fire",
+   "Earth"
+  ],
+  "a": 0,
+  "ex": "Aquarius is an air sign (despite the water-bearer)."
+ },
+ {
+  "q": "Which zodiac element does Pisces belong to?",
+  "opts": [
+   "Water",
+   "Air",
+   "Fire",
+   "Earth"
+  ],
+  "a": 0,
+  "ex": "Pisces is a water sign."
+ },
+ {
+  "q": "The Sun card generally signifies what?",
+  "opts": [
+   "Joy and success",
+   "Doom",
+   "Confusion",
+   "Loss"
+  ],
+  "a": 0,
+  "ex": "The Sun (XIX) — vitality, positivity, clarity."
+ },
+ {
+  "q": "The Moon card generally signifies what?",
+  "opts": [
+   "Illusion and the subconscious",
+   "Certainty",
+   "Wealth",
+   "Travel"
+  ],
+  "a": 0,
+  "ex": "The Moon (XVIII) — dreams, fear, illusion."
+ },
+ {
+  "q": "The Star card generally signifies what?",
+  "opts": [
+   "Hope and renewal",
+   "Endings",
+   "Anger",
+   "Debt"
+  ],
+  "a": 0,
+  "ex": "The Star (XVII) — hope, healing, inspiration."
+ },
+ {
+  "q": "What is 'divination'?",
+  "opts": [
+   "Seeking hidden knowledge by supernatural means",
+   "Dividing numbers",
+   "A prayer",
+   "A sacrifice"
+  ],
+  "a": 0,
+  "ex": "The practice of foretelling or discovering the unknown."
+ },
+ {
+  "q": "A 'talisman' is typically used for what?",
+  "opts": [
+   "Attracting or protecting",
+   "Cooking",
+   "Navigation",
+   "Timekeeping"
+  ],
+  "a": 0,
+  "ex": "A charged object for luck or protection."
+ },
+ {
+  "q": "Which tarot card is The Wheel of Fortune numbered?",
+  "opts": [
+   "X",
+   "V",
+   "XV",
+   "XX"
+  ],
+  "a": 0,
+  "ex": "The Wheel of Fortune (X) — cycles and fate."
+ },
+ {
+  "q": "The Devil card is numbered which?",
+  "opts": [
+   "XV",
+   "XIII",
+   "XVI",
+   "X"
+  ],
+  "a": 0,
+  "ex": "The Devil (XV) — bondage, temptation, materialism."
+ },
+ {
+  "q": "What are the two pillars often shown behind the High Priestess?",
+  "opts": [
+   "Boaz and Jachin",
+   "Alpha and Omega",
+   "Sun and Moon",
+   "Yin and Yang"
+  ],
+  "a": 0,
+  "ex": "The temple pillars Boaz (B) and Jachin (J)."
+ },
+ {
+  "q": "Which is NOT one of the four classical elements?",
+  "opts": [
+   "Metal",
+   "Fire",
+   "Water",
+   "Air"
+  ],
+  "a": 0,
+  "ex": "Classical Western elements: Fire, Water, Air, Earth (Metal is from Chinese Wu Xing)."
+ },
+ {
+  "q": "Astrologically, what is a 'natal chart'?",
+  "opts": [
+   "A map of the sky at your birth",
+   "A family tree",
+   "A tarot spread",
+   "A moon calendar"
+  ],
+  "a": 0,
+  "ex": "The positions of the planets at the moment of birth."
+ },
+ {
+  "q": "What is the 'rising sign' (ascendant)?",
+  "opts": [
+   "The sign on the eastern horizon at birth",
+   "Your sun sign",
+   "The brightest star",
+   "The full moon sign"
+  ],
+  "a": 0,
+  "ex": "The zodiac sign rising in the east at your birth."
+ },
+ {
+  "q": "Which tarot suit most concerns emotions and love?",
+  "opts": [
+   "Cups",
+   "Swords",
+   "Wands",
+   "Pentacles"
+  ],
+  "a": 0,
+  "ex": "Cups — the heart, relationships, feeling."
+ },
+ {
+  "q": "Which tarot suit most concerns work and money?",
+  "opts": [
+   "Pentacles",
+   "Cups",
+   "Swords",
+   "Wands"
+  ],
+  "a": 0,
+  "ex": "Pentacles — the material world and finances."
+ },
+ {
+  "q": "What does 'gnosis' refer to?",
+  "opts": [
+   "Spiritual knowledge through direct experience",
+   "A prayer",
+   "A curse",
+   "A star"
+  ],
+  "a": 0,
+  "ex": "Direct, experiential spiritual knowing."
+ },
+ {
+  "q": "The Fool's number, 0, symbolizes what?",
+  "opts": [
+   "Infinite potential / new beginnings",
+   "Nothingness only",
+   "Bad luck",
+   "The end"
+  ],
+  "a": 0,
+  "ex": "Zero — unlimited potential at the journey's start."
+ },
+ {
+  "q": "Which is a real occult text?",
+  "opts": [
+   "The Kybalion",
+   "The Vibe Codex",
+   "The Big Book of Auras",
+   "The Manual of Moons"
+  ],
+  "a": 0,
+  "ex": "The Kybalion — a 1908 Hermetic text."
+ },
+ {
+  "q": "What does 'as within, so without' express?",
+  "opts": [
+   "Inner and outer worlds mirror each other",
+   "Weather forecasting",
+   "A recipe",
+   "A law of physics"
+  ],
+  "a": 0,
+  "ex": "A Hermetic principle of correspondence."
+ },
+ {
+  "q": "A pendulum used for yes/no answers is a form of what?",
+  "opts": [
+   "Divination (radiesthesia)",
+   "Astronomy",
+   "Alchemy",
+   "Numerology"
+  ],
+  "a": 0,
+  "ex": "Dowsing/radiesthesia with a pendulum."
+ },
+ {
+  "q": "Which chakra is associated with the color red?",
+  "opts": [
+   "Root",
+   "Crown",
+   "Throat",
+   "Heart"
+  ],
+  "a": 0,
+  "ex": "Muladhara, the root chakra — grounding, survival."
+ },
+ {
+  "q": "Which chakra is associated with the color green?",
+  "opts": [
+   "Heart",
+   "Root",
+   "Third eye",
+   "Sacral"
+  ],
+  "a": 0,
+  "ex": "Anahata, the heart chakra — love, compassion."
  }
 ]
