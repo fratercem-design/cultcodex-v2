@@ -28,7 +28,6 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { YouTubeEmbed } from "@/components/media/youtube-embed";
 import { TranscriptViewer } from "@/components/media/transcript-viewer";
-import { PaywallGate } from "@/components/subscription/paywall-gate";
 import { isSubscribed } from "@/lib/subscription";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { ReactionBar } from "@/components/episodes/reaction-bar";
@@ -499,28 +498,18 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   </div>
                 ),
                 ...(hasTranscript ? {
-                  transcript: hasTranscriptAccess ? (
+                  // Transcripts are PUBLIC — full text, server-rendered, indexable.
+                  // This is the archive's SEO engine: thousands of pages of real,
+                  // long-tail-searchable content. Premium value lives in the
+                  // interactive tools (Oracle, Decode, Red Room, annotations),
+                  // not behind the words themselves.
+                  transcript: (
                     <TerminalPanel header="TRANSCRIPT">
                       <TranscriptViewer
                         segments={episode.segments}
                         hasVideoEmbed={!!episode.youtubeVideoId}
                         initialTimestamp={initialTimestamp}
                         signalMap={signalMap}
-                      />
-                    </TerminalPanel>
-                  ) : (
-                    <TerminalPanel header="TRANSCRIPT">
-                      <PaywallGate
-                        // First ~60s free (min 5, max 12 segments) — blurred
-                        // mid-flow. Teaser transcript converts better than a
-                        // hard wall: the reader is already inside the scene.
-                        previewSegments={(() => {
-                          const inFirstMinute = episode.segments.filter((s) => s.startSeconds < 60);
-                          return (inFirstMinute.length >= 5 ? inFirstMinute : episode.segments).slice(0, 12);
-                        })()}
-                        totalCount={episode.segments.length}
-                        isAuthenticated={!!user}
-                        episodeTitle={episode.title}
                       />
                     </TerminalPanel>
                   ),
@@ -659,10 +648,10 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
               <p className="font-mono text-xs font-bold text-accent-gold">Observers see the surface.</p>
               <ul className="space-y-1.5">
                 {[
-                  "Full searchable transcript",
-                  "Decode Mode — AI analysis",
-                  "Jump to any timestamp",
-                  "Pattern search across all episodes",
+                  "Decode Mode — AI analysis of every episode",
+                  "Ask the Oracle across the whole archive",
+                  "The Red Room — unfiltered, no softening",
+                  "Add annotations & help shape the canon",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 font-mono text-[10px] text-text-muted">
                     <span className="text-accent-gold mt-0.5">✦</span>
