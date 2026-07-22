@@ -515,6 +515,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         hasVideoEmbed={!!episode.youtubeVideoId}
                         initialTimestamp={initialTimestamp}
                         signalMap={signalMap}
+                        episodeSlug={episode.slug}
                       />
                     </TerminalPanel>
                   ),

@@ -20,6 +20,7 @@ interface TranscriptViewerProps {
   initialSearchQuery?: string;
   initialTimestamp?: number;
   signalMap?: Record<string, SignalClass>;
+  episodeSlug?: string;
 }
 
 const SPEAKER_COLORS = [
@@ -35,10 +36,12 @@ export function TranscriptViewer({
   initialSearchQuery,
   initialTimestamp,
   signalMap,
+  episodeSlug,
 }: TranscriptViewerProps) {
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery ?? "");
   const [activeIndex, setActiveIndex] = useState(-1);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [sharedId, setSharedId] = useState<string | null>(null);
   const [filterMode, setFilterMode] = useState<FilterMode>("all");
 
   const hasSignalData = signalMap && Object.keys(signalMap).length > 0;
@@ -136,6 +139,22 @@ export function TranscriptViewer({
     await navigator.clipboard.writeText(text);
     setCopiedId(seg.id);
     setTimeout(() => setCopiedId(null), 2000);
+  }
+
+  // Share a deep link straight to this moment — the growth loop. The ?t= param
+  // scrolls a new visitor to this exact line. Uses the Web Share sheet on
+  // mobile, clipboard everywhere else.
+  async function shareSegment(seg: Segment) {
+    if (!episodeSlug) return;
+    const t = Math.floor(seg.startSeconds);
+    const url = `${window.location.origin}/episodes/${episodeSlug}?t=${t}`;
+    const shareText = `"${seg.text.slice(0, 140)}${seg.text.length > 140 ? "…" : ""}" — from the Cult of Psyche archive`;
+    try {
+      if (navigator.share) { await navigator.share({ title: "Cult of Psyche", text: shareText, url }); }
+      else { await navigator.clipboard.writeText(url); }
+    } catch { /* user dismissed share sheet */ }
+    setSharedId(seg.id);
+    setTimeout(() => setSharedId(null), 2000);
   }
 
   function highlightText(text: string, query: string) {
@@ -260,19 +279,25 @@ export function TranscriptViewer({
                 </p>
               </div>
 
-              {/* Copy button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  copySegment(seg);
-                }}
-                className="shrink-0 self-start pt-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                title="Copy segment"
-              >
-                <span className="font-mono text-[10px] text-text-muted hover:text-accent-gold transition-colors">
+              {/* Share + copy buttons */}
+              <div className="shrink-0 self-start flex items-center gap-1.5 pt-0.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                {episodeSlug && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); shareSegment(seg); }}
+                    title="Share a link to this moment"
+                    className="font-mono text-[10px] text-text-muted hover:text-accent-cyan transition-colors"
+                  >
+                    {sharedId === seg.id ? "✓ link" : "🔗"}
+                  </button>
+                )}
+                <button
+                  onClick={(e) => { e.stopPropagation(); copySegment(seg); }}
+                  title="Copy segment text"
+                  className="font-mono text-[10px] text-text-muted hover:text-accent-gold transition-colors"
+                >
                   {copiedId === seg.id ? "✓" : "⎘"}
-                </span>
-              </button>
+                </button>
+              </div>
             </div>
           );
         })}
