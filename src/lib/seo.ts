@@ -50,6 +50,7 @@ export interface EpisodeJsonLdInput {
   thumbnailUrl?: string | null;
   youtubeVideoId?: string | null;
   duration?: string | null;
+  transcript?: string | null;
 }
 
 /**
@@ -70,6 +71,7 @@ export function episodeJsonLd(ep: EpisodeJsonLdInput): Record<string, unknown> {
     ...(ep.thumbnailUrl ? { thumbnailUrl: [ep.thumbnailUrl] } : {}),
     ...(ep.airDate ? { uploadDate: ep.airDate.toISOString() } : {}),
     ...(isoDuration ? { duration: isoDuration } : {}),
+    ...(ep.transcript ? { transcript: ep.transcript } : {}),
     ...(ep.youtubeVideoId
       ? {
           embedUrl: `https://www.youtube.com/embed/${ep.youtubeVideoId}`,

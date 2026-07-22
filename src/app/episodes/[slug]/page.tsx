@@ -196,6 +196,11 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
             thumbnailUrl: episode.thumbnailUrl,
             youtubeVideoId: episode.youtubeVideoId,
             duration: episode.duration,
+            // Transcript excerpt for the VideoObject schema (capped so it
+            // signals rich content without doubling page weight).
+            transcript: episode.segments.length
+              ? episode.segments.map((s) => s.text).join(" ").slice(0, 5000)
+              : null,
           })
         ),
       }}
