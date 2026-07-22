@@ -34,7 +34,11 @@ export function PrizeWheel({ progress, onUpdate, onPrize }: {
   }, [spinning, progress.spins, onUpdate, onPrize]);
 
   return (
-    <div className="rounded-xl border border-accent-gold/30 bg-surface/60 p-5 space-y-4">
+    <div className="relative overflow-hidden rounded-xl border border-accent-gold/30 bg-surface/60 p-5">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/images/gameshow/closing.webp" alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-[0.12]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-void/85 via-void/80 to-void/90" />
+      <div className="relative space-y-4">
       <div className="flex items-center justify-between gap-3">
         <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/70">{"/// the_prize_wheel"}</p>
         <span className="font-mono text-[10px] text-text-muted">🎡 {progress.spins} spin{progress.spins === 1 ? "" : "s"} · earn one every 5 correct</span>
@@ -87,6 +91,7 @@ export function PrizeWheel({ progress, onUpdate, onPrize }: {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
