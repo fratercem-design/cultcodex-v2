@@ -11,6 +11,7 @@ import {
 } from "./progression";
 import { SparkBurst } from "./fx";
 import { Leaderboard } from "./leaderboard";
+import { PrizeWheel } from "./prize-wheel";
 import bankJson from "@/lib/data/gameshow-questions.json";
 
 const ROUND_COLOR: Record<string, string> = {
@@ -82,7 +83,7 @@ export function GameShow() {
   const [revealed, setRevealed] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
   const [muted, setMuted] = useState(false);
-  const [progress, setProgress] = useState<ProgressState>(() => ({ xp: 0, correct: 0, streak: 0, bestStreak: 0, archiveClicks: 0, byRound: {}, unlocked: [], lastDaily: "", dailyStreak: 0 }));
+  const [progress, setProgress] = useState<ProgressState>(() => ({ xp: 0, correct: 0, streak: 0, bestStreak: 0, archiveClicks: 0, byRound: {}, unlocked: [], lastDaily: "", dailyStreak: 0, spins: 0, titles: [], activeTitle: "" }));
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [burst, setBurst] = useState<{ n: number; variant: "correct" | "wrong" | "gold" }>({ n: 0, variant: "correct" });
   const [session, setSession] = useState({ correct: 0, total: 0 });
@@ -126,6 +127,7 @@ export function GameShow() {
       setProgress(res.state);
       if (dailyBonus && res.xpGained > 0) { setBurst((b) => ({ n: b.n + 1, variant: "gold" })); pushToast(`+${DAILY_BONUS_XP} XP — Daily Challenge`, "Come back tomorrow."); }
       if (res.rankedUp) { sound.levelup(); setBurst((b) => ({ n: b.n + 1, variant: "gold" })); pushToast(`⬆ Rank up — ${res.rankedUp}`, "The Codex takes notice."); }
+      if (res.spinEarned) { setBurst((b) => ({ n: b.n + 1, variant: "gold" })); pushToast("🎡 You earned a spin!", "Claim it on the Prize Wheel below."); }
       res.newAchievements.forEach((a: Achievement) => pushToast(a.label, "Achievement unlocked"));
     };
     if (roundKey === "__daily" && q.type !== "clue" && selected != null) {
@@ -224,6 +226,12 @@ export function GameShow() {
           </div>
         </div>
 
+        <PrizeWheel
+          progress={progress}
+          onUpdate={setProgress}
+          onPrize={(p) => pushToast(`🎉 ${p.label}`, "Prize claimed")}
+        />
+
         <Leaderboard sessionCorrect={session.correct} sessionTotal={session.total} />
 
         <AchievementShelf unlocked={progress.unlocked} />
@@ -293,7 +301,9 @@ function ProgressHud({ progress, rank, compact }: { progress: ProgressState; ran
   return (
     <div className={`rounded-lg border border-accent-violet/20 bg-surface/60 ${compact ? "px-4 py-2" : "px-5 py-3.5"}`}>
       <div className="flex items-center justify-between gap-3">
-        <span className="font-display text-sm font-bold text-accent-violet">{rank.name}</span>
+        <span className="font-display text-sm font-bold text-accent-violet">
+          {rank.name}{progress.activeTitle && <span className="ml-1.5 font-mono text-[10px] font-normal text-accent-gold">{progress.activeTitle}</span>}
+        </span>
         <span className="font-mono text-[10px] text-text-muted">
           {progress.xp} XP{rank.next ? ` · ${rank.toNext} to ${rank.next}` : " · max rank"}
           {progress.streak > 1 && <span className="ml-2 text-accent-gold">🔥 {progress.streak}</span>}

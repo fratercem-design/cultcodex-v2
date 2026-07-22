@@ -55,10 +55,40 @@ export type ProgressState = {
   unlocked: string[];
   lastDaily: string;   // YYYY-MM-DD of last completed daily challenge
   dailyStreak: number; // consecutive days
+  spins: number;       // unspent prize-wheel spins
+  titles: string[];    // unlocked titles
+  activeTitle: string; // the title currently worn (shown by rank)
 };
 
 const KEY = "cc_gameshow_v1";
-const EMPTY: ProgressState = { xp: 0, correct: 0, streak: 0, bestStreak: 0, archiveClicks: 0, byRound: {}, unlocked: [], lastDaily: "", dailyStreak: 0 };
+const EMPTY: ProgressState = { xp: 0, correct: 0, streak: 0, bestStreak: 0, archiveClicks: 0, byRound: {}, unlocked: [], lastDaily: "", dailyStreak: 0, spins: 0, titles: [], activeTitle: "" };
+
+// One spin earned per this many correct answers.
+export const CORRECT_PER_SPIN = 5;
+
+// Wearable titles the wheel can grant.
+export const TITLE_POOL = [
+  "the Unhinged", "Keeper of Cats", "Troll's Bane", "Oracle's Pet", "Chaos Certified",
+  "Lore Goblin", "the Sleepless", "Prophecy Addict", "Panel Survivor", "Certified Cultist",
+  "the Beloved", "Whisper-Network Nemesis", "Ma Matangi's Favorite", "the Notarized", "Vibe Custodian",
+];
+
+export type Prize =
+  | { kind: "xp"; amount: number; label: string }
+  | { kind: "title"; title: string; label: string }
+  | { kind: "spins"; amount: number; label: string }
+  | { kind: "flavor"; label: string };
+
+// Weighted wheel segments (in display order).
+export const WHEEL: { weight: number; make: (s: ProgressState) => Prize }[] = [
+  { weight: 22, make: () => ({ kind: "xp", amount: 25, label: "+25 XP" }) },
+  { weight: 10, make: () => ({ kind: "xp", amount: 100, label: "+100 XP" }) },
+  { weight: 16, make: () => ({ kind: "flavor", label: "The Codex smiles" }) },
+  { weight: 14, make: (s) => { const t = TITLE_POOL.find((x) => !s.titles.includes(x)); return t ? { kind: "title", title: t, label: `Title: ${t}` } : { kind: "xp", amount: 50, label: "+50 XP" }; } },
+  { weight: 18, make: () => ({ kind: "xp", amount: 50, label: "+50 XP" }) },
+  { weight: 8, make: () => ({ kind: "spins", amount: 2, label: "🎡 +2 Spins!" }) },
+  { weight: 12, make: () => ({ kind: "xp", amount: 10, label: "+10 XP" }) },
+];
 
 /** Local calendar day as YYYY-MM-DD. */
 export function todayKey(d = new Date()): string {
@@ -121,18 +151,21 @@ function checkAchievements(s: ProgressState): string[] {
   return add;
 }
 
-export type AnswerResult = { state: ProgressState; newAchievements: Achievement[]; rankedUp: string | null; xpGained: number };
+export type AnswerResult = { state: ProgressState; newAchievements: Achievement[]; rankedUp: string | null; xpGained: number; spinEarned?: boolean };
 
 export function recordAnswer(roundKey: string, correct: boolean): AnswerResult {
   const s = load();
   const prevRank = rankFor(s.xp).name;
   const xpGained = correct ? XP_PER_CORRECT : 0;
+  let spinEarned = false;
   if (correct) {
+    const before = s.correct;
     s.correct += 1;
     s.xp += XP_PER_CORRECT;
     s.streak += 1;
     s.bestStreak = Math.max(s.bestStreak, s.streak);
     s.byRound[roundKey] = (s.byRound[roundKey] ?? 0) + 1;
+    if (Math.floor(s.correct / CORRECT_PER_SPIN) > Math.floor(before / CORRECT_PER_SPIN)) { s.spins += 1; spinEarned = true; }
   } else {
     s.streak = 0;
   }
@@ -141,8 +174,34 @@ export function recordAnswer(roundKey: string, correct: boolean): AnswerResult {
   save(s);
   const newAchievements = ACHIEVEMENTS.filter((a) => newIds.includes(a.id));
   const rankedUp = rankFor(s.xp).name !== prevRank ? rankFor(s.xp).name : null;
-  return { state: s, newAchievements, rankedUp, xpGained };
+  return { state: s, newAchievements, rankedUp, xpGained, spinEarned };
 }
+
+/** Spend one spin. Returns the landed prize + index (for the wheel animation) and new state. */
+export function spinWheel(): { prize: Prize; index: number; state: ProgressState } | null {
+  const s = load();
+  if (s.spins <= 0) return null;
+  s.spins -= 1;
+  const total = WHEEL.reduce((a, w) => a + w.weight, 0);
+  let r = rnd() * total, index = 0;
+  for (let i = 0; i < WHEEL.length; i++) { if (r < WHEEL[i].weight) { index = i; break; } r -= WHEEL[i].weight; }
+  const prize = WHEEL[index].make(s);
+  if (prize.kind === "xp") s.xp += prize.amount;
+  else if (prize.kind === "spins") s.spins += prize.amount;
+  else if (prize.kind === "title") { s.titles = [...new Set([...s.titles, prize.title])]; if (!s.activeTitle) s.activeTitle = prize.title; }
+  save(s);
+  return { prize, index, state: s };
+}
+
+export function setActiveTitle(title: string): ProgressState {
+  const s = load();
+  s.activeTitle = s.titles.includes(title) || title === "" ? title : s.activeTitle;
+  save(s);
+  return s;
+}
+
+// Deterministic-free RNG is fine on the client (not the workflow sandbox).
+function rnd(): number { return Math.random(); }
 
 /** Complete today's daily challenge. Awards bonus XP + advances the day streak. */
 export function recordDaily(correct: boolean): AnswerResult {
