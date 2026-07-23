@@ -1431,3 +1431,40 @@ model GameScore {
   @@index([createdAt])
   @@index([score])
 }
+
+// ─── Clap Tokens (#cultofpsyche) ───────────────────────
+// A ClapHolder is a nickname on the public /claps board with a permanent
+// token total. Each purchase (Stripe checkout or manual CashApp credit via
+// admin) appends a ClapToken: the token vests permanently to the holder AND
+// grants a 24-hour "clap" spotlight (spotlightUntil). Admin can add/adjust
+// at /admin/claps.
+model ClapHolder {
+  id        String      @id @default(cuid())
+  nickname  String      @unique // buyer-chosen display name (case-preserved)
+  tokens    Int         @default(0) // denormalized permanent total
+  hidden    Boolean     @default(false) // admin can hide a holder from the board
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  claps     ClapToken[]
+
+  @@index([tokens])
+  @@index([hidden, tokens])
+}
+
+model ClapToken {
+  id              String     @id @default(cuid())
+  holderId        String
+  holder          ClapHolder @relation(fields: [holderId], references: [id], onDelete: Cascade)
+  quantity        Int        @default(1)
+  source          String     // "stripe" | "cashapp" | "admin"
+  amountCents     Int?       // what was actually paid (1000 with coupon, 2000 without); null for admin grants
+  couponCode      String?    // e.g. "panel" when the discount applied
+  stripeSessionId String?    @unique // idempotency for webhook grants
+  note            String?    // admin note (e.g. "cashapp $psyche 07-22")
+  spotlightUntil  DateTime?  // 24h clap window from purchase
+  createdAt       DateTime   @default(now())
+
+  @@index([holderId])
+  @@index([spotlightUntil])
+  @@index([createdAt])
+}

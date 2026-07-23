@@ -121,6 +121,35 @@ export async function POST(request: NextRequest) {
           }
         }
 
+        // Clap token purchase (#cultofpsyche) → vest tokens to the nickname
+        // and open the 24-hour clap spotlight. stripeSessionId is unique on
+        // ClapToken, so a duplicate delivery cannot double-grant.
+        if (session.mode === "payment" && session.metadata?.clapNickname) {
+          const nickname = session.metadata.clapNickname;
+          const quantity = Math.max(parseInt(session.metadata.clapQuantity ?? "1", 10) || 1, 1);
+          const couponCode = session.metadata.clapCoupon || null;
+          try {
+            const holder = await prisma.clapHolder.upsert({
+              where: { nickname },
+              create: { nickname, tokens: quantity },
+              update: { tokens: { increment: quantity } },
+            });
+            await prisma.clapToken.create({
+              data: {
+                holderId: holder.id,
+                quantity,
+                source: "stripe",
+                amountCents: session.amount_total ?? null,
+                couponCode,
+                stripeSessionId: session.id,
+                spotlightUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
+              },
+            });
+          } catch (err) {
+            console.error("[webhook] clap grant failed:", err);
+          }
+        }
+
         // One-time book purchase → grant a BookPurchase entitlement.
         if (session.mode === "payment" && session.metadata?.bookSku && session.metadata?.codexUserId) {
           const sku = session.metadata.bookSku;

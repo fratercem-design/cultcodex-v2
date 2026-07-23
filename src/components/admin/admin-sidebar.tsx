@@ -17,6 +17,7 @@ const NAV_ITEMS = [
   { href: "/admin/users", label: "Users", icon: "\uD83D\uDC65" },
   { href: "/admin/signals", label: "Signals", icon: "\u25C8" },
   { href: "/admin/annotations", label: "Annotations", icon: "\u270E" },
+  { href: "/admin/claps", label: "Clap Tokens", icon: "\uD83D\uDC4F" },
   { href: "/admin/sync", label: "Sync & Ingest", icon: "\u21BB" },
 ];
 
