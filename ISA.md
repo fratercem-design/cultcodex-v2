@@ -2,8 +2,8 @@
 project: cultcodex-v2
 task: Trollopedia Phase 1 — Evidence + Relationship Engine (data layer)
 effort: E3
-phase: execute
-progress: 0/12
+phase: complete
+progress: 12/12
 mode: standard
 started: 2026-07-22
 updated: 2026-07-22
@@ -44,18 +44,18 @@ validate and typecheck clean.
 
 ## Criteria
 
-- [ ] ISC-1: schema.prisma defines enum `RelationType` with all 14 brief states (probe: Grep)
-- [ ] ISC-2: schema.prisma defines enums `EvidenceSourceType`, `ConfidenceLevel`, `ClaimNature` (probe: Grep)
-- [ ] ISC-3: `Evidence` model has claim, nature, confidence, sourceType, sourceUrl, episodeId, timestampSeconds (probe: Read)
-- [ ] ISC-4: `RelationshipEvent` model links personA/personB with relationType, episodeId, occurredAt, headline, evidenceId (probe: Read)
-- [ ] ISC-5: `TimelineEvent` model has title, slug, date, category, episodeId, evidenceId (probe: Read)
-- [ ] ISC-6: `Person` and `Episode` carry back-relations to the new models (probe: Grep)
-- [ ] ISC-7: Migration SQL dir exists following repo timestamp pattern and creates all 3 tables + 4 enums (probe: Read)
-- [ ] ISC-8: `bunx prisma validate` passes (probe: Bash)
-- [ ] ISC-9: `bunx prisma generate` succeeds against the new schema (probe: Bash)
-- [ ] ISC-10: `src/lib/relationships.ts` exports `currentRelationState()` and `relationshipTimeline()` with typed returns (probe: Read)
-- [ ] ISC-11: Typecheck passes on the repo (probe: Bash tsc --noEmit)
-- [ ] ISC-12: Anti: no existing model or migration file modified destructively; git diff on schema shows additions plus back-relations only (probe: Bash git diff)
+- [x] ISC-1: schema.prisma defines enum `RelationType` with all 14 brief states (probe: Grep)
+- [x] ISC-2: schema.prisma defines enums `EvidenceSourceType`, `ConfidenceLevel`, `ClaimNature` (probe: Grep)
+- [x] ISC-3: `Evidence` model has claim, nature, confidence, sourceType, sourceUrl, episodeId, timestampSeconds (probe: Read)
+- [x] ISC-4: `RelationshipEvent` model links personA/personB with relationType, episodeId, occurredAt, headline, evidenceId (probe: Read)
+- [x] ISC-5: `TimelineEvent` model has title, slug, date, category, episodeId, evidenceId (probe: Read)
+- [x] ISC-6: `Person` and `Episode` carry back-relations to the new models (probe: Grep)
+- [x] ISC-7: Migration SQL dir exists following repo timestamp pattern and creates all 3 tables + 4 enums (probe: Read)
+- [x] ISC-8: `bunx prisma validate` passes (probe: Bash)
+- [x] ISC-9: `bunx prisma generate` succeeds against the new schema (probe: Bash)
+- [x] ISC-10: `src/lib/relationships.ts` exports `currentRelationState()` and `relationshipTimeline()` with typed returns (probe: Read)
+- [x] ISC-11: Typecheck passes on the repo (probe: Bash tsc --noEmit)
+- [x] ISC-12: Anti: no existing model or migration file modified destructively; git diff on schema shows additions plus back-relations only (probe: Bash git diff)
 
 ## Test Strategy
 
@@ -87,3 +87,14 @@ validate and typecheck clean.
 - 2026-07-22: ISA written directly (inline) rather than via Skill("ISA") scaffold — task shape was fully determined by the approved plan; scaffold would add a round trip with no new structure.
 - 2026-07-22: `RelationshipEvent` is an event log, not a state table — current state is derived (latest event per pair), preserving the brief's "relationships evolve" requirement without a second source of truth.
 - 2026-07-22: No pair-ordering constraint enforced in DB; helpers normalize (personAId < personBId) at write time to avoid duplicate mirrored pairs.
+
+## Verification
+
+- ISC-1/2: Grep — RelationType (14 states), EvidenceSourceType, ConfidenceLevel, ClaimNature all present in schema.prisma
+- ISC-3/4/5/6: Read — Evidence, RelationshipEvent, TimelineEvent models + Person/Episode back-relations in schema.prisma
+- ISC-7: Read — migrations/20260722120000_add_trollopedia_evidence_relationships/migration.sql creates 4 enums, 3 tables, 9 indexes, 7 FKs
+- ISC-8: Bash — "The schema at prisma\schema.prisma is valid"
+- ISC-9: Bash — "Generated Prisma Client (7.8.0) in 367ms"
+- ISC-10: Read — relationships.ts exports normalizePair, currentRelationState, relationshipTimeline, RELATION_LABELS
+- ISC-11: Bash tsc --noEmit — only 2 pre-existing stale .next validator errors (deleted obsidian-export route), none from this change
+- ISC-12: Bash git diff --stat — schema.prisma +120/-0, purely additive; committed as 082c4a9
