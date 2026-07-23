@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/db";
 import { getStripe } from "@/lib/stripe";
 import { getTierByPriceId } from "@/lib/subscription-tiers";
@@ -40,11 +41,16 @@ async function markEventProcessed(eventId: string, eventType: string): Promise<b
       data: { id: eventId, type: eventType },
     });
     return true; // new event — proceed
-  } catch {
-    // Unique constraint violation means we've seen this event before.
-    // Any other DB error: log and continue (fail open so Stripe doesn't
-    // keep retrying and backlogging legitimate events).
-    return false; // duplicate — skip
+  } catch (err) {
+    // ONLY a unique-constraint violation (P2002) proves we've already
+    // processed this event. Any other DB error must NOT masquerade as a
+    // duplicate — swallowing it here would skip the handler, return 200,
+    // and permanently drop a paid grant (subscription / clap / book) because
+    // Stripe won't retry a 2xx. Re-throw so the caller returns 500 → retry.
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      return false; // genuine duplicate — skip
+    }
+    throw err;
   }
 }
 
@@ -74,7 +80,15 @@ export async function POST(request: NextRequest) {
   // Idempotency guard — return 200 immediately for duplicate deliveries.
   // Stripe marks a webhook as delivered on first 2xx; retries only happen
   // when the original delivery timed out or the connection dropped.
-  const isNew = await markEventProcessed(event.id, event.type);
+  let isNew: boolean;
+  try {
+    isNew = await markEventProcessed(event.id, event.type);
+  } catch (err) {
+    // Dedup bookkeeping failed for a non-duplicate reason — force a retry
+    // rather than risk dropping the event's side effects.
+    console.error("[webhook] dedup insert failed — asking Stripe to retry:", err);
+    return NextResponse.json({ error: "Temporary error" }, { status: 500 });
+  }
   if (!isNew) {
     console.log(`[webhook] Duplicate event ${event.id} (${event.type}) — skipping`);
     return NextResponse.json({ received: true, duplicate: true });

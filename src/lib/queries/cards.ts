@@ -413,15 +413,36 @@ const CREDIT_LIMITS = {
 } as const;
 type EarnReason = keyof typeof CREDIT_LIMITS;
 
-export async function earnCreditsForActivity(userId: string, reason: EarnReason, metadata?: object) {
+export async function earnCreditsForActivity(
+  userId: string,
+  reason: EarnReason,
+  metadata?: { contentId?: string },
+) {
   const { amount, dailyCap } = CREDIT_LIMITS[reason];
   const todayStart = new Date();
   todayStart.setUTCHours(0, 0, 0, 0);
+  const contentId = metadata?.contentId;
 
   // The cap check and the mint must be one Serializable unit, or concurrent
   // requests all read the same pre-cap count and each mint free Signal Credits
   // (the spend currency). Mirrors openPack / claimDailyReward in this file.
   return prisma.$transaction(async (tx) => {
+    // Reward reading DISTINCT content, not re-hitting the endpoint. Without
+    // this, a user can farm up to `dailyCap` grants from the same page. Only
+    // enforceable when the caller supplies a contentId (episode/lore id).
+    if (contentId) {
+      const already = await tx.creditTransaction.findFirst({
+        where: {
+          userId,
+          reason,
+          createdAt: { gte: todayStart },
+          metadata: { path: ["contentId"], equals: contentId },
+        },
+        select: { id: true },
+      });
+      if (already) return { granted: 0, reason: "already_earned" };
+    }
+
     const todayCount = await tx.creditTransaction.count({
       where: { userId, reason, createdAt: { gte: todayStart } },
     });
