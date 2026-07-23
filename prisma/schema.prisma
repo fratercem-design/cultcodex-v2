@@ -56,6 +56,53 @@ enum ContentType {
   clip
 }
 
+// ─── Trollopedia: Evidence + Relationship Engine ─────
+
+enum RelationType {
+  friend
+  former_friend
+  ally
+  frequent_collaborator
+  debate_rival
+  enemy
+  occasional_guest
+  moderator
+  supporter
+  critic
+  student
+  mentor
+  community_member
+  unknown
+}
+
+enum EvidenceSourceType {
+  youtube_video
+  livestream_transcript
+  chat_log
+  video_description
+  comment
+  screenshot
+  community_submission
+  archived_social_media
+  other
+}
+
+enum ConfidenceLevel {
+  confirmed
+  strong
+  moderate
+  weak
+  rumor
+}
+
+enum ClaimNature {
+  documented
+  opinion
+  satire
+  rumor
+  disputed
+}
+
 // ─── Core Models ─────────────────────────────────────
 
 model Episode {
@@ -108,6 +155,9 @@ model Episode {
   favorites          Favorite[]
   psychenomiconChapter PsychenomiconChapter?
   transcriptRequests TranscriptRequest[]
+  evidence           Evidence[]
+  relationshipEvents RelationshipEvent[]
+  timelineEvents     TimelineEvent[]
 
   @@index([airDate])
   @@index([status])
@@ -155,6 +205,8 @@ model Person {
   loreConnections    PersonLore[]
   relatedFrom        RelatedPerson[] @relation("relatedPersonFrom")
   relatedTo          RelatedPerson[] @relation("relatedPersonTo")
+  relationshipEventsFrom RelationshipEvent[] @relation("relationshipEventsFrom")
+  relationshipEventsTo   RelationshipEvent[] @relation("relationshipEventsTo")
 
   @@index([personType])
 }
@@ -329,6 +381,74 @@ model RelatedEpisode {
   episodeB   Episode @relation("relatedTo", fields: [episodeBId], references: [id], onDelete: Cascade)
 
   @@id([episodeAId, episodeBId])
+}
+
+/// A cited claim: the atomic unit of Trollopedia canon. Every dossier fact,
+/// relationship beat, and timeline event points at one of these.
+model Evidence {
+  id               String             @id @default(cuid())
+  claim            String
+  nature           ClaimNature        @default(documented)
+  confidence       ConfidenceLevel    @default(moderate)
+  sourceType       EvidenceSourceType
+  sourceUrl        String?
+  episodeId        String?
+  episode          Episode?           @relation(fields: [episodeId], references: [id])
+  timestampSeconds Int?
+  notes            String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  relationshipEvents RelationshipEvent[]
+  timelineEvents     TimelineEvent[]
+
+  @@index([episodeId])
+  @@index([confidence])
+  @@index([nature])
+}
+
+/// One beat in an evolving relationship between two people. Current state is
+/// derived from the latest event per pair; pairs are normalized personAId < personBId.
+model RelationshipEvent {
+  id           String       @id @default(cuid())
+  personAId    String
+  personBId    String
+  personA      Person       @relation("relationshipEventsFrom", fields: [personAId], references: [id], onDelete: Cascade)
+  personB      Person       @relation("relationshipEventsTo", fields: [personBId], references: [id], onDelete: Cascade)
+  relationType RelationType @default(unknown)
+  headline     String
+  details      String?
+  episodeId    String?
+  episode      Episode?     @relation(fields: [episodeId], references: [id])
+  occurredAt   DateTime?
+  evidenceId   String?
+  evidence     Evidence?    @relation(fields: [evidenceId], references: [id])
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([personAId, personBId])
+  @@index([episodeId])
+  @@index([relationType])
+}
+
+/// A dated event in the Psycheverse chronological history.
+model TimelineEvent {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  date        DateTime
+  category    String?
+  description String?
+  episodeId   String?
+  episode     Episode?      @relation(fields: [episodeId], references: [id])
+  evidenceId  String?
+  evidence    Evidence?     @relation(fields: [evidenceId], references: [id])
+  status      ContentStatus @default(published)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([date])
+  @@index([category])
 }
 
 model RelatedPerson {
