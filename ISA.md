@@ -1,9 +1,9 @@
 ---
 project: cultcodex-v2
-task: Trollopedia Phase 1 — Evidence + Relationship Engine (data layer)
+task: Trollopedia Phase 2 — Book of Trolls (relationship dossiers on person pages)
 effort: E3
 phase: complete
-progress: 12/12
+progress: 8/8
 mode: standard
 started: 2026-07-22
 updated: 2026-07-22
@@ -88,6 +88,17 @@ validate and typecheck clean.
 - 2026-07-22: `RelationshipEvent` is an event log, not a state table — current state is derived (latest event per pair), preserving the brief's "relationships evolve" requirement without a second source of truth.
 - 2026-07-22: No pair-ordering constraint enforced in DB; helpers normalize (personAId < personBId) at write time to avoid duplicate mirrored pairs.
 
+## Criteria (Phase 2)
+
+- [x] ISC-13: `src/lib/queries/relationships.ts` exports `getRelationshipDossier(personId)` grouping RelationshipEvents by counterpart with derived current state (probe: Read)
+- [x] ISC-14: `RelationshipDossier` component renders per-counterpart card: state badge, chronological beats, turn markers (probe: Read)
+- [x] ISC-15: Beats link to their episode and show confidence badge when evidence attached (probe: Read)
+- [x] ISC-16: Section carries editorial-synthesis/archival labeling consistent with site voice (probe: Grep)
+- [x] ISC-17: Section wired into people/[slug]/page.tsx, renders nothing when a person has no relationship events (probe: Read)
+- [x] ISC-18: Query is failure-safe (.catch → empty) matching page conventions (probe: Grep)
+- [x] ISC-19: Typecheck passes, no new errors (probe: Bash)
+- [x] ISC-20: Anti: no existing component or query modified beyond the page wiring insert (probe: git diff)
+
 ## Verification
 
 - ISC-1/2: Grep — RelationType (14 states), EvidenceSourceType, ConfidenceLevel, ClaimNature all present in schema.prisma
@@ -98,3 +109,15 @@ validate and typecheck clean.
 - ISC-10: Read — relationships.ts exports normalizePair, currentRelationState, relationshipTimeline, RELATION_LABELS
 - ISC-11: Bash tsc --noEmit — only 2 pre-existing stale .next validator errors (deleted obsidian-export route), none from this change
 - ISC-12: Bash git diff --stat — schema.prisma +120/-0, purely additive; committed as 082c4a9
+
+## Verification (Phase 2)
+
+- ISC-13: Read — queries/relationships.ts exports getRelationshipDossier, groups by counterpart, sorts longest-history-first
+- ISC-14: Read — relationship-dossier.tsx renders counterpart card, StateBadge, ordered beat list with turn dots
+- ISC-15: Read — each beat links /episodes/{slug} with EP number and renders CONFIDENCE_LABEL badge when evidence attached
+- ISC-16: Grep — "editorial synthesis of {name}'s archive history" line + AiNotice + "/// evolving_states · cited_to_episodes"
+- ISC-17: Read — wired at people/[slug]/page.tsx above "Frequently Appears With"; component early-returns null on empty entries
+- ISC-18: Grep — findMany(...).catch(() => []) in getRelationshipDossier
+- ISC-19: Bash tsc --noEmit filtered of pre-existing obsidian-export errors — exit 0, zero new errors
+- ISC-20: Bash git diff --stat — only page.tsx +6 (import + query call + component mount); no existing component/query touched
+- Live render: dev server returned GET /people/psyche 200; DB absent in preview sandbox so the section correctly renders nothing. Live data probe DEFERRED-VERIFY until migration is applied to prod and RelationshipEvents are seeded (follow-up: Phase 2b seed/admin).

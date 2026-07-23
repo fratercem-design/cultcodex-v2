@@ -33,6 +33,8 @@ import { ArchetypeTimeline } from "@/components/people/archetype-timeline";
 import { ArchetypeCard } from "@/components/people/archetype-card";
 import { PersonMediaSection, type PersonMediaItem } from "@/components/people/person-media-section";
 import { PersonCrossRef } from "@/components/people/person-cross-ref";
+import { RelationshipDossier } from "@/components/people/relationship-dossier";
+import { getRelationshipDossier } from "@/lib/queries/relationships";
 import {
   PERSON_TYPE_LABEL as PERSON_TYPE_LABELS,
   PERSON_TYPE_BADGE as PERSON_TYPE_VARIANTS,
@@ -211,6 +213,8 @@ export default async function PersonDetailPage({ params }: PageProps) {
   const coAppearances = person.guestAppearances.length >= 2
     ? await getCoAppearances(person.id, 6).catch(() => [])
     : [];
+
+  const relationshipDossier = await getRelationshipDossier(person.id);
 
   // Archetype evolution — query guest appearance episodes with decodeData (not null)
   const archetypeEpisodes = person.guestAppearances.length > 0
@@ -590,6 +594,8 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 archetypeAtlasSlug={atlasArchetypeSlug}
               />
             )}
+
+            <RelationshipDossier entries={relationshipDossier} personName={person.displayName} />
 
             {coAppearances.length > 0 && (
               <SectionCard title="Frequently Appears With" accent="gold">
