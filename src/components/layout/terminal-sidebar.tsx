@@ -44,7 +44,7 @@ const liveBadgeStyle: CSSProperties = {
   fontSize: 8,
   fontWeight: "bold",
   letterSpacing: "0.1em",
-  color: "rgba(239,68,68,0.85)",
+  color: "var(--accent-live-text)",
   border: "1px solid rgba(239,68,68,0.35)",
   borderRadius: 2,
   padding: "1px 4px",
@@ -137,7 +137,7 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
                   fontSize: 10,
                   textTransform: "uppercase",
                   letterSpacing: "0.18em",
-                  color: group.color,
+                  color: group.textColor ?? group.color,
                   opacity: 0.85,
                 }}
               >
@@ -152,8 +152,8 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
                 const itemColor = active
                   ? "var(--neon)"
                   : isLive
-                  ? "rgba(239,68,68,0.9)"
-                  : accentColor(item.accent, group.color);
+                  ? "var(--accent-live-text)"
+                  : accentColor(item.accent, group.textColor ?? group.color);
 
                 const itemStyle: CSSProperties = {
                   display: "flex",
@@ -176,7 +176,7 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
                   <>
                     <span aria-hidden="true" style={{ width: 14, display: "inline-block" }}>
                       {isLive ? (
-                        <span className="term-pulse" style={{ color: "rgba(239,68,68,0.9)" }}>●</span>
+                        <span className="term-pulse" style={{ color: "var(--accent-live-text)" }}>●</span>
                       ) : (
                         item.glyph
                       )}

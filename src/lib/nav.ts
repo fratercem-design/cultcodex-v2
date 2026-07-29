@@ -27,7 +27,13 @@ export interface NavItem {
 
 export interface NavGroup {
   readonly title: string;
+  /** Rule, dot, and (unless textColor is set) label color for the group. */
   readonly color: string;
+  /**
+   * Optional override for the group's title and item text, for groups whose
+   * `color` is too dark to read against the sidebar background.
+   */
+  readonly textColor?: string;
   readonly items: readonly NavItem[];
 }
 
@@ -35,6 +41,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
   {
     title: "LIVE",
     color: "rgba(239,68,68,0.75)",
+    textColor: "var(--accent-live-text)",
     items: [
       { href: "/cult-live",    label: "CULT OF PSYCHE",   glyph: "◎", liveKey: "cultOfPsyche" },
     ],
@@ -42,6 +49,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
   {
     title: "MAIN",
     color: "var(--accent-gold)",
+    textColor: "var(--accent-gold-text)",
     items: [
       { href: "/",             label: "OVERVIEW",      glyph: "▢", key: "1" },
       { href: "/episodes",     label: "ARCHIVE",       glyph: "▦", key: "2", countKey: "episodes" },
@@ -89,6 +97,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
   {
     title: "SISTER SITES",
     color: "var(--accent-violet)",
+    textColor: "var(--accent-violet-text)",
     items: [
       { href: "https://matangi.vercel.app", label: "MA MATANGI", glyph: "◬", external: true },
       { href: "https://dreamweave-darktales.vercel.app", label: "DREAMWEAVE", glyph: "☾", external: true },

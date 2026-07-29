@@ -40,8 +40,14 @@
      underlying values move to the dossier palette. */
   --color-accent-gold: #C8392E;               /* was gold #C8A96B — now Ember */
   --color-accent-gold-dim: rgba(200, 57, 46, 0.15);
+  --color-accent-gold-text: #E8776B;          /* readable tint of Ember for text
+                                                 (5:1 on --term-bg-1) */
+  --color-accent-live-text: #FF8A85;          /* readable tint of the live red */
   --color-accent-violet: #4A2D6E;             /* was violet #9B6ED0 — now Bruise */
   --color-accent-violet-dim: rgba(74, 45, 110, 0.18);
+  --color-accent-violet-text: #B79EE0;        /* Bruise is too dark to read on the
+                                                 void — use this tint for violet
+                                                 text/labels (8:1 on --term-bg-1) */
   --color-accent-cyan: #62E4C8;               /* was cyan #5DB7D8 — now Phosphor */
   --color-accent-cyan-dim: rgba(98, 228, 200, 0.15);
   --color-accent-crimson: #A94A4A;            /* unchanged — danger/error, kept
@@ -116,8 +122,12 @@
   --text-muted: #9A907D;
   --accent-gold: #C8392E;
   --accent-gold-dim: rgba(200, 57, 46, 0.15);
+  --accent-gold-text: #E8776B;
+  --accent-live-text: #FF8A85;
   --accent-violet: #4A2D6E;
   --accent-violet-dim: rgba(74, 45, 110, 0.18);
+  --accent-violet-text: #B79EE0;
+
   --accent-cyan: #62E4C8;
   --accent-cyan-dim: rgba(98, 228, 200, 0.15);
   --accent-crimson: #A94A4A;
