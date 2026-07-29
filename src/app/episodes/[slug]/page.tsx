@@ -739,38 +739,6 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
         </div>
       </div>
     </main>
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: jsonLdScript({
-          "@context": "https://schema.org",
-          "@type": "VideoObject",
-          name: episode.title,
-          description: episode.summaryShort ?? episode.title,
-          thumbnailUrl: episode.thumbnailUrl ?? undefined,
-          uploadDate: episode.airDate?.toISOString(),
-          url: `https://cultcodex.me/episodes/${episode.slug}`,
-          ...(episode.youtubeVideoId && {
-            contentUrl: `https://www.youtube.com/watch?v=${episode.youtubeVideoId}`,
-            // embedUrl lets Google render a video card in search results
-            embedUrl: `https://www.youtube.com/embed/${episode.youtubeVideoId}`,
-          }),
-          // Convert stored "h:mm:ss" / "m:ss" to ISO 8601 duration for rich results
-          ...(episode.duration && (() => {
-            const parts = episode.duration!.split(":").map(Number);
-            if (parts.length === 3) {
-              const [h, m, s] = parts;
-              return { duration: `PT${h}H${m}M${s}S` };
-            }
-            if (parts.length === 2) {
-              const [m, s] = parts;
-              return { duration: `PT${m}M${s}S` };
-            }
-            return {};
-          })()),
-        }),
-      }}
-    />
     </>
   );
 }
