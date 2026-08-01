@@ -5,11 +5,25 @@ import { notifyTranscriptReady } from "@/lib/notifications";
 import { YoutubeTranscript } from "youtube-transcript";
 
 export const runtime = "nodejs";
-export const maxDuration = 300; // Vercel Hobby cap (5 min); raise if plan upgraded
+export const maxDuration = 300; // 5 min. Deployed on Railway, which enforces its own
+                                // proxy timeout — treat this as the optimistic ceiling,
+                                // not a guarantee. ROUTE_BUDGET_MS is what actually keeps
+                                // us honest.
 export const dynamic = "force-dynamic";
 
-const DELAY_MS = 2000; // 2s between requests — still polite, fits 100 in ~600s
+const DELAY_MS = 2000; // 2s between requests — polite to YouTube's caption endpoint.
 const SUPADATA_BASE = "https://api.supadata.ai/v1";
+
+// Wall-clock budget for the whole request. We stop *starting* new episodes past this
+// and return partial results as JSON, rather than letting the platform kill the
+// request mid-flight and hand the browser a non-JSON gateway-timeout page.
+// Kept well under maxDuration to leave room for the final DB writes + serialization.
+const ROUTE_BUDGET_MS = 210_000;
+
+// Supadata async jobs used to poll 12x5s (60s) — a single slow episode could eat a
+// fifth of the entire budget. Capped, and deadline-aware on top of that.
+const SUPADATA_POLL_ATTEMPTS = 6;
+const SUPADATA_POLL_INTERVAL_MS = 5000;
 
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
@@ -63,7 +77,8 @@ async function fetchTranscriptYT(
 
 async function fetchTranscriptSupadata(
   videoId: string,
-  apiKey: string
+  apiKey: string,
+  deadlineAt: number
 ): Promise<{ chunks: SupadataChunk[] | null; reason: string; rateLimited?: boolean }> {
   // Try YouTube-specific GET endpoint first (works for both native captions and ASR)
   const params = new URLSearchParams({ videoId, lang: "en" });
@@ -90,10 +105,14 @@ async function fetchTranscriptSupadata(
 
   const data = (await res.json()) as SupadataTranscript | SupadataJobId;
 
-  // Async job — poll up to 12 times (1 min) at 5s intervals
+  // Async job — poll at a fixed interval, bounded by both an attempt cap and the
+  // caller's wall-clock deadline (whichever comes first).
   if ("jobId" in data) {
-    for (let attempt = 0; attempt < 12; attempt++) {
-      await sleep(5000);
+    for (let attempt = 0; attempt < SUPADATA_POLL_ATTEMPTS; attempt++) {
+      if (Date.now() + SUPADATA_POLL_INTERVAL_MS > deadlineAt) {
+        return { chunks: null, reason: "supadata_job_deadline" };
+      }
+      await sleep(SUPADATA_POLL_INTERVAL_MS);
       const jobRes = await fetch(`${SUPADATA_BASE}/transcript/${data.jobId}`, {
         headers: { "x-api-key": apiKey },
       });
@@ -121,6 +140,8 @@ async function fetchTranscriptSupadata(
 }
 
 export async function POST(req: NextRequest) {
+  const deadlineAt = Date.now() + ROUTE_BUDGET_MS;
+
   try {
     await requireAdmin();
   } catch {
@@ -177,8 +198,21 @@ export async function POST(req: NextRequest) {
   const results: TranscriptResult[] = [];
 
   let rateLimited = false;
+  let timedOut = false;
+  // Episodes stamped with the "no_captions" sentinel drop out of the pending query
+  // on future runs, so they count as resolved even though they produced no transcript.
+  // A transient miss (deadline, job timeout) is *not* stamped and stays pending.
+  let markedPermanent = 0;
 
   for (let i = 0; i < pending.length; i++) {
+    // Stop before starting an episode we probably can't finish. Returning partial
+    // results as JSON beats being killed mid-request — the caller reads `remaining`
+    // and clicks again. Episodes not reached are simply left untouched.
+    if (Date.now() >= deadlineAt) {
+      timedOut = true;
+      break;
+    }
+
     const ep = pending[i];
     const videoId = ep.youtubeVideoId!;
 
@@ -188,7 +222,7 @@ export async function POST(req: NextRequest) {
 
       // Fall back to Supadata for age-restricted / ASR-only / harder videos
       if (!chunks) {
-        const sup = await fetchTranscriptSupadata(videoId, supadataKey);
+        const sup = await fetchTranscriptSupadata(videoId, supadataKey, deadlineAt);
         chunks = sup.chunks;
         reason = sup.reason;
         if (sup.rateLimited) {
@@ -210,6 +244,7 @@ export async function POST(req: NextRequest) {
               where: { id: ep.id },
               data: { transcriptRaw: "no_captions" },
             });
+            markedPermanent++;
             markReason = `${reason} [marked]`;
           } catch (dbErr) {
             const dbMsg = dbErr instanceof Error ? dbErr.message : String(dbErr);
@@ -265,8 +300,10 @@ export async function POST(req: NextRequest) {
     ok: results.filter((r) => r.status === "ok").length,
     no_transcript: results.filter((r) => r.status === "no_transcript").length,
     errors: results.filter((r) => r.status === "error").length,
-    remaining: totalPending - results.length,
+    remaining:
+      totalPending - results.filter((r) => r.status === "ok").length - markedPermanent,
     ...(rateLimited ? { rateLimited: true } : {}),
+    ...(timedOut ? { timedOut: true } : {}),
   };
 
   if (rateLimited) {

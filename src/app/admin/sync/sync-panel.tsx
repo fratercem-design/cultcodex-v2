@@ -68,7 +68,15 @@ export function SyncPanel({
   const [transcriptLoading, setTranscriptLoading] = useState(false);
   const [transcriptResult, setTranscriptResult] = useState<{
     ok: boolean;
-    summary?: { processed: number; ok: number; no_transcript: number; errors: number; remaining: number };
+    summary?: {
+      processed: number;
+      ok: number;
+      no_transcript: number;
+      errors: number;
+      remaining: number;
+      rateLimited?: boolean;
+      timedOut?: boolean;
+    };
     results?: TranscriptResult[];
     error?: string;
   } | null>(null);
@@ -140,11 +148,31 @@ export function SyncPanel({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ limit: transcriptLimit, retry, reset }),
       });
-      const data = await res.json() as typeof transcriptResult;
+
+      // A gateway timeout hands us an HTML error page, not JSON. Parsing it blind
+      // throws and buries the real cause under "Network error." — read the body as
+      // text first and report the status we actually got.
+      const raw = await res.text();
+      let data: typeof transcriptResult = null;
+      try {
+        data = JSON.parse(raw) as typeof transcriptResult;
+      } catch {
+        setTranscriptResult({
+          ok: false,
+          error: `HTTP ${res.status} ${res.statusText || ""} — server returned a non-JSON response. ${
+            res.status === 502 || res.status === 504
+              ? "That's a gateway timeout: lower the batch size and try again."
+              : raw.slice(0, 200)
+          }`.trim(),
+        });
+        return;
+      }
+
       setTranscriptResult(data);
       router.refresh();
-    } catch {
-      setTranscriptResult({ ok: false, error: "Network error." });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setTranscriptResult({ ok: false, error: `Request failed: ${msg}` });
     } finally {
       setTranscriptLoading(false);
     }
@@ -376,6 +404,11 @@ export function SyncPanel({
                       <span className="text-accent-gold">{transcriptResult.summary.remaining.toLocaleString()} remaining</span>
                     )}
                   </div>
+                  {transcriptResult.summary.timedOut && (
+                    <p className="font-mono text-[10px] text-accent-gold/80">
+                      ⏱ Hit the time budget and returned early — nothing was lost. Click again to continue.
+                    </p>
+                  )}
                   {transcriptResult.results && (
                     <div className="max-h-40 overflow-y-auto space-y-0.5 pt-1">
                       {transcriptResult.results.map((r) => (
