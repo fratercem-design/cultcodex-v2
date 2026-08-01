@@ -5,20 +5,30 @@ import { notifyTranscriptReady } from "@/lib/notifications";
 import { YoutubeTranscript } from "youtube-transcript";
 
 export const runtime = "nodejs";
-export const maxDuration = 300; // 5 min. Deployed on Railway, which enforces its own
-                                // proxy timeout — treat this as the optimistic ceiling,
-                                // not a guarantee. ROUTE_BUDGET_MS is what actually keeps
-                                // us honest.
+// Vercel serverless function limit. 300s requires Pro, or Hobby with Fluid Compute
+// enabled; on classic Hobby the ceiling is 60s and this value does NOT raise it.
+// Exceeding whatever the real limit is kills the function and returns a 504
+// FUNCTION_INVOCATION_TIMEOUT *HTML* page — which is what made the admin panel say
+// "Network error." Do not trust this number; ROUTE_BUDGET_MS is the real guard.
+export const maxDuration = 300;
 export const dynamic = "force-dynamic";
 
 const DELAY_MS = 2000; // 2s between requests — polite to YouTube's caption endpoint.
 const SUPADATA_BASE = "https://api.supadata.ai/v1";
 
 // Wall-clock budget for the whole request. We stop *starting* new episodes past this
-// and return partial results as JSON, rather than letting the platform kill the
-// request mid-flight and hand the browser a non-JSON gateway-timeout page.
-// Kept well under maxDuration to leave room for the final DB writes + serialization.
-const ROUTE_BUDGET_MS = 210_000;
+// and return partial results as JSON, rather than letting Vercel kill the function
+// mid-flight and hand the browser a non-JSON 504 page.
+//
+// Defaults to 45s: safe even on classic Hobby (60s ceiling), leaving headroom for the
+// final DB writes and serialization. That's conservative — it means fewer episodes per
+// click, and the caller just clicks again. If this project is on Pro or has Fluid
+// Compute enabled, raise it via SYNC_TRANSCRIPTS_BUDGET_MS (e.g. 240000) to do more
+// per request. Setting it above the plan's real limit reintroduces the 504.
+const ROUTE_BUDGET_MS = (() => {
+  const raw = Number(process.env.SYNC_TRANSCRIPTS_BUDGET_MS);
+  return Number.isFinite(raw) && raw > 0 ? raw : 45_000;
+})();
 
 // Supadata async jobs used to poll 12x5s (60s) — a single slow episode could eat a
 // fifth of the entire budget. Capped, and deadline-aware on top of that.
