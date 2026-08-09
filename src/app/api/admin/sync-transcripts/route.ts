@@ -196,7 +196,12 @@ export async function POST(req: NextRequest) {
     where: {
       youtubeVideoId: { not: null },
       status: "published",
-      ...(retry ? {} : { transcriptRaw: { not: "no_captions" } }),
+      // `not` alone drops rows where transcriptRaw IS NULL, which is every episode
+      // that has never been attempted (and every episode just cleared by reset=true).
+      // That made both the normal fetch and reset&retry select zero candidates.
+      ...(retry
+        ? {}
+        : { OR: [{ transcriptRaw: null }, { transcriptRaw: { not: "no_captions" } }] }),
     },
     select: { id: true, slug: true, youtubeVideoId: true },
     orderBy: { airDate: "asc" },
