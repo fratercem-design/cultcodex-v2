@@ -27,13 +27,22 @@ export default async function AdminPsychenomiconPage() {
     }),
     prisma.psychenomiconEntity.count(),
     prisma.psychenomiconThread.count(),
-    // Episodes with transcripts that don't yet have a chapter
+    // Episodes with transcripts that don't yet have a chapter.
+    // NOTE: transcriptRaw doubles as a sentinel field — /api/admin/sync-transcripts
+    // writes the literal "no_captions" there to permanently skip episodes YouTube has
+    // no captions for. A bare `not: null` therefore matches episodes with NO transcript
+    // at all, offering them for chapter generation and burning Claude calls on nothing.
     prisma.episode.findMany({
       where: {
         psychenomiconChapter: null,
         OR: [
           { segments: { some: {} } },
-          { transcriptRaw: { not: null } },
+          {
+            AND: [
+              { transcriptRaw: { not: null } },
+              { transcriptRaw: { not: "no_captions" } },
+            ],
+          },
         ],
         status: "published",
       },
