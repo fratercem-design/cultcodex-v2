@@ -270,79 +270,98 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
     return { ok: false, status: 502, error: "Model returned invalid JSON", raw: rawText.slice(0, 2000) };
   }
 
-  // Upsert entities
-  const entityIds: string[] = [];
-  for (const e of generated.entities ?? []) {
-    const entitySlug = slugify(e.name);
-    const existing = await prisma.psychenomiconEntity.findUnique({ where: { slug: entitySlug } });
-    let archetypeHistory: Array<{ archetype: string; chapterNumber: number; reason: string }> = [];
-    if (existing) archetypeHistory = (existing.archetypeHistory as typeof archetypeHistory) ?? [];
-    if (e.archetype && existing?.primaryArchetype !== e.archetype) {
-      archetypeHistory.push({ archetype: e.archetype, chapterNumber: nextChapterNumber, reason: e.notes ?? "" });
-    }
-    const entity = await prisma.psychenomiconEntity.upsert({
-      where: { slug: entitySlug },
-      create: { name: e.name, slug: entitySlug, primaryArchetype: e.archetype, archetypeHistory, radarData: e.traits ?? undefined, behaviorPatterns: e.behaviorPatterns ?? [] },
-      update: { primaryArchetype: e.archetype, archetypeHistory, radarData: e.traits ?? undefined, behaviorPatterns: e.behaviorPatterns?.length ? e.behaviorPatterns : undefined, updatedAt: new Date() },
-      select: { id: true },
-    });
-    entityIds.push(entity.id);
-  }
+  // Every write below is one atomic unit.
+  //
+  // These previously ran as independent statements, with the chapter created
+  // LAST — after the entity and thread upserts. Vercel kills a function at the
+  // plan's ceiling (60s on Hobby, 300s with Fluid Compute or Pro), and a single
+  // chapter generation is advertised at 30-60s. So the request could commit the
+  // entities and threads and then die before creating the chapter, leaving
+  // orphaned rows and no chapter to attach them to. All-or-nothing means a
+  // timeout now costs the Bedrock spend but leaves the DB clean.
+  //
+  // Note the explicit timeout: Prisma interactive transactions default to 5s,
+  // which is too tight for this many sequential round trips to Xata.
+  const chapter = await prisma.$transaction(
+    async (tx) => {
+      // Upsert entities
+      const entityIds: string[] = [];
+      for (const e of generated.entities ?? []) {
+        const entitySlug = slugify(e.name);
+        const existing = await tx.psychenomiconEntity.findUnique({ where: { slug: entitySlug } });
+        let archetypeHistory: Array<{ archetype: string; chapterNumber: number; reason: string }> = [];
+        if (existing) archetypeHistory = (existing.archetypeHistory as typeof archetypeHistory) ?? [];
+        if (e.archetype && existing?.primaryArchetype !== e.archetype) {
+          archetypeHistory.push({ archetype: e.archetype, chapterNumber: nextChapterNumber, reason: e.notes ?? "" });
+        }
+        const entity = await tx.psychenomiconEntity.upsert({
+          where: { slug: entitySlug },
+          create: { name: e.name, slug: entitySlug, primaryArchetype: e.archetype, archetypeHistory, radarData: e.traits ?? undefined, behaviorPatterns: e.behaviorPatterns ?? [] },
+          update: { primaryArchetype: e.archetype, archetypeHistory, radarData: e.traits ?? undefined, behaviorPatterns: e.behaviorPatterns?.length ? e.behaviorPatterns : undefined, updatedAt: new Date() },
+          select: { id: true },
+        });
+        entityIds.push(entity.id);
+      }
 
-  // Upsert threads
-  const threadIds: string[] = [];
-  for (const t of generated.threads ?? []) {
-    const threadSlug = slugify(t.title);
-    const thread = await prisma.psychenomiconThread.upsert({
-      where: { slug: threadSlug },
-      create: { title: t.title, slug: threadSlug, description: t.description, status: t.status },
-      update: { status: t.status, description: t.description },
-      select: { id: true },
-    });
-    threadIds.push(thread.id);
-  }
+      // Upsert threads
+      const threadIds: string[] = [];
+      for (const t of generated.threads ?? []) {
+        const threadSlug = slugify(t.title);
+        const thread = await tx.psychenomiconThread.upsert({
+          where: { slug: threadSlug },
+          create: { title: t.title, slug: threadSlug, description: t.description, status: t.status },
+          update: { status: t.status, description: t.description },
+          select: { id: true },
+        });
+        threadIds.push(thread.id);
+      }
 
-  const baseSlug = `chapter-${String(nextChapterNumber).padStart(3, "0")}`;
-  const chapter = await prisma.psychenomiconChapter.create({
-    data: {
-      chapterNumber: nextChapterNumber,
-      title: generated.title,
-      slug: baseSlug,
-      episodeId,
-      canonText: generated.canonText,
-      interpretationText: generated.interpretationText,
-      mythicText: generated.mythicText,
-      emergingSignals: generated.emergingSignals ?? [],
-      archetypesData: generated.archetypes?.length ? generated.archetypes : undefined,
-      threadRefs: (generated.threads ?? []).map((t) => ({ title: t.title, slug: slugify(t.title) })),
-      isMajorEvent: generated.isMajorEvent ?? false,
-      entityAppearances: {
-        create: entityIds.map((entityId, i) => ({
-          entityId,
-          archetypeAt: generated.entities?.[i]?.archetype,
-          significance: generated.entities?.[i]?.notes,
-        })),
-      },
-      threadChapters: { create: threadIds.map((threadId) => ({ threadId })) },
+      const baseSlug = `chapter-${String(nextChapterNumber).padStart(3, "0")}`;
+      const created = await tx.psychenomiconChapter.create({
+        data: {
+          chapterNumber: nextChapterNumber,
+          title: generated.title,
+          slug: baseSlug,
+          episodeId,
+          canonText: generated.canonText,
+          interpretationText: generated.interpretationText,
+          mythicText: generated.mythicText,
+          emergingSignals: generated.emergingSignals ?? [],
+          archetypesData: generated.archetypes?.length ? generated.archetypes : undefined,
+          threadRefs: (generated.threads ?? []).map((t) => ({ title: t.title, slug: slugify(t.title) })),
+          isMajorEvent: generated.isMajorEvent ?? false,
+          entityAppearances: {
+            create: entityIds.map((entityId, i) => ({
+              entityId,
+              archetypeAt: generated.entities?.[i]?.archetype,
+              significance: generated.entities?.[i]?.notes,
+            })),
+          },
+          threadChapters: { create: threadIds.map((threadId) => ({ threadId })) },
+        },
+        select: { id: true, chapterNumber: true, slug: true, title: true },
+      });
+
+      for (let i = 0; i < entityIds.length; i++) {
+        const e = generated.entities?.[i];
+        if (!e) continue;
+        await tx.archetypeEvent.create({
+          data: {
+            entityId: entityIds[i],
+            chapterId: created.id,
+            chapterNumber: nextChapterNumber,
+            primaryArchetype: e.archetype,
+            secondaryArchetypes: [],
+            confidenceScore: 1.0,
+            triggerEvent: e.archetypeShift ? `Archetype shift — previously: ${e.archetypeShift}` : (e.notes ?? null),
+          },
+        });
+      }
+
+      return created;
     },
-    select: { id: true, chapterNumber: true, slug: true, title: true },
-  });
-
-  for (let i = 0; i < entityIds.length; i++) {
-    const e = generated.entities?.[i];
-    if (!e) continue;
-    await prisma.archetypeEvent.create({
-      data: {
-        entityId: entityIds[i],
-        chapterId: chapter.id,
-        chapterNumber: nextChapterNumber,
-        primaryArchetype: e.archetype,
-        secondaryArchetypes: [],
-        confidenceScore: 1.0,
-        triggerEvent: e.archetypeShift ? `Archetype shift — previously: ${e.archetypeShift}` : (e.notes ?? null),
-      },
-    });
-  }
+    { maxWait: 5_000, timeout: 20_000 }
+  );
 
   return { ok: true, chapter };
 }
