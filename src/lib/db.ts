@@ -5,40 +5,78 @@ const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined;
 };
 
+/**
+ * Resolve a connection string we can actually dial.
+ *
+ * `vercel env pull` writes the literal string "[SENSITIVE]" for any env var
+ * marked Sensitive in the dashboard — those are write-only and cannot be read
+ * back. A .env full of "[SENSITIVE]" means DATABASE_URL is *set* but garbage,
+ * which sails past a plain `if (!connectionString)` check and then fails deep
+ * inside pg with an opaque parse/connect error. Validate the shape instead.
+ */
+function resolveConnectionString(): string | null {
+  const raw = process.env.DATABASE_URL?.trim();
+  if (!raw) return null;
+  if (!/^postgres(ql)?:\/\//i.test(raw)) {
+    console.error(
+      `[db] DATABASE_URL is set but is not a postgres:// URL (got "${raw.slice(0, 24)}"). ` +
+        `If it reads "[SENSITIVE]" it is a \`vercel env pull\` placeholder for a Sensitive ` +
+        `variable — put the real connection string in .env.local, which overrides .env.`
+    );
+    return null;
+  }
+  return raw;
+}
+
 function createPrismaClient(): PrismaClient {
-  // DATABASE_URL is always set on Railway. At build time the module is
-  // imported for static analysis but no queries are executed, so no actual
-  // connection is opened until the first query at runtime.
-  const connectionString = process.env.DATABASE_URL;
+  const connectionString = resolveConnectionString();
+
   if (!connectionString) {
-    // Guard for local dev / CI without a DB.
+    // Guard for local dev / CI without a usable DB.
     // Returns a two-level Proxy so that `prisma.model.findXxx().catch()` works:
     // the outer Proxy returns a model-level Proxy, which returns a function for
     // any method name; that function returns a rejected Promise so all existing
     // `.catch(() => fallback)` guards keep working during static rendering.
     const methodProxy = () =>
-      Promise.reject(new Error("DATABASE_URL is not set"));
+      Promise.reject(new Error("DATABASE_URL is not set (or is not a valid postgres:// URL)"));
     const modelProxy = new Proxy({} as object, { get: () => methodProxy });
     return new Proxy({} as PrismaClient, { get: () => modelProxy });
   }
-  // `next build` spawns ~one static-generation worker per CPU (≈31 on Railway),
-  // each importing this module and opening its own pool. At max:5 that's ~155
-  // connections — past Postgres' max_connections (100) → "too many clients".
-  // But max:1 is too tight: each worker renders several pages concurrently that
-  // then queue on a single connection and blow the connect timeout. max:2 keeps
-  // total connections in budget (≈31×2=62 < 100) while clearing the per-worker
-  // queue, and a long connect timeout absorbs burst latency through the public
-  // DB proxy. Runtime keeps a normal pool.
+
   const isBuild = process.env.NEXT_PHASE === "phase-production-build";
-  // connectionTimeoutMillis prevents generateStaticParams from hanging the
-  // Railway build if the DB is slow or the connection pool is exhausted.
+  // On Vercel every serverless function instance is its own process with its
+  // own pool, so the per-process ceiling has to stay low or concurrent lambdas
+  // collectively exhaust the Postgres connection limit. On a long-lived Node
+  // server (local `next start`, a container) one process serves everything, so
+  // a larger pool is both safe and faster.
+  const isServerless = Boolean(process.env.VERCEL);
+
+  // `next build` spawns roughly one static-generation worker per CPU, each
+  // importing this module and opening its own pool. max:2 keeps the total in
+  // budget while still clearing each worker's internal queue (max:1 serialises
+  // pages that render several queries concurrently and blows the timeout).
+  const max = isBuild ? 2 : isServerless ? 3 : 5;
+
+  // Xata branches hibernate when idle: the first query after a sleep has to
+  // wait for the branch to reactivate. Allow generous time during builds (which
+  // prerender thousands of pages) and a shorter, user-facing budget at runtime.
+  const connectionTimeoutMillis = isBuild ? 30000 : isServerless ? 10000 : 5000;
+
   const adapter = new PrismaPg({
     connectionString,
-    connectionTimeoutMillis: isBuild ? 30000 : 5000,
+    connectionTimeoutMillis,
+    // Release idle connections promptly so scaled-down lambdas stop holding
+    // slots against the branch's connection limit.
     idleTimeoutMillis: 10000,
-    max: isBuild ? 2 : 5,
+    max,
   });
+
   return new PrismaClient({ adapter });
 }
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+
+// Cache the singleton on globalThis. Without this the `??` above never hits,
+// so every dev hot-reload (and every module re-evaluation) built a brand new
+// client and leaked its pool until the DB refused new connections.
+globalForPrisma.prisma = prisma;

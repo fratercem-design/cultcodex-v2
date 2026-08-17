@@ -5,7 +5,7 @@ const TTL_MS = 6 * 60 * 60 * 1000; // 6 hours
 
 // Audio (base64 MP3) is intentionally NOT cached here — a single ElevenLabs
 // response can be 100–200 KB as a base64 string. At 2000 entries that would
-// push 400 MB onto the heap and OOM a Railway hobby instance. Text answers
+// push 400 MB onto the heap and OOM a serverless function instance. Text answers
 // and citations are cheap; audio is re-fetched on each cache hit if needed.
 interface CachedResponse {
   answer: string;

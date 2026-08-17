@@ -115,8 +115,8 @@ export default function PrivacyPage() {
               <li><span className="text-text-primary font-medium">Google OAuth</span> — sign-in authentication</li>
               <li><span className="text-text-primary font-medium">Stripe</span> — payment processing</li>
               <li><span className="text-text-primary font-medium">Google Analytics / Tag Manager</span> — anonymised usage analytics</li>
-              <li><span className="text-text-primary font-medium">Railway</span> — application hosting</li>
-              <li><span className="text-text-primary font-medium">Neon</span> — database hosting (PostgreSQL)</li>
+              <li><span className="text-text-primary font-medium">Vercel</span> — application hosting</li>
+              <li><span className="text-text-primary font-medium">Xata</span> — database hosting (PostgreSQL)</li>
               <li><span className="text-text-primary font-medium">Resend</span> — transactional and newsletter email</li>
               <li><span className="text-text-primary font-medium">Anthropic Claude</span> — AI enrichment of archive data (content only, not user data)</li>
               <li><span className="text-text-primary font-medium">ElevenLabs</span> — voice synthesis for Oracle audio (query text only, not user data)</li>

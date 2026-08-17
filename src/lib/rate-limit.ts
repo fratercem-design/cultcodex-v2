@@ -1,11 +1,13 @@
 /**
  * In-memory fixed-window rate limiter.
  *
- * Scope is per-process: adequate for the current single-instance Railway
- * deploy and serves as a cheap guard against runaway/abusive traffic to the
- * paid AI endpoints (Anthropic, OpenAI, ElevenLabs). If the app scales to
- * multiple instances, swap the Map for a Redis/Upstash store — the call
- * sites only depend on the `rateLimit()` signature.
+ * Scope is per-process. NOTE: on Vercel each serverless instance is its own
+ * process with its own Map, and instances scale out under load — so the
+ * effective limit is (configured limit x live instances), and a cold start
+ * resets a caller's window. This is now a soft speed-bump on the paid AI
+ * endpoints (Anthropic, OpenAI, ElevenLabs), not a real cap. For a hard limit,
+ * swap the Map for a shared Redis/Upstash store — the call sites only depend
+ * on the `rateLimit()` signature.
  */
 
 interface Bucket {

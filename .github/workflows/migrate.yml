@@ -11,6 +11,11 @@ jobs:
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      # prisma.config.ts prefers DIRECT_URL for migrations. `prisma migrate
+      # deploy` takes a pg advisory lock, which a pooled/PgBouncer endpoint can
+      # silently drop or refuse — without this secret the CLI fell back to the
+      # pooled DATABASE_URL and migrations could hang or fail to acquire the lock.
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
     steps:
       - uses: actions/checkout@v7

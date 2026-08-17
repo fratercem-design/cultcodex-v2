@@ -53,7 +53,7 @@ export default async function AdminUsersPage() {
 
       {users === null && (
         <div className="mb-8 rounded-xl border border-yellow-500/30 bg-yellow-500/5 p-4 font-mono text-xs text-yellow-400">
-          {"⚠ "} DB columns are still migrating — the user list is unavailable. You can still grant access using the form below. Reload once the Railway deploy finishes.
+          {"⚠ "} DB columns are still migrating — the user list is unavailable. You can still grant access using the form below. Reload once the deploy finishes.
         </div>
       )}
 

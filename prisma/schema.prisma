@@ -800,7 +800,7 @@ model PsychenomiconChapter {
   @@index([chapterNumber])
 }
 
-// Art image bytes stored directly in Postgres (Railway), served by
+// Art image bytes stored directly in Postgres (Xata), served by
 // /api/psychenomicon-art/[slug]/[slot]. Avoids a separate object store.
 model PsychenomiconArtAsset {
   id          String   @id @default(cuid())

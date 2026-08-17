@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run dev              # start dev server (Turbopack)
 npm run build            # production build (no migration)
-npm run build:migrate    # prisma migrate deploy + next build (used by Railway)
+npm run vercel-build     # what Vercel runs: migrate (production only) + build
 npm run lint             # eslint
 npm run test             # vitest (run once)
 npm run test:watch       # vitest watch mode
@@ -27,7 +27,7 @@ npm run enrich:pipeline       # Claude AI enrichment
 
 ## Architecture
 
-**Stack:** Next.js 16 (App Router), React 19, TypeScript, Prisma 7 + PostgreSQL (Neon), NextAuth v5, Stripe, Tailwind v4, Vitest.
+**Stack:** Next.js 16 (App Router), React 19, TypeScript, Prisma 7 + PostgreSQL (Xata), NextAuth v5, Stripe, Tailwind v4, Vitest.
 
 **Prisma client** is generated to `src/generated/prisma/` (not the default location). Import from `@/generated/prisma/client`. The DB singleton lives in `src/lib/db.ts` using `PrismaPg` adapter for connection pooling.
 
@@ -52,8 +52,8 @@ npm run enrich:pipeline       # Claude AI enrichment
 ## Key env vars
 
 ```
-DATABASE_URL          # Neon pooled connection
-DIRECT_URL            # Neon direct connection (for migrations)
+DATABASE_URL          # Xata pooled connection (app runtime)
+DIRECT_URL            # Xata direct connection (migrations — advisory locks need non-pooled)
 NEXTAUTH_URL          # must match deployed origin exactly
 NEXTAUTH_SECRET
 GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET
@@ -69,7 +69,8 @@ ENRICH_SECRET         # protects all /api/admin/* routes
 
 ## Schema notes
 
-- Migrations live in `prisma/migrations/`. Railway runs `build:migrate` which calls `prisma migrate deploy` before building.
+- Migrations live in `prisma/migrations/`. Deploys run on **Vercel**, and `vercel.json` points `buildCommand` at `scripts/vercel-build.mjs`, which runs `prisma migrate deploy` **only when `VERCEL_ENV === "production"`** and then `next build`. Preview builds skip migrations on purpose — they share the production database. A failed migration fails the build, and Vercel keeps the previous deployment serving. The `Run DB Migrations` GitHub Action (workflow_dispatch) remains available for applying a migration without deploying. Railway config (`railway.toml`, `nixpacks.toml`) and the `build:migrate` script have been removed.
 - `prisma.config.ts` uses `DIRECT_URL` (non-pooled) for migrations, falls back to `DATABASE_URL`.
-- If a migration fails in the Railway DB, clear it with: `npx prisma migrate resolve --rolled-back <migration_name>`
-- The `railway.json` at root configures Railway's build/start commands.
+- If a migration fails, clear it with: `npx prisma migrate resolve --rolled-back <migration_name>`
+- The Xata branch hibernates when idle; `.github/workflows/keep-alive.yml` pings `/api/keep-alive` so builds (which prerender thousands of DB-backed pages) don't hit a sleeping branch.
+- Local env: put real `DATABASE_URL` / `DIRECT_URL` in `.env.local`. `vercel env pull` writes `[SENSITIVE]` placeholders for Sensitive vars, so `.env` cannot supply them.
