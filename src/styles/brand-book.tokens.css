@@ -1,0 +1,58 @@
+/* ═══════════════════════════════════════════════════════
+   POMELLI BRAND BOOK — token layer (NOT WIRED IN)
+   ═══════════════════════════════════════════════════════
+   Source: cult_of_psyche_brand_book_by_pomelli.pdf, §03 Typography, §04 Color.
+
+   This file is deliberately NOT imported by globals.css.
+
+   The shipping design system is "Sacred Terminal" (see globals.css), which
+   intentionally replaced the brand-book palette — its own comments record
+   `gold #C8A96B -> Ember #C8392E`, and #C8A96B is exactly Warm Gold below.
+   Importing this file as-is would silently revert that decision, so the tokens
+   live here namespaced under --brand-* and collide with nothing.
+
+   To adopt the brand palette for the product UI, map the Sacred Terminal
+   accents onto these in globals.css @theme, e.g.
+       --color-accent-gold:   var(--brand-warm-gold);
+       --color-accent-cyan:   var(--brand-capri-blue);
+       --color-accent-violet: var(--brand-vivid-violet);
+       --color-accent-crimson: var(--brand-coral-red);
+   and re-check contrast first — see docs/brand-book-audit.md.
+   ═══════════════════════════════════════════════════════ */
+
+:root {
+  /* ─── §04 Color Palette ─────────────────────────────── */
+
+  /* Jet Black — brand ground. The site ships #07060A (Void), very slightly
+     violet-shifted; this is the book's neutral value. */
+  --brand-jet-black: #030303;          /* rgb(3,3,3)       hsl(0,0%,1%)     */
+
+  /* Warm Gold — primary accent. 8.99:1 on #07060A, safe for body text. */
+  --brand-warm-gold: #C8A96B;          /* rgb(200,169,107) hsl(40,46%,60%)  */
+
+  /* Capri Blue — 11.18:1 on #07060A, the strongest performer in the book. */
+  --brand-capri-blue: #22D3EE;         /* rgb(34,211,238)  hsl(188,86%,53%) */
+
+  /* Vivid Violet — 2.65:1 on #07060A. FAILS WCAG AA for both text (4.5) and
+     UI (3.0). Backgrounds and large ornament only; use the tint below for any
+     violet text, mirroring how Sacred Terminal handles Bruise. */
+  --brand-vivid-violet: #6A0DE1;       /* rgb(106,13,225)  hsl(266,89%,47%) */
+  --brand-vivid-violet-text: #B79EE0;  /* derived, not from the book         */
+
+  /* Coral Red — 7.30:1 on #07060A. */
+  --brand-coral-red: #F87171;          /* rgb(248,113,113) hsl(0,91%,71%)   */
+
+  /* ─── §03 Typography ────────────────────────────────── */
+  /* Angkor is the book's PRIMARY face. It is not currently loaded anywhere in
+     the repo. Note it is a Khmer-script display family: limited Latin set,
+     single weight — realistic scope is wordmark and hero headline, not UI. */
+  --brand-font-primary: "Angkor", var(--font-display), system-ui, sans-serif;
+
+  /* IBM Plex Mono is the book's SECONDARY face. It IS loaded in layout.tsx,
+     but bound to --font-mono-fallback and overridden by JetBrains Mono. */
+  --brand-font-secondary: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* ─── §02 Logo ──────────────────────────────────────── */
+  --brand-logo-clear-space: 25px;      /* on every side                      */
+  --brand-logo-min-width: 80px;        /* 0.83in — below this, do not render  */
+}
