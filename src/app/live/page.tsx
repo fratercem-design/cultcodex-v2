@@ -27,6 +27,7 @@ export default async function LivePage() {
 
   const recentMessages = isLive
     ? await prisma.chatMessage.findMany({
+        where: { flagged: false },
         orderBy: { createdAt: "asc" },
         take: 100,
         select: {

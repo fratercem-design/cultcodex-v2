@@ -37,7 +37,7 @@
  *                          are skipped unless force:true: { dryRun?, force? }
  */
 
-import { createHash, timingSafeEqual } from "node:crypto";
+import { timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { cleanSummary, isJunkSummary, isTemplateJunk } from "@/lib/content-hygiene";
@@ -53,16 +53,11 @@ function safeEq(a: string, b: string): boolean {
   return ab.length === bb.length && timingSafeEqual(ab, bb);
 }
 
-// SHA-256 of the maintenance key (plaintext lives only on the operator's
-// machine — this hash is safe to commit, like a password hash).
-const MAINT_KEY_SHA256 = "1752d66f4bafec190381a695eb90fa59c98423ccba56773faaa3e611fbf7598c";
-
 function auth(req: NextRequest) {
   const enrich = req.headers.get("x-enrich-secret");
   if (enrich && process.env.ENRICH_SECRET && safeEq(enrich, process.env.ENRICH_SECRET)) return true;
   const maint = req.headers.get("x-maint-key");
   if (maint && process.env.PEOPLE_MAINT_KEY && safeEq(maint, process.env.PEOPLE_MAINT_KEY.trim())) return true;
-  if (maint && safeEq(createHash("sha256").update(maint).digest("hex"), MAINT_KEY_SHA256)) return true;
   return false;
 }
 

@@ -104,7 +104,10 @@ export function TranscriptViewer({
     );
     if (iframe) {
       const baseUrl = iframe.src.split("?")[0];
-      iframe.src = `${baseUrl}?start=${seconds}&autoplay=1`;
+      // Clamp to a sane range so a malformed DB value can never build a
+      // pathological URL (e.g. NaN, negatives, or huge numbers).
+      const safeSeconds = Number.isFinite(seconds) && seconds >= 0 ? Math.floor(seconds) : 0;
+      iframe.src = `${baseUrl}?start=${safeSeconds}&autoplay=1`;
     }
   }
 

@@ -44,13 +44,11 @@ export function SyncPanel({
   unenrichedEpisodes,
   enrichmentQueued,
   unenrichedPeople,
-  enrichSecret,
 }: {
   withoutTranscript: number;
   unenrichedEpisodes: number;
   enrichmentQueued: number;
   unenrichedPeople: number;
-  enrichSecret: string;
 }) {
   const router = useRouter();
 
@@ -188,7 +186,7 @@ export function SyncPanel({
       while (true) {
         const res = await fetch("/api/admin/enrich-episodes", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "x-enrich-secret": enrichSecret },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly, queuedOnly }),
         });
         const data = await res.json() as typeof enrichEpResult & { remaining?: number; done?: boolean };
@@ -233,7 +231,6 @@ export function SyncPanel({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-enrich-secret": enrichSecret,
           },
           body: JSON.stringify({ batch: enrichPeopleBatch }),
         });

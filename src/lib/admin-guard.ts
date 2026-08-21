@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth";
 
 /**
  * Constant-time comparison of two strings. Returns false on any length
@@ -49,4 +50,68 @@ export function requireEnrichSecret(req: NextRequest): NextResponse | null {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   return null;
+}
+
+/**
+ * Guard for endpoints called BOTH from an admin browser session (the admin
+ * UI) and from scripts / CI that have no session but hold `ENRICH_SECRET`.
+ *
+ * Authorized when the `X-Enrich-Secret` header matches `ENRICH_SECRET` OR the
+ * request carries a valid admin session cookie. This lets the browser admin
+ * pages stop shipping `ENRICH_SECRET` to the client while keeping the M2M
+ * scripts working.
+ *
+ * Returns a `NextResponse` (401/403) when unauthorized, `null` when allowed.
+ */
+export async function requireAdminOrEnrichSecret(req: NextRequest): Promise<NextResponse | null> {
+  const enrichDenied = requireEnrichSecret(req);
+  if (!enrichDenied) return null;
+
+  let user = null;
+  try {
+    user = await getCurrentUser();
+  } catch {
+    user = null;
+  }
+  if (user?.role === "admin") return null;
+
+  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+}
+
+/**
+ * Timing-safe check that the request carries `Authorization: Bearer <secret>`
+ * where `<secret>` matches the given env var name. Used by Vercel Cron routes
+ * (which set the header when `CRON_SECRET` exists) and by the live-toggle
+ * route. Fails closed when the env var is unset.
+ */
+export function requireBearerSecret(
+  req: NextRequest,
+  envVar: string,
+  responseText = "Unauthorized",
+): NextResponse | null {
+  const expected = process.env[envVar];
+  if (!expected) {
+    return NextResponse.json({ error: `${envVar} not configured` }, { status: 503 });
+  }
+  const header = req.headers.get("authorization") ?? "";
+  if (!header.startsWith("Bearer ") || !safeEqual(header.slice("Bearer ".length), expected)) {
+    return NextResponse.json({ error: responseText }, { status: 401 });
+  }
+  return null;
+}
+
+/**
+ * Session-admin gate that returns a 403 `NextResponse` instead of throwing.
+ * `requireAdmin()` in src/lib/auth.ts throws on a missing/invalid session,
+ * which uncaught route handlers turn into a 500. This wrapper converts that
+ * to the correct 403 while keeping the fail-closed behavior.
+ */
+export async function adminOnly(): Promise<NextResponse | null> {
+  try {
+    const { requireAdmin } = await import("@/lib/auth");
+    await requireAdmin();
+    return null;
+  } catch {
+    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  }
 }

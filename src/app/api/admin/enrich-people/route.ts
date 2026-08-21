@@ -11,7 +11,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { requireEnrichSecret } from "@/lib/admin-guard";
+import { requireAdminOrEnrichSecret } from "@/lib/admin-guard";
 import { enrichComplete } from "@/lib/enrichment-llm";
 import { prisma } from "@/lib/db";
 
@@ -55,7 +55,7 @@ RULES:
 ALSO: On the very first line before any ## header, write a one-sentence shortBio (plain text, no label, no formatting) — maximum 15 words. This will be extracted separately.`;
 
 export async function POST(req: NextRequest) {
-  const denied = requireEnrichSecret(req);
+  const denied = await requireAdminOrEnrichSecret(req);
   if (denied) return denied;
 
   if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {

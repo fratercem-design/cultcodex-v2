@@ -3,12 +3,21 @@ import Google from "next-auth/providers/google";
 import { prisma } from "@/lib/db";
 import type { CodexUserRole } from "@/generated/prisma/client";
 
+// Fail fast: an OAuth provider with undefined credentials fails only at
+// sign-in time, per request, with an opaque error. Surface a missing env var
+// at boot instead.
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+if (!googleClientId || !googleClientSecret) {
+  throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set");
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
     }),
   ],
   session: {

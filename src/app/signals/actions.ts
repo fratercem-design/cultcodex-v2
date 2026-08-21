@@ -15,6 +15,7 @@ export async function submitSignalProposal(formData: FormData) {
 
   if (!question || question.length < 10) throw new Error("Question too short");
   if (question.length > 1000) throw new Error("Question too long");
+  if (context && context.length > 2000) throw new Error("Context too long");
 
   await prisma.signalProposal.create({
     data: { userId: user.id, question, context },

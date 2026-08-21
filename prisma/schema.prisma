@@ -163,6 +163,7 @@ model Episode {
   @@index([status])
   @@index([episodeNumber])
   @@index([seriesId])
+  @@index([airDate, status])
 }
 
 model Series {
@@ -209,6 +210,7 @@ model Person {
   relationshipEventsTo   RelationshipEvent[] @relation("relationshipEventsTo")
 
   @@index([personType])
+  @@index([displayName])
 }
 
 model LoreEntry {
@@ -233,6 +235,7 @@ model LoreEntry {
   relatedTo       RelatedLore[] @relation("relatedLoreTo")
 
   @@index([canonStatus])
+  @@index([title])
 }
 
 model Topic {
@@ -248,6 +251,8 @@ model Topic {
   people    PersonTopic[]
   lore      LoreTopic[]
   savedBy   SavedTopic[]
+
+  @@index([title])
 }
 
 model Quote {
@@ -270,6 +275,7 @@ model Quote {
 
   @@index([speakerPersonId])
   @@index([episodeId])
+  @@index([createdAt])
 }
 
 model TranscriptSegment {
@@ -281,6 +287,11 @@ model TranscriptSegment {
   speakerLabel String?
   text         String
   searchText   String?
+  // pgvector embedding column — exists in the DB via the 20260517000000_add_pgvector
+  // raw migration; declared here so Prisma's schema matches the live database and
+  // `prisma migrate diff` stops wanting to drop it. Written/queried only through
+  // raw SQL in src/lib/queries/semantic.ts and src/app/api/admin/embed/route.ts.
+  embedding    Unsupported("vector(1536)")?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -696,13 +707,15 @@ model SalonPost {
 // ─── Chat & Notifications ─────────────────────────
 
 model ChatMessage {
-  id          String    @id @default(cuid())
-  userId      String
-  user        CodexUser @relation(fields: [userId], references: [id])
-  displayName String
-  avatarUrl   String?
-  content     String
-  createdAt   DateTime  @default(now())
+  id               String    @id @default(cuid())
+  userId           String
+  user             CodexUser @relation(fields: [userId], references: [id])
+  displayName      String
+  avatarUrl        String?
+  content          String
+  flagged          Boolean   @default(false)
+  moderationReason String?
+  createdAt        DateTime  @default(now())
 
   @@index([createdAt])
 }
@@ -971,13 +984,17 @@ enum OracleChunkSource {
   psy_entity
 }
 
+// Legacy model — NOT referenced by any app code (grep oracleChunk in src/ is empty)
+// and its table has no migration. The embedder writes 1536-dim vectors, so keep the
+// declared type in sync with the real one to avoid a 1024/1536 mismatch if anything
+// ever inserts here. Candidates for removal once the schema is baselined.
 model OracleChunk {
   id           String              @id @default(cuid())
   sourceType   OracleChunkSource
   sourceId     String
   content      String              @db.Text
   searchText   String              @db.Text
-  embedding    Unsupported("vector(1024)")
+  embedding    Unsupported("vector(1536)")
   metadata     Json
   contentHash  String
   createdAt    DateTime            @default(now())
@@ -1154,6 +1171,15 @@ model CardGift {
 
   @@unique([cardId, edition, serial])
   @@index([cardId])
+}
+
+// Daily/monthly LLM spend counters for the global budget breaker
+// (src/lib/llm-budget.ts). The table used to be created at runtime with
+// `CREATE TABLE IF NOT EXISTS`; it now ships as a real migration so Prisma
+// knows about it and the create-on-first-use race is gone.
+model LlmBudget {
+  bucket_day String @id
+  count      Int    @default(0)
 }
 
 model CardPack {

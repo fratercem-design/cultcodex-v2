@@ -2,19 +2,10 @@ import { prisma } from "@/lib/db";
 
 // Global daily circuit-breaker for paid-LLM endpoints. A per-IP rate limit
 // can't stop an attacker who rotates IPs; a GLOBAL daily cap can — it bounds
-// total spend no matter who calls or how. Backed by a tiny Postgres counter
-// (created on first use, so no Prisma migration). Plus an instant kill-switch
-// (AI_KILLSWITCH=1) to shut all paid-LLM endpoints off during an active attack
-// without a deploy-time code change.
-
-let ensured = false;
-async function ensureTable(): Promise<void> {
-  if (ensured) return;
-  await prisma.$executeRawUnsafe(
-    `CREATE TABLE IF NOT EXISTS "LlmBudget" (bucket_day text PRIMARY KEY, count integer NOT NULL DEFAULT 0)`
-  );
-  ensured = true;
-}
+// total spend no matter who calls or how. Backed by the `LlmBudget` Postgres
+// table (created by migration, see prisma/schema.prisma). Plus an instant
+// kill-switch (AI_KILLSWITCH=1) to shut all paid-LLM endpoints off during an
+// active attack without a deploy-time code change.
 
 export type BudgetResult =
   | { ok: true; used: number; cap: number }
@@ -61,7 +52,6 @@ function alertCapHit(bucket: string, cap: number): void {
 export async function consumeLlmBudget(bucket: string, cap: number, units = 1): Promise<BudgetResult> {
   if (process.env.AI_KILLSWITCH === "1") return { ok: false, reason: "killswitch", used: 0, cap };
   try {
-    await ensureTable();
     const day = new Date().toISOString().slice(0, 10);
     const key = `${bucket}:${day}`;
     const rows = await prisma.$queryRawUnsafe<{ count: number }[]>(
@@ -99,7 +89,6 @@ export async function consumeMonthlyMeter(
   units = 1
 ): Promise<{ ok: boolean; used: number; cap: number }> {
   try {
-    await ensureTable();
     const month = new Date().toISOString().slice(0, 7);
     const key = `${bucket}:${month}`;
     const rows = await prisma.$queryRawUnsafe<{ count: number }[]>(

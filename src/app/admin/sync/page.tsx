@@ -49,8 +49,6 @@ export default async function SyncPage() {
     prisma.person.count({ where: { guestAppearances: { some: {} } } }),
   ]);
 
-  const enrichSecret = process.env.ENRICH_SECRET ?? "";
-
   return (
     <main id="main-content" className="p-8 max-w-5xl">
       <div className="mb-8">
@@ -89,7 +87,6 @@ export default async function SyncPage() {
         unenrichedEpisodes={unenrichedEpisodes}
         enrichmentQueued={enrichmentQueued}
         unenrichedPeople={unenrichedPeople}
-        enrichSecret={enrichSecret}
       />
     </main>
   );

@@ -1,13 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
+import { timingSafeEqual } from "node:crypto";
 import { prisma } from "@/lib/db";
 import { notifySubscribers } from "@/lib/notifications";
+
+function liveSecretMatches(key: string | null): boolean {
+  const expected = process.env.LIVE_TOGGLE_SECRET;
+  if (!key || !expected) return false;
+  const a = Buffer.from(key);
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
 
 export async function POST(req: NextRequest) {
   // Secret must be passed as a header — never as a query param (query params
   // appear in server logs, proxy logs, and Referrer headers).
   const key = req.headers.get("x-live-secret");
 
-  if (key !== process.env.LIVE_TOGGLE_SECRET) {
+  if (!liveSecretMatches(key)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

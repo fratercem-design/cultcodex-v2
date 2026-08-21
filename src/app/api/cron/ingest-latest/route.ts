@@ -13,6 +13,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { requireBearerSecret } from "@/lib/admin-guard";
 import { google } from "googleapis";
 import { prisma } from "@/lib/db";
 import { ContentStatus } from "@/generated/prisma/client";
@@ -151,21 +152,8 @@ async function fetchRecentUploads(
 // ──────────────────────────────────────────────────────
 async function handle(req: NextRequest) {
   // Auth
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    return NextResponse.json(
-      { ok: false, error: "CRON_SECRET not configured" },
-      { status: 500 },
-    );
-  }
-  const auth = req.headers.get("authorization") || "";
-  const expected = `Bearer ${secret}`;
-  if (auth !== expected) {
-    return NextResponse.json(
-      { ok: false, error: "Unauthorized" },
-      { status: 401 },
-    );
-  }
+  const denied = requireBearerSecret(req, "CRON_SECRET");
+  if (denied) return denied;
 
   // YouTube client
   const apiKey = process.env.YOUTUBE_API_KEY;

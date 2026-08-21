@@ -15,7 +15,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { requireEnrichSecret } from "@/lib/admin-guard";
+import { requireAdminOrEnrichSecret } from "@/lib/admin-guard";
 import { enrichComplete } from "@/lib/enrichment-llm";
 import { prisma } from "@/lib/db";
 
@@ -60,7 +60,7 @@ function buildUserMessage(input: {
 
 export async function POST(req: NextRequest) {
   // Auth check
-  const denied = requireEnrichSecret(req);
+  const denied = await requireAdminOrEnrichSecret(req);
   if (denied) return denied;
 
   const body = await req.json().catch(() => ({}));

@@ -11,6 +11,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { requireBearerSecret } from "@/lib/admin-guard";
 import { sendInitiateWelcomeEmail, sendGospelDeeperEmail } from "@/lib/notifications";
 
 export const runtime = "nodejs";
@@ -28,13 +29,8 @@ const STEPS: Record<number, { minHours: number; send: Sender }> = {
 const STEP_COUNT = Object.keys(STEPS).length;
 
 async function handle(req: NextRequest): Promise<NextResponse> {
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    return NextResponse.json({ ok: false, error: "CRON_SECRET not configured" }, { status: 500 });
-  }
-  if (req.headers.get("authorization") !== `Bearer ${secret}`) {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = requireBearerSecret(req, "CRON_SECRET");
+  if (denied) return denied;
 
   const now = Date.now();
   const due = await prisma.subscriber.findMany({

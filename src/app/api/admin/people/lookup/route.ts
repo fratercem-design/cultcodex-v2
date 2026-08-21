@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin } from "@/lib/auth";
+import { adminOnly } from "@/lib/admin-guard";
 import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  await requireAdmin();
+  const denied = await adminOnly();
+  if (denied) return denied;
 
   const slug = req.nextUrl.searchParams.get("slug");
   if (!slug) {
