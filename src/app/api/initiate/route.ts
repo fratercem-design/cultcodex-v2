@@ -2,17 +2,23 @@
  * POST /api/initiate
  *
  * Free "Initiate" sign-up in exchange for name + email. Adds the lead to the
- * Subscriber list and returns the download URL for the gift PDF. Sends the
- * Initiate welcome email best-effort (never blocks the gift on email delivery).
+ * Subscriber list, provisions their CodexUser account, and returns the download
+ * URL for the gift PDF. Sends the Initiate welcome email best-effort (never
+ * blocks the gift on email delivery).
+ *
+ * The account is created here rather than at first sign-in so the visitor owns
+ * something the moment they hand over an address. `auth.ts` upserts on email,
+ * so signing in with Google later adopts this exact row.
  *
  * Body: { name: string; email: string; source?: string }
- * Returns: { ok: true, downloadUrl: string }
+ * Returns: { ok: true, downloadUrl: string, account: "created" | "existing" | "failed" }
  */
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod/v4";
 import { prisma } from "@/lib/db";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
 import { sendGospelDeliveryEmail } from "@/lib/notifications";
+import { provisionCodexUser } from "@/lib/initiate";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -54,6 +60,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Sign-up failed. Please try again." }, { status: 500 });
   }
 
+  // Provision the Codex account. Best-effort: the lead is already captured
+  // above, so a failure here must not cost us the subscriber.
+  const account = await provisionCodexUser({ email, name });
+
   // Best-effort delivery email (sequence step 0) — never block the gift on it.
   try {
     await sendGospelDeliveryEmail({ recipientEmail: email, recipientName: name });
@@ -61,5 +71,5 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     console.error("[initiate] delivery email failed (non-blocking):", err);
   }
 
-  return NextResponse.json({ ok: true, downloadUrl: GIFT_URL });
+  return NextResponse.json({ ok: true, downloadUrl: GIFT_URL, account: account.status });
 }

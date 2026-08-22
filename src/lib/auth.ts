@@ -32,6 +32,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { email: user.email },
           update: {
             avatarUrl: user.image ?? undefined,
+            // Claim the row. Accounts pre-provisioned by lead capture carry
+            // provider "initiate"; stamping the real provider here is what
+            // marks a captured lead as having become a signed-in initiate.
+            provider: account?.provider ?? undefined,
           },
           create: {
             email: user.email,
