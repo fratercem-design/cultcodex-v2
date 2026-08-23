@@ -19,6 +19,9 @@ export default defineConfig({
   datasource: {
     // Use DIRECT_URL (non-pooled) for migrate so pg_advisory_lock works.
     // Falls back to DATABASE_URL for generate/studio where pooling is fine.
-    url: process.env["DIRECT_URL"] ?? process.env["DATABASE_URL"],
+    // GitHub Actions exposes an unset secret as an empty string. Nullish
+    // coalescing treats that as a value, so Prisma received an empty URL and
+    // never fell back to DATABASE_URL. Treat blank strings as absent.
+    url: process.env["DIRECT_URL"]?.trim() || process.env["DATABASE_URL"],
   },
 });

@@ -3,6 +3,14 @@ name: Run DB Migrations
 on:
   workflow_dispatch:
     inputs:
+      diagnose_only:
+        description: >-
+          Read-only. Inspect unresolved migrations and public tables without
+          resolving or applying anything. Disable only after reviewing the
+          diagnosis and intentionally choosing a resolution.
+        required: true
+        default: true
+        type: boolean
       resolve_migration:
         description: >-
           Optional. Name of a FAILED migration to resolve before deploying,
@@ -51,6 +59,12 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
+      - name: Validate inputs
+        if: ${{ inputs.diagnose_only && inputs.resolve_migration != '' }}
+        run: |
+          echo "::error::resolve_migration cannot be used while diagnose_only is enabled"
+          exit 1
+
       # A failed migration row blocks every subsequent deploy with P3009, and
       # the error alone does not say whether the migration's changes actually
       # landed. This prints both halves of that question so the resolve choice
@@ -66,7 +80,7 @@ jobs:
               const failed = await c.query(
                 `select migration_name, started_at, finished_at, rolled_back_at, applied_steps_count
                  from "_prisma_migrations"
-                 where finished_at is null or rolled_back_at is not null
+                 where finished_at is null and rolled_back_at is null
                  order by started_at desc`
               );
               if (!failed.rows.length) {
@@ -94,11 +108,11 @@ jobs:
                 "\nmigration half-applied — do not resolve automatically, fix it by hand."
               );
               await c.end();
-            })().catch((e) => { console.error("Diagnose failed:", e.message); process.exit(0); });
+            })().catch((e) => { console.error("Diagnose failed:", e.message); process.exit(1); });
           '
 
       - name: Resolve failed migration
-        if: ${{ github.event.inputs.resolve_migration != '' }}
+        if: ${{ !inputs.diagnose_only && inputs.resolve_migration != '' }}
         run: |
           echo "Resolving ${{ github.event.inputs.resolve_migration }} as ${{ github.event.inputs.resolve_as }}"
           npx prisma migrate resolve \
@@ -106,7 +120,9 @@ jobs:
             "${{ github.event.inputs.resolve_migration }}"
 
       - name: Apply migrations
+        if: ${{ !inputs.diagnose_only }}
         run: |
+          set -o pipefail
           npx prisma migrate deploy 2>&1 | tee /tmp/migrate-output.txt
           SUMMARY=$(tail -5 /tmp/migrate-output.txt | tr '\n' ' ')
           echo "::notice title=Migrations::$SUMMARY"
