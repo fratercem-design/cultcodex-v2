@@ -82,7 +82,7 @@ jobs:
               }
               const tables = await c.query(
                 `select table_name from information_schema.tables
-                 where table_schema = 'public' order by table_name`
+                 where table_schema = $$public$$ order by table_name`
               );
               const names = tables.rows.map((r) => r.table_name);
               console.log(`\nPUBLIC TABLES (${names.length}):`);
