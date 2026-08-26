@@ -34,6 +34,17 @@ const PREFIXES = process.argv.slice(2);
 async function main() {
   await client.connect();
 
+  // Which database did we actually reach? A migration history that looks
+  // healthy here while deploys keep failing usually means CI and the host
+  // platform are pointed at different branches. Host and database name only —
+  // never the credentials.
+  const target = new URL(url);
+  const { rows: who } = await client.query(
+    "select current_database() as db, current_user as usr"
+  );
+  console.log(`CONNECTED TO  host=${target.hostname}  db=${who[0].db}  user=${who[0].usr}`);
+  console.log("");
+
   const { rows: suspect } = await client.query(
     `select migration_name, started_at, finished_at, rolled_back_at,
             applied_steps_count, logs
