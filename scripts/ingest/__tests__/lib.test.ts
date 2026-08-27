@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { slugify, buildSearchText } from "../lib";
+import { slugify, buildSearchText, assertUsableDatabaseUrl } from "../lib";
 
 describe("slugify", () => {
   it("converts title to lowercase kebab-case", () => {
@@ -36,5 +36,24 @@ describe("buildSearchText", () => {
 
   it("lowercases everything", () => {
     expect(buildSearchText("SHOUT", "Loud")).toBe("shout loud");
+  });
+});
+
+describe("assertUsableDatabaseUrl", () => {
+  it("accepts a real connection string", () => {
+    expect(() =>
+      assertUsableDatabaseUrl("postgresql://user:pw@host.example.com:5432/db")
+    ).not.toThrow();
+  });
+
+  it("rejects an unset value with a pointer to .env.local", () => {
+    expect(() => assertUsableDatabaseUrl(undefined)).toThrow(/\.env\.local/);
+    expect(() => assertUsableDatabaseUrl("")).toThrow(/not set/);
+  });
+
+  it("rejects the [SENSITIVE] placeholder vercel env pull writes", () => {
+    expect(() =>
+      assertUsableDatabaseUrl("postgresql://user:[SENSITIVE]@base:5432/db")
+    ).toThrow(/SENSITIVE/);
   });
 });
