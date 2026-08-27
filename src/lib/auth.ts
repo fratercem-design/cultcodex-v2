@@ -6,9 +6,17 @@ import type { CodexUserRole } from "@/generated/prisma/client";
 // Fail fast: an OAuth provider with undefined credentials fails only at
 // sign-in time, per request, with an opaque error. Surface a missing env var
 // at boot instead.
+//
+// But NOT during `next build`. Collecting page data imports this module for
+// every route that touches auth, and build environments (preview deploys, CI)
+// do not carry the OAuth secrets. Throwing at module scope there turned a
+// sign-in misconfiguration into a total build failure: every deployment,
+// including docs-only previews, died at page-data collection. src/lib/db.ts
+// guards on the same phase for the same reason.
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
-if (!googleClientId || !googleClientSecret) {
+const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+if (!isBuildPhase && (!googleClientId || !googleClientSecret)) {
   throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set");
 }
 
@@ -16,8 +24,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   providers: [
     Google({
-      clientId: googleClientId,
-      clientSecret: googleClientSecret,
+      clientId: googleClientId ?? "",
+      clientSecret: googleClientSecret ?? "",
     }),
   ],
   session: {
