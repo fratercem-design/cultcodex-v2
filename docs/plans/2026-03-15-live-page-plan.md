@@ -956,10 +956,10 @@ In Vercel dashboard or CLI, add:
 - `VAPID_PRIVATE_KEY`
 - `VAPID_SUBJECT`
 
-**Step 3: Run the Prisma migration on Neon**
+**Step 3: Run the Prisma migration on Xata**
 
 ```bash
-DATABASE_URL="<neon-connection-string>" npx prisma migrate deploy
+DATABASE_URL="<xata-connection-string>" npx prisma migrate deploy
 ```
 
 **Step 4: Deploy**

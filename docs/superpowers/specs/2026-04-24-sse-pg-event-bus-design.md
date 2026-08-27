@@ -10,7 +10,7 @@ Replace the in-memory `EventBus` (`src/lib/sse/event-bus.ts`) with a Postgres `L
 ## Constraints
 
 - **Minimum viable swap.** No tests, no structured logging beyond `console.error`, no client-side reconnect UI, no admin observability endpoint. Subsequent passes (B, C from brainstorm) can layer those on.
-- **Backend: Neon Postgres.** No new infrastructure, no new env vars. Reuse `DATABASE_URL`.
+- **Backend: Xata Postgres.** No new infrastructure, no new env vars. Reuse `DATABASE_URL`.
 - **Public API stays nearly identical.** Callers go from `eventBus.publish(...)` to `await eventBus.publish(...)`. `subscribe(channel, fn)` stays synchronous and keeps returning an unsubscribe function.
 - **Drop the in-memory bus entirely.** No dual-publish, no fallback. Local dev hits the dev Postgres database, same code path as production.
 
@@ -95,7 +95,7 @@ Reactions and live chat follow the same shape, just with different channel names
 
 ## Risks & mitigations
 
-- **Neon connection cap.** The listener client holds one persistent connection per Node instance. Vercel Fluid Compute typically keeps a small number of warm instances per region, so this should consume well under 10 connections in practice. If Neon ever rejects the listener client connection (e.g., during a scaling spike), the reconnect backoff handles it.
+- **Xata connection cap.** The listener client holds one persistent connection per Node instance. Vercel Fluid Compute typically keeps a small number of warm instances per region, so this should consume well under 10 connections in practice. If Xata ever rejects the listener client connection (e.g., during a scaling spike), the reconnect backoff handles it.
 - **NOTIFY payload size.** Postgres caps NOTIFY payloads at 8000 bytes. Current payloads (comment metadata + content trimmed to 2000 chars, reaction counts, live-chat messages trimmed to 500 chars) are well under. We do not add a runtime size guard; oversize would error in `pg_notify` and the catch path logs it.
 - **`subscribe` race window.** Because `subscribe` is sync but `LISTEN` is async, there is a small window where events could be missed between subscribe-call and LISTEN-ack. This is fine for SSE on initial connect — subscribers don't expect historical events; they want future events. The connect-time `connected` SSE message that the SSE endpoints already send still fires immediately because it doesn't go through the bus.
 - **Process restart loses in-flight events.** Same characteristic as the in-memory bus today. No regression.

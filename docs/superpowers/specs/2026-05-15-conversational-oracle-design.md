@@ -105,7 +105,7 @@ Ephemeral per session. Within a session:
 4. **Intent triage** (cheap regex + optional Haiku fallback): meta-conversational? If yes, skip pre-flight retrieval.
 5. **Pre-flight retrieval** (`searchArchive` called directly):
    - **BM25 pass** over `OracleChunk.searchText` (Postgres `tsvector` + `ts_rank_cd`) — top 50 candidates.
-   - **Vector pass** over `OracleChunk.embedding` (pgvector on Neon, cosine similarity) — top 50 candidates.
+   - **Vector pass** over `OracleChunk.embedding` (pgvector on Xata, cosine similarity) — top 50 candidates.
    - **Reciprocal rank fusion** of the two lists → top 30.
    - **Metadata boost** — if `anchor` or recent session entities name a specific person/episode/lore, boost matching chunks (multiplicative).
    - **Cross-encoder rerank** (Cohere `rerank-v3`) → top 8.
@@ -124,7 +124,7 @@ Single embedding table, multi-source content (schema in Section 7). BM25 via `to
 
 ### Chunking strategy (full table in Section 6)
 
-~45-50K chunks total across nine source types. Index size ~250MB; Neon handles ANN search at <50ms at this scale.
+~45-50K chunks total across nine source types. Index size ~250MB; Xata handles ANN search at <50ms at this scale.
 
 ### Streaming protocol (SSE)
 

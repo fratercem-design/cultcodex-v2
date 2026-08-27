@@ -6,7 +6,7 @@
 
 **Architecture:** Extend the existing Prisma schema with `EntityRelationship` and `EntityInteraction` models. A state-machine service enforces valid transitions (forming → stable → decaying → broken → reforming). A graph query service exposes relationship data to the Oracle and UI. Factual interactions are stored separately from interpretations.
 
-**Tech Stack:** Prisma (PostgreSQL/Neon), TypeScript, Next.js App Router API routes, Vitest
+**Tech Stack:** Prisma (PostgreSQL/Xata), TypeScript, Next.js App Router API routes, Vitest
 
 ---
 

@@ -115,7 +115,7 @@ None.
 
 ### Plan
 - Run batches of 100 via `npm run enrich:episodes -- --batch 100`
-- After each batch: import local → import Neon → deploy Vercel
+- After each batch: import local → import Xata → deploy Vercel
 - ~890 remaining × $0.01/ep = ~$9 more API cost
 - ~9 more batches, ~75 min each
 - Create `scripts/enrich/full-pipeline.ts` to chain enrich → import → deploy

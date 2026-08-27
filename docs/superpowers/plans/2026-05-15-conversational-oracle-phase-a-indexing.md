@@ -6,7 +6,7 @@
 
 **Architecture:** A single `OracleChunk` Postgres table stores all content types as fixed-shape rows with both a `tsvector`-indexed `searchText` column (BM25) and a `vector(1024)` `embedding` column (pgvector ivfflat). Per-source-type chunkers project the existing schema (Episode, Person, Quote, etc.) into chunks; a `hybridSearch` function runs both BM25 and vector passes, fuses with reciprocal rank, applies a metadata boost, and reranks via Cohere. A one-shot `build-index` script and a `reindex-incremental` script (diff by `contentHash`) maintain the index. Phase A ships no UI, no production API routes, and no agent — only the retrieval substrate.
 
-**Tech Stack:** TypeScript, Prisma 7 + `@prisma/adapter-pg`, Neon Postgres + pgvector, Voyage AI (`voyage-3` embeddings), Cohere (`rerank-v3`), Node `pg` for raw SQL on the `embedding` column, `vitest` for tests, `dotenvx` for env loading in scripts.
+**Tech Stack:** TypeScript, Prisma 7 + `@prisma/adapter-pg`, Xata Postgres + pgvector, Voyage AI (`voyage-3` embeddings), Cohere (`rerank-v3`), Node `pg` for raw SQL on the `embedding` column, `vitest` for tests, `dotenvx` for env loading in scripts.
 
 **Spec:** [`docs/superpowers/specs/2026-05-15-conversational-oracle-design.md`](../specs/2026-05-15-conversational-oracle-design.md) — Sections 6, 7, and Section 8 Rollout Phase A.
 
@@ -3457,7 +3457,7 @@ git commit -m "chore(oracle): npm scripts for build-index, reindex, eval"
 
 Before running, the engineer must:
 - Have `VOYAGE_API_KEY` and `COHERE_API_KEY` set in `.env.local` (or `.env`).
-- Have `DATABASE_URL` and `DIRECT_URL` pointing at a Neon DB that already has the existing corpus (episodes, quotes, lore, etc.).
+- Have `DATABASE_URL` and `DIRECT_URL` pointing at a Xata DB that already has the existing corpus (episodes, quotes, lore, etc.).
 - Be aware: full corpus embed will spend roughly **$5-10** of Voyage credit on the first run.
 
 - [ ] **Step 1: Dry-run on a single source type first to validate the wiring**
