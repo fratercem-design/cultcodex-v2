@@ -115,3 +115,17 @@ export async function adminOnly(): Promise<NextResponse | null> {
     return NextResponse.json({ error: "Admin access required" }, { status: 403 });
   }
 }
+
+/**
+ * Boolean form of an `X-Sweep-Secret` check against `SWEEP_SECRET`.
+ *
+ * Exists so long-running maintenance sweeps (transcript backfill) can be driven
+ * headlessly by a script without holding `ENRICH_SECRET` and without an admin
+ * browser session. Kept as a separate credential so it can be rotated or
+ * revoked on its own. Constant-time; fails closed when `SWEEP_SECRET` is unset.
+ */
+export function sweepSecretMatches(req: NextRequest): boolean {
+  const expected = process.env.SWEEP_SECRET;
+  if (!expected) return false;
+  return safeEqual(req.headers.get("x-sweep-secret"), expected);
+}

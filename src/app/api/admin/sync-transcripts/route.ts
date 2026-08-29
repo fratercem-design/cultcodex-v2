@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
+import { sweepSecretMatches } from "@/lib/admin-guard";
 import { notifyTranscriptReady } from "@/lib/notifications";
 import { YoutubeTranscript } from "youtube-transcript";
 
@@ -152,10 +153,15 @@ async function fetchTranscriptSupadata(
 export async function POST(req: NextRequest) {
   const deadlineAt = Date.now() + ROUTE_BUDGET_MS;
 
-  try {
-    await requireAdmin();
-  } catch {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  // Authorized by EITHER an admin browser session (the admin panel) or the
+  // `X-Sweep-Secret` header, so the backfill can be driven headlessly by a
+  // script. The secret path is checked first: it needs no session lookup.
+  if (!sweepSecretMatches(req)) {
+    try {
+      await requireAdmin();
+    } catch {
+      return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+    }
   }
 
   const supadataKey = process.env.SUPADATA_API_KEY;
