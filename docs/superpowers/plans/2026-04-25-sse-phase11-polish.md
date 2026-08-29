@@ -1206,7 +1206,7 @@ git commit -m "feat(sse): add PgEventBus.getStatus() introspection method"
 **Files:**
 - Create: `src/lib/sse/__tests__/event-bus.integration.test.ts`
 
-This is one round-trip test that uses `@electric-sql/pglite` + `@electric-sql/pglite-socket` to give the bus a real Postgres-compatible target without touching Neon.
+This is one round-trip test that uses `@electric-sql/pglite` + `@electric-sql/pglite-socket` to give the bus a real Postgres-compatible target without touching Xata.
 
 **Fallback note:** If `pglite-socket` integration proves unworkable (the `pg` Client cannot connect to it, or LISTEN/NOTIFY semantics differ enough to make the test useless), substitute a real-Postgres test against `process.env.DATABASE_URL` — but only when an explicit `RUN_INTEGRATION=1` env var is set, so `npm test` stays hermetic in CI. Document the fallback rationale in a top-of-file comment in the test file.
 

@@ -6,7 +6,7 @@
 
 **Architecture:** A single dedicated `pg.Client` per Node instance, lazy-started on first `subscribe`, holds a long-lived connection and `LISTEN`s to every active channel. `publish` becomes async and runs `SELECT pg_notify($1, $2)` on the same client. Auto-reconnect with exponential backoff handles dropped connections; on reconnect, re-`LISTEN`s to every channel that still has subscribers. Three caller sites (`comments`, `reactions`, `live/chat` POSTs) gain `await` on the publish call, wrapped in try/catch so a publish failure doesn't break the user-facing operation.
 
-**Tech Stack:** TypeScript, `pg` v8 (already in `package.json`), Next.js 15 App Router (`runtime = "nodejs"` for SSE endpoints), Neon Postgres.
+**Tech Stack:** TypeScript, `pg` v8 (already in `package.json`), Next.js 15 App Router (`runtime = "nodejs"` for SSE endpoints), Xata Postgres.
 
 **Spec:** [`docs/superpowers/specs/2026-04-24-sse-pg-event-bus-design.md`](../specs/2026-04-24-sse-pg-event-bus-design.md)
 
@@ -514,7 +514,7 @@ If this fails, check Vercel runtime logs for `[PgEventBus]` errors:
 npx vercel@latest logs --yes 2>&1 | grep -i pgeventbus
 ```
 
-A common failure mode is Neon refusing the listener client connection. The reconnect loop will surface as repeated `Reconnect failed` log entries.
+A common failure mode is Xata refusing the listener client connection. The reconnect loop will surface as repeated `Reconnect failed` log entries.
 
 - [ ] **Step 4: Smoke cross-instance in production**
 
@@ -526,9 +526,9 @@ This is the actual goal of the change. Two strategies — pick one:
 
 Expected: the comment posted in instance X appears in instance Y's SSE stream within ~1 second. The fact that this works *at all* is the goal — pre-change, this would silently fail because the in-memory bus didn't cross instances.
 
-- [ ] **Step 5: Sanity-check Neon connection count**
+- [ ] **Step 5: Sanity-check Xata connection count**
 
-Visit the Neon dashboard for the project (https://console.neon.tech). Look at active connections.
+Visit the Xata dashboard for the project (https://app.xata.io). Look at active connections.
 Expected: a small number (typically 1–3 listener client connections in addition to whatever Prisma's pool holds). If you see dozens, the bus is leaking — file a follow-up to investigate.
 
 - [ ] **Step 6: Update MEMORY**

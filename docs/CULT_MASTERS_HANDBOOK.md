@@ -12,7 +12,7 @@
 |---|---|
 | App | Next.js in `~\cultcodex-v2`, deployed on Vercel (project `psychetarotchannels-projects/cultcodex-v2`) |
 | Domain | cultcodex.me |
-| DB | PostgreSQL (Neon) via Prisma |
+| DB | PostgreSQL (Xata) via Prisma |
 | AI pipeline | YouTube captions → Whisper (fallback) → Claude enrichment (summaries, guests, topics, quotes, lore) |
 | Payments | Stripe — Initiate+ $10/mo, Oracle tier $25/mo (annual variants via `STRIPE_PRICE_*` envs) |
 | Oracle | `/api/oracle/ask` — Claude on Bedrock, Groq fallback, cached, budget-capped |
@@ -137,7 +137,7 @@ curl -s -X POST https://cultcodex.me/api/admin/data-ops \
 3. **Push ≠ deployed** — always confirm the fingerprint; builds can stick in "Initializing".
 4. **AI prose legitimately mentions sponsor words** — never match on keywords alone.
 5. **`bedrockModelId` fail-fast seam** (fixed `7bf19ae`): enrichment fallback model must stay non-Bedrock-routed.
-6. **Supabase pauses idle free projects** — not used here (Neon), but Grimoire's cron trick is the pattern if ever needed.
+6. **Supabase pauses idle free projects** — not used here (Xata), but Grimoire's cron trick is the pattern if ever needed.
 7. **Episode numbers ≠ chronology** — EP numbers and air dates disagree in places; sort by date, not number.
 
 ---
