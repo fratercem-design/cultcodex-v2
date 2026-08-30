@@ -883,51 +883,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Initiate+ ($10) monthly meter — generous enough to be invisible to normal
-  // use (~100/mo, tune via INITIATE_MONTHLY_CAP), but aligns price with
-  // inference cost and gives heavy users a concrete upgrade trigger. Oracle
-  // tier (system) and admins are unmetered; hasSystemTier covers both.
-  if (canAccess && user && !(await hasSystemTier(user.id))) {
-    const meter = await consumeMonthlyMeter(
-      `oracle-u-${user.id}`,
-      Number(process.env.INITIATE_MONTHLY_CAP ?? "100")
-    );
-    if (!meter.ok) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "You've used all " + meter.cap + " Oracle questions in your Initiate+ month. " +
-            "They renew with your billing cycle — or Ascend to Oracle for unlimited communion.",
-        } satisfies OracleResponse,
-        { status: 403 }
-      );
-    }
-  }
-
-  // Guard the expensive LLM + ElevenLabs path against rapid-fire calls.
-  const rl = rateLimit(`oracle:${clientKey(req, user?.id)}`, {
-    limit: 15,
-    windowMs: 60_000,
-  });
-  if (!rl.ok) {
-    return NextResponse.json(
-      { ok: false, error: "The Oracle needs a moment. Try again shortly." } satisfies OracleResponse,
-      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
-    );
-  }
-
-  // Global daily ceiling on the expensive LLM + voice path. The free trial is
-  // cookie-gated (clearable), so cap total calls/day across everyone. Tune via
-  // ORACLE_DAILY_CAP; AI_KILLSWITCH=1 disables instantly.
-  const budget = await consumeLlmBudget("oracle", Number(process.env.ORACLE_DAILY_CAP ?? "500"));
-  if (!budget.ok) {
-    return NextResponse.json(
-      { ok: false, error: "The Oracle is resting. Try again later." } satisfies OracleResponse,
-      { status: 503, headers: { "Retry-After": "3600" } }
-    );
-  }
-
   const body = await req.json().catch(() => ({})) as Record<string, unknown>;
   const question = String(body.question ?? "").trim().slice(0, 500);
 
@@ -957,6 +912,40 @@ export async function POST(req: NextRequest) {
       { ok: false, error: "Oracle not configured." } satisfies OracleResponse,
       { status: 500 }
     );
+  }
+
+  // Guard the expensive LLM + ElevenLabs path against rapid-fire calls.
+  const rl = rateLimit(`oracle:${clientKey(req, user?.id)}`, {
+    limit: 15,
+    windowMs: 60_000,
+  });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { ok: false, error: "The Oracle needs a moment. Try again shortly." } satisfies OracleResponse,
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
+    );
+  }
+
+  // Initiate+ ($10) monthly meter — generous enough to be invisible to normal
+  // use (~100/mo, tune via INITIATE_MONTHLY_CAP), but aligns price with
+  // inference cost and gives heavy users a concrete upgrade trigger. Oracle
+  // tier (system) and admins are unmetered; hasSystemTier covers both.
+  if (canAccess && user && !(await hasSystemTier(user.id))) {
+    const meter = await consumeMonthlyMeter(
+      `oracle-u-${user.id}`,
+      Number(process.env.INITIATE_MONTHLY_CAP ?? "100")
+    );
+    if (!meter.ok) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "You've used all " + meter.cap + " Oracle questions in your Initiate+ month. " +
+            "They renew with your billing cycle — or Ascend to Oracle for unlimited communion.",
+        } satisfies OracleResponse,
+        { status: 403 }
+      );
+    }
   }
 
   // Cache check — skip the expensive LLM + ElevenLabs call if we've seen this exact query.
@@ -1011,6 +1000,22 @@ export async function POST(req: NextRequest) {
     } satisfies OracleResponse);
     if (isFreeTrialRequest) setTrialCookie(res, trial.used + 1, trial.month);
     return res;
+  }
+
+  // Global daily ceiling on the expensive LLM path. The free trial is
+  // cookie-gated (clearable), so cap total calls/day across everyone. Tune via
+  // ORACLE_DAILY_CAP; AI_KILLSWITCH=1 disables instantly.
+  //
+  // Charged here, past the cache check, so a cache hit never spends global
+  // capacity on an LLM call that will not happen. Everything above this line
+  // (parse, validate, rate limit, per-user meter) runs first so malformed or
+  // duplicate requests cannot burn the day's budget.
+  const budget = await consumeLlmBudget("oracle", Number(process.env.ORACLE_DAILY_CAP ?? "500"));
+  if (!budget.ok) {
+    return NextResponse.json(
+      { ok: false, error: "The Oracle is resting. Try again later." } satisfies OracleResponse,
+      { status: 503, headers: { "Retry-After": "3600" } }
+    );
   }
 
   // Pre-flight archive search
