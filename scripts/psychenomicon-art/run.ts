@@ -1,20 +1,8 @@
 #!/usr/bin/env npx tsx
 // scripts/psychenomicon-art/run.ts
 //
-// Main pipeline orchestrator.
-// Reads Psychenomicon chapters from the DB, runs Claude symbolic analysis,
-// builds cinematic prompts, fetches images from Pollinations AI, and saves
-// structured output per chapter.
-//
-// Usage:
-//   npx dotenvx run -- npx tsx scripts/psychenomicon-art/run.ts [options]
-//
-// Options:
-//   --chapter <slug>   Process a single chapter by slug
-//   --batch <n>        Process at most N chapters (default: all)
-//   --force            Re-process chapters that already have output
-//   --dry-run          Analyze + build prompts, skip Pollinations image generation
-//   --skip-images      Same as --dry-run but saves prompts to disk
+// Resumable, local-first Psychenomicon chapter-art pipeline.
+// Database writes are disabled unless --publish is supplied explicitly.
 
 import "dotenv/config";
 import * as fs from "fs";
@@ -28,15 +16,12 @@ import { generateImages } from "./images";
 import { uploadChapterToRailway } from "./upload-railway";
 import type { ChapterArtOutput } from "./types";
 
-// ─── Output directories ────────────────────────────────────────────────────
-
 const SCRIPT_DIR = __dirname;
-const OUTPUT_DIR  = path.join(SCRIPT_DIR, "output");
+const OUTPUT_DIR = path.join(SCRIPT_DIR, "output");
 const PROMPTS_DIR = path.join(OUTPUT_DIR, "prompts");
-const IMAGES_DIR  = path.join(OUTPUT_DIR, "images");
-const LOG_PATH    = path.join(SCRIPT_DIR, "art-pipeline.log");
-
-// ─── Logging ──────────────────────────────────────────────────────────────
+const IMAGES_DIR = path.join(OUTPUT_DIR, "images");
+const LOG_PATH = path.join(SCRIPT_DIR, "art-pipeline.log");
+const SLOTS = ["cover", "scene_01", "scene_02", "scene_03"] as const;
 
 function log(msg: string) {
   const line = `[${new Date().toISOString()}] ${msg}`;
@@ -51,107 +36,195 @@ function logError(msg: string, err?: unknown) {
   fs.appendFileSync(LOG_PATH, line + "\n");
 }
 
-// ─── CLI arg parsing ──────────────────────────────────────────────────────
+function parsePositiveInt(flag: string, value: string | undefined): number {
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    throw new Error(`${flag} requires a positive integer.`);
+  }
+  return parsed;
+}
 
 function parseArgs() {
   const args = process.argv.slice(2);
   let chapterSlug: string | undefined;
   let batch: number | undefined;
+  let maxNew: number | undefined;
+  let stopAtTotal: number | undefined;
   let force = false;
   let dryRun = false;
   let skipImages = false;
-  let skipUpload = false;
-  let maxNew: number | undefined;
-  let stopAtTotal: number | undefined;
-
+  let skipUpload = true;
   let uploadOnly = false;
+  let inventory = false;
 
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === "--chapter" && args[i + 1]) { chapterSlug = args[++i]; }
-    if (args[i] === "--batch"   && args[i + 1]) { batch = parseInt(args[++i], 10); }
-    if (args[i] === "--max-new" && args[i + 1]) { maxNew = parseInt(args[++i], 10); }
-    if (args[i] === "--stop-at-total" && args[i + 1]) { stopAtTotal = parseInt(args[++i], 10); }
-    if (args[i] === "--force")        { force = true; }
-    if (args[i] === "--dry-run")      { dryRun = true; skipImages = true; }
-    if (args[i] === "--skip-images")  { skipImages = true; }
-    if (args[i] === "--skip-upload")  { skipUpload = true; }
-    if (args[i] === "--upload-only")  { uploadOnly = true; }
+    if (args[i] === "--chapter" && args[i + 1]) chapterSlug = args[++i];
+    else if (args[i] === "--batch") batch = parsePositiveInt("--batch", args[++i]);
+    else if (args[i] === "--max-new") maxNew = parsePositiveInt("--max-new", args[++i]);
+    else if (args[i] === "--stop-at-total") stopAtTotal = parsePositiveInt("--stop-at-total", args[++i]);
+    else if (args[i] === "--force") force = true;
+    else if (args[i] === "--dry-run") { dryRun = true; skipImages = true; }
+    else if (args[i] === "--skip-images") skipImages = true;
+    else if (args[i] === "--skip-upload") skipUpload = true;
+    else if (args[i] === "--publish") skipUpload = false;
+    else if (args[i] === "--upload-only") uploadOnly = true;
+    else if (args[i] === "--inventory") inventory = true;
+    else throw new Error(`Unknown or incomplete argument: ${args[i]}`);
   }
 
-  return { chapterSlug, batch, maxNew, stopAtTotal, force, dryRun, skipImages, skipUpload, uploadOnly };
+  if (uploadOnly && skipUpload) {
+    throw new Error("--upload-only requires explicit --publish authorization.");
+  }
+  if (inventory && !skipUpload) {
+    throw new Error("--inventory cannot be combined with --publish.");
+  }
+
+  return {
+    chapterSlug,
+    batch,
+    maxNew,
+    stopAtTotal,
+    force,
+    dryRun,
+    skipImages,
+    skipUpload,
+    uploadOnly,
+    inventory,
+  };
 }
 
-// Bluesminds credit exhaustion shows up as a 402 / balance / quota error on
-// image generation (the only Bluesminds-only step). When it does, the durable
-// runner should halt and stay halted rather than burn cycles retrying.
 function isCreditExhausted(err: unknown): boolean {
   const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
-  return (
-    msg.includes("402") ||
-    msg.includes("payment required") ||
-    msg.includes("insufficient_quota") ||
-    msg.includes("credit balance") ||
-    msg.includes("insufficient credit") ||
-    msg.includes("quota")
+  return [
+    "402",
+    "payment required",
+    "insufficient_quota",
+    "credit balance",
+    "insufficient credit",
+    "quota",
+  ].some((needle) => msg.includes(needle));
+}
+
+function hasExistingOutput(slug: string): boolean {
+  if (!fs.existsSync(path.join(PROMPTS_DIR, `${slug}.json`))) return false;
+  return SLOTS.every((slot) =>
+    fs.existsSync(path.join(IMAGES_DIR, slug, `${slot}.png`))
   );
 }
 
-// ─── Helper: check if chapter already has output ─────────────────────────
-
-function hasExistingOutput(slug: string): boolean {
-  const promptFile = path.join(PROMPTS_DIR, `${slug}.json`);
-  if (!fs.existsSync(promptFile)) return false;
-  // Require all four images — partial chapters must be reprocessed (the missing
-  // images get filled by generateImages, which skips ones already on disk).
-  for (const s of ["cover", "scene_01", "scene_02", "scene_03"]) {
-    if (!fs.existsSync(path.join(IMAGES_DIR, slug, `${s}.png`))) return false;
-  }
-  return true;
+function getLocalCoverage() {
+  const promptSlugs = fs.existsSync(PROMPTS_DIR)
+    ? fs.readdirSync(PROMPTS_DIR)
+        .filter((name) => name.endsWith(".json"))
+        .map((name) => name.slice(0, -5))
+    : [];
+  const imageSlugs = fs.existsSync(IMAGES_DIR)
+    ? fs.readdirSync(IMAGES_DIR).filter((name) => {
+        const candidate = path.join(IMAGES_DIR, name);
+        return fs.statSync(candidate).isDirectory();
+      })
+    : [];
+  const allSlugs = new Set([...promptSlugs, ...imageSlugs]);
+  const complete = [...allSlugs].filter(hasExistingOutput).length;
+  return {
+    prompts: promptSlugs.length,
+    complete,
+    partial: allSlugs.size - complete,
+  };
 }
-
-// ─── Sleep ────────────────────────────────────────────────────────────────
 
 function sleep(ms: number) {
   return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────
-
 async function main() {
-  const { chapterSlug, batch, maxNew, stopAtTotal, force, dryRun, skipImages, skipUpload, uploadOnly } = parseArgs();
+  const options = parseArgs();
+  const {
+    chapterSlug,
+    batch,
+    maxNew,
+    stopAtTotal,
+    force,
+    dryRun,
+    skipImages,
+    skipUpload,
+    uploadOnly,
+    inventory,
+  } = options;
 
-  // Ensure output directories exist
   fs.mkdirSync(PROMPTS_DIR, { recursive: true });
-  fs.mkdirSync(IMAGES_DIR,  { recursive: true });
+  fs.mkdirSync(IMAGES_DIR, { recursive: true });
 
   log("━━━ Psychenomicon Art Pipeline ━━━");
-  if (dryRun)       log("  Mode: dry-run (no images generated)");
-  if (skipImages)   log("  Mode: skip-images (prompts only)");
-  if (skipUpload)   log("  Mode: skip-upload (no Supabase upload)");
-  if (force)        log("  Mode: force (re-process existing outputs)");
-  if (uploadOnly)   log("  Mode: upload-only (skip Claude + image gen, upload existing local files)");
+  if (dryRun) log("  Mode: dry-run (no images generated)");
+  if (skipImages) log("  Mode: skip-images (prompts only)");
+  if (skipUpload) log("  Mode: local-only (publishing disabled; add --publish explicitly)");
+  if (!skipUpload) log("  Mode: publish (database writes enabled)");
+  if (force) log("  Mode: force (re-process existing outputs)");
+  if (uploadOnly) log("  Mode: upload-only (publish existing local files)");
+  if (inventory) log("  Mode: inventory (no AI calls or database writes)");
   if (chapterSlug) log(`  Filter: chapter slug = ${chapterSlug}`);
-  if (batch)       log(`  Batch limit: ${batch}`);
+  if (batch) log(`  Batch limit: ${batch}`);
+  if (maxNew) log(`  New chapter limit: ${maxNew}`);
 
   const prisma = getPrisma();
-  // Bluesminds (OpenAI-compatible). analyze.ts falls back to Bedrock if it flakes.
+
+  if (inventory) {
+    const [total, published, assets] = await Promise.all([
+      prisma.psychenomiconChapter.count(),
+      prisma.psychenomiconChapter.count({ where: { artGeneratedAt: { not: null } } }),
+      prisma.psychenomiconArtAsset.count(),
+    ]);
+    const local = getLocalCoverage();
+    log("━━━ Coverage inventory ━━━");
+    log(`  Database chapters:       ${total}`);
+    log(`  Published chapter art:   ${published}`);
+    log(`  Remaining chapter art:   ${Math.max(0, total - published)}`);
+    log(`  Stored art assets:       ${assets}`);
+    log(`  Local prompt files:      ${local.prompts}`);
+    log(`  Local complete chapters: ${local.complete}`);
+    log(`  Local partial chapters:  ${local.partial}`);
+    await disconnect();
+    return;
+  }
+
+  if (!uploadOnly) {
+    const apiKey =
+      process.env.ART_API_KEY ??
+      process.env.HCNSEC_API_KEY ??
+      process.env.OPENROUTER_API_KEY;
+    if (!apiKey) {
+      throw new Error(
+        "No art API key is set. Use run-hcnsec.ps1 so the key is prompted securely."
+      );
+    }
+  }
+
+  const apiKey =
+    process.env.ART_API_KEY ??
+    process.env.HCNSEC_API_KEY ??
+    process.env.OPENROUTER_API_KEY ??
+    "upload-only";
   const client = new OpenAI({
-    apiKey: process.env.OPENROUTER_API_KEY,
-    baseURL: process.env.OPENROUTER_BASE_URL ?? "https://api.bluesminds.com/v1",
+    apiKey,
+    baseURL:
+      process.env.ART_API_BASE_URL ??
+      (process.env.HCNSEC_API_KEY || process.env.ART_API_KEY
+        ? "https://api.hcnsec.cn/v1"
+        : process.env.OPENROUTER_BASE_URL ?? "https://api.bluesminds.com/v1"),
     defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" },
   });
 
-  // ─── Fetch chapters from DB ────────────────────────────────────────────
-
-  log("Fetching chapters from DB…");
-
-  const whereClause = chapterSlug ? { slug: chapterSlug } : undefined;
-  const takeClause  = batch ? { take: batch } : undefined;
-
+  log("Fetching chapters still missing published art from the configured database…");
+  const whereClause = chapterSlug
+    ? { slug: chapterSlug }
+    : force
+      ? undefined
+      : { artGeneratedAt: null };
   const chapters = await prisma.psychenomiconChapter.findMany({
     where: whereClause,
     orderBy: { chapterNumber: "asc" },
-    ...(takeClause ?? {}),
+    ...(batch ? { take: batch } : {}),
     select: {
       id: true,
       slug: true,
@@ -162,44 +235,38 @@ async function main() {
       mythicText: true,
       emergingSignals: true,
       archetypesData: true,
+      artGeneratedAt: true,
     },
   });
 
   if (chapters.length === 0) {
-    log("No chapters found. Is the DB populated? Exiting.");
+    log("No matching chapters need processing.");
     await disconnect();
-    process.exit(0);
+    return;
   }
-
-  log(`Found ${chapters.length} chapter(s) to process.`);
-
-  // ─── Process each chapter ─────────────────────────────────────────────
+  log(`Found ${chapters.length} chapter(s) to consider.`);
 
   let processed = 0;
   let skipped = 0;
   let failed = 0;
-
-  // Graceful stop for the durable runner: `touch output/STOP` halts after the
-  // current chapter (cost control without killing mid-write).
   const STOP_FILE = path.join(OUTPUT_DIR, "STOP");
   const writeStop = (reason: string) => {
-    try { fs.writeFileSync(STOP_FILE, `${new Date().toISOString()} ${reason}\n`); } catch { /* best effort */ }
+    try {
+      fs.writeFileSync(STOP_FILE, `${new Date().toISOString()} ${reason}\n`);
+    } catch {
+      // Best effort only.
+    }
   };
 
-  // Budget guard: once the whole archive has this many chapters with art, stop
-  // and stay stopped. Lets the durable runner do "N total" then quit.
   const artBaseline =
-    stopAtTotal != null
+    !skipUpload && stopAtTotal != null
       ? await prisma.psychenomiconChapter.count({ where: { artGeneratedAt: { not: null } } })
       : 0;
-  if (stopAtTotal != null) {
-    log(`Budget: ${artBaseline}/${stopAtTotal} chapters already have art.`);
-    if (artBaseline >= stopAtTotal) {
-      writeStop(`art total ${artBaseline} >= stop-at-total ${stopAtTotal}`);
-      log(`✅ Target of ${stopAtTotal} reached — wrote STOP, exiting.`);
-      await disconnect();
-      process.exit(0);
-    }
+  if (!skipUpload && stopAtTotal != null && artBaseline >= stopAtTotal) {
+    writeStop(`art total ${artBaseline} >= stop-at-total ${stopAtTotal}`);
+    log(`Target of ${stopAtTotal} published chapters already reached.`);
+    await disconnect();
+    return;
   }
 
   for (const chapter of chapters) {
@@ -208,60 +275,70 @@ async function main() {
       break;
     }
     if (maxNew && processed >= maxNew) {
-      log(`⏸  Reached --max-new ${maxNew} this run — stopping (resume later).`);
+      log(`⏸  Reached --max-new ${maxNew} this run — stopping.`);
       break;
     }
-    if (stopAtTotal != null && artBaseline + processed >= stopAtTotal) {
+    if (!skipUpload && stopAtTotal != null && artBaseline + processed >= stopAtTotal) {
       writeStop(`art total reached stop-at-total ${stopAtTotal}`);
-      log(`✅ Reached ${stopAtTotal} total chapters with art — wrote STOP, halting.`);
+      log(`Reached ${stopAtTotal} total chapters with published art.`);
       break;
     }
-    const label = `CH.${String(chapter.chapterNumber).padStart(3, "0")} "${chapter.title}" (${chapter.slug})`;
 
-    // Skip if already done and not forced (upload-only always re-uploads)
-    if (!force && !uploadOnly && hasExistingOutput(chapter.slug)) {
-      log(`  ↷  ${label} — already processed, skipping (use --force to re-run)`);
-      skipped++;
+    const label = `CH.${String(chapter.chapterNumber).padStart(3, "0")} "${chapter.title}" (${chapter.slug})`;
+    const localComplete = hasExistingOutput(chapter.slug);
+
+    if (localComplete && !force && !uploadOnly) {
+      if (skipUpload) {
+        log(`  ↷  ${label} — complete locally, skipping (use --force to regenerate)`);
+        skipped++;
+        continue;
+      }
+      try {
+        const imageDir = path.join(IMAGES_DIR, chapter.slug);
+        log(`  Publishing reviewed local files for ${label}…`);
+        await uploadChapterToRailway(prisma, chapter.slug, {
+          cover: path.join(imageDir, "cover.png"),
+          scene_01: path.join(imageDir, "scene_01.png"),
+          scene_02: path.join(imageDir, "scene_02.png"),
+          scene_03: path.join(imageDir, "scene_03.png"),
+        });
+        processed++;
+      } catch (err) {
+        logError(`Failed publishing ${label}`, err);
+        failed++;
+      }
       continue;
     }
 
     log(`\n▶  Processing ${label}…`);
 
-    // ── Upload-only mode: skip Claude + Pollinations, just upload existing files ──
     if (uploadOnly) {
       try {
-        const chapterImagesDir = path.join(IMAGES_DIR, chapter.slug);
-        const slots = ["cover", "scene_01", "scene_02", "scene_03"] as const;
-        const missing = slots.filter(s => !fs.existsSync(path.join(chapterImagesDir, `${s}.png`)));
+        const imageDir = path.join(IMAGES_DIR, chapter.slug);
+        const missing = SLOTS.filter(
+          (slot) => !fs.existsSync(path.join(imageDir, `${slot}.png`))
+        );
         if (missing.length > 0) {
-          log(`  ⚠  Skipping — missing local images: ${missing.join(", ")}`);
+          log(`  ↷  Missing local images: ${missing.join(", ")}`);
           skipped++;
           continue;
         }
-        log("  [1/1] Storing images in Railway Postgres…");
-        const localPaths = {
-          cover:    path.join(chapterImagesDir, "cover.png"),
-          scene_01: path.join(chapterImagesDir, "scene_01.png"),
-          scene_02: path.join(chapterImagesDir, "scene_02.png"),
-          scene_03: path.join(chapterImagesDir, "scene_03.png"),
-        };
-        if (!dryRun) {
-          await uploadChapterToRailway(prisma, chapter.slug, localPaths);
-          log(`  ✓  Art stored + artImageUrls set for ${chapter.slug}`);
-        } else {
-          log(`  [dry-run] Would save URLs to DB for ${chapter.slug}`);
-        }
+        await uploadChapterToRailway(prisma, chapter.slug, {
+          cover: path.join(imageDir, "cover.png"),
+          scene_01: path.join(imageDir, "scene_01.png"),
+          scene_02: path.join(imageDir, "scene_02.png"),
+          scene_03: path.join(imageDir, "scene_03.png"),
+        });
         processed++;
       } catch (err) {
-        logError(`Failed uploading ${label}`, err);
+        logError(`Failed publishing ${label}`, err);
         failed++;
       }
       continue;
     }
 
     try {
-      // ── Step 1: Claude symbolic analysis ──────────────────────────────
-      log("  [1/3] Symbolic analysis via Claude…");
+      log("  [1/3] Building symbolic analysis…");
       const analysis = await analyzeChapter(client, {
         slug: chapter.slug,
         title: chapter.title,
@@ -272,19 +349,11 @@ async function main() {
         emergingSignals: chapter.emergingSignals,
         archetypesData: chapter.archetypesData,
       });
-      log(`     Themes: ${analysis.themes.slice(0, 3).join(", ")}…`);
-      log(`     Symbols: ${analysis.symbols.slice(0, 4).join(", ")}…`);
-      log(`     Mood: ${analysis.mood}`);
-
-      // Brief pause between Claude calls to avoid rate-limit bursts
+      log(`     Themes: ${analysis.themes.slice(0, 3).join(", ")}`);
       await sleep(1_000);
 
-      // ── Step 2: Build cinematic prompts ───────────────────────────────
-      log("  [2/3] Building cinematic prompts via Claude…");
+      log("  [2/3] Building compact cinematic prompts…");
       const prompts = await buildPrompts(client, analysis);
-      log(`     Cover (${prompts.cover.length} chars): ${prompts.cover.slice(0, 80)}…`);
-
-      // Save prompts JSON immediately (survives partial failures)
       const promptsPath = path.join(PROMPTS_DIR, `${chapter.slug}.json`);
       const output: Partial<ChapterArtOutput> = {
         slug: chapter.slug,
@@ -296,81 +365,61 @@ async function main() {
       };
       fs.writeFileSync(promptsPath, JSON.stringify(output, null, 2));
       log(`     Saved prompts → ${path.relative(process.cwd(), promptsPath)}`);
-
       await sleep(1_000);
 
-      // ── Step 3: Generate images ───────────────────────────────────────
       if (!skipImages) {
-        log("  [3/3] Generating images via Pollinations AI…");
-        const chapterImagesDir = path.join(IMAGES_DIR, chapter.slug);
-
-        const imagePaths = await generateImages(prompts, chapterImagesDir, {
-          dryRun,
-        });
-
-        // Update the saved JSON with local image paths
+        log("  [3/3] Generating four images through the configured art provider…");
+        const imageDir = path.join(IMAGES_DIR, chapter.slug);
+        const imagePaths = await generateImages(prompts, imageDir, { dryRun });
         const fullOutput: ChapterArtOutput = {
           ...(output as ChapterArtOutput),
           imagePaths: {
-            cover:    path.relative(OUTPUT_DIR, imagePaths.cover),
+            cover: path.relative(OUTPUT_DIR, imagePaths.cover),
             scene_01: path.relative(OUTPUT_DIR, imagePaths.scene_01),
             scene_02: path.relative(OUTPUT_DIR, imagePaths.scene_02),
             scene_03: path.relative(OUTPUT_DIR, imagePaths.scene_03),
           },
         };
         fs.writeFileSync(promptsPath, JSON.stringify(fullOutput, null, 2));
-        log(`     Images saved to ${path.relative(process.cwd(), chapterImagesDir)}/`);
+        log(`     Images saved to ${path.relative(process.cwd(), imageDir)}/`);
 
-        // ── Step 4: Store images in Postgres (Railway) + write URLs to DB ──
         if (!skipUpload && !dryRun) {
-          log("  [4/4] Storing images in Railway Postgres…");
-          await uploadChapterToRailway(prisma, chapter.slug, {
-            cover:    imagePaths.cover,
-            scene_01: imagePaths.scene_01,
-            scene_02: imagePaths.scene_02,
-            scene_03: imagePaths.scene_03,
-          });
-          log(`  ✓  Art stored + artImageUrls set for ${chapter.slug}`);
+          await uploadChapterToRailway(prisma, chapter.slug, imagePaths);
+          log(`  ✓  Published art for ${chapter.slug}`);
         } else {
-          log("  [4/4] Skipping upload (--skip-upload or --dry-run)");
+          log("  ✓  Local files complete; database unchanged.");
         }
       } else {
-        log("  [3/3] Skipping image generation (--skip-images or --dry-run)");
+        log("  [3/3] Image generation skipped; prompt file saved.");
       }
 
       processed++;
       log(`  ✓  ${label} complete.`);
-
     } catch (err) {
       logError(`Failed processing ${label}`, err);
       failed++;
-      // Credit exhausted on Bluesminds → halt the durable runner for good so it
-      // stops re-triggering and burning failed retries against a dead balance.
       if (isCreditExhausted(err)) {
-        writeStop("Bluesminds credit exhausted (402/quota)");
-        log("🛑 Bluesminds credit appears exhausted — wrote STOP, halting runner.");
+        writeStop("configured art provider credit or quota exhausted");
+        log("Art-provider credit appears exhausted — wrote STOP and halted.");
         break;
       }
-      // Otherwise continue with the next chapter rather than aborting the batch.
     }
 
-    // Polite gap between chapters to avoid hammering APIs
     await sleep(3_000);
   }
 
-  // ─── Summary ─────────────────────────────────────────────────────────
-
-  log(`\n━━━ Pipeline complete ━━━`);
+  log("\n━━━ Pipeline complete ━━━");
   log(`  Processed: ${processed}`);
   log(`  Skipped:   ${skipped}`);
   log(`  Failed:    ${failed}`);
   log(`  Output:    ${path.relative(process.cwd(), OUTPUT_DIR)}/`);
 
   await disconnect();
-  process.exit(failed > 0 ? 1 : 0);
+  if (failed > 0) process.exitCode = 1;
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error("Fatal pipeline error:", err);
-  process.exit(1);
+  await disconnect().catch(() => undefined);
+  process.exitCode = 1;
 });

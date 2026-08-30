@@ -1,7 +1,7 @@
 #!/usr/bin/env npx tsx
 // scripts/psychenomicon-art/upload-railway.ts
 //
-// Store generated chapter art in Postgres (Railway) instead of Supabase, and
+// Store generated chapter art in the configured Postgres database, and
 // point each chapter's artImageUrls at /api/psychenomicon-art/[slug]/[slot].
 //
 // Usage:
@@ -31,8 +31,8 @@ export async function uploadChapterToRailway(
     const data = fs.readFileSync(imagePaths[slot]);
     await prisma.psychenomiconArtAsset.upsert({
       where: { chapterSlug_slot: { chapterSlug: slug, slot } },
-      create: { chapterSlug: slug, slot, mimeType: "image/jpeg", data },
-      update: { data, mimeType: "image/jpeg" },
+      create: { chapterSlug: slug, slot, mimeType: "image/png", data },
+      update: { data, mimeType: "image/png" },
     });
   }
   const artImageUrls = Object.fromEntries(
@@ -77,22 +77,6 @@ async function main() {
         scene_02: path.join(dir, "scene_02.png"),
         scene_03: path.join(dir, "scene_03.png"),
       });
-      for (const { slot, file } of files) {
-        const data = fs.readFileSync(file);
-        await prisma.psychenomiconArtAsset.upsert({
-          where: { chapterSlug_slot: { chapterSlug: slug, slot } },
-          create: { chapterSlug: slug, slot, mimeType: "image/jpeg", data },
-          update: { data, mimeType: "image/jpeg" },
-        });
-      }
-
-      const artImageUrls = Object.fromEntries(
-        SLOTS.map((slot) => [slot, `/api/psychenomicon-art/${slug}/${slot}`])
-      );
-      await prisma.psychenomiconChapter.update({
-        where: { slug },
-        data: { artImageUrls, artGeneratedAt: new Date() },
-      });
 
       console.log(`✓ ${slug} — 4 images → Postgres, artImageUrls set`);
       uploaded++;
@@ -106,7 +90,11 @@ async function main() {
   await disconnect();
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+// Keep this file import-safe: run.ts imports the reusable uploader, and that
+// import must not also launch the standalone bulk-upload command.
+if (require.main === module) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
