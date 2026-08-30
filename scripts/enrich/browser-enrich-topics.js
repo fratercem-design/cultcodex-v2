@@ -6,8 +6,11 @@
  * or by setting window.__enrichStop = true in the console.
  */
 (async function enrichTopics() {
-  const SECRET  = "2633f3d5c23cfa60765748e5de4dcd633ac100e3e8f8b241";
-  const API_KEY = "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";
+  // Secret is prompted for at runtime — never hard-code it in this file.
+  // Paste the value of ENRICH_SECRET when asked.
+  const SECRET = window.prompt("ENRICH_SECRET:");
+  if (!SECRET) { console.error("No secret provided — aborting."); return; }
+
   const BATCH   = 10;   // topics per round — keep low to stay under 60s Vercel limit
   const MIN_EP  = 2;    // minimum episode count
 
@@ -31,7 +34,7 @@
           "Content-Type": "application/json",
           "x-enrich-secret": SECRET,
         },
-        body: JSON.stringify({ batch: BATCH, minEpisodes: MIN_EP, anthropicKey: API_KEY }),
+        body: JSON.stringify({ batch: BATCH, minEpisodes: MIN_EP }),
       });
       data = await res.json();
       if (!res.ok) {
