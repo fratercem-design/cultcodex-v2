@@ -39,7 +39,16 @@ export function getPrisma(): PrismaClient {
   if (_prisma) return _prisma;
   const connectionString = process.env.DATABASE_URL;
   assertUsableDatabaseUrl(connectionString);
-  const adapter = new PrismaPg({ connectionString });
+  // Xata branches hibernate when idle, and these are batch scripts that are
+  // often the first thing to touch a sleeping branch. Give the initial connect
+  // room to wake it instead of failing on the first query and succeeding on a
+  // manual retry.
+  const adapter = new PrismaPg({
+    connectionString,
+    connectionTimeoutMillis: 30000,
+    idleTimeoutMillis: 10000,
+    max: 5,
+  });
   _prisma = new PrismaClient({ adapter });
   return _prisma;
 }
