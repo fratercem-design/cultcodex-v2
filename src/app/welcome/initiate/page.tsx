@@ -4,7 +4,7 @@ import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Welcome, Initiate — CULT CODEX",
+  title: "Welcome, Initiate",
   description: "You're in. The archive is now a tool you can use.",
   path: "/welcome/initiate",
 });
@@ -56,7 +56,7 @@ export default function WelcomeInitiatePage() {
 
       {/* ── Hero ── */}
       <section className="text-center space-y-5">
-        <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-gold/60">
+        <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-gold-text/60">
           ✦ &nbsp; transmission confirmed &nbsp; ✦
         </p>
         <h1
@@ -72,7 +72,7 @@ export default function WelcomeInitiatePage() {
         <div className="flex flex-wrap justify-center gap-3 pt-2">
           <Link
             href="/episodes"
-            className="rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
+            className="rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25"
           >
             Enter the Archive →
           </Link>
@@ -89,7 +89,7 @@ export default function WelcomeInitiatePage() {
 
       {/* ── What just opened ── */}
       <section className="space-y-6">
-        <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+        <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
           {"/// what just opened"}
         </p>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -99,7 +99,7 @@ export default function WelcomeInitiatePage() {
               className="rounded-xl border border-accent-gold/15 bg-surface p-5 space-y-2.5 transition-colors hover:border-accent-gold/30"
             >
               <span className="text-2xl">{b.icon}</span>
-              <h3 className="font-display text-sm font-bold text-accent-gold">{b.title}</h3>
+              <h3 className="font-display text-sm font-bold text-accent-gold-text">{b.title}</h3>
               <p className="font-mono text-[11px] text-text-muted leading-relaxed">{b.body}</p>
             </div>
           ))}
@@ -120,13 +120,13 @@ export default function WelcomeInitiatePage() {
               href={s.href}
               className="flex items-center gap-4 rounded-xl border border-border bg-surface px-5 py-3.5 transition-all hover:border-accent-gold/40 hover:bg-accent-gold/5 group"
             >
-              <span className="font-mono text-lg font-bold text-accent-gold/25 w-6 flex-shrink-0">
+              <span className="font-mono text-lg font-bold text-accent-gold-text/25 w-6 flex-shrink-0">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span className="font-mono text-sm text-text-muted group-hover:text-accent-gold transition-colors">
+              <span className="font-mono text-sm text-text-muted group-hover:text-accent-gold-text transition-colors">
                 {s.label}
               </span>
-              <span className="ml-auto font-mono text-[11px] text-accent-gold opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+              <span className="ml-auto font-mono text-[11px] text-accent-gold-text opacity-0 group-hover:opacity-100 transition-opacity">→</span>
             </Link>
           ))}
         </div>
@@ -134,17 +134,17 @@ export default function WelcomeInitiatePage() {
 
       {/* ── Upgrade tease ── */}
       <section className="rounded-2xl border border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-surface p-8 text-center space-y-4 max-w-2xl mx-auto">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">
           {"/// when you&apos;re ready to go deeper"}
         </p>
-        <h3 className="font-display text-xl font-bold text-accent-violet">Oracle Tier</h3>
+        <h3 className="font-display text-xl font-bold text-accent-violet-text">Oracle Tier</h3>
         <p className="font-mono text-xs text-text-muted max-w-sm mx-auto leading-relaxed">
           A personal codex page. Votes on future guests. Red Room Sessions. A named role in the archive.
           $25/month — when you&rsquo;re ready to stop watching and start shaping it.
         </p>
         <Link
           href="/premium#system"
-          className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 px-5 py-2 font-mono text-xs text-accent-violet transition-all hover:bg-accent-violet/20"
+          className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 px-5 py-2 font-mono text-xs text-accent-violet-text transition-all hover:bg-accent-violet/20"
         >
           See what Oracle opens →
         </Link>

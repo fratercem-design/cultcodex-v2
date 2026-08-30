@@ -15,7 +15,7 @@ export default function ArchetypesPage() {
     <div className="min-h-screen bg-void">
       <PageHero
         title="Archetypes"
-        subtitle="Eight patterns the Oracle has identified across 2,600+ transmissions"
+        subtitle="Eight patterns the Oracle has identified across nearly 3,000 transmissions"
         backgroundImage="/articles-bacgkground.jpg"
       />
 

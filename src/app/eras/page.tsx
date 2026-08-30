@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 export const revalidate = 3600;
 
 export const metadata: Metadata = buildMetadata({
-  title: "Eras of the Archive — CULT CODEX",
+  title: "Eras of the Archive",
   description:
     "The Cult of Psyche archive divided into its five defining eras — from the first raw transmissions to the ongoing signal. Browse episodes by the period that shaped them.",
   path: "/eras",
@@ -23,8 +23,8 @@ const ERA_BORDER: Record<string, string> = {
 };
 
 const ERA_TEXT: Record<string, string> = {
-  gold:    "text-accent-gold",
-  violet:  "text-accent-violet",
+  gold:    "text-accent-gold-text",
+  violet:  "text-accent-violet-text",
   cyan:    "text-accent-cyan",
   crimson: "text-accent-crimson",
   muted:   "text-text-muted",
@@ -39,8 +39,8 @@ const ERA_BG: Record<string, string> = {
 };
 
 const ERA_SIGIL_BG: Record<string, string> = {
-  gold:    "bg-accent-gold/10    text-accent-gold",
-  violet:  "bg-accent-violet/10  text-accent-violet",
+  gold:    "bg-accent-gold/10    text-accent-gold-text",
+  violet:  "bg-accent-violet/10  text-accent-violet-text",
   cyan:    "bg-accent-cyan/10    text-accent-cyan",
   crimson: "bg-accent-crimson/10 text-accent-crimson",
   muted:   "bg-surface           text-text-muted",

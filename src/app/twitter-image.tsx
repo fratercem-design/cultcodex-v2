@@ -9,7 +9,7 @@ export default function Image() {
   return createOgImage({
     eyebrow: "Cult of Psyche archive",
     title: "CultCodex",
-    subtitle: "Tarot, consciousness, the occult, AI, and open-panel chaos — 2,600+ transmissions, searchable, with an AI Oracle.",
+    subtitle: "Tarot, consciousness, the occult, AI, and open-panel chaos — nearly 3,000 transmissions, searchable, with an AI Oracle.",
     accent: "gold",
   });
 }

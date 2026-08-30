@@ -3,7 +3,7 @@ import { buildMetadata } from "@/lib/seo";
 import PsychenomiconChronicle from "@/components/psychenomicon/chronicle/psychenomicon-chronicle-client";
 
 export const metadata: Metadata = buildMetadata({
-  title: "The Psychenomicon — CULT CODEX",
+  title: "The Psychenomicon",
   description: "A living record of evolving patterns.",
   path: "/psychenomicon",
 });

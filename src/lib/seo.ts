@@ -141,7 +141,7 @@ export function organizationJsonLd(): Record<string, unknown> {
     url: SITE_URL,
     logo: `${SITE_URL}/logo.jpg`,
     description:
-      "The definitive intelligence archive for the Cult of Psyche. 2,600+ episodes indexed with full transcripts, AI psychological breakdowns, guest profiles, and behavioral pattern maps.",
+      "The definitive intelligence archive for the Cult of Psyche. nearly 3,000 episodes indexed with full transcripts, AI psychological breakdowns, guest profiles, and behavioral pattern maps.",
     sameAs: ["https://www.youtube.com/@CultofPsyche"],
   };
 }

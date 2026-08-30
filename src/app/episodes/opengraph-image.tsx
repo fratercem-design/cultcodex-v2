@@ -28,10 +28,10 @@ export default function OGImage() {
               CULTCODEX.ME / EPISODES
             </div>
             <div style={{ color: "#f5f0e8", fontSize: 74, fontWeight: 700, lineHeight: 1.05 }}>
-              2,600+ Transmissions.
+              Nearly 3,000 Transmissions.
             </div>
             <div style={{ color: "#888", fontSize: 26, lineHeight: 1.5, maxWidth: 700 }}>
-              Every Cult of Psyche episode — with full transcripts, AI behavioral breakdowns, guest profiles, and searchable quotes.
+              Every Cult of Psyche episode — with transcripts for 97% of the archive, AI behavioral breakdowns, guest profiles, and searchable quotes.
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>

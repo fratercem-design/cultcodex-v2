@@ -3,7 +3,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 
 export const metadata = buildMetadata({
-  title: "The Cult Master's Guide — CULT CODEX",
+  title: "The Cult Master's Guide",
   description:
     "The Cult Master's Guide to a Safe, Intelligent, and Transformative Community — the philosophy, rules, and moderation doctrine of the Cult of Psyche.",
   path: "/guide",
@@ -225,7 +225,7 @@ export default function GuidePage() {
               The Cult of Psyche is not a religion. It is not a political movement. It is not
               an ideology demanding conformity.
             </p>
-            <p className="font-semibold text-accent-gold">It is a gathering place for explorers.</p>
+            <p className="font-semibold text-accent-gold-text">It is a gathering place for explorers.</p>
             <p>
               Our symbol is not blind obedience — it is curiosity. Every person who walks
               through our gateway remains completely free to believe whatever they choose. The
@@ -280,7 +280,7 @@ export default function GuidePage() {
             <ol className="space-y-2">
               {ESCALATION.map((step) => (
                 <li key={step.level} className="flex gap-3">
-                  <span className="font-mono text-xs font-semibold uppercase tracking-wider text-accent-violet shrink-0">
+                  <span className="font-mono text-xs font-semibold uppercase tracking-wider text-accent-violet-text shrink-0">
                     {step.level}
                   </span>
                   <span>{step.action}</span>
@@ -355,7 +355,7 @@ export default function GuidePage() {
               The greatest mystery is not what we already know. It is what we have yet to
               discover together.
             </p>
-            <p className="pt-2 font-serif text-lg font-black text-accent-gold">
+            <p className="pt-2 font-serif text-lg font-black text-accent-gold-text">
               Welcome to the Gateway.
               <br />
               Welcome to the Cult of Psyche.

@@ -92,7 +92,7 @@ export default function TarotWaitlistPage() {
             margin: 0,
           }}>
             80 cards. Every major archetype, psychological pattern, and recurring
-            force from 2,600+ transmissions — distilled into a physical oracle.
+            force from nearly 3,000 transmissions — distilled into a physical oracle.
             The archive made tangible.
           </p>
         </div>

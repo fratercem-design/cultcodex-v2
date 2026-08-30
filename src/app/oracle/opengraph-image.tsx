@@ -80,7 +80,7 @@ export default function OGImage() {
                 maxWidth: 700,
               }}
             >
-              AI trained on 2,500+ transmissions. Real answers drawn from transcripts, lore, and behavioral profiles — with citations.
+              AI trained on nearly 3,000 transmissions. Real answers drawn from transcripts, lore, and behavioral profiles — with citations.
             </div>
           </div>
 

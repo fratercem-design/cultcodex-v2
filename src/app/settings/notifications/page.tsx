@@ -9,6 +9,8 @@ import { NotificationToggle } from "./notification-toggle";
 
 export const metadata = {
   title: "Notification Preferences — CultCodex",
+  // Private account surface — nothing here belongs in search results.
+  robots: { index: false, follow: false },
 };
 
 export default async function NotificationsPage() {
