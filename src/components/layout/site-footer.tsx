@@ -34,6 +34,7 @@ const COLUMNS: { heading: string; links: { label: string; href: string }[] }[] =
       { label: "Prophecies", href: "/prophecies" },
       { label: "Drama Files", href: "/drama" },
       { label: "Articles", href: "/articles" },
+      { label: "Shop", href: "/shop" },
       { label: "Premium", href: "/premium" },
     ],
   },
