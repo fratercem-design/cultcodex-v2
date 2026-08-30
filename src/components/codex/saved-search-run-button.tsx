@@ -50,7 +50,7 @@ export function SavedSearchRunButton({ id, kind, payload }: Props) {
     <button
       type="button"
       onClick={run}
-      className="shrink-0 rounded border border-accent-violet/30 px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-accent-violet hover:bg-accent-violet/10 transition-colors"
+      className="shrink-0 rounded border border-accent-violet/30 px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-accent-violet-text hover:bg-accent-violet/10 transition-colors"
     >
       Run →
     </button>

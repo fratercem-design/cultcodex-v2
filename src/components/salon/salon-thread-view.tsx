@@ -97,7 +97,7 @@ export function SalonThreadView({
                 {p.user.displayName}
               </span>
               {p.user.memberTitle && (
-                <span className="font-mono text-[9px] uppercase tracking-widest text-accent-violet">
+                <span className="font-mono text-[9px] uppercase tracking-widest text-accent-violet-text">
                   {p.user.memberTitle}
                 </span>
               )}
@@ -130,7 +130,7 @@ export function SalonThreadView({
             <button
               type="submit"
               disabled={!content.trim() || status === "sending"}
-              className="rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-2.5 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/25 disabled:opacity-40"
+              className="rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-2.5 font-mono text-sm font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25 disabled:opacity-40"
             >
               {status === "sending" ? "Posting…" : "Post"}
             </button>

@@ -28,7 +28,7 @@ export const PERSON_TYPE_BADGE: Record<PersonType, "gold" | "purple" | "cyan" | 
 
 /** Text/stroke tint class (sigils, icons). */
 export const PERSON_TYPE_TINT: Record<PersonType, string> = {
-  host: "text-accent-gold",
+  host: "text-accent-gold-text",
   recurring: "text-accent-purple",
   guest: "text-accent-cyan",
   mentioned: "text-text-muted",

@@ -26,7 +26,7 @@ export default function GlobalError({
       <div className="mt-6 flex gap-3">
         <button
           onClick={reset}
-          className="rounded-lg border border-accent-gold bg-accent-gold/10 px-4 py-2 font-mono text-xs text-accent-gold transition-colors hover:bg-accent-gold/20"
+          className="rounded-lg border border-accent-gold bg-accent-gold/10 px-4 py-2 font-mono text-xs text-accent-gold-text transition-colors hover:bg-accent-gold/20"
         >
           Try Again
         </button>

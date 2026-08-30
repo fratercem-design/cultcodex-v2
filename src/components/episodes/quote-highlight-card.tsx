@@ -66,11 +66,11 @@ export function QuoteHighlightCard({
                   className="rounded-full border border-accent-gold/30"
                 />
               ) : (
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-gold/20 text-[10px] font-bold text-accent-gold">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-gold/20 text-[10px] font-bold text-accent-gold-text">
                   {speakerName[0]?.toUpperCase()}
                 </div>
               )}
-              <span className="font-mono text-xs font-medium text-accent-gold">
+              <span className="font-mono text-xs font-medium text-accent-gold-text">
                 {speakerName}
               </span>
             </>

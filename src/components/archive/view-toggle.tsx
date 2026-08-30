@@ -32,7 +32,7 @@ export function ViewToggle({ basePath, currentView }: ViewToggleProps) {
         onClick={() => setView("card")}
         className={`px-2.5 py-1.5 transition-colors ${
           currentView === "card" || (currentView !== "list" && currentView !== "timeline")
-            ? "bg-accent-gold/15 text-accent-gold"
+            ? "bg-accent-gold/15 text-accent-gold-text"
             : "text-text-muted hover:text-text-primary hover:bg-elevated"
         }`}
         title="Card view"
@@ -49,7 +49,7 @@ export function ViewToggle({ basePath, currentView }: ViewToggleProps) {
         onClick={() => setView("list")}
         className={`px-2.5 py-1.5 transition-colors ${
           currentView === "list"
-            ? "bg-accent-gold/15 text-accent-gold"
+            ? "bg-accent-gold/15 text-accent-gold-text"
             : "text-text-muted hover:text-text-primary hover:bg-elevated"
         }`}
         title="List view"
@@ -65,7 +65,7 @@ export function ViewToggle({ basePath, currentView }: ViewToggleProps) {
         onClick={() => setView("timeline")}
         className={`px-2.5 py-1.5 transition-colors ${
           currentView === "timeline"
-            ? "bg-accent-gold/15 text-accent-gold"
+            ? "bg-accent-gold/15 text-accent-gold-text"
             : "text-text-muted hover:text-text-primary hover:bg-elevated"
         }`}
         title="Timeline view"

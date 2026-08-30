@@ -9,7 +9,7 @@ interface DividerProps {
 export function MysticalDivider({ className }: DividerProps) {
   return (
     <div className={cn("flex items-center justify-center py-4", className)} aria-hidden="true">
-      <svg width="280" height="16" viewBox="0 0 280 16" fill="none" className="text-accent-gold/30">
+      <svg width="280" height="16" viewBox="0 0 280 16" fill="none" className="text-accent-gold-text/30">
         {/* Left line */}
         <line x1="0" y1="8" x2="115" y2="8" stroke="currentColor" strokeWidth="0.5" />
         {/* Left dots */}
@@ -32,7 +32,7 @@ export function MysticalDivider({ className }: DividerProps) {
 export function OrnamentalBreak({ className }: DividerProps) {
   return (
     <div className={cn("flex items-center justify-center gap-3 py-3", className)} aria-hidden="true">
-      <svg width="80" height="8" viewBox="0 0 80 8" fill="none" className="text-accent-gold/25">
+      <svg width="80" height="8" viewBox="0 0 80 8" fill="none" className="text-accent-gold-text/25">
         <circle cx="10" cy="4" r="1" fill="currentColor" />
         <circle cx="25" cy="4" r="1.5" fill="currentColor" />
         <path d="M40 0l4 4-4 4-4-4z" fill="currentColor" fillOpacity="0.5" />
@@ -47,7 +47,7 @@ export function OrnamentalBreak({ className }: DividerProps) {
 export function SacredBorder({ className }: DividerProps) {
   return (
     <div className={cn("w-full", className)} aria-hidden="true">
-      <svg width="100%" height="12" viewBox="0 0 800 12" preserveAspectRatio="none" fill="none" className="text-accent-gold/15">
+      <svg width="100%" height="12" viewBox="0 0 800 12" preserveAspectRatio="none" fill="none" className="text-accent-gold-text/15">
         {/* Repeating ornamental pattern */}
         <pattern id="sacred-pattern" x="0" y="0" width="40" height="12" patternUnits="userSpaceOnUse">
           <path d="M0 6h15" stroke="currentColor" strokeWidth="0.5" />
@@ -63,7 +63,7 @@ export function SacredBorder({ className }: DividerProps) {
 /** Section header ornament — small decorative element next to titles */
 export function TitleOrnament({ className }: DividerProps) {
   return (
-    <svg width="24" height="8" viewBox="0 0 24 8" fill="none" className={cn("text-accent-gold/40 inline-block mr-2", className)} aria-hidden="true">
+    <svg width="24" height="8" viewBox="0 0 24 8" fill="none" className={cn("text-accent-gold-text/40 inline-block mr-2", className)} aria-hidden="true">
       <path d="M0 4h8" stroke="currentColor" strokeWidth="0.8" />
       <path d="M12 0l4 4-4 4-4-4z" fill="currentColor" fillOpacity="0.4" />
       <path d="M16 4h8" stroke="currentColor" strokeWidth="0.8" />

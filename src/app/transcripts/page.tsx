@@ -150,10 +150,10 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
                     className="group block rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-cyan/40 hover:bg-elevated"
                   >
                     <div className="mb-1 flex items-center gap-2">
-                      <span className="font-mono text-[11px] text-accent-gold">
+                      <span className="font-mono text-[11px] text-accent-gold-text">
                         {hit.episodeNumber != null ? `EP ${hit.episodeNumber}` : "Episode"}
                       </span>
-                      <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+                      <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
                         {hit.episodeTitle}
                       </span>
                       <span className="ml-auto font-mono text-[10px] text-accent-cyan">
@@ -232,11 +232,11 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
                   className="group block rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-cyan/40 hover:bg-elevated"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="flex h-8 w-12 items-center justify-center rounded bg-accent-gold/10 font-mono text-xs font-bold text-accent-gold">
+                    <span className="flex h-8 w-12 items-center justify-center rounded bg-accent-gold/10 font-mono text-xs font-bold text-accent-gold-text">
                       {ep.episodeNumber != null ? `#${ep.episodeNumber}` : "—"}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-1">
+                      <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-1">
                         {ep.title}
                       </span>
                       <div className="mt-1 flex flex-wrap items-center gap-1.5">

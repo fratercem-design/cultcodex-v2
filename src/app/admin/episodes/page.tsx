@@ -100,7 +100,7 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
               href={`/admin/episodes${s !== "all" ? `?status=${s}` : ""}`}
               className={`rounded-full border px-3 py-1 font-mono text-[10px] transition-colors ${
                 !filterMode && ((statusFilter ?? "all") === s || (!statusFilter && s === "all"))
-                  ? "border-accent-gold text-accent-gold bg-accent-gold/10"
+                  ? "border-accent-gold text-accent-gold-text bg-accent-gold/10"
                   : "border-border text-text-muted hover:border-accent-gold/50"
               }`}
             >
@@ -111,7 +111,7 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
             href="/admin/episodes?filter=enrich"
             className={`rounded-full border px-3 py-1 font-mono text-[10px] transition-colors ${
               filterMode === "enrich"
-                ? "border-accent-gold text-accent-gold bg-accent-gold/10"
+                ? "border-accent-gold text-accent-gold-text bg-accent-gold/10"
                 : "border-border text-text-muted hover:border-accent-gold/50"
             }`}
           >
@@ -138,7 +138,7 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
           <tbody className="divide-y divide-border">
             {episodes.map((ep) => (
               <tr key={ep.id} className="hover:bg-elevated/50 transition-colors">
-                <td className="px-3 py-2 font-mono text-xs text-accent-gold font-bold">
+                <td className="px-3 py-2 font-mono text-xs text-accent-gold-text font-bold">
                   {ep.episodeNumber ? `EP.${String(ep.episodeNumber).padStart(3, "0")}` : "\u2014"}
                 </td>
                 <td className="px-3 py-2 text-xs text-text-primary max-w-xs truncate">
@@ -167,7 +167,7 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
                     />
                     <Link
                       href={`/admin/episodes/${ep.id}/edit`}
-                      className="font-mono text-[10px] text-accent-gold hover:underline"
+                      className="font-mono text-[10px] text-accent-gold-text hover:underline"
                     >
                       Edit
                     </Link>

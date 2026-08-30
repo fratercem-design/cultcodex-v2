@@ -115,9 +115,9 @@ export default async function PillarPage({ params }: PageProps) {
 
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
-          <Link href="/" className="hover:text-accent-gold transition-colors">Home</Link>
+          <Link href="/" className="hover:text-accent-gold-text transition-colors">Home</Link>
           <span className="mx-2">/</span>
-          <Link href="/explore" className="hover:text-accent-gold transition-colors">Explore</Link>
+          <Link href="/explore" className="hover:text-accent-gold-text transition-colors">Explore</Link>
           <span className="mx-2">/</span>
           <span className={a.title}>{p.title}</span>
         </nav>
@@ -241,7 +241,7 @@ export default async function PillarPage({ params }: PageProps) {
           <p className="font-mono text-[11px] text-text-muted max-w-md mx-auto">
             The AI Oracle answers any question from inside the full archive — with citations.
           </p>
-          <Link href="/oracle" className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25">
+          <Link href="/oracle" className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-xs font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25">
             Consult the Oracle →
           </Link>
         </section>

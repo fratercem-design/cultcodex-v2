@@ -81,19 +81,19 @@ export function ShareSignalButton({ hasQuote }: Props) {
       <button
         onClick={handleShare}
         disabled={state === "sharing"}
-        className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25 disabled:opacity-60"
+        className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 disabled:opacity-60"
       >
         {state === "sharing" ? "Preparing…" : state === "error" ? "Failed — try again" : "Share this signal ✦"}
       </button>
       <button
         onClick={handleTwitter}
-        className="font-mono text-[11px] text-text-muted hover:text-accent-gold transition-colors"
+        className="font-mono text-[11px] text-text-muted hover:text-accent-gold-text transition-colors"
       >
         Post to X
       </button>
       <button
         onClick={handleCopyLink}
-        className="font-mono text-[11px] text-text-muted hover:text-accent-gold transition-colors"
+        className="font-mono text-[11px] text-text-muted hover:text-accent-gold-text transition-colors"
       >
         {state === "copied" ? "Copied!" : "Copy link"}
       </button>

@@ -32,7 +32,7 @@ export default async function LeaderboardPage() {
       <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-8">
         <section className="text-center max-w-xl mx-auto space-y-2">
           <p className="text-sm text-text-muted leading-relaxed">
-            Ranked by <Link href="/rank" className="text-accent-gold hover:underline">codex score</Link> —
+            Ranked by <Link href="/rank" className="text-accent-gold-text hover:underline">codex score</Link> —
             earned through contribution, collection, and time in the cult. Only members who&apos;ve
             joined the Member Roll appear here.
           </p>
@@ -44,7 +44,7 @@ export default async function LeaderboardPage() {
             <p className="font-mono text-sm text-text-muted">
               The leaderboard is empty. Be the first to ascend.
             </p>
-            <Link href="/rank" className="inline-block font-mono text-xs text-accent-gold hover:underline">
+            <Link href="/rank" className="inline-block font-mono text-xs text-accent-gold-text hover:underline">
               See your rank →
             </Link>
           </div>
@@ -86,7 +86,7 @@ export default async function LeaderboardPage() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-mono text-sm font-bold text-text-primary">{e.displayName}</p>
                     {e.memberTitle && (
-                      <p className="truncate font-mono text-[11px] italic text-accent-gold/70">{e.memberTitle}</p>
+                      <p className="truncate font-mono text-[11px] italic text-accent-gold-text/70">{e.memberTitle}</p>
                     )}
                   </div>
 
@@ -118,7 +118,7 @@ export default async function LeaderboardPage() {
           <p className="font-mono text-[11px] text-text-muted max-w-md mx-auto leading-relaxed">
             Your rank rises with every contribution. Check where you stand and what it takes to ascend.
           </p>
-          <Link href="/rank" className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25">
+          <Link href="/rank" className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-xs font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25">
             See your rank →
           </Link>
         </section>

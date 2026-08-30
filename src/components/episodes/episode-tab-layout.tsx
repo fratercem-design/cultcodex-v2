@@ -48,7 +48,7 @@ export function EpisodeTabLayout({ tabs, children }: EpisodeTabLayoutProps) {
             onClick={() => setTab(tab.id)}
             className={`shrink-0 px-4 py-2.5 font-mono text-xs uppercase tracking-wider transition-colors border-b-2 ${
               activeTab === tab.id
-                ? "border-accent-gold text-accent-gold"
+                ? "border-accent-gold text-accent-gold-text"
                 : "border-transparent text-text-muted hover:text-text-primary hover:border-border"
             }`}
           >

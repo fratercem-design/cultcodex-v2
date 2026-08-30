@@ -160,7 +160,7 @@ export function AdminTable<T extends { id: string }>({
                             <Link
                               key={action.label}
                               href={action.href(row)}
-                              className="font-mono text-[10px] text-accent-gold hover:underline"
+                              className="font-mono text-[10px] text-accent-gold-text hover:underline"
                             >
                               {action.label}
                             </Link>
@@ -171,7 +171,7 @@ export function AdminTable<T extends { id: string }>({
                               className={`font-mono text-[10px] hover:underline ${
                                 action.variant === "danger"
                                   ? "text-red-400"
-                                  : "text-accent-gold"
+                                  : "text-accent-gold-text"
                               }`}
                             >
                               {action.label}

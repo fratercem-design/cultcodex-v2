@@ -92,7 +92,7 @@ export default async function DramaPage() {
         <div className="pt-6 text-center">
           <Link
             href="/fun"
-            className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors"
+            className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             ← Return to the Fun Wing
           </Link>

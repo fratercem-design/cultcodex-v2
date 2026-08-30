@@ -92,7 +92,7 @@ export function SubscribeForm() {
 
   return (
     <div className="rounded-lg border border-border bg-surface p-6">
-      <h3 className="mb-1 font-mono text-sm font-bold text-accent-gold">
+      <h3 className="mb-1 font-mono text-sm font-bold text-accent-gold-text">
         GET NOTIFIED WHEN WE GO LIVE
       </h3>
       <p className="mb-4 font-mono text-xs text-text-muted">
@@ -112,7 +112,7 @@ export function SubscribeForm() {
         <button
           type="submit"
           disabled={status === "loading" || status === "success"}
-          className="rounded border border-accent-gold bg-accent-gold/10 px-4 py-2 font-mono text-xs font-bold text-accent-gold transition hover:bg-accent-gold/20 disabled:opacity-50"
+          className="rounded border border-accent-gold bg-accent-gold/10 px-4 py-2 font-mono text-xs font-bold text-accent-gold-text transition hover:bg-accent-gold/20 disabled:opacity-50"
         >
           {status === "loading"
             ? "..."
@@ -124,7 +124,7 @@ export function SubscribeForm() {
 
       {message && (
         <p
-          className={`mt-2 font-mono text-xs ${status === "success" ? "text-accent-gold" : "text-red-400"}`}
+          className={`mt-2 font-mono text-xs ${status === "success" ? "text-accent-gold-text" : "text-red-400"}`}
         >
           {message}
         </p>

@@ -91,9 +91,9 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
           Profile Enrichment — all {totalAll.toLocaleString()} people
         </p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <EnrichStat label="Lore Summary" count={withLoreSummary} total={totalAll} pct={enrichPct} color="text-accent-violet" barColor="bg-accent-violet" />
+          <EnrichStat label="Lore Summary" count={withLoreSummary} total={totalAll} pct={enrichPct} color="text-accent-violet-text" barColor="bg-accent-violet" />
           <EnrichStat label="Short Bio"    count={withShortBio}    total={totalAll} pct={bioPct}    color="text-accent-cyan"   barColor="bg-accent-cyan"   />
-          <EnrichStat label="Avatar"       count={withAvatar}      total={totalAll} pct={avatarPct} color="text-accent-gold"   barColor="bg-accent-gold"   />
+          <EnrichStat label="Avatar"       count={withAvatar}      total={totalAll} pct={avatarPct} color="text-accent-gold-text"   barColor="bg-accent-gold"   />
           <EnrichStat label="Fully Complete" count={completeCount} total={totalAll} pct={completePct} color="text-green-400" barColor="bg-green-400" highlight />
         </div>
       </div>
@@ -115,7 +115,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
               href={`/admin/people${t !== "all" ? `?type=${t}` : ""}`}
               className={`rounded-full border px-3 py-1 font-mono text-[10px] transition-colors ${
                 (typeFilter ?? "all") === t || (!typeFilter && t === "all")
-                  ? "border-accent-gold text-accent-gold bg-accent-gold/10"
+                  ? "border-accent-gold text-accent-gold-text bg-accent-gold/10"
                   : "border-border text-text-muted hover:border-accent-gold/50"
               }`}
             >
@@ -165,7 +165,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
                     </div>
                   </td>
                   <td className="px-3 py-2 text-right">
-                    <Link href={`/admin/people/${person.id}/edit`} className="font-mono text-[10px] text-accent-gold hover:underline">
+                    <Link href={`/admin/people/${person.id}/edit`} className="font-mono text-[10px] text-accent-gold-text hover:underline">
                       Edit
                     </Link>
                   </td>

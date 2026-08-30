@@ -27,14 +27,14 @@ export async function generateMetadata({
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  active:  "border-accent-violet/30 text-accent-violet",
-  evolved: "border-accent-gold/30 text-accent-gold",
+  active:  "border-accent-violet/30 text-accent-violet-text",
+  evolved: "border-accent-gold/30 text-accent-gold-text",
   dormant: "border-border text-text-muted",
 };
 
 const ERA_TEXT: Record<string, string> = {
-  gold:    "text-accent-gold",
-  violet:  "text-accent-violet",
+  gold:    "text-accent-gold-text",
+  violet:  "text-accent-violet-text",
   cyan:    "text-accent-cyan",
   crimson: "text-accent-crimson",
   muted:   "text-text-muted",
@@ -50,7 +50,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
     return (
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">
             {"/// initiate_only"}
           </p>
           <p className="font-display text-xl font-bold text-text-primary">
@@ -58,7 +58,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
           </p>
           <Link
             href="/premium#access"
-            className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors"
+            className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/20 transition-colors"
           >
             Become Initiate+ →
           </Link>
@@ -191,7 +191,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
                         <span className={`font-mono text-[10px] ${accentClass}`}>
                           {era.sigil}
                         </span>
-                        <span className="font-mono text-[11px] text-text-primary group-hover:text-accent-violet transition-colors truncate">
+                        <span className="font-mono text-[11px] text-text-primary group-hover:text-accent-violet-text transition-colors truncate">
                           {era.label}
                         </span>
                       </div>
@@ -291,11 +291,11 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
                         </div>
                       )}
                       <div className="min-w-0">
-                        <p className="font-mono text-xs font-bold text-text-primary group-hover:text-accent-violet transition-colors truncate">
+                        <p className="font-mono text-xs font-bold text-text-primary group-hover:text-accent-violet-text transition-colors truncate">
                           {entity.name}
                         </p>
                         {entity.primaryArchetype && (
-                          <p className="font-mono text-[9px] text-accent-violet/70 mt-0.5">
+                          <p className="font-mono text-[9px] text-accent-violet-text/70 mt-0.5">
                             {entity.primaryArchetype}
                           </p>
                         )}
@@ -329,7 +329,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
                   )}
 
                   {entity.personSlug && (
-                    <p className="font-mono text-[8px] text-accent-gold/50 group-hover:text-accent-gold/70 transition-colors">
+                    <p className="font-mono text-[8px] text-accent-gold-text/50 group-hover:text-accent-gold-text/70 transition-colors">
                       ◈ archive profile →
                     </p>
                   )}
@@ -343,13 +343,13 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
         <div className="pt-6 border-t border-border flex flex-wrap items-center justify-between gap-3">
           <Link
             href="/psychenomicon/archetypes"
-            className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors"
+            className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             ← All archetypes
           </Link>
           <Link
             href="/psychenomicon"
-            className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors"
+            className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             Return to Psychenomicon →
           </Link>

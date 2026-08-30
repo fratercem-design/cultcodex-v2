@@ -243,14 +243,14 @@ export function ImportForm() {
       {/* Results */}
       {result && (
         <div className="rounded border border-border bg-surface p-4 space-y-2">
-          <p className="font-mono text-sm text-accent-gold font-bold">
+          <p className="font-mono text-sm text-accent-gold-text font-bold">
             Import Complete
           </p>
           <p className="font-mono text-xs text-text-primary">
             ✓ Created: {result.created}
           </p>
           {result.skipped > 0 && (
-            <p className="font-mono text-xs text-accent-gold">
+            <p className="font-mono text-xs text-accent-gold-text">
               ⊘ Skipped (duplicate slug): {result.skipped}
             </p>
           )}

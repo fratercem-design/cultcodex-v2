@@ -58,7 +58,7 @@ export function VerifyContent() {
   if (status === "success") {
     return (
       <div className="flex flex-col items-center gap-3 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
           {"/// access_granted"}
         </p>
         <p className="font-display text-lg font-semibold text-text-primary">You&apos;re in</p>
@@ -76,7 +76,7 @@ export function VerifyContent() {
       <p className="font-mono text-xs text-text-muted max-w-xs">{errorMsg}</p>
       <Link
         href="/auth/signin"
-        className="mt-2 inline-flex items-center gap-2 rounded border border-accent-gold/40 bg-accent-gold/10 px-5 py-2 font-mono text-xs font-bold text-accent-gold transition-colors hover:bg-accent-gold/20"
+        className="mt-2 inline-flex items-center gap-2 rounded border border-accent-gold/40 bg-accent-gold/10 px-5 py-2 font-mono text-xs font-bold text-accent-gold-text transition-colors hover:bg-accent-gold/20"
       >
         Request a new link →
       </Link>

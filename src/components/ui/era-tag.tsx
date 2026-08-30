@@ -1,8 +1,8 @@
 import type { Era, EraColor } from "@/lib/eras";
 
 const COLOR_CLASSES: Record<EraColor, string> = {
-  gold:    "border-accent-gold/30    text-accent-gold    bg-accent-gold/10",
-  violet:  "border-accent-violet/30  text-accent-violet  bg-accent-violet/10",
+  gold:    "border-accent-gold/30    text-accent-gold-text    bg-accent-gold/10",
+  violet:  "border-accent-violet/30  text-accent-violet-text  bg-accent-violet/10",
   cyan:    "border-accent-cyan/30    text-accent-cyan    bg-accent-cyan/10",
   crimson: "border-accent-crimson/30 text-accent-crimson bg-accent-crimson/10",
   muted:   "border-border            text-text-muted     bg-surface",

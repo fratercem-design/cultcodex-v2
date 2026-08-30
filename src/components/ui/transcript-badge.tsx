@@ -17,7 +17,7 @@ const coverageConfig: Record<TranscriptCoverage, { label: string; indicator: str
   full: {
     label: "Full Transcript",
     indicator: "●●●",
-    style: "border-accent-gold/30 text-accent-gold bg-accent-gold-dim",
+    style: "border-accent-gold/30 text-accent-gold-text bg-accent-gold-dim",
   },
   partial: {
     label: "Partial Transcript",

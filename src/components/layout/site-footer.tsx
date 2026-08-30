@@ -75,7 +75,7 @@ export function SiteFooter() {
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
           {/* Brand cell */}
           <div className="col-span-2 sm:col-span-3 lg:col-span-1">
-            <span className="font-display text-lg font-black uppercase tracking-tight text-accent-gold">
+            <span className="font-display text-lg font-black uppercase tracking-tight text-accent-gold-text">
               CULT CODEX
             </span>
             <p className="mt-2 max-w-xs font-mono text-[11px] leading-relaxed text-text-muted">
@@ -94,7 +94,7 @@ export function SiteFooter() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="font-mono text-xs text-text-primary transition-colors hover:text-accent-gold"
+                      className="font-mono text-xs text-text-primary transition-colors hover:text-accent-gold-text"
                     >
                       {link.label}
                     </Link>
@@ -112,7 +112,7 @@ export function SiteFooter() {
             <Link
               href="/basement"
               aria-label="ψ"
-              className="ml-1 select-none text-text-muted/20 transition-colors duration-500 hover:text-accent-violet"
+              className="ml-1 select-none text-text-muted/20 transition-colors duration-500 hover:text-accent-violet-text"
             >
               ψ
             </Link>
@@ -124,7 +124,7 @@ export function SiteFooter() {
                 href={ch.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-[10px] uppercase tracking-wider text-text-muted transition-colors hover:text-accent-gold"
+                className="font-mono text-[10px] uppercase tracking-wider text-text-muted transition-colors hover:text-accent-gold-text"
               >
                 {ch.label}
               </a>

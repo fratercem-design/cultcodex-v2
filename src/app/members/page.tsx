@@ -106,7 +106,7 @@ export default async function MembersPage() {
 
           <Link
             href="/leaderboard"
-            className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent-gold/30 bg-accent-gold/5 px-5 py-2 font-mono text-[11px] uppercase tracking-widest text-accent-gold transition-colors hover:bg-accent-gold/10"
+            className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent-gold/30 bg-accent-gold/5 px-5 py-2 font-mono text-[11px] uppercase tracking-widest text-accent-gold-text transition-colors hover:bg-accent-gold/10"
           >
             ◆ View the rank leaderboard →
           </Link>
@@ -134,12 +134,12 @@ export default async function MembersPage() {
           {(oracleMembers.length > 0 || members.length > 0) && (
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
               {oracleMembers.length > 0 && (
-                <span className="rounded-full border border-accent-violet/30 bg-accent-violet/10 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-accent-violet">
+                <span className="rounded-full border border-accent-violet/30 bg-accent-violet/10 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-accent-violet-text">
                   {oracleMembers.length} Oracle
                 </span>
               )}
               {members.length > 0 && (
-                <span className="rounded-full border border-accent-gold/30 bg-accent-gold/10 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-accent-gold">
+                <span className="rounded-full border border-accent-gold/30 bg-accent-gold/10 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-accent-gold-text">
                   {members.length} Initiate+
                 </span>
               )}
@@ -153,7 +153,7 @@ export default async function MembersPage() {
       <section className="border-b border-border bg-void">
         <div className="mx-auto max-w-5xl px-4 py-10">
           <div className="mb-6 text-center">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
               {"/// what_initiation_unlocks"}
             </p>
             <h2 className="mt-2 font-display text-xl font-bold text-text-primary">
@@ -164,7 +164,7 @@ export default async function MembersPage() {
             {TIERS.map((t) => {
               const isGold = t.accent === "gold";
               const ring = isGold ? "border-accent-gold/30" : "border-accent-violet/30";
-              const text = isGold ? "text-accent-gold" : "text-accent-violet";
+              const text = isGold ? "text-accent-gold-text" : "text-accent-violet-text";
               const bg = isGold ? "from-accent-gold/5" : "from-accent-violet/5";
               return (
                 <div
@@ -217,7 +217,7 @@ export default async function MembersPage() {
                 className="h-px flex-1"
                 style={{ background: "linear-gradient(to right, rgba(200, 57, 46,0.4), transparent)" }}
               />
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/70">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/70">
                 ✦ Archive Contributors — Oracle Tier
               </p>
               <div
@@ -237,7 +237,7 @@ export default async function MembersPage() {
           /* Empty state */
           <div className="py-20 text-center">
             <p className="text-4xl">🌑</p>
-            <p className="mt-4 font-display text-lg text-accent-gold">
+            <p className="mt-4 font-display text-lg text-accent-gold-text">
               The roll is empty — for now
             </p>
             <p className="mt-2 font-mono text-xs text-text-muted">
@@ -277,7 +277,7 @@ export default async function MembersPage() {
                 Premium member?{" "}
                 <Link
                   href="/settings/profile"
-                  className="font-bold text-accent-gold hover:underline"
+                  className="font-bold text-accent-gold-text hover:underline"
                 >
                   Add yourself to the roll →
                 </Link>
@@ -292,7 +292,7 @@ export default async function MembersPage() {
             Not yet initiated?{" "}
             <Link
               href="/premium"
-              className="font-bold text-accent-gold hover:underline"
+              className="font-bold text-accent-gold-text hover:underline"
             >
               Join the archive for $10/month →
             </Link>
@@ -343,8 +343,8 @@ function MemberCard({
       card: "border-accent-gold/20 hover:border-accent-gold/40 hover:shadow-accent-gold/10",
       ring: "border-accent-gold/30",
       ringBg: "border-accent-gold/30 bg-accent-gold/10",
-      text: "text-accent-gold",
-      soft: "text-accent-gold/60",
+      text: "text-accent-gold-text",
+      soft: "text-accent-gold-text/60",
     },
     cyan: {
       card: "border-accent-cyan/20 hover:border-accent-cyan/40 hover:shadow-accent-cyan/10",
@@ -357,8 +357,8 @@ function MemberCard({
       card: "border-accent-violet/25 hover:border-accent-violet/50 hover:shadow-accent-violet/15",
       ring: "border-accent-violet/40",
       ringBg: "border-accent-violet/40 bg-accent-violet/10",
-      text: "text-accent-violet",
-      soft: "text-accent-violet/60",
+      text: "text-accent-violet-text",
+      soft: "text-accent-violet-text/60",
     },
   }[accent];
 
@@ -369,7 +369,7 @@ function MemberCard({
       {/* Oracle badge — violet to match the Oracle tier identity */}
       {oracle && (
         <div className="absolute right-3 top-3">
-          <span className="rounded-full border border-accent-violet/50 bg-accent-violet/15 px-2 py-0.5 font-mono text-[8px] uppercase tracking-widest text-accent-violet">
+          <span className="rounded-full border border-accent-violet/50 bg-accent-violet/15 px-2 py-0.5 font-mono text-[8px] uppercase tracking-widest text-accent-violet-text">
             ✦ Oracle
           </span>
         </div>
@@ -377,7 +377,7 @@ function MemberCard({
       {/* Founding member glow for early joiners */}
       {!oracle && index < 10 && (
         <div className="absolute right-3 top-3">
-          <span className="rounded-full border border-accent-gold/30 bg-accent-gold/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-widest text-accent-gold">
+          <span className="rounded-full border border-accent-gold/30 bg-accent-gold/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-widest text-accent-gold-text">
             Founder
           </span>
         </div>
@@ -409,7 +409,7 @@ function MemberCard({
               {member.memberTitle}
             </p>
           ) : isAdmin ? (
-            <p className="font-mono text-[11px] text-accent-gold">Admin</p>
+            <p className="font-mono text-[11px] text-accent-gold-text">Admin</p>
           ) : null}
           <p className="mt-0.5 font-mono text-[10px] text-text-muted/60">
             Member since {joinMonth} {joinYear}

@@ -132,11 +132,11 @@ export default async function AdminAnalyticsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     {ep.episodeNumber != null && (
-                      <span className="font-mono text-[9px] text-accent-gold font-bold">
+                      <span className="font-mono text-[9px] text-accent-gold-text font-bold">
                         EP.{String(ep.episodeNumber).padStart(3, "0")}
                       </span>
                     )}
-                    <span className="font-mono text-xs text-text-primary truncate group-hover:text-accent-gold transition-colors">
+                    <span className="font-mono text-xs text-text-primary truncate group-hover:text-accent-gold-text transition-colors">
                       {ep.title}
                     </span>
                   </div>
@@ -147,7 +147,7 @@ export default async function AdminAnalyticsPage() {
                     />
                   </div>
                 </div>
-                <span className="shrink-0 font-mono text-[10px] text-accent-gold font-bold">
+                <span className="shrink-0 font-mono text-[10px] text-accent-gold-text font-bold">
                   {ep.count}
                 </span>
               </Link>
@@ -174,11 +174,11 @@ export default async function AdminAnalyticsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     {ep.episodeNumber != null && (
-                      <span className="font-mono text-[9px] text-accent-gold font-bold">
+                      <span className="font-mono text-[9px] text-accent-gold-text font-bold">
                         EP.{String(ep.episodeNumber).padStart(3, "0")}
                       </span>
                     )}
-                    <span className="font-mono text-xs text-text-primary truncate group-hover:text-accent-gold transition-colors">
+                    <span className="font-mono text-xs text-text-primary truncate group-hover:text-accent-gold-text transition-colors">
                       {ep.title}
                     </span>
                   </div>
@@ -230,10 +230,10 @@ export default async function AdminAnalyticsPage() {
                   </span>
                 </div>
               )}
-              <span className="flex-1 font-mono text-xs text-text-primary group-hover:text-accent-gold transition-colors truncate">
+              <span className="flex-1 font-mono text-xs text-text-primary group-hover:text-accent-gold-text transition-colors truncate">
                 {user.displayName}
               </span>
-              <span className="shrink-0 font-mono text-[9px] text-accent-gold">
+              <span className="shrink-0 font-mono text-[9px] text-accent-gold-text">
                 {user.commentCount} 💬
               </span>
               <span className="shrink-0 font-mono text-[9px] text-accent-cyan">

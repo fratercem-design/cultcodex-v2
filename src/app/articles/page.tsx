@@ -22,7 +22,7 @@ export default async function ArticlesPage() {
       {/* Hero */}
       <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/60">
             {"/// field_reports"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -41,12 +41,12 @@ export default async function ArticlesPage() {
       <div className="mx-auto max-w-3xl px-4 py-10 space-y-4">
         {entries.length === 0 ? (
           <div className="rounded border border-border bg-surface px-6 py-16 text-center space-y-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/60">
               {"/// presses_warming_up"}
             </p>
             <p className="text-sm text-text-muted max-w-sm mx-auto leading-relaxed">
               The first field reports are being transcribed. Until then, the{" "}
-              <Link href="/lore" className="text-accent-violet hover:underline">
+              <Link href="/lore" className="text-accent-violet-text hover:underline">
                 lore archive
               </Link>{" "}
               runs deep.
@@ -60,7 +60,7 @@ export default async function ArticlesPage() {
               className="group block rounded border border-border bg-surface p-5 hover:border-accent-violet/40 hover:bg-accent-violet/5 transition-all"
             >
               <div className="space-y-1.5">
-                <h2 className="font-display text-lg font-bold text-text-primary group-hover:text-accent-violet transition-colors">
+                <h2 className="font-display text-lg font-bold text-text-primary group-hover:text-accent-violet-text transition-colors">
                   {entry.title}
                 </h2>
                 {entry.summary && (

@@ -46,7 +46,7 @@ export function SoftGate({
 
   const t = getTier(tier);
   const accentTextCls =
-    t.accent === "violet" ? "text-accent-violet" : "text-accent-gold";
+    t.accent === "violet" ? "text-accent-violet-text" : "text-accent-gold-text";
   const accentBorderCls =
     t.accent === "violet" ? "border-accent-violet/40" : "border-accent-gold/40";
   const accentBgCls =

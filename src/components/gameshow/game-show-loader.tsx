@@ -10,7 +10,7 @@ const GameShow = dynamic(() => import("./game-show").then((m) => m.GameShow), {
   ssr: false,
   loading: () => (
     <div className="mx-auto max-w-3xl px-4 py-16 text-center">
-      <p className="font-mono text-[11px] uppercase tracking-[0.4em] text-accent-violet/60 animate-pulse">
+      <p className="font-mono text-[11px] uppercase tracking-[0.4em] text-accent-violet-text/60 animate-pulse">
         {"/// summoning_the_show…"}
       </p>
     </div>
