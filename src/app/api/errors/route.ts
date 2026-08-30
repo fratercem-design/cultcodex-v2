@@ -1,15 +1,22 @@
 /**
  * POST /api/errors
  *
- * Receives client-side error reports from GlobalError and error.tsx
- * boundaries, then logs them server-side so they flow through Railway's
- * log drain to Better Stack (and trigger any configured alerts there).
+ * Receives client-side error reports from the GlobalError and error.tsx
+ * boundaries and records them server-side.
+ *
+ * NOTE: this used to claim the logs flowed through "Railway's log drain to
+ * Better Stack". That pipeline no longer exists — Railway was retired in the
+ * 2026-08-17 move to Vercel and no log drain replaced it, so for a while these
+ * reports were written to an ephemeral function log and silently discarded.
+ * Sentry is now the alerting path (see instrumentation.ts); the console.error
+ * below is kept as a second record for when the client-side SDK cannot report.
  *
  * Intentionally minimal — no auth, no DB. The endpoint must be reachable
  * even when the app is partially broken.
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
@@ -35,7 +42,15 @@ export async function POST(req: NextRequest) {
   const stack    = typeof b.stack    === "string" ? b.stack.slice(0, 2000)   : null;
   const pathname = typeof b.pathname === "string" ? b.pathname.slice(0, 200) : null;
 
-  // Structured log — Better Stack alert rule: log contains "[client-error]"
+  // Forward to Sentry so a client error that could not self-report (SDK blocked,
+  // init failed, DSN missing on the client) still reaches the alerting path.
+  Sentry.captureMessage(`[client-error] ${message}`, {
+    level: "error",
+    tags: { source: "client-error-endpoint" },
+    extra: { digest, pathname, stack },
+  });
+
+  // Structured log — second record, greppable as "[client-error]".
   console.error(
     `[client-error] ${message}`,
     JSON.stringify({ digest, pathname, stack: stack?.split("\n").slice(0, 5).join(" | ") })

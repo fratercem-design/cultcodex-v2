@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -113,4 +114,26 @@ const nextConfig: NextConfig = {
   ],
 };
 
-export default nextConfig;
+// Sentry wrapper. Kept at the very end so every header/redirect rule above is
+// preserved. Two deliberate choices:
+//
+//  - `tunnelRoute` proxies browser events through this origin instead of
+//    *.ingest.sentry.io. The CSP above sets `connect-src 'self'` with no Sentry
+//    host, so a direct send would be blocked outright; tunnelling keeps it
+//    inside 'self' (and survives ad blockers) without widening the policy.
+//  - Source-map upload is opt-in on SENTRY_AUTH_TOKEN. Without it the build
+//    still succeeds — it just ships unminified-stack-free events — so a missing
+//    token can never break a deploy.
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+  tunnelRoute: "/monitoring",
+  widenClientFileUpload: true,
+  disableLogger: true,
+  sourcemaps: {
+    disable: !process.env.SENTRY_AUTH_TOKEN,
+  },
+  telemetry: false,
+});

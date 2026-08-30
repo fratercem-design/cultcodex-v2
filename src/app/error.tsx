@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 
 export default function GlobalError({
   error,
@@ -9,6 +11,12 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  // This boundary catches far more than global-error.tsx does, and until now it
+  // reported nothing at all — errors here were invisible.
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
   return (
     <main className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 text-center">
       <span className="text-5xl">⚠️</span>
