@@ -95,6 +95,13 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     ],
   },
   {
+    title: "SHOP",
+    color: "#D6A017",
+    items: [
+      { href: "/shop", label: "VESTMENTS", glyph: "✦" },
+    ],
+  },
+  {
     title: "SISTER SITES",
     color: "var(--accent-violet)",
     textColor: "var(--accent-violet-text)",

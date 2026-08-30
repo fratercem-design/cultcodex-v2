@@ -9,6 +9,10 @@ const BOOKS: Record<string, { priceEnvVar: string; title: string }> = {
     priceEnvVar: "STRIPE_PRICE_BOOK_VOL1_ID",
     title: "The Psychenomicon — Volume I",
   },
+  "cult-masters-handbook": {
+    priceEnvVar: "STRIPE_PRICE_BOOK_HANDBOOK_ID",
+    title: "The Cult Master's Handbook",
+  },
 };
 
 /**
