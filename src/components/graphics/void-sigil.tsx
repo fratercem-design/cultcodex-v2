@@ -17,7 +17,7 @@ export function VoidSigil({ className, size = 160, animate = true }: VoidSigilPr
       height={size}
       viewBox="0 0 160 160"
       fill="none"
-      className={cn("text-accent-violet", className)}
+      className={cn("text-accent-violet-text", className)}
     >
       {/* Outer ring */}
       <circle
@@ -149,7 +149,7 @@ export function VoidSigil({ className, size = 160, animate = true }: VoidSigilPr
 /** Smaller pulsing orb for loading states */
 export function PulsingOrb({ className, size = 40 }: { className?: string; size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" className={cn("text-accent-violet", className)}>
+    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" className={cn("text-accent-violet-text", className)}>
       <circle cx="20" cy="20" r="16" stroke="currentColor" strokeWidth="0.8" opacity="0.2" strokeDasharray="3 4">
         <animateTransform
           attributeName="transform"

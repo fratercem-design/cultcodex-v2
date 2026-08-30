@@ -8,9 +8,9 @@
  */
 
 const LEGEND_ITEMS = [
-  { dot: "bg-accent-gold", label: "People", color: "text-accent-gold" },
+  { dot: "bg-accent-gold", label: "People", color: "text-accent-gold-text" },
   { dot: "bg-accent-cyan", label: "Topics", color: "text-accent-cyan" },
-  { dot: "bg-accent-violet", label: "Lore", color: "text-accent-violet" },
+  { dot: "bg-accent-violet", label: "Lore", color: "text-accent-violet-text" },
   { dot: "bg-red-400", label: "Quotes", color: "text-red-400" },
 ] as const;
 

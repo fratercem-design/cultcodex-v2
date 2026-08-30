@@ -116,17 +116,17 @@ export default async function LorePage({ searchParams }: LorePageProps) {
               📜
             </div>
             <div className="text-center sm:text-left flex-1">
-              <h3 className="font-display text-lg sm:text-xl font-bold text-accent-gold mb-1">
+              <h3 className="font-display text-lg sm:text-xl font-bold text-accent-gold-text mb-1">
                 THE PSYCHENOMICON
               </h3>
               <p className="text-sm text-text-muted leading-relaxed max-w-xl">
                 &ldquo;In the beginning, there was static. Then a voice cut through the noise.&rdquo;
-                <span className="block mt-1 text-xs text-accent-gold/60">
+                <span className="block mt-1 text-xs text-accent-gold-text/60">
                   The forbidden chronicle of every soul, saga, and spectacle from the Panelverse.
                 </span>
               </p>
             </div>
-            <div className="flex-shrink-0 font-mono text-xs text-accent-gold/50 group-hover:text-accent-gold transition-colors">
+            <div className="flex-shrink-0 font-mono text-xs text-accent-gold-text/50 group-hover:text-accent-gold-text transition-colors">
               Enter →
             </div>
           </div>

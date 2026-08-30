@@ -81,7 +81,7 @@ export default function MeowPage() {
 
         {/* Lenore */}
         <div className="rounded-lg border border-accent-gold/10 bg-accent-gold/[0.03] px-6 py-5">
-          <h2 className="font-display text-lg text-accent-gold">
+          <h2 className="font-display text-lg text-accent-gold-text">
             Lenore <span className="font-mono text-xs text-text-muted">(Pie)</span>
           </h2>
           <p className="mt-1 font-mono text-xs text-text-muted">
@@ -92,7 +92,7 @@ export default function MeowPage() {
 
       {/* Random cat quote */}
       <div className="mt-12 max-w-md text-center">
-        <p className="font-serif text-sm italic leading-relaxed text-accent-gold/70">
+        <p className="font-serif text-sm italic leading-relaxed text-accent-gold-text/70">
           {quote}
         </p>
         <p className="mt-2 font-mono text-[10px] tracking-wider text-text-muted/50">

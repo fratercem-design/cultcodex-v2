@@ -40,7 +40,7 @@ export default async function EditEpisodePage({ params }: PageProps) {
         </h1>
         <Link
           href="/admin/episodes"
-          className="font-mono text-xs text-text-muted hover:text-accent-gold transition-colors"
+          className="font-mono text-xs text-text-muted hover:text-accent-gold-text transition-colors"
         >
           &larr; Back to Episodes
         </Link>

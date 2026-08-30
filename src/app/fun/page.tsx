@@ -86,7 +86,7 @@ export default async function FunPage() {
       {/* Hero */}
       <section className="border-b border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/60">
             {"/// recreation_level · unserious_by_decree"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -113,7 +113,7 @@ export default async function FunPage() {
                 href={a.href}
                 className="group rounded border border-border bg-surface p-4 hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-all space-y-1.5"
               >
-                <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold transition-colors">
+                <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold-text transition-colors">
                   {a.label}
                 </p>
                 <p className="text-[11px] text-text-muted leading-relaxed">{a.blurb}</p>
@@ -142,7 +142,7 @@ export default async function FunPage() {
                   href={`/lore/${entry.slug}`}
                   className="group rounded border border-border bg-surface p-4 hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-all space-y-1"
                 >
-                  <p className="font-mono text-xs font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+                  <p className="font-mono text-xs font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
                     {entry.title}
                   </p>
                   {entry.summary && (

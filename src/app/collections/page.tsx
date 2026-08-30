@@ -31,7 +31,7 @@ const COLLECTIONS: Collection[] = [
     title: "Best of Tarot",
     description: "The most powerful and insightful tarot readings across all series. Psyche at their most mystical.",
     icon: <IconTarot size={28} />,
-    color: "text-accent-gold",
+    color: "text-accent-gold-text",
     borderColor: "border-accent-gold/20",
     links: [
       { label: "Psyche Awakens Tarot", href: "/episodes?series=psyche-awakens-tarot" },
@@ -110,7 +110,7 @@ const COLLECTIONS: Collection[] = [
     title: "Notable Quotes",
     description: "The most memorable, profound, and hilarious quotes from across the archive.",
     icon: <IconQuote size={28} />,
-    color: "text-accent-gold",
+    color: "text-accent-gold-text",
     borderColor: "border-accent-gold/20",
     links: [
       { label: "Full quote archive", href: "/quotes" },
@@ -216,7 +216,7 @@ export default async function CollectionsPage() {
         {/* Series-based collections */}
         <section className="space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text">
               {"/// series_packs"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
@@ -275,7 +275,7 @@ export default async function CollectionsPage() {
         <div className="text-center">
           <Link
             href="/start-here"
-            className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/30 px-6 py-3 font-mono text-xs text-accent-gold transition-colors hover:bg-accent-gold/10"
+            className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/30 px-6 py-3 font-mono text-xs text-accent-gold-text transition-colors hover:bg-accent-gold/10"
           >
             <IconTransmission size={16} />
             New here? Start Here →

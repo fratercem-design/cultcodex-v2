@@ -67,7 +67,7 @@ export default async function MediaKitPage() {
 
         {/* What it is */}
         <section className="space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
             {"/// what_it_is"}
           </p>
           <div className="rounded-xl border border-border bg-surface p-6 space-y-4">
@@ -90,7 +90,7 @@ export default async function MediaKitPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {FACTS.map((f) => (
               <div key={f.label} className="rounded-lg border border-border bg-surface p-4 text-center">
-                <p className="font-mono text-xl font-bold text-accent-gold">{f.value}</p>
+                <p className="font-mono text-xl font-bold text-accent-gold-text">{f.value}</p>
                 <p className="mt-1 font-mono text-[10px] text-text-muted">{f.label}</p>
               </div>
             ))}
@@ -104,7 +104,7 @@ export default async function MediaKitPage() {
 
         {/* Brand */}
         <section className="space-y-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">
             {"/// brand_language"}
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -127,7 +127,7 @@ export default async function MediaKitPage() {
 
           {/* Sigil + palette */}
           <div className="rounded-xl border border-border bg-surface p-6 flex flex-col sm:flex-row items-center gap-6">
-            <div className="flex flex-col items-center gap-2 text-accent-gold">
+            <div className="flex flex-col items-center gap-2 text-accent-gold-text">
               <CodexSigil size={72} glow />
               <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">The Codex sigil</p>
             </div>
@@ -155,7 +155,7 @@ export default async function MediaKitPage() {
             channels or the about page. Watch a live stream to see the format firsthand.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/about" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25">
+            <Link href="/about" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25">
               About &amp; contact →
             </Link>
             <Link href="/cult-live" className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-3 font-mono text-xs text-text-muted transition-all hover:border-accent-gold/30 hover:text-text-primary">

@@ -26,8 +26,8 @@ const TYPE_LABELS: Record<string, string> = {
 
 const TYPE_COLORS: Record<string, string> = {
   episode: "text-accent-cyan",
-  person: "text-accent-gold",
-  lore: "text-accent-violet",
+  person: "text-accent-gold-text",
+  lore: "text-accent-violet-text",
   topic: "text-text-muted",
 };
 
@@ -195,7 +195,7 @@ export function CommandPalette() {
               <span className="flex-1 text-sm text-text-muted font-mono">
                 Search all results for &ldquo;{query}&rdquo;
               </span>
-              <span className="font-mono text-[10px] text-accent-gold">→</span>
+              <span className="font-mono text-[10px] text-accent-gold-text">→</span>
             </Link>
           ) : (
             <div className="flex items-center justify-between px-4">

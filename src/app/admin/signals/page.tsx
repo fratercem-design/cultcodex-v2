@@ -45,7 +45,7 @@ export default async function AdminSignalsPage() {
             <div key={p.id} className="rounded-xl border border-border bg-surface p-5">
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 text-center">
-                  <span className="font-mono text-xl font-bold text-accent-gold">{p.votes}</span>
+                  <span className="font-mono text-xl font-bold text-accent-gold-text">{p.votes}</span>
                   <p className="font-mono text-[9px] text-text-muted">votes</p>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -85,7 +85,7 @@ export default async function AdminSignalsPage() {
                     </select>
                     <button
                       type="submit"
-                      className="rounded px-3 py-1 font-mono text-xs bg-accent-gold/10 text-accent-gold hover:bg-accent-gold/20 transition-colors"
+                      className="rounded px-3 py-1 font-mono text-xs bg-accent-gold/10 text-accent-gold-text hover:bg-accent-gold/20 transition-colors"
                     >
                       Update
                     </button>

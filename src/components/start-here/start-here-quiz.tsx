@@ -82,7 +82,7 @@ export function StartHereQuiz() {
     }, 180);
   }
 
-  const accentByStep = ["text-accent-violet", "text-accent-cyan", "text-accent-gold"];
+  const accentByStep = ["text-accent-violet-text", "text-accent-cyan", "text-accent-gold-text"];
   const borderByStep = ["border-accent-violet/40", "border-accent-cyan/40", "border-accent-gold/40"];
   const bgByStep = ["bg-accent-violet/10", "bg-accent-cyan/10", "bg-accent-gold/10"];
   const accent = accentByStep[step];

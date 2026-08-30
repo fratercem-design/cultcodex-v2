@@ -12,9 +12,9 @@ interface SectionCardProps {
 }
 
 const ACCENT_TITLE: Record<SectionAccent, string> = {
-  gold:   "text-accent-gold",
+  gold:   "text-accent-gold-text",
   cyan:   "text-accent-cyan",
-  violet: "text-accent-violet",
+  violet: "text-accent-violet-text",
   red:    "text-red-400",
   muted:  "text-text-muted",
 };

@@ -215,14 +215,14 @@ export function EntityNetworkGraph({ nodes, edges, width = 600, height = 400 }: 
           <div className="absolute bottom-3 left-3 flex items-center gap-2">
             <Link
               href={`/psychenomicon/entities/${node.slug}`}
-              className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-void/90 px-3 py-1.5 font-mono text-[10px] text-accent-violet hover:bg-accent-violet/10 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-void/90 px-3 py-1.5 font-mono text-[10px] text-accent-violet-text hover:bg-accent-violet/10 transition-colors"
             >
               {node.name} <span className="opacity-60">→</span>
             </Link>
             {node.personSlug && (
               <Link
                 href={`/people/${node.personSlug}`}
-                className="inline-flex items-center gap-1 rounded border border-accent-gold/30 bg-void/90 px-2 py-1.5 font-mono text-[9px] text-accent-gold hover:bg-accent-gold/10 transition-colors"
+                className="inline-flex items-center gap-1 rounded border border-accent-gold/30 bg-void/90 px-2 py-1.5 font-mono text-[9px] text-accent-gold-text hover:bg-accent-gold/10 transition-colors"
               >
                 archive ↗
               </Link>

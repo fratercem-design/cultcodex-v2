@@ -93,7 +93,7 @@ export default function BasementPage() {
           </p>
           <Link
             href="/"
-            className="inline-block font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors"
+            className="inline-block font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             ← Back upstairs, quietly
           </Link>

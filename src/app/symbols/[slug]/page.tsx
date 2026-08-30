@@ -9,8 +9,8 @@ import { jsonLdScript } from "@/lib/seo";
 export const dynamic = "force-static";
 
 const CATEGORY_COLORS: Record<SymbolEntry["category"], string> = {
-  cosmic: "border-accent-violet/40 text-accent-violet bg-accent-violet/10",
-  divine: "border-accent-gold/40 text-accent-gold bg-accent-gold/10",
+  cosmic: "border-accent-violet/40 text-accent-violet-text bg-accent-violet/10",
+  divine: "border-accent-gold/40 text-accent-gold-text bg-accent-gold/10",
   occult: "border-red-500/40 text-red-400 bg-red-500/10",
   alchemical: "border-accent-cyan/40 text-accent-cyan bg-accent-cyan/10",
   geometric: "border-blue-400/40 text-blue-400 bg-blue-500/10",
@@ -82,11 +82,11 @@ export default async function SymbolDetailPage({
         <div className="mx-auto max-w-3xl px-4 py-8">
           {/* Breadcrumb */}
           <nav className="mb-8 flex items-center gap-2 font-mono text-[10px] text-text-muted">
-            <Link href="/" className="hover:text-accent-gold transition-colors">
+            <Link href="/" className="hover:text-accent-gold-text transition-colors">
               CODEX
             </Link>
             <span>/</span>
-            <Link href="/symbols" className="hover:text-accent-gold transition-colors">
+            <Link href="/symbols" className="hover:text-accent-gold-text transition-colors">
               SYMBOLS
             </Link>
             <span>/</span>
@@ -96,7 +96,7 @@ export default async function SymbolDetailPage({
           {/* Hero glyph + name */}
           <header className="mb-10 space-y-5">
             <div
-              className="text-accent-gold"
+              className="text-accent-gold-text"
               style={{ filter: "drop-shadow(0 0 28px rgba(200,169,107,0.45))" }}
               aria-hidden="true"
             >
@@ -124,7 +124,7 @@ export default async function SymbolDetailPage({
           <div className="space-y-10">
             {/* History */}
             <section>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60 mb-3">
+              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-3">
                 {"/// history"}
               </p>
               <p className="text-sm text-text-muted leading-relaxed">{symbol.history}</p>
@@ -134,7 +134,7 @@ export default async function SymbolDetailPage({
 
             {/* Occult Meaning */}
             <section>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60 mb-3">
+              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-3">
                 {"/// occult_meaning"}
               </p>
               <p className="text-sm text-text-muted leading-relaxed">{symbol.occultMeaning}</p>
@@ -144,7 +144,7 @@ export default async function SymbolDetailPage({
 
             {/* Modern Interpretation */}
             <section>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60 mb-3">
+              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-3">
                 {"/// modern_interpretation"}
               </p>
               <p className="text-sm text-text-muted leading-relaxed">
@@ -156,7 +156,7 @@ export default async function SymbolDetailPage({
 
             {/* Associated Archetypes */}
             <section>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60 mb-3">
+              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-3">
                 {"/// associated_archetypes"}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -164,7 +164,7 @@ export default async function SymbolDetailPage({
                   <Link
                     key={archetype}
                     href="/archetype-quiz"
-                    className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-accent-violet/10 hover:bg-accent-violet/20 px-3 py-1.5 font-mono text-xs text-accent-violet transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-accent-violet/10 hover:bg-accent-violet/20 px-3 py-1.5 font-mono text-xs text-accent-violet-text transition-colors"
                   >
                     <span aria-hidden="true">◈</span>
                     {archetype}
@@ -178,7 +178,7 @@ export default async function SymbolDetailPage({
               <>
                 <div className="h-px bg-border" />
                 <section>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60 mb-4">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-4">
                     {"/// related_symbols"}
                   </p>
                   <div className="grid gap-3 sm:grid-cols-3">
@@ -188,10 +188,10 @@ export default async function SymbolDetailPage({
                         href={`/symbols/${related.slug}`}
                         className="group rounded-xl border border-border bg-surface p-4 hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-all flex flex-col gap-2"
                       >
-                        <span className="text-accent-gold/60 group-hover:text-accent-gold transition-colors">
+                        <span className="text-accent-gold-text/60 group-hover:text-accent-gold-text transition-colors">
                           <SymbolGlyph slug={related.slug} glyph={related.glyph} size={32} />
                         </span>
-                        <span className="font-mono text-xs text-text-primary group-hover:text-accent-gold transition-colors">
+                        <span className="font-mono text-xs text-text-primary group-hover:text-accent-gold-text transition-colors">
                           {related.name}
                         </span>
                         <span className="font-mono text-[9px] text-text-muted line-clamp-1">
@@ -224,25 +224,25 @@ export default async function SymbolDetailPage({
 
           {/* Footer CTAs */}
           <footer className="mt-12 pt-8 border-t border-border">
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60 mb-4">
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-4">
               {"/// continue_your_research"}
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/psychenomicon"
-                className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 hover:bg-accent-violet/20 px-5 py-2.5 font-mono text-xs font-bold text-accent-violet transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 hover:bg-accent-violet/20 px-5 py-2.5 font-mono text-xs font-bold text-accent-violet-text transition-colors"
               >
                 Explore The Psychenomicon →
               </Link>
               <Link
                 href="/archetype-quiz"
-                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/40 bg-accent-gold/10 hover:bg-accent-gold/20 px-5 py-2.5 font-mono text-xs font-bold text-accent-gold transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/40 bg-accent-gold/10 hover:bg-accent-gold/20 px-5 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-colors"
               >
                 Discover Your Archetype →
               </Link>
               <Link
                 href="/symbols"
-                className="inline-flex items-center gap-2 rounded-lg border border-border hover:border-accent-gold/30 px-5 py-2.5 font-mono text-xs text-text-muted hover:text-accent-gold transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg border border-border hover:border-accent-gold/30 px-5 py-2.5 font-mono text-xs text-text-muted hover:text-accent-gold-text transition-colors"
               >
                 ← All Symbols
               </Link>

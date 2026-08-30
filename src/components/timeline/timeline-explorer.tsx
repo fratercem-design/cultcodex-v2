@@ -76,7 +76,7 @@ export function TimelineExplorer({ items }: { items: TimelineItem[] }) {
         <button
           onClick={() => setEraFilter(null)}
           className={`rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest transition-colors ${
-            eraFilter === null ? "border-accent-gold/60 bg-accent-gold/10 text-accent-gold" : "border-border text-text-muted hover:text-text-primary"
+            eraFilter === null ? "border-accent-gold/60 bg-accent-gold/10 text-accent-gold-text" : "border-border text-text-muted hover:text-text-primary"
           }`}
         >
           All eras
@@ -151,11 +151,11 @@ export function TimelineExplorer({ items }: { items: TimelineItem[] }) {
                 className="group flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-2.5 transition-all hover:border-accent-gold/30 hover:bg-elevated"
               >
                 {ep.episodeNumber != null && (
-                  <span className="shrink-0 font-mono text-[10px] font-bold text-accent-gold/70">
+                  <span className="shrink-0 font-mono text-[10px] font-bold text-accent-gold-text/70">
                     EP.{String(ep.episodeNumber).padStart(3, "0")}
                   </span>
                 )}
-                <span className="min-w-0 flex-1 truncate text-sm text-text-primary group-hover:text-accent-gold transition-colors">
+                <span className="min-w-0 flex-1 truncate text-sm text-text-primary group-hover:text-accent-gold-text transition-colors">
                   {ep.title}
                 </span>
                 <span className="shrink-0 font-mono text-[10px] text-text-muted/50">

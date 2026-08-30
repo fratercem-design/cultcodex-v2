@@ -77,7 +77,7 @@ export async function AnnotationSection({ targetType, targetId, returnPath, labe
                 <p className="text-sm text-text-primary leading-relaxed">{a.body}</p>
                 <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">
                   {a.user.displayName}
-                  {a.user.memberTitle && <span className="text-accent-gold/40"> · {a.user.memberTitle}</span>}
+                  {a.user.memberTitle && <span className="text-accent-gold-text/40"> · {a.user.memberTitle}</span>}
                   {" · "}
                   {new Date(a.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                 </p>
@@ -103,7 +103,7 @@ export async function AnnotationSection({ targetType, targetId, returnPath, labe
           </p>
           <Link
             href={user ? "/premium" : "/auth/signin"}
-            className="font-mono text-[10px] uppercase tracking-widest rounded border border-accent-gold/30 text-accent-gold px-3 py-1.5 hover:bg-accent-gold/5 transition-colors"
+            className="font-mono text-[10px] uppercase tracking-widest rounded border border-accent-gold/30 text-accent-gold-text px-3 py-1.5 hover:bg-accent-gold/5 transition-colors"
           >
             {user ? "Become Initiate+ →" : "Sign in →"}
           </Link>

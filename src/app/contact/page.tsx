@@ -30,7 +30,7 @@ export default function ContactPage() {
               For questions about the archive, the show, partnerships, or anything else, email us at{" "}
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="text-accent-gold hover:underline"
+                className="text-accent-gold-text hover:underline"
               >
                 {CONTACT_EMAIL}
               </a>
@@ -44,7 +44,7 @@ export default function ContactPage() {
             <p>
               Spotted an error in an episode, transcript, quote, or person profile? Submit it through
               the{" "}
-              <Link href="/corrections" className="text-accent-gold hover:underline">
+              <Link href="/corrections" className="text-accent-gold-text hover:underline">
                 corrections page
               </Link>{" "}
               so we can review and fix it.
@@ -59,16 +59,16 @@ export default function ContactPage() {
               or a charge you believe was made in error, email{" "}
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="text-accent-gold hover:underline"
+                className="text-accent-gold-text hover:underline"
               >
                 {CONTACT_EMAIL}
               </a>{" "}
               or see the{" "}
-              <Link href="/refund" className="text-accent-gold hover:underline">
+              <Link href="/refund" className="text-accent-gold-text hover:underline">
                 refund policy
               </Link>
               . You can manage or cancel an active subscription any time from your{" "}
-              <Link href="/settings" className="text-accent-gold hover:underline">
+              <Link href="/settings" className="text-accent-gold-text hover:underline">
                 account settings
               </Link>
               .

@@ -28,8 +28,8 @@ const CATEGORIES: SymbolEntry["category"][] = [
 ];
 
 const CATEGORY_COLORS: Record<SymbolEntry["category"], string> = {
-  cosmic: "border-accent-violet/40 text-accent-violet bg-accent-violet/10",
-  divine: "border-accent-gold/40 text-accent-gold bg-accent-gold/10",
+  cosmic: "border-accent-violet/40 text-accent-violet-text bg-accent-violet/10",
+  divine: "border-accent-gold/40 text-accent-gold-text bg-accent-gold/10",
   occult: "border-red-500/40 text-red-400 bg-red-500/10",
   alchemical: "border-accent-cyan/40 text-accent-cyan bg-accent-cyan/10",
   geometric: "border-blue-400/40 text-blue-400 bg-blue-500/10",
@@ -50,7 +50,7 @@ export default function SymbolsPage({
       {/* Hero */}
       <section className="border-b border-border bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-5xl space-y-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/60">
             {"/// symbol_encyclopedia"}
           </p>
           <div className="flex items-center gap-4">
@@ -104,13 +104,13 @@ function SymbolCard({ symbol }: { symbol: SymbolEntry }) {
       className="group rounded-xl border border-border bg-surface p-5 hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-all duration-200 flex flex-col gap-3"
     >
       {/* Glyph */}
-      <div className="text-accent-gold/70 group-hover:text-accent-gold transition-colors duration-200">
+      <div className="text-accent-gold-text/70 group-hover:text-accent-gold-text transition-colors duration-200">
         <SymbolGlyph slug={symbol.slug} glyph={symbol.glyph} size={48} />
       </div>
 
       {/* Name + tagline */}
       <div className="flex-1 min-w-0 space-y-1.5">
-        <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold transition-colors">
+        <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold-text transition-colors">
           {symbol.name}
         </p>
         <p className="font-mono text-[10px] text-text-muted leading-relaxed line-clamp-2">

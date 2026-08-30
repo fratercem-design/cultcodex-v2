@@ -35,7 +35,7 @@ const CustomTooltip = ({ active, payload }: any) => {
   return (
     <div className="bg-surface border border-border rounded px-3 py-2 font-mono text-xs shadow-lg">
       <div className="text-text-primary font-bold">{d.displayName}</div>
-      <div className="text-accent-gold">{d.count} appearances</div>
+      <div className="text-accent-gold-text">{d.count} appearances</div>
     </div>
   );
 };
@@ -79,7 +79,7 @@ export function GuestRadialChart({ data }: Props) {
               className="w-2 h-2 rounded-full shrink-0"
               style={{ background: COLORS[i] ?? "#6b7280" }}
             />
-            <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-gold transition-colors truncate">
+            <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-gold-text transition-colors truncate">
               {g.displayName}
             </span>
             <span className="font-mono text-[10px] text-text-muted/50 ml-auto shrink-0">

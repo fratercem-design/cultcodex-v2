@@ -29,7 +29,7 @@ export function GiftDownloadCta({ autostart = false }: { autostart?: boolean }) 
       <a
         href={GIFT_URL}
         download
-        className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/20 px-9 py-4 font-mono text-sm font-bold text-accent-gold transition hover:bg-accent-gold/30"
+        className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/20 px-9 py-4 font-mono text-sm font-bold text-accent-gold-text transition hover:bg-accent-gold/30"
       >
         ↓ &nbsp;Download the Gospel (PDF)
       </a>
