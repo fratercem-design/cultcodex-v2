@@ -18,6 +18,15 @@ chiaroscuro shadow work, baroque compositional density, hyper-detailed material 
 `.trim().replace(/\n/g, " ");
 
 /**
+ * Compact form for image providers with short prompt limits. Step Image Edit 2
+ * accepts at most 512 characters, so generated prompts use this fingerprint
+ * instead of repeating the full prose bible.
+ */
+export const COMPACT_VISUAL_DNA =
+  "cinematic occult neon-noir, Renaissance chiaroscuro fused with cyberpunk chrome, " +
+  "obsidian and marble, sacred geometry, analog film grain, volumetric light";
+
+/**
  * Recurring entity visual descriptors — used verbatim in prompts to enforce
  * character/archetype consistency across the entire Psychenomicon.
  * When a chapter references one of these entities, insert their descriptor.
@@ -59,6 +68,9 @@ export const QUALITY_SUFFIX =
   "8K resolution, masterwork digital painting, museum-quality composition, " +
   "rule of thirds, dramatic depth of field, perfect lighting balance, " +
   "hyper-realistic textures, award-winning concept art.";
+
+export const COMPACT_QUALITY_SUFFIX =
+  "museum-grade composition, realistic materials, no text, no logo, no watermark";
 
 /**
  * Builds the full prompt from a raw scene description.

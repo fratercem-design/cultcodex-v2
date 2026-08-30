@@ -1,24 +1,24 @@
 # Durable Psychenomicon art runner.
 #
-# Runs one bounded chunk per invocation: generates + publishes (Railway
-# Postgres) art for the next incomplete chapters, then exits. A scheduled task
-# re-triggers it, so it grinds through the archive across sessions/reboots and
-# resumes automatically (run.ts skips chapters that already have complete art).
+# Runs one bounded local chunk per invocation for the next incomplete chapters,
+# then exits. Publishing requires --publish after explicit approval. A scheduled
+# task may re-trigger it across sessions/reboots; the pipeline resumes without
+# replacing completed local files.
 #
 # Stop gracefully:     New-Item scripts\psychenomicon-art\output\STOP
 # Resume:              Remove-Item scripts\psychenomicon-art\output\STOP
-# Per-run chapter cap: set env ART_MAX_NEW (default 50).
+# Per-run chapter cap: set env ART_MAX_NEW (default 1).
 
 $ErrorActionPreference = "Continue"
-$proj   = "C:\Users\johnb\cultcodex-v2"
+$proj   = "C:\Users\johnb\Projects\cultcodex-v2"
 $art    = Join-Path $proj "scripts\psychenomicon-art"
 $outDir = Join-Path $art "output"
 $log    = Join-Path $art "daemon.log"
 $lock   = Join-Path $art "daemon.lock"
-$maxNew = if ($env:ART_MAX_NEW) { $env:ART_MAX_NEW } else { "50" }
+$maxNew = if ($env:ART_MAX_NEW) { $env:ART_MAX_NEW } else { "1" }
 # Budget guard: stop for good once the archive has this many chapters with art.
-# Raise it (or set ART_STOP_AT_TOTAL) to push further; the runner also auto-stops
-# the moment Bluesminds returns a credit/402 error.
+# Raise it (or set ART_STOP_AT_TOTAL) to push further; the runner auto-stops
+# when the configured provider reports exhausted credit or quota.
 $stopAt = if ($env:ART_STOP_AT_TOTAL) { $env:ART_STOP_AT_TOTAL } else { "300" }
 
 $env:Path = "C:\Program Files\nodejs;" + $env:Path

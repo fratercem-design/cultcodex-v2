@@ -1,14 +1,17 @@
 // scripts/psychenomicon-art/llm.ts
 //
-// Shared LLM caller for the art pipeline. Primary path is Bluesminds
-// (OpenAI-compatible, the user's prepaid credit); it's provider-flaky, so we
-// retry a few times then fall back to AWS Bedrock (Claude Sonnet). This keeps
-// the pipeline off the out-of-credit direct Anthropic API.
+// Shared LLM caller for the art pipeline. HCNSEC is the preferred
+// OpenAI-compatible provider when HCNSEC_API_KEY is configured. Legacy
+// Bluesminds/OpenRouter settings remain supported. Bedrock is an optional
+// fallback only when its credentials already exist in the process.
 
 import OpenAI from "openai";
 import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 
-const ART_MODEL = process.env.ART_MODEL ?? "gpt-4o";
+const ART_MODEL =
+  process.env.ART_TEXT_MODEL ??
+  process.env.ART_MODEL ??
+  (process.env.HCNSEC_API_KEY ? "DeepSeek-V4-Flash" : "gpt-4o");
 const BEDROCK_FALLBACK_MODEL =
   process.env.PSYCHENOMICON_FALLBACK_MODEL ?? "us.anthropic.claude-sonnet-4-6";
 
@@ -31,7 +34,7 @@ export async function callLLM(
       });
       const text = r.choices[0]?.message?.content?.trim() ?? "";
       if (text) return text;
-      throw new Error("empty response from Bluesminds");
+      throw new Error("empty response from configured art text provider");
     } catch (e) {
       lastErr = e;
       if (attempt < 3) await new Promise((res) => setTimeout(res, 1500 * attempt));
