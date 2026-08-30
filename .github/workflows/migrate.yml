@@ -80,11 +80,13 @@ jobs:
               const failed = await c.query(
                 `select migration_name, started_at, finished_at, rolled_back_at, applied_steps_count
                  from "_prisma_migrations"
-                 where finished_at is null and rolled_back_at is null
+                 where finished_at is null
+                    or rolled_back_at is not null
+                    or logs is not null
                  order by started_at desc`
               );
               if (!failed.rows.length) {
-                console.log("No failed or unfinished migrations. Nothing to resolve.");
+                console.log("No migration row carries a failure marker.");
               } else {
                 console.log("FAILED / UNFINISHED MIGRATIONS:");
                 for (const r of failed.rows) {
