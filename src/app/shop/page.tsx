@@ -78,9 +78,9 @@ export default function ShopPage() {
       <main id="main-content" className="mx-auto max-w-7xl px-4 py-8 space-y-14">
         {!PRICING_APPROVED && (
           <div className="rounded-lg border border-accent-sulphur/40 bg-accent-sulphur/5 px-4 py-3 font-mono text-[11px] text-text-muted">
-            <span className="text-accent-sulphur">Draft —</span> prices and product links are
-            placeholders until the shop is live. Set <code>PRICING_APPROVED</code> in{" "}
-            <code>src/lib/merch.ts</code> to remove this notice.
+            <span className="text-accent-sulphur">Coming soon —</span> the designs below are
+            final, but the store is not open yet. Prices are provisional and the product links
+            go live when the shop opens.
           </div>
         )}
 
