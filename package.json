@@ -50,19 +50,14 @@
     "art:cards:tarot": "npx tsx scripts/generate-card-art.ts --slug cop-maj-00 --all"
   },
   "dependencies": {
-    "@anthropic-ai/bedrock-sdk": "^0.33.1",
-    "@anthropic-ai/sdk": "^0.122.0",
     "@anthropic-ai/bedrock-sdk": "^0.33.3",
-    "@anthropic-ai/sdk": "^0.120.0",
+    "@anthropic-ai/sdk": "^0.122.0",
     "@auth/prisma-adapter": "2.11.3",
     "@aws-sdk/client-s3": "^3.1120.0",
     "@base-ui/react": "^1.7.0",
-    "@next/third-parties": "^16.3.2",
+    "@next/third-parties": "^16.3.3",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
-    "@next/third-parties": "^16.3.3",
-    "@prisma/adapter-pg": "^7.9.1",
-    "@prisma/client": "^7.9.1",
     "@sentry/nextjs": "^10.72.0",
     "@vercel/analytics": "^2.0.1",
     "class-variance-authority": "^0.7.1",
@@ -116,6 +111,6 @@
     "ws": "^8.21.3"
   },
   "overrides": {
-    "@auth/core": "0.41.2"
+    "@auth/core": "^0.41.3"
   }
 }
