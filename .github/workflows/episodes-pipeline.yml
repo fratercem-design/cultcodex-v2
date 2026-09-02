@@ -1,6 +1,18 @@
 name: CultofPsyche Transcript Import
 
 on:
+  # Nothing was fetching transcripts automatically. The daily Vercel cron
+  # (/api/cron/ingest-latest, 15:00 UTC) creates Episode rows from YouTube
+  # metadata but touches no transcripts, and this workflow was dispatch-only —
+  # so every new episode sat transcript-less, and therefore un-enriched and
+  # without a real meta description, until someone triggered this by hand.
+  #
+  # Runs 90 minutes after that ingest so the new rows exist. On a schedule run
+  # github.event.inputs is null, so the `|| default` fallbacks in the run step
+  # apply: content type "original", all missing transcripts, 1500ms apart. The
+  # script fetches the missing list first and exits early when there is none.
+  schedule:
+    - cron: "30 16 * * *"
   workflow_dispatch:
     inputs:
       content_type:
