@@ -3,13 +3,27 @@ import type { MetadataRoute } from "next";
 export default function robots(): MetadataRoute.Robots {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me";
 
+  const privatePaths = [
+    "/api/",
+    "/auth/",
+    "/admin/",
+    "/settings/",
+    "/members/",
+    "/red-room/",
+    "/salon/",
+    "/onboarding/",
+    "/claim/",
+    "/user/",
+  ];
+
   return {
     rules: [
-      // Standard crawlers — allow everything except private routes
+      // Standard crawlers — public archive is indexable; account/member
+      // surfaces and the paid Oracle stay out of the generic allow-list.
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/", "/auth/", "/admin/"],
+        disallow: privatePaths,
       },
 
       // AI *retrieval* bots (ChatGPT Browse, Perplexity, Claude, AI Overviews) —
@@ -41,19 +55,10 @@ export default function robots(): MetadataRoute.Robots {
           "/graph/",
         ],
         disallow: [
-          "/api/",
-          "/admin/",
-          "/auth/",
+          ...privatePaths,
           "/oracle/",          // paid AI feature — don't let them replicate it
           "/psychenomicon/",   // premium narrative content
-          "/settings/",
-          "/members/",
           "/cards/",
-          "/salon/",
-          "/red-room/",
-          "/onboarding/",
-          "/claim/",
-          "/user/",
         ],
       },
 
