@@ -4,24 +4,30 @@
  *
  * Progress is logged to the console. You can stop at any time with Ctrl+C
  * or by setting window.__enrichStop = true in the console.
+ *
+ * Credentials are prompted at runtime — never hard-code them in this file.
  */
 (async function enrichTopics() {
-  const SECRET  = "2633f3d5c23cfa60765748e5de4dcd633ac100e3e8f8b241";
-  const API_KEY = "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";
-  const BATCH   = 10;   // topics per round — keep low to stay under 60s Vercel limit
-  const MIN_EP  = 2;    // minimum episode count
+  const SECRET  = window.prompt("ENRICH_SECRET (from Vercel env — do not paste into git)");
+  const API_KEY = window.prompt("Anthropic API key");
+  if (!SECRET || !API_KEY) {
+    console.error("Aborted — both credentials are required.");
+    return;
+  }
+  const BATCH   = 10;
+  const MIN_EP  = 2;
 
   window.__enrichStop = false;
   let round = 0;
   let totalDone = 0;
 
-  console.log("%c── CultCodex Topic Enrichment ──", "font-weight:bold;color:#a78bfa");
-  console.log(`Batch: ${BATCH} | Min episodes: ${MIN_EP}`);
-  console.log('Set window.__enrichStop = true to halt early.\n');
+  console.log("%c-- CultCodex Topic Enrichment --", "font-weight:bold;color:#a78bfa");
+  console.log("Batch: " + BATCH + " | Min episodes: " + MIN_EP);
+  console.log("Set window.__enrichStop = true to halt early.");
 
   while (!window.__enrichStop) {
     round++;
-    console.log(`Round ${round}…`);
+    console.log("Round " + round + "…");
 
     let data;
     try {
@@ -41,28 +47,27 @@
     } catch (err) {
       console.error("Fetch error:", err);
       console.log("Retrying in 10s…");
-      await new Promise(r => setTimeout(r, 10000));
+      await new Promise(function (r) { setTimeout(r, 10000); });
       continue;
     }
 
     totalDone += data.processed ?? 0;
 
     for (const r of (data.results ?? [])) {
-      console.log(`  ${r.ok ? "✓" : "✗"} ${r.title}${r.error ? " — " + r.error : ""}`);
+      console.log("  " + (r.ok ? "ok" : "fail") + " " + r.title + (r.error ? " — " + r.error : ""));
     }
 
-    console.log(`  processed=${data.processed}  remaining=${data.remaining}  total done=${totalDone}`);
+    console.log("  processed=" + data.processed + "  remaining=" + data.remaining + "  total done=" + totalDone);
 
     if (data.done || data.remaining <= 0) {
-      console.log(`%c\n✅ All topics enriched! Total: ${totalDone}`, "color:green;font-weight:bold");
+      console.log("%cAll topics enriched. Total: " + totalDone, "color:green;font-weight:bold");
       break;
     }
 
-    // Short pause between rounds
-    await new Promise(r => setTimeout(r, 1500));
+    await new Promise(function (r) { setTimeout(r, 1500); });
   }
 
   if (window.__enrichStop) {
-    console.log(`Stopped after ${round} rounds. ${totalDone} topics enriched so far.`);
+    console.log("Stopped after " + round + " rounds. " + totalDone + " topics enriched so far.");
   }
 })();
