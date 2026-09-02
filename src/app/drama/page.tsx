@@ -22,9 +22,11 @@ function severityFor(index: number): string {
 }
 
 export default async function DramaPage() {
+  // Prerendering runs without a database, so a query rejection must degrade
+  // to the empty state below rather than failing the whole build.
   const [entries, total] = await Promise.all([
-    getLoreEntries({ category: "drama", take: 100 }),
-    getLoreCount({ category: "drama" }),
+    getLoreEntries({ category: "drama", take: 100 }).catch(() => []),
+    getLoreCount({ category: "drama" }).catch(() => 0),
   ]);
 
   return (

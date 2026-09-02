@@ -75,7 +75,11 @@ const ATTRACTIONS: { label: string; href: string; blurb: string }[] = [
 ];
 
 export default async function FunPage() {
-  const humorous = await getLoreEntries({ canon: "humorous", take: 24 });
+  // Prerendering runs without a database, so a query rejection must degrade
+  // to the empty state below rather than failing the whole build.
+  const humorous = await getLoreEntries({ canon: "humorous", take: 24 }).catch(
+    () => []
+  );
 
   return (
     <main className="min-h-screen bg-void">
