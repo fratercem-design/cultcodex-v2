@@ -15,17 +15,17 @@
 
 ### 0.1 Git state  [VERIFIED]
 
-```
 $ git fetch origin
 From https://github.com/fratercem-design/cultcodex-v2
- * branch  fix/auth-env-check-blocks-build -> FETCH_HEAD
+
+branch fix/auth-env-check-blocks-build -> FETCH_HEAD
 
 $ git rev-parse --abbrev-ref HEAD
 fix/auth-env-check-blocks-build
 
 $ git rev-list --left-right --count HEAD...origin/master
-4       5
-```
+4 5
+
 
 - **Current branch:** `fix/auth-env-check-blocks-build` — not the production branch.
 - **Divergence:** 4 ahead / 5 behind `origin/master`.
@@ -33,21 +33,20 @@ $ git rev-list --left-right --count HEAD...origin/master
   that made the migration diagnosis fail silently (#133)"*.
 - **Uncommitted changes: 23 paths** (16 modified, 7 untracked):
 
-```
- M .env.example                                M scripts/psychenomicon-art/run.ts
- M .github/workflows/migrate.yml               M scripts/psychenomicon-art/upload-railway.ts
- M package.json                                M scripts/psychenomicon-art/visual-bible.ts
- M scripts/ingest/lib.ts                       M src/app/api/stripe/book-checkout/route.ts
- M scripts/psychenomicon-art/README.md         M src/components/layout/site-footer.tsx
- M scripts/psychenomicon-art/art-daemon.ps1    M src/lib/nav.ts
- M scripts/psychenomicon-art/art-pipeline.log
- M scripts/psychenomicon-art/images.ts
- M scripts/psychenomicon-art/llm.ts
- M scripts/psychenomicon-art/prompts.ts
-?? public/merch/          ?? scripts/handbook/          ?? src/app/handbook/
-?? src/app/shop/          ?? src/lib/merch.ts           ?? scripts/psychenomicon-art/__tests__/
+M .env.example M scripts/psychenomicon-art/run.ts
+M .github/workflows/migrate.yml M scripts/psychenomicon-art/upload-railway.ts
+M package.json M scripts/psychenomicon-art/visual-bible.ts
+M scripts/ingest/lib.ts M src/app/api/stripe/book-checkout/route.ts
+M scripts/psychenomicon-art/README.md M src/components/layout/site-footer.tsx
+M scripts/psychenomicon-art/art-daemon.ps1 M src/lib/nav.ts
+M scripts/psychenomicon-art/art-pipeline.log
+M scripts/psychenomicon-art/images.ts
+M scripts/psychenomicon-art/llm.ts
+M scripts/psychenomicon-art/prompts.ts
+?? public/merch/ ?? scripts/handbook/ ?? src/app/handbook/
+?? src/app/shop/ ?? src/lib/merch.ts ?? scripts/psychenomicon-art/tests/
 ?? scripts/psychenomicon-art/run-hcnsec.ps1
-```
+
 
 `scripts/psychenomicon-art/art-pipeline.log` is a **tracked log file with uncommitted
 churn** — a build artifact under version control.
@@ -160,19 +159,18 @@ files are never verified by any gate.
 
 ### 1.2 Build  [VERIFIED — failure is environmental, not a code defect]
 
-```
 ▲ Next.js 16.3.1 (Turbopack)
-- Environments: .env.local, .env
+
+Environments: .env.local, .env
 ✓ Compiled successfully in 11.3s
-  Running TypeScript ...
-  Finished TypeScript in 10.2s ...
-  Generating static pages using 15 workers (0/195) ...
+Running TypeScript ...
+Finished TypeScript in 10.2s ...
+Generating static pages using 15 workers (0/195) ...
 Error: DATABASE_URL is not set (or is not a valid postgres:// URL)
-    at Proxy.a (src\lib\db.ts:41:22)
-    at g (src\lib\queries\stats.ts:51:20)
-    at async D (src\app\layout.tsx:128:34)
+at Proxy.a (src\lib\db.ts:41:22)
+at g (src\lib\queries\stats.ts:51:20)
+at async D (src\app\layout.tsx:128:34)
 ⨯ Next.js build worker exited with code: 1
-```
 
 Compile and TypeScript both pass. The build then dies in prerender because this machine has
 no working `DATABASE_URL` — a known local constraint, not a repo defect. Grouped counts
@@ -196,11 +194,11 @@ dependency on an external font service.
 
 **1 error** (`react-hooks/set-state-in-effect`):
 
-```
 src/components/gameshow/game-show.tsx:93:21
-> 93 |   useEffect(() => { setProgress(loadProgress()); }, []);
-     |                     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
-```
+
+93 | useEffect(() => { setProgress(loadProgress()); }, []);
+| ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+
 
 `npm run lint` is therefore **red on the working tree**, and `next build` does not run
 ESLint in Next 16 — so nothing in the pipeline blocks on it.
@@ -258,14 +256,13 @@ finding worth acting on is the untyped raw-SQL result in `semantic.ts`.
 
 ### 2.1 Suite result  [VERIFIED]
 
-```
-$ npm test          # vitest run
- RUN  v4.1.10 C:/Users/johnb/Projects/cultcodex-v2
- Test Files  30 passed (30)
-      Tests  167 passed (167)
-   Duration  43.84s (transform 5.22s, setup 93.08s, import 57.42s,
-                     tests 7.02s, environment 254.69s)
-```
+$ npm test # vitest run
+RUN v4.1.10 C:/Users/johnb/Projects/cultcodex-v2
+Test Files 30 passed (30)
+Tests 167 passed (167)
+Duration 43.84s (transform 5.22s, setup 93.08s, import 57.42s,
+tests 7.02s, environment 254.69s)
+
 
 **167 passed / 0 failed / 0 skipped / 167 total**, 30 files, **43.84s**.
 (The brief said "~145-test suite"; the actual figure is **167**.)
@@ -276,10 +273,9 @@ of the 30 files pays for a jsdom environment, including the 20 that never touch 
 
 ### 2.2 Coverage — could not be measured  [VERIFIED that it is unavailable]
 
-```
 $ node -e "require.resolve('@vitest/coverage-v8')"
 coverage-v8 ABSENT
-```
+
 
 No coverage provider is installed and `vitest.config.ts` declares no `coverage` block.
 Measuring coverage requires `npm i -D @vitest/coverage-v8`, which is outside the read-only
@@ -392,26 +388,24 @@ the schema (`grep -c '@@map'` → 0), so this is not a naming mismatch.
 
 Models with no migration:
 
-```
-CodexSession   CodexAccount   VerificationToken   EpisodeReaction   CodexComment
-CommentReport  NotificationPreference  Favorite   OracleChunk       CardGift
-Spread         SpreadPosition Reading             ReadingCard       CardSet
-CardSetMember  UserSetCompletion       CardInstance  OracleAffinity  SeasonalEvent
-```
+CodexSession CodexAccount VerificationToken EpisodeReaction CodexComment
+CommentReport NotificationPreference Favorite OracleChunk CardGift
+Spread SpreadPosition Reading ReadingCard CardSet
+CardSetMember UserSetCompletion CardInstance OracleAffinity SeasonalEvent
+
 
 That list includes the **NextAuth session/account/verification tables** and the **entire
 tarot reading subsystem**.
 
 **How they got into production: DDL executed through HTTP admin endpoints.**
 
-```
-src/app/api/admin/data-ops/route.ts:1251  CREATE TABLE IF NOT EXISTS "CardGift" (…
-src/app/api/admin/data-ops/route.ts:1266  CREATE INDEX IF NOT EXISTS "CardGift_cardId_idx" …
-src/app/api/admin/data-ops/route.ts:1268  ALTER TABLE "CardGift" ADD CONSTRAINT …
-src/app/api/admin/data-ops/route.ts:288   ALTER TABLE "Subscriber" ADD COLUMN IF NOT EXISTS "name" TEXT
-src/app/api/admin/seed-cards/route.ts:41  ALTER TABLE "Card" ADD COLUMN IF NOT EXISTS "personality" TEXT
+src/app/api/admin/data-ops/route.ts:1251 CREATE TABLE IF NOT EXISTS "CardGift" (…
+src/app/api/admin/data-ops/route.ts:1266 CREATE INDEX IF NOT EXISTS "CardGift_cardId_idx" …
+src/app/api/admin/data-ops/route.ts:1268 ALTER TABLE "CardGift" ADD CONSTRAINT …
+src/app/api/admin/data-ops/route.ts:288 ALTER TABLE "Subscriber" ADD COLUMN IF NOT EXISTS "name" TEXT
+src/app/api/admin/seed-cards/route.ts:41 ALTER TABLE "Card" ADD COLUMN IF NOT EXISTS "personality" TEXT
 … 15 further ALTER/CREATE statements across the two routes
-```
+
 
 The `apply-card-gift-migration` op carries the comment *"(Vercel builds don't run prisma
 migrate deploy)"*. **That justification is now stale** — `scripts/vercel-build.mjs` runs
@@ -568,12 +562,11 @@ Parameterize `limit`/`threshold`, or coerce with `Number()` inside `semanticSear
 for live-key patterns (`sk-`, `sk_live_`, `whsec_`, `AIza`, `ghp_`, `AKIA`, private-key
 headers, credentialed `postgres://` URLs), excluding `package-lock.json` and `src/generated`:
 
-```
 scripts/enrich/browser-enrich-topics.js:9
-  const SECRET  = "2633f3d5c23cfa60765748e5de4dcd633ac100e3e8f8b241"
+const SECRET = "2633f3d5c23cfa60765748e5de4dcd633ac100e3e8f8b241"
 scripts/enrich/browser-enrich-topics.js:10
-  const API_KEY = "sk-ant-api03-<REDACTED — 95 chars, full value in the file>"
-```
+const API_KEY = "sk-ant-api03-<REDACTED — 95 chars, full value in the file>"
+
 
 Everything else matching was a placeholder (`.env.example:2`,
 `docs/plans/2026-03-07-…md:138` — both literal `USER:PASSWORD`).
@@ -640,14 +633,13 @@ Both cron routes use `requireBearerSecret(req, "CRON_SECRET")`.
 
 **Live verification** — production actually enforces it:
 
-```
-GET  /api/admin/people/lookup?q=…   → 403 {"error":"Admin access required"}
-GET  /api/debug-auth                → 403 {"error":"Admin only"}
-GET  /api/cron/ingest-latest        → 401 {"error":"Unauthorized"}
-GET  /api/cron/gift-sequence        → 401 {"error":"Unauthorized"}
-POST /api/stripe/webhook  {}        → 400 {"error":"Missing signature"}
-POST /api/search/semantic {…}       → 403 {"error":"Deep search requires an active subscription."}
-```
+GET /api/admin/people/lookup?q=… → 403 {"error":"Admin access required"}
+GET /api/debug-auth → 403 {"error":"Admin only"}
+GET /api/cron/ingest-latest → 401 {"error":"Unauthorized"}
+GET /api/cron/gift-sequence → 401 {"error":"Unauthorized"}
+POST /api/stripe/webhook {} → 400 {"error":"Missing signature"}
+POST /api/search/semantic {…} → 403 {"error":"Deep search requires an active subscription."}
+
 
 `middleware.ts` does **not** guard `/admin` — it only does a `www` → apex 301. All protection
 is per-route. That works today because coverage is complete, but a new `admin/*` route that
@@ -680,10 +672,9 @@ pattern-checked for symmetry with `slot`.
 
 ### 4.4 Dependency risk  [VERIFIED]
 
-```
 $ npm audit
 {"info":0,"low":3,"moderate":3,"high":13,"critical":3,"total":22}
-```
+
 
 **The three criticals are the auth stack, and production is running them.** `origin/master`
 pins `next-auth@5.0.0-beta.31`, and its lockfile pins `@auth/core@0.41.2`:
@@ -718,13 +709,12 @@ homoglyph bypass's target.
 version. The override drags it back to **0.41.2** — the last vulnerable release. Verified
 against production's exact manifest:
 
-```
 $ (origin/master package.json + package-lock.json, audited in isolation)
 PRODUCTION SUMMARY: {"info":0,"low":3,"moderate":3,"high":13,"critical":3,"total":22}
 installed: next-auth 5.0.0-beta.32
-           @auth/core 0.41.2          <-- forced by overrides, vulnerable
-           @auth/prisma-adapter 2.11.3
-```
+@auth/core 0.41.2 <-- forced by overrides, vulnerable
+@auth/prisma-adapter 2.11.3
+
 
 **What this changes:**
 
@@ -742,9 +732,9 @@ Whoever added the pin should confirm why before it is simply removed — it was 
 added to force a single `@auth/core` across `next-auth` and `@auth/prisma-adapter`, and
 `^0.41.3` preserves that intent.
 
-**A second, separate defect found in the same file: `origin/master`'s `package.json` has
+**A second, separate defect found in the same file: `origin/master`'s `package.json` had
 six duplicate keys in `dependencies`.** JSON parsers take the last occurrence, so four
-dependency bumps that appear to have landed are silently dead on production:
+dependency bumps that appeared to have landed were silently dead on production:
 
 | Package | Declared twice | Effective |
 |---|---|---|
@@ -755,14 +745,23 @@ dependency bumps that appear to have landed are silently dead on production:
 | `@auth/prisma-adapter` | `2.11.2` → `2.11.3` | `2.11.3` (newer, harmless) |
 | `next` | `^16.3.1` → `^16.3.2` | `^16.3.2` (newer, harmless) |
 
-This is a botched merge-conflict resolution from the 2026-08-26/27 Dependabot merges
-(#130–#133) landing on top of one another. The lockfile is currently *ahead* of the manifest
-(it has `next-auth@5.0.0-beta.32` while the manifest declares `beta.31`), so `npm ci` installs
-the newer version today — **but the next `npm install` will resolve the manifest and silently
-downgrade `next-auth`, `@anthropic-ai/sdk`, `@anthropic-ai/bedrock-sdk` and
-`@aws-sdk/client-s3`.** The local branch does *not* have the duplicates; this is
-`origin/master` only. **Severity: High** — it is a live regression waiting on the next
-install, and it makes dependency state unreadable.
+This was a botched merge-conflict resolution from the 2026-08-26/27 Dependabot merges
+(#130–#133) landing on top of one another. At the time this section was first written, the
+lockfile was *ahead* of the manifest (it had `next-auth@5.0.0-beta.32` while the manifest
+declared `beta.31`), so `npm ci` installed the newer version — but the manifest's duplicate
+keys meant the *next* `npm install` would have resolved to the manifest and silently
+downgraded `next-auth`, `@anthropic-ai/sdk`, `@anthropic-ai/bedrock-sdk` and
+`@aws-sdk/client-s3`.
+
+> **CORRECTION (issued 2026-09-02, after further verification).** The duplicate keys
+> described above are resolved. Commit `9b24ac3` ("fix(deps): remove duplicate dependency
+> keys left by the minor-updates merge") removed all duplicate `dependencies` entries from
+> `origin/master`; verified directly against master — zero duplicates remain. That same
+> commit's message notes the duplicates had also silently reverted `@prisma/client` to
+> `^7.9.1` while the CLI stayed on `^7.10.0` — the same client/CLI mismatch pattern fixed
+> manually in an earlier pass. Installs were unaffected throughout, since `^7.9.1` admits
+> `7.10.0`, so this never broke a build; the manifest was simply wrong. **F2b is resolved;
+> no further action required.**
 
 The remaining 19 (13 high) are transitive and mostly DoS-class: `undici` (5 advisories incl.
 CVSS 7.4 cross-user information disclosure via cache directives), `js-yaml`, `flatted`,
@@ -772,7 +771,6 @@ CVSS 7.4 cross-user information disclosure via cache directives), `js-yaml`, `fl
 
 ### 4.5 Security headers, live  [VERIFIED against production, not just config]
 
-```
 $ curl -sSI https://cultcodex.me/
 Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
 Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' …
@@ -782,8 +780,8 @@ Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()
 Cross-Origin-Opener-Policy: same-origin-allow-popups
 Cross-Origin-Resource-Policy: cross-origin
-Server: Vercel        # X-Powered-By correctly absent
-```
+Server: Vercel # X-Powered-By correctly absent
+
 
 **Every header configured in `next.config.ts` is actually being served.** HSTS is 2 years
 with `includeSubDomains; preload`. `object-src 'none'`, `base-uri 'self'`,
@@ -889,11 +887,10 @@ Extracted every internal `href` from the home page plus **20 sampled transcript 
 (sampled evenly across the 2,921-URL episode list): **335 unique links, 331 after removing
 `/_next/*` and `/api/*`.** All 331 fetched:
 
-```
-327  200
-  3  000   (transient — see below)
-  1  404   /settings
-```
+327 200
+3 000 (transient — see below)
+1 404 /settings
+
 
 **`/settings` → 404, and it is linked from the site-wide footer.**
 `src/components/layout/site-footer.tsx:47` renders
@@ -941,11 +938,10 @@ design. **Visual quality is therefore unverified** — see "inferred".
 `/episodes`, `/topics/identity`, `/psychenomicon`, `/search`, `/stats`, and every episode
 page, on first *and* immediate repeat request — returned:
 
-```
 Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate
 X-Vercel-Cache: MISS
 Age: 0
-```
+
 
 Cause: **71 of 161 `page.tsx` files declare `export const dynamic = "force-dynamic"`.** The
 root layout sets `export const revalidate = 60`, which would be cacheable, but a page-level
@@ -954,12 +950,11 @@ root layout sets `export const revalidate = 60`, which would be cacheable, but a
 **Four of those templates also declare `generateStaticParams()` — which `force-dynamic`
 makes dead code:**
 
-```
-src/app/episodes/[slug]/page.tsx   :57 force-dynamic   :59 generateStaticParams
-src/app/topics/[slug]/page.tsx     :19 force-dynamic   :21 generateStaticParams
+src/app/episodes/[slug]/page.tsx :57 force-dynamic :59 generateStaticParams
+src/app/topics/[slug]/page.tsx :19 force-dynamic :21 generateStaticParams
 src/app/lore/[slug]/page.tsx
 src/app/quests/[slug]/page.tsx
-```
+
 
 Those four templates serve **23,680 of the 27,817 URLs in the sitemap** (2,921 episodes +
 11,944 topics + 8,815 lore + quests). Someone built the static-generation path and then
@@ -970,12 +965,11 @@ server render with live database queries.
 
 Measured on `/episodes/get-your-freak-on-friday` (2,861,640 chars):
 
-```
-RSC flight payload (self.__next_f):  2,776,292 chars  = 97.0% of the page
-Rendered HTML:                          83,176 chars  =  3.0%
-Transcript <p> elements in rendered HTML:      1
-Transcript <p> elements in whole document:     2
-```
+RSC flight payload (self.__next_f): 2,776,292 chars = 97.0% of the page
+Rendered HTML: 83,176 chars = 3.0%
+Transcript <p> elements in rendered HTML: 1
+Transcript <p> elements in whole document: 2
+
 
 The mechanism: `src/components/episodes/episode-tab-layout.tsx` is a **client component**
 whose line 63 renders `children[activeTab]` — only the active tab. The default tab is
@@ -1035,13 +1029,12 @@ Home page loads **15 JS chunks totalling ~727 KB uncompressed** (curl sends no
 `Accept-Encoding`, so these are decoded sizes; over the wire with Brotli, substantially
 smaller). Largest:
 
-```
-233,801 B  chunks/0iedjqcsj5jla.js
-129,205 B  chunks/1t7xs5sdt8k0b.js
-112,594 B  chunks/0c0hxoamwjsbw.js
- 58,522 B  chunks/3og4uougj5s7d.js
- 46,396 B  chunks/03wvv4eimci76.js
-```
+233,801 B chunks/0iedjqcsj5jla.js
+129,205 B chunks/1t7xs5sdt8k0b.js
+112,594 B chunks/0c0hxoamwjsbw.js
+58,522 B chunks/3og4uougj5s7d.js
+46,396 B chunks/03wvv4eimci76.js
+
 
 **A proper bundle analysis could not be run** — `next build` fails before emitting the route
 size table (1.2), and no analyzer is configured. Chunk names are content-hashed, so I cannot
@@ -1150,15 +1143,14 @@ am reporting the discrepancy rather than calling it a bug.
 
 On `/episodes/get-your-freak-on-friday`:
 
-```
-h1 count: 1                        lang="en"  ✓
-skip link: "Skip to main content"  ✓
+h1 count: 1 lang="en" ✓
+skip link: "Skip to main content" ✓
 Heading order (DOM):
-  H2:Archive  H2:Explore  H2:Support  H2:Legal   ← footer/nav H2s
-  H1:Get Your Freak on Friday                    ← page H1, FIFTH
-  H3:Metadata  H3:At a Glance  H4:Topics  H4:Lore
-  H3:Topics (5)  H3:Related Episodes (6)  H2:Anyone Up? …
-```
+H2:Archive H2:Explore H2:Support H2:Legal ← footer/nav H2s
+H1:Get Your Freak on Friday ← page H1, FIFTH
+H3:Metadata H3:At a Glance H4:Topics H4:Lore
+H3:Topics (5) H3:Related Episodes (6) H2:Anyone Up? …
+
 
 **Four `<h2>` elements precede the page `<h1>` in DOM order**, and `H4:Topics`/`H4:Lore`
 appear before the `H3:Topics (5)` that should contain them. Exactly one `<h1>` per page and a
@@ -1171,14 +1163,13 @@ working skip link are both correct and better than most sites; the ordering is t
 
 **Speaker attribution: absent entirely.** This is the finding.
 
-```
 Sampled 20 episode pages; counted "speakerLabel" keys and null values in the payload:
-  pg_a7dc0754  speakerLabelKeys=7906  null=7906
-  pg_d2353dec  speakerLabelKeys=7311  null=7311
-  pg_39d82a6e  speakerLabelKeys=7048  null=7048
-  … (all 20) …
-  pg_52ad6c5b  speakerLabelKeys=0     null=0      ← episode page with zero segments
-```
+pg_a7dc0754 speakerLabelKeys=7906 null=7906
+pg_d2353dec speakerLabelKeys=7311 null=7311
+pg_39d82a6e speakerLabelKeys=7048 null=7048
+… (all 20) …
+pg_52ad6c5b speakerLabelKeys=0 null=0 ← episode page with zero segments
+
 
 **Across 19 episodes with transcripts, all 43,279 segments have `speakerLabel: null`. Not one
 segment in the sample carries a speaker.** Confirmed independently in the live DOM: the
@@ -1210,10 +1201,9 @@ streams. The important consequence is that a great deal of code assumes otherwis
 Segments are **caption fragments, not sentences** — they break mid-clause on YouTube's caption
 timing:
 
-```
 first 3: "spend my soul in a way I shouldn't have" / "thought out." / ""
-last 3:  "mean she looks Natalie, please no. I" / "have to" / "taste the biscuit."
-```
+last 3: "mean she looks Natalie, please no. I" / "have to" / "taste the biscuit."
+
 
 **Truncation: none detected** — the fragment boundaries are caption artefacts, not cut-off
 text, and the sequences run continuously to the episode end. But the transcript begins
@@ -1418,7 +1408,7 @@ mean a sleeping database renders zeros and returns HTTP 200.
 |---|---|---|---|---|
 | **F1** | **Critical** | Secrets | `scripts/enrich/browser-enrich-topics.js:9-10` | Live Anthropic API key + `ENRICH_SECRET` committed to `origin/master` since 2026-04-29; one request with that header grants full admin **and** a lifetime top-tier subscription via `/api/admin/grant-access` |
 | **F2** | **Critical** | Dependencies | `package.json` `overrides` (both branches) | `"overrides": {"@auth/core": "0.41.2"}` force-pins the vulnerable `@auth/core` under an otherwise-patched `next-auth@5.0.0-beta.32`; 3 advisories stay live (CVSS 7.5, 6.8, + homoglyph bypass against magic-link sign-in) |
-| **F2b** | **High** | Dependencies | `package.json` `dependencies` (`origin/master` only) | Six duplicate keys from a botched Dependabot merge; last-wins silently reverts `next-auth`, `@anthropic-ai/sdk`, `@anthropic-ai/bedrock-sdk`, `@aws-sdk/client-s3` on the next `npm install` |
+| **F2b** | **High (Resolved)** | Dependencies | `package.json` `dependencies` (`origin/master` only) | Six duplicate keys from a botched Dependabot merge; last-wins had silently reverted `next-auth`, `@anthropic-ai/sdk`, `@anthropic-ai/bedrock-sdk`, `@aws-sdk/client-s3` on the next `npm install` — **RESOLVED in `9b24ac3`; verified zero duplicates on master (see correction, Phase 4.4)** |
 | **F3** | **High** | Data / DR | `prisma/migrations/` vs `prisma/schema.prisma` | 20 of 81 models have no `CREATE TABLE` in any migration; created via DDL through `/api/admin/data-ops`. Repo cannot rebuild the production schema |
 | **F4** | **High** | Operations | `src/app/api/errors/route.ts:6`; `package.json` | No error monitoring at all; client-error pipeline still targets the decommissioned Railway→Better Stack drain. Errors collected and discarded |
 | **F5** | **High** | Performance | `src/app/episodes/[slug]/page.tsx:57` + 70 others | 71/161 pages `force-dynamic`; zero CDN caching site-wide; 4 templates covering 23,680 sitemap URLs also declare a dead `generateStaticParams` |
@@ -1448,7 +1438,7 @@ mean a sleeping database renders zeros and returns HTTP 200.
 | **F29** | **Low** | Hygiene | repo-wide | 41 of 68 remote branches unmerged since Apr–Aug; dead files (`paywall-gate.tsx` unused, `schema.prisma.txt`, `check_user.ts`, `out/`, tracked `art-pipeline.log`) |
 | **F30** | **Low** | Security | `psychenomicon-art/[slug]/[slot]/route.ts:28` | `slot` is allowlisted but `slug` flows unvalidated into an R2 object key |
 
-**By severity: 2 Critical · 7 High · 11 Medium · 11 Low · 31 total.**
+**By severity: 2 Critical · 6 High (1 Resolved) · 11 Medium · 11 Low · 31 total.**
 
 ### 3. Detail on the findings that matter
 
@@ -1476,11 +1466,12 @@ app ships magic-link sign-in. The *fail-open* advisory I originally ranked worst
 `"@auth/core": "^0.41.3"` (or remove it), `npm install`, re-audit. There is no PR to merge.
 **Effort:** 15 min plus a login smoke test.
 
-**F2b — Duplicate keys in production's `package.json`.** Evidence: Phase 4.4. **Impact:** the
-lockfile is currently ahead of the manifest, so today's deploys are fine — but the next
-`npm install` resolves the manifest and downgrades four packages, `next-auth` among them,
-re-introducing the fail-open advisory. **Fix:** de-duplicate the `dependencies` block on
-`master`, keeping the newer version of each. **Effort:** 15 min.
+**F2b — Duplicate keys in production's `package.json`.** Evidence: Phase 4.4. **Status:
+Resolved.** Commit `9b24ac3` ("fix(deps): remove duplicate dependency keys left by the
+minor-updates merge") removed the duplicate `dependencies` entries from `master`; verified
+directly against master — zero duplicates remain. See the correction notice in Phase 4.4 for
+the full detail, including the incidental `@prisma/client`/CLI mismatch the same commit
+cleared up. No further action needed on this finding.
 
 **F3 + F8 — Schema drift and no backups.** Evidence: Phase 3.2, 9.5. **Impact:** together
 these mean a lost or corrupted Xata branch is an unrecoverable event. The repo yields a
@@ -1552,6 +1543,8 @@ in the list.
   dimensions, 0 broken images.
 - RSC payload measurement: 2,776,292 / 2,861,640 chars = 97.0%.
 - Live JS: 15 chunks, ~727 KB uncompressed, individually measured.
+- **Duplicate `package.json` keys (F2b): resolved in `9b24ac3`, re-verified against master
+  with zero duplicates remaining (correction added 2026-09-02).**
 
 **INFERRED — read from source or reasoned about, NOT executed:**
 
@@ -1603,7 +1596,7 @@ in the list.
 | # | Action | Findings | Effort |
 |---|---|---|---|
 | 1 | **Rotate the Anthropic key and `ENRICH_SECRET`.** Do this before anything else and before touching git history — the values are compromised regardless of what happens to the file | F1 | 30 min |
-| 2 | **Change `overrides` to `"@auth/core": "^0.41.3"` and `npm install`**, then de-duplicate `master`'s `dependencies` block. There is no PR to merge — #132 already landed | F2, F2b | 30 min |
+| 2 | **Change `overrides` to `"@auth/core": "^0.41.3"` and `npm install`.** (F2b's duplicate-key de-dup is no longer needed here — already resolved independently in `9b24ac3`.) There is no PR to merge — #132 already landed | F2 | 15 min |
 | 3 | **Add Sentry (or a Vercel log drain) and repoint `/api/errors`** — everything below is easier to verify once something reports | F4 | 1–2 h |
 | 4 | **Add `src/app/settings/page.tsx`** (or a redirect to `/settings/profile`) — a site-wide footer link and the refund page currently 404 | F11 | 15 min |
 
@@ -1664,7 +1657,7 @@ in the list.
 | Lint problems | **102** (1 error, 101 warnings) |
 | npm advisories | **22** (3 critical, 13 high, 3 moderate, 3 low) |
 | Secrets found | **2, in 1 file, in `origin/master`** |
-| Findings by severity | **Critical 2 · High 7 · Medium 11 · Low 11 · Total 31** |
+| Findings by severity | **Critical 2 · High 7 (1 resolved) · Medium 11 · Low 11 · Total 31** |
 
 ---
 
@@ -1707,6 +1700,10 @@ deployed, no production writes.
 is still the most serious finding in this report.** Note `docs/audit-2026-07-security-pass.md`
 finding M1 already recommended rotating `ENRICH_SECRET` in July 2026 for a different reason;
 that has not happened either.
+
+**Correction (2026-09-02):** F2b (duplicate `package.json` keys, Phase 4.4) was independently
+resolved via commit `9b24ac3` prior to this note being added. No action from this audit's own
+fix list was required for that item — see the correction in Phase 4.4 for detail.
 
 **Requires your action before Sentry does anything:** set `NEXT_PUBLIC_SENTRY_DSN` (and
 optionally `SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`) in Vercel. Until
