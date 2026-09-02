@@ -12,6 +12,13 @@ const { version } = JSON.parse(readFileSync(join(process.cwd(), "package.json"),
 // `process.cwd()` works because `next dev`is always launched from the
 // project root; matches the launch.json cwd setup.
 const nextConfig: NextConfig = {
+  // The OG routes read these font files from disk at render time (see
+  // src/lib/og-fonts.ts). Nothing imports them, so tracing cannot infer the
+  // dependency — without this they are absent from the lambda and every OG
+  // image falls back to Satori's per-glyph font fetching again.
+  outputFileTracingIncludes: {
+    "/**": ["./src/assets/fonts/**"],
+  },
   poweredByHeader: false,
   env: {
     NEXT_PUBLIC_APP_VERSION: version,

@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getDailyTransmission } from "@/lib/queries/daily";
 import { cleanTranscriptText } from "@/lib/format/text";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 // The quote/episode rotate daily — without this the image would be baked in
@@ -117,6 +118,6 @@ export default async function OGImage() {
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await ogFonts() }
   );
 }

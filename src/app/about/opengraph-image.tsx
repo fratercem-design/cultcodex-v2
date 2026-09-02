@@ -5,8 +5,8 @@ export const alt = "About CultCodex — The Cult of Psyche Archive";
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 
-export default function Image() {
-  return createOgImage({
+export default async function Image() {
+  return await createOgImage({
     eyebrow: "About",
     title: "The searchable memory of the Cult of Psyche.",
     subtitle:

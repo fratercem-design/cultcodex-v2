@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
@@ -22,7 +23,7 @@ interface OgOpts {
  * Each route's opengraph-image.tsx exports size/contentType/runtime and
  * a default that calls this with its copy.
  */
-export function createOgImage({ eyebrow, title, subtitle, accent = "gold" }: OgOpts): ImageResponse {
+export async function createOgImage({ eyebrow, title, subtitle, accent = "gold" }: OgOpts): Promise<ImageResponse> {
   const hex = ACCENT[accent] ?? ACCENT.gold;
   return new ImageResponse(
     (
@@ -84,6 +85,6 @@ export function createOgImage({ eyebrow, title, subtitle, accent = "gold" }: OgO
         </div>
       </div>
     ),
-    { ...OG_SIZE }
+    { ...OG_SIZE, fonts: await ogFonts() }
   );
 }
