@@ -9,6 +9,7 @@
     "vercel-build": "node scripts/vercel-build.mjs",
     "start": "next start",
     "lint": "eslint",
+    "check:manifest": "node scripts/check-manifest-sync.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "scrape:youtube": "npx tsx scripts/scrape/fetch-youtube.ts",
