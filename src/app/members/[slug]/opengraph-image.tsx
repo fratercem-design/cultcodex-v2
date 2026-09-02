@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/db";
 import { getUserRank } from "@/lib/rankings/get-user-rank";
 import { BANNER_THEMES } from "@/lib/codex-page";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 export const alt = "Member profile";
@@ -64,7 +65,7 @@ export default async function OGImage({
   );
 
   if (!member || !member.codexPagePublic) {
-    return new ImageResponse(fallback, { ...size });
+    return new ImageResponse(fallback, { ...size, fonts: await ogFonts() });
   }
 
   const rankData = await getUserRank(member.id, true).catch(() => null);
@@ -361,6 +362,6 @@ export default async function OGImage({
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await ogFonts() }
   );
 }

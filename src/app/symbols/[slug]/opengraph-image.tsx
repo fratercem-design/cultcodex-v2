@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { SYMBOLS } from "@/lib/symbols/data";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
@@ -162,6 +163,6 @@ export default async function OGImage({
         />
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await ogFonts() }
   );
 }

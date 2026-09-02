@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getPillarBySlug } from "@/lib/pillars/pillars";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 export const alt = "CultCodex pillar";
@@ -40,7 +41,7 @@ export default async function OGImage({
           CultCodex
         </div>
       ),
-      { ...size }
+      { ...size, fonts: await ogFonts() }
     );
   }
 
@@ -106,6 +107,6 @@ export default async function OGImage({
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await ogFonts() }
   );
 }

@@ -17,7 +17,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
 
   const count = person?._count.guestAppearances ?? 0;
 
-  return createOgImage({
+  return await createOgImage({
     eyebrow: "Guest Intelligence Report",
     title: person?.displayName ?? "CultCodex",
     subtitle: person

@@ -5,8 +5,8 @@ export const alt = "Appear on the Show — CultCodex";
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 
-export default function Image() {
-  return createOgImage({
+export default async function Image() {
+  return await createOgImage({
     eyebrow: "Guests",
     title: "Appear on the Show",
     subtitle: "The panel is open. Here's how to get on — and make it count.",
