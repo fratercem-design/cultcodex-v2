@@ -14,25 +14,37 @@ function client(): OpenAI {
   return _client;
 }
 const DIMENSIONS = 1536;
-// OpenAI max inputs per batch call
 const BATCH_SIZE = 2048;
 
-/** Format a segment for embedding — speaker label gives retrieval signal. */
+/** Process-local LRU so repeat concepts on the same instance do not bill twice. */
+const embedCache = new Map<string, number[]>();
+const EMBED_CACHE_MAX = 256;
+
+function cacheSet(text: string, vec: number[]) {
+  if (embedCache.size >= EMBED_CACHE_MAX) {
+    const first = embedCache.keys().next().value;
+    if (first !== undefined) embedCache.delete(first);
+  }
+  embedCache.set(text, vec);
+}
+
 export function segmentToEmbedText(speakerLabel: string | null, text: string): string {
   return speakerLabel ? `${speakerLabel}: ${text}` : text;
 }
 
-/** Embed a single string. Returns a 1536-dim float array. */
 export async function embedOne(text: string): Promise<number[]> {
+  const hit = embedCache.get(text);
+  if (hit) return hit;
   const res = await client().embeddings.create({
     model: MODEL,
     input: text,
     dimensions: DIMENSIONS,
   });
-  return res.data[0].embedding;
+  const vec = res.data[0].embedding;
+  cacheSet(text, vec);
+  return vec;
 }
 
-/** Embed up to BATCH_SIZE strings in one API call. Returns parallel array of vectors. */
 export async function embedBatch(texts: string[]): Promise<number[][]> {
   if (texts.length === 0) return [];
   if (texts.length > BATCH_SIZE) {
@@ -43,11 +55,12 @@ export async function embedBatch(texts: string[]): Promise<number[][]> {
     input: texts,
     dimensions: DIMENSIONS,
   });
-  // OpenAI returns results sorted by index
   return res.data.sort((a, b) => a.index - b.index).map((d) => d.embedding);
 }
 
-/** Postgres literal for a float array: '[0.1,0.2,...]'::vector */
 export function vectorLiteral(v: number[]): string {
+  if (!Array.isArray(v) || v.some((n) => typeof n !== "number" || !Number.isFinite(n))) {
+    throw new Error("vectorLiteral: embedding is not a finite number array");
+  }
   return `[${v.join(",")}]`;
 }
