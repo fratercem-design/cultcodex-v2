@@ -12,9 +12,11 @@ export const metadata: Metadata = {
 };
 
 export default async function ArticlesPage() {
+  // Prerendering runs without a database, so a query rejection must degrade
+  // to the empty state below rather than failing the whole build.
   const [entries, total] = await Promise.all([
-    getLoreEntries({ category: "article", take: 100 }),
-    getLoreCount({ category: "article" }),
+    getLoreEntries({ category: "article", take: 100 }).catch(() => []),
+    getLoreCount({ category: "article" }).catch(() => 0),
   ]);
 
   return (
