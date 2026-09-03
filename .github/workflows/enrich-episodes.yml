@@ -18,6 +18,11 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       ENRICHMENT_MODEL: claude-haiku-4-5-20251001
+      # scripts/enrich/lib.ts defaults to the bedrock provider, which needs AWS
+      # credentials this repo does not have - every episode failed with
+      # 'Failed to resolve AWS credentials'. Use the Anthropic API directly,
+      # via the ANTHROPIC_API_KEY already passed above.
+      ENRICHMENT_PROVIDER: anthropic
 
     steps:
       - uses: actions/checkout@v7
