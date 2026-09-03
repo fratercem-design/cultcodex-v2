@@ -48,12 +48,24 @@ jobs:
         run: npx tsx scripts/asr-export-pending.ts --include-enriched
 
       - name: Install Python dependencies
-        run: pip install -q yt-dlp elevenlabs python-dotenv
+        run: |
+          pip install -q yt-dlp elevenlabs python-dotenv
+          case "${{ inputs.backend }}" in
+            faster-whisper) pip install -q faster-whisper ;;
+            whisper)        pip install -q openai-whisper ;;
+          esac
 
       - name: Write YouTube cookies
         run: |
           if [ -n "$YOUTUBE_COOKIES" ]; then
             printf '%s' "$YOUTUBE_COOKIES" > scripts/cookies.txt
+            # yt-dlp rejects a non-Netscape jar outright, and it attaches --cookies to
+            # EVERY download - so one malformed file fails even public videos that need
+            # no auth at all. Discard it rather than poison the whole run.
+            if ! head -n 1 scripts/cookies.txt | grep -qE '^# (Netscape )?HTTP Cookie File'; then
+              echo "::warning title=Bad cookies::YOUTUBE_COOKIES is not Netscape format - discarding. Public videos will still download; age-restricted and members-only ones will fail."
+              rm -f scripts/cookies.txt
+            fi
           fi
         env:
           YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}

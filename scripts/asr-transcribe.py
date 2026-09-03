@@ -174,7 +174,13 @@ _WHISPER_MODEL = None
 def transcribe_whisper(mp3_path: str, model_name: str):
     global _WHISPER_MODEL
     if _WHISPER_MODEL is None:
-        import whisper  # type: ignore
+        try:
+            import whisper  # type: ignore
+        except ImportError:
+            raise SystemExit(
+                "ERROR: openai-whisper is not installed. Run `pip install openai-whisper`. "
+                "In CI it is installed only when --backend whisper is selected."
+            )
         log(f"Loading Whisper {model_name} model...")
         _WHISPER_MODEL = whisper.load_model(model_name)
     result = _WHISPER_MODEL.transcribe(mp3_path, language="en", verbose=False)
@@ -194,7 +200,13 @@ _FASTER_MODEL = None
 def transcribe_faster_whisper(mp3_path: str, model_name: str):
     global _FASTER_MODEL
     if _FASTER_MODEL is None:
-        from faster_whisper import WhisperModel  # type: ignore
+        try:
+            from faster_whisper import WhisperModel  # type: ignore
+        except ImportError:
+            raise SystemExit(
+                "ERROR: faster-whisper is not installed. Run `pip install faster-whisper`. "
+                "In CI it is installed only when --backend faster-whisper is selected."
+            )
         log(f"Loading faster-whisper {model_name} model...")
         _FASTER_MODEL = WhisperModel(model_name, device="cpu", compute_type="int8")
     segments, _ = _FASTER_MODEL.transcribe(mp3_path, language="en", beam_size=5)
