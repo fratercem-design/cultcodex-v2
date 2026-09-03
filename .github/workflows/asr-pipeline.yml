@@ -49,7 +49,10 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip install -q yt-dlp elevenlabs python-dotenv
+          # curl-cffi extra is required by asr-download-audio.py's
+          # `--impersonate chrome`; without it every download fails with
+          # 'Impersonate target "chrome" is not available'.
+          pip install -q "yt-dlp[default,curl-cffi]" elevenlabs python-dotenv
           case "${{ inputs.backend }}" in
             faster-whisper) pip install -q faster-whisper ;;
             whisper)        pip install -q openai-whisper ;;
