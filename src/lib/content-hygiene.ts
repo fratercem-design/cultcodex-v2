@@ -61,11 +61,120 @@ export const JUNK_PERSON_NAMES: string[] = [
   "multiple",
   "multiple speakers",
   "tbd",
+  // Generic placeholder "people" the enrichment invents when it can't name a
+  // speaker. Verified against the full people table — none collide with a real
+  // person (see scripts check on 2026-08-11).
+  "none mentioned",
+  "narrator",
+  "the narrator",
+  "guest",
+  "host",
+  "various guests",
+  "various panel members",
+  "various panel guests",
+];
+
+/**
+ * Patterned placeholders the pipeline generates with a numeric or parenthetical
+ * suffix ("Host 1", "Guest (appears ~9:37)", "Unknown Panel Participant 2",
+ * "Speaker 3"). Anchored on purpose so they cannot swallow a real name — every
+ * pattern was checked against the whole people table for false positives.
+ */
+export const JUNK_PERSON_PATTERNS: RegExp[] = [
+  /^guest\s*\(.*\)$/i, // Guest (Grimaldi claimant), Guest (Brother/Leah)
+  /^host\s+\d+$/i, // Host 1, Host 2
+  /^speaker\s+\d+$/i, // Speaker 3
+  /^unknown\b/i, // Unknown, Unknown Speaker, Unknown Panel Participant 2
+  /^various\b/i, // Various Guests, Various Panel Members
+  /panel participant/i, // …Panel Participant N
+  /^(the\s+)?narrator$/i, // Narrator, The Narrator
+  /^none\b/i, // None, None mentioned
 ];
 
 export function isJunkPersonName(displayName: string | null | undefined): boolean {
   if (!displayName) return true;
-  return JUNK_PERSON_NAMES.includes(displayName.trim().toLowerCase());
+  const n = displayName.trim().toLowerCase();
+  if (JUNK_PERSON_NAMES.includes(n)) return true;
+  return JUNK_PERSON_PATTERNS.some((re) => re.test(n));
+}
+
+/**
+ * Canonical base of a display name: lower-cased, with a trailing parenthetical
+ * qualifier stripped ("Psyche (Trix)" → "psyche"). Used ONLY to detect variant
+ * duplicates on inventory pages — never for display.
+ */
+export function personNameBase(displayName: string): string {
+  return displayName.replace(/\s*\([^)]*\)\s*$/, "").trim().toLowerCase();
+}
+
+function hasParenthetical(displayName: string): boolean {
+  return /\([^)]*\)\s*$/.test(displayName.trim());
+}
+
+/**
+ * People to force onto the Reports grid regardless of appearance rank, in
+ * priority order. Matched case-insensitively on displayName (see the page's
+ * pinned fetch). This is the curation dial: add or reorder names here.
+ */
+export const PINNED_REPORT_PEOPLE: string[] = ["Beeta"];
+
+/**
+ * Decide the Reports grid roster from a ranked candidate list.
+ *
+ *  - drops extraction-artifact names ("None", "Unknown", …)
+ *  - collapses a parenthetical variant ("Psyche (Trix)") into an already-listed
+ *    row of the same base ("Psyche"), keeping the higher-appearance row. Only
+ *    parenthetical rows are ever dropped this way — a bare canonical name is
+ *    never removed as a "duplicate", so two distinct people are never merged
+ *    unless one is explicitly written as a "(qualifier)" variant of the other.
+ *  - guarantees pinned people appear, in priority order, ahead of the ranked
+ *    remainder (deduped against it by base name)
+ *  - caps the result at `limit`
+ *
+ * Pure and stable on the input order (which the caller sorts by appearances
+ * desc). Unit-tested in content-hygiene.test.ts.
+ */
+export function curateReportPeople<T extends { displayName: string }>(
+  ranked: T[],
+  pinned: T[],
+  pinnedNames: string[],
+  limit: number,
+): T[] {
+  // 1. Dedup the ranked list. Input is sorted appearances-desc, so the first
+  //    time we see a base name it is the strongest row for that base.
+  const seenBase = new Set<string>();
+  const deduped: T[] = [];
+  for (const row of ranked) {
+    if (isJunkPersonName(row.displayName)) continue;
+    const base = personNameBase(row.displayName);
+    if (hasParenthetical(row.displayName) && seenBase.has(base)) continue; // variant dup
+    seenBase.add(base);
+    deduped.push(row);
+  }
+
+  // 2. Pinned people first, in the configured order, matched by base name.
+  const wantPinned = pinnedNames.map((n) => n.trim().toLowerCase());
+  const pinnedByBase = new Map(pinned.map((p) => [personNameBase(p.displayName), p]));
+  const out: T[] = [];
+  const usedBase = new Set<string>();
+  for (const name of wantPinned) {
+    const row = pinnedByBase.get(name);
+    if (row && !isJunkPersonName(row.displayName)) {
+      out.push(row);
+      usedBase.add(name);
+    }
+  }
+
+  // 3. Ranked remainder, skipping anyone already pinned in.
+  for (const row of deduped) {
+    if (out.length >= limit) break;
+    const base = personNameBase(row.displayName);
+    if (usedBase.has(base)) continue;
+    usedBase.add(base);
+    out.push(row);
+  }
+
+  return out.slice(0, limit);
 }
 
 export function cleanSummary(raw: string): string {
