@@ -70,9 +70,7 @@ async function importEnrichment(
       // 97 episodes, at full API cost, for zero new coverage).
       summaryLong:
         data.summaryLong ??
-        [data.summaryFacts, data.summaryThemes].filter(Boolean).join("
-
-") ??
+        [data.summaryFacts, data.summaryThemes].filter(Boolean).join("\n\n") ??
         undefined,
       cutOfPsyche: data.cutOfPsyche,
     },
