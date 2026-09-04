@@ -71,6 +71,11 @@ async function importEnrichment(
       where: { episodeId: episode.id },
     });
 
+    // The LLM can name the same person twice ("Chris Kay" / "chris kay"), which
+    // slugify collapses to one Person - the second episodeGuest.create() then
+    // violates the composite pkey and fails the whole episode's import.
+    const seenPersonIds = new Set<string>();
+
     for (const guest of data.guests) {
       const personSlug = slugify(guest.name);
       const person = await prisma.person.upsert({
@@ -86,6 +91,9 @@ async function importEnrichment(
           shortBio: guest.shortBio || undefined,
         },
       });
+
+      if (seenPersonIds.has(person.id)) continue;
+      seenPersonIds.add(person.id);
 
       await prisma.episodeGuest.create({
         data: { episodeId: episode.id, personId: person.id },
