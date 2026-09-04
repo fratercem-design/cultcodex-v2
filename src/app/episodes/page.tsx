@@ -15,7 +15,7 @@ import {
   getEpisodeCount,
 } from "@/lib/queries/episodes";
 import { getEpisodeAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
-import { getEraById, ERAS } from "@/lib/eras";
+import { getEraById } from "@/lib/eras";
 import {
   DEFAULT_PAGE_SIZE,
   parsePage,

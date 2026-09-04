@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db";
 import { cleanTitle } from "@/lib/format/text";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { getEraById } from "@/lib/eras";
-import type { Prisma, ContentStatus, ContentType, PersonType } from "@/generated/prisma/client";
+import type { Prisma, ContentStatus, PersonType } from "@/generated/prisma/client";
 
 // Type for episode with all relations loaded
 export type EpisodeWithRelations = Prisma.EpisodeGetPayload<{

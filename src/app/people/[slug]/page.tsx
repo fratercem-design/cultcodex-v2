@@ -24,7 +24,6 @@ import { formatDate } from "@/lib/format/date";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { editorialFrame } from "@/lib/format/editorial-frame";
 import { getExternalLinks } from "@/lib/format/external-links";
-import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { ArchiveNotice } from "@/components/notices/archive-notice";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import { ColorLegend } from "@/components/ui/color-legend";
