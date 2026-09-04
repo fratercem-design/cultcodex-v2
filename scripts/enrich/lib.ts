@@ -215,20 +215,20 @@ export async function enrichEpisode(
     } catch (err) {
       if (isCreditOrRateError(err)) {
         console.warn(`  ⚠ OpenAI limit hit — falling back to OpenRouter free model`);
-        jsonText = await callChatAPI(buildOpenRouterClient(), "google/gemini-2.0-flash-exp:free", input, false);
+        jsonText = await callChatAPI(buildOpenRouterClient(), "google/gemma-4-26b-a4b-it:free", input, false);
       } else {
         throw err;
       }
     }
   } else if (provider === "openrouter") {
-    const model = process.env.ENRICHMENT_MODEL ?? "google/gemini-2.0-flash-exp:free";
+    const model = process.env.ENRICHMENT_MODEL ?? "google/gemma-4-26b-a4b-it:free";
     try {
       jsonText = await callChatAPI(buildOpenRouterClient(), model, input, false);
     } catch (err) {
       if (isCreditOrRateError(err) && process.env.OPENROUTER_FALLBACK_KEY) {
         console.warn(`  ⚠ Primary OpenRouter/Bluesminds failed — falling back to OpenRouter free`);
         const fallback = new OpenAI({ apiKey: process.env.OPENROUTER_FALLBACK_KEY, baseURL: "https://openrouter.ai/api/v1", defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" } });
-        jsonText = await callChatAPI(fallback, "google/gemini-2.0-flash-exp:free", input, false);
+        jsonText = await callChatAPI(fallback, "google/gemma-4-26b-a4b-it:free", input, false);
       } else {
         throw err;
       }
