@@ -4,6 +4,8 @@
  *
  * Progress is logged to the console. You can stop at any time with Ctrl+C
  * or by setting window.__enrichStop = true in the console.
+ *
+ * Credentials are prompted at runtime — never hard-code them in this file.
  */
 (async function enrichTopics() {
   // Secret is prompted for at runtime — never hard-code it in this file.
@@ -18,13 +20,13 @@
   let round = 0;
   let totalDone = 0;
 
-  console.log("%c── CultCodex Topic Enrichment ──", "font-weight:bold;color:#a78bfa");
-  console.log(`Batch: ${BATCH} | Min episodes: ${MIN_EP}`);
-  console.log('Set window.__enrichStop = true to halt early.\n');
+  console.log("%c-- CultCodex Topic Enrichment --", "font-weight:bold;color:#a78bfa");
+  console.log("Batch: " + BATCH + " | Min episodes: " + MIN_EP);
+  console.log("Set window.__enrichStop = true to halt early.");
 
   while (!window.__enrichStop) {
     round++;
-    console.log(`Round ${round}…`);
+    console.log("Round " + round + "…");
 
     let data;
     try {
@@ -44,28 +46,27 @@
     } catch (err) {
       console.error("Fetch error:", err);
       console.log("Retrying in 10s…");
-      await new Promise(r => setTimeout(r, 10000));
+      await new Promise(function (r) { setTimeout(r, 10000); });
       continue;
     }
 
     totalDone += data.processed ?? 0;
 
     for (const r of (data.results ?? [])) {
-      console.log(`  ${r.ok ? "✓" : "✗"} ${r.title}${r.error ? " — " + r.error : ""}`);
+      console.log("  " + (r.ok ? "ok" : "fail") + " " + r.title + (r.error ? " — " + r.error : ""));
     }
 
-    console.log(`  processed=${data.processed}  remaining=${data.remaining}  total done=${totalDone}`);
+    console.log("  processed=" + data.processed + "  remaining=" + data.remaining + "  total done=" + totalDone);
 
     if (data.done || data.remaining <= 0) {
-      console.log(`%c\n✅ All topics enriched! Total: ${totalDone}`, "color:green;font-weight:bold");
+      console.log("%cAll topics enriched. Total: " + totalDone, "color:green;font-weight:bold");
       break;
     }
 
-    // Short pause between rounds
-    await new Promise(r => setTimeout(r, 1500));
+    await new Promise(function (r) { setTimeout(r, 1500); });
   }
 
   if (window.__enrichStop) {
-    console.log(`Stopped after ${round} rounds. ${totalDone} topics enriched so far.`);
+    console.log("Stopped after " + round + " rounds. " + totalDone + " topics enriched so far.");
   }
 })();

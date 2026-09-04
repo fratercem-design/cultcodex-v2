@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 
 export default function GlobalError({
   error,
@@ -11,8 +12,11 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Ship the client error to the server so it flows through Railway's
-    // log drain to Better Stack and triggers configured alerts.
+    // Primary path: Sentry, with a stack trace and grouping.
+    Sentry.captureException(error);
+
+    // Secondary path: keep the server-side structured log. It costs one fetch
+    // and is the only record if the Sentry DSN is unset or the tunnel fails.
     fetch("/api/errors", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

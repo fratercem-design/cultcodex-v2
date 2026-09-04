@@ -1,9 +1,10 @@
 # Psychenomicon Art Pipeline
 
-Generates cinematic AI images for every Psychenomicon chapter using:
+Generates resumable cinematic art for Psychenomicon chapters still missing published images.
 
-1. **Claude Opus** — symbolic analysis + cinematic prompt generation  
-2. **Pollinations AI** — free image generation (FLUX model, no API key needed)
+1. **HCNSEC text model** — symbolic analysis + compact cinematic prompts
+2. **Step Image Edit 2** — image generation through HCNSEC's OpenAI-compatible API
+3. **Local-first output** — nothing is written to the live database without `--publish`
 
 ---
 
@@ -18,7 +19,7 @@ scripts/psychenomicon-art/output/
 
   images/
     ch-001-the-gate/
-      cover.png                  ← mythological frontispiece (1024×1536)
+      cover.png                  ← mythological frontispiece (1024×1024 by default)
       scene_01.png               ← opening threshold moment
       scene_02.png               ← crisis / peak transformation
       scene_03.png               ← aftermath / world changed
@@ -27,7 +28,7 @@ scripts/psychenomicon-art/output/
 ```
 
 Each `.json` in `prompts/` contains:
-- `analysis` — Claude's structured symbolic analysis (themes, symbols, entities, palette, mood)  
+- `analysis` — structured symbolic analysis (themes, symbols, entities, palette, mood)
 - `prompts` — four final cinematic prompts (cover + 3 scenes)  
 - `imagePaths` — relative paths to generated images  
 
@@ -36,7 +37,10 @@ Each `.json` in `prompts/` contains:
 ## Commands
 
 ```bash
-# Process all chapters (full pipeline: analyze → prompts → images)
+# Report exact database and local coverage; no AI calls or writes
+npm run art:psychenomicon -- --inventory
+
+# Generate the next missing chapter locally (four images)
 npm run art:psychenomicon
 
 # Single chapter only
@@ -45,11 +49,14 @@ npm run art:psychenomicon -- --chapter ch-001-the-gate
 # Process first 5 chapters
 npm run art:psychenomicon -- --batch 5
 
-# Analyze + generate prompts only (no image generation — free, fast)
+# Analyze + generate prompts only (uses the configured text model)
 npm run art:psychenomicon -- --skip-images
 
-# Dry run (shows what would happen, no writes to Pollinations)
+# Dry run (build prompts, but do not call the image endpoint)
 npm run art:psychenomicon -- --dry-run
+
+# Publish locally complete images after review (writes to the configured DB)
+npm run art:psychenomicon -- --chapter chapter-025 --publish
 
 # Re-process chapters that already have output
 npm run art:psychenomicon -- --force
@@ -62,9 +69,9 @@ npm run art:psychenomicon -- --batch 3 --force --dry-run
 
 ## How it works
 
-### Step 1 — Symbolic analysis (Claude)
+### Step 1 — Symbolic analysis
 
-Claude reads the chapter's `canonText`, `interpretationText`, `mythicText`, and `emergingSignals` fields and returns a structured JSON:
+The configured text model reads `canonText`, `interpretationText`, `mythicText`, and `emergingSignals` and returns structured JSON:
 
 ```json
 {
@@ -80,26 +87,26 @@ Claude reads the chapter's `canonText`, `interpretationText`, `mythicText`, and 
 }
 ```
 
-### Step 2 — Cinematic prompts (Claude)
+### Step 2 — Compact cinematic prompts
 
-Using the analysis + the shared **Visual Bible** (see `visual-bible.ts`), Claude builds four prompts:
+Using the analysis + the shared **Visual Bible** (see `visual-bible.ts`), the text model builds four prompts:
 
 - **Cover** — symbolic/abstract, portrait orientation, mythological weight
 - **Scene 01** — opening threshold or arrival moment  
 - **Scene 02** — crisis point / peak transformation  
 - **Scene 03** — aftermath, the world irreversibly changed
 
-Every prompt is prefixed with the Visual DNA and suffixed with the quality directive — enforcing a consistent aesthetic across all chapters.
+Every prompt includes compact visual DNA and quality requirements while remaining within Step Image Edit 2's 512-character limit.
 
-### Step 3 — Image generation (Pollinations AI)
+### Step 3 — Image generation (HCNSEC)
 
-Images are fetched from `https://image.pollinations.ai` with:
-- `width=1024&height=1536` (portrait)
-- `model=flux` (FLUX.1)
-- `nologo=true`
-- Deterministic seeds per image type (same prompt → same image)
-- 3× retry with exponential backoff on failure
-- 2-second polite delay between requests
+Images are requested from `https://api.hcnsec.cn/v1/images/generations` with:
+- `model=step-image-edit-2`
+- `size=1024x1024` by default
+- `response_format=b64_json` for durable local output
+- stable requested seeds derived from each prompt and slot
+- four attempts with exponential backoff
+- a configurable polite delay between requests
 
 ---
 
@@ -122,16 +129,20 @@ To add a new recurring entity, extend `ENTITY_DESCRIPTORS` in `visual-bible.ts`.
 
 ## Requirements
 
-- `ANTHROPIC_API_KEY` in `.env`  
-- `DATABASE_URL` in `.env` (Neon PostgreSQL with Psychenomicon chapters populated)  
+- `HCNSEC_API_KEY` set in the current shell (do not commit it)
+- `DATABASE_URL` for the current Xata/Postgres database
 - Node ≥ 22 (uses native `fetch`)  
-- No API key needed for Pollinations AI  
+
+Optional overrides: `ART_TEXT_MODEL`, `ART_IMAGE_MODEL`, `ART_API_BASE_URL`,
+`ART_IMAGE_SIZE`, `ART_IMAGE_DELAY_MS`, and `ART_IMAGE_PROMPT_MAX_CHARS`.
+
+The runner is local-only by default. `--publish` is required for database writes.
 
 ---
 
-## Upgrading to local generation (higher quality)
+## Optional local generation
 
-For better quality than Pollinations, swap the `generateImages()` call in `images.ts` with a ComfyUI API call:
+To use ComfyUI instead, implement another OpenAI-compatible provider adapter or replace `generateImages()`:
 
 ```
 ComfyUI endpoint: http://localhost:8188/api/prompt

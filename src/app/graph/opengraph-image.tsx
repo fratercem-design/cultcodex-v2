@@ -1,11 +1,12 @@
 import { ImageResponse } from "next/og";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 export const alt = "Network Map — Relationship graph of every Cult of Psyche figure";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OGImage() {
+export default async function OGImage() {
   return new ImageResponse(
     (
       <div
@@ -41,6 +42,6 @@ export default function OGImage() {
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await ogFonts() }
   );
 }

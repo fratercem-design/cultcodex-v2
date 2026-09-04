@@ -5,8 +5,8 @@ export const alt = "Media Kit — CultCodex";
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 
-export default function Image() {
-  return createOgImage({
+export default async function Image() {
+  return await createOgImage({
     eyebrow: "Press",
     title: "Media Kit",
     subtitle: "Everything you need to write about the Psycheverse — facts, brand language, and contact.",

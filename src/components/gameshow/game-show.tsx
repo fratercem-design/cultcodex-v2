@@ -90,6 +90,18 @@ export function GameShow() {
   const toastId = useRef(0);
   const sound = useSound();
 
+  // Seed from localStorage after mount, deliberately.
+  //
+  // progression.load() is SSR-safe: with no window it returns EMPTY, which is
+  // what useState is initialised to above. Reading it in a useState initialiser
+  // instead would return the *stored* progress on the client's first render
+  // while the server rendered EMPTY — a hydration mismatch for any returning
+  // player. The one extra render this costs happens once, on mount.
+  //
+  // Removing the suppression means moving progress to useSyncExternalStore,
+  // which also needs a cached snapshot (a fresh object per call loops forever)
+  // and a notifier on every save() — worth doing, but not as a lint cleanup.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setProgress(loadProgress()); }, []);
   useEffect(() => { sound.setMuted(muted); }, [muted, sound]);
 

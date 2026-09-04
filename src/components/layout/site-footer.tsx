@@ -6,6 +6,10 @@ import Link from "next/link";
  * archive sections (so /series and /lore are never orphaned), account/support,
  * the legal pages (Stripe requires these be easily accessible), and the
  * channels. Server component — no interactivity.
+ *
+ * Column labels are <p>, not <h2>, so they do not steal heading rank from the
+ * page <h1> (WCAG 1.3.1). Screen-reader users still get the cluster via the
+ * <nav aria-label>.
  */
 
 const COLUMNS: { heading: string; links: { label: string; href: string }[] }[] = [
@@ -34,6 +38,7 @@ const COLUMNS: { heading: string; links: { label: string; href: string }[] }[] =
       { label: "Prophecies", href: "/prophecies" },
       { label: "Drama Files", href: "/drama" },
       { label: "Articles", href: "/articles" },
+      { label: "Shop", href: "/shop" },
       { label: "Premium", href: "/premium" },
     ],
   },
@@ -86,9 +91,9 @@ export function SiteFooter() {
 
           {COLUMNS.map((col) => (
             <nav key={col.heading} aria-label={col.heading}>
-              <h2 className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+              <p className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted">
                 {col.heading}
-              </h2>
+              </p>
               <ul className="space-y-2">
                 {col.links.map((link) => (
                   <li key={link.href}>

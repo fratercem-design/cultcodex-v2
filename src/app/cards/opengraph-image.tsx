@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 export const alt = "Codex Cards — Cult of Psyche trading card collection";
@@ -13,7 +14,7 @@ const CARD_PREVIEWS = [
   { name: "Transmission I", type: "SIGNAL", glyph: "◈" },
 ];
 
-export default function OGImage() {
+export default async function OGImage() {
   return new ImageResponse(
     (
       <div
@@ -132,6 +133,6 @@ export default function OGImage() {
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await ogFonts() }
   );
 }

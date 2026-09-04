@@ -10,7 +10,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { buildMetadata } from "@/lib/seo";
-import { isJunkPersonName } from "@/lib/content-hygiene";
+import { curateReportPeople, PINNED_REPORT_PEOPLE } from "@/lib/content-hygiene";
 
 export const revalidate = 600;
 
@@ -62,22 +62,47 @@ export default async function ReportsPage() {
     ? user.role === "admin" || (await isSubscribed(user.id).catch(() => false))
     : false;
 
-  const topGuests = await prisma.person
-    .findMany({
-      where: { personType: { in: ["guest", "host", "recurring"] } },
-      select: {
-        slug: true,
-        displayName: true,
-        avatarUrl: true,
-        _count: { select: { guestAppearances: true } },
-      },
-      orderBy: { guestAppearances: { _count: "desc" } },
-      // Over-fetch so junk extraction artifacts ("None", "Unknown") can be
-      // filtered out post-query without leaving the grid short.
-      take: 18,
-    })
-    .then((rows) => rows.filter((p) => !isJunkPersonName(p.displayName)).slice(0, 9))
-    .catch(() => [] as { slug: string; displayName: string; avatarUrl: string | null; _count: { guestAppearances: number } }[]);
+  type GuestRow = {
+    slug: string;
+    displayName: string;
+    avatarUrl: string | null;
+    _count: { guestAppearances: number };
+  };
+  const guestSelect = {
+    slug: true,
+    displayName: true,
+    avatarUrl: true,
+    _count: { select: { guestAppearances: true } },
+  } as const;
+
+  // Two fetches, then curate in-process (dedup + pin), because "who's listed"
+  // is an editorial decision, not just a rank:
+  //  - ranked candidates, over-fetched so parenthetical variants ("Psyche
+  //    (Trix)") and junk names can be folded out without leaving the grid short
+  //  - pinned people fetched by name IGNORING personType, so a pin always lands
+  //    even if that figure is typed `mentioned` rather than `guest`/`recurring`
+  const [ranked, pinnedRows] = await Promise.all([
+    prisma.person
+      .findMany({
+        where: { personType: { in: ["guest", "host", "recurring"] } },
+        select: guestSelect,
+        orderBy: { guestAppearances: { _count: "desc" } },
+        take: 40,
+      })
+      .catch(() => [] as GuestRow[]),
+    prisma.person
+      .findMany({
+        where: {
+          OR: PINNED_REPORT_PEOPLE.map((name) => ({
+            displayName: { equals: name, mode: "insensitive" as const },
+          })),
+        },
+        select: guestSelect,
+      })
+      .catch(() => [] as GuestRow[]),
+  ]);
+
+  const topGuests = curateReportPeople(ranked, pinnedRows, PINNED_REPORT_PEOPLE, 9);
 
   return (
     <>

@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getCollectionBySlug } from "@/lib/collections/themed-collections";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 export const alt = "Collection preview";
@@ -40,7 +41,7 @@ export default async function OGImage({
     </div>
   );
 
-  if (!collection) return new ImageResponse(fallback, { ...size });
+  if (!collection) return new ImageResponse(fallback, { ...size, fonts: await ogFonts() });
 
   const accentColor = ACCENT_COLORS[collection.accent] ?? "#C8392E";
 
@@ -139,6 +140,6 @@ export default async function OGImage({
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await ogFonts() }
   );
 }

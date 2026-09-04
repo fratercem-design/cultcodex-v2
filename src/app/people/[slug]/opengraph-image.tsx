@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/db";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 export const alt = "Person profile preview";
@@ -56,7 +57,7 @@ export default async function OGImage({
           Person Not Found
         </div>
       ),
-      { ...size }
+      { ...size, fonts: await ogFonts() }
     );
   }
 
@@ -213,6 +214,6 @@ export default async function OGImage({
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await ogFonts() }
   );
 }

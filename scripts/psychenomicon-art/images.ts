@@ -1,48 +1,106 @@
 // scripts/psychenomicon-art/images.ts
 //
-// Step 3: Generate images via Bluesminds (OpenAI-compatible /images/generations,
-// grok-imagine-image-lite) and save the resulting files. Pollinations was
-// dropped once its free endpoint started returning HTTP 402. Retries up to 3×
-// with exponential backoff to ride out Bluesminds' provider flakiness.
+// Step 3: Generate images through an OpenAI-compatible /images/generations
+// endpoint. HCNSEC + step-image-edit-2 is the preferred path; legacy
+// Bluesminds settings remain supported. Images are requested as base64 so
+// durable output never depends on an expiring provider URL.
 
 import * as fs from "fs";
 import * as path from "path";
 import type { ChapterPrompts } from "./types";
 
-const BLUESMINDS_BASE = process.env.OPENROUTER_BASE_URL ?? "https://api.bluesminds.com/v1";
-const IMAGE_MODEL = process.env.ART_IMAGE_MODEL ?? "grok-imagine-image-lite";
+const USING_HCNSEC = Boolean(process.env.HCNSEC_API_KEY || process.env.ART_API_KEY);
+const API_BASE = (
+  process.env.ART_API_BASE_URL ??
+  (USING_HCNSEC ? "https://api.hcnsec.cn/v1" : process.env.OPENROUTER_BASE_URL) ??
+  "https://api.bluesminds.com/v1"
+).replace(/\/$/, "");
+const IMAGE_MODEL =
+  process.env.ART_IMAGE_MODEL ??
+  (USING_HCNSEC ? "step-image-edit-2" : "grok-imagine-image-lite");
 const IMAGE_SIZE = process.env.ART_IMAGE_SIZE ?? "1024x1024";
+const IMAGE_PROMPT_MAX_CHARS = Number(
+  process.env.ART_IMAGE_PROMPT_MAX_CHARS ??
+    (IMAGE_MODEL === "step-image-edit-2" ? "512" : "4000")
+);
+
+export function prepareImagePrompt(
+  prompt: string,
+  maxChars = IMAGE_PROMPT_MAX_CHARS
+): string {
+  const compact = prompt.replace(/\s+/g, " ").trim();
+  if (!Number.isFinite(maxChars) || maxChars < 64) {
+    throw new Error(`Invalid ART_IMAGE_PROMPT_MAX_CHARS: ${maxChars}`);
+  }
+  if (compact.length <= maxChars) return compact;
+  const clipped = compact.slice(0, maxChars - 1);
+  const lastBoundary = Math.max(
+    clipped.lastIndexOf(". "),
+    clipped.lastIndexOf(", ")
+  );
+  const body =
+    lastBoundary >= Math.floor(maxChars * 0.7)
+      ? clipped.slice(0, lastBoundary + 1)
+      : clipped;
+  return `${body.trim()}…`;
+}
+
+export function stableSeed(prompt: string, offset = 0): number {
+  let hash = 2166136261;
+  for (const char of prompt) {
+    hash ^= char.charCodeAt(0);
+    hash = Math.imul(hash, 16777619);
+  }
+  return ((hash >>> 0) + offset) % 2147483647;
+}
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
- * Generate a single image via Bluesminds and return the raw image buffer.
- * The `seed` arg is kept for signature stability but unused by grok-imagine.
+ * Generate a single image through the configured provider.
  */
 async function fetchImage(
   prompt: string,
   _seed: number,
   attempt = 1
 ): Promise<Buffer> {
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey) throw new Error("OPENROUTER_API_KEY not set");
+  const apiKey =
+    process.env.ART_API_KEY ??
+    process.env.HCNSEC_API_KEY ??
+    process.env.OPENROUTER_API_KEY;
+  if (!apiKey) {
+    throw new Error("No art API key set. Configure HCNSEC_API_KEY (preferred), ART_API_KEY, or OPENROUTER_API_KEY.");
+  }
+  const preparedPrompt = prepareImagePrompt(prompt);
 
   try {
-    const res = await fetch(`${BLUESMINDS_BASE}/images/generations`, {
+    const res = await fetch(`${API_BASE}/images/generations`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      // b64_json avoids grok's auth-gated asset URLs (which 403 on direct download).
-      body: JSON.stringify({ model: IMAGE_MODEL, prompt, n: 1, size: IMAGE_SIZE, response_format: "b64_json" }),
+      // Base64 avoids expiring or auth-gated result URLs.
+      body: JSON.stringify({
+        model: IMAGE_MODEL,
+        prompt: preparedPrompt,
+        n: 1,
+        size: IMAGE_SIZE,
+        response_format: "b64_json",
+        ...(IMAGE_MODEL === "step-image-edit-2"
+          ? { cfg_scale: 2, steps: 12, seed: _seed, text_mode: false }
+          : {}),
+      }),
       signal: AbortSignal.timeout(120_000), // 2-minute timeout per image
     });
 
     if (!res.ok) {
-      throw new Error(`HTTP ${res.status} ${res.statusText} from Bluesminds images`);
+      const detail = await res.text().catch(() => "");
+      throw new Error(
+        `HTTP ${res.status} ${res.statusText} from ${new URL(API_BASE).host} images${detail ? `: ${detail.slice(0, 300)}` : ""}`
+      );
     }
 
     const json = (await res.json()) as { data?: Array<{ url?: string; b64_json?: string }> };
@@ -55,13 +113,13 @@ async function fetchImage(
       if (!imgRes.ok) throw new Error(`image download HTTP ${imgRes.status} from ${item.url}`);
       return Buffer.from(await imgRes.arrayBuffer());
     }
-    throw new Error("Bluesminds returned no image url/b64");
+    throw new Error("Configured image provider returned no image url/b64");
   } catch (err) {
     if (attempt >= 4) throw err;
-    // Bluesminds rate-limits image generation hard (429/502) — back off generously.
+    // Image providers can rate-limit hard (429/502) — back off generously.
     const backoff = attempt * 12_000;
     console.warn(
-      `  ↩  Bluesminds image attempt ${attempt} failed, retrying in ${backoff / 1000}s… (${String(err).slice(0, 80)})`
+      `  ↩  Image attempt ${attempt} failed, retrying in ${backoff / 1000}s… (${String(err).slice(0, 120)})`
     );
     await sleep(backoff);
     return fetchImage(prompt, _seed, attempt + 1);
@@ -112,12 +170,12 @@ export async function generateImages(
     }
 
     console.log(`  ⬇  Generating ${filename}…`);
-    const buffer = await fetchImage(prompt, seedOffset);
+    const buffer = await fetchImage(prompt, stableSeed(prompt, seedOffset));
     fs.writeFileSync(filePath, buffer);
     paths[key] = filePath;
     console.log(`  ✓ Saved ${filename} (${(buffer.length / 1024).toFixed(0)} KB)`);
 
-    // Bluesminds image endpoint rate-limits aggressively — space requests out.
+    // Provider endpoints rate-limit aggressively — space requests out.
     await sleep(Number(process.env.ART_IMAGE_DELAY_MS ?? 12_000));
   }
 

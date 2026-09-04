@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getDailyTransmission } from "@/lib/queries/daily";
 import { cleanTranscriptText } from "@/lib/format/text";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 
@@ -101,7 +102,7 @@ export async function GET() {
         </div>
       </div>
     ),
-    { width: 1080, height: 1350 }
+    { width: 1080, height: 1350, fonts: await ogFonts() }
   );
 
   // The image is deterministic for the whole UTC day and safe to cache at

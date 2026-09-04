@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/db";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 export const alt = "Series preview";
@@ -43,7 +44,7 @@ export default async function OGImage({
           Series Not Found
         </div>
       ),
-      { ...size }
+      { ...size, fonts: await ogFonts() }
     );
   }
 
@@ -157,6 +158,6 @@ export default async function OGImage({
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await ogFonts() }
   );
 }

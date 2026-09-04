@@ -6,7 +6,11 @@
 
 import OpenAI from "openai";
 import type { ChapterAnalysis, ChapterPrompts } from "./types";
-import { VISUAL_DNA, QUALITY_SUFFIX, ENTITY_DESCRIPTORS } from "./visual-bible";
+import {
+  COMPACT_QUALITY_SUFFIX,
+  COMPACT_VISUAL_DNA,
+  ENTITY_DESCRIPTORS,
+} from "./visual-bible";
 import { callLLM } from "./llm";
 
 const PROMPT_SYSTEM = `You are a cinematic prompt engineer for a premium AI art book — the Psychenomicon visual companion.
@@ -24,6 +28,8 @@ RULES:
 6. Textures must be material-specific: "cracked obsidian", "oxidized bronze", "water-stained vellum", "chrome plate"
 7. Emotion through composition, not adjectives: "figure hunched beneath cathedral ceiling" not "sad figure"
 8. Each of the four prompts must be visually distinct — no repeating the same shot or setting
+9. Each complete prompt MUST be 380-500 characters and NEVER exceed 500 characters
+10. Include the compact visual DNA and quality requirements naturally; do not repeat or expand them
 
 Return ONLY a valid JSON object with no markdown, no explanation:
 {
@@ -70,11 +76,11 @@ COMPOSITION HINTS: ${analysis.cameraDirections.join("; ")}
 ENTITIES:
 ${entityBlock}
 
-VISUAL DNA (prepend to every prompt):
-${VISUAL_DNA}
+COMPACT VISUAL DNA (include in every prompt):
+${COMPACT_VISUAL_DNA}
 
-QUALITY SUFFIX (append to every prompt):
-${QUALITY_SUFFIX}
+QUALITY REQUIREMENTS (include in every prompt):
+${COMPACT_QUALITY_SUFFIX}
 `.trim();
 
   const userMessage = `Generate four cinematic image prompts for this chapter briefing:\n\n${briefing}`;
@@ -109,6 +115,11 @@ ${QUALITY_SUFFIX}
       throw new Error(`Missing or invalid prompt key "${key}" for ${analysis.slug}`);
     }
   }
+    if (parsed[key].length > 512) {
+      throw new Error(
+        `Prompt "${key}" exceeds the 512-character image-provider limit for ${analysis.slug} (${parsed[key].length})`
+      );
+    }
 
   return parsed;
 }

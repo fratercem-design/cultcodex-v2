@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 export const alt = "Join CultCodex — Choose Your Role in the Archive";
@@ -11,7 +12,7 @@ const TIERS = [
   { name: "ORACLE", price: "$25/mo", color: "#C8392E", desc: "Full system access" },
 ];
 
-export default function OGImage() {
+export default async function OGImage() {
   return new ImageResponse(
     (
       <div
@@ -135,6 +136,6 @@ export default function OGImage() {
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await ogFonts() }
   );
 }
