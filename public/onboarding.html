@@ -1,0 +1,325 @@
+<title>Welcome, Traveler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap">
+<style>
+  /* A candlelit onboarding rite — committed single dark world (deliberate, like a temple at night). */
+  :root{
+    --abyss:#0a0612; --abyss-2:#140c22; --panel:#181030;
+    --sigil:#9a71ea; --sigil-lt:#c3a6f7;
+    --gold:#e8b64b; --gold-lt:#f6d888; --gold-deep:#c8922f;
+    --ink:#efe9f8; --ink-2:#c7bce0; --ink-3:#9285ad; --ink-4:#6a6088;
+    --edge:rgba(154,113,234,.18); --edge-gold:rgba(232,182,75,.3);
+    --serif:"Cormorant Garamond","Palatino Linotype",Georgia,serif;
+    --caps:"Cinzel","Palatino Linotype",Georgia,serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{
+    background:
+      radial-gradient(1200px 800px at 50% -12%,rgba(154,113,234,.16),transparent 62%),
+      radial-gradient(700px 520px at 82% 108%,rgba(232,182,75,.07),transparent 60%),
+      var(--abyss);
+    color:var(--ink); font-family:var(--serif);
+    -webkit-font-smoothing:antialiased;
+  }
+  canvas#motes{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+  .veil{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(720px 720px at 50% 8%,rgba(232,182,75,.05),transparent 60%);
+    animation:flick 8s ease-in-out infinite}
+  @keyframes flick{0%,100%{opacity:.6}45%{opacity:.9}62%{opacity:.5}}
+
+  /* ── deck ── */
+  .deck{position:fixed;inset:0;z-index:1}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:clamp(28px,6vw,90px);opacity:0;visibility:hidden;
+    transform:translateY(14px) scale(.995);transition:opacity .6s ease,transform .6s ease;}
+  .slide.active{opacity:1;visibility:visible;transform:none;}
+  .wrap{max-width:56rem;width:100%}
+
+  .eyebrow{font-family:var(--mono);font-size:clamp(10px,1.1vw,12px);letter-spacing:.42em;
+    text-transform:uppercase;color:var(--gold);opacity:.9;margin-bottom:1.6rem}
+  h1{font-family:var(--caps);font-weight:600;font-size:clamp(2.6rem,7.5vw,5.4rem);line-height:1.02;
+    letter-spacing:.03em;text-wrap:balance;
+    background:linear-gradient(178deg,#fdf6e6,var(--gold-lt) 55%,var(--gold-deep));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  h2{font-family:var(--caps);font-weight:600;font-size:clamp(1.7rem,4.4vw,3rem);line-height:1.08;
+    letter-spacing:.02em;color:var(--ink);text-wrap:balance;margin-bottom:1.4rem}
+  h2 .g{color:var(--gold-lt)}
+  .lead{font-size:clamp(1.25rem,2.9vw,2rem);line-height:1.45;color:var(--ink-2);text-wrap:pretty;font-weight:400}
+  .lead em{color:var(--sigil-lt);font-style:italic}
+  .lead b{color:var(--ink);font-weight:600}
+  .sub{margin-top:1.6rem;font-size:clamp(1rem,2vw,1.3rem);color:var(--ink-3);font-style:italic;text-wrap:pretty}
+  .quote{font-style:italic;font-size:clamp(1.5rem,4vw,2.6rem);line-height:1.32;color:var(--sigil-lt);text-wrap:balance}
+
+  /* lists */
+  .stack{display:flex;flex-direction:column;gap:.9rem;margin-top:.4rem;text-align:left;max-width:44rem;margin-left:auto;margin-right:auto}
+  .row{display:flex;gap:1rem;align-items:baseline;font-size:clamp(1.05rem,2.3vw,1.45rem);color:var(--ink-2)}
+  .row .k{font-family:var(--caps);color:var(--gold-lt);font-weight:600;white-space:nowrap;letter-spacing:.02em}
+  .row .k.v{color:var(--sigil-lt)}
+  .row .d{color:var(--ink-3)}
+
+  .pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem 2.4rem;margin-top:.6rem;text-align:left;max-width:46rem;margin-inline:auto}
+  .pillar{display:flex;gap:.8rem;align-items:baseline}
+  .pillar .n{font-family:var(--mono);font-size:.8em;color:var(--gold-deep);width:1.4em}
+  .pillar .t{font-family:var(--caps);color:var(--gold-lt);font-size:clamp(1.05rem,2.2vw,1.4rem)}
+  .pillar .s{display:block;color:var(--ink-3);font-size:.82em;font-style:italic}
+
+  .three{display:flex;flex-direction:column;gap:1.3rem;margin-top:.4rem;max-width:40rem;margin-inline:auto}
+  .promise{font-size:clamp(1.15rem,2.6vw,1.7rem);color:var(--ink);font-style:italic;line-height:1.3}
+  .promise::before{content:"✦";color:var(--gold-deep);font-style:normal;margin-right:.6rem;font-size:.7em;vertical-align:middle}
+
+  /* sigil */
+  .seal{width:clamp(78px,11vw,120px);height:clamp(78px,11vw,120px);margin:0 auto 1.8rem;
+    filter:drop-shadow(0 0 20px rgba(154,113,234,.5))}
+  .seal .spin{transform-origin:60px 60px;animation:spin 64s linear infinite}
+  .seal .spin-r{transform-origin:60px 60px;animation:spin 92s linear infinite reverse}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .orn{color:var(--gold-deep);margin:1.4rem auto 0;font-size:1.1rem;letter-spacing:.5em}
+
+  /* ── chrome ── */
+  .progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--sigil),var(--gold));
+    z-index:5;transition:width .5s ease;box-shadow:0 0 8px rgba(232,182,75,.5)}
+  .nav{position:fixed;bottom:clamp(14px,3vh,28px);left:50%;transform:translateX(-50%);z-index:6;
+    display:flex;align-items:center;gap:16px}
+  .dots{display:flex;gap:8px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--edge);border:none;cursor:pointer;padding:0;transition:.25s}
+  .dot:hover{background:var(--sigil)}
+  .dot.on{background:var(--gold);box-shadow:0 0 8px rgba(232,182,75,.6);transform:scale(1.25)}
+  .arrow{background:transparent;border:1px solid var(--edge-gold);color:var(--gold);width:38px;height:38px;
+    border-radius:50%;cursor:pointer;font-size:16px;line-height:1;display:grid;place-items:center;transition:.2s;font-family:var(--serif)}
+  .arrow:hover{background:rgba(232,182,75,.12);color:#fdf6e6}
+  .arrow:disabled{opacity:.25;cursor:default}
+  .count{position:fixed;top:20px;right:24px;z-index:6;font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--ink-4)}
+  .count b{color:var(--gold)}
+  .hint{position:fixed;bottom:clamp(14px,3vh,28px);right:24px;z-index:6;font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--ink-4);text-transform:uppercase}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  @media (prefers-reduced-motion:reduce){
+    .slide{transition:opacity .2s}.veil,.seal .spin,.seal .spin-r{animation:none}#motes{display:none}
+  }
+  @media (max-width:640px){
+    .pillars{grid-template-columns:1fr;gap:.55rem}
+    .hint{display:none}
+    .count{top:14px;right:14px}
+  }
+</style>
+
+<canvas id="motes"></canvas>
+<div class="veil"></div>
+<div class="progress" id="prog"></div>
+<div class="count"><b id="cnum">1</b> / 13</div>
+<div class="hint">← → to move</div>
+
+<main class="deck" id="deck">
+
+  <!-- 1 · WELCOME -->
+  <section class="slide active">
+    <div class="wrap">
+      <svg class="seal" viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="spin" cx="60" cy="60" r="52" fill="none" stroke="#9a71ea" stroke-width="1"/>
+        <circle class="spin-r" cx="60" cy="60" r="44" fill="none" stroke="#e8b64b" stroke-width=".7" stroke-dasharray="2 7"/>
+        <path class="spin" d="M60 16 L75 60 L60 104 L45 60 Z" fill="none" stroke="#c3a6f7" stroke-width="1.3"/>
+        <path class="spin-r" d="M16 60 L60 45 L104 60 L60 75 Z" fill="none" stroke="#c3a6f7" stroke-width="1.3"/>
+        <circle cx="60" cy="60" r="26" fill="none" stroke="#e8b64b" stroke-width=".8"/>
+        <circle cx="60" cy="60" r="5" fill="#e8b64b"/>
+      </svg>
+      <div class="eyebrow">The Cult of Psyche</div>
+      <h1>Welcome,<br>Traveler</h1>
+      <p class="sub">You did not find this. You arrived at it.</p>
+      <div class="orn">✦</div>
+    </div>
+  </section>
+
+  <!-- 2 · WHAT THIS IS -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">What this is</div>
+      <p class="lead">A community for <b>exploring truth</b>, <b>exposing deception</b>, <b>embracing mystery</b>, and helping each other understand ourselves and the strange corners of human nature —</p>
+      <p class="sub">through open, honest conversation.</p>
+    </div>
+  </section>
+
+  <!-- 3 · THE WORD CULT -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">About that word</div>
+      <h2>Yes, we say <span class="g">&ldquo;cult.&rdquo;</span></h2>
+      <p class="lead">We keep the dangerous word on purpose — so the danger stays visible. Here it means not a hierarchy of followers, but <em>a culture of inquiry.</em></p>
+      <p class="sub">You are free to disagree. Free to challenge. Free to leave. That freedom is the whole foundation.</p>
+    </div>
+  </section>
+
+  <!-- 4 · NO FOLLOWERS -->
+  <section class="slide">
+    <div class="wrap">
+      <p class="quote">&ldquo;There are no followers here.<br>There are only fellow travelers.&rdquo;</p>
+      <p class="sub">Some carry lanterns. Some carry questions. Some carry scars. We walk toward the unknown together — not to conquer it, but to be changed by it.</p>
+    </div>
+  </section>
+
+  <!-- 5 · WHAT WE HOLD -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">What we hold</div>
+      <div class="three" style="gap:1.5rem">
+        <p class="promise">Every mystery is welcome.</p>
+        <p class="promise">Every certainty is suspect.</p>
+        <p class="promise">Every question is sacred.</p>
+      </div>
+      <p class="sub" style="margin-top:2rem">We kneel before no ideology. We swear loyalty to no dogma. We worship no leader.</p>
+    </div>
+  </section>
+
+  <!-- 6 · SEVEN PILLARS -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">What holds us up</div>
+      <h2>The Seven Pillars</h2>
+      <div class="pillars">
+        <div class="pillar"><span class="n">I</span><span><span class="t">Curiosity</span><span class="s">Never stop asking.</span></span></div>
+        <div class="pillar"><span class="n">II</span><span><span class="t">Compassion</span><span class="s">Everyone is fighting invisible battles.</span></span></div>
+        <div class="pillar"><span class="n">III</span><span><span class="t">Integrity</span><span class="s">Never knowingly deceive.</span></span></div>
+        <div class="pillar"><span class="n">IV</span><span><span class="t">Humility</span><span class="s">You are probably wrong about something.</span></span></div>
+        <div class="pillar"><span class="n">V</span><span><span class="t">Wonder</span><span class="s">Protect your ability to be amazed.</span></span></div>
+        <div class="pillar"><span class="n">VI</span><span><span class="t">Discernment</span><span class="s">Consider everything; accept nothing blindly.</span></span></div>
+        <div class="pillar"><span class="n">VII</span><span><span class="t">Transformation</span><span class="s">Become difficult to manipulate.</span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · HOW WE ARE -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">How we are here</div>
+      <h2>The way of the circle</h2>
+      <div class="stack">
+        <div class="row"><span class="k">Listen</span><span class="d">to understand — not to reload your reply.</span></div>
+        <div class="row"><span class="k">Disagree</span><span class="d">freely — attack the idea, honor the person.</span></div>
+        <div class="row"><span class="k">Assume</span><span class="d">good faith, until the pattern proves otherwise.</span></div>
+        <div class="row"><span class="k">Respect</span><span class="d">is not agreement — every voice is heard.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · THREE PROMISES -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">Invited, never required</div>
+      <h2>The Three Promises</h2>
+      <div class="three">
+        <p class="promise">I will protect my curiosity.</p>
+        <p class="promise">I will treat others with dignity.</p>
+        <p class="promise">I will accept that I am still learning.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · THE OPEN PANEL -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">How we gather</div>
+      <h2>The Open Panel</h2>
+      <p class="lead">The oldest human technology: a circle around a fire, where people face one another and ask, <em>&ldquo;What have you discovered?&rdquo;</em></p>
+      <p class="sub">The skeptic and the mystic, the scientist and the tarot reader — every voice adds a piece to the mosaic. The goal is not agreement. It is exploration.</p>
+    </div>
+  </section>
+
+  <!-- 10 · WHAT TO EXPECT -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">What to expect</div>
+      <h2>Nights at the fire</h2>
+      <div class="stack">
+        <div class="row"><span class="k v">Tarot &amp; Oracle</span><span class="d">the mirror in card form — reflection, not fortune.</span></div>
+        <div class="row"><span class="k v">Question of the Night</span><span class="d">one real question, and every voice answering.</span></div>
+        <div class="row"><span class="k v">The Great Debate</span><span class="d">honest opposition — heat that gives light.</span></div>
+        <div class="row"><span class="k v">Mystery &amp; Wonder</span><span class="d">the strange corners of the world, held with awe and rigor.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · LANTERN BEARERS -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">You are safe here</div>
+      <h2>The Lantern Bearers</h2>
+      <p class="lead">Our moderators guard the edges of the light so everyone within the circle can be free.</p>
+      <p class="sub">They protect the vulnerable and check the cruel. If you ever feel unsafe or unsure — reach for one. That is what they are here for.</p>
+    </div>
+  </section>
+
+  <!-- 12 · FIRST STEPS -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">Your first steps</div>
+      <h2>Cross the gate</h2>
+      <div class="stack">
+        <div class="row"><span class="k">One &nbsp;·</span><span class="d">Say hello. Answer the oldest question: <em style="color:var(--sigil-lt)">what brings you here?</em></span></div>
+        <div class="row"><span class="k">Two &nbsp;·</span><span class="d">Ask something you genuinely wonder about.</span></div>
+        <div class="row"><span class="k">Three ·</span><span class="d">Come back. A community is made of the returning.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · CLOSE -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="orn" style="margin-bottom:1.6rem">✦</div>
+      <p class="quote">&ldquo;Step forward with open eyes.<br>Leave with a freer mind.&rdquo;</p>
+      <p class="sub" style="margin-top:2rem">The gateway does not promise answers.<br>It promises transformation.</p>
+      <div class="eyebrow" style="margin-top:2.2rem;margin-bottom:0">Welcome to the Cult of Psyche</div>
+    </div>
+  </section>
+
+</main>
+
+<div class="nav">
+  <button class="arrow" id="prev" aria-label="Previous slide">&#8249;</button>
+  <div class="dots" id="dots"></div>
+  <button class="arrow" id="next" aria-label="Next slide">&#8250;</button>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const dotsWrap=document.getElementById('dots');
+  const prog=document.getElementById('prog'), cnum=document.getElementById('cnum');
+  const prev=document.getElementById('prev'), next=document.getElementById('next');
+  let i=0;
+  slides.forEach((_,n)=>{const b=document.createElement('button');b.className='dot'+(n===0?' on':'');
+    b.setAttribute('aria-label','Slide '+(n+1));b.onclick=()=>go(n);dotsWrap.appendChild(b);});
+  const dots=[...dotsWrap.children];
+  function go(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    dots.forEach((d,k)=>d.classList.toggle('on',k===i));
+    prog.style.width=((i)/(slides.length-1)*100)+'%';
+    cnum.textContent=i+1;
+    prev.disabled=i===0; next.disabled=i===slides.length-1;
+  }
+  next.onclick=()=>go(i+1); prev.onclick=()=>go(i-1);
+  addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home'){go(0);} else if(e.key==='End'){go(slides.length-1);}
+  });
+  // click-advance on the slide area (not on nav controls)
+  document.getElementById('deck').addEventListener('click',e=>{ if(!e.target.closest('button')) go(i+1); });
+  go(0);
+
+  // ambient embers
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(!reduce){
+    const c=document.getElementById('motes'),x=c.getContext('2d');let w,h,m;
+    const rz=()=>{w=c.width=innerWidth;h=c.height=innerHeight;
+      m=Array.from({length:Math.min(52,Math.floor(w/26))},()=>({x:Math.random()*w,y:Math.random()*h,
+        r:Math.random()*1.6+.3,s:Math.random()*.25+.05,d:Math.random()*6.28,g:Math.random()>.5}));};
+    rz();addEventListener('resize',rz);
+    (function loop(){x.clearRect(0,0,w,h);
+      for(const p of m){p.y-=p.s;p.x+=Math.sin(p.d+=.008)*.25;
+        if(p.y<-6){p.y=h+6;p.x=Math.random()*w;}
+        x.beginPath();x.arc(p.x,p.y,p.r,0,7);
+        x.fillStyle=p.g?'rgba(232,182,75,.55)':'rgba(154,113,234,.5)';x.fill();}
+      requestAnimationFrame(loop);})();
+  }
+</script>

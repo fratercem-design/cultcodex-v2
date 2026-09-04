@@ -80,6 +80,14 @@ export default async function HandbookPage() {
         </p>
       </div>
 
+      <p className="mt-6 font-mono text-[11px] text-text-muted">
+        New to the circle?{" "}
+        <a href="/onboarding.html" className="text-accent-violet hover:underline">
+          Start with the welcome deck
+        </a>{" "}
+        — a short walk through what the Cult of Psyche is and how we gather.
+      </p>
+
       <ol className="mt-10 space-y-3">
         {volumes.map(([roman, title, blurb]) => (
           <li key={roman} className="border-l-2 border-accent-violet/25 pl-4">
