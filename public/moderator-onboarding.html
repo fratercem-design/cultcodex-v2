@@ -1,0 +1,334 @@
+<title>The Lantern Bearers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap">
+<style>
+  :root{
+    --abyss:#0a0612; --abyss-2:#140c22; --panel:#181030;
+    --sigil:#9a71ea; --sigil-lt:#c3a6f7;
+    --gold:#e8b64b; --gold-lt:#f6d888; --gold-deep:#c8922f;
+    --warn:#e5a13a; --crit:#e2685f; --good:#5ec26a;
+    --ink:#efe9f8; --ink-2:#c7bce0; --ink-3:#9285ad; --ink-4:#6a6088;
+    --edge:rgba(154,113,234,.18); --edge-gold:rgba(232,182,75,.3);
+    --serif:"Cormorant Garamond","Palatino Linotype",Georgia,serif;
+    --caps:"Cinzel","Palatino Linotype",Georgia,serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{background:
+      radial-gradient(1200px 800px at 50% -12%,rgba(154,113,234,.16),transparent 62%),
+      radial-gradient(700px 520px at 82% 108%,rgba(232,182,75,.07),transparent 60%),
+      var(--abyss);
+    color:var(--ink); font-family:var(--serif); -webkit-font-smoothing:antialiased;}
+  canvas#motes{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+  .veil{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(720px 720px at 50% 8%,rgba(232,182,75,.05),transparent 60%);animation:flick 8s ease-in-out infinite}
+  @keyframes flick{0%,100%{opacity:.6}45%{opacity:.9}62%{opacity:.5}}
+
+  .deck{position:fixed;inset:0;z-index:1}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:clamp(28px,6vw,84px);opacity:0;visibility:hidden;
+    transform:translateY(14px) scale(.995);transition:opacity .6s ease,transform .6s ease;}
+  .slide.active{opacity:1;visibility:visible;transform:none;}
+  .wrap{max-width:58rem;width:100%}
+
+  .eyebrow{font-family:var(--mono);font-size:clamp(10px,1.1vw,12px);letter-spacing:.42em;text-transform:uppercase;color:var(--gold);opacity:.9;margin-bottom:1.5rem}
+  h1{font-family:var(--caps);font-weight:600;font-size:clamp(2.4rem,6.8vw,4.8rem);line-height:1.04;letter-spacing:.03em;text-wrap:balance;
+    background:linear-gradient(178deg,#fdf6e6,var(--gold-lt) 55%,var(--gold-deep));-webkit-background-clip:text;background-clip:text;color:transparent}
+  h2{font-family:var(--caps);font-weight:600;font-size:clamp(1.6rem,4.2vw,2.8rem);line-height:1.1;letter-spacing:.02em;color:var(--ink);text-wrap:balance;margin-bottom:1.3rem}
+  h2 .g{color:var(--gold-lt)}
+  .lead{font-size:clamp(1.2rem,2.8vw,1.9rem);line-height:1.45;color:var(--ink-2);text-wrap:pretty}
+  .lead em{color:var(--sigil-lt);font-style:italic}
+  .lead b{color:var(--ink);font-weight:600}
+  .sub{margin-top:1.5rem;font-size:clamp(1rem,2vw,1.28rem);color:var(--ink-3);font-style:italic;text-wrap:pretty}
+  .quote{font-style:italic;font-size:clamp(1.5rem,3.9vw,2.5rem);line-height:1.32;color:var(--sigil-lt);text-wrap:balance}
+
+  .stack{display:flex;flex-direction:column;gap:.85rem;margin-top:.4rem;text-align:left;max-width:46rem;margin-inline:auto}
+  .row{display:flex;gap:1rem;align-items:baseline;font-size:clamp(1.02rem,2.2vw,1.4rem);color:var(--ink-2)}
+  .row .k{font-family:var(--caps);color:var(--gold-lt);font-weight:600;white-space:nowrap;letter-spacing:.02em;min-width:6.4rem;text-align:right}
+  .row .k.v{color:var(--sigil-lt)}
+
+  /* escalation ladder */
+  .ladder{display:flex;flex-direction:column;gap:.6rem;margin-top:.5rem;max-width:48rem;margin-inline:auto;text-align:left}
+  .rung{display:flex;gap:1rem;align-items:baseline;padding:.55rem .9rem;border:1px solid var(--edge);border-radius:10px;
+    background:linear-gradient(90deg,rgba(154,113,234,.05),transparent)}
+  .rung .n{font-family:var(--mono);color:var(--gold);font-size:.95em;width:1.4em}
+  .rung .t{font-family:var(--caps);color:var(--gold-lt);font-size:clamp(1rem,2.1vw,1.3rem)}
+  .rung .d{color:var(--ink-3);font-size:.82em;font-style:italic;display:block}
+
+  .callout{border:1px solid var(--edge-gold);border-radius:14px;padding:1.4rem 1.8rem;max-width:46rem;margin:1rem auto 0;
+    background:linear-gradient(135deg,rgba(226,104,95,.08),transparent)}
+  .callout .h{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--crit);margin-bottom:.6rem}
+  .callout p{font-size:clamp(1.05rem,2.3vw,1.4rem);color:var(--ink);line-height:1.4}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:.6rem;max-width:48rem;margin-inline:auto;text-align:left}
+  .col{border:1px solid var(--edge);border-radius:14px;padding:1.2rem 1.4rem}
+  .col .h{font-family:var(--caps);color:var(--gold-lt);font-size:clamp(1.05rem,2.2vw,1.35rem);margin-bottom:.5rem}
+  .col p{color:var(--ink-2);font-size:clamp(.95rem,1.9vw,1.15rem);line-height:1.4}
+
+  .three{display:flex;flex-direction:column;gap:1.2rem;margin-top:.4rem;max-width:42rem;margin-inline:auto}
+  .promise{font-size:clamp(1.1rem,2.5vw,1.6rem);color:var(--ink);font-style:italic;line-height:1.3}
+  .promise::before{content:"✦";color:var(--gold-deep);font-style:normal;margin-right:.6rem;font-size:.7em;vertical-align:middle}
+
+  .seal{width:clamp(76px,10vw,114px);height:clamp(76px,10vw,114px);margin:0 auto 1.6rem;filter:drop-shadow(0 0 20px rgba(154,113,234,.5))}
+  .seal .spin{transform-origin:60px 60px;animation:spin 64s linear infinite}
+  .seal .spin-r{transform-origin:60px 60px;animation:spin 92s linear infinite reverse}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .orn{color:var(--gold-deep);margin:1.3rem auto 0;font-size:1.05rem;letter-spacing:.5em}
+
+  .progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--sigil),var(--gold));z-index:5;transition:width .5s ease;box-shadow:0 0 8px rgba(232,182,75,.5)}
+  .nav{position:fixed;bottom:clamp(14px,3vh,26px);left:50%;transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:16px}
+  .dots{display:flex;gap:7px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--edge);border:none;cursor:pointer;padding:0;transition:.25s}
+  .dot:hover{background:var(--sigil)}
+  .dot.on{background:var(--gold);box-shadow:0 0 8px rgba(232,182,75,.6);transform:scale(1.25)}
+  .arrow{background:transparent;border:1px solid var(--edge-gold);color:var(--gold);width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:16px;display:grid;place-items:center;transition:.2s;font-family:var(--serif)}
+  .arrow:hover{background:rgba(232,182,75,.12);color:#fdf6e6}
+  .arrow:disabled{opacity:.25;cursor:default}
+  .count{position:fixed;top:20px;right:24px;z-index:6;font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--ink-4)}
+  .count b{color:var(--gold)}
+  .hint{position:fixed;bottom:clamp(14px,3vh,26px);right:24px;z-index:6;font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--ink-4);text-transform:uppercase}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  @media (prefers-reduced-motion:reduce){.slide{transition:opacity .2s}.veil,.seal .spin,.seal .spin-r{animation:none}#motes{display:none}}
+  @media (max-width:640px){.two{grid-template-columns:1fr}.hint{display:none}.count{top:14px;right:14px}.row .k{min-width:5rem}}
+</style>
+
+<canvas id="motes"></canvas>
+<div class="veil"></div>
+<div class="progress" id="prog"></div>
+<div class="count"><b id="cnum">1</b> / 14</div>
+<div class="hint">← → to move</div>
+
+<main class="deck" id="deck">
+
+  <!-- 1 · TITLE -->
+  <section class="slide active">
+    <div class="wrap">
+      <svg class="seal" viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="spin" cx="60" cy="60" r="52" fill="none" stroke="#9a71ea" stroke-width="1"/>
+        <circle class="spin-r" cx="60" cy="60" r="44" fill="none" stroke="#e8b64b" stroke-width=".7" stroke-dasharray="2 7"/>
+        <path class="spin" d="M60 16 L75 60 L60 104 L45 60 Z" fill="none" stroke="#c3a6f7" stroke-width="1.3"/>
+        <circle cx="60" cy="60" r="26" fill="none" stroke="#e8b64b" stroke-width=".8"/>
+        <circle cx="60" cy="60" r="5" fill="#e8b64b"/>
+      </svg>
+      <div class="eyebrow">Moderator Onboarding · Cult of Psyche</div>
+      <h1>The Lantern<br>Bearers</h1>
+      <p class="sub">You have been asked to guard the gate — so that everyone within it can be free.</p>
+      <div class="orn">✦</div>
+    </div>
+  </section>
+
+  <!-- 2 · THE ROLE -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">What you've taken on</div>
+      <h2>The most important work no one sees</h2>
+      <p class="lead">When you do this well, no one notices you did anything at all. A well-guarded space simply <em>feels safe.</em></p>
+      <p class="sub">No one sees the troll removed before they could wound, or the conflict defused before it exploded. This is a labor of love, performed in the dark — and the whole community rests on it.</p>
+    </div>
+  </section>
+
+  <!-- 3 · LANTERN NOT SWORD -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">Who you are</div>
+      <h2>The lantern, <span class="g">not the sword</span></h2>
+      <p class="lead">You are not the community's police, its army, or its judge. You are a Lantern Bearer — carrying light to the edges so others can see and be safe.</p>
+      <p class="sub">One rules the community. The other serves it from the shadows. Choose the lantern, always — even when the sword would be easier.</p>
+    </div>
+  </section>
+
+  <!-- 4 · RESPONSIBILITIES -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">Your charge</div>
+      <h2>What you hold</h2>
+      <div class="stack">
+        <div class="row"><span class="k">Protect</span><span>the vulnerable from the predatory.</span></div>
+        <div class="row"><span class="k">Enforce</span><span>the community's standards — fairly, and the same for everyone.</span></div>
+        <div class="row"><span class="k">Defuse</span><span>conflict before it turns destructive.</span></div>
+        <div class="row"><span class="k">Remove</span><span>what genuinely harms — and only what genuinely harms.</span></div>
+        <div class="row"><span class="k">Keep</span><span>the space true to its purpose.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · RESTRAINT -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">The core discipline</div>
+      <h2>Restraint</h2>
+      <p class="lead">The power to remove and to silence is real power — and real power corrupts quietly. Intervene <b>as little as possible, and as much as necessary.</b></p>
+      <p class="sub">Guard the edges. Do not police the center. An over-moderated space is as dead as an unmoderated one is dangerous.</p>
+    </div>
+  </section>
+
+  <!-- 6 · READ THE ROOM -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">The skill beneath the skills</div>
+      <h2>Read the Room</h2>
+      <p class="lead">By the time trouble is obvious, it is already late. Learn to feel it while it is still just a shift in the air.</p>
+      <div class="stack" style="margin-top:1.4rem">
+        <div class="row"><span class="k">Watch</span><span>the pace, the tone, the edges, the quiet ones, the recurring names.</span></div>
+        <div class="row"><span class="k">Act early</span><span>— a gentle nudge at the first flicker beats a ban at the peak.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · DE-ESCALATION -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">When it heats up</div>
+      <h2>De-escalation</h2>
+      <p class="lead">Your first act is not on the room. It is on <em>yourself</em> — an agitated moderator pours fuel on the fire; a calm one starves it.</p>
+      <div class="stack" style="margin-top:1.2rem">
+        <div class="row"><span class="k">Slow</span><span>the pace — heat thrives on speed.</span></div>
+        <div class="row"><span class="k">Lower</span><span>the stakes — it's a disagreement, not a war.</span></div>
+        <div class="row"><span class="k">Name</span><span>the shared ground beneath the clash.</span></div>
+        <div class="row"><span class="k">Separate</span><span>the people from the problem — take it private when you can.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · GOOD/BAD FAITH -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">Know the difference</div>
+      <h2>Good Faith &amp; Bad Faith</h2>
+      <div class="two">
+        <div class="col"><div class="h">Good faith → mediate</div><p>Sincere, if clumsy. Can state your view, updates when shown wrong, wants resolution. Meet with patience and questions.</p></div>
+        <div class="col"><div class="h">Bad faith → contain</div><p>Moving goalposts, one-sided standards, seeking your reaction not resolution. Name it once, then bound it. Don't feed it.</p></div>
+      </div>
+      <p class="sub">Charity first — always. But to keep mediating bad faith is to let it burn the room while you reason with the arsonist.</p>
+    </div>
+  </section>
+
+  <!-- 9 · THE LADDER -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">Agree on this before you need it</div>
+      <h2>The Escalation Ladder</h2>
+      <div class="ladder">
+        <div class="rung"><span class="n">1</span><span><span class="t">Ignore</span><span class="d">First mild bait gets nothing. Starve it — no reaction from you or chat.</span></span></div>
+        <div class="rung"><span class="n">2</span><span><span class="t">One boundary</span><span class="d">One calm, authoritative line: &ldquo;That's not it. Moving on.&rdquo; Then never again.</span></span></div>
+        <div class="rung"><span class="n">3</span><span><span class="t">Time-out / mute</span><span class="d">Quiet removal, no drama, no public fight.</span></span></div>
+        <div class="rung"><span class="n">4</span><span><span class="t">Ban</span><span class="d">Repeat or serious violation. No farewell speech, no debate.</span></span></div>
+        <div class="rung"><span class="n">5</span><span><span class="t">Lockdown</span><span class="d">Raid: subscriber/slow mode, batch-ban, ride it out. It passes.</span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · HARD LINE -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">No nuance here</div>
+      <h2>The Hard Line</h2>
+      <div class="callout">
+        <div class="h">Threats · Doxxing · Danger to a real person</div>
+        <p>This is not trolling — it is danger. Remove instantly. Screenshot for evidence. Report to the platform, and if credible, to authorities.</p>
+      </div>
+      <p class="sub">The moment a conflict moves toward someone's physical safety, we are no longer moderating a debate. There is no cause that justifies it.</p>
+    </div>
+  </section>
+
+  <!-- 11 · TWIN GUARDIANSHIP -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">The balance you carry</div>
+      <h2>The Twin Guardianship</h2>
+      <div class="two">
+        <div class="col"><div class="h">Protect free speech</div><p>The freedom to question, challenge, and say the uncomfortable thing. Attack ideas freely.</p></div>
+        <div class="col"><div class="h">Protect human dignity</div><p>The right to take part without being degraded or dehumanized. Cruelty to a person, never.</p></div>
+      </div>
+      <p class="sub">Guard the <b>content</b> of speech generously; guard the <b>conduct</b> of speech firmly. This line never draws perfectly — draw it anyway, in good faith, forever.</p>
+    </div>
+  </section>
+
+  <!-- 12 · DISCIPLINES OF TRUST -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">Where your authority comes from</div>
+      <h2>The Disciplines of Trust</h2>
+      <p class="lead">Your power is not in the ban button. It is in the community's belief that you use it fairly.</p>
+      <div class="stack" style="margin-top:1.2rem">
+        <div class="row"><span class="k v">Transparency</span><span>the rules are known; the reasoning is available when asked.</span></div>
+        <div class="row"><span class="k v">Documentation</span><span>write it down — the record is the memory of the gate.</span></div>
+        <div class="row"><span class="k v">Consistency</span><span>the same rule for the friend and the stranger. This one costs the most.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 · GUARD YOURSELF -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="eyebrow">And this matters most of all</div>
+      <h2>Guard yourself</h2>
+      <p class="lead">You will see the worst of the community, so no one else has to. That cost is real, and it accumulates.</p>
+      <div class="three" style="margin-top:1.2rem">
+        <p class="promise">Rest before you are empty — not after.</p>
+        <p class="promise">Never carry it alone. Lean on the other bearers.</p>
+        <p class="promise">You see the edge of the community — not its heart.</p>
+      </div>
+      <p class="sub">You cannot pour light from an empty lantern. We will guard the guardians.</p>
+    </div>
+  </section>
+
+  <!-- 14 · CLOSE -->
+  <section class="slide">
+    <div class="wrap">
+      <div class="orn" style="margin-bottom:1.5rem">✦</div>
+      <p class="quote">&ldquo;You guard the edges of the light,<br>so that everyone within can be free.&rdquo;</p>
+      <p class="sub" style="margin-top:1.8rem">Remove what harms — but never with hatred.<br>Protect the circle. Do not become the thing you guard against.</p>
+      <div class="eyebrow" style="margin-top:2rem;margin-bottom:0">Welcome, Lantern Bearer</div>
+    </div>
+  </section>
+
+</main>
+
+<div class="nav">
+  <button class="arrow" id="prev" aria-label="Previous slide">&#8249;</button>
+  <div class="dots" id="dots"></div>
+  <button class="arrow" id="next" aria-label="Next slide">&#8250;</button>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const dotsWrap=document.getElementById('dots');
+  const prog=document.getElementById('prog'), cnum=document.getElementById('cnum');
+  const prev=document.getElementById('prev'), next=document.getElementById('next');
+  let i=0;
+  slides.forEach((_,n)=>{const b=document.createElement('button');b.className='dot'+(n===0?' on':'');
+    b.setAttribute('aria-label','Slide '+(n+1));b.onclick=()=>go(n);dotsWrap.appendChild(b);});
+  const dots=[...dotsWrap.children];
+  function go(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    dots.forEach((d,k)=>d.classList.toggle('on',k===i));
+    prog.style.width=(i/(slides.length-1)*100)+'%'; cnum.textContent=i+1;
+    prev.disabled=i===0; next.disabled=i===slides.length-1;
+  }
+  next.onclick=()=>go(i+1); prev.onclick=()=>go(i-1);
+  addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(i+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1);}
+    else if(e.key==='Home'){go(0);} else if(e.key==='End'){go(slides.length-1);}
+  });
+  document.getElementById('deck').addEventListener('click',e=>{ if(!e.target.closest('button')) go(i+1); });
+  go(0);
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(!reduce){
+    const c=document.getElementById('motes'),x=c.getContext('2d');let w,h,m;
+    const rz=()=>{w=c.width=innerWidth;h=c.height=innerHeight;
+      m=Array.from({length:Math.min(52,Math.floor(w/26))},()=>({x:Math.random()*w,y:Math.random()*h,
+        r:Math.random()*1.6+.3,s:Math.random()*.25+.05,d:Math.random()*6.28,g:Math.random()>.5}));};
+    rz();addEventListener('resize',rz);
+    (function loop(){x.clearRect(0,0,w,h);
+      for(const p of m){p.y-=p.s;p.x+=Math.sin(p.d+=.008)*.25;
+        if(p.y<-6){p.y=h+6;p.x=Math.random()*w;}
+        x.beginPath();x.arc(p.x,p.y,p.r,0,7);
+        x.fillStyle=p.g?'rgba(232,182,75,.55)':'rgba(154,113,234,.5)';x.fill();}
+      requestAnimationFrame(loop);})();
+  }
+</script>
