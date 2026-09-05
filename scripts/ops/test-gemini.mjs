@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const MODEL = "gemini-2.5-flash-lite";
+const MODEL = "gemini-3.5-flash-lite";
 const apiKey = process.env.GEMINI_API_KEY?.trim();
 
 if (!apiKey) {
@@ -43,6 +43,7 @@ try {
 
   const payload = await response.json();
   const text = payload.candidates?.[0]?.content?.parts
+    ?.filter((part) => part.thought !== true)
     ?.map((part) => part.text ?? "")
     .join("")
     .trim();

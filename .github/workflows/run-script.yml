@@ -37,6 +37,7 @@ jobs:
           # exposing it to every script this generic workflow can execute.
           GEMINI_API_KEY: ${{ github.event.inputs.script == 'ops/test-gemini.mjs' && secrets.GEMINI_API_KEY || '' }}
         run: |
+          set -o pipefail
           echo "── Running scripts/${{ github.event.inputs.script }} ──"
           npx tsx "scripts/${{ github.event.inputs.script }}" | tee /tmp/script-output.txt
           SUMMARY=$(tail -5 /tmp/script-output.txt | tr '\n' ' ')
