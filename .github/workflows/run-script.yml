@@ -32,6 +32,10 @@ jobs:
         run: npx prisma generate
 
       - name: Run script
+        env:
+          # Keep the Gemini key scoped to the dedicated smoke test rather than
+          # exposing it to every script this generic workflow can execute.
+          GEMINI_API_KEY: ${{ github.event.inputs.script == 'ops/test-gemini.mjs' && secrets.GEMINI_API_KEY || '' }}
         run: |
           echo "── Running scripts/${{ github.event.inputs.script }} ──"
           npx tsx "scripts/${{ github.event.inputs.script }}" | tee /tmp/script-output.txt
