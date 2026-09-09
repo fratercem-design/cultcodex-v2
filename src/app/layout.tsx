@@ -118,11 +118,6 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: ["/images/site/og.jpg"],
   },
-  alternates: {
-    types: {
-      "application/rss+xml": [{ url: "/feed.xml", title: "CultCodex — Latest Episodes" }],
-    },
-  },
 };
 
 export default async function RootLayout({
@@ -173,6 +168,16 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://i.ytimg.com" />
         <link rel="preconnect" href="https://yt3.ggpht.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        {/* RSS autodiscovery. Deliberately rendered here rather than via
+            `metadata.alternates.types`: Next.js replaces the whole `alternates`
+            object per route, so every page declaring its own canonical (all of
+            `buildMetadata`, plus ~69 pages inline) silently dropped it. */}
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="CultCodex — Latest Episodes"
+          href={`${SITE_URL}/feed.xml`}
+        />
               </head>
       <body
         className={`${fontVariables} font-mono antialiased bg-void text-text-primary`}
