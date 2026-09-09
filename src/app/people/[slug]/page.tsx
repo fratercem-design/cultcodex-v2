@@ -49,7 +49,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
 
   if (!hasSections) {
     return (
-      <SectionCard title="Codex Entry">
+      <SectionCard headingLevel={2} title="Codex Entry">
         {loreSummary.split(/\n{2,}/).map((para, i) => (
           <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
             {editorialFrame(para.trim())}
@@ -431,7 +431,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
             {/* Archetype Evolution */}
             {archetypeEntries.length > 0 && (
-              <SectionCard title="Archetype Evolution">
+              <SectionCard headingLevel={2} title="Archetype Evolution">
                 <ArchetypeTimeline
                   entries={archetypeEntries}
                   personName={person.displayName}
@@ -443,7 +443,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             <ColorLegend />
 
             {/* Appearances */}
-            <SectionCard title={`Appearances (${totalAppearances})`} accent="gold">
+            <SectionCard headingLevel={2} title={`Appearances (${totalAppearances})`} accent="gold">
               {uniqueEpisodes.length > 0 ? (
                 <div className="space-y-6">
                   {totalAppearances > uniqueEpisodes.length && (
@@ -473,7 +473,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                       </Link>
                       <div className="grid gap-3">
                         {group.episodes.map((ep) => (
-                          <EpisodeListItem
+                          <EpisodeListItem headingLevel={3}
                             key={ep.id}
                             slug={ep.slug}
                             title={ep.title}
@@ -493,7 +493,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                       </p>
                       <div className="grid gap-3">
                         {unclassified.map((ep) => (
-                          <EpisodeListItem
+                          <EpisodeListItem headingLevel={3}
                             key={ep.id}
                             slug={ep.slug}
                             title={ep.title}
@@ -514,7 +514,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
             {/* Quotes */}
             {person.quotes.length > 0 && (
-              <SectionCard title={`Quotes (${person._count.quotes})`} accent="red">
+              <SectionCard headingLevel={2} title={`Quotes (${person._count.quotes})`} accent="red">
                 <div className="space-y-4">
                   {person._count.quotes > person.quotes.length && (
                     <p className="font-mono text-[11px] text-text-muted">
@@ -618,7 +618,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             <RelationshipDossier entries={relationshipDossier} personName={person.displayName} />
 
             {coAppearances.length > 0 && (
-              <SectionCard title="Frequently Appears With" accent="gold">
+              <SectionCard headingLevel={2} title="Frequently Appears With" accent="gold">
                 <div className="grid grid-cols-3 gap-3">
                   {coAppearances.map((coGuest) => (
                     <Link
@@ -663,7 +663,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
               type="person"
             />
 
-            <SectionCard title="Dossier">
+            <SectionCard headingLevel={2} title="Dossier">
               <MetaRow
                 label="Type"
                 value={<StatusBadge label={typeLabel} variant={typeVariant} />}
@@ -692,7 +692,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
               const isYt = (url: string) => url.includes("youtube.com") || url.includes("youtu.be");
               return (
-                <SectionCard title="External Links">
+                <SectionCard headingLevel={2} title="External Links">
                   <ul className="space-y-2">
                     {allLinks.map((link) => (
                       <li key={link.url}>
