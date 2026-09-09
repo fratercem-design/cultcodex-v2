@@ -84,7 +84,7 @@ export default function NotFound() {
         404
       </h1>
 
-      <p className="mt-2 font-display text-lg text-accent-gold-text/70">
+      <p className="mt-2 font-display text-lg text-accent-gold-text/80">
         Lost in the Void
       </p>
 

@@ -65,7 +65,7 @@ export async function QuoteCrossRef({ quoteText, excludeEpisodeId }: QuoteCrossR
       </div>
       <Link
         href={`/search/deep?concept=${encodeURIComponent(quoteText.slice(0, 100))}`}
-        className="font-mono text-[10px] text-accent-violet-text/50 hover:text-accent-violet-text transition-colors"
+        className="font-mono text-[10px] text-accent-violet-text/70 hover:text-accent-violet-text transition-colors"
       >
         Search deeper in the archive →
       </Link>

@@ -292,7 +292,7 @@ function PathRow({ step, index }: { step: PathStep; index: number }) {
             href={`/episodes/${step.via.slug}`}
             className="min-w-0 flex-1 group"
           >
-            <p className="font-mono text-[9px] uppercase tracking-widest text-accent-violet-text/60">
+            <p className="font-mono text-[9px] uppercase tracking-widest text-accent-violet-text/70">
               via{" "}
               {step.via.episodeNumber != null
                 ? `EP.${String(step.via.episodeNumber).padStart(3, "0")}`

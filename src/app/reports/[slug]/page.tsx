@@ -147,7 +147,7 @@ export default async function GuestReportPage({ params }: Props) {
 
         {/* Key quotes */}
         <section className="space-y-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60">{"/// on_the_record"}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">{"/// on_the_record"}</p>
           {hasAccess ? (
             quotes.length > 0 ? (
               <div className="space-y-3">
@@ -167,7 +167,7 @@ export default async function GuestReportPage({ params }: Props) {
 
         {/* Frequent collaborators */}
         <section className="space-y-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/60">{"/// frequent_collaborators"}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/70">{"/// frequent_collaborators"}</p>
           {hasAccess ? (
             coStars.length > 0 ? (
               <div className="grid gap-2 sm:grid-cols-2">
@@ -211,7 +211,7 @@ export default async function GuestReportPage({ params }: Props) {
                   className="group flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-2.5 transition-all hover:border-accent-gold/30"
                 >
                   {e.episodeNumber != null && (
-                    <span className="shrink-0 font-mono text-[10px] font-bold text-accent-gold-text/70">EP.{String(e.episodeNumber).padStart(3, "0")}</span>
+                    <span className="shrink-0 font-mono text-[10px] font-bold text-accent-gold-text/80">EP.{String(e.episodeNumber).padStart(3, "0")}</span>
                   )}
                   <span className="min-w-0 flex-1 truncate text-sm text-text-primary group-hover:text-accent-gold-text transition-colors">{cleanTitle(e.title)}</span>
                   {e.airDate && <span className="shrink-0 font-mono text-[10px] text-text-muted/50">{formatDate(e.airDate)}</span>}

@@ -89,7 +89,7 @@ export default function MethodologyPage() {
               "Psychenomicon narrative chapters (explicitly mythic/symbolic interpretations)",
             ].map((item) => (
               <li key={item} className="flex gap-2">
-                <span className="text-accent-gold-text/60 shrink-0 mt-0.5">·</span>
+                <span className="text-accent-gold-text/80 shrink-0 mt-0.5">·</span>
                 <span>{item}</span>
               </li>
             ))}

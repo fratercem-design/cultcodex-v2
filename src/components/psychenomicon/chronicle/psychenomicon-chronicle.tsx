@@ -80,7 +80,7 @@ export default function PsychenomiconChronicle() {
         <div className="absolute inset-0 bg-gradient-to-b from-void/80 via-void/70 to-void" />
         <div className="relative mx-auto max-w-7xl flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="space-y-2">
-            <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/60">⏈ THE PSYCHENOMICON ⏈</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">⏈ THE PSYCHENOMICON ⏈</p>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">A Living Record of Evolving Patterns</h1>
             {chapterCount > 0 && (
               <p className="text-xs text-text-muted">
@@ -100,7 +100,7 @@ export default function PsychenomiconChronicle() {
         {/* Latest chapters */}
         {latest && latest.length > 0 && (
           <section className="space-y-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/60">Latest transmissions</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">Latest transmissions</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
               {latest.map((c) => (
                 <Link
@@ -122,7 +122,7 @@ export default function PsychenomiconChronicle() {
         {/* Major events timeline */}
         {arcGroups.length > 0 && (
           <section className="space-y-4">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/70">Major events</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">Major events</p>
             {arcGroups.map((g) => (
               <div key={g.key} className="space-y-1.5">
                 <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/70">{g.label}</p>
@@ -149,7 +149,7 @@ export default function PsychenomiconChronicle() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {entities && entities.length > 0 && (
             <section className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/60">Entities tracked</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">Entities tracked</p>
               <div className="flex flex-wrap gap-2">
                 {entities.map((e) => (
                   <Link key={e.slug} href={`/psychenomicon/entities/${e.slug}`} className="group rounded border border-border bg-surface hover:border-accent-violet/30 hover:bg-accent-violet/5 px-3 py-1.5 transition-all">
@@ -163,7 +163,7 @@ export default function PsychenomiconChronicle() {
 
           {activeThreads && activeThreads.length > 0 && (
             <section className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/60">Active threads</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">Active threads</p>
               <div className="space-y-1.5">
                 {activeThreads.map((t) => (
                   <Link key={t.slug} href={`/psychenomicon/threads/${t.slug}`} className="group block rounded border border-border bg-surface hover:border-accent-violet/30 hover:bg-accent-violet/5 px-4 py-2.5 transition-all">

@@ -18,7 +18,7 @@ export async function TopAscenders() {
     <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-6 space-y-4">
       <div className="flex items-center justify-between gap-3">
         <div className="space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">{"/// top_ascenders"}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// top_ascenders"}</p>
           <h2 className="font-display text-lg font-bold text-white">Highest-ranked in the cult.</h2>
         </div>
         <Link

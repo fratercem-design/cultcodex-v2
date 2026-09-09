@@ -87,7 +87,7 @@ export default async function ThreadPage({ params }: PageProps) {
           <div className="flex items-center gap-3">
             <Link
               href="/psychenomicon"
-              className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/60 hover:text-accent-violet-text transition-colors"
+              className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/70 hover:text-accent-violet-text transition-colors"
             >
               ← Psychenomicon
             </Link>
@@ -173,7 +173,7 @@ export default async function ThreadPage({ params }: PageProps) {
                           <div className="space-y-1 pt-1">
                             {c.emergingSignals.slice(0, 2).map((s, j) => (
                               <div key={j} className="flex items-start gap-2">
-                                <span className="text-accent-gold-text/60 font-mono text-[9px] flex-shrink-0 mt-0.5">▸</span>
+                                <span className="text-accent-gold-text/80 font-mono text-[9px] flex-shrink-0 mt-0.5">▸</span>
                                 <p className="text-[10px] text-text-muted leading-relaxed line-clamp-1">{s}</p>
                               </div>
                             ))}

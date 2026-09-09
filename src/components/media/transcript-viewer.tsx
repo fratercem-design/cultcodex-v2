@@ -255,13 +255,13 @@ export function TranscriptViewer({
                     e.stopPropagation();
                     seekTo(seg.startSeconds);
                   }}
-                  className="shrink-0 font-mono text-[10px] text-accent-gold-text/60 w-14 text-right pt-0.5 hover:text-accent-gold-text transition-colors cursor-pointer"
+                  className="shrink-0 font-mono text-[10px] text-accent-gold-text/80 w-14 text-right pt-0.5 hover:text-accent-gold-text transition-colors cursor-pointer"
                   title={`Jump to ${formatSeconds(seg.startSeconds)}`}
                 >
                   {formatSeconds(seg.startSeconds)}
                 </button>
               ) : (
-                <span className="shrink-0 font-mono text-[10px] text-accent-gold-text/60 w-14 text-right pt-0.5">
+                <span className="shrink-0 font-mono text-[10px] text-accent-gold-text/80 w-14 text-right pt-0.5">
                   {formatSeconds(seg.startSeconds)}
                 </span>
               )}

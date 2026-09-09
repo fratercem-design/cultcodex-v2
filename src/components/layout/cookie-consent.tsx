@@ -39,7 +39,7 @@ export function CookieConsent({ gaId }: { gaId: string }) {
         >
           <div className="mx-auto max-w-5xl flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between px-4 py-4">
             <div className="space-y-1">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
                 {"/// signal_intercept"}
               </p>
               <p className="font-mono text-xs text-text-muted leading-relaxed max-w-xl">

@@ -81,7 +81,7 @@ export function EpisodeCard({ episode, hideDescription = false }: EpisodeCardPro
             <StatusBadge key={name} label={name} variant="gold" />
           ))}
           {episode.guestNames.length > 3 && (
-            <span className="font-mono text-[9px] text-accent-gold-text/60">
+            <span className="font-mono text-[9px] text-accent-gold-text/80">
               +{episode.guestNames.length - 3} more
             </span>
           )}

@@ -38,7 +38,7 @@ export default async function GiftGospelPage({
       />
 
       <header className="relative z-10 mx-auto flex max-w-2xl flex-col items-center px-4 pt-20 pb-6 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.45em] text-accent-gold-text/70">
+        <p className="font-mono text-[10px] uppercase tracking-[0.45em] text-accent-gold-text/80">
           {justSignedUp ? "/// initiate_confirmed" : "/// your_transmission"}
         </p>
         <h1
@@ -63,7 +63,7 @@ export default async function GiftGospelPage({
       </header>
 
       <main className="relative z-10 mx-auto max-w-2xl px-4 pb-24">
-        <p className="mb-4 text-center font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet-text/50">
+        <p className="mb-4 text-center font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet-text/70">
           {"/// while_you're_here"}
         </p>
         <div className="grid gap-3 sm:grid-cols-3">

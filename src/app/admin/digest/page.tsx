@@ -254,7 +254,7 @@ export default async function AdminDigestPage({ searchParams }: PageProps) {
                     </button>
                   </form>
                   <form action={deleteWeeklyDigest.bind(null, d.id)}>
-                    <button className="font-mono text-[10px] text-accent-crimson-text hover:text-accent-crimson-text/70 transition-colors">
+                    <button className="font-mono text-[10px] text-accent-crimson-text hover:text-accent-crimson-text/80 transition-colors">
                       Delete
                     </button>
                   </form>

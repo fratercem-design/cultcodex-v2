@@ -161,7 +161,7 @@ export default async function HomePage() {
               <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-cyan/80">
                 ✦ &nbsp; CultCodex &nbsp; ✦
               </p>
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
                 The Cult of Psyche intelligence archive
               </p>
             </div>
@@ -199,7 +199,7 @@ export default async function HomePage() {
             </Link>
             <Link
               href="/oracle"
-              className="font-mono text-[11px] text-text-muted/50 hover:text-accent-gold-text/70 transition-colors underline underline-offset-4"
+              className="font-mono text-[11px] text-text-muted/50 hover:text-accent-gold-text/80 transition-colors underline underline-offset-4"
             >
               Ask the Oracle — 3 free →
             </Link>
@@ -302,7 +302,7 @@ export default async function HomePage() {
 
           {/* ── MUSIC PLAYER ─────────────────────────────────────────── */}
           <div className="space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60">{"/// the_signal"}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">{"/// the_signal"}</p>
             <YouTubePlayer
               videoId="xlpOB2eXM1o"
               playlistId="PLvfZtruvrMTufahIz2Mx9GI_4SJP-ySMw"
@@ -332,7 +332,7 @@ export default async function HomePage() {
                   className="h-32 w-24 flex-shrink-0 object-cover sm:h-40 sm:w-28"
                 />
                 <div className="flex flex-col justify-center gap-1.5 px-5 py-4">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">{"/// chapter_of_the_day"}</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">{"/// chapter_of_the_day"}</p>
                   <h3 className="font-display text-lg font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-violet-text">
                     {dailyChapter.title}
                   </h3>
@@ -359,7 +359,7 @@ export default async function HomePage() {
                   className="h-32 w-24 flex-shrink-0 object-cover sm:h-40 sm:w-28"
                 />
                 <div className="flex flex-col justify-center gap-1.5 px-5 py-4">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/70">{"/// the_book · $5"}</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// the_book · $5"}</p>
                   <h3 className="font-display text-lg font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-gold-text">
                     The Psychenomicon — Volume I
                   </h3>
@@ -375,7 +375,7 @@ export default async function HomePage() {
           <div className="rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface px-6 py-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="space-y-1.5">
-                <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">{"/// ai_oracle"}</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">{"/// ai_oracle"}</p>
                 <h2 className="font-display text-lg font-bold text-white">Ask the archive anything.</h2>
                 <p className="font-mono text-[11px] text-text-muted leading-relaxed max-w-lg">
                   AI trained on every transcript, lore entry, and behavioral profile. Ask a question —
@@ -400,7 +400,7 @@ export default async function HomePage() {
 
           {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
           <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">{"/// unlock_the_archive"}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// unlock_the_archive"}</p>
             <p className="font-display text-xl font-bold text-white">Full transcripts. AI Oracle. The Psychenomicon.</p>
             <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.</p>
             <div className="flex flex-wrap justify-center gap-3">
@@ -424,7 +424,7 @@ export default async function HomePage() {
             <div className="space-y-3">
               <Link
                 href="/episodes"
-                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60 hover:text-accent-gold-text transition-colors"
+                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80 hover:text-accent-gold-text transition-colors"
               >
                 {"/// latest_transmission"} <span className="opacity-50 ml-1">→</span>
               </Link>
@@ -474,7 +474,7 @@ export default async function HomePage() {
             <div className="space-y-3">
               <Link
                 href="/episodes"
-                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60 hover:text-accent-gold-text transition-colors"
+                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80 hover:text-accent-gold-text transition-colors"
               >
                 {"/// recent_transmissions"} <span className="opacity-50 ml-1">→</span>
               </Link>
@@ -557,7 +557,7 @@ export default async function HomePage() {
                 <span className="font-mono text-lg text-accent-gold-text/60">◑</span>
               </div>
               <div className="min-w-0 flex-1 space-y-1">
-                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/50">
+                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
                   ✦ &nbsp; This week in the archive &nbsp; ✦
                 </p>
                 <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold-text transition-colors">
@@ -569,7 +569,7 @@ export default async function HomePage() {
                   </p>
                 )}
               </div>
-              <span className="font-mono text-[10px] text-accent-gold-text/40 group-hover:text-accent-gold-text transition-colors shrink-0 self-center">
+              <span className="font-mono text-[10px] text-accent-gold-text/80 group-hover:text-accent-gold-text transition-colors shrink-0 self-center">
                 →
               </span>
             </Link>

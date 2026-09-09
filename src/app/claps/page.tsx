@@ -58,7 +58,7 @@ export default async function ClapsPage() {
         {/* Active 24-hour claps */}
         {spotlights.length > 0 && (
           <section className="space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/70">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
               {"/// clapping_right_now"}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -92,7 +92,7 @@ export default async function ClapsPage() {
             <ol className="divide-y divide-border rounded-lg border border-border bg-surface/50">
               {holders.map((h, i) => (
                 <li key={h.id} className="flex items-center gap-4 px-4 py-3">
-                  <span className="w-8 shrink-0 text-center font-mono text-sm text-accent-gold-text/70">
+                  <span className="w-8 shrink-0 text-center font-mono text-sm text-accent-gold-text/80">
                     {MEDAL[i] ?? i + 1}
                   </span>
                   <span className="min-w-0 flex-1 truncate font-display text-base font-bold text-text-primary">

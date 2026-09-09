@@ -42,7 +42,7 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
   return (
     <section className="space-y-4 rounded-xl border border-accent-gold/30 bg-surface/60 p-5">
       <div className="space-y-1">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/70">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
           {"/// buy_a_clap"}
         </p>
         <p className="text-sm text-text-muted leading-relaxed">

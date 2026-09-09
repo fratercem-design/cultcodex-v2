@@ -78,7 +78,7 @@ export default async function SignalsPage() {
       <section className="relative overflow-hidden border-b border-accent-gold/10 bg-gradient-to-b from-[#0d0020] via-[#07001a] to-void">
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top,rgba(180,100,255,0.3)_0%,transparent_70%)]" />
         <div className="relative mx-auto max-w-4xl px-6 py-14">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-3">
             ✦ &nbsp; Oracle Feature &nbsp; ✦
           </p>
           <h1
@@ -168,7 +168,7 @@ export default async function SignalsPage() {
                           className="flex flex-col items-center gap-0.5 rounded-lg border border-border px-2.5 py-2 hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-all group"
                           title="Upvote this proposal"
                         >
-                          <span className="text-accent-gold-text/60 group-hover:text-accent-gold-text text-xs">▲</span>
+                          <span className="text-accent-gold-text/80 group-hover:text-accent-gold-text text-xs">▲</span>
                           <span className="font-mono text-sm font-bold text-text-primary">{proposal.votes}</span>
                         </button>
                       </form>
@@ -183,7 +183,7 @@ export default async function SignalsPage() {
                           <span className="font-mono text-[10px] text-text-muted/50">
                             {proposal.user.displayName}
                             {proposal.user.memberTitle && (
-                              <span className="text-accent-gold-text/50"> · {proposal.user.memberTitle}</span>
+                              <span className="text-accent-gold-text/80"> · {proposal.user.memberTitle}</span>
                             )}
                           </span>
                           <span className="text-text-muted/30">·</span>

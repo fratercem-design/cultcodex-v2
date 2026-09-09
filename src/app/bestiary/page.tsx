@@ -38,7 +38,7 @@ export default async function BestiaryPage() {
     <main className="min-h-screen bg-void">
       <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-4xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">
             {"/// field_guide · handle_with_ritual_gloves"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">

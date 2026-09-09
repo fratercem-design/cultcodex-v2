@@ -369,7 +369,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
                   &ldquo;{q.text}&rdquo;
                 </p>
                 {q.speaker && (
-                  <p className="font-mono text-[9px] text-accent-gold-text/70">
+                  <p className="font-mono text-[9px] text-accent-gold-text/80">
                     — {q.speaker.displayName}
                   </p>
                 )}

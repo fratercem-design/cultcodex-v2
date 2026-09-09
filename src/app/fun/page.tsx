@@ -86,7 +86,7 @@ export default async function FunPage() {
       {/* Hero */}
       <section className="border-b border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/80">
             {"/// recreation_level · unserious_by_decree"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">

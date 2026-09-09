@@ -124,7 +124,7 @@ export default async function SymbolDetailPage({
           <div className="space-y-10">
             {/* History */}
             <section>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-3">
+              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-3">
                 {"/// history"}
               </p>
               <p className="text-sm text-text-muted leading-relaxed">{symbol.history}</p>
@@ -134,7 +134,7 @@ export default async function SymbolDetailPage({
 
             {/* Occult Meaning */}
             <section>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-3">
+              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-3">
                 {"/// occult_meaning"}
               </p>
               <p className="text-sm text-text-muted leading-relaxed">{symbol.occultMeaning}</p>
@@ -144,7 +144,7 @@ export default async function SymbolDetailPage({
 
             {/* Modern Interpretation */}
             <section>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-3">
+              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-3">
                 {"/// modern_interpretation"}
               </p>
               <p className="text-sm text-text-muted leading-relaxed">
@@ -156,7 +156,7 @@ export default async function SymbolDetailPage({
 
             {/* Associated Archetypes */}
             <section>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-3">
+              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-3">
                 {"/// associated_archetypes"}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -178,7 +178,7 @@ export default async function SymbolDetailPage({
               <>
                 <div className="h-px bg-border" />
                 <section>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-4">
+                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-4">
                     {"/// related_symbols"}
                   </p>
                   <div className="grid gap-3 sm:grid-cols-3">
@@ -188,7 +188,7 @@ export default async function SymbolDetailPage({
                         href={`/symbols/${related.slug}`}
                         className="group rounded-xl border border-border bg-surface p-4 hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-all flex flex-col gap-2"
                       >
-                        <span className="text-accent-gold-text/60 group-hover:text-accent-gold-text transition-colors">
+                        <span className="text-accent-gold-text/80 group-hover:text-accent-gold-text transition-colors">
                           <SymbolGlyph slug={related.slug} glyph={related.glyph} size={32} />
                         </span>
                         <span className="font-mono text-xs text-text-primary group-hover:text-accent-gold-text transition-colors">
@@ -224,7 +224,7 @@ export default async function SymbolDetailPage({
 
           {/* Footer CTAs */}
           <footer className="mt-12 pt-8 border-t border-border">
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60 mb-4">
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-4">
               {"/// continue_your_research"}
             </p>
             <div className="flex flex-wrap gap-3">

@@ -86,7 +86,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
           <ul key={i} className="space-y-1 mb-3 last:mb-0">
             {bullets.map((b, j) => (
               <li key={j} className="flex gap-2 text-sm text-text-primary leading-relaxed">
-                <span className="text-accent-gold-text/60 flex-shrink-0 mt-0.5">·</span>
+                <span className="text-accent-gold-text/80 flex-shrink-0 mt-0.5">·</span>
                 <span>{editorialFrame(b)}</span>
               </li>
             ))}
@@ -595,7 +595,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </div>
                 {eraPresence.length === ERAS.length && (
                   <div className="border-t border-border/60 px-4 py-2">
-                    <p className="font-mono text-[9px] text-accent-gold-text/60 uppercase tracking-widest">
+                    <p className="font-mono text-[9px] text-accent-gold-text/80 uppercase tracking-widest">
                       ◈ Spans all eras
                     </p>
                   </div>

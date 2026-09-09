@@ -33,7 +33,7 @@ export default async function PropheciesPage() {
     <main className="min-h-screen bg-void">
       <section className="border-b border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/80">
             {"/// future_tense · accuracy_not_guaranteed"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -66,7 +66,7 @@ export default async function PropheciesPage() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 space-y-1.5">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/50">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
                       OMEN №{String(i + 1).padStart(3, "0")}
                     </p>
                     <h2 className="font-display text-lg font-bold text-text-primary group-hover:text-accent-gold-text transition-colors">

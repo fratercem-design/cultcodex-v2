@@ -151,7 +151,7 @@ export function TimelineExplorer({ items }: { items: TimelineItem[] }) {
                 className="group flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-2.5 transition-all hover:border-accent-gold/30 hover:bg-elevated"
               >
                 {ep.episodeNumber != null && (
-                  <span className="shrink-0 font-mono text-[10px] font-bold text-accent-gold-text/70">
+                  <span className="shrink-0 font-mono text-[10px] font-bold text-accent-gold-text/80">
                     EP.{String(ep.episodeNumber).padStart(3, "0")}
                   </span>
                 )}

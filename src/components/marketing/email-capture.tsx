@@ -95,7 +95,7 @@ export function EmailCapture({
     <div
       className={`rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4 ${className}`}
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
         {eyebrow}
       </p>
       <p className="font-display text-xl font-bold text-text-primary">{heading}</p>

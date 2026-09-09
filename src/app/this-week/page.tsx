@@ -108,7 +108,7 @@ export default async function ThisWeekPage() {
     <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-14">
       {/* Header */}
       <section className="space-y-3 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
           ✦ &nbsp; Week of {formatDate(digest.weekOf)} &nbsp; ✦
         </p>
         <h1 className="font-display text-3xl font-bold text-text-primary">
@@ -126,7 +126,7 @@ export default async function ThisWeekPage() {
       {/* Quotes */}
       {orderedQuotes.length > 0 && (
         <section className="space-y-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
             {"/// moments_from_the_archive"}
           </p>
 
@@ -230,7 +230,7 @@ export default async function ThisWeekPage() {
       {/* People */}
       {orderedPeople.length > 0 && (
         <section className="space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/70">
             {"/// voices_in_focus"}
           </p>
           <div className="grid gap-3 sm:grid-cols-3">

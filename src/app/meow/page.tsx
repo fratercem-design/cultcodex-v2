@@ -92,7 +92,7 @@ export default function MeowPage() {
 
       {/* Random cat quote */}
       <div className="mt-12 max-w-md text-center">
-        <p className="font-serif text-sm italic leading-relaxed text-accent-gold-text/70">
+        <p className="font-serif text-sm italic leading-relaxed text-accent-gold-text/80">
           {quote}
         </p>
         <p className="mt-2 font-mono text-[10px] tracking-wider text-text-muted/50">

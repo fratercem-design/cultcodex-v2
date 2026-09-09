@@ -51,7 +51,7 @@ export function DailyTransmission({
       {/* ── Header ───────────────────────────────────────────────── */}
       <div className="relative flex flex-wrap items-baseline justify-between gap-3">
         <div className="space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-gold-text/70">
+          <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-gold-text/80">
             ✦ today&rsquo;s signal
           </p>
           <p className="font-mono text-[10px] text-text-muted/50 tabular-nums">
@@ -66,7 +66,7 @@ export function DailyTransmission({
       {/* ── Quote of the day ─────────────────────────────────────── */}
       {quote && quote.episode && (
         <div className="relative space-y-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/50">
+          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
             {"/// quote_of_the_day"}
           </p>
           <blockquote className="font-display text-xl sm:text-2xl leading-snug text-text-primary border-l-2 border-accent-gold/40 pl-5 italic">
@@ -136,7 +136,7 @@ export function DailyTransmission({
 
         {/* Weekly pulse */}
         <div className="rounded-xl border border-border bg-void/40 backdrop-blur-sm p-5 space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/50">
+          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
             {"/// week_in_review"}
           </p>
           <div className="grid grid-cols-2 gap-3">
@@ -176,7 +176,7 @@ export function DailyTransmission({
             href={`/episodes/${spotlightEpisode.slug}`}
             className="group rounded-xl border border-border bg-void/40 backdrop-blur-sm overflow-hidden hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-colors flex flex-col"
           >
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/50 px-5 pt-5">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80 px-5 pt-5">
               {"/// transmission_from_the_vault"}
             </p>
             <div className="px-5 py-4 flex items-start gap-4 flex-1">

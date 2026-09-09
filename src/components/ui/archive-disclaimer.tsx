@@ -31,13 +31,13 @@ export function ArchiveDisclaimer({ variant = "compact", className }: ArchiveDis
           All content is sourced from publicly available streams and recordings.
         </p>
         <div className="flex items-center gap-3 pt-1">
-          <Link href="/methodology" className="font-mono text-[10px] text-accent-gold-text/60 hover:text-accent-gold-text hover:underline">
+          <Link href="/methodology" className="font-mono text-[10px] text-accent-gold-text/80 hover:text-accent-gold-text hover:underline">
             Methodology
           </Link>
-          <Link href="/content-policy" className="font-mono text-[10px] text-accent-gold-text/60 hover:text-accent-gold-text hover:underline">
+          <Link href="/content-policy" className="font-mono text-[10px] text-accent-gold-text/80 hover:text-accent-gold-text hover:underline">
             Content Policy
           </Link>
-          <Link href="/corrections" className="font-mono text-[10px] text-accent-gold-text/60 hover:text-accent-gold-text hover:underline">
+          <Link href="/corrections" className="font-mono text-[10px] text-accent-gold-text/80 hover:text-accent-gold-text hover:underline">
             Corrections
           </Link>
         </div>
@@ -48,7 +48,7 @@ export function ArchiveDisclaimer({ variant = "compact", className }: ArchiveDis
   return (
     <p className={`text-[10px] text-text-muted/50 font-mono leading-relaxed ${className ?? ""}`}>
       Content is AI-assisted and community-curated. Details may be approximate.{" "}
-      <Link href="/corrections" className="text-accent-gold-text/40 hover:text-accent-gold-text hover:underline">
+      <Link href="/corrections" className="text-accent-gold-text/80 hover:text-accent-gold-text hover:underline">
         Suggest corrections →
       </Link>
     </p>
