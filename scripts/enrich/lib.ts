@@ -223,19 +223,7 @@ export async function enrichEpisode(
   } else if (provider === "openrouter") {
     const model = process.env.ENRICHMENT_MODEL ?? "google/gemma-4-26b-a4b-it:free";
     try {
-      // jsonMode=true sets response_format: json_object. Without it free models
-      // emit raw newlines inside JSON string values and the parse dies with
-      // "Bad control character in string literal" - 3 of 5 episodes failed that
-      // way on nemotron-3-ultra. Not every model accepts the parameter, so fall
-      // back to the unconstrained call rather than failing the episode.
-      try {
-        jsonText = await callChatAPI(buildOpenRouterClient(), model, input, true);
-      } catch (fmtErr) {
-        const m = fmtErr instanceof Error ? fmtErr.message : String(fmtErr);
-        if (!/response_format|json_object|not supported/i.test(m)) throw fmtErr;
-        console.warn("  ⚠ model rejected response_format — retrying unconstrained");
-        jsonText = await callChatAPI(buildOpenRouterClient(), model, input, false);
-      }
+      jsonText = await callChatAPI(buildOpenRouterClient(), model, input, false);
     } catch (err) {
       if (isCreditOrRateError(err) && process.env.OPENROUTER_FALLBACK_KEY) {
         console.warn(`  ⚠ Primary OpenRouter/Bluesminds failed — falling back to OpenRouter free`);
