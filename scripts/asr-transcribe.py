@@ -91,7 +91,15 @@ def words_to_segments(words):
     return segments
 
 
-def split_audio(mp3_path: str, chunk_minutes: int = 30):
+# ElevenLabs disconnects mid-upload on ~30MB chunks ("Server disconnected
+# without sending a response" - 3 of 4 episodes failed at 30 min).
+# Halved to 15. NOTE: transcribe_elevenlabs() derives its timestamp offset
+# from this same constant - they must never diverge or every segment after
+# the first chunk is misplaced.
+CHUNK_MINUTES = 15
+
+
+def split_audio(mp3_path: str, chunk_minutes: int = CHUNK_MINUTES):
     """Split files >25MB into chunks via ffmpeg so they fit ElevenLabs limits."""
     size_mb = os.path.getsize(mp3_path) / 1024 / 1024
     if size_mb < 25:
@@ -140,11 +148,21 @@ def transcribe_elevenlabs(mp3_path: str):
     all_segments = []
 
     for chunk_idx, chunk_path in enumerate(chunks):
-        chunk_offset_ms = chunk_idx * 30 * 60 * 1000
-        with open(chunk_path, "rb") as f:
-            result = client.speech_to_text.convert(
-                file=f, model_id="scribe_v1", language_code="en"
-            )
+        chunk_offset_ms = chunk_idx * CHUNK_MINUTES * 60 * 1000
+        result = None
+        for attempt in range(3):
+            try:
+                with open(chunk_path, "rb") as f:
+                    result = client.speech_to_text.convert(
+                        file=f, model_id="scribe_v1", language_code="en"
+                    )
+                break
+            except Exception as exc:
+                if attempt == 2:
+                    raise
+                log(f"    chunk {chunk_idx + 1}/{len(chunks)} attempt {attempt + 1} failed "
+                    f"({type(exc).__name__}); retrying in {5 * (attempt + 1)}s")
+                time.sleep(5 * (attempt + 1))
 
         if hasattr(result, "words") and result.words:
             segs = words_to_segments(result.words)
