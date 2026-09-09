@@ -45,7 +45,7 @@ export async function TopAscenders() {
               )}
               <span className="min-w-0 flex-1 truncate font-mono text-xs font-bold text-text-primary">{e.displayName}</span>
               <RankBadge rank={e.rank} size="sm" showTitle={false} />
-              <span className="shrink-0 font-mono text-[10px] text-text-muted/60 w-14 text-right">{e.score.toLocaleString()} pts</span>
+              <span className="shrink-0 font-mono text-[10px] text-text-muted/60 w-14 text-right">{e.score.toLocaleString("en-US")} pts</span>
             </div>
           );
           return (

@@ -76,11 +76,11 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
   if (search) subtitleParts.push(`matching "${search}"`);
   if (activeSpeaker) subtitleParts.push(`by ${activeSpeaker.displayName}`);
   const subtitle = subtitleParts.length > 0
-    ? `${totalCount.toLocaleString()} quotes ${subtitleParts.join(" ")}`
-    : `${allQuoteCount.toLocaleString()} notable quotes from the archive`;
+    ? `${totalCount.toLocaleString("en-US")} quotes ${subtitleParts.join(" ")}`
+    : `${allQuoteCount.toLocaleString("en-US")} notable quotes from the archive`;
 
   const glanceItems = [
-    { icon: <IconQuote size={14} />, label: `${allQuoteCount.toLocaleString()} quotes` },
+    { icon: <IconQuote size={14} />, label: `${allQuoteCount.toLocaleString("en-US")} quotes` },
     { icon: "\uD83C\uDFA4", label: `${topSpeakers.length} speakers` },
     ...(lastUpdated ? [{ icon: "\uD83D\uDD04", label: `Updated ${formatRelativeDate(lastUpdated)}` }] : []),
   ];

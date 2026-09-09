@@ -291,7 +291,7 @@ export default async function OGImage({
                     color: accent,
                   }}
                 >
-                  {score.toLocaleString()}
+                  {score.toLocaleString("en-US")}
                 </span>
                 <span style={{ fontSize: 16, color: "#666", letterSpacing: "0.1em" }}>
                   CODEX SCORE

@@ -185,7 +185,7 @@ export default async function HomePage() {
 
           <p className="font-mono text-[12px] text-text-muted max-w-lg mx-auto leading-relaxed">
             <span className="text-accent-gold-text font-bold">CultCodex</span> is the complete searchable
-            archive: <span className="text-accent-cyan">{stats.episodes.toLocaleString()}+ episodes</span>{" "}
+            archive: <span className="text-accent-cyan">{stats.episodes.toLocaleString("en-US")}+ episodes</span>{" "}
             indexed — full transcripts, guest profiles, lore, and an AI Oracle that answers questions
             from inside it all.
           </p>
@@ -219,10 +219,10 @@ export default async function HomePage() {
         <div className="border-b border-border/40 bg-void/80 backdrop-blur-sm py-3 px-4">
           <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-center gap-x-8 gap-y-1">
             {[
-              { value: stats.episodes.toLocaleString(), label: "transmissions archived" },
-              { value: stats.segments.toLocaleString(), label: "transcript segments" },
-              { value: stats.people.toLocaleString(), label: "voices profiled" },
-              { value: `${stats.totalHours.toLocaleString()}+`, label: "hours decoded" },
+              { value: stats.episodes.toLocaleString("en-US"), label: "transmissions archived" },
+              { value: stats.segments.toLocaleString("en-US"), label: "transcript segments" },
+              { value: stats.people.toLocaleString("en-US"), label: "voices profiled" },
+              { value: `${stats.totalHours.toLocaleString("en-US")}+`, label: "hours decoded" },
             ].map((s) => (
               <span key={s.label} className="font-mono text-[11px] text-text-muted whitespace-nowrap">
                 <span className="text-accent-gold-text font-bold">{s.value}</span>{" "}{s.label}
@@ -240,14 +240,14 @@ export default async function HomePage() {
                 href: "/episodes",
                 icon: <IconTransmission size={22} className="text-accent-gold" />,
                 label: "Episodes",
-                count: `${stats.episodes.toLocaleString()} transmissions`,
+                count: `${stats.episodes.toLocaleString("en-US")} transmissions`,
                 accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
               },
               {
                 href: "/people",
                 icon: <IconPerson size={22} className="text-accent-cyan" />,
                 label: "People",
-                count: `${stats.people.toLocaleString()} profiled`,
+                count: `${stats.people.toLocaleString("en-US")} profiled`,
                 accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5",
               },
               {
@@ -484,7 +484,7 @@ export default async function HomePage() {
                 ))}
               </div>
               <Link href="/episodes" className="font-mono text-xs text-accent-gold-text hover:underline">
-                View all {stats.episodes.toLocaleString()} episodes →
+                View all {stats.episodes.toLocaleString("en-US")} episodes →
               </Link>
             </div>
           )}

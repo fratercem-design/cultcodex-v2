@@ -232,7 +232,7 @@ function PulseStat({ value, label, accent, href }: PulseStatProps) {
   const inner = (
     <>
       <span className={`font-display text-2xl font-bold tabular-nums ${accent}`}>
-        {value.toLocaleString()}
+        {value.toLocaleString("en-US")}
       </span>
       <span className="block font-mono text-[10px] uppercase tracking-widest text-text-muted/60">
         {label}

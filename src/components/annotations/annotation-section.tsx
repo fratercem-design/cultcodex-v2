@@ -79,7 +79,7 @@ export async function AnnotationSection({ targetType, targetId, returnPath, labe
                   {a.user.displayName}
                   {a.user.memberTitle && <span className="text-accent-gold-text/80"> · {a.user.memberTitle}</span>}
                   {" · "}
-                  {new Date(a.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  {new Date(a.createdAt).toLocaleDateString("en-US", { timeZone: "UTC", month: "short", day: "numeric", year: "numeric" })}
                 </p>
               </div>
             </div>

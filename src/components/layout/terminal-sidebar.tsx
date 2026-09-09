@@ -169,7 +169,7 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
                 };
 
                 const badgeText = item.countKey
-                  ? counts[item.countKey].toLocaleString()
+                  ? counts[item.countKey].toLocaleString("en-US")
                   : null;
 
                 const inner = (
@@ -256,7 +256,7 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
           />
         </div>
         <div style={{ marginTop: 6 }}>
-          {counts.transcribedEpisodes.toLocaleString()} / {counts.episodes.toLocaleString()} eps
+          {counts.transcribedEpisodes.toLocaleString("en-US")} / {counts.episodes.toLocaleString("en-US")} eps
         </div>
       </div>
     </aside>

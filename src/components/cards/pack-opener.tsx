@@ -280,7 +280,7 @@ export function PackOpener({ packSlug, packTitle, packAccentColor, onClose }: Pa
           }}>
             <span>
               ⚡ <span style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}>
-                +{totalSignalPower.toLocaleString()} SIGNAL POWER
+                +{totalSignalPower.toLocaleString("en-US")} SIGNAL POWER
               </span>
             </span>
             {totalBonusCredits > 0 && (

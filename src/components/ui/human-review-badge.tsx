@@ -17,7 +17,7 @@ export function HumanReviewBadge({
   className,
 }: HumanReviewBadgeProps) {
   const dateStr = reviewedAt
-    ? new Date(reviewedAt).toLocaleDateString("en-US", {
+    ? new Date(reviewedAt).toLocaleDateString("en-US", { timeZone: "UTC",
         month: "short",
         year: "numeric",
       })

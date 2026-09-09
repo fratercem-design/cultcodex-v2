@@ -1,9 +1,25 @@
+/**
+ * `timeZone: "UTC"` is load-bearing, not decoration.
+ *
+ * Without it Intl formats in the runtime's zone: the server renders in UTC and
+ * the browser renders in the visitor's zone, so the same instant comes out as
+ * two different dates and React throws a hydration mismatch (error #418) on
+ * every page showing a date. An air date stored as UTC midnight is the common
+ * case here, and it is exactly the one that breaks:
+ *
+ *   2024-01-01T00:00:00Z  ->  UTC "Jan 1, 2024"  /  US Pacific "Dec 31, 2023"
+ *
+ * These are calendar dates, not moments in time, so UTC is also the correct
+ * reading — an episode that aired on the 1st should not read as the 31st
+ * because the visitor happens to be west of Greenwich.
+ */
 export function formatDate(date: Date | null | undefined): string {
   if (!date) return "—";
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
+    timeZone: "UTC",
   }).format(new Date(date));
 }
 

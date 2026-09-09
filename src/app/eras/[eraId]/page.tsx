@@ -175,7 +175,7 @@ export default async function EraDetailPage({
               className="rounded-lg border border-border bg-surface px-5 py-4 space-y-1"
             >
               <p className={`font-display text-2xl font-bold tabular-nums ${accentClass}`}>
-                {s.n.toLocaleString()}
+                {s.n.toLocaleString("en-US")}
               </p>
               <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
                 {s.label}

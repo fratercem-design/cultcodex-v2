@@ -98,7 +98,7 @@ export default async function OraclePage() {
 
         <p className="mx-auto mt-4 max-w-md px-4 font-serif text-sm leading-relaxed text-text-muted italic">
           Ask anything.{" "}
-          <span className="text-accent-cyan">{archiveSize.toLocaleString()}+ archive moments</span>{" "}
+          <span className="text-accent-cyan">{archiveSize.toLocaleString("en-US")}+ archive moments</span>{" "}
           synthesized in real time — with citations back to the source.
         </p>
 

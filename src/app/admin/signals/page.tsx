@@ -54,7 +54,7 @@ export default async function AdminSignalsPage() {
                       {p.user.displayName} · {p.user.email}
                     </span>
                     <span className="font-mono text-[10px] text-text-muted/60">
-                      {new Date(p.createdAt).toLocaleDateString()}
+                      {new Date(p.createdAt).toLocaleDateString("en-US", { timeZone: "UTC" })}
                     </span>
                   </div>
                   <p className="font-mono text-sm text-text-primary mb-2">{p.question}</p>

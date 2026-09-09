@@ -74,7 +74,7 @@ export default async function GraphPage({
             { n: totalEpisodes, label: activeEra ? "episodes in era" : "episodes analyzed" },
           ].map((s) => (
             <span key={s.label} className="font-mono text-[11px] text-text-muted">
-              <span className="text-accent-gold-text font-bold">{s.n.toLocaleString()}</span>{" "}
+              <span className="text-accent-gold-text font-bold">{s.n.toLocaleString("en-US")}</span>{" "}
               {s.label}
             </span>
           ))}

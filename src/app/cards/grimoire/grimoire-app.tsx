@@ -39,7 +39,7 @@ const panel: CSSProperties = {
 
 function fmtDate(iso: string): string {
   try {
-    return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+    return new Date(iso).toLocaleDateString("en-US", { timeZone: "UTC", year: "numeric", month: "long", day: "numeric" });
   } catch {
     return iso.slice(0, 10);
   }

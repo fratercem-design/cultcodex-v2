@@ -222,7 +222,7 @@ export default async function ChapterPage({ params }: PageProps) {
               </Link>
               {chapter.episode.airDate && (
                 <span className="ml-2 opacity-60">
-                  ({new Date(chapter.episode.airDate).toLocaleDateString()})
+                  ({new Date(chapter.episode.airDate).toLocaleDateString("en-US", { timeZone: "UTC" })})
                 </span>
               )}
             </p>

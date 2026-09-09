@@ -157,7 +157,7 @@ export default async function PsychenomiconPage() {
             <p className="mt-3 text-sm leading-relaxed text-text-muted">
               Over{" "}
               <span className="font-bold text-accent-cyan">
-                {stats.episodes.toLocaleString()} transmissions
+                {stats.episodes.toLocaleString("en-US")} transmissions
               </span>
               , across tarot readings, open panels, mythology deep-dives,
               midnight madness sessions, and the occasional full-blown spiritual
@@ -489,7 +489,7 @@ async function PsychenomiconContent({
         </div>
 
         <p className="mt-6 text-center font-mono text-xs text-text-muted">
-          Selected from {stats.quotes.toLocaleString()} recorded utterances.
+          Selected from {stats.quotes.toLocaleString("en-US")} recorded utterances.
           <br />
           <Link
             href="/transcripts"
@@ -623,7 +623,7 @@ function StatOrb({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex flex-col items-center rounded-lg border border-border bg-surface px-4 py-3">
       <span className="font-mono text-lg font-bold text-accent-cyan">
-        {value.toLocaleString()}
+        {value.toLocaleString("en-US")}
       </span>
       <span className="font-mono text-[9px] uppercase tracking-wider text-text-muted">
         {label}

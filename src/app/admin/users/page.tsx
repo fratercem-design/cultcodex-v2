@@ -183,7 +183,7 @@ function UserTable({
                   )}
                 </td>
                 <td className="px-4 py-3 text-text-muted/70">
-                  {new Date(user.createdAt).toLocaleDateString("en-US", {
+                  {new Date(user.createdAt).toLocaleDateString("en-US", { timeZone: "UTC",
                     month: "short",
                     year: "numeric",
                   })}

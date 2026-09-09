@@ -77,7 +77,7 @@ export default async function FromYouTubePage() {
 
           <p className="font-mono text-[12px] text-text-muted max-w-lg mx-auto leading-relaxed">
             <span className="text-accent-gold-text font-bold">CultCodex</span> holds{" "}
-            <span className="text-accent-cyan">{stats.episodes.toLocaleString()}+ episodes</span> with full
+            <span className="text-accent-cyan">{stats.episodes.toLocaleString("en-US")}+ episodes</span> with full
             transcripts, guest profiles, lore, and an AI Oracle that answers questions from inside all of it.
           </p>
 
@@ -105,10 +105,10 @@ export default async function FromYouTubePage() {
         <div className="border-b border-border/40 bg-void/80 backdrop-blur-sm py-3 px-4">
           <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-center gap-x-8 gap-y-1">
             {[
-              { value: stats.episodes.toLocaleString(), label: "transmissions archived" },
-              { value: stats.segments.toLocaleString(), label: "transcript segments" },
-              { value: stats.people.toLocaleString(), label: "voices profiled" },
-              { value: `${stats.totalHours.toLocaleString()}+`, label: "hours decoded" },
+              { value: stats.episodes.toLocaleString("en-US"), label: "transmissions archived" },
+              { value: stats.segments.toLocaleString("en-US"), label: "transcript segments" },
+              { value: stats.people.toLocaleString("en-US"), label: "voices profiled" },
+              { value: `${stats.totalHours.toLocaleString("en-US")}+`, label: "hours decoded" },
             ].map((s) => (
               <span key={s.label} className="font-mono text-[11px] text-text-muted whitespace-nowrap">
                 <span className="text-accent-gold-text font-bold">{s.value}</span>{" "}{s.label}
@@ -203,7 +203,7 @@ export default async function FromYouTubePage() {
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/60">{"/// free"}</p>
               <p className="font-display text-base font-bold text-text-primary">Start decoding — no account needed</p>
               <ul className="space-y-1.5 font-mono text-[11px] text-text-muted">
-                <li>✦ Browse {stats.episodes.toLocaleString()}+ episodes &amp; transcripts</li>
+                <li>✦ Browse {stats.episodes.toLocaleString("en-US")}+ episodes &amp; transcripts</li>
                 <li>✦ Ask the Oracle 3 questions</li>
                 <li>✦ Symbol Codex &amp; the Archetype Quiz</li>
                 <li>✦ The weekly Signal newsletter</li>

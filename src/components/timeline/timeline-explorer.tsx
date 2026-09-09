@@ -159,7 +159,7 @@ export function TimelineExplorer({ items }: { items: TimelineItem[] }) {
                   {ep.title}
                 </span>
                 <span className="shrink-0 font-mono text-[10px] text-text-muted/50">
-                  {new Date(ep.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  {new Date(ep.date).toLocaleDateString("en-US", { timeZone: "UTC", month: "short", day: "numeric" })}
                 </span>
               </Link>
             ))}

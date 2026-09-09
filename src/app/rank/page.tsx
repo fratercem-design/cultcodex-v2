@@ -58,7 +58,7 @@ export default async function RankPage() {
                 {data.progress.current.blurb}
               </p>
               <p className="font-mono text-xs text-text-muted/60">
-                Codex score: <span className="text-accent-gold-text font-bold">{data.score.toLocaleString()}</span>
+                Codex score: <span className="text-accent-gold-text font-bold">{data.score.toLocaleString("en-US")}</span>
               </p>
             </div>
 
@@ -67,7 +67,7 @@ export default async function RankPage() {
               <div className="space-y-2 pt-2">
                 <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-text-muted/60">
                   <span>{data.progress.current.title}</span>
-                  <span>{data.progress.toNext.toLocaleString()} pts to {data.progress.next.title}</span>
+                  <span>{data.progress.toNext.toLocaleString("en-US")} pts to {data.progress.next.title}</span>
                 </div>
                 <div className="h-2 w-full rounded-full bg-void overflow-hidden border border-border">
                   <div
@@ -124,9 +124,9 @@ export default async function RankPage() {
                   .map((l) => (
                     <div key={l.label} className="flex items-center justify-between px-5 py-2.5">
                       <span className="font-mono text-xs text-text-muted">
-                        {l.label} <span className="text-text-muted/60">× {l.count.toLocaleString()}</span>
+                        {l.label} <span className="text-text-muted/60">× {l.count.toLocaleString("en-US")}</span>
                       </span>
-                      <span className="font-mono text-xs font-bold text-accent-gold-text">+{l.points.toLocaleString()}</span>
+                      <span className="font-mono text-xs font-bold text-accent-gold-text">+{l.points.toLocaleString("en-US")}</span>
                     </div>
                   ))
               )}
@@ -169,7 +169,7 @@ export default async function RankPage() {
                     </div>
                     <p className="font-mono text-[11px] text-text-muted leading-relaxed">{r.blurb}</p>
                     <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">
-                      {r.minScore === 0 ? "Starting rank" : `${r.minScore.toLocaleString()} codex score`}
+                      {r.minScore === 0 ? "Starting rank" : `${r.minScore.toLocaleString("en-US")} codex score`}
                     </p>
                   </div>
                 </div>

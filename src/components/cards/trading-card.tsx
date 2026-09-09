@@ -385,7 +385,7 @@ export function TradingCard({ card, size = "md", onClick, faceDown = false, noTi
               color: "var(--term-fg-faint)",
               letterSpacing: "0.06em",
             }}>
-              {card.totalMinted?.toLocaleString() ?? "?"}/{card.maxSupply.toLocaleString()}
+              {card.totalMinted?.toLocaleString("en-US") ?? "?"}/{card.maxSupply.toLocaleString("en-US")}
             </span>
           )}
         </div>

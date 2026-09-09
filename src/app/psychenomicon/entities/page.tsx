@@ -137,7 +137,7 @@ export default async function EntitiesPage() {
           </div>
           <p className="text-xs text-text-muted">
             {nodes.length > 0
-              ? `${totalEntities.toLocaleString()} entities tracked · showing the ${nodes.length} most-connected · ${edges.length} relationship edges`
+              ? `${totalEntities.toLocaleString("en-US")} entities tracked · showing the ${nodes.length} most-connected · ${edges.length} relationship edges`
               : "No entities recorded yet."
             }
           </p>

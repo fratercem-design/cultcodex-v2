@@ -131,7 +131,7 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text">{"/// decode_mode"}</p>
         {generated_at && (
           <p className="font-mono text-[9px] text-text-muted">
-            Generated {new Date(generated_at).toLocaleDateString()}
+            Generated {new Date(generated_at).toLocaleDateString("en-US", { timeZone: "UTC" })}
           </p>
         )}
       </div>

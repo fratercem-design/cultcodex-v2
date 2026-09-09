@@ -163,7 +163,7 @@ export default async function TheRestPage() {
           <p className="text-sm text-text-primary leading-relaxed mb-3">
             Not every voice that entered the Cult of Psyche stream left a name. Not every
             name left a story. The Rest is the archive&apos;s acknowledgment of that — a
-            collective entry for the {unprofiled.length.toLocaleString()} guests,
+            collective entry for the {unprofiled.length.toLocaleString("en-US")} guests,
             one-time speakers, and mentioned figures who passed through without accumulating
             enough of a footprint to justify a standalone profile.
           </p>

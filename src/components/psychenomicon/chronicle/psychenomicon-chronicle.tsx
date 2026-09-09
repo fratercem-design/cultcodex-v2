@@ -84,7 +84,7 @@ export default function PsychenomiconChronicle() {
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">A Living Record of Evolving Patterns</h1>
             {chapterCount > 0 && (
               <p className="text-xs text-text-muted">
-                {chapterCount.toLocaleString()} chapters &middot; {majors?.length ?? 0} major events &middot; {entityCount} entities tracked &middot; {activeThreads.length} threads active
+                {chapterCount.toLocaleString("en-US")} chapters &middot; {majors?.length ?? 0} major events &middot; {entityCount} entities tracked &middot; {activeThreads.length} threads active
               </p>
             )}
           </div>

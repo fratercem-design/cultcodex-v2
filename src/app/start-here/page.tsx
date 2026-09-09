@@ -169,12 +169,12 @@ export default async function StartHerePage() {
 
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
           {[
-            { n: stats.episodes.toLocaleString(), label: "Transmissions" },
-            { n: `${stats.totalHours.toLocaleString()}+`, label: "Hours" },
-            { n: stats.people.toLocaleString(), label: "Voices" },
-            { n: stats.segments.toLocaleString(), label: "Moments indexed" },
-            { n: stats.quotes.toLocaleString(), label: "Quotes" },
-            { n: stats.lore.toLocaleString(), label: "Lore entries" },
+            { n: stats.episodes.toLocaleString("en-US"), label: "Transmissions" },
+            { n: `${stats.totalHours.toLocaleString("en-US")}+`, label: "Hours" },
+            { n: stats.people.toLocaleString("en-US"), label: "Voices" },
+            { n: stats.segments.toLocaleString("en-US"), label: "Moments indexed" },
+            { n: stats.quotes.toLocaleString("en-US"), label: "Quotes" },
+            { n: stats.lore.toLocaleString("en-US"), label: "Lore entries" },
           ].map((s) => (
             <div key={s.label} className="rounded-lg border border-border bg-surface p-3 text-center">
               <p className="font-mono text-lg font-bold text-accent-gold-text">{s.n}</p>
@@ -419,8 +419,8 @@ export default async function StartHerePage() {
             label: "Voices & Moments",
             color: "gold" as const,
             items: [
-              { href: "/people", label: "People", desc: `${stats.people.toLocaleString()} voices, hosts, guests` },
-              { href: "/quotes", label: "Quotes", desc: `${stats.quotes.toLocaleString()} memorable moments` },
+              { href: "/people", label: "People", desc: `${stats.people.toLocaleString("en-US")} voices, hosts, guests` },
+              { href: "/quotes", label: "Quotes", desc: `${stats.quotes.toLocaleString("en-US")} memorable moments` },
               { href: "/lore", label: "Lore", desc: "Deep mythology entries" },
               { href: "/members", label: "Members", desc: "The cult community" },
               { href: "/timeline", label: "Timeline", desc: "All episodes, chronological" },
@@ -434,7 +434,7 @@ export default async function StartHerePage() {
               { href: "/graph", label: "Relationship Map", desc: "Who appeared with whom — as a live network" },
               { href: "/topics", label: "Signals", desc: "Every theme and concept" },
               { href: "/collections", label: "Collections", desc: "Curated groupings" },
-              { href: "/episodes", label: "Episodes", desc: `${stats.episodes.toLocaleString()} transmissions` },
+              { href: "/episodes", label: "Episodes", desc: `${stats.episodes.toLocaleString("en-US")} transmissions` },
             ],
           },
           {

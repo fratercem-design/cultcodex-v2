@@ -165,7 +165,7 @@ export function ProfileForm({
     setLinks(links.map((l, idx) => idx === i ? { ...l, [field]: value } : l));
   }
 
-  const memberSinceStr = new Date(memberSince).toLocaleDateString("en-US", {
+  const memberSinceStr = new Date(memberSince).toLocaleDateString("en-US", { timeZone: "UTC",
     month: "long",
     year: "numeric",
   });

@@ -27,7 +27,7 @@ const TOPIC_COLORS = [
 function formatMonth(m: string) {
   const [year, month] = m.split("-");
   const d = new Date(parseInt(year), parseInt(month) - 1);
-  return d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+  return d.toLocaleDateString("en-US", { timeZone: "UTC", month: "short", year: "2-digit" });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
