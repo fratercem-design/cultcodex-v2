@@ -7,7 +7,7 @@ export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me";
 
   const episodes = await prisma.episode.findMany({
-    where: { status: "PUBLISHED" },
+    where: { status: "published" },
     orderBy: { airDate: "desc" },
     take: 50,
     select: {
