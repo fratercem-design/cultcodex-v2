@@ -51,6 +51,24 @@ function alertCapHit(bucket: string, cap: number): void {
  */
 export async function consumeLlmBudget(bucket: string, cap: number, units = 1): Promise<BudgetResult> {
   if (process.env.AI_KILLSWITCH === "1") return { ok: false, reason: "killswitch", used: 0, cap };
+  return consumeDailyBudget(bucket, cap, units);
+}
+
+/**
+ * The same global daily circuit-breaker, without the AI kill-switch.
+ *
+ * Costly endpoints that are not LLM calls need the same protection — the
+ * per-IP limiter in rate-limit.ts is an in-memory Map, so on serverless it is
+ * per-instance and does not actually cap anything (measured: 75 sequential
+ * requests against a documented 60/min limit produced zero 429s). A global
+ * daily counter is the control that genuinely bounds spend, because it holds
+ * however many instances are running and whoever is calling.
+ *
+ * Kept separate from consumeLlmBudget so AI_KILLSWITCH cannot take out sign-in
+ * email: shutting off paid AI during an attack should not lock people out of
+ * their accounts.
+ */
+export async function consumeDailyBudget(bucket: string, cap: number, units = 1): Promise<BudgetResult> {
   try {
     const day = new Date().toISOString().slice(0, 10);
     const key = `${bucket}:${day}`;
