@@ -25,12 +25,12 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-      # Provider is chosen per-run. openrouter/minimax-m3 is free with a 1M
+      # Provider is chosen per-run. The openrouter model is free with a 1M
       # context window, which matters because buildTranscriptText() does not
       # truncate - a multi-hour transcript is an enormous prompt. anthropic
       # uses Haiku and bills the account.
       ENRICHMENT_PROVIDER: ${{ inputs.provider || 'openrouter' }}
-      ENRICHMENT_MODEL: ${{ (inputs.provider == 'anthropic') && 'claude-haiku-4-5-20251001' || 'minimax/minimax-m3:free' }}
+      ENRICHMENT_MODEL: ${{ (inputs.provider == 'anthropic') && 'claude-haiku-4-5-20251001' || 'nvidia/nemotron-3-ultra-550b-a55b:free' }}
 
     steps:
       - uses: actions/checkout@v7
