@@ -662,7 +662,7 @@ export function SyncPanel({
                   )}
                 </div>
                 {(avatarResult.results ?? []).filter((r) => r.status === "ok").slice(0, 10).map((r) => (
-                  <p key={r.name} className="font-mono text-[10px] text-accent-gold-text/70">
+                  <p key={r.name} className="font-mono text-[10px] text-accent-gold-text/80">
                     ✓ {r.name} → {r.channelTitle}
                   </p>
                 ))}

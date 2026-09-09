@@ -153,7 +153,7 @@ export default async function MembersPage() {
       <section className="border-b border-border bg-void">
         <div className="mx-auto max-w-5xl px-4 py-10">
           <div className="mb-6 text-center">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
               {"/// what_initiation_unlocks"}
             </p>
             <h2 className="mt-2 font-display text-xl font-bold text-text-primary">
@@ -217,7 +217,7 @@ export default async function MembersPage() {
                 className="h-px flex-1"
                 style={{ background: "linear-gradient(to right, rgba(200, 57, 46,0.4), transparent)" }}
               />
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/70">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
                 ✦ Archive Contributors — Oracle Tier
               </p>
               <div
@@ -344,7 +344,7 @@ function MemberCard({
       ring: "border-accent-gold/30",
       ringBg: "border-accent-gold/30 bg-accent-gold/10",
       text: "text-accent-gold-text",
-      soft: "text-accent-gold-text/60",
+      soft: "text-accent-gold-text/80",
     },
     cyan: {
       card: "border-accent-cyan/20 hover:border-accent-cyan/40 hover:shadow-accent-cyan/10",
@@ -358,7 +358,7 @@ function MemberCard({
       ring: "border-accent-violet/40",
       ringBg: "border-accent-violet/40 bg-accent-violet/10",
       text: "text-accent-violet-text",
-      soft: "text-accent-violet-text/60",
+      soft: "text-accent-violet-text/70",
     },
   }[accent];
 

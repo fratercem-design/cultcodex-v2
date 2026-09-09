@@ -49,7 +49,7 @@ export default async function HandbookPage() {
 
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">
+      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
         {"/// the_codex_of_gatekeepers"}
       </p>
       <h1 className="mt-3 font-display text-4xl font-black tracking-tight text-text-primary">

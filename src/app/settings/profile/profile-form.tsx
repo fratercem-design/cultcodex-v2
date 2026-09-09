@@ -331,7 +331,7 @@ export function ProfileForm({
       {isSystemTier && (
         <div className="mt-2 space-y-5 rounded-xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface p-6">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/60 mb-1">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/70 mb-1">
               ✦ Full System · Oracle Tier
             </p>
             <h3 className="font-display text-base font-bold text-accent-violet-text">Your Codex Page</h3>

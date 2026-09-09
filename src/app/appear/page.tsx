@@ -73,13 +73,13 @@ export default function AppearPage() {
 
         {/* How it works */}
         <section className="space-y-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
             {"/// how_to_get_on"}
           </p>
           <div className="space-y-4">
             {STEPS.map((s) => (
               <div key={s.n} className="flex gap-4 rounded-xl border border-border bg-surface p-5">
-                <span className="font-display text-lg font-bold text-accent-gold-text/70 shrink-0 w-8">{s.n}</span>
+                <span className="font-display text-lg font-bold text-accent-gold-text/80 shrink-0 w-8">{s.n}</span>
                 <div className="space-y-1">
                   <h2 className="font-display text-base font-bold text-text-primary">{s.title}</h2>
                   <p className="text-sm text-text-muted leading-relaxed">{s.body}</p>

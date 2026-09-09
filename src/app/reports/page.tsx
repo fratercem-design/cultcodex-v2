@@ -125,7 +125,7 @@ export default async function ReportsPage() {
             by AI from the full corpus and cited back to the source.
           </p>
           {!hasAccess && (
-            <p className="font-mono text-[11px] text-accent-gold-text/70">
+            <p className="font-mono text-[11px] text-accent-gold-text/80">
               An Initiate+ feature · $10/mo
             </p>
           )}
@@ -196,7 +196,7 @@ export default async function ReportsPage() {
         {/* Codex Reports */}
         <section className="space-y-5">
           <div className="text-center space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
               {"/// codex_reports"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">Standing intelligence on the archive.</h2>

@@ -15,7 +15,7 @@ export function SuggestCorrection({ entityType, entityTitle, className }: Sugges
       <div className="flex items-start gap-3">
         <IconScroll size={16} className="text-accent-gold-text/60 mt-0.5 flex-shrink-0" />
         <div className="space-y-1.5">
-          <p className="font-mono text-[10px] text-accent-gold-text/60 uppercase tracking-wider font-bold">
+          <p className="font-mono text-[10px] text-accent-gold-text/80 uppercase tracking-wider font-bold">
             Content Notice
           </p>
           <p className="text-[11px] text-text-muted leading-relaxed">

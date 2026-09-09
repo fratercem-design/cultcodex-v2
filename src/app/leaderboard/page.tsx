@@ -86,7 +86,7 @@ export default async function LeaderboardPage() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-mono text-sm font-bold text-text-primary">{e.displayName}</p>
                     {e.memberTitle && (
-                      <p className="truncate font-mono text-[11px] italic text-accent-gold-text/70">{e.memberTitle}</p>
+                      <p className="truncate font-mono text-[11px] italic text-accent-gold-text/80">{e.memberTitle}</p>
                     )}
                   </div>
 

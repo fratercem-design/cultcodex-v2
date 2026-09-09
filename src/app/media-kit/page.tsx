@@ -67,7 +67,7 @@ export default async function MediaKitPage() {
 
         {/* What it is */}
         <section className="space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
             {"/// what_it_is"}
           </p>
           <div className="rounded-xl border border-border bg-surface p-6 space-y-4">
@@ -104,7 +104,7 @@ export default async function MediaKitPage() {
 
         {/* Brand */}
         <section className="space-y-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
             {"/// brand_language"}
           </p>
           <div className="grid gap-4 sm:grid-cols-2">

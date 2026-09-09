@@ -42,7 +42,7 @@ export function TranscriptNotify({ episodeSlug }: TranscriptNotifyProps) {
 
   return (
     <div className="mt-3 space-y-2">
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60">
+      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
         {"/// notify_when_ready"}
       </p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-2 sm:flex-row">

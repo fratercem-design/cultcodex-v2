@@ -40,7 +40,7 @@ export function PrizeWheel({ progress, onUpdate, onPrize }: {
       <div className="absolute inset-0 bg-gradient-to-b from-void/85 via-void/80 to-void/90" />
       <div className="relative space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/70">{"/// the_prize_wheel"}</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// the_prize_wheel"}</p>
         <span className="font-mono text-[10px] text-text-muted">🎡 {progress.spins} spin{progress.spins === 1 ? "" : "s"} · earn one every 5 correct</span>
       </div>
 

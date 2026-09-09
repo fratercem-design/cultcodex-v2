@@ -79,7 +79,7 @@ export default function StormbornPage() {
 
       <Link
         href="/"
-        className="mt-6 font-mono text-[10px] tracking-widest text-text-muted/60 transition-colors hover:text-accent-violet-text/60"
+        className="mt-6 font-mono text-[10px] tracking-widest text-text-muted/60 transition-colors hover:text-accent-violet-text/70"
       >
         &larr; return to the archive
       </Link>

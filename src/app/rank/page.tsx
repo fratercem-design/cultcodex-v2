@@ -87,7 +87,7 @@ export default async function RankPage() {
           </section>
         ) : (
           <section className="rounded-2xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-7 text-center space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
               {"/// claim_your_rank"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
@@ -138,7 +138,7 @@ export default async function RankPage() {
 
         {/* The ladder */}
         <section className="space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60 text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70 text-center">
             {"/// the_path"}
           </p>
           <div className="space-y-3">

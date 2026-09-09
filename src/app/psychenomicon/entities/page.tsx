@@ -125,7 +125,7 @@ export default async function EntitiesPage() {
     <main className="min-h-screen bg-void">
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-5xl space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/60">ψ PSYCHENOMICON · ENTITIES ψ</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">ψ PSYCHENOMICON · ENTITIES ψ</p>
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <h1 className="font-display text-2xl font-bold text-text-primary">Entity Network</h1>
             <Link
@@ -147,8 +147,8 @@ export default async function EntitiesPage() {
       <div className="mx-auto max-w-5xl px-4 py-8 space-y-10">
         {nodes.length === 0 ? (
           <div className="py-20 text-center space-y-6">
-            <p className="font-mono text-4xl text-accent-violet-text/20">ψ</p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/60">{"/// no_entities_recorded"}</p>
+            <p className="font-mono text-4xl text-accent-violet-text/55">ψ</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/70">{"/// no_entities_recorded"}</p>
             <p className="text-sm text-text-muted leading-relaxed max-w-sm mx-auto">
               Entities are extracted automatically when Psychenomicon chapters are generated. Each significant person becomes a tracked entity with archetype evolution, radar traits, and chapter appearances.
             </p>
@@ -221,7 +221,7 @@ export default async function EntitiesPage() {
                   <div className="flex items-center justify-between text-[9px] font-mono text-text-muted">
                     <span>{e._count.appearances} chapter{e._count.appearances !== 1 ? "s" : ""}</span>
                     {latestEvent && (
-                      <span className="text-accent-gold-text/70">
+                      <span className="text-accent-gold-text/80">
                         CH.{String(latestEvent.chapterNumber).padStart(3, "0")} → {latestEvent.primaryArchetype}
                       </span>
                     )}
@@ -239,7 +239,7 @@ export default async function EntitiesPage() {
 
                   {/* Archive profile cross-link */}
                   {e.personSlug && (
-                    <p className="font-mono text-[8px] text-accent-gold-text/50 group-hover:text-accent-gold-text/70 transition-colors">
+                    <p className="font-mono text-[8px] text-accent-gold-text/80 group-hover:text-accent-gold-text/80 transition-colors">
                       ◈ archive profile →
                     </p>
                   )}

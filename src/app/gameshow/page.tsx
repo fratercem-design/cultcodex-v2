@@ -37,7 +37,7 @@ export default function GameShowPage() {
 
         <div className="relative mx-auto max-w-3xl text-center space-y-5">
           <GameShowHero size={84} className="mx-auto text-accent-violet-text" title="Panelverse Game Show sigil" />
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/60">{"/// the_ultimate_cult_trivia_experience"}</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">{"/// the_ultimate_cult_trivia_experience"}</p>
           <h1 className="font-display text-4xl sm:text-5xl font-bold text-text-primary leading-tight">
             The Panelverse Game Show
           </h1>

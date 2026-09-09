@@ -88,7 +88,7 @@ export default async function ThreadsIndexPage() {
     <main className="min-h-screen bg-void">
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-5xl space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">
             ψ PSYCHENOMICON · THREADS ψ
           </p>
           <h1 className="font-display text-2xl font-bold text-text-primary">Thread Registry</h1>

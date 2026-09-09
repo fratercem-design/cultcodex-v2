@@ -91,7 +91,7 @@ export function HomeOraclePreview() {
       )}
 
       {state === "loading" && (
-        <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/50 animate-pulse py-2">
+        <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70 animate-pulse py-2">
           {"/// searching_the_archive"}
         </p>
       )}
@@ -129,7 +129,7 @@ export function HomeOraclePreview() {
           </div>
           {/* Paywall CTA */}
           <div className="rounded-xl border border-accent-gold/25 bg-gradient-to-b from-accent-gold/5 to-surface px-5 py-4 text-center space-y-2">
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
               {"/// unlock full answer + citations"}
             </p>
             <p className="font-serif text-sm text-text-muted italic">
@@ -148,7 +148,7 @@ export function HomeOraclePreview() {
       {/* Gated — needs subscription */}
       {state === "gated" && (
         <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-5 text-center space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60">{"/// initiate_required"}</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// initiate_required"}</p>
           <p className="font-display text-sm font-bold text-text-primary">The Oracle speaks only to Initiates.</p>
           <p className="font-mono text-xs text-text-muted">Unlock the full Oracle with unlimited questions and archive citations.</p>
           <Link
@@ -163,7 +163,7 @@ export function HomeOraclePreview() {
       {/* Monthly preview used */}
       {state === "limit" && (
         <div className="rounded-xl border border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-surface p-5 text-center space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/60">{"/// preview_exhausted"}</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/70">{"/// preview_exhausted"}</p>
           <p className="font-display text-sm font-bold text-text-primary">Your free preview is complete.</p>
           <p className="font-mono text-xs text-text-muted">Initiate+ unlocks unlimited Oracle access — every question, every citation.</p>
           <Link

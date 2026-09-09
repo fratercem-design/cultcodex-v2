@@ -445,7 +445,7 @@ export function RelationshipGraph({ nodes, edges }: Props) {
       {selectedNode && (
         <div className="rounded-lg border border-accent-violet/20 bg-surface px-5 py-4 flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-1">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/60">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">
               {"/// focused"}
             </p>
             <p className="font-display text-base font-bold text-text-primary">

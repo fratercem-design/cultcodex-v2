@@ -50,7 +50,7 @@ export function ClaimForm({ token, recipientName }: ClaimFormProps) {
     return (
       <div className="text-center space-y-6 animate-pulse-slow">
         <div className="text-5xl text-accent-gold">✦</div>
-        <div className="font-mono text-xs uppercase tracking-[0.4em] text-accent-gold-text/60">
+        <div className="font-mono text-xs uppercase tracking-[0.4em] text-accent-gold-text/80">
           Sealed
         </div>
         <h2 className="font-serif text-3xl text-white">{title}</h2>
@@ -67,7 +67,7 @@ export function ClaimForm({ token, recipientName }: ClaimFormProps) {
       <div className="space-y-3">
         <label
           htmlFor="oracle-title"
-          className="block font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60"
+          className="block font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80"
         >
           Your name in the archive
         </label>

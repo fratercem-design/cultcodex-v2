@@ -33,7 +33,7 @@ export default async function ClaimCardPage({ params }: PageProps) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#080810" }}>
         <div className="text-center space-y-5 max-w-md">
-          <div className="font-mono text-[8px] uppercase tracking-[0.7em] text-accent-gold-text/25">
+          <div className="font-mono text-[8px] uppercase tracking-[0.7em] text-accent-gold-text/80">
             Living Oracle Deck
           </div>
           <div className="text-accent-gold/20 text-2xl">🃏</div>
@@ -45,7 +45,7 @@ export default async function ClaimCardPage({ params }: PageProps) {
           </p>
           <Link
             href="/cards"
-            className="inline-block font-mono text-[10px] text-accent-gold-text/40 hover:text-accent-gold-text/70 transition-colors uppercase tracking-[0.4em] mt-4"
+            className="inline-block font-mono text-[10px] text-accent-gold-text/80 hover:text-accent-gold-text/80 transition-colors uppercase tracking-[0.4em] mt-4"
           >
             Enter the archive →
           </Link>
@@ -61,7 +61,7 @@ export default async function ClaimCardPage({ params }: PageProps) {
     <div className="min-h-screen" style={{ background: "#080810" }}>
       <div className="max-w-lg mx-auto px-6 py-16 text-center space-y-10">
         <div className="space-y-4">
-          <div className="font-mono text-[8px] uppercase tracking-[0.7em] text-accent-gold-text/35">
+          <div className="font-mono text-[8px] uppercase tracking-[0.7em] text-accent-gold-text/80">
             Living Oracle Deck &nbsp;·&nbsp; {editionLabel} &nbsp;·&nbsp; №{gift.serial}
           </div>
           <h1 className="font-serif text-white text-3xl" style={{ textShadow: "0 0 60px rgba(200,169,107,0.25)" }}>
@@ -101,7 +101,7 @@ export default async function ClaimCardPage({ params }: PageProps) {
             given — and this one was set aside for you before the deck went live.
           </p>
           {gift.note && <p className="italic text-white/55">&ldquo;{gift.note}&rdquo;</p>}
-          <p className="font-mono text-[9px] not-italic uppercase tracking-[0.45em] text-accent-gold-text/35">
+          <p className="font-mono text-[9px] not-italic uppercase tracking-[0.45em] text-accent-gold-text/80">
             First provenance · marked before the awakening
           </p>
         </div>

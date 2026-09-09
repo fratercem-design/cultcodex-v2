@@ -26,7 +26,7 @@ export default async function SalonPage() {
         <PageHero title="THE SALON" subtitle="The room behind the room." label="oracle_only" backgroundImage="/hero-bg.jpg" />
         <main id="main-content" className="mx-auto max-w-2xl px-4 py-16">
           <div className="rounded-2xl border border-accent-violet/40 bg-gradient-to-b from-accent-violet/10 to-surface p-8 text-center space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
               {"/// oracle_tier_only"}
             </p>
             <h2 className="font-display text-2xl font-bold text-accent-violet-text">

@@ -29,7 +29,7 @@ export function BookCta({ sku, price }: { sku: string; price: number }) {
   if (state && (state.owned || state.isAdmin)) {
     return (
       <div className="space-y-3 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
           {"/// psychenomicon · the_book"}
         </p>
         <Link

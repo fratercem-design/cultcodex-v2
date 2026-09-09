@@ -49,7 +49,7 @@ export default async function ArchetypesIndexPage() {
     <main className="min-h-screen bg-void">
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-5xl space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">
             ψ PSYCHENOMICON · ARCHETYPES ψ
           </p>
           <h1 className="font-display text-2xl font-bold text-text-primary">
@@ -72,8 +72,8 @@ export default async function ArchetypesIndexPage() {
       <div className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         {archetypes.length === 0 ? (
           <div className="py-20 text-center space-y-3">
-            <p className="font-mono text-4xl text-accent-violet-text/20">ψ</p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/60">
+            <p className="font-mono text-4xl text-accent-violet-text/55">ψ</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/70">
               {"/// no_archetypes_recorded"}
             </p>
             <p className="text-sm text-text-muted max-w-sm mx-auto">
@@ -146,7 +146,7 @@ export default async function ArchetypesIndexPage() {
                     </div>
                   )}
 
-                  <p className="font-mono text-[10px] text-accent-violet-text/40 group-hover:text-accent-violet-text transition-colors">
+                  <p className="font-mono text-[10px] text-accent-violet-text/70 group-hover:text-accent-violet-text transition-colors">
                     Open atlas →
                   </p>
                 </Link>
@@ -164,7 +164,7 @@ export default async function ArchetypesIndexPage() {
           </Link>
           <Link
             href="/psychenomicon/entities"
-            className="font-mono text-[10px] text-accent-violet-text/60 hover:text-accent-violet-text transition-colors"
+            className="font-mono text-[10px] text-accent-violet-text/70 hover:text-accent-violet-text transition-colors"
           >
             All entities →
           </Link>

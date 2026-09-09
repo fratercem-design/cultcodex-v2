@@ -54,7 +54,7 @@ export function EmailGate({ callbackUrl = "/onboarding" }: { callbackUrl?: strin
         role="status"
         aria-live="polite"
       >
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/70">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
           {"// "}step 1 of 2 complete
         </p>
         <h2 className="mt-3 font-serif text-2xl font-black text-accent-gold">
@@ -95,7 +95,7 @@ export function EmailGate({ callbackUrl = "/onboarding" }: { callbackUrl?: strin
       onSubmit={handleSubmit}
       className="mx-auto mt-10 max-w-lg rounded-lg border border-accent-gold/25 bg-surface p-6 sm:p-8"
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/70">
+      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
         {"// "}the first gate
       </p>
       <h2 className="mt-3 font-serif text-2xl font-black text-text-primary">

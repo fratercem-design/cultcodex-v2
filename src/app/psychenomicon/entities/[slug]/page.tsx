@@ -136,7 +136,7 @@ export default async function EntityPage({ params }: PageProps) {
       {/* Header */}
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-4xl space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/70">
             ψ PSYCHENOMICON · ENTITY ψ
           </p>
           <div className="flex flex-wrap items-start gap-4">
@@ -216,7 +216,7 @@ export default async function EntityPage({ params }: PageProps) {
               <div className="rounded-lg border border-border bg-surface p-4 space-y-2">
                 {patterns.map((p, i) => (
                   <div key={i} className="flex items-start gap-2.5">
-                    <span className="font-mono text-[9px] text-accent-violet-text/60 flex-shrink-0 mt-0.5">▸</span>
+                    <span className="font-mono text-[9px] text-accent-violet-text/70 flex-shrink-0 mt-0.5">▸</span>
                     <p className="text-xs text-text-muted leading-relaxed">{p}</p>
                   </div>
                 ))}

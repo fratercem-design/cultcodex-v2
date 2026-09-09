@@ -62,7 +62,7 @@ export function GiftSignup({ source = "gift:gospel", className = "" }: GiftSignu
         style={{ background: "radial-gradient(ellipse 55% 100% at 50% 0%, rgba(169,74,74,0.20) 0%, transparent 70%)" }}
       />
 
-      <p className="relative font-mono text-[10px] uppercase tracking-[0.45em] text-accent-gold-text/70">
+      <p className="relative font-mono text-[10px] uppercase tracking-[0.45em] text-accent-gold-text/80">
         ✦ &nbsp;A free transmission&nbsp; ✦
       </p>
       <h2 className="relative mt-2 font-display text-2xl font-bold text-white sm:text-3xl" style={{ textShadow: "0 0 40px rgba(74, 45, 110,0.35)" }}>

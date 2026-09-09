@@ -84,7 +84,7 @@ export default async function ChaptersIndexPage({
       <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-4xl flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="space-y-2">
-            <Link href="/psychenomicon" className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/60 hover:text-accent-violet-text transition-colors">
+            <Link href="/psychenomicon" className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70 hover:text-accent-violet-text transition-colors">
               ← The Psychenomicon
             </Link>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">The Chronicle</h1>
@@ -109,7 +109,7 @@ export default async function ChaptersIndexPage({
         )}
         {groups.map((g) => (
           <section key={g.label} className="space-y-2">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/70 sticky top-0 bg-void/90 backdrop-blur-sm py-1.5 z-10">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80 sticky top-0 bg-void/90 backdrop-blur-sm py-1.5 z-10">
               {g.label}
             </p>
             <div className="space-y-1.5">

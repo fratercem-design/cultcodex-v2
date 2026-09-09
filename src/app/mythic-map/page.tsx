@@ -278,7 +278,7 @@ export default function MythicMapPage() {
             divination, myth retelling, livestream community theater,
             psychological transformation, and digital-age spiritual boundary work.
           </p>
-          <p className="font-mono text-xs text-accent-gold-text/70">
+          <p className="font-mono text-xs text-accent-gold-text/80">
             oracle insight &rarr; public reaction &rarr; projection &rarr; boundary
             formation &rarr; mythic transformation &rarr; codex memory
           </p>
@@ -318,7 +318,7 @@ export default function MythicMapPage() {
                   {a.conflict}
                 </p>
                 <p className="font-mono text-[10px] text-text-muted">
-                  <span className="text-accent-gold-text/60">see:</span>{" "}
+                  <span className="text-accent-gold-text/80">see:</span>{" "}
                   {a.examples}
                 </p>
               </div>
@@ -372,7 +372,7 @@ export default function MythicMapPage() {
                   <p className="font-mono text-[8px] text-text-muted mt-0.5">
                     ritual host node
                   </p>
-                  <p className="font-mono text-[7px] text-accent-gold-text/50 mt-0.5">
+                  <p className="font-mono text-[7px] text-accent-gold-text/80 mt-0.5">
                     oracle &middot; host &middot; witness
                   </p>
                 </div>
@@ -440,7 +440,7 @@ export default function MythicMapPage() {
                   <p className="font-mono text-[10px] text-text-muted leading-relaxed">
                     {ax.path}
                   </p>
-                  <p className="font-mono text-[9px] text-accent-gold-text/50 italic">
+                  <p className="font-mono text-[9px] text-accent-gold-text/80 italic">
                     {ax.verb}
                   </p>
                 </div>
@@ -606,7 +606,7 @@ export default function MythicMapPage() {
                     <td className="px-3 py-2.5 text-xs text-text-muted hidden sm:table-cell">
                       {row.meaning}
                     </td>
-                    <td className="px-3 py-2.5 font-mono text-[10px] text-accent-gold-text/70 hidden lg:table-cell">
+                    <td className="px-3 py-2.5 font-mono text-[10px] text-accent-gold-text/80 hidden lg:table-cell">
                       {row.episodes}
                     </td>
                     <td className="px-3 py-2.5 text-xs text-text-muted italic hidden md:table-cell">

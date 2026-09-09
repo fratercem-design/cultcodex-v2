@@ -228,7 +228,7 @@ export function GameShow() {
                     <span className="flex items-center gap-2">
                       <span className="font-display text-lg font-bold text-text-primary group-hover:text-accent-violet-text transition-colors">{meta?.name ?? r.label}</span>
                     </span>
-                    {meta && <span className="mt-0.5 block font-mono text-[8px] uppercase tracking-[0.3em] text-accent-gold-text/70">{meta.tag}</span>}
+                    {meta && <span className="mt-0.5 block font-mono text-[8px] uppercase tracking-[0.3em] text-accent-gold-text/80">{meta.tag}</span>}
                     <span className="mt-1.5 block text-xs text-text-muted leading-relaxed">{meta?.desc}</span>
                     <span className="mt-2 block font-mono text-[10px] uppercase tracking-widest text-text-muted/50">{count} questions</span>
                   </span>
@@ -264,7 +264,7 @@ export function GameShow() {
       <div className="mb-4"><ProgressHud progress={progress} rank={rank} compact /></div>
       <div className="mb-6 flex items-center justify-between gap-3 border-b border-border pb-3">
         <button onClick={() => { setRoundKey(null); goto(0); }} className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-violet-text transition-colors">← Rounds</button>
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/60">
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/70">
           {roundKey === "__daily" ? "⚡ Daily Challenge" : ROUND_META[roundKey]?.name ?? bank.rounds.find((r) => r.key === roundKey)?.label ?? "The Whole Deck"} · {idx + 1}/{pool.length}
         </span>
         <div className="flex items-center gap-2">
@@ -291,7 +291,7 @@ function DailyChallenge({ done, streak, onPlay }: { done: boolean; streak: numbe
       <div className="gs-drift pointer-events-none absolute inset-0 opacity-20" aria-hidden />
       <div className="relative flex flex-wrap items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/70">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
             {"/// daily_challenge"}{streak > 0 && <span className="ml-2 text-accent-gold-text">🔥 {streak}-day streak</span>}
           </p>
           <h3 className="mt-1 font-display text-xl font-bold text-text-primary">Today&rsquo;s Impossible Question</h3>
@@ -418,10 +418,10 @@ function QuestionCard({ q, revealed, selected, onChoose, onReveal, onNext, onArc
         <div className="grid gap-4 sm:grid-cols-3">
           {([["SUSPECT", q.suspects, q.solution.suspect], ["LOCATION", q.locations, q.solution.location], ["ARTIFACT", q.artifacts, q.solution.artifact]] as const).map(([label, opts, sol]) => (
             <div key={label} className="space-y-2">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/60">{label}</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">{label}</p>
               {opts.map((o, i) => (
                 <div key={i} className={`rounded border px-3 py-2 text-sm transition-all duration-300 ${revealed && o === sol ? "border-emerald-400/70 bg-emerald-400/10 text-text-primary shadow-[0_0_16px_-4px_rgba(52,211,153,0.5)]" : "border-border bg-surface text-text-muted"}`}>
-                  <span className="font-mono text-[10px] text-accent-violet-text/60 mr-2">{LETTERS[i]}</span>{o}
+                  <span className="font-mono text-[10px] text-accent-violet-text/70 mr-2">{LETTERS[i]}</span>{o}
                   {revealed && o === sol && <span className="ml-1 text-emerald-400">✓</span>}
                 </div>
               ))}

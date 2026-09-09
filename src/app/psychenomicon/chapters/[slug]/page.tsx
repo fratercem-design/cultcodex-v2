@@ -143,7 +143,7 @@ export default async function ChapterPage({ params }: PageProps) {
       {/* Chapter header */}
       <header className={`border-b py-10 px-4 ${chapter.isMajorEvent ? "border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-void" : "border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void"}`}>
         <div className="mx-auto max-w-3xl text-center space-y-3">
-          <p className={`font-mono text-[9px] uppercase tracking-[0.5em] ${chapter.isMajorEvent ? "text-accent-gold-text/60" : "text-accent-violet-text/60"}`}>
+          <p className={`font-mono text-[9px] uppercase tracking-[0.5em] ${chapter.isMajorEvent ? "text-accent-gold-text/80" : "text-accent-violet-text/70"}`}>
             ψ PSYCHENOMICON · CH.{String(chapter.chapterNumber).padStart(3, "0")} ψ
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">

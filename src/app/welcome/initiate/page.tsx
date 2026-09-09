@@ -56,7 +56,7 @@ export default function WelcomeInitiatePage() {
 
       {/* ── Hero ── */}
       <section className="text-center space-y-5">
-        <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-gold-text/60">
+        <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-gold-text/80">
           ✦ &nbsp; transmission confirmed &nbsp; ✦
         </p>
         <h1
@@ -89,7 +89,7 @@ export default function WelcomeInitiatePage() {
 
       {/* ── What just opened ── */}
       <section className="space-y-6">
-        <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+        <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
           {"/// what just opened"}
         </p>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -120,7 +120,7 @@ export default function WelcomeInitiatePage() {
               href={s.href}
               className="flex items-center gap-4 rounded-xl border border-border bg-surface px-5 py-3.5 transition-all hover:border-accent-gold/40 hover:bg-accent-gold/5 group"
             >
-              <span className="font-mono text-lg font-bold text-accent-gold-text/25 w-6 flex-shrink-0">
+              <span className="font-mono text-lg font-bold text-accent-gold-text/80 w-6 flex-shrink-0">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className="font-mono text-sm text-text-muted group-hover:text-accent-gold-text transition-colors">
@@ -134,7 +134,7 @@ export default function WelcomeInitiatePage() {
 
       {/* ── Upgrade tease ── */}
       <section className="rounded-2xl border border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-surface p-8 text-center space-y-4 max-w-2xl mx-auto">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
           {"/// when you&apos;re ready to go deeper"}
         </p>
         <h3 className="font-display text-xl font-bold text-accent-violet-text">Oracle Tier</h3>

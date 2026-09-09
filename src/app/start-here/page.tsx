@@ -136,7 +136,7 @@ export default async function StartHerePage() {
       {/* ── 0. What is this? ── */}
       <section className="max-w-3xl mx-auto space-y-8 text-center">
         <div className="space-y-2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
             ✦ &nbsp; CultCodex &nbsp; ✦
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary leading-tight">
@@ -293,7 +293,7 @@ export default async function StartHerePage() {
       <section className="max-w-2xl mx-auto">
         <div className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface overflow-hidden">
           <div className="p-7 space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
               {"/// not sure where to start?"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
@@ -323,7 +323,7 @@ export default async function StartHerePage() {
       <section className="max-w-3xl mx-auto">
         <div className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface overflow-hidden">
           <div className="p-7 space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
               {"/// not_sure_where_to_start"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">

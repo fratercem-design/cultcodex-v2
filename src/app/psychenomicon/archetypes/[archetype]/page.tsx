@@ -329,7 +329,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
                   )}
 
                   {entity.personSlug && (
-                    <p className="font-mono text-[8px] text-accent-gold-text/50 group-hover:text-accent-gold-text/70 transition-colors">
+                    <p className="font-mono text-[8px] text-accent-gold-text/80 group-hover:text-accent-gold-text/80 transition-colors">
                       ◈ archive profile →
                     </p>
                   )}

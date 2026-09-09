@@ -160,7 +160,7 @@ export default function DataOpsPage() {
         </div>
         {dupes.length > 0 && dupes.map((group, i) => (
           <div key={i} className="rounded border border-accent-crimson/20 bg-surface p-3 space-y-1">
-            <p className="font-mono text-[9px] uppercase tracking-widest text-accent-crimson-text/60">Dupe group {i + 1}</p>
+            <p className="font-mono text-[9px] uppercase tracking-widest text-accent-crimson-text/80">Dupe group {i + 1}</p>
             <PersonTable people={group} onSelect={(p) => setRenameSlug(p.slug)} />
           </div>
         ))}

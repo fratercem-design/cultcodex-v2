@@ -191,12 +191,12 @@ export default async function TimelinePage() {
                                         </span>
                                       )}
                                       {ep._count.quotes > 0 && (
-                                        <span className="font-mono text-[9px] text-accent-gold-text/60" title={`${ep._count.quotes} quotes`}>
+                                        <span className="font-mono text-[9px] text-accent-gold-text/80" title={`${ep._count.quotes} quotes`}>
                                           Q{ep._count.quotes}
                                         </span>
                                       )}
                                       {ep._count.guests > 0 && (
-                                        <span className="font-mono text-[9px] text-accent-violet-text/60" title={`${ep._count.guests} guests`}>
+                                        <span className="font-mono text-[9px] text-accent-violet-text/70" title={`${ep._count.guests} guests`}>
                                           G{ep._count.guests}
                                         </span>
                                       )}

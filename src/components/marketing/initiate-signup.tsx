@@ -67,7 +67,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
         role="status"
         aria-live="polite"
       >
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/70">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
           {"// "}the gate is open
         </p>
         <h2 className="mt-3 font-serif text-2xl font-black text-accent-gold">
@@ -130,7 +130,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
       onSubmit={handleSubmit}
       className={`rounded-lg border border-accent-gold/25 bg-surface p-6 sm:p-8 ${className}`}
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/70">
+      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
         {"// "}first gate
       </p>
       <h2 className="mt-3 font-serif text-2xl font-black text-text-primary">

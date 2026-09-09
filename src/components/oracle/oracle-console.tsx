@@ -276,7 +276,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
             </>
           ) : (
             <>
-              <span className="text-accent-violet-text/50 text-base">◈</span>
+              <span className="text-accent-violet-text/70 text-base">◈</span>
               <span>Consult the Oracle</span>
               <span className="text-accent-violet-text/50 text-base">◈</span>
             </>
@@ -300,7 +300,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
               <LilithOracle />
             </div>
           </div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-violet-text/50 animate-pulse">
+          <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-violet-text/70 animate-pulse">
             searching_the_archive
           </p>
         </div>
@@ -309,7 +309,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
       {/* ── Gated ── */}
       {state === "error" && gated && (
         <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-6 text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
             {"/// initiate_required"}
           </p>
           <p className="font-display text-base font-bold text-text-primary">
@@ -407,7 +407,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
                     ◈ The Oracle speaks — tap to hear ◈
                   </p>
                 ) : (
-                  <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet-text/55 text-center">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet-text/70 text-center">
                     {isPlaying ? "The Oracle speaks" : "Voice ready"}
                   </p>
                 )}
@@ -543,7 +543,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
           {/* ── Email capture after free trial ── */}
           {trialUsed && captureState !== "done" && (
             <div className="rounded-xl border border-accent-gold/30 bg-accent-gold/5 p-5 space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/60">
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
                 {trialRemaining !== null && trialRemaining > 0
                   ? `/// ${trialRemaining} free question${trialRemaining === 1 ? "" : "s"} remaining this month`
                   : "/// free questions exhausted"}

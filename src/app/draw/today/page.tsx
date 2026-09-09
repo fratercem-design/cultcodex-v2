@@ -96,7 +96,7 @@ export default async function TodaysDrawPage() {
     <main className="min-h-screen bg-void">
       <section className="border-b border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-2xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/80">
             {"/// today's_draw · the_same_for_everyone"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -114,7 +114,7 @@ export default async function TodaysDrawPage() {
       <div className="mx-auto max-w-2xl px-4 py-10 space-y-5">
         {/* Card I — Lore */}
         <article className="rounded-lg border border-accent-violet/20 bg-surface p-5 space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">
             I · The Lore {lore?.category ? `· ${lore.category}` : ""}
           </p>
           {lore ? (
@@ -123,7 +123,7 @@ export default async function TodaysDrawPage() {
                 {lore.title}
               </h2>
               {lore.summary && <p className="text-sm text-text-muted leading-relaxed">{lore.summary}</p>}
-              <span className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-violet-text/50 group-hover:text-accent-violet-text transition-colors pt-1">
+              <span className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-violet-text/70 group-hover:text-accent-violet-text transition-colors pt-1">
                 Follow this thread →
               </span>
             </Link>
@@ -161,7 +161,7 @@ export default async function TodaysDrawPage() {
 
         {/* Card III — Prophecy */}
         <article className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-5 space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
             III · The Prophecy
           </p>
           {prophecy ? (
@@ -170,7 +170,7 @@ export default async function TodaysDrawPage() {
                 {prophecy.title}
               </h2>
               {prophecy.summary && <p className="text-sm text-text-muted leading-relaxed">{prophecy.summary}</p>}
-              <span className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-gold-text/50 group-hover:text-accent-gold-text transition-colors pt-1">
+              <span className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-gold-text/80 group-hover:text-accent-gold-text transition-colors pt-1">
                 Read the whole omen →
               </span>
             </Link>

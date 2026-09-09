@@ -55,7 +55,7 @@ export function Leaderboard({ sessionCorrect, sessionTotal }: { sessionCorrect: 
       <div className="absolute inset-0 bg-gradient-to-b from-void/85 via-void/80 to-void/90" />
       <div className="relative space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/70">{"/// hall_of_oracles"}</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// hall_of_oracles"}</p>
         <div className="flex gap-1">
           {RANGES.map((r) => (
             <button key={r.key} onClick={() => setRange(r.key)}

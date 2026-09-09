@@ -121,12 +121,12 @@ export default async function LorePage({ searchParams }: LorePageProps) {
               </h3>
               <p className="text-sm text-text-muted leading-relaxed max-w-xl">
                 &ldquo;In the beginning, there was static. Then a voice cut through the noise.&rdquo;
-                <span className="block mt-1 text-xs text-accent-gold-text/60">
+                <span className="block mt-1 text-xs text-accent-gold-text/80">
                   The forbidden chronicle of every soul, saga, and spectacle from the Panelverse.
                 </span>
               </p>
             </div>
-            <div className="flex-shrink-0 font-mono text-xs text-accent-gold-text/50 group-hover:text-accent-gold-text transition-colors">
+            <div className="flex-shrink-0 font-mono text-xs text-accent-gold-text/80 group-hover:text-accent-gold-text transition-colors">
               Enter →
             </div>
           </div>

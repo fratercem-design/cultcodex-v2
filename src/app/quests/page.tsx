@@ -55,7 +55,7 @@ export default async function QuestsPage() {
 
         {!user && (
           <section className="rounded-2xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-6 text-center space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">{"/// sign_in_to_begin"}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// sign_in_to_begin"}</p>
             <p className="font-mono text-[11px] text-text-muted max-w-md mx-auto">
               The Trials track your real activity in the archive. Sign in to begin your rites.
             </p>

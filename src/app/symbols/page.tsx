@@ -50,7 +50,7 @@ export default function SymbolsPage({
       {/* Hero */}
       <section className="border-b border-border bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-5xl space-y-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/80">
             {"/// symbol_encyclopedia"}
           </p>
           <div className="flex items-center gap-4">
@@ -104,7 +104,7 @@ function SymbolCard({ symbol }: { symbol: SymbolEntry }) {
       className="group rounded-xl border border-border bg-surface p-5 hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-all duration-200 flex flex-col gap-3"
     >
       {/* Glyph */}
-      <div className="text-accent-gold-text/70 group-hover:text-accent-gold-text transition-colors duration-200">
+      <div className="text-accent-gold-text/80 group-hover:text-accent-gold-text transition-colors duration-200">
         <SymbolGlyph slug={symbol.slug} glyph={symbol.glyph} size={48} />
       </div>
 

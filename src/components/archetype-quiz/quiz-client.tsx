@@ -129,7 +129,7 @@ export function QuizClient() {
 
         {/* Description */}
         <div className="mt-6 rounded-xl border border-border bg-surface p-6 space-y-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
             {"/// your_nature"}
           </p>
           <p className="text-sm text-text-muted leading-relaxed">{result.description}</p>
@@ -145,7 +145,7 @@ export function QuizClient() {
 
         {/* Gifts */}
         <div className="mt-6 rounded-xl border border-border bg-surface p-6 space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
             {"/// your_gifts"}
           </p>
           <ul className="space-y-2">
@@ -165,7 +165,7 @@ export function QuizClient() {
 
         {/* Related symbols */}
         <div className="mt-6 space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
             {"/// related_symbols"}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -277,7 +277,7 @@ export function QuizClient() {
               animation: `optionIn 0.3s ease ${i * 60}ms both`,
             }}
           >
-            <span className="text-accent-gold-text/50 mr-3 text-[10px] uppercase tracking-widest">
+            <span className="text-accent-gold-text/80 mr-3 text-[10px] uppercase tracking-widest">
               {["A", "B", "C", "D"][i]}
             </span>
             {option.text}

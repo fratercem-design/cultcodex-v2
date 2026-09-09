@@ -125,13 +125,13 @@ export default async function JoinPage() {
                 className="group rounded-xl border border-border bg-surface p-6 space-y-3 transition-all hover:border-accent-gold/40 hover:bg-elevated"
               >
                 <div className="flex items-center gap-3">
-                  <span className="font-mono text-xl text-accent-gold-text/70">{w.glyph}</span>
+                  <span className="font-mono text-xl text-accent-gold-text/80">{w.glyph}</span>
                   <h2 className="font-display text-lg font-bold text-text-primary group-hover:text-accent-gold-text transition-colors">
                     {w.title}
                   </h2>
                 </div>
                 <p className="text-sm text-text-muted leading-relaxed">{w.body}</p>
-                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold-text/70 group-hover:text-accent-gold-text transition-colors">
+                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold-text/80 group-hover:text-accent-gold-text transition-colors">
                   {w.cta} →
                 </p>
               </Link>
@@ -143,7 +143,7 @@ export default async function JoinPage() {
 
         {/* Tiers */}
         <section className="space-y-6">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60 text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80 text-center">
             {"/// choose_your_level"}
           </p>
           <div className="grid gap-4 sm:grid-cols-2 max-w-3xl mx-auto">
@@ -159,7 +159,7 @@ export default async function JoinPage() {
                   }`}
                 >
                   <div className="space-y-1">
-                    <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${featured ? "text-accent-gold-text/60" : "text-accent-cyan/60"}`}>
+                    <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${featured ? "text-accent-gold-text/80" : "text-accent-cyan/60"}`}>
                       {t.tagline}
                     </p>
                     <div className="flex items-baseline justify-between">

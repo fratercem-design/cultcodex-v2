@@ -58,7 +58,7 @@ export function VerifyContent() {
   if (status === "success") {
     return (
       <div className="flex flex-col items-center gap-3 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
           {"/// access_granted"}
         </p>
         <p className="font-display text-lg font-semibold text-text-primary">You&apos;re in</p>
