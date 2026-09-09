@@ -153,7 +153,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
 
             {descPsycheverse && (
               <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-5 py-4">
-                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold/60 mb-2">
+                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold-text/60 mb-2">
                   In the Psycheverse
                 </p>
                 <p className="text-sm text-text-primary leading-relaxed">

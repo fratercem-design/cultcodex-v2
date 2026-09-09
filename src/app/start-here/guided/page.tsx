@@ -116,12 +116,12 @@ const accentMap: Record<
     question: "text-accent-violet-text",
   },
   crimson: {
-    icon: "text-accent-crimson",
-    title: "text-accent-crimson",
+    icon: "text-accent-crimson-text",
+    title: "text-accent-crimson-text",
     border: "border-accent-crimson/20",
     hoverBorder: "group-hover:border-accent-crimson/60",
     hoverBg: "group-hover:bg-red-950/30",
-    question: "text-accent-crimson",
+    question: "text-accent-crimson-text",
   },
   mixed: {
     icon: "text-accent-gold-text",

@@ -56,7 +56,7 @@ export default async function SettingsPage() {
                   href={link.href}
                   className="block rounded-lg border border-accent-gold/20 bg-surface px-4 py-3 transition-colors hover:border-accent-gold/50"
                 >
-                  <span className="font-mono text-xs font-bold text-accent-gold">
+                  <span className="font-mono text-xs font-bold text-accent-gold-text">
                     {link.label}
                   </span>
                   <p className="mt-1 font-mono text-[10px] text-text-muted">
@@ -84,7 +84,7 @@ export default async function SettingsPage() {
             {subscription && !subscription.isAdmin && subscription.status !== "active" && (
               <p className="mt-3 font-mono text-[10px] text-text-muted">
                 No active subscription.{" "}
-                <Link href="/premium" className="text-accent-gold hover:underline">
+                <Link href="/premium" className="text-accent-gold-text hover:underline">
                   See membership tiers
                 </Link>
                 .
@@ -95,7 +95,7 @@ export default async function SettingsPage() {
 
         <p className="text-center font-mono text-[10px] text-text-muted">
           Need help?{" "}
-          <Link href="/contact" className="text-accent-gold hover:underline">
+          <Link href="/contact" className="text-accent-gold-text hover:underline">
             Contact us
           </Link>
           .

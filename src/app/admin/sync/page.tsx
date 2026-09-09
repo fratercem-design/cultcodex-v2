@@ -68,7 +68,7 @@ export default async function SyncPage() {
           { label: "⚡ Enrich queued", value: enrichmentQueued, color: "text-accent-gold-text" },
           { label: "With YouTube ID", value: withYoutubeId, color: "text-text-muted" },
           { label: "Total people", value: totalPeople, color: "text-text-muted" },
-          { label: "Need profiles", value: unenrichedPeople, color: "text-accent-crimson" },
+          { label: "Need profiles", value: unenrichedPeople, color: "text-accent-crimson-text" },
           {
             label: "Profiles done",
             value: totalPeople - unenrichedPeople,

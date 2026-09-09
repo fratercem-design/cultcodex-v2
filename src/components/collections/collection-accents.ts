@@ -47,9 +47,9 @@ const MAP: Record<CollectionAccent, AccentClasses> = {
     sectionBar: "bg-accent-violet",
   },
   crimson: {
-    icon: "text-accent-crimson",
-    title: "text-accent-crimson",
-    eyebrow: "text-accent-crimson",
+    icon: "text-accent-crimson-text",
+    title: "text-accent-crimson-text",
+    eyebrow: "text-accent-crimson-text",
     border: "border-accent-crimson/30",
     hoverBorder: "hover:border-accent-crimson/60",
     hoverBg: "hover:bg-red-950/30",

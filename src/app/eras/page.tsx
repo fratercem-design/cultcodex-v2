@@ -23,10 +23,10 @@ const ERA_BORDER: Record<string, string> = {
 };
 
 const ERA_TEXT: Record<string, string> = {
-  gold:    "text-accent-gold",
-  violet:  "text-accent-violet",
+  gold:    "text-accent-gold-text",
+  violet:  "text-accent-violet-text",
   cyan:    "text-accent-cyan",
-  crimson: "text-accent-crimson",
+  crimson: "text-accent-crimson-text",
   muted:   "text-text-muted",
 };
 
@@ -39,10 +39,10 @@ const ERA_BG: Record<string, string> = {
 };
 
 const ERA_SIGIL_BG: Record<string, string> = {
-  gold:    "bg-accent-gold/10    text-accent-gold",
-  violet:  "bg-accent-violet/10  text-accent-violet",
+  gold:    "bg-accent-gold/10    text-accent-gold-text",
+  violet:  "bg-accent-violet/10  text-accent-violet-text",
   cyan:    "bg-accent-cyan/10    text-accent-cyan",
-  crimson: "bg-accent-crimson/10 text-accent-crimson",
+  crimson: "bg-accent-crimson/10 text-accent-crimson-text",
   muted:   "bg-surface           text-text-muted",
 };
 

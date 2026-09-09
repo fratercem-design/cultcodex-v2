@@ -87,7 +87,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
           <ul key={i} className="space-y-1 mb-3 last:mb-0">
             {bullets.map((b, j) => (
               <li key={j} className="flex gap-2 text-sm text-text-primary leading-relaxed">
-                <span className="text-accent-gold/60 flex-shrink-0 mt-0.5">·</span>
+                <span className="text-accent-gold-text/60 flex-shrink-0 mt-0.5">·</span>
                 <span>{editorialFrame(b)}</span>
               </li>
             ))}
@@ -106,7 +106,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
       {/* Codex entry header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold">{"/// codex_entry"}</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text">{"/// codex_entry"}</p>
         <p className="font-mono text-[9px] text-text-muted/50 tracking-widest">AI · ARCHIVAL</p>
       </div>
 
@@ -118,7 +118,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
           return (
             <div key={heading} className={`px-4 py-4 ${isControversy ? "bg-red-950/10" : ""}`}>
               <div className="flex items-center gap-2 mb-3">
-                <span className={`font-mono text-xs ${isControversy ? "text-red-400" : "text-accent-gold"}`}>
+                <span className={`font-mono text-xs ${isControversy ? "text-red-400" : "text-accent-gold-text"}`}>
                   {sigil}
                 </span>
                 <h4 className={`font-mono text-[10px] uppercase tracking-[0.3em] font-semibold ${isControversy ? "text-red-400/80" : "text-text-muted"}`}>
@@ -311,10 +311,10 @@ export default async function PersonDetailPage({ params }: PageProps) {
     muted:   "bg-text-muted",
   };
   const ERA_TEXT_COLOR: Record<string, string> = {
-    gold:    "text-accent-gold",
-    violet:  "text-accent-violet",
+    gold:    "text-accent-gold-text",
+    violet:  "text-accent-violet-text",
     cyan:    "text-accent-cyan",
-    crimson: "text-accent-crimson",
+    crimson: "text-accent-crimson-text",
     muted:   "text-text-muted",
   };
   const eraPresence = ERAS.map((era) => {
@@ -575,7 +575,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </div>
                 {eraPresence.length === ERAS.length && (
                   <div className="border-t border-border/60 px-4 py-2">
-                    <p className="font-mono text-[9px] text-accent-gold/60 uppercase tracking-widest">
+                    <p className="font-mono text-[9px] text-accent-gold-text/60 uppercase tracking-widest">
                       ◈ Spans all eras
                     </p>
                   </div>
@@ -615,11 +615,11 @@ export default async function PersonDetailPage({ params }: PageProps) {
                           className="h-10 w-10 rounded-full object-cover border border-border group-hover:border-accent-gold/50 transition-colors"
                         />
                       ) : (
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-gold/15 font-mono text-sm font-bold text-accent-gold border border-border group-hover:border-accent-gold/50 transition-colors">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-gold/15 font-mono text-sm font-bold text-accent-gold-text border border-border group-hover:border-accent-gold/50 transition-colors">
                           {coGuest.displayName[0]?.toUpperCase() ?? "?"}
                         </div>
                       )}
-                      <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-gold transition-colors line-clamp-1">
+                      <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-gold-text transition-colors line-clamp-1">
                         {coGuest.displayName}
                       </span>
                       <span className="font-mono text-[9px] text-text-muted">
@@ -630,7 +630,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </div>
                 <Link
                   href={`/graph/path?from=${person.slug}`}
-                  className="mt-4 block w-full rounded border border-accent-violet/30 bg-accent-violet/5 px-3 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-accent-violet hover:bg-accent-violet/10 transition-colors"
+                  className="mt-4 block w-full rounded border border-accent-violet/30 bg-accent-violet/5 px-3 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-accent-violet-text hover:bg-accent-violet/10 transition-colors"
                 >
                   Find a path to anyone →
                 </Link>

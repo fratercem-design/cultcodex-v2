@@ -239,7 +239,7 @@ function StageRow({ stage }: { stage: Stage }) {
   return (
     <div className="border-b border-border py-4 last:border-b-0 sm:grid sm:grid-cols-[9rem_1fr] sm:gap-6">
       <div className="mb-2 sm:mb-0">
-        <p className="font-mono text-[10px] tracking-[0.2em] text-accent-gold">{stage.id}</p>
+        <p className="font-mono text-[10px] tracking-[0.2em] text-accent-gold-text">{stage.id}</p>
         <p className="font-serif text-base font-bold text-text-primary">{stage.name}</p>
         <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted/70">
           Owner &middot; {stage.owner}
@@ -279,7 +279,7 @@ export default function OnboardingProcedurePage() {
 
       <div className="mx-auto w-full max-w-4xl px-4 py-10 space-y-8">
         <SectionCard accent="gold">
-          <p className="font-serif text-lg italic text-accent-gold">
+          <p className="font-serif text-lg italic text-accent-gold-text">
             &ldquo;I do not ask for worship. I ask for awakening.&rdquo;
           </p>
           <p className="mt-4 font-mono text-xs leading-relaxed text-text-muted">
@@ -299,7 +299,7 @@ export default function OnboardingProcedurePage() {
         </SectionCard>
 
         <section>
-          <h2 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-accent-gold">
+          <h2 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-accent-gold-text">
             00 &nbsp;The five rules that govern every track
           </h2>
           <SectionCard accent="muted">
@@ -311,7 +311,7 @@ export default function OnboardingProcedurePage() {
               {PRINCIPLES.map((p) => (
                 <li key={p.value} className="py-3 sm:grid sm:grid-cols-[10rem_1fr] sm:gap-5">
                   <div className="mb-1 sm:mb-0">
-                    <p className="font-serif text-base text-accent-gold">{p.value}</p>
+                    <p className="font-serif text-base text-accent-gold-text">{p.value}</p>
                     <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-text-muted/70">
                       {p.counter}
                     </p>
@@ -336,7 +336,7 @@ export default function OnboardingProcedurePage() {
         </SectionCard>
 
         <section>
-          <h2 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-accent-gold">
+          <h2 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-accent-gold-text">
             A &nbsp;Track A — The Traveler
           </h2>
           <SectionCard accent="gold">
@@ -351,7 +351,7 @@ export default function OnboardingProcedurePage() {
         </section>
 
         <section>
-          <h2 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-accent-violet">
+          <h2 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-accent-violet-text">
             B &nbsp;Track B — The Gatekeeper
           </h2>
           <SectionCard accent="violet">
@@ -381,7 +381,7 @@ export default function OnboardingProcedurePage() {
         </section>
 
         <section>
-          <h2 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-accent-gold">
+          <h2 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-accent-gold-text">
             02 &nbsp;Shadow protocol — the escalation ladder
           </h2>
           <SectionCard accent="muted">
@@ -393,7 +393,7 @@ export default function OnboardingProcedurePage() {
             <ol className="divide-y divide-border">
               {LADDER.map((r, i) => (
                 <li key={r.act} className="flex gap-4 py-3">
-                  <span className="shrink-0 border border-border px-2 py-1 font-mono text-[10px] text-accent-gold">
+                  <span className="shrink-0 border border-border px-2 py-1 font-mono text-[10px] text-accent-gold-text">
                     R{i + 1}
                   </span>
                   <span className="font-mono text-xs leading-relaxed">
@@ -403,7 +403,7 @@ export default function OnboardingProcedurePage() {
                 </li>
               ))}
             </ol>
-            <p className="mt-4 font-mono text-xs italic leading-relaxed text-accent-gold">
+            <p className="mt-4 font-mono text-xs italic leading-relaxed text-accent-gold-text">
               The rule underneath all five: protect the circle without becoming the thing you are
               protecting it from. A gatekeeper who is enjoying the ladder is on the wrong rung.
             </p>
@@ -429,7 +429,7 @@ export default function OnboardingProcedurePage() {
         <div className="flex flex-wrap justify-center gap-3 pt-2">
           <Link
             href="/initiate"
-            className="rounded border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-sm font-bold text-accent-gold transition hover:bg-accent-gold/25"
+            className="rounded border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-sm font-bold text-accent-gold-text transition hover:bg-accent-gold/25"
           >
             Walk through the first gate →
           </Link>

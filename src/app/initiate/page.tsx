@@ -47,7 +47,7 @@ export default function InitiatePage() {
         <div className="grid gap-4 sm:grid-cols-3">
           {WHAT_YOU_GET.map((item) => (
             <SectionCard key={item.title} accent="gold">
-              <p className="font-mono text-lg text-accent-gold">{item.glyph}</p>
+              <p className="font-mono text-lg text-accent-gold-text">{item.glyph}</p>
               <p className="mt-1 font-serif text-base font-bold text-text-primary">{item.title}</p>
               <p className="mt-2 font-mono text-xs leading-relaxed text-text-muted">{item.body}</p>
             </SectionCard>
@@ -85,13 +85,13 @@ export default function InitiatePage() {
         <div className="flex flex-wrap justify-center gap-3 pt-2">
           <Link
             href="/start-here"
-            className="rounded border border-border px-5 py-2.5 font-mono text-sm text-text-muted transition hover:border-accent-gold/60 hover:text-accent-gold"
+            className="rounded border border-border px-5 py-2.5 font-mono text-sm text-text-muted transition hover:border-accent-gold/60 hover:text-accent-gold-text"
           >
             Skip this and start reading →
           </Link>
           <Link
             href="/join"
-            className="rounded border border-border px-5 py-2.5 font-mono text-sm text-text-muted transition hover:border-accent-violet/60 hover:text-accent-violet"
+            className="rounded border border-border px-5 py-2.5 font-mono text-sm text-text-muted transition hover:border-accent-violet/60 hover:text-accent-violet-text"
           >
             See the paid tiers
           </Link>
