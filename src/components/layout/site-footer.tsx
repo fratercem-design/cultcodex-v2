@@ -99,7 +99,7 @@ export function SiteFooter() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="font-mono text-xs text-text-primary transition-colors hover:text-accent-gold-text"
+                      className="inline-flex min-h-6 items-center font-mono text-xs text-text-primary transition-colors hover:text-accent-gold-text"
                     >
                       {link.label}
                     </Link>
@@ -129,7 +129,7 @@ export function SiteFooter() {
                 href={ch.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-[10px] uppercase tracking-wider text-text-muted transition-colors hover:text-accent-gold-text"
+                className="inline-flex min-h-6 items-center font-mono text-[10px] uppercase tracking-wider text-text-muted transition-colors hover:text-accent-gold-text"
               >
                 {ch.label}
               </a>

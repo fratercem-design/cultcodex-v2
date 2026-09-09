@@ -50,7 +50,7 @@ export function EntryBanner() {
         <button
           onClick={dismiss}
           aria-label="Dismiss"
-          className="shrink-0 text-text-muted/70 hover:text-text-muted transition-colors text-lg leading-none"
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center text-text-muted/70 hover:text-text-muted transition-colors text-lg leading-none"
         >
           ×
         </button>
