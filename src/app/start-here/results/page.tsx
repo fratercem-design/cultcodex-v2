@@ -32,7 +32,7 @@ const INTEREST_ACCENTS: Record<Interest, { text: string; border: string; bg: str
   consciousness: { text: "text-accent-violet-text", border: "border-accent-violet/30", bg: "bg-accent-violet/5" },
   ai: { text: "text-accent-cyan", border: "border-accent-cyan/30", bg: "bg-accent-cyan/5" },
   occult: { text: "text-accent-gold-text", border: "border-accent-gold/30", bg: "bg-accent-gold/5" },
-  behavior: { text: "text-accent-crimson", border: "border-accent-crimson/30", bg: "bg-red-950/10" },
+  behavior: { text: "text-accent-crimson-text", border: "border-accent-crimson/30", bg: "bg-red-950/10" },
   wild: { text: "text-accent-gold-text", border: "border-accent-gold/30", bg: "bg-accent-gold/5" },
 };
 

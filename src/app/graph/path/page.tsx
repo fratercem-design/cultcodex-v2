@@ -225,7 +225,7 @@ function NotFound({
   const msg = messages[reason];
   return (
     <div className="rounded-xl border border-accent-crimson/20 bg-accent-crimson/5 p-8 text-center space-y-3">
-      <p className="font-display text-lg font-bold text-accent-crimson">
+      <p className="font-display text-lg font-bold text-accent-crimson-text">
         {msg.title}
       </p>
       <p className="font-mono text-sm text-text-muted leading-relaxed max-w-md mx-auto">

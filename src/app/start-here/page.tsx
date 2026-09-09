@@ -101,11 +101,11 @@ const accentMap = {
     question: "text-accent-violet-text",
   },
   crimson: {
-    icon: "text-accent-crimson",
-    title: "text-accent-crimson",
+    icon: "text-accent-crimson-text",
+    title: "text-accent-crimson-text",
     border: "border-accent-crimson/20",
     hover: "group-hover:border-accent-crimson/60 group-hover:bg-red-950/30",
-    question: "text-accent-crimson",
+    question: "text-accent-crimson-text",
   },
 };
 

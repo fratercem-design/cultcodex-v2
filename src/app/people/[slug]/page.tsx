@@ -319,7 +319,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
     gold:    "text-accent-gold-text",
     violet:  "text-accent-violet-text",
     cyan:    "text-accent-cyan",
-    crimson: "text-accent-crimson",
+    crimson: "text-accent-crimson-text",
     muted:   "text-text-muted",
   };
   const eraPresence = ERAS.map((era) => {

@@ -53,7 +53,7 @@ const CODEX_REPORTS = [
 ];
 
 const ACCENT: Record<string, string> = {
-  gold: "text-accent-gold-text", crimson: "text-accent-crimson", cyan: "text-accent-cyan", violet: "text-accent-violet-text",
+  gold: "text-accent-gold-text", crimson: "text-accent-crimson-text", cyan: "text-accent-cyan", violet: "text-accent-violet-text",
 };
 
 export default async function ReportsPage() {

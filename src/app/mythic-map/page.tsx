@@ -68,7 +68,7 @@ const ARCHETYPES = [
   {
     name: "The Scapegoat / Truth-Teller",
     symbol: "Stage, mask, serpent eye, phoenix",
-    color: "text-accent-crimson",
+    color: "text-accent-crimson-text",
     border: "border-accent-crimson/30",
     glow: "shadow-accent-crimson/10",
     meaning:
@@ -148,7 +148,7 @@ const THEMES = [
   {
     letter: "D",
     title: "Projection, Shadow & Misunderstood Identity",
-    color: "text-accent-crimson",
+    color: "text-accent-crimson-text",
     body: "The archive\u2019s deepest psychological theme. Lilith in Scorpio, the scapegoat logic of The Golden Ass, The Mortal Veil, and The Paradox of Being Nice all revolve around the figure who gets projected onto yet still reveals truth.",
   },
   {
@@ -487,7 +487,7 @@ export default function MythicMapPage() {
 
         {/* ── Recurring Themes ── */}
         <section className="space-y-6">
-          <h2 className="font-display text-lg font-bold text-accent-crimson tracking-tight">
+          <h2 className="font-display text-lg font-bold text-accent-crimson-text tracking-tight">
             Recurring Themes
           </h2>
           <div className="space-y-4">

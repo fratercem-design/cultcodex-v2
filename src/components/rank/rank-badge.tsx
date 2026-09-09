@@ -4,7 +4,7 @@ const COLOR: Record<RankColor, { text: string; border: string; bg: string }> = {
   cyan: { text: "text-accent-cyan", border: "border-accent-cyan/40", bg: "bg-accent-cyan/10" },
   violet: { text: "text-accent-violet-text", border: "border-accent-violet/40", bg: "bg-accent-violet/10" },
   gold: { text: "text-accent-gold-text", border: "border-accent-gold/40", bg: "bg-accent-gold/10" },
-  crimson: { text: "text-accent-crimson", border: "border-accent-crimson/40", bg: "bg-red-950/20" },
+  crimson: { text: "text-accent-crimson-text", border: "border-accent-crimson/40", bg: "bg-red-950/20" },
 };
 
 interface RankBadgeProps {

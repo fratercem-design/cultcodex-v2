@@ -20,7 +20,7 @@ const ACCENT: Record<QuestAccent, { text: string; border: string; bar: string; h
   gold: { text: "text-accent-gold-text", border: "border-accent-gold/30", bar: "bg-accent-gold", hex: "#C8392E" },
   cyan: { text: "text-accent-cyan", border: "border-accent-cyan/30", bar: "bg-accent-cyan", hex: "#62E4C8" },
   violet: { text: "text-accent-violet-text", border: "border-accent-violet/30", bar: "bg-accent-violet", hex: "#4A2D6E" },
-  crimson: { text: "text-accent-crimson", border: "border-accent-crimson/30", bar: "bg-accent-crimson", hex: "#A94A4A" },
+  crimson: { text: "text-accent-crimson-text", border: "border-accent-crimson/30", bar: "bg-accent-crimson", hex: "#A94A4A" },
 };
 
 export default async function QuestsPage() {

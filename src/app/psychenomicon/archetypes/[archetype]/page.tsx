@@ -36,7 +36,7 @@ const ERA_TEXT: Record<string, string> = {
   gold:    "text-accent-gold-text",
   violet:  "text-accent-violet-text",
   cyan:    "text-accent-cyan",
-  crimson: "text-accent-crimson",
+  crimson: "text-accent-crimson-text",
   muted:   "text-text-muted",
 };
 

@@ -18,7 +18,7 @@ const ERA_ACCENT: Record<string, string> = {
   gold:    "text-accent-gold-text border-accent-gold/50 bg-accent-gold/10",
   violet:  "text-accent-violet-text border-accent-violet/50 bg-accent-violet/10",
   cyan:    "text-accent-cyan border-accent-cyan/50 bg-accent-cyan/10",
-  crimson: "text-accent-crimson border-accent-crimson/50 bg-accent-crimson/10",
+  crimson: "text-accent-crimson-text border-accent-crimson/50 bg-accent-crimson/10",
   muted:   "text-text-muted border-border bg-surface",
 };
 

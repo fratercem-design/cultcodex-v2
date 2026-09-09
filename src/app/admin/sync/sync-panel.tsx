@@ -588,17 +588,17 @@ export function SyncPanel({
               {enrichPeopleResult.ok ? (
                 <>
                   <div className="flex flex-wrap gap-4 font-mono text-[10px]">
-                    <span className="text-accent-crimson">✓ {enrichPeopleResult.processed} profiled</span>
+                    <span className="text-accent-crimson-text">✓ {enrichPeopleResult.processed} profiled</span>
                     {(enrichPeopleResult.remaining ?? 0) > 0 && (
                       <span className="text-text-muted">{enrichPeopleResult.remaining?.toLocaleString()} remaining</span>
                     )}
-                    {enrichPeopleResult.done && <span className="text-accent-crimson">— all done</span>}
+                    {enrichPeopleResult.done && <span className="text-accent-crimson-text">— all done</span>}
                   </div>
                   {enrichPeopleResult.results && (
                     <div className="max-h-40 overflow-y-auto space-y-0.5 pt-1">
                       {enrichPeopleResult.results.map((r, i) => (
                         <div key={i} className="flex items-center gap-2 font-mono text-[9px]">
-                          <span className={r.ok ? "text-accent-crimson" : "text-red-400"}>{r.ok ? "✓" : "✗"}</span>
+                          <span className={r.ok ? "text-accent-crimson-text" : "text-red-400"}>{r.ok ? "✓" : "✗"}</span>
                           <span className="text-text-muted truncate flex-1">{r.name}</span>
                           {r.error && <span className="text-red-400/70 truncate">{r.error}</span>}
                         </div>
