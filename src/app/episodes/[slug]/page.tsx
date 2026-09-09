@@ -373,7 +373,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         humanReviewedAt={episode.humanReviewedAt}
                       />
                     ) : episode.summaryLong ? (
-                      <SectionCard title="Summary">
+                      <SectionCard headingLevel={2} title="Summary">
                         <p className="text-sm text-text-primary leading-relaxed">
                           {renderWithTimestamps(episode.summaryLong, episode.youtubeVideoId)}
                         </p>
@@ -388,7 +388,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
                     {/* Guests (inline for mobile) — hosts filtered out */}
                     {actualGuests.length > 0 && (
-                      <SectionCard title={`Guests (${actualGuests.length})`} accent="gold">
+                      <SectionCard headingLevel={2} title={`Guests (${actualGuests.length})`} accent="gold">
                         <div className="flex flex-wrap gap-1.5">
                           {actualGuests.map((g) => (
                             <Link
@@ -405,7 +405,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
                     {/* Topics (inline for mobile) */}
                     {episode.topics.length > 0 && (
-                      <SectionCard title={`Topics (${episode.topics.length})`} accent="cyan">
+                      <SectionCard headingLevel={2} title={`Topics (${episode.topics.length})`} accent="cyan">
                         <div className="flex flex-wrap gap-1.5">
                           {episode.topics.map((t) => (
                             <Link
@@ -422,7 +422,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
                     {/* Transcript status — show when no transcript */}
                     {!hasTranscript && (
-                      <SectionCard title="Transcript">
+                      <SectionCard headingLevel={2} title="Transcript">
                         <div className="flex items-center gap-3 py-2">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface border border-border">
                             <span className="font-mono text-[10px] text-text-muted">░░░</span>
@@ -443,10 +443,10 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                     {/* Related episodes */}
                     {relatedEpisodes.length > 0 && (
                       <section>
-                        <SectionCard title={`Related Episodes (${relatedEpisodes.length})`}>
+                        <SectionCard headingLevel={2} title={`Related Episodes (${relatedEpisodes.length})`}>
                           <div className="grid gap-3 sm:grid-cols-2">
                             {relatedEpisodes.map((ep) => (
-                              <EpisodeListItem
+                              <EpisodeListItem headingLevel={3}
                                 key={ep.id}
                                 slug={ep.slug}
                                 title={ep.title}
@@ -471,7 +471,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         .slice(0, 3);
                       if (topicsWithDesc.length === 0) return null;
                       return (
-                        <SectionCard title="🐇 Go Deeper">
+                        <SectionCard headingLevel={2} title="🐇 Go Deeper">
                           <p className="text-xs text-text-muted mb-4">
                             Explore the ideas at the heart of this episode
                           </p>
@@ -551,7 +551,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 ),
                 discussion: (
                   <div className="space-y-6">
-                    <SectionCard title={`Comments (${commentsData.totalCount})`}>
+                    <SectionCard headingLevel={2} title={`Comments (${commentsData.totalCount})`}>
                       <CommentSection
                         slug={episode.slug}
                         initialComments={JSON.parse(JSON.stringify(commentsData.comments))}
@@ -560,7 +560,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         currentUserId={user?.id}
                       />
                     </SectionCard>
-                    <SectionCard title="Community Annotations">
+                    <SectionCard headingLevel={2} title="Community Annotations">
                       <AnnotationSection
                         targetType="episode"
                         targetId={episode.slug}
@@ -578,7 +578,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Meta */}
-          <SectionCard title="Metadata">
+          <SectionCard headingLevel={2} title="Metadata">
             <div className="space-y-0">
               {epNum && <MetaRow label="Episode" value={epNum} />}
               <MetaRow label="Aired" value={formatDate(episode.airDate)} />

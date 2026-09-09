@@ -159,7 +159,7 @@ export default async function TheRestPage() {
       <div style={{ maxWidth: 860, margin: "0 auto", padding: "40px 24px 80px" }}>
 
         {/* Codex entry */}
-        <SectionCard title="Codex Entry">
+        <SectionCard headingLevel={2} title="Codex Entry">
           <p className="text-sm text-text-primary leading-relaxed mb-3">
             Not every voice that entered the Cult of Psyche stream left a name. Not every
             name left a story. The Rest is the archive&apos;s acknowledgment of that — a
@@ -186,7 +186,7 @@ export default async function TheRestPage() {
 
         {/* Profiled guests with links */}
         {profiled.length > 0 && (
-          <SectionCard title={`Notable Guests — Full Profiles (${profiled.length})`}>
+          <SectionCard headingLevel={2} title={`Notable Guests — Full Profiles (${profiled.length})`}>
             <p className="text-xs text-text-muted mb-4">
               These guests have enough archive footprint for a dedicated entry.
             </p>
@@ -243,20 +243,20 @@ export default async function TheRestPage() {
 
         {/* Recent episodes with any of these guests */}
         {recentEpisodes.length > 0 && (
-          <SectionCard title="Recent Episodes with Unproiled Voices">
+          <SectionCard headingLevel={2} title="Recent Episodes with Unproiled Voices">
             <p className="text-xs text-text-muted mb-4">
               Episodes where one or more voices in this entry appeared.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {recentEpisodes.map((ep) => (
-                <EpisodeListItem key={ep.id} {...ep} />
+                <EpisodeListItem key={ep.id} {...ep} headingLevel={3} />
               ))}
             </div>
           </SectionCard>
         )}
 
         {/* A–Z name list of unprofiled */}
-        <SectionCard title={`All Voices In This Entry (${unprofiled.length})`}>
+        <SectionCard headingLevel={2} title={`All Voices In This Entry (${unprofiled.length})`}>
           <p className="text-xs text-text-muted mb-4">
             Alphabetical. Names without hyperlinks have no standalone profile — their
             appearances are documented in episode transcripts only.
