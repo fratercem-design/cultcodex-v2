@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { isFreePreviewChapter } from "@/lib/psychenomicon";
+import { buildMetadata } from "@/lib/seo";
 import { LayerViewer } from "@/components/psychenomicon/layer-viewer";
 import { TimelineStrip } from "@/components/psychenomicon/timeline-strip";
 import { ScrollReveal } from "@/components/psychenomicon/scroll-reveal";
@@ -17,14 +18,43 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  // Deliberately NOT `.catch(() => null)`. Now that a missing row produces a
+  // real 404, swallowing errors here would turn a transient database failure
+  // into a 404 too — and this database hibernates when idle, so a wake-up blip
+  // could hand Google a 404 for a chapter that exists and get it deindexed.
+  // Letting the error propagate yields a 500, which crawlers retry.
   const chapter = await prisma.psychenomiconChapter.findUnique({
     where: { slug },
     select: { title: true, chapterNumber: true },
-  }).catch(() => null);
-  if (!chapter) return { title: "Chapter Not Found — CULT CODEX" };
+  });
+  if (!chapter) notFound();
+
+  // A sealed chapter shows a crawler the same ~1,450-character "This chapter is
+  // sealed" shell as every other sealed chapter. There were 2,990 of them, all
+  // `index, follow` and all in the sitemap — near-duplicate thin content making
+  // up roughly 9% of the site's URLs, which is a sitewide quality signal rather
+  // than a per-page one. Only the free-preview chapters have anything for a
+  // crawler to read, so only those stay indexable. `follow` is kept either way
+  // so the links out of the shell still pass equity.
+  const isFree = await isFreePreviewChapter(chapter.chapterNumber).catch(() => false);
+  const label = `CH.${String(chapter.chapterNumber).padStart(3, "0")} ${chapter.title}`;
+
+  // buildMetadata is what every other content route uses, and it supplies the
+  // absolute canonical plus the OpenGraph and Twitter tags these pages were
+  // missing entirely. The title is overridden back to the existing shape so the
+  // change does not quietly rewrite 2,990 titles.
+  const base = buildMetadata({
+    title: label,
+    description: isFree
+      ? `Chapter ${chapter.chapterNumber} of the Psychenomicon: ${chapter.title}. A living record of evolving patterns from the Cult of Psyche archive.`
+      : `Chapter ${chapter.chapterNumber} of the Psychenomicon. A living record of evolving patterns.`,
+    path: `/psychenomicon/chapters/${slug}`,
+  });
+
   return {
-    title: `CH.${String(chapter.chapterNumber).padStart(3, "0")} ${chapter.title} — Psychenomicon`,
-    description: `Chapter ${chapter.chapterNumber} of the Psychenomicon. A living record of evolving patterns.`,
+    ...base,
+    title: `${label} — Psychenomicon`,
+    robots: { index: isFree, follow: true },
   };
 }
 
@@ -36,21 +66,36 @@ export default async function ChapterPage({ params }: PageProps) {
 
   // Free-preview pipeline: a configured set of chapters is readable by anyone.
   const gateRow = await prisma.psychenomiconChapter
-    .findUnique({ where: { slug }, select: { chapterNumber: true } })
-    .catch(() => null);
+    .findUnique({ where: { slug }, select: { chapterNumber: true, title: true } });
   if (!gateRow) notFound();
   const isFreePreview = await isFreePreviewChapter(gateRow.chapterNumber);
   const canRead = subscribed || isFreePreview;
 
   if (!canRead) {
     return (
-      <main className="min-h-screen bg-void flex items-center justify-center">
+      <main id="main-content" className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
           <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">{"/// initiate_only"}</p>
-          <p className="font-display text-xl font-bold text-text-primary">This chapter is sealed.</p>
+          {/* The shell had no <h1> at all, so every sealed chapter was a page
+              with no heading. The title is already public in <title> and in the
+              chapter index, so naming it here reveals nothing the crawler
+              cannot already see, and it gives the page a real document
+              outline. The body stays sealed. */}
+          <h1 className="font-display text-xl font-bold text-text-primary">
+            <span className="block font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+              {`CH.${String(gateRow.chapterNumber).padStart(3, "0")}`}
+            </span>
+            {gateRow.title}
+          </h1>
+          <p className="font-display text-lg font-bold text-text-primary">This chapter is sealed.</p>
           <Link href="/premium#access" className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/20 transition-colors">
             Become Initiate+ →
           </Link>
+          <p className="pt-2">
+            <Link href="/psychenomicon/chapters" className="font-mono text-[11px] text-accent-gold-text/80 hover:underline">
+              ← All chapters
+            </Link>
+          </p>
         </div>
       </main>
     );
@@ -67,8 +112,13 @@ export default async function ChapterPage({ params }: PageProps) {
         include: { thread: { select: { title: true, slug: true, status: true } } },
       },
     },
-  }).catch(() => null);
+  });
 
+  // Same reasoning as generateMetadata: this feeds notFound(), so a swallowed
+  // error would be indistinguishable from a chapter that does not exist. The
+  // gate query above already proved the row is there, so reaching null here
+  // means a genuine race (deleted mid-request); anything else should surface
+  // as a 500 rather than a 404 a crawler will act on.
   if (!chapter) notFound();
 
   // Adjacent + windowed chapters in BROADCAST order (episode air date).
