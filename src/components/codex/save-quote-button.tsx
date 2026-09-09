@@ -75,8 +75,8 @@ export function SaveQuoteButton({
         isSm ? "px-1.5 py-0.5" : "px-2 py-1"
       } ${
         saved
-          ? "text-accent-gold hover:text-accent-gold/80"
-          : "text-text-muted hover:text-accent-gold"
+          ? "text-accent-gold-text hover:text-accent-gold-text/80"
+          : "text-text-muted hover:text-accent-gold-text"
       } ${isPending ? "opacity-50" : ""}`}
       title={saved ? "Remove from your codex" : "Save to your codex"}
       aria-label={saved ? "Remove quote from your codex" : "Save quote to your codex"}

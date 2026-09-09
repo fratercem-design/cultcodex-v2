@@ -372,7 +372,7 @@ export default async function MemberProfilePage({ params }: Props) {
               ← Member Roll
             </Link>
             {!isOracle && (
-              <Link href="/premium" className="font-mono text-[11px] text-text-muted hover:text-accent-gold transition-colors">
+              <Link href="/premium" className="font-mono text-[11px] text-text-muted hover:text-accent-gold-text transition-colors">
                 Get Oracle Access →
               </Link>
             )}

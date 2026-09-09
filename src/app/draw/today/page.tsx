@@ -96,13 +96,13 @@ export default async function TodaysDrawPage() {
     <main className="min-h-screen bg-void">
       <section className="border-b border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-2xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/60">
             {"/// today's_draw · the_same_for_everyone"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
             Today&rsquo;s Draw
           </h1>
-          <p className="font-mono text-[11px] text-accent-gold/80">{prettyDate}</p>
+          <p className="font-mono text-[11px] text-accent-gold-text/80">{prettyDate}</p>
           <p className="text-sm text-text-muted max-w-md mx-auto leading-relaxed">
             Once a day the Codex draws for the whole cult at once. These three
             cards are the same for everyone who looks, until midnight. Share
@@ -114,16 +114,16 @@ export default async function TodaysDrawPage() {
       <div className="mx-auto max-w-2xl px-4 py-10 space-y-5">
         {/* Card I — Lore */}
         <article className="rounded-lg border border-accent-violet/20 bg-surface p-5 space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/60">
             I · The Lore {lore?.category ? `· ${lore.category}` : ""}
           </p>
           {lore ? (
             <Link href={`/lore/${lore.slug}`} className="group block space-y-1.5">
-              <h2 className="font-display text-xl font-bold text-text-primary group-hover:text-accent-violet transition-colors">
+              <h2 className="font-display text-xl font-bold text-text-primary group-hover:text-accent-violet-text transition-colors">
                 {lore.title}
               </h2>
               {lore.summary && <p className="text-sm text-text-muted leading-relaxed">{lore.summary}</p>}
-              <span className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-violet/50 group-hover:text-accent-violet transition-colors pt-1">
+              <span className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-violet-text/50 group-hover:text-accent-violet-text transition-colors pt-1">
                 Follow this thread →
               </span>
             </Link>
@@ -161,16 +161,16 @@ export default async function TodaysDrawPage() {
 
         {/* Card III — Prophecy */}
         <article className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-5 space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/60">
             III · The Prophecy
           </p>
           {prophecy ? (
             <Link href={`/lore/${prophecy.slug}`} className="group block space-y-1.5">
-              <h2 className="font-display text-xl font-bold text-text-primary group-hover:text-accent-gold transition-colors">
+              <h2 className="font-display text-xl font-bold text-text-primary group-hover:text-accent-gold-text transition-colors">
                 {prophecy.title}
               </h2>
               {prophecy.summary && <p className="text-sm text-text-muted leading-relaxed">{prophecy.summary}</p>}
-              <span className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-gold/50 group-hover:text-accent-gold transition-colors pt-1">
+              <span className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-gold-text/50 group-hover:text-accent-gold-text transition-colors pt-1">
                 Read the whole omen →
               </span>
             </Link>
@@ -184,11 +184,11 @@ export default async function TodaysDrawPage() {
           <Link
             href="/draw"
             prefetch={false}
-            className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2.5 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors"
+            className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2.5 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/20 transition-colors"
           >
             ↻ Draw your own three
           </Link>
-          <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors">
+          <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors">
             ← The Fun Wing
           </Link>
         </div>

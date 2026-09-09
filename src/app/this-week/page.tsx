@@ -43,7 +43,7 @@ export default async function ThisWeekPage() {
         </p>
         <Link
           href="/episodes"
-          className="inline-block font-mono text-xs uppercase tracking-widest text-accent-gold hover:opacity-80 transition-opacity"
+          className="inline-block font-mono text-xs uppercase tracking-widest text-accent-gold-text hover:opacity-80 transition-opacity"
         >
           Browse the full archive →
         </Link>
@@ -108,7 +108,7 @@ export default async function ThisWeekPage() {
     <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-14">
       {/* Header */}
       <section className="space-y-3 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
           ✦ &nbsp; Week of {formatDate(digest.weekOf)} &nbsp; ✦
         </p>
         <h1 className="font-display text-3xl font-bold text-text-primary">
@@ -126,7 +126,7 @@ export default async function ThisWeekPage() {
       {/* Quotes */}
       {orderedQuotes.length > 0 && (
         <section className="space-y-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60">
             {"/// moments_from_the_archive"}
           </p>
 
@@ -147,7 +147,7 @@ export default async function ThisWeekPage() {
                     {q.speaker && (
                       <Link
                         href={`/people/${q.speaker.slug}`}
-                        className="font-display text-sm font-bold text-accent-gold hover:text-accent-gold/80 transition-colors"
+                        className="font-display text-sm font-bold text-accent-gold-text hover:text-accent-gold-text/80 transition-colors"
                       >
                         {q.speaker.displayName}
                       </Link>
@@ -230,7 +230,7 @@ export default async function ThisWeekPage() {
       {/* People */}
       {orderedPeople.length > 0 && (
         <section className="space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/60">
             {"/// voices_in_focus"}
           </p>
           <div className="grid gap-3 sm:grid-cols-3">
@@ -250,7 +250,7 @@ export default async function ThisWeekPage() {
                   <div className="h-12 w-12 rounded-full bg-accent-violet/10 border border-accent-violet/20" />
                 )}
                 <div>
-                  <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-violet transition-colors">
+                  <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-violet-text transition-colors">
                     {person.displayName}
                   </p>
                   {person.shortBio && (
@@ -286,7 +286,7 @@ export default async function ThisWeekPage() {
           </a>
           <Link
             href="/episodes"
-            className="inline-flex items-center gap-2 rounded border border-accent-gold/30 px-4 py-2 font-mono text-[11px] text-accent-gold hover:bg-accent-gold/5 transition-colors"
+            className="inline-flex items-center gap-2 rounded border border-accent-gold/30 px-4 py-2 font-mono text-[11px] text-accent-gold-text hover:bg-accent-gold/5 transition-colors"
           >
             Full archive →
           </Link>

@@ -38,7 +38,7 @@ export default async function BestiaryPage() {
     <main className="min-h-screen bg-void">
       <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-4xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/60">
             {"/// field_guide · handle_with_ritual_gloves"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -70,14 +70,14 @@ export default async function BestiaryPage() {
                 className="group flex flex-col rounded-lg border border-border bg-surface p-4 hover:border-accent-violet/40 hover:bg-accent-violet/5 transition-all"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl text-accent-violet/70 group-hover:text-accent-violet transition-colors" aria-hidden>
+                  <span className="text-2xl text-accent-violet-text/70 group-hover:text-accent-violet-text transition-colors" aria-hidden>
                     {glyphFor(b.title)}
                   </span>
                   <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted/40">
                     {b.category}
                   </span>
                 </div>
-                <h2 className="mt-2 font-display text-sm font-bold text-text-primary group-hover:text-accent-violet transition-colors">
+                <h2 className="mt-2 font-display text-sm font-bold text-text-primary group-hover:text-accent-violet-text transition-colors">
                   {b.title}
                 </h2>
                 {b.summary && (
@@ -91,7 +91,7 @@ export default async function BestiaryPage() {
         )}
 
         <div className="pt-8 text-center">
-          <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors">
+          <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors">
             ← The Fun Wing
           </Link>
         </div>

@@ -153,11 +153,11 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
           aria-label="Breadcrumb"
           className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted"
         >
-          <Link href="/start-here" className="hover:text-accent-gold transition-colors">
+          <Link href="/start-here" className="hover:text-accent-gold-text transition-colors">
             Enter the Codex
           </Link>
           <span className="mx-2">/</span>
-          <Link href="/collections" className="hover:text-accent-gold transition-colors">
+          <Link href="/collections" className="hover:text-accent-gold-text transition-colors">
             Collections
           </Link>
           <span className="mx-2">/</span>
@@ -326,7 +326,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
                     <Link
                       key={rs.href}
                       href={rs.href}
-                      className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-border text-text-muted hover:text-accent-gold hover:border-accent-gold/40 transition-colors"
+                      className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-border text-text-muted hover:text-accent-gold-text hover:border-accent-gold/40 transition-colors"
                     >
                       {rs.label} →
                     </Link>
@@ -341,7 +341,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
         <section className="text-center">
           <Link
             href="/collections"
-            className="font-mono text-xs uppercase tracking-widest text-text-muted hover:text-accent-gold transition-colors"
+            className="font-mono text-xs uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
           >
             ← All collections
           </Link>

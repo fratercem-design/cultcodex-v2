@@ -41,12 +41,12 @@ export function PaywallGate({
               key={seg.id}
               className="flex gap-3 rounded px-2 py-1.5 border-l-2 border-transparent"
             >
-              <span className="shrink-0 font-mono text-[10px] text-accent-gold/60 w-14 text-right pt-0.5">
+              <span className="shrink-0 font-mono text-[10px] text-accent-gold-text/60 w-14 text-right pt-0.5">
                 {formatSeconds(seg.startSeconds)}
               </span>
               <div className="min-w-0 flex-1">
                 {seg.speakerLabel && (
-                  <span className="font-mono text-[10px] font-bold uppercase text-accent-gold">
+                  <span className="font-mono text-[10px] font-bold uppercase text-accent-gold-text">
                     {seg.speakerLabel}
                   </span>
                 )}
@@ -59,7 +59,7 @@ export function PaywallGate({
         <div className="absolute inset-x-0 bottom-0 h-2/3 backdrop-blur-[2px]" aria-hidden="true" />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="flex h-10 w-10 items-center justify-center rounded-full border border-accent-gold/40 bg-surface/80 shadow-lg backdrop-blur-sm">
-            <span className="text-lg text-accent-gold" aria-hidden>🔒</span>
+            <span className="text-lg text-accent-gold-text" aria-hidden>🔒</span>
           </div>
         </div>
       </div>
@@ -70,10 +70,10 @@ export function PaywallGate({
           <SubscriptionCTA />
         ) : (
           <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-transparent p-6 text-center space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60">
               {"/// observer_mode"}
             </p>
-            <h3 className="font-display text-xl font-bold text-accent-gold">
+            <h3 className="font-display text-xl font-bold text-accent-gold-text">
               Observers see the surface.
             </h3>
             <p className="font-mono text-xs text-text-muted max-w-sm mx-auto leading-relaxed">
@@ -96,7 +96,7 @@ export function PaywallGate({
             <div className="flex flex-wrap justify-center gap-3 pt-1">
               <Link
                 href="/auth/signin"
-                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25"
               >
                 Sign in to unlock →
               </Link>

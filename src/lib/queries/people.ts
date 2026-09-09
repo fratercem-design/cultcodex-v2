@@ -12,17 +12,35 @@ const EPISODE_CARD_SELECT = {
   thumbnailUrl: true,
 } satisfies Prisma.EpisodeSelect;
 
+/** How many related records a person page renders before "show more" territory.
+ *  Psyche has ~2,900 appearances and thousands of quotes; loading them all
+ *  serialized a 13 MB RSC payload into the HTML (2026-08 audit). Totals come
+ *  from `_count` so the UI still shows true numbers next to a bounded list. */
+export const PERSON_APPEARANCES_TAKE = 60;
+export const PERSON_MENTIONS_TAKE = 60;
+export const PERSON_QUOTES_TAKE = 50;
+
 export function buildPersonInclude() {
   return {
+    _count: {
+      select: {
+        guestAppearances: true,
+        mentions: true,
+        quotes: true,
+        topics: true,
+        loreConnections: true,
+      },
+    },
     firstAppearanceEpisode: { select: { airDate: true } },
     guestAppearances: {
       select: { episode: { select: EPISODE_CARD_SELECT } },
       orderBy: { episode: { airDate: "desc" } },
+      take: PERSON_APPEARANCES_TAKE,
     },
     mentions: {
       select: { episode: { select: EPISODE_CARD_SELECT } },
       orderBy: { episode: { airDate: "desc" } },
-      take: 200,
+      take: PERSON_MENTIONS_TAKE,
     },
     topics: { include: { topic: true } },
     loreConnections: { include: { loreEntry: true } },
@@ -33,6 +51,7 @@ export function buildPersonInclude() {
         timestampSeconds: true,
         episode: { select: { id: true } },
       },
+      take: PERSON_QUOTES_TAKE,
     },
   } satisfies Prisma.PersonInclude;
 }
@@ -165,6 +184,28 @@ export async function getSpecialMentions() {
     },
     orderBy: { displayName: "asc" },
   }).catch(() => []);
+}
+
+/** Air dates for every episode a person appears in or is mentioned in.
+ *  Dates only — this feeds the era-presence chart and the true appearance
+ *  total, so those stay accurate even though the rendered episode list is
+ *  capped at PERSON_APPEARANCES_TAKE. Aggregated server-side; the rows
+ *  themselves are never serialized into the page payload. */
+export async function getPersonEpisodeDates(
+  personId: string
+): Promise<(Date | null)[]> {
+  const rows = await prisma.episode.findMany({
+    where: {
+      OR: [
+        { guests: { some: { personId } } },
+        { mentionedPeople: { some: { personId } } },
+      ],
+    },
+    select: { airDate: true },
+  });
+  // Undated episodes are kept so the total matches /episodes?person=<slug>;
+  // era bucketing skips them.
+  return rows.map((r) => r.airDate);
 }
 
 export async function getPersonBySlug(slug: string) {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import {
   Space_Grotesk,
   Inter,
@@ -8,6 +9,7 @@ import {
   VT323,
 } from "next/font/google";
 import { LiveBanner } from "@/components/layout/live-banner";
+import { ScrollReset } from "@/components/layout/scroll-reset";
 import { EntryBanner } from "@/components/layout/entry-banner";
 import { TerminalTopBar } from "@/components/layout/terminal-topbar";
 import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
@@ -77,7 +79,7 @@ const vt323 = VT323({preload: false,
 });
 
 const SITE_DESCRIPTION =
-  "The complete archive of the Cult of Psyche: 2,500+ transmissions, searchable transcripts, lore entries, guest profiles, relationship maps, and AI-powered exploration of every word ever spoken in the stream.";
+  "The complete archive of the Cult of Psyche: nearly 3,000 transmissions, searchable transcripts, lore entries, guest profiles, relationship maps, and AI-powered exploration of every word ever spoken in the stream.";
 
 // SITE_URL comes from @/lib/seo — single source of truth with a localhost guard,
 // so a stray dev value in NEXT_PUBLIC_SITE_URL can never become metadataBase.
@@ -184,14 +186,18 @@ export default async function RootLayout({
         style={{ backgroundColor: "var(--term-bg)" }}
       >
         <SkipLink />
+        <Suspense fallback={null}>
+          <ScrollReset />
+        </Suspense>
         <LiveBanner />
         <EntryBanner />
         <div className="terminal-grid">
           <TerminalTopBar />
           <TerminalSidebar counts={counts} liveChannels={liveChannels} />
           <div
-            id="main-content"
-            className="terminal-main"
+            id="terminal-scroll"
+            tabIndex={-1}
+            className="terminal-main outline-none"
             style={{ backgroundColor: "var(--term-bg)" }}
           >
             {children}

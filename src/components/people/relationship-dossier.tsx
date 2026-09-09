@@ -11,11 +11,11 @@ const STATE_CLS: Partial<Record<RelationType, string>> = {
   friend: "border-accent-cyan/40 text-accent-cyan bg-accent-cyan/10",
   ally: "border-accent-cyan/40 text-accent-cyan bg-accent-cyan/10",
   frequent_collaborator: "border-accent-cyan/40 text-accent-cyan bg-accent-cyan/10",
-  mentor: "border-accent-gold/40 text-accent-gold bg-accent-gold/10",
-  student: "border-accent-gold/40 text-accent-gold bg-accent-gold/10",
-  supporter: "border-accent-gold/40 text-accent-gold bg-accent-gold/10",
-  debate_rival: "border-accent-violet/40 text-accent-violet bg-accent-violet/10",
-  critic: "border-accent-violet/40 text-accent-violet bg-accent-violet/10",
+  mentor: "border-accent-gold/40 text-accent-gold-text bg-accent-gold/10",
+  student: "border-accent-gold/40 text-accent-gold-text bg-accent-gold/10",
+  supporter: "border-accent-gold/40 text-accent-gold-text bg-accent-gold/10",
+  debate_rival: "border-accent-violet/40 text-accent-violet-text bg-accent-violet/10",
+  critic: "border-accent-violet/40 text-accent-violet-text bg-accent-violet/10",
   former_friend: "border-red-400/40 text-red-400 bg-red-500/10",
   enemy: "border-red-400/40 text-red-400 bg-red-500/10",
 };
@@ -62,13 +62,13 @@ export function RelationshipDossier({ entries, personName }: { entries: Relation
                   className="h-7 w-7 rounded-full object-cover border border-border"
                 />
               ) : (
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-violet/15 font-mono text-xs font-bold text-accent-violet border border-border">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-violet/15 font-mono text-xs font-bold text-accent-violet-text border border-border">
                   {counterpart.displayName[0]?.toUpperCase() ?? "?"}
                 </div>
               )}
               <Link
                 href={`/people/${counterpart.slug}`}
-                className="font-mono text-xs text-text-primary hover:text-accent-violet transition-colors"
+                className="font-mono text-xs text-text-primary hover:text-accent-violet-text transition-colors"
               >
                 {counterpart.displayName}
               </Link>
@@ -95,7 +95,7 @@ export function RelationshipDossier({ entries, personName }: { entries: Relation
                     {beat.episode && (
                       <Link
                         href={`/episodes/${beat.episode.slug}`}
-                        className="text-accent-gold/80 hover:text-accent-gold transition-colors"
+                        className="text-accent-gold-text/80 hover:text-accent-gold-text transition-colors"
                       >
                         {beat.episode.episodeNumber != null ? `EP ${beat.episode.episodeNumber} · ` : ""}
                         {beat.episode.title}

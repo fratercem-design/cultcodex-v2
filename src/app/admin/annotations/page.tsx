@@ -27,7 +27,7 @@ async function getAnnotations() {
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  pending: "text-accent-gold",
+  pending: "text-accent-gold-text",
   approved: "text-green-400",
   hidden: "text-red-400/60",
 };
@@ -86,7 +86,7 @@ export default async function AdminAnnotationsPage() {
                       </button>
                     </form>
                     <form action={moderateAnnotation.bind(null, a.id, "pending")}>
-                      <button type="submit" className="rounded px-3 py-1 font-mono text-xs bg-accent-gold/10 text-accent-gold hover:bg-accent-gold/20 transition-colors">
+                      <button type="submit" className="rounded px-3 py-1 font-mono text-xs bg-accent-gold/10 text-accent-gold-text hover:bg-accent-gold/20 transition-colors">
                         Reset
                       </button>
                     </form>

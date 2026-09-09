@@ -65,7 +65,7 @@ export default async function CorrectionsPage({
                 href="https://github.com/fratercem-design/cultcodex-v2/issues"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-accent-gold hover:underline"
+                className="text-accent-gold-text hover:underline"
               >
                 GitHub Issues
               </a>{" "}
@@ -85,7 +85,7 @@ export default async function CorrectionsPage({
             <p className="text-text-muted text-xs">
               All content in this archive is derived from publicly available streams
               and recordings. See our{" "}
-              <Link href="/content-policy" className="text-accent-gold hover:underline">
+              <Link href="/content-policy" className="text-accent-gold-text hover:underline">
                 Content Policy
               </Link>{" "}
               for more details.
@@ -94,11 +94,11 @@ export default async function CorrectionsPage({
         </SectionCard>
 
         <div className="flex items-center justify-center gap-4 text-xs">
-          <Link href="/methodology" className="font-mono text-accent-gold hover:underline">
+          <Link href="/methodology" className="font-mono text-accent-gold-text hover:underline">
             Methodology
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/content-policy" className="font-mono text-accent-gold hover:underline">
+          <Link href="/content-policy" className="font-mono text-accent-gold-text hover:underline">
             Content Policy
           </Link>
         </div>

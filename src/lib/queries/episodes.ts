@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db";
 import { cleanTitle } from "@/lib/format/text";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { getEraById } from "@/lib/eras";
-import type { Prisma, ContentStatus, ContentType, PersonType } from "@/generated/prisma/client";
+import type { Prisma, ContentStatus, PersonType } from "@/generated/prisma/client";
 
 // Type for episode with all relations loaded
 export type EpisodeWithRelations = Prisma.EpisodeGetPayload<{
@@ -121,6 +121,26 @@ const EPISODE_CARD_LIST_SELECT = {
  * ordering semantics as getEpisodes, but selects only what cards render.
  * Use getEpisodes/getEpisodeBySlug when the full relations are actually needed.
  */
+/** Episodes where the person appeared as a guest or was mentioned. Mirrors the
+ *  union the person page shows, so /episodes?person=<slug> is the full,
+ *  paginated view behind that page's capped appearance list. */
+/** Episodes linked to a topic — the paginated view behind a topic page's
+ *  capped episode list. */
+function buildTopicWhere(topicSlug?: string): Prisma.EpisodeWhereInput {
+  if (!topicSlug) return {};
+  return { topics: { some: { topic: { slug: topicSlug } } } };
+}
+
+function buildPersonWhere(personSlug?: string): Prisma.EpisodeWhereInput {
+  if (!personSlug) return {};
+  return {
+    OR: [
+      { guests: { some: { person: { slug: personSlug } } } },
+      { mentionedPeople: { some: { person: { slug: personSlug } } } },
+    ],
+  };
+}
+
 export async function getEpisodeCards(options?: {
   status?: ContentStatus;
   take?: number;
@@ -128,6 +148,10 @@ export async function getEpisodeCards(options?: {
   orderBy?: "airDate" | "episodeNumber" | "title";
   order?: "asc" | "desc";
   eraId?: string;
+  /** Restrict to episodes this person appeared in or was mentioned in. */
+  personSlug?: string;
+  /** Restrict to episodes linked to this topic. */
+  topicSlug?: string;
 }): Promise<EpisodeCardWithGuests[]> {
   const {
     status,
@@ -136,6 +160,8 @@ export async function getEpisodeCards(options?: {
     orderBy = "episodeNumber",
     order = "desc",
     eraId,
+    personSlug,
+    topicSlug,
   } = options ?? {};
 
   const orderByClause =
@@ -146,6 +172,8 @@ export async function getEpisodeCards(options?: {
   const where: Prisma.EpisodeWhereInput = {
     ...(status ? { status } : {}),
     ...buildEraWhere(eraId),
+    ...buildPersonWhere(personSlug),
+    ...buildTopicWhere(topicSlug),
   };
 
   const rows = await prisma.episode.findMany({
@@ -193,6 +221,10 @@ export async function getEpisodes(options?: {
   orderBy?: "airDate" | "episodeNumber" | "title";
   order?: "asc" | "desc";
   eraId?: string;
+  /** Restrict to episodes this person appeared in or was mentioned in. */
+  personSlug?: string;
+  /** Restrict to episodes linked to this topic. */
+  topicSlug?: string;
 }) {
   const {
     status,
@@ -201,6 +233,8 @@ export async function getEpisodes(options?: {
     orderBy = "episodeNumber",
     order = "desc",
     eraId,
+    personSlug,
+    topicSlug,
   } = options ?? {};
 
   // When sorting by airDate, use episodeNumber as tiebreaker so null-airDate
@@ -213,6 +247,8 @@ export async function getEpisodes(options?: {
   const where: Prisma.EpisodeWhereInput = {
     ...(status ? { status } : {}),
     ...buildEraWhere(eraId),
+    ...buildPersonWhere(personSlug),
+    ...buildTopicWhere(topicSlug),
   };
 
   return prisma.episode.findMany({
@@ -231,10 +267,17 @@ export async function getEpisodeBySlug(slug: string) {
   });
 }
 
-export async function getEpisodeCount(status?: ContentStatus, eraId?: string) {
+export async function getEpisodeCount(
+  status?: ContentStatus,
+  eraId?: string,
+  personSlug?: string,
+  topicSlug?: string
+) {
   const where: Prisma.EpisodeWhereInput = {
     ...(status ? { status } : {}),
     ...buildEraWhere(eraId),
+    ...buildPersonWhere(personSlug),
+    ...buildTopicWhere(topicSlug),
   };
   return prisma.episode.count({
     where: Object.keys(where).length > 0 ? where : undefined,

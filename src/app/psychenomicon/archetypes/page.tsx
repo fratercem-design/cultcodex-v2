@@ -25,7 +25,7 @@ export default async function ArchetypesIndexPage() {
     return (
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">
             {"/// initiate_only"}
           </p>
           <p className="font-display text-xl font-bold text-text-primary">
@@ -33,7 +33,7 @@ export default async function ArchetypesIndexPage() {
           </p>
           <Link
             href="/premium#access"
-            className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors"
+            className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/20 transition-colors"
           >
             Become Initiate+ →
           </Link>
@@ -49,7 +49,7 @@ export default async function ArchetypesIndexPage() {
     <main className="min-h-screen bg-void">
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-5xl space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/60">
             ψ PSYCHENOMICON · ARCHETYPES ψ
           </p>
           <h1 className="font-display text-2xl font-bold text-text-primary">
@@ -72,8 +72,8 @@ export default async function ArchetypesIndexPage() {
       <div className="mx-auto max-w-5xl px-4 py-8 space-y-6">
         {archetypes.length === 0 ? (
           <div className="py-20 text-center space-y-3">
-            <p className="font-mono text-4xl text-accent-violet/20">ψ</p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60">
+            <p className="font-mono text-4xl text-accent-violet-text/20">ψ</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/60">
               {"/// no_archetypes_recorded"}
             </p>
             <p className="text-sm text-text-muted max-w-sm mx-auto">
@@ -146,7 +146,7 @@ export default async function ArchetypesIndexPage() {
                     </div>
                   )}
 
-                  <p className="font-mono text-[10px] text-accent-violet/40 group-hover:text-accent-violet transition-colors">
+                  <p className="font-mono text-[10px] text-accent-violet-text/40 group-hover:text-accent-violet-text transition-colors">
                     Open atlas →
                   </p>
                 </Link>
@@ -158,13 +158,13 @@ export default async function ArchetypesIndexPage() {
         <div className="pt-6 border-t border-border flex flex-wrap items-center justify-between gap-3">
           <Link
             href="/psychenomicon"
-            className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors"
+            className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             ← Return to Psychenomicon
           </Link>
           <Link
             href="/psychenomicon/entities"
-            className="font-mono text-[10px] text-accent-violet/60 hover:text-accent-violet transition-colors"
+            className="font-mono text-[10px] text-accent-violet-text/60 hover:text-accent-violet-text transition-colors"
           >
             All entities →
           </Link>

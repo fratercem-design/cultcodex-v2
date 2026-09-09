@@ -21,7 +21,7 @@ export default function ArchetypeQuizPage() {
       {/* Hero */}
       <section className="border-b border-border bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-2xl space-y-4 text-center">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/60">
             {"/// archetype_discovery"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">

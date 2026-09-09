@@ -59,7 +59,7 @@ export const metadata = {
   alternates: { canonical: "/" },
   title: "CultCodex — The Archive of Cult of Psyche | Tarot, Consciousness & Open Panels",
   description:
-    "Cult of Psyche is a live, unscripted internet show — tarot, consciousness, spirituality, open-panel debates, and the strange edges of human behavior. CultCodex is its complete searchable archive: 2,600+ episodes with full transcripts, guest profiles, lore, and an AI Oracle.",
+    "Cult of Psyche is a live, unscripted internet show — tarot, consciousness, spirituality, open-panel debates, and the strange edges of human behavior. CultCodex is its complete searchable archive: nearly 3,000 episodes with full transcripts, guest profiles, lore, and an AI Oracle.",
   openGraph: {
     title: "CultCodex — Decode Cult of Psyche",
     description:
@@ -161,7 +161,7 @@ export default async function HomePage() {
               <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-cyan/80">
                 ✦ &nbsp; CultCodex &nbsp; ✦
               </p>
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60">
                 The Cult of Psyche intelligence archive
               </p>
             </div>
@@ -171,7 +171,7 @@ export default async function HomePage() {
             >
               The searchable memory of the Cult of Psyche.
               <br />
-              <span className="text-accent-gold" style={{ textShadow: "0 0 40px rgba(200, 57, 46,0.6)" }}>
+              <span className="text-accent-gold-text" style={{ textShadow: "0 0 40px rgba(200, 57, 46,0.6)" }}>
                 Every pattern — still decoding.
               </span>
             </h1>
@@ -184,7 +184,7 @@ export default async function HomePage() {
           </div>
 
           <p className="font-mono text-[12px] text-text-muted max-w-lg mx-auto leading-relaxed">
-            <span className="text-accent-gold font-bold">CultCodex</span> is the complete searchable
+            <span className="text-accent-gold-text font-bold">CultCodex</span> is the complete searchable
             archive: <span className="text-accent-cyan">{stats.episodes.toLocaleString()}+ episodes</span>{" "}
             indexed — full transcripts, guest profiles, lore, and an AI Oracle that answers questions
             from inside it all.
@@ -193,13 +193,13 @@ export default async function HomePage() {
           <div className="flex flex-col items-center gap-2">
             <Link
               href="/start-here"
-              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-10 py-4 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-10 py-4 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 hover:shadow-xl hover:shadow-accent-gold/20"
             >
               Enter the Codex →
             </Link>
             <Link
               href="/oracle"
-              className="font-mono text-[11px] text-text-muted/50 hover:text-accent-gold/70 transition-colors underline underline-offset-4"
+              className="font-mono text-[11px] text-text-muted/50 hover:text-accent-gold-text/70 transition-colors underline underline-offset-4"
             >
               Ask the Oracle — 3 free →
             </Link>
@@ -225,7 +225,7 @@ export default async function HomePage() {
               { value: `${stats.totalHours.toLocaleString()}+`, label: "hours decoded" },
             ].map((s) => (
               <span key={s.label} className="font-mono text-[11px] text-text-muted whitespace-nowrap">
-                <span className="text-accent-gold font-bold">{s.value}</span>{" "}{s.label}
+                <span className="text-accent-gold-text font-bold">{s.value}</span>{" "}{s.label}
               </span>
             ))}
           </div>
@@ -238,7 +238,7 @@ export default async function HomePage() {
             {([
               {
                 href: "/episodes",
-                icon: <IconTransmission size={22} className="text-accent-gold" />,
+                icon: <IconTransmission size={22} className="text-accent-gold-text" />,
                 label: "Episodes",
                 count: `${stats.episodes.toLocaleString()} transmissions`,
                 accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
@@ -252,21 +252,21 @@ export default async function HomePage() {
               },
               {
                 href: "/symbols",
-                icon: <IconScroll size={22} className="text-accent-gold" />,
+                icon: <IconScroll size={22} className="text-accent-gold-text" />,
                 label: "Symbol Codex",
                 count: "esoteric encyclopedia",
                 accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
               },
               {
                 href: "/archetype-quiz",
-                icon: <IconRecurring size={22} className="text-accent-violet" />,
+                icon: <IconRecurring size={22} className="text-accent-violet-text" />,
                 label: "Archetype Quiz",
                 count: "find your pattern",
                 accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5",
               },
               {
                 href: "/graph",
-                icon: <IconLink size={22} className="text-accent-violet" />,
+                icon: <IconLink size={22} className="text-accent-violet-text" />,
                 label: "Network Map",
                 count: "relationship graph",
                 accent: "hover:border-accent-violet/40 hover:bg-accent-violet/5",
@@ -280,7 +280,7 @@ export default async function HomePage() {
               },
               {
                 href: "/reports",
-                icon: <IconTransmission size={22} className="text-accent-gold" />,
+                icon: <IconTransmission size={22} className="text-accent-gold-text" />,
                 label: "Codex Reports",
                 count: "guest intelligence",
                 accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
@@ -302,7 +302,7 @@ export default async function HomePage() {
 
           {/* ── MUSIC PLAYER ─────────────────────────────────────────── */}
           <div className="space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">{"/// the_signal"}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60">{"/// the_signal"}</p>
             <YouTubePlayer
               videoId="xlpOB2eXM1o"
               playlistId="PLvfZtruvrMTufahIz2Mx9GI_4SJP-ySMw"
@@ -332,8 +332,8 @@ export default async function HomePage() {
                   className="h-32 w-24 flex-shrink-0 object-cover sm:h-40 sm:w-28"
                 />
                 <div className="flex flex-col justify-center gap-1.5 px-5 py-4">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">{"/// chapter_of_the_day"}</p>
-                  <h3 className="font-display text-lg font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-violet">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">{"/// chapter_of_the_day"}</p>
+                  <h3 className="font-display text-lg font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-violet-text">
                     {dailyChapter.title}
                   </h3>
                   <p className="font-mono text-[11px] text-text-muted">
@@ -359,8 +359,8 @@ export default async function HomePage() {
                   className="h-32 w-24 flex-shrink-0 object-cover sm:h-40 sm:w-28"
                 />
                 <div className="flex flex-col justify-center gap-1.5 px-5 py-4">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/70">{"/// the_book · $5"}</p>
-                  <h3 className="font-display text-lg font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-gold">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/70">{"/// the_book · $5"}</p>
+                  <h3 className="font-display text-lg font-bold leading-snug text-text-primary transition-colors group-hover:text-accent-gold-text">
                     The Psychenomicon — Volume I
                   </h3>
                   <p className="font-mono text-[11px] text-text-muted">
@@ -375,7 +375,7 @@ export default async function HomePage() {
           <div className="rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface px-6 py-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="space-y-1.5">
-                <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">{"/// ai_oracle"}</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/60">{"/// ai_oracle"}</p>
                 <h2 className="font-display text-lg font-bold text-white">Ask the archive anything.</h2>
                 <p className="font-mono text-[11px] text-text-muted leading-relaxed max-w-lg">
                   AI trained on every transcript, lore entry, and behavioral profile. Ask a question —
@@ -384,7 +384,7 @@ export default async function HomePage() {
               </div>
               <Link
                 href="/oracle"
-                className="shrink-0 self-start inline-flex items-center gap-1.5 rounded-lg border border-accent-violet bg-accent-violet/15 px-4 py-2.5 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25 whitespace-nowrap"
+                className="shrink-0 self-start inline-flex items-center gap-1.5 rounded-lg border border-accent-violet bg-accent-violet/15 px-4 py-2.5 font-mono text-xs font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25 whitespace-nowrap"
               >
                 Ask the Oracle →
               </Link>
@@ -400,13 +400,13 @@ export default async function HomePage() {
 
           {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
           <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">{"/// unlock_the_archive"}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">{"/// unlock_the_archive"}</p>
             <p className="font-display text-xl font-bold text-white">Full transcripts. AI Oracle. The Psychenomicon.</p>
             <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
                 href="/premium"
-                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
               >
                 Become Initiate+ — $10/mo →
               </Link>
@@ -424,7 +424,7 @@ export default async function HomePage() {
             <div className="space-y-3">
               <Link
                 href="/episodes"
-                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60 hover:text-accent-gold transition-colors"
+                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60 hover:text-accent-gold-text transition-colors"
               >
                 {"/// latest_transmission"} <span className="opacity-50 ml-1">→</span>
               </Link>
@@ -448,7 +448,7 @@ export default async function HomePage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     {featured.episodeNumber && (
-                      <span className="font-mono text-[10px] text-accent-gold font-bold">
+                      <span className="font-mono text-[10px] text-accent-gold-text font-bold">
                         EP.{String(featured.episodeNumber).padStart(3, "0")}
                       </span>
                     )}
@@ -456,7 +456,7 @@ export default async function HomePage() {
                       <span className="font-mono text-[10px] text-text-muted">{formatDate(featured.airDate)}</span>
                     )}
                   </div>
-                  <h3 className="text-lg font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+                  <h3 className="text-lg font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
                     {featured.title}
                   </h3>
                   {/* summaryShort intentionally omitted — AI summaries read as filler in this context */}
@@ -474,7 +474,7 @@ export default async function HomePage() {
             <div className="space-y-3">
               <Link
                 href="/episodes"
-                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60 hover:text-accent-gold transition-colors"
+                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/60 hover:text-accent-gold-text transition-colors"
               >
                 {"/// recent_transmissions"} <span className="opacity-50 ml-1">→</span>
               </Link>
@@ -483,7 +483,7 @@ export default async function HomePage() {
                   <EpisodeCard key={ep.id} episode={ep} hideDescription />
                 ))}
               </div>
-              <Link href="/episodes" className="font-mono text-xs text-accent-gold hover:underline">
+              <Link href="/episodes" className="font-mono text-xs text-accent-gold-text hover:underline">
                 View all {stats.episodes.toLocaleString()} episodes →
               </Link>
             </div>
@@ -554,13 +554,13 @@ export default async function HomePage() {
               className="group flex items-start gap-4 rounded-xl border border-accent-gold/20 bg-gradient-to-r from-accent-gold/5 to-surface p-5 transition-all hover:border-accent-gold/40 hover:from-accent-gold/8"
             >
               <div className="shrink-0 mt-0.5">
-                <span className="font-mono text-lg text-accent-gold/60">◑</span>
+                <span className="font-mono text-lg text-accent-gold-text/60">◑</span>
               </div>
               <div className="min-w-0 flex-1 space-y-1">
-                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/50">
+                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/50">
                   ✦ &nbsp; This week in the archive &nbsp; ✦
                 </p>
-                <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold transition-colors">
+                <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold-text transition-colors">
                   {latestDigest.title}
                 </p>
                 {latestDigest.blurb && (
@@ -569,7 +569,7 @@ export default async function HomePage() {
                   </p>
                 )}
               </div>
-              <span className="font-mono text-[10px] text-accent-gold/40 group-hover:text-accent-gold transition-colors shrink-0 self-center">
+              <span className="font-mono text-[10px] text-accent-gold-text/40 group-hover:text-accent-gold-text transition-colors shrink-0 self-center">
                 →
               </span>
             </Link>
@@ -580,9 +580,9 @@ export default async function HomePage() {
             <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">{"/// new here?"}</p>
             <div className="grid gap-2 sm:grid-cols-3">
               {([
-                { href: "/start-here",     label: "Start Here",       desc: "Guided entry points chosen by people who've gone deep", accent: "text-accent-gold border-accent-gold/30 hover:bg-accent-gold/5" },
-                { href: "/archetype-quiz", label: "Find Your Archetype", desc: "10 questions reveal which mythic pattern you embody", accent: "text-accent-violet border-accent-violet/30 hover:bg-accent-violet/5" },
-                { href: "/symbols",        label: "Symbol Codex",     desc: "History and occult meaning of 20+ esoteric symbols", accent: "text-accent-gold border-accent-gold/30 hover:bg-accent-gold/5" },
+                { href: "/start-here",     label: "Start Here",       desc: "Guided entry points chosen by people who've gone deep", accent: "text-accent-gold-text border-accent-gold/30 hover:bg-accent-gold/5" },
+                { href: "/archetype-quiz", label: "Find Your Archetype", desc: "10 questions reveal which mythic pattern you embody", accent: "text-accent-violet-text border-accent-violet/30 hover:bg-accent-violet/5" },
+                { href: "/symbols",        label: "Symbol Codex",     desc: "History and occult meaning of 20+ esoteric symbols", accent: "text-accent-gold-text border-accent-gold/30 hover:bg-accent-gold/5" },
               ] as const).map((p) => (
                 <Link
                   key={p.href}

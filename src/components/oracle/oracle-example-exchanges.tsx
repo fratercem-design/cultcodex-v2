@@ -26,7 +26,7 @@ export function OracleExampleExchanges() {
 
   return (
     <div className="space-y-3">
-      <p className="font-mono text-[9px] uppercase tracking-[0.35em] text-accent-violet/50 text-center">
+      <p className="font-mono text-[9px] uppercase tracking-[0.35em] text-accent-violet-text/50 text-center">
         {"/// oracle_sample_transmissions"}
       </p>
       <p className="text-center font-mono text-[11px] text-text-muted/60 mb-4">
@@ -48,9 +48,9 @@ export function OracleExampleExchanges() {
               onClick={() => setOpen(open === i ? -1 : i)}
               className="w-full flex items-start gap-3 px-5 py-4 text-left"
             >
-              <span className="mt-0.5 shrink-0 font-mono text-[9px] text-accent-violet/50 uppercase tracking-widest pt-0.5">Q</span>
+              <span className="mt-0.5 shrink-0 font-mono text-[9px] text-accent-violet-text/50 uppercase tracking-widest pt-0.5">Q</span>
               <span className="font-mono text-xs text-text-primary leading-relaxed flex-1">{ex.q}</span>
-              <span className={`shrink-0 font-mono text-[10px] text-accent-violet/40 transition-transform ${open === i ? "rotate-180" : ""}`}>▾</span>
+              <span className={`shrink-0 font-mono text-[10px] text-accent-violet-text/40 transition-transform ${open === i ? "rotate-180" : ""}`}>▾</span>
             </button>
 
             {/* Answer */}

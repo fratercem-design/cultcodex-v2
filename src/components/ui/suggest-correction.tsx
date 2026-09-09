@@ -13,9 +13,9 @@ export function SuggestCorrection({ entityType, entityTitle, className }: Sugges
   return (
     <aside className={`rounded-lg border border-border/50 bg-surface/30 p-4 ${className ?? ""}`}>
       <div className="flex items-start gap-3">
-        <IconScroll size={16} className="text-accent-gold/60 mt-0.5 flex-shrink-0" />
+        <IconScroll size={16} className="text-accent-gold-text/60 mt-0.5 flex-shrink-0" />
         <div className="space-y-1.5">
-          <p className="font-mono text-[10px] text-accent-gold/60 uppercase tracking-wider font-bold">
+          <p className="font-mono text-[10px] text-accent-gold-text/60 uppercase tracking-wider font-bold">
             Content Notice
           </p>
           <p className="text-[11px] text-text-muted leading-relaxed">
@@ -24,7 +24,7 @@ export function SuggestCorrection({ entityType, entityTitle, className }: Sugges
           </p>
           <Link
             href={correctionHref}
-            className="inline-block font-mono text-[10px] text-accent-gold hover:text-accent-gold/80 hover:underline transition-colors"
+            className="inline-block font-mono text-[10px] text-accent-gold-text hover:text-accent-gold-text/80 hover:underline transition-colors"
           >
             Suggest a correction &rarr;
           </Link>

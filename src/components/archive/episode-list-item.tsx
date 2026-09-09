@@ -47,7 +47,7 @@ export function EpisodeListItem({
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-0.5">
           {epNum && (
-            <span className="font-mono text-[10px] text-accent-gold font-bold">
+            <span className="font-mono text-[10px] text-accent-gold-text font-bold">
               {epNum}
             </span>
           )}
@@ -63,7 +63,7 @@ export function EpisodeListItem({
             <TranscriptBadge segmentCount={segmentCount} />
           )}
         </div>
-        <h2 className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
+        <h2 className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-2">
           {title}
         </h2>
         {summaryShort && (

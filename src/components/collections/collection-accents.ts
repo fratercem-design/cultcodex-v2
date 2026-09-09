@@ -17,9 +17,9 @@ export interface AccentClasses {
 
 const MAP: Record<CollectionAccent, AccentClasses> = {
   gold: {
-    icon: "text-accent-gold",
-    title: "text-accent-gold",
-    eyebrow: "text-accent-gold",
+    icon: "text-accent-gold-text",
+    title: "text-accent-gold-text",
+    eyebrow: "text-accent-gold-text",
     border: "border-accent-gold/30",
     hoverBorder: "hover:border-accent-gold/60",
     hoverBg: "hover:bg-accent-gold-dim",
@@ -37,9 +37,9 @@ const MAP: Record<CollectionAccent, AccentClasses> = {
     sectionBar: "bg-accent-cyan",
   },
   violet: {
-    icon: "text-accent-violet",
-    title: "text-accent-violet",
-    eyebrow: "text-accent-violet",
+    icon: "text-accent-violet-text",
+    title: "text-accent-violet-text",
+    eyebrow: "text-accent-violet-text",
     border: "border-accent-violet/30",
     hoverBorder: "hover:border-accent-violet/60",
     hoverBg: "hover:bg-accent-violet-dim",
@@ -57,8 +57,8 @@ const MAP: Record<CollectionAccent, AccentClasses> = {
     sectionBar: "bg-accent-crimson",
   },
   mixed: {
-    icon: "text-accent-gold",
-    title: "text-accent-gold",
+    icon: "text-accent-gold-text",
+    title: "text-accent-gold-text",
     eyebrow: "text-accent-cyan",
     border: "border-accent-gold/30",
     hoverBorder: "hover:border-accent-gold/60",

@@ -20,7 +20,7 @@ export function EnrichQueueToggle({ episodeId, queued }: Props) {
       title={queued ? "Remove from enrichment queue" : "Queue for enrichment"}
       className={`rounded border px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider transition-colors disabled:opacity-40 ${
         queued
-          ? "border-accent-gold/60 bg-accent-gold/10 text-accent-gold hover:bg-accent-gold/20"
+          ? "border-accent-gold/60 bg-accent-gold/10 text-accent-gold-text hover:bg-accent-gold/20"
           : "border-border text-text-muted hover:border-accent-gold/30 hover:text-text-primary"
       }`}
     >

@@ -26,8 +26,8 @@ const CONTENT_TYPE_ICONS: Record<string, string> = {
 };
 
 const ERA_CHIP_STYLE: Record<string, string> = {
-  gold:    "border-accent-gold/40 bg-accent-gold/10 text-accent-gold hover:border-accent-gold/60",
-  violet:  "border-accent-violet/40 bg-accent-violet/10 text-accent-violet hover:border-accent-violet/60",
+  gold:    "border-accent-gold/40 bg-accent-gold/10 text-accent-gold-text hover:border-accent-gold/60",
+  violet:  "border-accent-violet/40 bg-accent-violet/10 text-accent-violet-text hover:border-accent-violet/60",
   cyan:    "border-accent-cyan/40 bg-accent-cyan/10 text-accent-cyan hover:border-accent-cyan/60",
   crimson: "border-accent-crimson/40 bg-accent-crimson/10 text-accent-crimson hover:border-accent-crimson/60",
   muted:   "border-border bg-surface text-text-muted",

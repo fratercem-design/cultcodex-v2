@@ -158,7 +158,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
                           variant={CANON_VARIANTS[lore.canonStatus] ?? "muted"}
                         />
                       </div>
-                      <h4 className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
+                      <h4 className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-2">
                         {lore.title}
                       </h4>
                       {lore.summary && (

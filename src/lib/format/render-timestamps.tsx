@@ -64,7 +64,7 @@ export function renderWithTimestamps(
           target="_blank"
           rel="noopener noreferrer"
           title={`Jump to ${ts} on YouTube`}
-          className="mx-0.5 inline-flex items-center rounded bg-accent-gold/10 border border-accent-gold/20 px-1 font-mono text-[11px] text-accent-gold hover:bg-accent-gold/20 hover:text-accent-gold transition-colors"
+          className="mx-0.5 inline-flex items-center rounded bg-accent-gold/10 border border-accent-gold/20 px-1 font-mono text-[11px] text-accent-gold-text hover:bg-accent-gold/20 hover:text-accent-gold-text transition-colors"
         >
           ▶ {ts}
         </a>

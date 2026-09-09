@@ -73,13 +73,13 @@ export default function AppearPage() {
 
         {/* How it works */}
         <section className="space-y-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/60">
             {"/// how_to_get_on"}
           </p>
           <div className="space-y-4">
             {STEPS.map((s) => (
               <div key={s.n} className="flex gap-4 rounded-xl border border-border bg-surface p-5">
-                <span className="font-display text-lg font-bold text-accent-gold/70 shrink-0 w-8">{s.n}</span>
+                <span className="font-display text-lg font-bold text-accent-gold-text/70 shrink-0 w-8">{s.n}</span>
                 <div className="space-y-1">
                   <h2 className="font-display text-base font-bold text-text-primary">{s.title}</h2>
                   <p className="text-sm text-text-muted leading-relaxed">{s.body}</p>
@@ -129,7 +129,7 @@ export default function AppearPage() {
             conversation.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/cult-live" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25">
+            <Link href="/cult-live" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25">
               Watch live →
             </Link>
             <Link href="/premium" className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-3 font-mono text-xs text-text-muted transition-all hover:border-accent-gold/30 hover:text-text-primary">

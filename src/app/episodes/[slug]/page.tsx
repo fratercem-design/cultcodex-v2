@@ -394,7 +394,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                             <Link
                               key={g.person.slug}
                               href={`/people/${g.person.slug}`}
-                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-text-primary hover:border-accent-gold/30 hover:text-accent-gold transition-colors"
+                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-text-primary hover:border-accent-gold/30 hover:text-accent-gold-text transition-colors"
                             >
                               {g.person.displayName}
                             </Link>
@@ -650,8 +650,8 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           {/* Upgrade CTA — only for non-subscribers */}
           {!hasTranscriptAccess && (
             <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-5 space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">{"/// initiate_layer"}</p>
-              <p className="font-mono text-xs font-bold text-accent-gold">Observers see the surface.</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text">{"/// initiate_layer"}</p>
+              <p className="font-mono text-xs font-bold text-accent-gold-text">Observers see the surface.</p>
               <ul className="space-y-1.5">
                 {[
                   "Decode Mode — AI analysis of every episode",
@@ -660,14 +660,14 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   "Add annotations & help shape the canon",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 font-mono text-[10px] text-text-muted">
-                    <span className="text-accent-gold mt-0.5">✦</span>
+                    <span className="text-accent-gold-text mt-0.5">✦</span>
                     {f}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/premium"
-                className="block w-full rounded-lg border border-accent-gold bg-accent-gold/15 px-4 py-2.5 text-center font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
+                className="block w-full rounded-lg border border-accent-gold bg-accent-gold/15 px-4 py-2.5 text-center font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25"
               >
                 Become Initiate+ — $10/mo
               </Link>

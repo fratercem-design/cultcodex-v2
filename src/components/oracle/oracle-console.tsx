@@ -237,6 +237,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
             ref={textareaRef}
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
+            aria-label="Ask the Oracle a question"
             placeholder="Ask the Oracle anything about the archive…"
             disabled={state === "loading"}
             rows={3}
@@ -258,7 +259,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
         <button
           type="submit"
           disabled={!question.trim() || state === "loading"}
-          className="relative w-full overflow-hidden flex items-center justify-center gap-2.5 rounded-xl border border-accent-violet/40 bg-black/40 px-6 py-3.5 font-mono text-sm font-bold text-accent-violet transition-all hover:border-accent-violet/70 hover:bg-accent-violet/10 disabled:opacity-40 disabled:cursor-not-allowed group"
+          className="relative w-full overflow-hidden flex items-center justify-center gap-2.5 rounded-xl border border-accent-violet/40 bg-black/40 px-6 py-3.5 font-mono text-sm font-bold text-accent-violet-text transition-all hover:border-accent-violet/70 hover:bg-accent-violet/10 disabled:opacity-40 disabled:cursor-not-allowed group"
         >
           {/* Shimmer sweep on hover */}
           <span
@@ -276,9 +277,9 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
             </>
           ) : (
             <>
-              <span className="text-accent-violet/50 text-base">◈</span>
+              <span className="text-accent-violet-text/50 text-base">◈</span>
               <span>Consult the Oracle</span>
-              <span className="text-accent-violet/50 text-base">◈</span>
+              <span className="text-accent-violet-text/50 text-base">◈</span>
             </>
           )}
         </button>
@@ -300,7 +301,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
               <LilithOracle />
             </div>
           </div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-violet/50 animate-pulse">
+          <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-violet-text/50 animate-pulse">
             searching_the_archive
           </p>
         </div>
@@ -309,7 +310,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
       {/* ── Gated ── */}
       {state === "error" && gated && (
         <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-6 text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/60">
             {"/// initiate_required"}
           </p>
           <p className="font-display text-base font-bold text-text-primary">
@@ -320,7 +321,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
           </p>
           <Link
             href="/premium"
-            className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
+            className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25"
           >
             Become Initiate+ — $10/mo →
           </Link>
@@ -333,7 +334,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
           <p className="font-mono text-xs text-red-400">{errorMsg || "The Oracle is unavailable."}</p>
           <button
             onClick={handleReset}
-            className="mt-2 font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors"
+            className="mt-2 font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             Try again →
           </button>
@@ -403,11 +404,11 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
 
                 {/* Status label */}
                 {autoPlayBlocked && !isPlaying ? (
-                  <p className="font-mono text-[11px] font-bold text-accent-violet tracking-[0.2em] uppercase animate-pulse text-center">
+                  <p className="font-mono text-[11px] font-bold text-accent-violet-text tracking-[0.2em] uppercase animate-pulse text-center">
                     ◈ The Oracle speaks — tap to hear ◈
                   </p>
                 ) : (
-                  <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet/55 text-center">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet-text/55 text-center">
                     {isPlaying ? "The Oracle speaks" : "Voice ready"}
                   </p>
                 )}
@@ -499,7 +500,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
               {/* Ornamental divider */}
               <div className="flex items-center gap-3">
                 <div className="flex-1 h-px bg-gradient-to-r from-transparent via-accent-violet/18 to-transparent" />
-                <span className="text-accent-violet/28 text-xs">◈</span>
+                <span className="text-accent-violet-text/28 text-xs">◈</span>
                 <div className="flex-1 h-px bg-gradient-to-r from-transparent via-accent-violet/18 to-transparent" />
               </div>
 
@@ -530,7 +531,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
                   <Link
                     key={i}
                     href={c.href}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-border/50 bg-black/30 px-2.5 py-1.5 font-mono text-[9px] text-text-muted hover:border-accent-violet/40 hover:text-accent-violet transition-all truncate max-w-[200px]"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-border/50 bg-black/30 px-2.5 py-1.5 font-mono text-[9px] text-text-muted hover:border-accent-violet/40 hover:text-accent-violet-text transition-all truncate max-w-[200px]"
                   >
                     <CitationIcon type={c.type} />
                     <span className="truncate">{c.label}</span>
@@ -543,7 +544,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
           {/* ── Email capture after free trial ── */}
           {trialUsed && captureState !== "done" && (
             <div className="rounded-xl border border-accent-gold/30 bg-accent-gold/5 p-5 space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/60">
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/60">
                 {trialRemaining !== null && trialRemaining > 0
                   ? `/// ${trialRemaining} free question${trialRemaining === 1 ? "" : "s"} remaining this month`
                   : "/// free questions exhausted"}
@@ -575,6 +576,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
                 <input
                   type="email"
                   required
+                  aria-label="Email address"
                   placeholder="your@email.com"
                   value={captureEmail}
                   onChange={(e) => setCaptureEmail(e.target.value)}
@@ -583,14 +585,14 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
                 <button
                   type="submit"
                   disabled={captureState === "saving"}
-                  className="rounded border border-accent-gold bg-accent-gold/15 px-4 py-2 font-mono text-[11px] font-bold text-accent-gold transition-all hover:bg-accent-gold/25 disabled:opacity-50"
+                  className="rounded border border-accent-gold bg-accent-gold/15 px-4 py-2 font-mono text-[11px] font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 disabled:opacity-50"
                 >
                   {captureState === "saving" ? "…" : "Send me in →"}
                 </button>
               </form>
               <p className="font-mono text-[10px] text-text-muted/50">
                 Or{" "}
-                <Link href="/premium" className="text-accent-gold underline hover:text-accent-gold/80">
+                <Link href="/premium" className="text-accent-gold-text underline hover:text-accent-gold-text/80">
                   subscribe now →
                 </Link>
               </p>
@@ -599,10 +601,10 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
 
           {trialUsed && captureState === "done" && (
             <div className="rounded-xl border border-accent-gold/30 bg-accent-gold/5 px-5 py-4 text-center space-y-1">
-              <p className="font-mono text-xs font-bold text-accent-gold">Received.</p>
+              <p className="font-mono text-xs font-bold text-accent-gold-text">Received.</p>
               <p className="font-mono text-[11px] text-text-muted">
                 Check your inbox.{" "}
-                <Link href="/premium" className="text-accent-gold underline">
+                <Link href="/premium" className="text-accent-gold-text underline">
                   Subscribe now →
                 </Link>
               </p>
@@ -612,7 +614,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
           {/* ── Ask again ── */}
           <button
             onClick={handleReset}
-            className="w-full text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/35 hover:text-accent-violet/70 transition-colors py-2"
+            className="w-full text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/35 hover:text-accent-violet-text/70 transition-colors py-2"
           >
             ◈ ask another question ◈
           </button>

@@ -27,7 +27,7 @@ export const ARCHETYPES: QuizArchetype[] = [
     id: "oracle",
     name: "The Oracle",
     glyph: "◉",
-    color: "text-accent-gold",
+    color: "text-accent-gold-text",
     hex: "#C8392E",
     tagline: "You see the pattern before anyone else has named it.",
     description:

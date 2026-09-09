@@ -23,7 +23,7 @@ function ProcedureLink() {
       </p>
       <Link
         href="/onboarding/procedure"
-        className="mt-2 inline-block font-mono text-xs text-accent-cyan underline underline-offset-4 hover:text-accent-gold"
+        className="mt-2 inline-block font-mono text-xs text-accent-cyan underline underline-offset-4 hover:text-accent-gold-text"
       >
         Read The First Gate Procedure →
       </Link>

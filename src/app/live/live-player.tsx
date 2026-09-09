@@ -20,7 +20,7 @@ export function LivePlayer({ videoId }: LivePlayerProps) {
       {/* Chat */}
       <div className="flex flex-col overflow-hidden rounded-lg border border-border bg-surface">
         <div className="border-b border-border px-4 py-2">
-          <p className="font-mono text-xs font-bold text-accent-gold">
+          <p className="font-mono text-xs font-bold text-accent-gold-text">
             LIVE CHAT
           </p>
         </div>

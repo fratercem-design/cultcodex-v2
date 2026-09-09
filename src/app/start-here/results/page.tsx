@@ -29,11 +29,11 @@ const DEPTH_LABELS: Record<Depth, string> = {
 };
 
 const INTEREST_ACCENTS: Record<Interest, { text: string; border: string; bg: string }> = {
-  consciousness: { text: "text-accent-violet", border: "border-accent-violet/30", bg: "bg-accent-violet/5" },
+  consciousness: { text: "text-accent-violet-text", border: "border-accent-violet/30", bg: "bg-accent-violet/5" },
   ai: { text: "text-accent-cyan", border: "border-accent-cyan/30", bg: "bg-accent-cyan/5" },
-  occult: { text: "text-accent-gold", border: "border-accent-gold/30", bg: "bg-accent-gold/5" },
+  occult: { text: "text-accent-gold-text", border: "border-accent-gold/30", bg: "bg-accent-gold/5" },
   behavior: { text: "text-accent-crimson", border: "border-accent-crimson/30", bg: "bg-red-950/10" },
-  wild: { text: "text-accent-gold", border: "border-accent-gold/30", bg: "bg-accent-gold/5" },
+  wild: { text: "text-accent-gold-text", border: "border-accent-gold/30", bg: "bg-accent-gold/5" },
 };
 
 const VALID_INTERESTS: Interest[] = ["consciousness", "ai", "occult", "behavior", "wild"];
@@ -167,7 +167,7 @@ export default async function ResultsPage({ searchParams }: Props) {
             href={`/episodes`}
             className={`font-mono text-[10px] uppercase tracking-widest ${accent.text} hover:opacity-80 transition-opacity inline-flex items-center gap-1.5`}
           >
-            Full archive → <span aria-hidden>({">"}2,600 episodes)</span>
+            Full archive → <span aria-hidden>(nearly 3,000 episodes)</span>
           </Link>
         </div>
       </section>
@@ -249,7 +249,7 @@ export default async function ResultsPage({ searchParams }: Props) {
             Ask the Oracle
           </h2>
           <p className="font-mono text-[11px] text-text-muted">
-            The Oracle synthesizes across all 2,600+ transmissions. These
+            The Oracle synthesizes across all nearly 3,000 transmissions. These
             questions are calibrated for what you told the archive.
           </p>
         </div>
@@ -283,7 +283,7 @@ export default async function ResultsPage({ searchParams }: Props) {
           </Link>
           <Link
             href="/premium"
-            className="font-mono text-[10px] uppercase tracking-widest text-accent-gold hover:opacity-80 transition-opacity"
+            className="font-mono text-[10px] uppercase tracking-widest text-accent-gold-text hover:opacity-80 transition-opacity"
           >
             Get Initiate+ →
           </Link>

@@ -471,7 +471,7 @@ export async function sendGospelDeeperEmail({
       heading: "There's more",
       accent: "beneath it.",
       paras: [
-        `Now that you're an Initiate, the Oracle answers anything from inside 2,600+ transmissions — behavioral patterns, guest dynamics, recurring moments, all cited to the source. Your first three questions are free.`,
+        `Now that you're an Initiate, the Oracle answers anything from inside nearly 3,000 transmissions — behavioral patterns, guest dynamics, recurring moments, all cited to the source. Your first three questions are free.`,
         "Not sure where to begin? Start where others started — the curated entry points into the archive.",
       ],
       ctaHref: "https://cultcodex.me/oracle",

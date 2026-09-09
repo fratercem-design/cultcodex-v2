@@ -141,7 +141,7 @@ export function WhatYouMissed({ decodeData, isUnlocked, isAuthenticated, episode
                 Full analysis →{" "}
                 <Link
                   href={`/episodes/${episodeSlug}?tab=decode`}
-                  className="text-accent-violet hover:underline"
+                  className="text-accent-violet-text hover:underline"
                 >
                   Decode tab
                 </Link>

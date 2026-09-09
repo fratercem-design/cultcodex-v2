@@ -24,7 +24,7 @@ export async function generateMetadata({
   const era = getEraById(eraId);
   if (!era) return {};
   return buildMetadata({
-    title: `${era.label} — Eras — CULT CODEX`,
+    title: `${era.label} — Eras`,
     description: era.description,
     path: `/eras/${era.id}`,
   });
@@ -32,8 +32,8 @@ export async function generateMetadata({
 
 // ── Color maps (mirror the graph component) ───────────────────────────────────
 const ERA_ACCENT: Record<string, string> = {
-  gold:    "text-accent-gold",
-  violet:  "text-accent-violet",
+  gold:    "text-accent-gold-text",
+  violet:  "text-accent-violet-text",
   cyan:    "text-accent-cyan",
   crimson: "text-accent-crimson",
   muted:   "text-text-muted",
@@ -53,8 +53,8 @@ const ERA_BG: Record<string, string> = {
   muted:   "bg-surface",
 };
 const ERA_SIGIL_BG: Record<string, string> = {
-  gold:    "bg-accent-gold/10 text-accent-gold",
-  violet:  "bg-accent-violet/10 text-accent-violet",
+  gold:    "bg-accent-gold/10 text-accent-gold-text",
+  violet:  "bg-accent-violet/10 text-accent-violet-text",
   cyan:    "bg-accent-cyan/10 text-accent-cyan",
   crimson: "bg-accent-crimson/10 text-accent-crimson",
   muted:   "bg-surface text-text-muted",
@@ -270,7 +270,7 @@ export default async function EraDetailPage({
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors truncate">
+                    <p className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors truncate">
                       {guest.name}
                     </p>
                     {guest.archetype ? (

@@ -45,49 +45,76 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // column not yet migrated — skip member pages in sitemap
   }
 
-  const now = new Date();
+  /** Newest updatedAt in a collection, or undefined when empty. A sitemap
+   *  lastmod must describe the content, not the moment the sitemap was built —
+   *  stamping generation time made ~79 URLs claim an hourly change they never
+   *  had (2026-08 audit). Index pages inherit their collection's newest date;
+   *  genuinely static pages omit lastmod entirely, which the protocol allows
+   *  and crawlers prefer over a date they will learn to distrust. */
+  const latest = (rows: Array<{ updatedAt: Date }>): Date | undefined =>
+    rows.reduce<Date | undefined>(
+      (max, r) => (!max || r.updatedAt > max ? r.updatedAt : max),
+      undefined
+    );
+
+  const episodesUpdated = latest(episodes);
+  const peopleUpdated = latest(people);
+  const loreUpdated = latest(lore);
+  const topicsUpdated = latest(topics);
+  const seriesUpdated = latest(series);
+  const chaptersUpdated = latest(psychenomiconChapters);
+  const membersUpdated = latest(memberPages);
+  const archiveUpdated = latest(
+    [
+      episodesUpdated, peopleUpdated, loreUpdated,
+      topicsUpdated, seriesUpdated, chaptersUpdated,
+    ]
+      .filter((d): d is Date => Boolean(d))
+      .map((updatedAt) => ({ updatedAt }))
+  );
+
 
   const staticPages: MetadataRoute.Sitemap = [
-    { url: baseUrl,                           lastModified: now, changeFrequency: "daily",   priority: 1.0 },
-    { url: `${baseUrl}/episodes`,             lastModified: now, changeFrequency: "daily",   priority: 0.9 },
-    { url: `${baseUrl}/people`,               lastModified: now, changeFrequency: "weekly",  priority: 0.8 },
-    { url: `${baseUrl}/lore`,                 lastModified: now, changeFrequency: "weekly",  priority: 0.8 },
-    { url: `${baseUrl}/topics`,               lastModified: now, changeFrequency: "weekly",  priority: 0.7 },
-    { url: `${baseUrl}/series`,               lastModified: now, changeFrequency: "weekly",  priority: 0.7 },
-    { url: `${baseUrl}/psychenomicon`,        lastModified: now, changeFrequency: "weekly",  priority: 0.7 },
-    { url: `${baseUrl}/quotes`,               lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
-    { url: `${baseUrl}/search`,               lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/collections`,          lastModified: now, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${baseUrl}/timeline`,             lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
-    { url: `${baseUrl}/timeline/explore`,     lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
-    { url: `${baseUrl}/start-here`,           lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/explore`,              lastModified: now, changeFrequency: "weekly",  priority: 0.8 },
-    { url: `${baseUrl}/join`,                 lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/rank`,                 lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/leaderboard`,          lastModified: now, changeFrequency: "daily",   priority: 0.6 },
-    { url: `${baseUrl}/quests`,               lastModified: now, changeFrequency: "weekly",  priority: 0.5 },
-    { url: `${baseUrl}/reports`,              lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
-    { url: `${baseUrl}/appear`,               lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/media-kit`,            lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/this-week`,            lastModified: now, changeFrequency: "weekly",  priority: 0.8 },
-    { url: `${baseUrl}/stats`,                lastModified: now, changeFrequency: "weekly",  priority: 0.5 },
-    { url: `${baseUrl}/lexicon`,              lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/mythic-map`,           lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/oracle`,               lastModified: now, changeFrequency: "always",  priority: 0.6 },
-    { url: `${baseUrl}/live`,                 lastModified: now, changeFrequency: "daily",   priority: 0.6 },
-    { url: `${baseUrl}/tarot`,                lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/tarot/oracle`,         lastModified: now, changeFrequency: "weekly",  priority: 0.7 },
-    { url: `${baseUrl}/people/the-rest`,      lastModified: now, changeFrequency: "weekly",  priority: 0.5 },
-    { url: `${baseUrl}/members`,              lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
-    { url: `${baseUrl}/graph`,                lastModified: now, changeFrequency: "weekly",  priority: 0.6 },
-    { url: `${baseUrl}/symbols`,              lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/archetypes`,           lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/archetype-quiz`,       lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/about/methodology`,    lastModified: now, changeFrequency: "monthly", priority: 0.4 },
-    { url: `${baseUrl}/corrections`,          lastModified: now, changeFrequency: "monthly", priority: 0.3 },
-    { url: `${baseUrl}/content-policy`,       lastModified: now, changeFrequency: "monthly", priority: 0.3 },
-    { url: `${baseUrl}/privacy`,              lastModified: now, changeFrequency: "yearly",  priority: 0.2 },
-    { url: `${baseUrl}/terms`,                lastModified: now, changeFrequency: "yearly",  priority: 0.2 },
+    { url: baseUrl,                           lastModified: archiveUpdated, changeFrequency: "daily",   priority: 1.0 },
+    { url: `${baseUrl}/episodes`,             lastModified: episodesUpdated, changeFrequency: "daily",   priority: 0.9 },
+    { url: `${baseUrl}/people`,               lastModified: peopleUpdated, changeFrequency: "weekly",  priority: 0.8 },
+    { url: `${baseUrl}/lore`,                 lastModified: loreUpdated, changeFrequency: "weekly",  priority: 0.8 },
+    { url: `${baseUrl}/topics`,               lastModified: topicsUpdated, changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${baseUrl}/series`,               lastModified: seriesUpdated, changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${baseUrl}/psychenomicon`,        lastModified: chaptersUpdated, changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${baseUrl}/quotes`,               lastModified: episodesUpdated, changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/search`,               changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/collections`,          lastModified: archiveUpdated, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${baseUrl}/timeline`,             lastModified: episodesUpdated, changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/timeline/explore`,     lastModified: episodesUpdated, changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/start-here`,           changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/explore`,              lastModified: archiveUpdated, changeFrequency: "weekly",  priority: 0.8 },
+    { url: `${baseUrl}/join`,                 changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/rank`,                 changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/leaderboard`,          lastModified: membersUpdated, changeFrequency: "daily",   priority: 0.6 },
+    { url: `${baseUrl}/quests`,               changeFrequency: "weekly",  priority: 0.5 },
+    { url: `${baseUrl}/reports`,              lastModified: peopleUpdated, changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/appear`,               changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/media-kit`,            changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/this-week`,            lastModified: episodesUpdated, changeFrequency: "weekly",  priority: 0.8 },
+    { url: `${baseUrl}/stats`,                lastModified: archiveUpdated, changeFrequency: "weekly",  priority: 0.5 },
+    { url: `${baseUrl}/lexicon`,              changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/mythic-map`,           changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/oracle`,               changeFrequency: "always",  priority: 0.6 },
+    { url: `${baseUrl}/live`,                 lastModified: episodesUpdated, changeFrequency: "daily",   priority: 0.6 },
+    { url: `${baseUrl}/tarot`,                changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/tarot/oracle`,         changeFrequency: "weekly",  priority: 0.7 },
+    { url: `${baseUrl}/people/the-rest`,      lastModified: peopleUpdated, changeFrequency: "weekly",  priority: 0.5 },
+    { url: `${baseUrl}/members`,              lastModified: membersUpdated, changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/graph`,                lastModified: archiveUpdated, changeFrequency: "weekly",  priority: 0.6 },
+    { url: `${baseUrl}/symbols`,              changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/archetypes`,           changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/archetype-quiz`,       changeFrequency: "monthly", priority: 0.7 },
+    { url: `${baseUrl}/about/methodology`,    changeFrequency: "monthly", priority: 0.4 },
+    { url: `${baseUrl}/corrections`,          changeFrequency: "monthly", priority: 0.3 },
+    { url: `${baseUrl}/content-policy`,       changeFrequency: "monthly", priority: 0.3 },
+    { url: `${baseUrl}/privacy`,              changeFrequency: "yearly",  priority: 0.2 },
+    { url: `${baseUrl}/terms`,                changeFrequency: "yearly",  priority: 0.2 },
   ];
 
   const dynamicPages: MetadataRoute.Sitemap = [
@@ -140,20 +167,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Static archetype and symbol pages (force-static, no DB)
     ...ARCHETYPES.map((a) => ({
       url: `${baseUrl}/archetypes/${a.slug}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     ...SYMBOLS.map((s) => ({
       url: `${baseUrl}/symbols/${s.slug}`,
-      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     })),
     // SEO pillar / authority pages
     ...PILLARS.map((p) => ({
       url: `${baseUrl}/explore/${p.slug}`,
-      lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),

@@ -30,11 +30,11 @@ const typeToPath: Record<EntityType, string> = {
  *   Red    — Quotes (notable moments)
  */
 const typeColors: Record<EntityType, { dot: string; border: string; text: string; bg: string; label: string }> = {
-  person:  { dot: "bg-accent-gold",   border: "border-accent-gold/20 hover:border-accent-gold/50", text: "text-accent-gold",   bg: "hover:bg-accent-gold-dim", label: "text-accent-gold" },
+  person:  { dot: "bg-accent-gold",   border: "border-accent-gold/20 hover:border-accent-gold/50", text: "text-accent-gold-text",   bg: "hover:bg-accent-gold-dim", label: "text-accent-gold-text" },
   topic:   { dot: "bg-accent-cyan",   border: "border-accent-cyan/20 hover:border-accent-cyan/50", text: "text-accent-cyan",   bg: "hover:bg-accent-cyan-dim", label: "text-accent-cyan" },
-  lore:    { dot: "bg-accent-violet", border: "border-accent-violet/20 hover:border-accent-violet/50", text: "text-accent-violet", bg: "hover:bg-accent-violet-dim", label: "text-accent-violet" },
-  episode: { dot: "bg-accent-gold",   border: "border-accent-gold/20 hover:border-accent-gold/50", text: "text-accent-gold",   bg: "hover:bg-accent-gold-dim", label: "text-accent-gold" },
-  series:  { dot: "bg-accent-gold",   border: "border-accent-gold/20 hover:border-accent-gold/50", text: "text-accent-gold",   bg: "hover:bg-accent-gold-dim", label: "text-accent-gold" },
+  lore:    { dot: "bg-accent-violet", border: "border-accent-violet/20 hover:border-accent-violet/50", text: "text-accent-violet-text", bg: "hover:bg-accent-violet-dim", label: "text-accent-violet-text" },
+  episode: { dot: "bg-accent-gold",   border: "border-accent-gold/20 hover:border-accent-gold/50", text: "text-accent-gold-text",   bg: "hover:bg-accent-gold-dim", label: "text-accent-gold-text" },
+  series:  { dot: "bg-accent-gold",   border: "border-accent-gold/20 hover:border-accent-gold/50", text: "text-accent-gold-text",   bg: "hover:bg-accent-gold-dim", label: "text-accent-gold-text" },
   quote:   { dot: "bg-red-400",       border: "border-red-400/20 hover:border-red-400/50",         text: "text-red-400",       bg: "hover:bg-red-400/5",       label: "text-red-400" },
 };
 

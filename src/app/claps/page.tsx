@@ -58,14 +58,14 @@ export default async function ClapsPage() {
         {/* Active 24-hour claps */}
         {spotlights.length > 0 && (
           <section className="space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/70">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/70">
               {"/// clapping_right_now"}
             </p>
             <div className="flex flex-wrap gap-2">
               {spotlights.map((s) => (
                 <span
                   key={s.id}
-                  className="animate-pulse rounded-full border border-accent-gold/50 bg-accent-gold/10 px-4 py-1.5 font-display text-sm font-bold text-accent-gold shadow-[0_0_18px_-6px_rgba(200,169,107,0.8)]"
+                  className="animate-pulse rounded-full border border-accent-gold/50 bg-accent-gold/10 px-4 py-1.5 font-display text-sm font-bold text-accent-gold-text shadow-[0_0_18px_-6px_rgba(200,169,107,0.8)]"
                   title={`Clap active until ${s.spotlightUntil?.toISOString()}`}
                 >
                   👏 {s.holder.nickname}
@@ -92,7 +92,7 @@ export default async function ClapsPage() {
             <ol className="divide-y divide-border rounded-lg border border-border bg-surface/50">
               {holders.map((h, i) => (
                 <li key={h.id} className="flex items-center gap-4 px-4 py-3">
-                  <span className="w-8 shrink-0 text-center font-mono text-sm text-accent-gold/70">
+                  <span className="w-8 shrink-0 text-center font-mono text-sm text-accent-gold-text/70">
                     {MEDAL[i] ?? i + 1}
                   </span>
                   <span className="min-w-0 flex-1 truncate font-display text-base font-bold text-text-primary">

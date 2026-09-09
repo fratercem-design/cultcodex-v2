@@ -43,7 +43,7 @@ export function EpisodeHero({
       {/* Top badges */}
       <div className="absolute top-4 left-4 right-4 z-10 flex items-start justify-between">
         {epNum && (
-          <span className="rounded-full border border-accent-gold/40 bg-accent-gold/15 px-3 py-1 font-mono text-xs font-bold text-accent-gold backdrop-blur-sm">
+          <span className="rounded-full border border-accent-gold/40 bg-accent-gold/15 px-3 py-1 font-mono text-xs font-bold text-accent-gold-text backdrop-blur-sm">
             {epNum}
           </span>
         )}

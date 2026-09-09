@@ -21,7 +21,7 @@ export default function StormbornPage() {
     <main className="relative mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center px-4 py-20 text-center">
       <VoidSigil size={180} />
 
-      <h1 className="mt-8 font-display text-5xl font-bold tracking-widest text-accent-violet">
+      <h1 className="mt-8 font-display text-5xl font-bold tracking-widest text-accent-violet-text">
         STORMBORN
       </h1>
 
@@ -48,7 +48,7 @@ export default function StormbornPage() {
         <p className="font-serif text-sm leading-loose text-text-primary/80">
           Father of cats. Speaker to the void.
         </p>
-        <p className="mt-4 font-display text-lg tracking-widest text-accent-violet">
+        <p className="mt-4 font-display text-lg tracking-widest text-accent-violet-text">
           Stormborn.
         </p>
       </div>
@@ -62,7 +62,7 @@ export default function StormbornPage() {
             key={stat.label}
             className="rounded-lg border border-accent-violet/20 bg-accent-violet/[0.04] px-4 py-5"
           >
-            <p className="font-display text-2xl font-bold text-accent-violet">
+            <p className="font-display text-2xl font-bold text-accent-violet-text">
               {stat.value}
             </p>
             <p className="mt-1 font-mono text-[10px] tracking-wider text-text-muted">
@@ -79,7 +79,7 @@ export default function StormbornPage() {
 
       <Link
         href="/"
-        className="mt-6 font-mono text-[10px] tracking-widest text-text-muted/60 transition-colors hover:text-accent-violet/60"
+        className="mt-6 font-mono text-[10px] tracking-widest text-text-muted/60 transition-colors hover:text-accent-violet-text/60"
       >
         &larr; return to the archive
       </Link>

@@ -20,14 +20,14 @@ const STATUS_META = {
   emerging: {
     label: "Emerging",
     dot: "bg-accent-gold animate-pulse",
-    badge: "border-accent-gold/30 text-accent-gold bg-accent-gold/5",
-    heading: "text-accent-gold",
+    badge: "border-accent-gold/30 text-accent-gold-text bg-accent-gold/5",
+    heading: "text-accent-gold-text",
   },
   active: {
     label: "Active",
     dot: "bg-accent-violet",
-    badge: "border-accent-violet/30 text-accent-violet bg-accent-violet/5",
-    heading: "text-accent-violet",
+    badge: "border-accent-violet/30 text-accent-violet-text bg-accent-violet/5",
+    heading: "text-accent-violet-text",
   },
   resolved: {
     label: "Resolved",
@@ -45,11 +45,11 @@ export default async function ThreadsIndexPage() {
     return (
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">{"/// initiate_only"}</p>
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">{"/// initiate_only"}</p>
           <p className="font-display text-xl font-bold text-text-primary">The thread registry is sealed.</p>
           <Link
             href="/premium"
-            className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors"
+            className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/20 transition-colors"
           >
             Become Initiate+ →
           </Link>
@@ -88,15 +88,15 @@ export default async function ThreadsIndexPage() {
     <main className="min-h-screen bg-void">
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-5xl space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/60">
             ψ PSYCHENOMICON · THREADS ψ
           </p>
           <h1 className="font-display text-2xl font-bold text-text-primary">Thread Registry</h1>
           <p className="text-xs text-text-muted">
             {totalThreads.toLocaleString()} thread{totalThreads !== 1 ? "s" : ""} tracked &middot;&nbsp;
-            <span className="text-accent-gold">{counts.emerging} emerging</span>
+            <span className="text-accent-gold-text">{counts.emerging} emerging</span>
             &nbsp;&middot;&nbsp;
-            <span className="text-accent-violet">{counts.active} active</span>
+            <span className="text-accent-violet-text">{counts.active} active</span>
             &nbsp;&middot;&nbsp;
             <span>{counts.resolved} resolved</span>
           </p>
@@ -127,7 +127,7 @@ export default async function ThreadsIndexPage() {
                     className="group rounded-lg border border-border bg-surface p-5 space-y-3 hover:border-accent-violet/40 hover:bg-accent-violet/5 transition-all"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <p className="font-mono text-xs font-bold text-text-primary group-hover:text-accent-violet transition-colors leading-snug">
+                      <p className="font-mono text-xs font-bold text-text-primary group-hover:text-accent-violet-text transition-colors leading-snug">
                         {thread.title}
                       </p>
                       <span className={`flex-shrink-0 inline-flex items-center rounded border px-1.5 py-0.5 font-mono text-[8px] uppercase ${meta.badge}`}>
@@ -152,7 +152,7 @@ export default async function ThreadsIndexPage() {
                               key={c.slug}
                               className={`inline-flex items-center rounded border px-1.5 py-0.5 font-mono text-[8px] ${
                                 c.isMajorEvent
-                                  ? "border-accent-gold/30 text-accent-gold bg-accent-gold/5"
+                                  ? "border-accent-gold/30 text-accent-gold-text bg-accent-gold/5"
                                   : "border-border text-text-muted"
                               }`}
                             >
@@ -182,7 +182,7 @@ export default async function ThreadsIndexPage() {
 
         <Link
           href="/psychenomicon"
-          className="block font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors"
+          className="block font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
         >
           ← Return to Psychenomicon
         </Link>

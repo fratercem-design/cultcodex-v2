@@ -39,7 +39,7 @@ export function AdminSidebar({ userName, userAvatar }: AdminSidebarProps) {
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-60 flex-col border-r border-border bg-surface">
       {/* Header */}
       <div className="border-b border-border px-4 py-4">
-        <h1 className="font-display text-sm font-bold text-accent-gold">
+        <h1 className="font-display text-sm font-bold text-accent-gold-text">
           CULT CODEX
         </h1>
         <p className="font-mono text-[10px] text-text-muted">Admin Panel</p>
@@ -53,7 +53,7 @@ export function AdminSidebar({ userName, userAvatar }: AdminSidebarProps) {
             href={item.href}
             className={`flex items-center gap-2.5 rounded px-3 py-2 font-mono text-xs transition-colors ${
               isActive(item.href)
-                ? "bg-accent-gold/10 text-accent-gold"
+                ? "bg-accent-gold/10 text-accent-gold-text"
                 : "text-text-muted hover:bg-elevated hover:text-text-primary"
             }`}
           >
@@ -83,7 +83,7 @@ export function AdminSidebar({ userName, userAvatar }: AdminSidebarProps) {
         </div>
         <Link
           href="/"
-          className="flex items-center gap-1.5 font-mono text-[10px] text-text-muted hover:text-accent-gold transition-colors"
+          className="flex items-center gap-1.5 font-mono text-[10px] text-text-muted hover:text-accent-gold-text transition-colors"
         >
           ← Back to Site
         </Link>

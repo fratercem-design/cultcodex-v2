@@ -54,7 +54,7 @@ export function EmailGate({ callbackUrl = "/onboarding" }: { callbackUrl?: strin
         role="status"
         aria-live="polite"
       >
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/70">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/70">
           {"// "}step 1 of 2 complete
         </p>
         <h2 className="mt-3 font-serif text-2xl font-black text-accent-gold">
@@ -73,7 +73,7 @@ export function EmailGate({ callbackUrl = "/onboarding" }: { callbackUrl?: strin
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href={`/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-            className="rounded border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-sm font-bold text-accent-gold transition hover:bg-accent-gold/25"
+            className="rounded border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-sm font-bold text-accent-gold-text transition hover:bg-accent-gold/25"
           >
             Sign in and finish →
           </Link>
@@ -95,7 +95,7 @@ export function EmailGate({ callbackUrl = "/onboarding" }: { callbackUrl?: strin
       onSubmit={handleSubmit}
       className="mx-auto mt-10 max-w-lg rounded-lg border border-accent-gold/25 bg-surface p-6 sm:p-8"
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/70">
+      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/70">
         {"// "}the first gate
       </p>
       <h2 className="mt-3 font-serif text-2xl font-black text-text-primary">
@@ -141,7 +141,7 @@ export function EmailGate({ callbackUrl = "/onboarding" }: { callbackUrl?: strin
       <button
         type="submit"
         disabled={busy}
-        className="mt-5 w-full rounded border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition hover:bg-accent-gold/25 disabled:opacity-50"
+        className="mt-5 w-full rounded border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold-text transition hover:bg-accent-gold/25 disabled:opacity-50"
       >
         {busy ? "Opening the gate…" : "Begin initiation"}
       </button>

@@ -24,8 +24,8 @@ interface TranscriptViewerProps {
 }
 
 const SPEAKER_COLORS = [
-  "text-accent-gold",
-  "text-accent-gold",
+  "text-accent-gold-text",
+  "text-accent-gold-text",
   "text-accent-cyan",
   "text-accent-purple",
 ];
@@ -167,7 +167,7 @@ export function TranscriptViewer({
     const parts = text.split(regex);
     return parts.map((part, i) =>
       regex.test(part) ? (
-        <mark key={i} className="bg-accent-gold/20 text-accent-gold rounded-sm px-0.5">
+        <mark key={i} className="bg-accent-gold/20 text-accent-gold-text rounded-sm px-0.5">
           {part}
         </mark>
       ) : (
@@ -190,7 +190,7 @@ export function TranscriptViewer({
                 filterMode === mode
                   ? mode === "signal"
                     ? "border-green-500/60 bg-green-500/15 text-green-400"
-                    : "border-accent-gold/50 bg-accent-gold/10 text-accent-gold"
+                    : "border-accent-gold/50 bg-accent-gold/10 text-accent-gold-text"
                   : "border-border text-text-muted hover:text-text-primary hover:border-border/60"
               }`}
             >
@@ -255,13 +255,13 @@ export function TranscriptViewer({
                     e.stopPropagation();
                     seekTo(seg.startSeconds);
                   }}
-                  className="shrink-0 font-mono text-[10px] text-accent-gold/60 w-14 text-right pt-0.5 hover:text-accent-gold transition-colors cursor-pointer"
+                  className="shrink-0 font-mono text-[10px] text-accent-gold-text/60 w-14 text-right pt-0.5 hover:text-accent-gold-text transition-colors cursor-pointer"
                   title={`Jump to ${formatSeconds(seg.startSeconds)}`}
                 >
                   {formatSeconds(seg.startSeconds)}
                 </button>
               ) : (
-                <span className="shrink-0 font-mono text-[10px] text-accent-gold/60 w-14 text-right pt-0.5">
+                <span className="shrink-0 font-mono text-[10px] text-accent-gold-text/60 w-14 text-right pt-0.5">
                   {formatSeconds(seg.startSeconds)}
                 </span>
               )}
@@ -296,7 +296,7 @@ export function TranscriptViewer({
                 <button
                   onClick={(e) => { e.stopPropagation(); copySegment(seg); }}
                   title="Copy segment text"
-                  className="font-mono text-[10px] text-text-muted hover:text-accent-gold transition-colors"
+                  className="font-mono text-[10px] text-text-muted hover:text-accent-gold-text transition-colors"
                 >
                   {copiedId === seg.id ? "✓" : "⎘"}
                 </button>

@@ -18,7 +18,7 @@ export function PremiumTierAction({ tier, role, priceMonthly, priceAnnual, accen
   const isCurrent = !loading && activeTier === tier;
 
   if (isCurrent) {
-    const accentText = accent === "violet" ? "text-accent-violet" : "text-accent-gold";
+    const accentText = accent === "violet" ? "text-accent-violet-text" : "text-accent-gold-text";
     const accentBorder = accent === "violet" ? "border-accent-violet/25" : "border-accent-gold/25";
     return (
       <div className={`rounded-lg border ${accentBorder} bg-void/40 px-4 py-3 text-center font-mono text-xs font-bold ${accentText}`}>

@@ -52,6 +52,12 @@
   --color-accent-cyan-dim: rgba(98, 228, 200, 0.15);
   --color-accent-crimson: #A94A4A;            /* unchanged — danger/error, kept
                                                   distinct from the ember CTA */
+  --color-accent-crimson-text: #D08585;       /* #A94A4A is only 3.64:1 on the
+                                                  terminal ground — fine for
+                                                  borders and large display
+                                                  type, short of WCAG AA for
+                                                  body copy. This tint is 7.1:1
+                                                  and keeps the same hue. */
   --color-accent-sulphur: #D6A017;            /* new — dossier's rare/2% accent,
                                                   available for future use */
   --color-accent-sulphur-dim: rgba(214, 160, 23, 0.15);
@@ -131,6 +137,7 @@
   --accent-cyan: #62E4C8;
   --accent-cyan-dim: rgba(98, 228, 200, 0.15);
   --accent-crimson: #A94A4A;
+  --accent-crimson-text: #D08585;
 
   /* Legacy aliases */
   --accent-green: #C8392E;
