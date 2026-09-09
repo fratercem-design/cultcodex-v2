@@ -94,7 +94,13 @@ export const metadata: Metadata = {
   // NOTE: no global `alternates.canonical` here. Setting it at the root made
   // every page inherit the homepage URL as its canonical, so Google treated
   // all routes as duplicates of `/`. Each page declares its own canonical.
-  robots: { index: true, follow: true },
+  // NOTE: no global `robots` here either. "index, follow" is already what a
+  // crawler assumes when no robots meta is present, so declaring it bought
+  // nothing — and it collided with the `noindex` Next emits automatically on a
+  // 404, leaving not-found pages carrying both directives at once. Google
+  // resolves such a conflict by taking the most restrictive, so the outcome
+  // happened to be right, but it was luck rather than intent. Pages that need
+  // to be excluded set `robots` themselves.
   verification: { google: "QfWzbm45sKbw9uEbINbuPaWLQEbVsVpP3J8umJYCUAo" },
   other: { "build-commit": process.env.VERCEL_GIT_COMMIT_SHA ?? "dev" },
   icons: {
