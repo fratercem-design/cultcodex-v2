@@ -563,7 +563,7 @@ for live-key patterns (`sk-`, `sk_live_`, `whsec_`, `AIza`, `ghp_`, `AKIA`, priv
 headers, credentialed `postgres://` URLs), excluding `package-lock.json` and `src/generated`:
 
 scripts/enrich/browser-enrich-topics.js:9
-const SECRET = "2633f3d5c23cfa60765748e5de4dcd633ac100e3e8f8b241"
+const SECRET = "<REDACTED — 48 chars, removed from the repo in 056daf7>"
 scripts/enrich/browser-enrich-topics.js:10
 const API_KEY = "sk-ant-api03-<REDACTED — 95 chars, full value in the file>"
 
