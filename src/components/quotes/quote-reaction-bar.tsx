@@ -106,7 +106,7 @@ export function QuoteReactionBar({
             title={isAuthenticated ? label : `Sign in to react · ${label}`}
             className={`group inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[10px] transition-all ${
               isActive
-                ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold"
+                ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold-text"
                 : "border-border bg-surface/60 text-text-muted hover:border-accent-gold/30 hover:text-text-primary"
             } ${pending === type ? "opacity-50" : ""}`}
           >

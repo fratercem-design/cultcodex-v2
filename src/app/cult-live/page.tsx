@@ -18,8 +18,8 @@ const CHANNELS = [
 
 /** One colour per channel */
 const CHANNEL_COLORS = [
-  "text-accent-gold",
-  "text-accent-violet",
+  "text-accent-gold-text",
+  "text-accent-violet-text",
   "text-accent-cyan",
 ] as const;
 
@@ -167,7 +167,7 @@ export default async function CultLivePage() {
 
       {/* Header */}
       <div className="space-y-1">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">{"/// cult_live"}</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// cult_live"}</p>
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-white">Cult Live</h1>
           {liveCount > 0 && (
@@ -184,7 +184,7 @@ export default async function CultLivePage() {
               href={`https://www.youtube.com/${ch.handle}/videos`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-accent-gold transition-colors"
+              className="hover:text-accent-gold-text transition-colors"
             >
               ↗ {ch.label}
             </a>
@@ -255,7 +255,7 @@ export default async function CultLivePage() {
                 <p className="font-mono text-[10px] font-bold uppercase tracking-wider">
                   <span className={channelColor}>{v.channelTitle}</span>
                 </p>
-                <p className="text-xs font-medium text-text-primary leading-snug line-clamp-2 group-hover:text-accent-gold transition-colors">
+                <p className="text-xs font-medium text-text-primary leading-snug line-clamp-2 group-hover:text-accent-gold-text transition-colors">
                   {v.title}
                 </p>
                 <div className="flex items-center gap-2 font-mono text-[9px] text-text-muted">

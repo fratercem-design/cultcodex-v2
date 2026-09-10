@@ -219,7 +219,7 @@ export async function generateChapterForEpisode(episodeId: string): Promise<Chap
   const episodeRef = [
     episode.episodeNumber ? `EP.${String(episode.episodeNumber).padStart(3, "0")}` : "",
     episode.title,
-    episode.airDate ? `(${new Date(episode.airDate).toLocaleDateString()})` : "",
+    episode.airDate ? `(${new Date(episode.airDate).toLocaleDateString("en-US", { timeZone: "UTC" })})` : "",
     guestList ? `— Guests: ${guestList}` : "",
   ].filter(Boolean).join(" ");
 

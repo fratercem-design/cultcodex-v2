@@ -54,7 +54,7 @@ export default async function FromYouTubePage() {
               <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-cyan/80">
                 ✦ &nbsp; You followed the signal &nbsp; ✦
               </p>
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
                 From the broadcast — into the archive
               </p>
             </div>
@@ -64,7 +64,7 @@ export default async function FromYouTubePage() {
             >
               YouTube forgets.
               <br />
-              <span className="text-accent-gold" style={{ textShadow: "0 0 40px rgba(200, 57, 46,0.6)" }}>
+              <span className="text-accent-gold-text" style={{ textShadow: "0 0 40px rgba(200, 57, 46,0.6)" }}>
                 The Codex remembers.
               </span>
             </h1>
@@ -76,21 +76,21 @@ export default async function FromYouTubePage() {
           </div>
 
           <p className="font-mono text-[12px] text-text-muted max-w-lg mx-auto leading-relaxed">
-            <span className="text-accent-gold font-bold">CultCodex</span> holds{" "}
-            <span className="text-accent-cyan">{stats.episodes.toLocaleString()}+ episodes</span> with full
+            <span className="text-accent-gold-text font-bold">CultCodex</span> holds{" "}
+            <span className="text-accent-cyan">{stats.episodes.toLocaleString("en-US")}+ episodes</span> with full
             transcripts, guest profiles, lore, and an AI Oracle that answers questions from inside all of it.
           </p>
 
           <div className="flex flex-col items-center gap-2">
             <Link
               href="/oracle"
-              className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-10 py-4 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/25 hover:shadow-xl hover:shadow-accent-violet/20"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-10 py-4 font-mono text-sm font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25 hover:shadow-xl hover:shadow-accent-violet/20"
             >
               🔮 Ask the Oracle — 3 free →
             </Link>
             <Link
               href="/start-here"
-              className="font-mono text-[11px] text-text-muted/50 hover:text-accent-gold/70 transition-colors underline underline-offset-4"
+              className="font-mono text-[11px] text-text-muted/50 hover:text-accent-gold-text/80 transition-colors underline underline-offset-4"
             >
               Or just enter the Codex →
             </Link>
@@ -105,13 +105,13 @@ export default async function FromYouTubePage() {
         <div className="border-b border-border/40 bg-void/80 backdrop-blur-sm py-3 px-4">
           <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-center gap-x-8 gap-y-1">
             {[
-              { value: stats.episodes.toLocaleString(), label: "transmissions archived" },
-              { value: stats.segments.toLocaleString(), label: "transcript segments" },
-              { value: stats.people.toLocaleString(), label: "voices profiled" },
-              { value: `${stats.totalHours.toLocaleString()}+`, label: "hours decoded" },
+              { value: stats.episodes.toLocaleString("en-US"), label: "transmissions archived" },
+              { value: stats.segments.toLocaleString("en-US"), label: "transcript segments" },
+              { value: stats.people.toLocaleString("en-US"), label: "voices profiled" },
+              { value: `${stats.totalHours.toLocaleString("en-US")}+`, label: "hours decoded" },
             ].map((s) => (
               <span key={s.label} className="font-mono text-[11px] text-text-muted whitespace-nowrap">
-                <span className="text-accent-gold font-bold">{s.value}</span>{" "}{s.label}
+                <span className="text-accent-gold-text font-bold">{s.value}</span>{" "}{s.label}
               </span>
             ))}
           </div>
@@ -120,7 +120,7 @@ export default async function FromYouTubePage() {
         <div className="mx-auto max-w-4xl px-4 py-12 space-y-12">
           {/* ── THE BRIDGE: what this is, for someone who knows the show ── */}
           <div className="space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
               {"/// why_you're_here"}
             </p>
             <div className="grid gap-3 sm:grid-cols-3">
@@ -160,7 +160,7 @@ export default async function FromYouTubePage() {
           <div className="rounded-xl border border-accent-violet/25 bg-gradient-to-b from-accent-violet/5 to-surface px-6 py-6 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="space-y-1.5">
-                <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">{"/// ai_oracle"}</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">{"/// ai_oracle"}</p>
                 <h2 className="font-display text-lg font-bold text-white">Ask about the episode you just watched.</h2>
                 <p className="font-mono text-[11px] text-text-muted leading-relaxed max-w-lg">
                   The Oracle is trained on every transcript, lore entry, and behavioral profile in the archive.
@@ -170,13 +170,13 @@ export default async function FromYouTubePage() {
               </div>
               <Link
                 href="/oracle"
-                className="shrink-0 self-start inline-flex items-center gap-1.5 rounded-lg border border-accent-violet bg-accent-violet/15 px-4 py-2.5 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25 whitespace-nowrap"
+                className="shrink-0 self-start inline-flex items-center gap-1.5 rounded-lg border border-accent-violet bg-accent-violet/15 px-4 py-2.5 font-mono text-xs font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25 whitespace-nowrap"
               >
                 Ask the Oracle — 3 free →
               </Link>
             </div>
             <div className="space-y-2">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/50">
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">
                 {"/// try_asking"}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -188,7 +188,7 @@ export default async function FromYouTubePage() {
                   <Link
                     key={q}
                     href={`/oracle?q=${encodeURIComponent(q)}`}
-                    className="rounded-full border border-accent-violet/20 bg-surface px-3 py-1.5 font-mono text-[10px] text-text-muted hover:border-accent-violet/50 hover:text-accent-violet transition-colors"
+                    className="rounded-full border border-accent-violet/20 bg-surface px-3 py-1.5 font-mono text-[10px] text-text-muted hover:border-accent-violet/50 hover:text-accent-violet-text transition-colors"
                   >
                     ↳ {q}
                   </Link>
@@ -203,17 +203,17 @@ export default async function FromYouTubePage() {
               <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/60">{"/// free"}</p>
               <p className="font-display text-base font-bold text-text-primary">Start decoding — no account needed</p>
               <ul className="space-y-1.5 font-mono text-[11px] text-text-muted">
-                <li>✦ Browse {stats.episodes.toLocaleString()}+ episodes &amp; transcripts</li>
+                <li>✦ Browse {stats.episodes.toLocaleString("en-US")}+ episodes &amp; transcripts</li>
                 <li>✦ Ask the Oracle 3 questions</li>
                 <li>✦ Symbol Codex &amp; the Archetype Quiz</li>
                 <li>✦ The weekly Signal newsletter</li>
               </ul>
             </div>
             <div className="rounded-xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface px-5 py-5 space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/70">{"/// initiate+ · $10/mo"}</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">{"/// initiate+ · $10/mo"}</p>
               <p className="font-display text-base font-bold text-white">Open the whole archive</p>
               <ul className="space-y-1.5 font-mono text-[11px] text-text-muted">
-                <li className="text-accent-gold/90">✦ Unlimited AI Oracle</li>
+                <li className="text-accent-gold-text/90">✦ Unlimited AI Oracle</li>
                 <li>✦ Full transcript access + Decode Mode</li>
                 <li>✦ Your member identity profile</li>
                 <li>✦ No contracts — cancel anytime</li>
@@ -223,7 +223,7 @@ export default async function FromYouTubePage() {
 
           {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
           <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">{"/// unlock_the_archive"}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// unlock_the_archive"}</p>
             <p className="font-display text-xl font-bold text-white">Full transcripts. Unlimited Oracle. The Psychenomicon.</p>
             <p className="font-mono text-xs text-text-muted max-w-md mx-auto">
               Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.
@@ -231,7 +231,7 @@ export default async function FromYouTubePage() {
             <div className="flex flex-wrap justify-center gap-3">
               <Link
                 href="/premium"
-                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
               >
                 Become Initiate+ — $10/mo →
               </Link>

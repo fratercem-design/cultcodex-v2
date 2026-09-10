@@ -64,7 +64,7 @@ export default async function ConnectionPathPage({ searchParams }: PageProps) {
         </p>
         <Link
           href="/graph"
-          className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-gold transition-colors"
+          className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
         >
           ← Open the full network map
         </Link>
@@ -110,7 +110,7 @@ export default async function ConnectionPathPage({ searchParams }: PageProps) {
           </p>
           <button
             type="submit"
-            className="rounded-lg border border-accent-violet bg-accent-violet/15 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/25 transition-colors"
+            className="rounded-lg border border-accent-violet bg-accent-violet/15 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/25 transition-colors"
           >
             Trace the path →
           </button>
@@ -186,7 +186,7 @@ function EmptyHint({
                   ? `/graph/path?from=${encodeURIComponent(samples[0].slug)}&to=${encodeURIComponent(s.slug)}`
                   : `/graph/path?from=${encodeURIComponent(samples[0].slug)}&to=${encodeURIComponent(s.slug)}`
             }
-            className="rounded-full border border-border bg-surface px-3 py-1 font-mono text-[10px] text-text-muted hover:border-accent-violet/40 hover:text-accent-violet transition-colors"
+            className="rounded-full border border-border bg-surface px-3 py-1 font-mono text-[10px] text-text-muted hover:border-accent-violet/40 hover:text-accent-violet-text transition-colors"
           >
             {s.displayName}
           </Link>
@@ -225,7 +225,7 @@ function NotFound({
   const msg = messages[reason];
   return (
     <div className="rounded-xl border border-accent-crimson/20 bg-accent-crimson/5 p-8 text-center space-y-3">
-      <p className="font-display text-lg font-bold text-accent-crimson">
+      <p className="font-display text-lg font-bold text-accent-crimson-text">
         {msg.title}
       </p>
       <p className="font-mono text-sm text-text-muted leading-relaxed max-w-md mx-auto">
@@ -255,7 +255,7 @@ function PathResult({
             {fromName} → {toName}
           </h2>
         </div>
-        <div className="rounded-full border border-accent-violet/40 bg-accent-violet/10 px-3 py-1 font-mono text-[11px] text-accent-violet tabular-nums">
+        <div className="rounded-full border border-accent-violet/40 bg-accent-violet/10 px-3 py-1 font-mono text-[11px] text-accent-violet-text tabular-nums">
           {result.degree} {result.degree === 1 ? "degree" : "degrees"} of separation
         </div>
       </div>
@@ -292,14 +292,14 @@ function PathRow({ step, index }: { step: PathStep; index: number }) {
             href={`/episodes/${step.via.slug}`}
             className="min-w-0 flex-1 group"
           >
-            <p className="font-mono text-[9px] uppercase tracking-widest text-accent-violet/60">
+            <p className="font-mono text-[9px] uppercase tracking-widest text-accent-violet-text/70">
               via{" "}
               {step.via.episodeNumber != null
                 ? `EP.${String(step.via.episodeNumber).padStart(3, "0")}`
                 : "episode"}
               {step.via.airDate && ` · ${formatDate(step.via.airDate)}`}
             </p>
-            <p className="font-mono text-[11px] text-text-muted group-hover:text-accent-violet transition-colors line-clamp-1">
+            <p className="font-mono text-[11px] text-text-muted group-hover:text-accent-violet-text transition-colors line-clamp-1">
               {step.via.title}
             </p>
           </Link>
@@ -322,12 +322,12 @@ function PathRow({ step, index }: { step: PathStep; index: number }) {
             className="h-9 w-9 rounded-full object-cover shrink-0 border border-border group-hover:border-accent-gold/60 transition-colors"
           />
         ) : (
-          <div className="h-9 w-9 rounded-full shrink-0 border border-border bg-accent-violet/10 flex items-center justify-center font-mono text-[12px] text-accent-violet">
+          <div className="h-9 w-9 rounded-full shrink-0 border border-border bg-accent-violet/10 flex items-center justify-center font-mono text-[12px] text-accent-violet-text">
             {step.person.displayName[0]}
           </div>
         )}
         <div className="min-w-0">
-          <p className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+          <p className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
             {step.person.displayName}
           </p>
           <p className="font-mono text-[9px] text-text-muted/50 capitalize">

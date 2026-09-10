@@ -102,7 +102,7 @@ export function SearchInput({ defaultValue = "" }: SearchInputProps) {
         </svg>
         <button
           type="submit"
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded bg-accent-gold/10 px-3 py-1.5 font-mono text-xs text-accent-gold hover:bg-accent-gold/20 transition-colors"
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded bg-accent-gold/10 px-3 py-1.5 font-mono text-xs text-accent-gold-text hover:bg-accent-gold/20 transition-colors"
         >
           Search
         </button>

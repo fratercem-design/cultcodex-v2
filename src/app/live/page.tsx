@@ -82,7 +82,7 @@ export default async function LivePage() {
           /* No video at all */
           <div className="space-y-6">
             <div className="rounded-lg border border-border bg-surface p-8 text-center">
-              <p className="font-mono text-lg text-accent-gold">
+              <p className="font-mono text-lg text-accent-gold-text">
                 No stream scheduled yet
               </p>
               <p className="mt-2 font-mono text-xs text-text-muted">

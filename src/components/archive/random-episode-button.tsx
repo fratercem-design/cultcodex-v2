@@ -14,7 +14,7 @@ export function RandomEpisodeButton() {
     <button
       onClick={handleClick}
       disabled={loading}
-      className="inline-flex items-center gap-1.5 rounded border border-border px-2.5 py-1.5 font-mono text-xs text-text-muted transition-colors hover:border-accent-gold/50 hover:text-accent-gold disabled:opacity-50"
+      className="inline-flex items-center gap-1.5 rounded border border-border px-2.5 py-1.5 font-mono text-xs text-text-muted transition-colors hover:border-accent-gold/50 hover:text-accent-gold-text disabled:opacity-50"
       title="Random episode"
       aria-label="Random episode"
     >

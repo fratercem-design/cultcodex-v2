@@ -72,8 +72,8 @@ export default async function OracleSharePage({ searchParams }: PageProps) {
           }}
         >
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-2xl text-accent-violet" aria-hidden="true">◉</span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet/70">
+            <span className="text-2xl text-accent-violet-text" aria-hidden="true">◉</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/70">
               The Oracle Responds
             </span>
           </div>
@@ -85,13 +85,13 @@ export default async function OracleSharePage({ searchParams }: PageProps) {
         <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <Link
             href="/oracle"
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-accent-violet/50 bg-accent-violet/10 px-6 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:border-accent-violet/70 hover:bg-accent-violet/15"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-accent-violet/50 bg-accent-violet/10 px-6 py-3 font-mono text-sm font-bold text-accent-violet-text transition-all hover:border-accent-violet/70 hover:bg-accent-violet/15"
           >
             Ask the Oracle →
           </Link>
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-surface px-6 py-3 font-mono text-sm text-text-muted transition-all hover:border-accent-violet/30 hover:text-accent-violet"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-surface px-6 py-3 font-mono text-sm text-text-muted transition-all hover:border-accent-violet/30 hover:text-accent-violet-text"
           >
             Enter the Codex
           </Link>

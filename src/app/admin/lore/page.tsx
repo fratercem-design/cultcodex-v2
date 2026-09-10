@@ -85,7 +85,7 @@ export default async function AdminLorePage({ searchParams }: PageProps) {
               href={`/admin/lore${s !== "all" ? `?canonStatus=${s}` : ""}`}
               className={`rounded-full border px-3 py-1 font-mono text-[10px] transition-colors ${
                 (canonFilter ?? "all") === s || (!canonFilter && s === "all")
-                  ? "border-accent-gold text-accent-gold bg-accent-gold/10"
+                  ? "border-accent-gold text-accent-gold-text bg-accent-gold/10"
                   : "border-border text-text-muted hover:border-accent-gold/50"
               }`}
             >
@@ -130,7 +130,7 @@ export default async function AdminLorePage({ searchParams }: PageProps) {
                 <td className="px-3 py-2 text-right">
                   <Link
                     href={`/admin/lore/${entry.id}/edit`}
-                    className="font-mono text-[10px] text-accent-gold hover:underline"
+                    className="font-mono text-[10px] text-accent-gold-text hover:underline"
                   >
                     Edit
                   </Link>

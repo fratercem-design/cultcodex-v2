@@ -58,7 +58,7 @@ export function GuestGrid({ guests, archetypes, bare = false }: GuestGridProps) 
                   className="rounded-full border-2 border-transparent transition-colors group-hover:border-accent-gold"
                 />
               )}
-              <span className="w-full truncate text-center font-mono text-[10px] text-text-muted transition-colors group-hover:text-accent-gold">
+              <span className="w-full truncate text-center font-mono text-[10px] text-text-muted transition-colors group-hover:text-accent-gold-text">
                 {guest.displayName}
               </span>
             </Link>

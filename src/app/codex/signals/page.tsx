@@ -45,7 +45,7 @@ export default async function CodexSignalsPage() {
         className="mx-auto max-w-5xl px-4 py-10 space-y-6"
       >
         <nav className="font-mono text-[11px] uppercase tracking-widest text-text-muted">
-          <Link href="/codex" className="hover:text-accent-gold transition-colors">
+          <Link href="/codex" className="hover:text-accent-gold-text transition-colors">
             ← Back to your codex
           </Link>
         </nav>

@@ -49,7 +49,7 @@ export default async function HandbookPage() {
 
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
+      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
         {"/// the_codex_of_gatekeepers"}
       </p>
       <h1 className="mt-3 font-display text-4xl font-black tracking-tight text-text-primary">
@@ -70,7 +70,7 @@ export default async function HandbookPage() {
           crowds are pointed, how a mind is captured — and treats that knowledge as
           something to defend people with, never something to use on them. Its spine is
           a single commitment:{" "}
-          <span className="text-accent-violet">no followers, only fellow travelers.</span>
+          <span className="text-accent-violet-text">no followers, only fellow travelers.</span>
         </p>
         <p>
           {edition?.pageCount
@@ -82,7 +82,7 @@ export default async function HandbookPage() {
 
       <p className="mt-6 font-mono text-[11px] text-text-muted">
         New to the circle?{" "}
-        <a href="/onboarding.html" className="text-accent-violet hover:underline">
+        <a href="/onboarding.html" className="text-accent-violet-text hover:underline">
           Start with the welcome deck
         </a>{" "}
         — a short walk through what the Cult of Psyche is and how we gather.
@@ -91,7 +91,7 @@ export default async function HandbookPage() {
       <ol className="mt-10 space-y-3">
         {volumes.map(([roman, title, blurb]) => (
           <li key={roman} className="border-l-2 border-accent-violet/25 pl-4">
-            <p className="font-mono text-xs text-accent-violet/70">Volume {roman}</p>
+            <p className="font-mono text-xs text-accent-violet-text/70">Volume {roman}</p>
             <p className="font-display text-lg text-text-primary">{title}</p>
             <p className="font-mono text-xs leading-relaxed text-text-muted">{blurb}</p>
           </li>
@@ -115,7 +115,7 @@ export default async function HandbookPage() {
 
       <p className="mt-6 font-mono text-[11px] text-text-muted">
         The Handbook is the outer codex. Its counterpart, the inner one, is the{" "}
-        <Link href="/psychenomicon" className="text-accent-violet hover:underline">
+        <Link href="/psychenomicon" className="text-accent-violet-text hover:underline">
           Psychenomicon
         </Link>
         .

@@ -56,7 +56,7 @@ export function PersonCard({ person }: PersonCardProps) {
       )}
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors truncate">
+          <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors truncate">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent-gold/60 mr-1.5 align-middle" />
             {person.displayName}
           </h3>
@@ -73,7 +73,7 @@ export function PersonCard({ person }: PersonCardProps) {
           </span>
           {isProfileComplete && (
             <span
-              className="font-mono text-[9px] text-accent-violet border border-accent-violet/30 rounded px-1 py-px leading-none"
+              className="font-mono text-[9px] text-accent-violet-text border border-accent-violet/30 rounded px-1 py-px leading-none"
               title="Full profile — bio, lore summary, and photo all present"
             >
               PROFILE

@@ -38,7 +38,7 @@ export function SubscriptionCTA({ variant = "card" }: SubscriptionCTAProps) {
       <button
         onClick={handleSubscribe}
         disabled={loading}
-        className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/10 disabled:opacity-50"
+        className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/10 disabled:opacity-50"
       >
         {loading ? "Redirecting..." : "Become Initiate+ — $10/month"}
       </button>
@@ -47,10 +47,10 @@ export function SubscriptionCTA({ variant = "card" }: SubscriptionCTAProps) {
 
   return (
     <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-transparent p-6 text-center space-y-3">
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">
+      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
         {"/// observer_mode"}
       </p>
-      <h3 className="font-display text-xl font-bold text-accent-gold">
+      <h3 className="font-display text-xl font-bold text-accent-gold-text">
         Observers see the surface.
       </h3>
       <p className="font-mono text-xs text-text-muted leading-relaxed max-w-sm mx-auto">
@@ -61,7 +61,7 @@ export function SubscriptionCTA({ variant = "card" }: SubscriptionCTAProps) {
         <button
           onClick={handleSubscribe}
           disabled={loading}
-          className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/10 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/10 disabled:opacity-50"
         >
           {loading ? "Redirecting..." : "Become Initiate+ — $10/mo →"}
         </button>

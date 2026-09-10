@@ -110,12 +110,12 @@ export const getCounts = unstable_cache(
 
 /** Format a number with locale commas: 2600 → "2,600" */
 export function fmt(n: number): string {
-  return n.toLocaleString();
+  return n.toLocaleString("en-US");
 }
 
 /** Format with a trailing plus: 2600 → "2,600+" */
 export function fmtPlus(n: number): string {
-  return `${n.toLocaleString()}+`;
+  return `${n.toLocaleString("en-US")}+`;
 }
 
 /** Format as a percentage string: 58 → "58%" */

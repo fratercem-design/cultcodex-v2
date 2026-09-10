@@ -36,7 +36,7 @@ export default function MethodologyPage() {
 
         <SectionCard title="Data Pipeline">
           <div className="space-y-3 text-sm text-text-primary leading-relaxed">
-            <h3 className="font-mono text-xs text-accent-gold uppercase tracking-wider font-bold">
+            <h3 className="font-mono text-xs text-accent-gold-text uppercase tracking-wider font-bold">
               1. Transcript Acquisition
             </h3>
             <p>
@@ -46,7 +46,7 @@ export default function MethodologyPage() {
               as timestamped segments.
             </p>
 
-            <h3 className="font-mono text-xs text-accent-gold uppercase tracking-wider font-bold mt-4">
+            <h3 className="font-mono text-xs text-accent-gold-text uppercase tracking-wider font-bold mt-4">
               2. AI Enrichment
             </h3>
             <p>
@@ -56,7 +56,7 @@ export default function MethodologyPage() {
               explicit editorial guidelines emphasizing neutral, factual language.
             </p>
 
-            <h3 className="font-mono text-xs text-accent-gold uppercase tracking-wider font-bold mt-4">
+            <h3 className="font-mono text-xs text-accent-gold-text uppercase tracking-wider font-bold mt-4">
               3. Database Import
             </h3>
             <p>
@@ -65,7 +65,7 @@ export default function MethodologyPage() {
               using slug-based matching.
             </p>
 
-            <h3 className="font-mono text-xs text-accent-gold uppercase tracking-wider font-bold mt-4">
+            <h3 className="font-mono text-xs text-accent-gold-text uppercase tracking-wider font-bold mt-4">
               4. Quality Indicators
             </h3>
             <p>
@@ -103,11 +103,11 @@ export default function MethodologyPage() {
         </SectionCard>
 
         <div className="flex items-center justify-center gap-4 text-xs">
-          <Link href="/corrections" className="font-mono text-accent-gold hover:underline">
+          <Link href="/corrections" className="font-mono text-accent-gold-text hover:underline">
             Submit a Correction
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/content-policy" className="font-mono text-accent-gold hover:underline">
+          <Link href="/content-policy" className="font-mono text-accent-gold-text hover:underline">
             Content Policy
           </Link>
         </div>

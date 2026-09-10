@@ -3,14 +3,34 @@ import { prisma } from "@/lib/db";
 import { ARCHETYPES } from "@/lib/archetypes";
 import { SYMBOLS } from "@/lib/symbols/data";
 import { PILLARS } from "@/lib/pillars/pillars";
+import { getFreePreviewChapterNumbers } from "@/lib/psychenomicon";
 
 // Regenerate at most once per hour
 export const revalidate = 3600;
 
+/**
+ * Only the free-preview chapters belong in the sitemap.
+ *
+ * Every other chapter serves a crawler the same ~1,450-character "This chapter
+ * is sealed" shell. Submitting all 2,990 asked Google to index thousands of
+ * near-duplicate pages — roughly 9% of the site's whole URL set, which reads as
+ * a sitewide quality signal rather than a per-page one. Those chapters now
+ * carry `noindex`, and listing a noindex URL in a sitemap only contradicts it.
+ *
+ * Exported so the rule is unit-testable without standing up the database.
+ */
+export function indexableChapterSubset<T extends { chapterNumber: number }>(
+  chapters: T[],
+  freeChapterNumbers: number[]
+): T[] {
+  const free = new Set(freeChapterNumbers);
+  return chapters.filter((c) => free.has(c.chapterNumber));
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me";
 
-  const [episodes, people, lore, topics, series, psychenomiconChapters] = await Promise.all([
+  const [episodes, people, lore, topics, series, psychenomiconChapters, freeChapterNumbers] = await Promise.all([
     prisma.episode.findMany({
       where: { status: "published" },
       select: { slug: true, updatedAt: true, thumbnailUrl: true },
@@ -21,9 +41,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     prisma.series.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
     prisma.psychenomiconChapter.findMany({
       where: { status: "stable" },
-      select: { slug: true, updatedAt: true },
+      select: { slug: true, updatedAt: true, chapterNumber: true },
     }).catch(() => []),
+    getFreePreviewChapterNumbers().catch(() => [] as number[]),
   ]);
+
+  const indexableChapters = indexableChapterSubset(psychenomiconChapters, freeChapterNumbers);
 
   // Member pages are optional — schema drift on CodexUser columns must not break the build
   let memberPages: Array<{ codexSlug: string | null; updatedAt: Date }> = [];
@@ -123,7 +146,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
-    ...psychenomiconChapters.map((c) => ({
+    ...indexableChapters.map((c) => ({
       url: `${baseUrl}/psychenomicon/chapters/${c.slug}`,
       lastModified: c.updatedAt,
       changeFrequency: "monthly" as const,

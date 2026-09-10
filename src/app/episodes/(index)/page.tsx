@@ -138,7 +138,7 @@ export default async function EpisodesPage({
           {!activeEra && (
             <Link
               href="/eras"
-              className="font-mono text-[10px] text-text-muted border border-border rounded px-2.5 py-1.5 hover:border-accent-gold/40 hover:text-accent-gold transition-colors"
+              className="font-mono text-[10px] text-text-muted border border-border rounded px-2.5 py-1.5 hover:border-accent-gold/40 hover:text-accent-gold-text transition-colors"
             >
               Browse by Era
             </Link>

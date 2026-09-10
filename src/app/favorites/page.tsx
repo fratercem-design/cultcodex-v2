@@ -58,7 +58,7 @@ export default async function FavoritesPage() {
             <div className="mt-4 text-center">
               <Link
                 href="/episodes"
-                className="font-mono text-sm text-accent-gold hover:underline"
+                className="font-mono text-sm text-accent-gold-text hover:underline"
               >
                 Browse Episodes
               </Link>
@@ -86,7 +86,7 @@ export default async function FavoritesPage() {
                 )}
                 <div className="flex items-center gap-2 mb-1">
                   {fav.episode.episodeNumber != null && (
-                    <span className="font-mono text-[10px] text-accent-gold font-bold">
+                    <span className="font-mono text-[10px] text-accent-gold-text font-bold">
                       EP.{String(fav.episode.episodeNumber).padStart(3, "0")}
                     </span>
                   )}
@@ -96,7 +96,7 @@ export default async function FavoritesPage() {
                     </span>
                   )}
                 </div>
-                <h3 className="font-mono text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
+                <h3 className="font-mono text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-2">
                   {fav.episode.title}
                 </h3>
                 {fav.episode.summaryShort && (

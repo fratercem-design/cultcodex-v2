@@ -76,13 +76,13 @@ export function EmailCapture({
           <button
             type="submit"
             disabled={status === "loading" || status === "success"}
-            className="rounded-lg border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-sm font-bold text-accent-gold transition hover:bg-accent-gold/25 disabled:opacity-50 whitespace-nowrap"
+            className="rounded-lg border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-sm font-bold text-accent-gold-text transition hover:bg-accent-gold/25 disabled:opacity-50 whitespace-nowrap"
           >
             {status === "loading" ? "…" : status === "success" ? "✓ Subscribed" : "Get the signal"}
           </button>
         </form>
         {message && (
-          <p className={`font-mono text-[11px] ${status === "success" ? "text-accent-gold" : "text-red-400"}`}>
+          <p className={`font-mono text-[11px] ${status === "success" ? "text-accent-gold-text" : "text-red-400"}`}>
             {message}
           </p>
         )}
@@ -94,7 +94,7 @@ export function EmailCapture({
     <div
       className={`rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4 ${className}`}
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
         {eyebrow}
       </p>
       <p className="font-display text-xl font-bold text-text-primary">{heading}</p>
@@ -113,7 +113,7 @@ export function EmailCapture({
         <button
           type="submit"
           disabled={status === "loading" || status === "success"}
-          className="rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition hover:bg-accent-gold/25 disabled:opacity-50 whitespace-nowrap"
+          className="rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold-text transition hover:bg-accent-gold/25 disabled:opacity-50 whitespace-nowrap"
         >
           {status === "loading" ? "…" : status === "success" ? "✓ Subscribed" : "Get the signal"}
         </button>
@@ -121,7 +121,7 @@ export function EmailCapture({
 
       {message && (
         <p
-          className={`font-mono text-xs ${status === "success" ? "text-accent-gold" : "text-red-400"}`}
+          className={`font-mono text-xs ${status === "success" ? "text-accent-gold-text" : "text-red-400"}`}
         >
           {message}
         </p>

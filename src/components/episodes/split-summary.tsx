@@ -49,7 +49,7 @@ export function SplitSummaryCard({
       {/* Facts zone */}
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-center gap-2 mb-2">
-          <span className="font-mono text-[9px] uppercase tracking-[0.35em] text-accent-gold">
+          <span className="font-mono text-[9px] uppercase tracking-[0.35em] text-accent-gold-text">
             ◈ What Happened
           </span>
         </div>
@@ -71,7 +71,7 @@ export function SplitSummaryCard({
 
           <div className="px-4 pt-1 pb-4">
             <div className="flex items-center gap-2 mb-2">
-              <span className="font-mono text-[9px] uppercase tracking-[0.35em] text-accent-violet">
+              <span className="font-mono text-[9px] uppercase tracking-[0.35em] text-accent-violet-text">
                 ⬡ Interpretive Layer
               </span>
               <span className="font-mono text-[8px] text-text-muted/60">

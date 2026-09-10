@@ -37,7 +37,7 @@ export function OracleCathedral() {
             onClick={() => setPrefill((p) => ({ question: prompt, nonce: p.nonce + 1 }))}
             className="shrink-0 max-w-[260px] rounded-lg border border-accent-violet/25 bg-black/30 px-3.5 py-2.5 text-left font-mono text-[11px] leading-snug text-text-muted transition-all hover:border-accent-violet/60 hover:bg-accent-violet/10 hover:text-text-primary"
           >
-            <span className="mr-1.5 text-accent-violet/50">◈</span>
+            <span className="mr-1.5 text-accent-violet-text/70">◈</span>
             {prompt}
           </button>
         ))}

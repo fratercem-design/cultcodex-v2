@@ -53,7 +53,7 @@ const CODEX_REPORTS = [
 ];
 
 const ACCENT: Record<string, string> = {
-  gold: "text-accent-gold", crimson: "text-accent-crimson", cyan: "text-accent-cyan", violet: "text-accent-violet",
+  gold: "text-accent-gold-text", crimson: "text-accent-crimson-text", cyan: "text-accent-cyan", violet: "text-accent-violet-text",
 };
 
 export default async function ReportsPage() {
@@ -117,7 +117,7 @@ export default async function ReportsPage() {
 
         {/* Intro */}
         <section className="max-w-2xl mx-auto text-center space-y-4">
-          <div className="flex justify-center text-accent-gold"><CodexSigil size={48} glow /></div>
+          <div className="flex justify-center text-accent-gold-text"><CodexSigil size={48} glow /></div>
           <p className="text-sm text-text-muted leading-relaxed">
             The archive holds {topGuests.length > 0 ? "thousands of hours" : "everything"} of raw
             material. <span className="text-text-primary font-semibold">Reports</span> turn it into
@@ -125,7 +125,7 @@ export default async function ReportsPage() {
             by AI from the full corpus and cited back to the source.
           </p>
           {!hasAccess && (
-            <p className="font-mono text-[11px] text-accent-gold/70">
+            <p className="font-mono text-[11px] text-accent-gold-text/80">
               An Initiate+ feature · $10/mo
             </p>
           )}
@@ -184,7 +184,7 @@ export default async function ReportsPage() {
                 Full Guest Intelligence Reports — behavioral signatures, appearance histories, and
                 pattern analysis — open with Initiate+.
               </p>
-              <Link href="/premium" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25">
+              <Link href="/premium" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25">
                 Unlock the reports — $10/mo →
               </Link>
             </div>
@@ -196,7 +196,7 @@ export default async function ReportsPage() {
         {/* Codex Reports */}
         <section className="space-y-5">
           <div className="text-center space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
               {"/// codex_reports"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">Standing intelligence on the archive.</h2>
@@ -230,7 +230,7 @@ export default async function ReportsPage() {
               Initiate+ opens Guest Intelligence Reports, the Oracle, full transcripts, and the
               Psychenomicon — for $10/month.
             </p>
-            <Link href="/premium" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25">
+            <Link href="/premium" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25">
               Become Initiate+ →
             </Link>
           </section>
@@ -241,7 +241,7 @@ export default async function ReportsPage() {
               Ask the Oracle for a behavioral profile, a conflict timeline, or a pattern analysis —
               it answers from the full archive with citations.
             </p>
-            <Link href="/oracle" className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/25">
+            <Link href="/oracle" className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-xs font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25">
               Ask the Oracle →
             </Link>
           </section>

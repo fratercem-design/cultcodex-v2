@@ -117,7 +117,7 @@ export function ThresholdHero({
         <dl className="threshold__meta">
           <div>
             <dt>Transmissions</dt>
-            <dd>{episodeCount.toLocaleString()}</dd>
+            <dd>{episodeCount.toLocaleString("en-US")}</dd>
           </div>
           <div className="threshold__meta-div" aria-hidden="true" />
           <div>

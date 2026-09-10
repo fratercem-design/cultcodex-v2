@@ -14,7 +14,7 @@ export default function StartHereQuizPage() {
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-4 py-16 space-y-12">
       <div className="text-center space-y-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
           ✦ &nbsp; CultCodex &nbsp; ✦
         </p>
         <h1 className="font-display text-3xl font-bold text-text-primary">

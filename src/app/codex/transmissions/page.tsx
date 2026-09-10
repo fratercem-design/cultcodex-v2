@@ -48,7 +48,7 @@ export default async function CodexTransmissionsPage() {
         className="mx-auto max-w-6xl px-4 py-10 space-y-6"
       >
         <nav className="font-mono text-[11px] uppercase tracking-widest text-text-muted">
-          <Link href="/codex" className="hover:text-accent-gold transition-colors">
+          <Link href="/codex" className="hover:text-accent-gold-text transition-colors">
             ← Back to your codex
           </Link>
         </nav>
@@ -62,7 +62,7 @@ export default async function CodexTransmissionsPage() {
             <div className="text-center">
               <Link
                 href="/episodes"
-                className="inline-flex items-center gap-2 rounded border border-accent-gold/40 bg-accent-gold/10 px-5 py-2 font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/20"
+                className="inline-flex items-center gap-2 rounded border border-accent-gold/40 bg-accent-gold/10 px-5 py-2 font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/20"
               >
                 Browse episodes <span aria-hidden>→</span>
               </Link>
@@ -90,7 +90,7 @@ export default async function CodexTransmissionsPage() {
                 )}
                 <div className="flex items-center gap-2 mb-1">
                   {fav.episode.episodeNumber != null && (
-                    <span className="font-mono text-[10px] text-accent-gold font-bold">
+                    <span className="font-mono text-[10px] text-accent-gold-text font-bold">
                       EP.{String(fav.episode.episodeNumber).padStart(3, "0")}
                     </span>
                   )}
@@ -100,7 +100,7 @@ export default async function CodexTransmissionsPage() {
                     </span>
                   )}
                 </div>
-                <h2 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
+                <h2 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-2">
                   {fav.episode.title}
                 </h2>
                 {fav.episode.summaryShort && (

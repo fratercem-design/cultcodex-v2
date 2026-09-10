@@ -103,7 +103,7 @@ export function ReactionBar({
             aria-pressed={isActive}
             className={`group flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-mono text-xs transition-all ${
               isActive
-                ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold"
+                ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold-text"
                 : "border-border bg-surface text-text-muted hover:border-accent-gold/30 hover:text-text-primary"
             } ${pending === type ? "opacity-50" : ""}`}
           >

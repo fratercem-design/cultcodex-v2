@@ -101,7 +101,7 @@ export default async function AdminTopicsPage({ searchParams }: PageProps) {
                 <td className="px-3 py-2 text-right">
                   <Link
                     href={`/admin/topics/${topic.id}/edit`}
-                    className="font-mono text-[10px] text-accent-gold hover:underline"
+                    className="font-mono text-[10px] text-accent-gold-text hover:underline"
                   >
                     Edit
                   </Link>

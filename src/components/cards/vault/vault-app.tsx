@@ -302,7 +302,7 @@ export function VaultApp({
           <div style={{ flex: 1 }} />
           {(stats.collectionPower ?? 0) > 0 && (
             <span style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}>
-              ⚡ {(stats.collectionPower ?? 0).toLocaleString()} power
+              ⚡ {(stats.collectionPower ?? 0).toLocaleString("en-US")} power
             </span>
           )}
           {(stats.dailyStreak ?? 0) > 0 && (
@@ -317,7 +317,7 @@ export function VaultApp({
             </span>
           )}
           <span style={{ color: "var(--neon-4)", textShadow: "0 0 6px var(--neon-4)" }}>
-            ◈ {stats.signalCredits.toLocaleString()} credits
+            ◈ {stats.signalCredits.toLocaleString("en-US")} credits
           </span>
           {dailyAvailable && (
             <Link href="/cards/packs" style={{

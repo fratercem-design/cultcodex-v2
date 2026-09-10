@@ -40,7 +40,7 @@ const FAQS: { q: string; plain: string; body: ReactNode }[] = [
         An ongoing occult-and-drama livestream world spread across three YouTube channels —
         @CultofPsyche, @PsychesNightmares, and @NightmareFrequenciesTV. CultCodex indexes all of
         them into one continuous archive. More on the{" "}
-        <Link href="/about" className="text-accent-gold hover:underline">about page</Link>.
+        <Link href="/about" className="text-accent-gold-text hover:underline">about page</Link>.
       </p>
     ),
   },
@@ -51,7 +51,7 @@ const FAQS: { q: string; plain: string; body: ReactNode }[] = [
     body: (
       <p>
         Ask the{" "}
-        <Link href="/oracle" className="text-accent-gold hover:underline">Oracle</Link> anything
+        <Link href="/oracle" className="text-accent-gold-text hover:underline">Oracle</Link> anything
         about the archive and it answers using the real episode transcripts — and it cites the
         episodes it pulled from, so you can trace every answer back to a moment that actually aired.
       </p>
@@ -66,7 +66,7 @@ const FAQS: { q: string; plain: string; body: ReactNode }[] = [
         The Psychenomicon is the archive&apos;s living myth-engine — chapters, entities, and threads
         that map the recurring mythology of the show. It is included with Initiate+. You can also
         purchase{" "}
-        <Link href="/psychenomicon" className="text-accent-gold hover:underline">
+        <Link href="/psychenomicon" className="text-accent-gold-text hover:underline">
           Volume I as a PDF
         </Link>{" "}
         to keep.
@@ -82,7 +82,7 @@ const FAQS: { q: string; plain: string; body: ReactNode }[] = [
         Treat them as a guide, not gospel. Summaries and character profiles describe what happened
         on stream, not verified real-world facts — and AI can get things wrong. We document exactly
         how content is generated and where it can fail on the{" "}
-        <Link href="/about/methodology" className="text-accent-gold hover:underline">
+        <Link href="/about/methodology" className="text-accent-gold-text hover:underline">
           methodology page
         </Link>.
       </p>
@@ -96,7 +96,7 @@ const FAQS: { q: string; plain: string; body: ReactNode }[] = [
       <p>
         Browsing and searching the archive is free. Paid tiers unlock deeper Oracle access and
         members-only features. The current tiers and pricing live on the{" "}
-        <Link href="/premium" className="text-accent-gold hover:underline">premium page</Link>.
+        <Link href="/premium" className="text-accent-gold-text hover:underline">premium page</Link>.
       </p>
     ),
   },
@@ -108,7 +108,7 @@ const FAQS: { q: string; plain: string; body: ReactNode }[] = [
       <p>
         Not yet — gift subscriptions are on the roadmap. For now, you can support the archive by
         upgrading your own account or through the{" "}
-        <Link href="/premium" className="text-accent-gold hover:underline">support options</Link>.
+        <Link href="/premium" className="text-accent-gold-text hover:underline">support options</Link>.
       </p>
     ),
   },
@@ -119,7 +119,7 @@ const FAQS: { q: string; plain: string; body: ReactNode }[] = [
     body: (
       <p>
         Use the{" "}
-        <Link href="/corrections" className="text-accent-gold hover:underline">corrections page</Link>,
+        <Link href="/corrections" className="text-accent-gold-text hover:underline">corrections page</Link>,
         or the correction link on any episode or person page. Typical turnaround is 1–3 days, and
         urgent removal requests are prioritised.
       </p>
@@ -133,7 +133,7 @@ const FAQS: { q: string; plain: string; body: ReactNode }[] = [
       <p>
         Yes. Payments are handled entirely by Stripe — CultCodex never sees or stores your card
         number or full payment details. See the{" "}
-        <Link href="/privacy" className="text-accent-gold hover:underline">privacy policy</Link> for
+        <Link href="/privacy" className="text-accent-gold-text hover:underline">privacy policy</Link> for
         how data is handled.
       </p>
     ),
@@ -147,7 +147,7 @@ const FAQS: { q: string; plain: string; body: ReactNode }[] = [
         If you sign in, we store your email and display name to identify your account, plus
         subscription status from Stripe. Analytics are anonymised and we never sell your data. Full
         detail is in the{" "}
-        <Link href="/privacy" className="text-accent-gold hover:underline">privacy policy</Link>.
+        <Link href="/privacy" className="text-accent-gold-text hover:underline">privacy policy</Link>.
       </p>
     ),
   },
@@ -158,9 +158,9 @@ const FAQS: { q: string; plain: string; body: ReactNode }[] = [
     body: (
       <p>
         Guests and creators can claim and promote their archive pages — start at{" "}
-        <Link href="/appear" className="text-accent-gold hover:underline">appear</Link>. Removal
+        <Link href="/appear" className="text-accent-gold-text hover:underline">appear</Link>. Removal
         requests go through{" "}
-        <Link href="/corrections" className="text-accent-gold hover:underline">corrections</Link>.
+        <Link href="/corrections" className="text-accent-gold-text hover:underline">corrections</Link>.
       </p>
     ),
   },
@@ -172,7 +172,7 @@ const FAQS: { q: string; plain: string; body: ReactNode }[] = [
       <p>
         Metadata from YouTube, transcripts from captions and our own Whisper transcription, and AI
         enrichment from Anthropic Claude. Every source is listed on the{" "}
-        <Link href="/about/methodology" className="text-accent-gold hover:underline">
+        <Link href="/about/methodology" className="text-accent-gold-text hover:underline">
           methodology page
         </Link>.
       </p>
@@ -211,15 +211,15 @@ export default function FaqPage() {
         ))}
 
         <div className="flex items-center justify-center gap-4 text-xs pt-2">
-          <Link href="/about" className="font-mono text-accent-gold hover:underline">
+          <Link href="/about" className="font-mono text-accent-gold-text hover:underline">
             About
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/about/methodology" className="font-mono text-accent-gold hover:underline">
+          <Link href="/about/methodology" className="font-mono text-accent-gold-text hover:underline">
             Methodology
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/corrections" className="font-mono text-accent-gold hover:underline">
+          <Link href="/corrections" className="font-mono text-accent-gold-text hover:underline">
             Corrections
           </Link>
         </div>

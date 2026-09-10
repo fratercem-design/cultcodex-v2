@@ -153,7 +153,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
 
             {descPsycheverse && (
               <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-5 py-4">
-                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold/60 mb-2">
+                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold-text/80 mb-2">
                   In the Psycheverse
                 </p>
                 <p className="text-sm text-text-primary leading-relaxed">
@@ -162,11 +162,11 @@ export default async function TopicDetailPage({ params }: PageProps) {
               </div>
             )}
 
-            <SectionCard title={`Episodes (${topic.episodes.length})`} accent="gold">
+            <SectionCard headingLevel={2} title={`Episodes (${topic.episodes.length})`} accent="gold">
               {sortedEpisodes.length > 0 ? (
                 <div className="grid gap-3">
                   {sortedEpisodes.map((e) => (
-                    <EpisodeListItem
+                    <EpisodeListItem headingLevel={3}
                       key={e.episode.id}
                       slug={e.episode.slug}
                       title={e.episode.title}
@@ -183,7 +183,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
             </SectionCard>
 
             {relatedTopics.length > 0 && (
-              <SectionCard title="🐇 Rabbit Hole" accent="cyan">
+              <SectionCard headingLevel={2} title="🐇 Rabbit Hole" accent="cyan">
                 <p className="text-xs text-text-muted mb-4">
                   Topics that frequently appear alongside{" "}
                   <strong className="text-text-primary">{topic.title}</strong>

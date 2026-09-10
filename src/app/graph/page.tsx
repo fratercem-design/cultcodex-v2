@@ -15,10 +15,10 @@ export const metadata: Metadata = {
 };
 
 const ERA_ACCENT: Record<string, string> = {
-  gold:    "text-accent-gold border-accent-gold/50 bg-accent-gold/10",
-  violet:  "text-accent-violet border-accent-violet/50 bg-accent-violet/10",
+  gold:    "text-accent-gold-text border-accent-gold/50 bg-accent-gold/10",
+  violet:  "text-accent-violet-text border-accent-violet/50 bg-accent-violet/10",
   cyan:    "text-accent-cyan border-accent-cyan/50 bg-accent-cyan/10",
-  crimson: "text-accent-crimson border-accent-crimson/50 bg-accent-crimson/10",
+  crimson: "text-accent-crimson-text border-accent-crimson/50 bg-accent-crimson/10",
   muted:   "text-text-muted border-border bg-surface",
 };
 
@@ -74,7 +74,7 @@ export default async function GraphPage({
             { n: totalEpisodes, label: activeEra ? "episodes in era" : "episodes analyzed" },
           ].map((s) => (
             <span key={s.label} className="font-mono text-[11px] text-text-muted">
-              <span className="text-accent-gold font-bold">{s.n.toLocaleString()}</span>{" "}
+              <span className="text-accent-gold-text font-bold">{s.n.toLocaleString("en-US")}</span>{" "}
               {s.label}
             </span>
           ))}
@@ -133,13 +133,13 @@ export default async function GraphPage({
         <div className="flex gap-2 shrink-0">
           <Link
             href="/graph/path"
-            className="inline-flex items-center gap-1 rounded border border-accent-violet/30 px-3 py-1.5 font-mono text-[10px] text-accent-violet hover:bg-accent-violet/10 transition-colors"
+            className="inline-flex items-center gap-1 rounded border border-accent-violet/30 px-3 py-1.5 font-mono text-[10px] text-accent-violet-text hover:bg-accent-violet/10 transition-colors"
           >
             Find a path →
           </Link>
           <Link
             href="/people"
-            className="inline-flex items-center gap-1 rounded border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted hover:text-accent-gold hover:border-accent-gold/30 transition-colors"
+            className="inline-flex items-center gap-1 rounded border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted hover:text-accent-gold-text hover:border-accent-gold/30 transition-colors"
           >
             All people →
           </Link>
@@ -151,7 +151,7 @@ export default async function GraphPage({
           </Link>
           <Link
             href="/psychenomicon/entities"
-            className="inline-flex items-center gap-1 rounded border border-accent-violet/30 px-3 py-1.5 font-mono text-[10px] text-accent-violet hover:bg-accent-violet/10 transition-colors"
+            className="inline-flex items-center gap-1 rounded border border-accent-violet/30 px-3 py-1.5 font-mono text-[10px] text-accent-violet-text hover:bg-accent-violet/10 transition-colors"
           >
             Psychenomicon →
           </Link>

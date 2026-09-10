@@ -15,5 +15,5 @@ export function relativeTime(date: Date | string): string {
   if (diffDay < 7) return `${diffDay}d ago`;
   if (diffWeek < 4) return `${diffWeek}w ago`;
   if (diffMonth < 12) return `${diffMonth}mo ago`;
-  return then.toLocaleDateString();
+  return then.toLocaleDateString("en-US", { timeZone: "UTC" });
 }

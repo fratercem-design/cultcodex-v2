@@ -129,7 +129,7 @@ export function QuizClient() {
 
         {/* Description */}
         <div className="mt-6 rounded-xl border border-border bg-surface p-6 space-y-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
             {"/// your_nature"}
           </p>
           <p className="text-sm text-text-muted leading-relaxed">{result.description}</p>
@@ -145,7 +145,7 @@ export function QuizClient() {
 
         {/* Gifts */}
         <div className="mt-6 rounded-xl border border-border bg-surface p-6 space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
             {"/// your_gifts"}
           </p>
           <ul className="space-y-2">
@@ -165,7 +165,7 @@ export function QuizClient() {
 
         {/* Related symbols */}
         <div className="mt-6 space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
             {"/// related_symbols"}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -173,7 +173,7 @@ export function QuizClient() {
               <Link
                 key={slug}
                 href={`/symbols/${slug}`}
-                className="inline-flex items-center gap-1.5 rounded border border-accent-gold/30 bg-accent-gold/10 hover:bg-accent-gold/20 px-3 py-1.5 font-mono text-xs text-accent-gold transition-colors"
+                className="inline-flex items-center gap-1.5 rounded border border-accent-gold/30 bg-accent-gold/10 hover:bg-accent-gold/20 px-3 py-1.5 font-mono text-xs text-accent-gold-text transition-colors"
               >
                 ✦ {slug.replace(/-/g, " ")}
               </Link>
@@ -204,7 +204,7 @@ export function QuizClient() {
           <div className="flex items-center gap-3">
             <button
               onClick={handleCopy}
-              className="flex-1 rounded-lg border border-border bg-surface hover:border-accent-gold/30 hover:text-accent-gold px-5 py-2.5 font-mono text-xs text-text-muted transition-colors"
+              className="flex-1 rounded-lg border border-border bg-surface hover:border-accent-gold/30 hover:text-accent-gold-text px-5 py-2.5 font-mono text-xs text-text-muted transition-colors"
             >
               {copied ? "✓ Copied to clipboard!" : "Copy result"}
             </button>
@@ -277,7 +277,7 @@ export function QuizClient() {
               animation: `optionIn 0.3s ease ${i * 60}ms both`,
             }}
           >
-            <span className="text-accent-gold/50 mr-3 text-[10px] uppercase tracking-widest">
+            <span className="text-accent-gold-text/80 mr-3 text-[10px] uppercase tracking-widest">
               {["A", "B", "C", "D"][i]}
             </span>
             {option.text}

@@ -163,7 +163,7 @@ export default function PackStorePage() {
             textShadow: "var(--glow-amber)",
             lineHeight: 1,
           }}>
-            {wallet?.signalCredits.toLocaleString() ?? "--"}
+            {wallet?.signalCredits.toLocaleString("en-US") ?? "--"}
           </span>
         </div>
 

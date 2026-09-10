@@ -35,7 +35,7 @@ export default function PremiumPage() {
     <main id="main-content" className="mx-auto max-w-5xl px-4 py-16 space-y-14">
       {/* ── Threshold header ── */}
       <div className="text-center space-y-4">
-        <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-gold/60">
+        <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-gold-text/80">
           ✦ the threshold of initiation ✦
         </p>
         <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -52,7 +52,7 @@ export default function PremiumPage() {
       {/* ── Tier cards ── */}
       <div className="grid gap-6 sm:grid-cols-2">
         {TIERS.map((tier) => {
-          const accentText = tier.accent === "violet" ? "text-accent-violet" : "text-accent-gold";
+          const accentText = tier.accent === "violet" ? "text-accent-violet-text" : "text-accent-gold-text";
           const accentBorder = tier.accent === "violet" ? "border-accent-violet/25" : "border-accent-gold/25";
           const accentBg = tier.accent === "violet" ? "from-accent-violet/5" : "from-accent-gold/5";
 
@@ -110,11 +110,11 @@ export default function PremiumPage() {
 
       <p className="text-center font-mono text-[10px] text-text-muted/40">
         Not ready yet?{" "}
-        <Link href="/start-here" className="text-accent-gold/60 hover:text-accent-gold transition-colors">
+        <Link href="/start-here" className="text-accent-gold-text/80 hover:text-accent-gold-text transition-colors">
           Start here
         </Link>{" "}
         or{" "}
-        <Link href="/oracle" className="text-accent-violet/60 hover:text-accent-violet transition-colors">
+        <Link href="/oracle" className="text-accent-violet-text/70 hover:text-accent-violet-text transition-colors">
           ask the Oracle 3 free questions
         </Link>
         .

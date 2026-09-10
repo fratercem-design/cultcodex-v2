@@ -89,7 +89,7 @@ export default async function StatsPage() {
               className="rounded-lg border border-border bg-surface p-4 text-center"
             >
               <div className="font-mono text-3xl font-bold text-accent-gold">
-                {card.value.toLocaleString()}
+                {card.value.toLocaleString("en-US")}
               </div>
               <div className="font-mono text-[10px] text-text-muted uppercase tracking-wider mt-1">
                 {card.label}
@@ -110,7 +110,7 @@ export default async function StatsPage() {
                 <span className="shrink-0 font-mono text-[10px] text-text-muted w-5 text-right">
                   {i + 1}.
                 </span>
-                <span className="shrink-0 font-mono text-xs text-text-primary w-40 truncate group-hover:text-accent-gold transition-colors">
+                <span className="shrink-0 font-mono text-xs text-text-primary w-40 truncate group-hover:text-accent-gold-text transition-colors">
                   {person.displayName}
                 </span>
                 <div className="flex-1 h-2 rounded-full bg-elevated overflow-hidden">
@@ -119,7 +119,7 @@ export default async function StatsPage() {
                     style={{ width: `${(person.count / maxQuotes) * 100}%` }}
                   />
                 </div>
-                <span className="shrink-0 font-mono text-[10px] text-accent-gold font-bold w-8 text-right">
+                <span className="shrink-0 font-mono text-[10px] text-accent-gold-text font-bold w-8 text-right">
                   {person.count}
                 </span>
               </Link>
@@ -143,8 +143,8 @@ export default async function StatsPage() {
 
               // Color tiers
               let colorClass = "text-accent-cyan";
-              if (i < 5) colorClass = "text-accent-gold";
-              else if (i < 10) colorClass = "text-accent-gold";
+              if (i < 5) colorClass = "text-accent-gold-text";
+              else if (i < 10) colorClass = "text-accent-gold-text";
 
               return (
                 <Link

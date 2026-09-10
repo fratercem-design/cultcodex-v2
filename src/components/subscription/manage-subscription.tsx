@@ -39,7 +39,7 @@ export function ManageSubscription({
     return (
       <div className="rounded-lg border border-accent-gold/30 bg-surface p-4">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-xs text-accent-gold font-bold">ADMIN</span>
+          <span className="font-mono text-xs text-accent-gold-text font-bold">ADMIN</span>
           <span className="font-mono text-[10px] text-text-muted">
             Full transcript access (admin bypass)
           </span>
@@ -53,7 +53,7 @@ export function ManageSubscription({
       <div className="rounded-lg border border-accent-gold/30 bg-surface p-4">
         <div className="flex items-center justify-between">
           <div>
-            <span className="font-mono text-xs text-accent-gold font-bold">
+            <span className="font-mono text-xs text-accent-gold-text font-bold">
               MEMBER
             </span>
             <p className="mt-1 font-mono text-[10px] text-text-muted">

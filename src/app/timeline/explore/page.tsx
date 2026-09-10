@@ -66,7 +66,7 @@ export default async function TimelineExplorePage() {
         )}
 
         <section className="text-center">
-          <Link href="/timeline" className="font-mono text-xs uppercase tracking-widest text-text-muted hover:text-accent-gold transition-colors">
+          <Link href="/timeline" className="font-mono text-xs uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors">
             ← Classic chronological timeline
           </Link>
         </section>

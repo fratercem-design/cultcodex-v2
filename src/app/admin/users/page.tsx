@@ -59,7 +59,7 @@ export default async function AdminUsersPage() {
 
       {/* Grant Oracle Access */}
       <section className="mb-10 rounded-xl border border-accent-gold/20 bg-surface p-6">
-        <h2 className="font-mono text-xs font-bold uppercase tracking-widest text-accent-gold mb-4">
+        <h2 className="font-mono text-xs font-bold uppercase tracking-widest text-accent-gold-text mb-4">
           Grant Oracle Access
         </h2>
         <form
@@ -113,7 +113,7 @@ function UserTable({
 }) {
   const headerColor =
     highlightColor === "gold"
-      ? "text-accent-gold"
+      ? "text-accent-gold-text"
       : highlightColor === "cyan"
       ? "text-accent-cyan"
       : "text-text-muted";
@@ -151,7 +151,7 @@ function UserTable({
                 <td className="px-4 py-3">
                   <div className="flex flex-col gap-0.5">
                     {user.role === "admin" && (
-                      <span className="inline-block rounded px-1.5 py-0.5 text-[10px] bg-accent-gold/15 text-accent-gold">
+                      <span className="inline-block rounded px-1.5 py-0.5 text-[10px] bg-accent-gold/15 text-accent-gold-text">
                         admin
                       </span>
                     )}
@@ -175,7 +175,7 @@ function UserTable({
                   <SetTitleForm userId={user.id} currentTitle={user.memberTitle} />
                 </td>
                 <td className="px-4 py-3">
-                  <span className={user.isPublicMember ? "text-accent-gold" : "text-text-muted/50"}>
+                  <span className={user.isPublicMember ? "text-accent-gold-text" : "text-text-muted/50"}>
                     {user.isPublicMember ? "yes" : "no"}
                   </span>
                   {user.codexSlug && (
@@ -183,7 +183,7 @@ function UserTable({
                   )}
                 </td>
                 <td className="px-4 py-3 text-text-muted/70">
-                  {new Date(user.createdAt).toLocaleDateString("en-US", {
+                  {new Date(user.createdAt).toLocaleDateString("en-US", { timeZone: "UTC",
                     month: "short",
                     year: "numeric",
                   })}

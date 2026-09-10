@@ -12,11 +12,11 @@ export const metadata: Metadata = {
 };
 
 const CANON_BADGE: Record<string, { label: string; cls: string }> = {
-  canonical: { label: "CANON", cls: "border-accent-violet/40 text-accent-violet bg-accent-violet/10" },
-  speculative: { label: "SPECULATIVE", cls: "border-accent-gold/40 text-accent-gold bg-accent-gold/10" },
+  canonical: { label: "CANON", cls: "border-accent-violet/40 text-accent-violet-text bg-accent-violet/10" },
+  speculative: { label: "SPECULATIVE", cls: "border-accent-gold/40 text-accent-gold-text bg-accent-gold/10" },
   community_myth: { label: "COMMUNITY MYTH", cls: "border-accent-cyan/40 text-accent-cyan bg-accent-cyan/10" },
   disputed: { label: "DISPUTED", cls: "border-red-400/40 text-red-400 bg-red-500/10" },
-  humorous: { label: "HUMOROUS", cls: "border-accent-gold/40 text-accent-gold bg-accent-gold/10" },
+  humorous: { label: "HUMOROUS", cls: "border-accent-gold/40 text-accent-gold-text bg-accent-gold/10" },
 };
 
 export default async function PropheciesPage() {
@@ -33,7 +33,7 @@ export default async function PropheciesPage() {
     <main className="min-h-screen bg-void">
       <section className="border-b border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold/60">
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/80">
             {"/// future_tense · accuracy_not_guaranteed"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -66,10 +66,10 @@ export default async function PropheciesPage() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 space-y-1.5">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/50">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
                       OMEN №{String(i + 1).padStart(3, "0")}
                     </p>
-                    <h2 className="font-display text-lg font-bold text-text-primary group-hover:text-accent-gold transition-colors">
+                    <h2 className="font-display text-lg font-bold text-text-primary group-hover:text-accent-gold-text transition-colors">
                       {p.title}
                     </h2>
                     {p.summary && (
@@ -88,7 +88,7 @@ export default async function PropheciesPage() {
         )}
 
         <div className="pt-6 text-center">
-          <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors">
+          <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors">
             ← The Fun Wing
           </Link>
         </div>

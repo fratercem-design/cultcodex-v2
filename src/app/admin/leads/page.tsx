@@ -92,7 +92,7 @@ function LeadRow({ lead }: { lead: Lead }) {
       </td>
       <td className="py-2 pr-4 font-mono text-[11px]">
         {lead.claimed ? (
-          <span className="text-accent-gold">
+          <span className="text-accent-gold-text">
             {lead.account?.provider}
             {lead.account?.handle ? ` · @${lead.account.handle}` : ""}
           </span>
@@ -102,7 +102,7 @@ function LeadRow({ lead }: { lead: Lead }) {
       </td>
       <td className="py-2 font-mono text-[11px] text-text-muted">
         {lead.account?.onboardingCompleted ? (
-          <span className="text-accent-gold">complete</span>
+          <span className="text-accent-gold-text">complete</span>
         ) : (
           "—"
         )}
@@ -141,7 +141,7 @@ export default async function AdminLeadsPage() {
       <h1 className="mb-2 font-display text-2xl font-bold text-accent-gold">Lead Pipeline</h1>
       <p className="mb-6 max-w-2xl font-mono text-xs leading-relaxed text-text-muted">
         Everyone who has handed over an address, and how far they got. A lead becomes an{" "}
-        <span className="text-accent-gold">Initiate</span> the moment they sign in — their account
+        <span className="text-accent-gold-text">Initiate</span> the moment they sign in — their account
         already exists, so signing in claims it rather than creating a second one. Capture surfaces
         are <Link href="/initiate" className="text-accent-cyan underline">/initiate</Link> and the{" "}
         <Link href="/onboarding" className="text-accent-cyan underline">/onboarding</Link> gate.
@@ -150,9 +150,9 @@ export default async function AdminLeadsPage() {
       <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-5">
         <Stat label="Leads" value={total} accent="text-text-primary" />
         <Stat label="Accounts made" value={withAccount} accent="text-accent-cyan" />
-        <Stat label="Signed in" value={claimed} accent="text-accent-gold" />
-        <Stat label="Onboarded" value={completed} accent="text-accent-gold" />
-        <Stat label="Conversion" value={`${conversion}%`} accent="text-accent-violet" />
+        <Stat label="Signed in" value={claimed} accent="text-accent-gold-text" />
+        <Stat label="Onboarded" value={completed} accent="text-accent-gold-text" />
+        <Stat label="Conversion" value={`${conversion}%`} accent="text-accent-violet-text" />
       </div>
 
       {withAccount < total && (
@@ -163,7 +163,7 @@ export default async function AdminLeadsPage() {
         </p>
       )}
 
-      <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-accent-gold">
+      <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-accent-gold-text">
         By source
       </h2>
       <div className="mb-8 flex flex-wrap gap-2">
@@ -174,7 +174,7 @@ export default async function AdminLeadsPage() {
               key={src}
               className="rounded border border-border bg-surface px-3 py-1 font-mono text-[11px] text-text-muted"
             >
-              {src} <span className="text-accent-gold">{n}</span>
+              {src} <span className="text-accent-gold-text">{n}</span>
             </span>
           ))}
       </div>
@@ -213,7 +213,7 @@ export default async function AdminLeadsPage() {
         )}
       </div>
 
-      <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-accent-gold">
+      <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-accent-gold-text">
         All leads ({total})
       </h2>
       <div className="overflow-x-auto">

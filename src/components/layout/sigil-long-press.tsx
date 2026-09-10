@@ -59,7 +59,7 @@ export function SigilLongPress() {
     <Link
       href="/"
       aria-label="CultCodex — Overview (long-press for quick navigation)"
-      className="font-mono text-[12px] font-semibold flex items-center gap-2"
+      className="font-mono text-[12px] font-semibold flex min-h-6 items-center gap-2"
       style={{
         color: "var(--neon)",
         textShadow: "var(--glow-neon)",

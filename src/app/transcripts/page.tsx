@@ -46,7 +46,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
 
   const glanceItems = [
     { icon: "\uD83C\uDFA4", label: `${stats.episodeCount} transcribed episodes` },
-    { icon: "\uD83D\uDCC4", label: `${stats.totalSegments.toLocaleString()} segments` },
+    { icon: "\uD83D\uDCC4", label: `${stats.totalSegments.toLocaleString("en-US")} segments` },
   ];
 
   if (isSearch) {
@@ -80,7 +80,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
                   style={{ filter: "blur(6px)", userSelect: "none" }}
                   aria-hidden="true"
                 >
-                  {teasedCount.toLocaleString()}
+                  {teasedCount.toLocaleString("en-US")}
                 </span>
                 <span className="sr-only">{teasedCount} results found — subscribe to view</span>
               </div>
@@ -89,7 +89,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
                   ? "No matches found."
                   : teasedCount === 1
                   ? "1 transcript segment matches."
-                  : `${teasedCount.toLocaleString()} transcript segments match.`}
+                  : `${teasedCount.toLocaleString("en-US")} transcript segments match.`}
               </p>
               <p className="mt-1 font-mono text-[10px] text-text-muted/60">
                 Subscribe to unlock full results with timestamps and episode links.
@@ -116,7 +116,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
       <>
         <PageHero
           title="TRANSCRIPTS"
-          subtitle={`${results.totalCount.toLocaleString()} result${results.totalCount !== 1 ? "s" : ""} for "${query}"`}
+          subtitle={`${results.totalCount.toLocaleString("en-US")} result${results.totalCount !== 1 ? "s" : ""} for "${query}"`}
           backgroundImage="/search-database-background.jpg"
         label="transcripts"
         />
@@ -133,7 +133,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
             <>
               <div className="mb-4 flex items-center gap-2">
                 <span className="font-mono text-xs text-text-muted">
-                  Showing {skip + 1}–{Math.min(skip + take, results.totalCount)} of {results.totalCount.toLocaleString()} matches
+                  Showing {skip + 1}–{Math.min(skip + take, results.totalCount)} of {results.totalCount.toLocaleString("en-US")} matches
                 </span>
                 <Link
                   href="/transcripts"
@@ -150,10 +150,10 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
                     className="group block rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-cyan/40 hover:bg-elevated"
                   >
                     <div className="mb-1 flex items-center gap-2">
-                      <span className="font-mono text-[11px] text-accent-gold">
+                      <span className="font-mono text-[11px] text-accent-gold-text">
                         {hit.episodeNumber != null ? `EP ${hit.episodeNumber}` : "Episode"}
                       </span>
-                      <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+                      <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
                         {hit.episodeTitle}
                       </span>
                       <span className="ml-auto font-mono text-[10px] text-accent-cyan">
@@ -199,7 +199,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
         {/* Search prominently at top */}
         <SectionCard title="Search Transcripts">
           <p className="mb-3 text-xs text-text-muted">
-            Search across all {stats.totalSegments.toLocaleString()} transcript segments from {stats.episodeCount} episodes.
+            Search across all {stats.totalSegments.toLocaleString("en-US")} transcript segments from {stats.episodeCount} episodes.
           </p>
           <TranscriptSearchBox defaultValue="" />
         </SectionCard>
@@ -232,11 +232,11 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
                   className="group block rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-cyan/40 hover:bg-elevated"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="flex h-8 w-12 items-center justify-center rounded bg-accent-gold/10 font-mono text-xs font-bold text-accent-gold">
+                    <span className="flex h-8 w-12 items-center justify-center rounded bg-accent-gold/10 font-mono text-xs font-bold text-accent-gold-text">
                       {ep.episodeNumber != null ? `#${ep.episodeNumber}` : "—"}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-1">
+                      <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-1">
                         {ep.title}
                       </span>
                       <div className="mt-1 flex flex-wrap items-center gap-1.5">
@@ -296,7 +296,7 @@ function StatCard({ icon, label, value }: { icon: string; label: string; value: 
     <div className="rounded-lg border border-border bg-surface p-3 text-center">
       <span className="text-lg">{icon}</span>
       <p className="mt-1 font-mono text-lg font-bold text-accent-cyan">
-        {typeof value === "number" ? value.toLocaleString() : value}
+        {typeof value === "number" ? value.toLocaleString("en-US") : value}
       </p>
       <p className="font-mono text-[10px] text-text-muted uppercase tracking-wider">{label}</p>
     </div>

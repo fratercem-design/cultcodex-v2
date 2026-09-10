@@ -29,12 +29,12 @@ export function BookCta({ sku, price }: { sku: string; price: number }) {
   if (state && (state.owned || state.isAdmin)) {
     return (
       <div className="space-y-3 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
           {"/// psychenomicon · the_book"}
         </p>
         <Link
           href={`/api/psychenomicon/book/${sku}`}
-          className="inline-block w-full rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/25"
+          className="inline-block w-full rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-sm font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25"
         >
           Download the PDF →
         </Link>

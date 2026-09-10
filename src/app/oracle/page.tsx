@@ -89,24 +89,24 @@ export default async function OraclePage() {
         <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-[0.08em] text-accent-gold drop-shadow-lg">
           THE ORACLE
         </h1>
-        <p className="mt-1.5 font-mono text-xs uppercase tracking-[0.45em] text-accent-violet/60">
+        <p className="mt-1.5 font-mono text-xs uppercase tracking-[0.45em] text-accent-violet-text/70">
           AI synthesis of the complete archive
         </p>
 
         <div className="mt-5 w-24 h-px bg-gradient-to-r from-transparent via-accent-gold/40 to-transparent" />
-        <MysticalDivider className="mt-4 opacity-40 [&_svg]:!text-accent-violet/25" />
+        <MysticalDivider className="mt-4 opacity-40 [&_svg]:!text-accent-violet-text/25" />
 
         <p className="mx-auto mt-4 max-w-md px-4 font-serif text-sm leading-relaxed text-text-muted italic">
           Ask anything.{" "}
-          <span className="text-accent-cyan">{archiveSize.toLocaleString()}+ archive moments</span>{" "}
+          <span className="text-accent-cyan">{archiveSize.toLocaleString("en-US")}+ archive moments</span>{" "}
           synthesized in real time — with citations back to the source.
         </p>
 
         {/* Trial callout for non-subscribers */}
         {!canAccess && (
           <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-accent-gold/30 bg-accent-gold/5 px-5 py-2">
-            <span className="text-accent-gold text-sm">✦</span>
-            <p className="font-mono text-[11px] text-accent-gold/80">
+            <span className="text-accent-gold-text text-sm">✦</span>
+            <p className="font-mono text-[11px] text-accent-gold-text/80">
               3 free questions every month — no account required to start
             </p>
           </div>
@@ -124,7 +124,7 @@ export default async function OraclePage() {
 
             <div className="relative">
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-violet/30 to-transparent" />
-              <p className="pt-6 text-center font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet/40">
+              <p className="pt-6 text-center font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet-text/70">
                 {"/// now_ask_yours"}
               </p>
             </div>
@@ -137,7 +137,7 @@ export default async function OraclePage() {
           {!canAccess && (
             <p className="mt-3 text-center font-mono text-[10px] text-text-muted/60 uppercase tracking-widest">
               Initiate+ — unlimited Oracle access ·{" "}
-              <Link href="/premium" className="text-accent-gold/60 hover:text-accent-gold transition-colors">
+              <Link href="/premium" className="text-accent-gold-text/80 hover:text-accent-gold-text transition-colors">
                 $10/mo
               </Link>
             </p>
@@ -147,7 +147,7 @@ export default async function OraclePage() {
         {/* ── For subscribers: show what they've unlocked ── */}
         {canAccess && (
           <section className="rounded-xl border border-accent-violet/15 bg-surface/60 px-6 py-5 space-y-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/50">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">
               {"/// oracle_capabilities"}
             </p>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -160,7 +160,7 @@ export default async function OraclePage() {
                 "Cross-episode theme tracking",
               ].map((cap) => (
                 <div key={cap} className="flex items-start gap-2">
-                  <span className="text-accent-violet/50 mt-0.5 shrink-0">◈</span>
+                  <span className="text-accent-violet-text/70 mt-0.5 shrink-0">◈</span>
                   <p className="font-mono text-[10px] text-text-muted leading-snug">{cap}</p>
                 </div>
               ))}
@@ -168,12 +168,12 @@ export default async function OraclePage() {
           </section>
         )}
 
-        <MysticalDivider className="opacity-40 [&_svg]:!text-accent-violet/20" />
+        <MysticalDivider className="opacity-40 [&_svg]:!text-accent-violet-text/20" />
 
         {/* ── Transmission fragment (quality-filtered random quote) ── */}
         {quote && (
           <section>
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/40 text-center mb-4">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70 text-center mb-4">
               {"/// transmission_fragment"}
             </p>
             <div className="relative rounded-xl border border-accent-violet/20 bg-surface/80 backdrop-blur-sm p-1">
@@ -187,7 +187,7 @@ export default async function OraclePage() {
               />
               <div className="relative rounded-lg border border-border bg-elevated p-6 sm:p-8">
                 <div
-                  className="pointer-events-none select-none text-center font-serif text-6xl leading-none text-accent-violet/20"
+                  className="pointer-events-none select-none text-center font-serif text-6xl leading-none text-accent-violet-text/20"
                   aria-hidden="true"
                 >
                   &ldquo;
@@ -196,17 +196,17 @@ export default async function OraclePage() {
                   {quote.text}
                 </blockquote>
                 <div
-                  className="pointer-events-none select-none text-center font-serif text-6xl leading-none text-accent-violet/20 mt-2"
+                  className="pointer-events-none select-none text-center font-serif text-6xl leading-none text-accent-violet-text/20 mt-2"
                   aria-hidden="true"
                 >
                   &rdquo;
                 </div>
-                <OrnamentalBreak className="my-4 [&_svg]:!text-accent-violet/25" />
+                <OrnamentalBreak className="my-4 [&_svg]:!text-accent-violet-text/70" />
                 {quote.speaker && (
                   <p className="text-center">
                     <Link
                       href={`/people/${quote.speaker.slug}`}
-                      className="font-display text-sm font-semibold text-accent-gold hover:text-accent-gold/80 transition-colors"
+                      className="font-display text-sm font-semibold text-accent-gold-text hover:text-accent-gold-text/80 transition-colors"
                     >
                       {quote.speaker.displayName}
                     </Link>
@@ -240,12 +240,12 @@ export default async function OraclePage() {
               <div className="absolute -top-12 left-1/2 h-40 w-80 -translate-x-1/2 rounded-full bg-accent-violet/10 blur-3xl" />
             </div>
             <div className="relative space-y-4">
-              <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">
+              <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">
                 ✦ &nbsp; unlock the full archive &nbsp; ✦
               </p>
               <h3 className="font-display text-2xl font-bold text-white sm:text-3xl">
                 The Oracle answers{" "}
-                <span className="text-accent-violet">everything.</span>
+                <span className="text-accent-violet-text">everything.</span>
               </h3>
               <p className="font-mono text-[11px] text-text-muted max-w-sm mx-auto leading-relaxed">
                 Unlimited questions. Every transcript, every behavioral profile, every pattern
@@ -254,13 +254,13 @@ export default async function OraclePage() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                 <Link
                   href="/premium"
-                  className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-7 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/25 hover:shadow-lg hover:shadow-accent-violet/20"
+                  className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-7 py-3 font-mono text-sm font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25 hover:shadow-lg hover:shadow-accent-violet/20"
                 >
                   Become Initiate+ — $10/mo →
                 </Link>
                 <Link
                   href="/premium"
-                  className="font-mono text-[11px] text-text-muted/50 hover:text-accent-violet/70 transition-colors"
+                  className="font-mono text-[11px] text-text-muted/50 hover:text-accent-violet-text/70 transition-colors"
                 >
                   See what opens →
                 </Link>
@@ -275,24 +275,24 @@ export default async function OraclePage() {
         {/* Sibling divination tool — the Tarot reading is a distinct mode from AI Q&A */}
         <section className="rounded-xl border border-accent-gold/15 bg-surface/40 px-6 py-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/50">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
               {"/// also_in_the_codex"}
             </p>
             <p className="max-w-md font-mono text-[11px] leading-relaxed text-text-muted">
               Prefer your answers in symbols? The{" "}
-              <span className="text-accent-gold">Cult of Psyche Tarot</span> pulls a reading from the
+              <span className="text-accent-gold-text">Cult of Psyche Tarot</span> pulls a reading from the
               same archive — 80 cards of its archetypes and recurring forces.
             </p>
           </div>
           <Link
             href="/tarot"
-            className="shrink-0 self-start inline-flex items-center gap-1.5 rounded-lg border border-accent-gold/40 bg-accent-gold/10 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/20 whitespace-nowrap"
+            className="shrink-0 self-start inline-flex items-center gap-1.5 rounded-lg border border-accent-gold/40 bg-accent-gold/10 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/20 whitespace-nowrap"
           >
             Pull a Tarot reading →
           </Link>
         </section>
 
-        <OrnamentalBreak className="mt-4 opacity-30 [&_svg]:!text-accent-violet/20" />
+        <OrnamentalBreak className="mt-4 opacity-30 [&_svg]:!text-accent-violet-text/70" />
         <p className="mt-4 text-center font-serif text-xs text-text-muted/30 italic">
           What is remembered, lives.
         </p>

@@ -335,14 +335,14 @@ export function SyncPanel({
         {/* Transcript Sync */}
         <section className="rounded-lg border border-accent-violet/20 bg-accent-violet/5 p-6 space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">{"/// sync_transcripts"}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text">{"/// sync_transcripts"}</p>
             <h2 className="font-display text-lg font-bold text-text-primary">Fetch Transcripts</h2>
             <p className="text-xs text-text-muted leading-relaxed">
               Pulls YouTube auto-captions for episodes with a video ID but no transcript yet.
               Stored as searchable <code>TranscriptSegment</code> rows.
             </p>
             <p className="font-mono text-[9px] text-text-muted/60">
-              {withoutTranscript.toLocaleString()} episodes still need transcripts. No API key required.
+              {withoutTranscript.toLocaleString("en-US")} episodes still need transcripts. No API key required.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -361,7 +361,7 @@ export function SyncPanel({
           <button
             onClick={() => handleTranscriptSync(false)}
             disabled={transcriptLoading || withoutTranscript === 0}
-            className="w-full flex items-center justify-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 hover:bg-accent-violet/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-violet transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 hover:bg-accent-violet/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-violet-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {transcriptLoading
               ? <><Spinner /> Fetching {transcriptLimit} transcripts…</>
@@ -380,7 +380,7 @@ export function SyncPanel({
           <button
             onClick={() => handleTranscriptSync(true)}
             disabled={transcriptLoading}
-            className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/40 bg-accent-gold/5 hover:bg-accent-gold/10 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-accent-gold/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/40 bg-accent-gold/5 hover:bg-accent-gold/10 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-accent-gold-text/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title="Re-try episodes previously marked as having no captions."
           >
             ↻ Retry no-caption episodes
@@ -390,7 +390,7 @@ export function SyncPanel({
               {transcriptResult.ok && transcriptResult.summary ? (
                 <>
                   <div className="flex flex-wrap gap-4 font-mono text-[10px]">
-                    <span className="text-accent-violet">✓ {transcriptResult.summary.ok} fetched</span>
+                    <span className="text-accent-violet-text">✓ {transcriptResult.summary.ok} fetched</span>
                     {transcriptResult.summary.no_transcript > 0 && (
                       <span className="text-text-muted">— {transcriptResult.summary.no_transcript} no captions</span>
                     )}
@@ -398,11 +398,11 @@ export function SyncPanel({
                       <span className="text-red-400">✗ {transcriptResult.summary.errors} errors</span>
                     )}
                     {transcriptResult.summary.remaining > 0 && (
-                      <span className="text-accent-gold">{transcriptResult.summary.remaining.toLocaleString()} remaining</span>
+                      <span className="text-accent-gold-text">{transcriptResult.summary.remaining.toLocaleString("en-US")} remaining</span>
                     )}
                   </div>
                   {transcriptResult.summary.timedOut && (
-                    <p className="font-mono text-[10px] text-accent-gold/80">
+                    <p className="font-mono text-[10px] text-accent-gold-text/80">
                       ⏱ Hit the time budget and returned early — nothing was lost. Click again to continue.
                     </p>
                   )}
@@ -410,7 +410,7 @@ export function SyncPanel({
                     <div className="max-h-40 overflow-y-auto space-y-0.5 pt-1">
                       {transcriptResult.results.map((r) => (
                         <div key={r.episodeId} className="flex items-center gap-2 font-mono text-[9px]">
-                          <span className={r.status === "ok" ? "text-accent-violet" : r.status === "no_transcript" ? "text-text-muted" : "text-red-400"}>
+                          <span className={r.status === "ok" ? "text-accent-violet-text" : r.status === "no_transcript" ? "text-text-muted" : "text-red-400"}>
                             {r.status === "ok" ? "✓" : r.status === "no_transcript" ? "—" : "✗"}
                           </span>
                           <span className="text-text-muted truncate flex-1">{r.slug}</span>
@@ -436,14 +436,14 @@ export function SyncPanel({
         {/* Episode Enrichment */}
         <section className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-6 space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">{"/// enrich_episodes"}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text">{"/// enrich_episodes"}</p>
             <h2 className="font-display text-lg font-bold text-text-primary">Enrich Episodes</h2>
             <p className="text-xs text-text-muted leading-relaxed">
               Runs Claude Haiku on each episode transcript to extract summaries, guests, quotes,
               lore, and topics. Only processes episodes with transcripts that haven&apos;t been enriched yet.
             </p>
             <p className="font-mono text-[9px] text-text-muted/60">
-              {unenrichedEpisodes.toLocaleString()} episodes need enrichment. Requires <code>ENRICH_SECRET</code> + AWS Bedrock credentials.
+              {unenrichedEpisodes.toLocaleString("en-US")} episodes need enrichment. Requires <code>ENRICH_SECRET</code> + AWS Bedrock credentials.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -463,7 +463,7 @@ export function SyncPanel({
             <button
               onClick={() => handleEnrichEpisodes(false)}
               disabled={enrichEpLoading || unenrichedEpisodes === 0}
-              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {enrichEpLoading && !enrichEpProgress
                 ? <><Spinner /> Enriching…</>
@@ -474,7 +474,7 @@ export function SyncPanel({
             <button
               onClick={() => handleEnrichEpisodes(true)}
               disabled={enrichEpLoading || unenrichedEpisodes === 0}
-              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-gold bg-accent-gold/20 hover:bg-accent-gold/30 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-gold bg-accent-gold/20 hover:bg-accent-gold/30 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {enrichEpLoading && enrichEpProgress
                 ? <><Spinner /> {enrichEpProgress.done} done, {enrichEpProgress.remaining} left…</>
@@ -495,9 +495,9 @@ export function SyncPanel({
             className="w-full flex flex-col items-center gap-0.5 rounded border border-accent-gold/40 bg-accent-gold/5 hover:bg-accent-gold/15 px-4 py-2.5 font-mono transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title={enrichmentQueued === 0 ? "Queue episodes first from /admin/episodes → click '+ enrich' on any row" : `Re-enriches ${enrichmentQueued} manually queued episode${enrichmentQueued !== 1 ? "s" : ""}`}
           >
-            <span className="text-[10px] uppercase tracking-widest text-accent-gold">
+            <span className="text-[10px] uppercase tracking-widest text-accent-gold-text">
               ⚡ Run enrichment queue
-              {enrichmentQueued > 0 && <span className="ml-1.5 rounded-full bg-accent-gold/20 px-1.5 py-0.5 text-accent-gold font-bold">{enrichmentQueued}</span>}
+              {enrichmentQueued > 0 && <span className="ml-1.5 rounded-full bg-accent-gold/20 px-1.5 py-0.5 text-accent-gold-text font-bold">{enrichmentQueued}</span>}
             </span>
             <span className="text-[9px] text-text-muted/60">
               {enrichmentQueued === 0
@@ -510,17 +510,17 @@ export function SyncPanel({
               {enrichEpResult.ok ? (
                 <>
                   <div className="flex flex-wrap gap-4 font-mono text-[10px]">
-                    <span className="text-accent-gold">✓ {enrichEpResult.processed} enriched</span>
+                    <span className="text-accent-gold-text">✓ {enrichEpResult.processed} enriched</span>
                     {(enrichEpResult.remaining ?? 0) > 0 && (
-                      <span className="text-text-muted">{enrichEpResult.remaining?.toLocaleString()} remaining</span>
+                      <span className="text-text-muted">{enrichEpResult.remaining?.toLocaleString("en-US")} remaining</span>
                     )}
-                    {enrichEpResult.done && <span className="text-accent-gold">— all done</span>}
+                    {enrichEpResult.done && <span className="text-accent-gold-text">— all done</span>}
                   </div>
                   {enrichEpResult.results && (
                     <div className="max-h-40 overflow-y-auto space-y-0.5 pt-1">
                       {enrichEpResult.results.map((r, i) => (
                         <div key={i} className="flex items-center gap-2 font-mono text-[9px]">
-                          <span className={r.ok ? "text-accent-gold" : "text-red-400"}>{r.ok ? "✓" : "✗"}</span>
+                          <span className={r.ok ? "text-accent-gold-text" : "text-red-400"}>{r.ok ? "✓" : "✗"}</span>
                           <span className="text-text-muted truncate flex-1">{r.title}</span>
                           {r.error && <span className="text-red-400/70 truncate">{r.error}</span>}
                         </div>
@@ -538,14 +538,14 @@ export function SyncPanel({
         {/* People Enrichment */}
         <section className="rounded-lg border border-accent-crimson/20 bg-accent-crimson/5 p-6 space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-crimson">{"/// enrich_people"}</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-crimson-text">{"/// enrich_people"}</p>
             <h2 className="font-display text-lg font-bold text-text-primary">Enrich People</h2>
             <p className="text-xs text-text-muted leading-relaxed">
               Generates <code>loreSummary</code> — a psychological/behavioral archive profile —
               for each person who has appearances but no profile yet. Feeds directly into Oracle answers.
             </p>
             <p className="font-mono text-[9px] text-text-muted/60">
-              {unenrichedPeople.toLocaleString()} people need profiles. Requires <code>ENRICH_SECRET</code> + AWS Bedrock credentials.
+              {unenrichedPeople.toLocaleString("en-US")} people need profiles. Requires <code>ENRICH_SECRET</code> + AWS Bedrock credentials.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -565,7 +565,7 @@ export function SyncPanel({
             <button
               onClick={() => handleEnrichPeople(false)}
               disabled={enrichPeopleLoading || unenrichedPeople === 0}
-              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-crimson/50 bg-accent-crimson/10 hover:bg-accent-crimson/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-crimson transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-crimson/50 bg-accent-crimson/10 hover:bg-accent-crimson/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-crimson-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {enrichPeopleLoading && !enrichPeopleProgress
                 ? <><Spinner /> Profiling…</>
@@ -576,7 +576,7 @@ export function SyncPanel({
             <button
               onClick={() => handleEnrichPeople(true)}
               disabled={enrichPeopleLoading || unenrichedPeople === 0}
-              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-crimson bg-accent-crimson/20 hover:bg-accent-crimson/30 px-4 py-2.5 font-mono text-xs font-bold text-accent-crimson transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-crimson bg-accent-crimson/20 hover:bg-accent-crimson/30 px-4 py-2.5 font-mono text-xs font-bold text-accent-crimson-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {enrichPeopleLoading && enrichPeopleProgress
                 ? <><Spinner /> {enrichPeopleProgress.done} done, {enrichPeopleProgress.remaining} left…</>
@@ -588,17 +588,17 @@ export function SyncPanel({
               {enrichPeopleResult.ok ? (
                 <>
                   <div className="flex flex-wrap gap-4 font-mono text-[10px]">
-                    <span className="text-accent-crimson">✓ {enrichPeopleResult.processed} profiled</span>
+                    <span className="text-accent-crimson-text">✓ {enrichPeopleResult.processed} profiled</span>
                     {(enrichPeopleResult.remaining ?? 0) > 0 && (
-                      <span className="text-text-muted">{enrichPeopleResult.remaining?.toLocaleString()} remaining</span>
+                      <span className="text-text-muted">{enrichPeopleResult.remaining?.toLocaleString("en-US")} remaining</span>
                     )}
-                    {enrichPeopleResult.done && <span className="text-accent-crimson">— all done</span>}
+                    {enrichPeopleResult.done && <span className="text-accent-crimson-text">— all done</span>}
                   </div>
                   {enrichPeopleResult.results && (
                     <div className="max-h-40 overflow-y-auto space-y-0.5 pt-1">
                       {enrichPeopleResult.results.map((r, i) => (
                         <div key={i} className="flex items-center gap-2 font-mono text-[9px]">
-                          <span className={r.ok ? "text-accent-crimson" : "text-red-400"}>{r.ok ? "✓" : "✗"}</span>
+                          <span className={r.ok ? "text-accent-crimson-text" : "text-red-400"}>{r.ok ? "✓" : "✗"}</span>
                           <span className="text-text-muted truncate flex-1">{r.name}</span>
                           {r.error && <span className="text-red-400/70 truncate">{r.error}</span>}
                         </div>
@@ -617,7 +617,7 @@ export function SyncPanel({
       {/* ── Avatar Sync ── */}
       <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-6 space-y-5">
         <div className="space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">{"/// sync_avatars"}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text">{"/// sync_avatars"}</p>
           <h2 className="font-display text-lg font-bold text-text-primary">Sync People Avatars</h2>
           <p className="text-xs text-text-muted leading-relaxed">
             Searches YouTube for a matching channel for each person without an avatar. Only writes when the channel title
@@ -644,7 +644,7 @@ export function SyncPanel({
         <button
           onClick={handleAvatarSync}
           disabled={avatarLoading}
-          className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {avatarLoading ? <><Spinner /> Searching YouTube…</> : "Sync Avatars from YouTube →"}
         </button>
@@ -653,7 +653,7 @@ export function SyncPanel({
             {avatarResult.ok ? (
               <>
                 <div className="flex flex-wrap gap-4 font-mono text-[10px]">
-                  <span className="text-accent-gold">✓ {avatarResult.ok_count} matched</span>
+                  <span className="text-accent-gold-text">✓ {avatarResult.ok_count} matched</span>
                   {(avatarResult.no_match ?? 0) > 0 && (
                     <span className="text-text-muted">{avatarResult.no_match} no match</span>
                   )}
@@ -662,7 +662,7 @@ export function SyncPanel({
                   )}
                 </div>
                 {(avatarResult.results ?? []).filter((r) => r.status === "ok").slice(0, 10).map((r) => (
-                  <p key={r.name} className="font-mono text-[10px] text-accent-gold/70">
+                  <p key={r.name} className="font-mono text-[10px] text-accent-gold-text/80">
                     ✓ {r.name} → {r.channelTitle}
                   </p>
                 ))}

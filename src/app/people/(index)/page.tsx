@@ -120,12 +120,12 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
       {/* Graph teaser */}
       <div className="mb-3 flex items-center justify-between gap-4 rounded-lg border border-accent-violet/20 bg-accent-violet/5 px-4 py-3">
         <p className="font-mono text-[11px] text-text-muted">
-          <span className="text-accent-violet font-bold">Relationship Map</span>
+          <span className="text-accent-violet-text font-bold">Relationship Map</span>
           {" "}— see who appeared with whom across the entire archive, as a live network graph.
         </p>
         <Link
           href="/graph"
-          className="shrink-0 inline-flex items-center gap-1 rounded border border-accent-violet/40 bg-surface px-3 py-1.5 font-mono text-[10px] font-bold text-accent-violet hover:bg-accent-violet/10 transition-colors whitespace-nowrap"
+          className="shrink-0 inline-flex items-center gap-1 rounded border border-accent-violet/40 bg-surface px-3 py-1.5 font-mono text-[10px] font-bold text-accent-violet-text hover:bg-accent-violet/10 transition-colors whitespace-nowrap"
         >
           View map →
         </Link>
@@ -179,7 +179,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
             </div>
             <Link
               href="/people/the-rest"
-              className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-gold transition-colors"
+              className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
             >
               Full entry →
             </Link>
@@ -204,7 +204,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
             {mentionsOverflow > 0 && (
               <Link
                 href="/people/the-rest"
-                className="inline-flex items-center gap-1 rounded border border-border bg-surface px-2.5 py-1 font-mono text-[10px] text-text-muted hover:text-accent-gold hover:border-accent-gold/30 transition-colors"
+                className="inline-flex items-center gap-1 rounded border border-border bg-surface px-2.5 py-1 font-mono text-[10px] text-text-muted hover:text-accent-gold-text hover:border-accent-gold/30 transition-colors"
               >
                 +{mentionsOverflow} more →
               </Link>

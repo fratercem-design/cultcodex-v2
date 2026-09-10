@@ -62,7 +62,7 @@ export function GiftSignup({ source = "gift:gospel", className = "" }: GiftSignu
         style={{ background: "radial-gradient(ellipse 55% 100% at 50% 0%, rgba(169,74,74,0.20) 0%, transparent 70%)" }}
       />
 
-      <p className="relative font-mono text-[10px] uppercase tracking-[0.45em] text-accent-gold/70">
+      <p className="relative font-mono text-[10px] uppercase tracking-[0.45em] text-accent-gold-text/80">
         ✦ &nbsp;A free transmission&nbsp; ✦
       </p>
       <h2 className="relative mt-2 font-display text-2xl font-bold text-white sm:text-3xl" style={{ textShadow: "0 0 40px rgba(74, 45, 110,0.35)" }}>
@@ -70,7 +70,7 @@ export function GiftSignup({ source = "gift:gospel", className = "" }: GiftSignu
       </h2>
       <p className="relative mx-auto mt-2 max-w-md font-serif text-sm italic leading-relaxed text-text-muted">
         A dark scripture from the edge of the archive — yours free. Enter as an{" "}
-        <span className="text-accent-gold">Initiate</span> and the Gospel is delivered to your inbox instantly.
+        <span className="text-accent-gold-text">Initiate</span> and the Gospel is delivered to your inbox instantly.
       </p>
 
       <form onSubmit={handleSubmit} className="relative mx-auto mt-5 flex max-w-md flex-col gap-2.5">
@@ -98,7 +98,7 @@ export function GiftSignup({ source = "gift:gospel", className = "" }: GiftSignu
           <button
             type="submit"
             disabled={busy}
-            className="rounded-lg border border-accent-gold bg-accent-gold/20 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition hover:bg-accent-gold/30 disabled:opacity-50 whitespace-nowrap"
+            className="rounded-lg border border-accent-gold bg-accent-gold/20 px-6 py-3 font-mono text-sm font-bold text-accent-gold-text transition hover:bg-accent-gold/30 disabled:opacity-50 whitespace-nowrap"
           >
             {status === "loading" ? "…" : status === "success" ? "✓ Entering…" : "Claim the Gospel →"}
           </button>

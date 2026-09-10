@@ -20,10 +20,10 @@ const ARCHETYPE_COLORS: Record<string, string> = {
   aggressor: "text-red-400 border-red-500/30 bg-red-500/5",
   challenger: "text-red-400 border-red-500/30 bg-red-500/5",
   // Performer / charismatic
-  performer: "text-accent-gold border-accent-gold/30 bg-accent-gold/5",
-  charmer: "text-accent-gold border-accent-gold/30 bg-accent-gold/5",
-  showman: "text-accent-gold border-accent-gold/30 bg-accent-gold/5",
-  oracle: "text-accent-gold border-accent-gold/30 bg-accent-gold/5",
+  performer: "text-accent-gold-text border-accent-gold/30 bg-accent-gold/5",
+  charmer: "text-accent-gold-text border-accent-gold/30 bg-accent-gold/5",
+  showman: "text-accent-gold-text border-accent-gold/30 bg-accent-gold/5",
+  oracle: "text-accent-gold-text border-accent-gold/30 bg-accent-gold/5",
   // Defensive / deflective
   defensive: "text-amber-400 border-amber-500/30 bg-amber-500/5",
   deflector: "text-amber-400 border-amber-500/30 bg-amber-500/5",
@@ -32,7 +32,7 @@ const ARCHETYPE_COLORS: Record<string, string> = {
   strategist: "text-accent-cyan border-accent-cyan/30 bg-accent-cyan/5",
   observer: "text-accent-cyan border-accent-cyan/30 bg-accent-cyan/5",
   // Default
-  default: "text-accent-violet border-accent-violet/30 bg-accent-violet/5",
+  default: "text-accent-violet-text border-accent-violet/30 bg-accent-violet/5",
 };
 
 function getArchetypeColor(archetype: string): string {
@@ -103,7 +103,7 @@ export function ArchetypeTimeline({ entries, personName }: ArchetypeTimelineProp
                     </div>
                     <Link
                       href={`/episodes/${entry.episodeSlug}`}
-                      className="font-mono text-[10px] text-text-muted hover:text-accent-gold transition-colors line-clamp-1"
+                      className="font-mono text-[10px] text-text-muted hover:text-accent-gold-text transition-colors line-clamp-1"
                     >
                       {entry.episodeNumber ? `EP.${String(entry.episodeNumber).padStart(3, "0")} · ` : ""}
                       {entry.episodeTitle}

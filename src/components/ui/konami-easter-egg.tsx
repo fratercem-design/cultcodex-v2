@@ -88,11 +88,11 @@ export function KonamiEasterEgg() {
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-accent-violet font-display text-3xl md:text-4xl font-bold tracking-wide">
+        <h2 className="text-accent-violet-text font-display text-3xl md:text-4xl font-bold tracking-wide">
           {'\u{1F52E}'} THE VOID WELCOMES YOU {'\u{1F52E}'}
         </h2>
 
-        <p className="text-accent-gold font-display text-lg md:text-xl">
+        <p className="text-accent-gold-text font-display text-lg md:text-xl">
           You have unlocked the secret paths of the Codex.
         </p>
 

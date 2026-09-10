@@ -57,7 +57,7 @@ export default function AboutPage() {
               Search by word, theme, or person. Trace a running joke from its first
               mention to its latest callback. Follow a guest across every appearance
               and watch how their role shifts. Or simply ask the{" "}
-              <Link href="/oracle" className="text-accent-gold hover:underline">Oracle</Link>{" "}
+              <Link href="/oracle" className="text-accent-gold-text hover:underline">Oracle</Link>{" "}
               a question and get an answer drawn straight from the transcripts — with
               citations to the exact moment it happened.
             </p>
@@ -100,7 +100,7 @@ export default function AboutPage() {
               It is a guide through the signal, not an authority on anyone&apos;s private
               life. How it&apos;s generated — and where it can be wrong — is documented in
               full on the{" "}
-              <Link href="/about/methodology" className="text-accent-gold hover:underline">
+              <Link href="/about/methodology" className="text-accent-gold-text hover:underline">
                 methodology page
               </Link>.
             </p>
@@ -119,7 +119,7 @@ export default function AboutPage() {
             <p>
               We show our work. The full sourcing, the role of AI, known limitations, and the
               correction process all live on the{" "}
-              <Link href="/about/methodology" className="text-accent-gold hover:underline">
+              <Link href="/about/methodology" className="text-accent-gold-text hover:underline">
                 methodology &amp; transparency log
               </Link>.
             </p>
@@ -133,7 +133,7 @@ export default function AboutPage() {
               publication, and the profiles and summaries here describe on-stream performance and
               discussion — not verified real-world claims. If something is wrong, harmful, or out of
               date, tell us and we&apos;ll fix it: see{" "}
-              <Link href="/corrections" className="text-accent-gold hover:underline">corrections</Link>.
+              <Link href="/corrections" className="text-accent-gold-text hover:underline">corrections</Link>.
             </p>
           </div>
         </SectionCard>
@@ -141,7 +141,7 @@ export default function AboutPage() {
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <Link
             href="/episodes"
-            className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-accent-gold transition-all hover:bg-accent-gold/25"
+            className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-accent-gold-text transition-all hover:bg-accent-gold/25"
           >
             Explore the Archive
           </Link>
@@ -153,22 +153,22 @@ export default function AboutPage() {
           </Link>
           <Link
             href="/premium"
-            className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-accent-violet transition-all hover:bg-accent-violet/20"
+            className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-accent-violet-text transition-all hover:bg-accent-violet/20"
           >
             Become an Initiate
           </Link>
         </div>
 
         <div className="flex items-center justify-center gap-4 text-xs pt-2">
-          <Link href="/about/methodology" className="font-mono text-accent-gold hover:underline">
+          <Link href="/about/methodology" className="font-mono text-accent-gold-text hover:underline">
             Methodology
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/faq" className="font-mono text-accent-gold hover:underline">
+          <Link href="/faq" className="font-mono text-accent-gold-text hover:underline">
             FAQ
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/content-policy" className="font-mono text-accent-gold hover:underline">
+          <Link href="/content-policy" className="font-mono text-accent-gold-text hover:underline">
             Content Policy
           </Link>
         </div>

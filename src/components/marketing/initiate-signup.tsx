@@ -67,7 +67,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
         role="status"
         aria-live="polite"
       >
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/70">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
           {"// "}the gate is open
         </p>
         <h2 className="mt-3 font-serif text-2xl font-black text-accent-gold">
@@ -101,7 +101,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
           {downloadUrl && (
             <a
               href={downloadUrl}
-              className="rounded border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-sm font-bold text-accent-gold transition hover:bg-accent-gold/25"
+              className="rounded border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-sm font-bold text-accent-gold-text transition hover:bg-accent-gold/25"
             >
               Download the Gospel
             </a>
@@ -114,7 +114,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
           </Link>
           <Link
             href="/start-here"
-            className="rounded border border-border px-5 py-2.5 font-mono text-sm text-text-muted transition hover:border-accent-gold/60 hover:text-accent-gold"
+            className="rounded border border-border px-5 py-2.5 font-mono text-sm text-text-muted transition hover:border-accent-gold/60 hover:text-accent-gold-text"
           >
             Just start reading
           </Link>
@@ -130,7 +130,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
       onSubmit={handleSubmit}
       className={`rounded-lg border border-accent-gold/25 bg-surface p-6 sm:p-8 ${className}`}
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/70">
+      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
         {"// "}first gate
       </p>
       <h2 className="mt-3 font-serif text-2xl font-black text-text-primary">
@@ -138,7 +138,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
       </h2>
       <p className="mt-3 font-mono text-xs leading-relaxed text-text-muted">
         Two fields. You get{" "}
-        <span className="text-accent-gold">The Gospel of Psyche&rsquo;s Nightmares</span> as a PDF,
+        <span className="text-accent-gold-text">The Gospel of Psyche&rsquo;s Nightmares</span> as a PDF,
         and a Codex account created in your name at the same time — so that when you decide to sign
         in, everything you have collected is already waiting.
       </p>
@@ -179,7 +179,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
       <button
         type="submit"
         disabled={busy}
-        className="mt-5 w-full rounded border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition hover:bg-accent-gold/25 disabled:opacity-50"
+        className="mt-5 w-full rounded border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold-text transition hover:bg-accent-gold/25 disabled:opacity-50"
       >
         {busy ? "Opening the gate…" : "Send the Gospel & make my account"}
       </button>

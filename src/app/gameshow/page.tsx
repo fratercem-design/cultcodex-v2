@@ -36,13 +36,13 @@ export default function GameShowPage() {
         <div className="gs-drift pointer-events-none absolute inset-0 opacity-40" aria-hidden />
 
         <div className="relative mx-auto max-w-3xl text-center space-y-5">
-          <GameShowHero size={84} className="mx-auto text-accent-violet" title="Panelverse Game Show sigil" />
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet/60">{"/// the_ultimate_cult_trivia_experience"}</p>
+          <GameShowHero size={84} className="mx-auto text-accent-violet-text" title="Panelverse Game Show sigil" />
+          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">{"/// the_ultimate_cult_trivia_experience"}</p>
           <h1 className="font-display text-4xl sm:text-5xl font-bold text-text-primary leading-tight">
             The Panelverse Game Show
           </h1>
           <p className="mx-auto max-w-xl text-base text-text-muted leading-relaxed">
-            How well do you <em className="text-accent-gold not-italic font-bold">really</em> know the Cult? Every
+            How well do you <em className="text-accent-gold-text not-italic font-bold">really</em> know the Cult? Every
             question comes from a real livestream. Every answer is hidden somewhere inside thousands of hours of chaos.
             <br className="hidden sm:block" />
             <span className="text-text-primary font-medium"> Can you survive eleven rounds?</span>
@@ -51,7 +51,7 @@ export default function GameShowPage() {
           <div className="pt-2">
             <Link
               href="#rounds"
-              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-8 py-4 font-display text-lg font-bold text-accent-gold hover:bg-accent-gold/25 hover:scale-[1.04] active:scale-[0.98] transition-all shadow-[0_0_32px_-8px_rgba(200,57,46,0.6)]"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-8 py-4 font-display text-lg font-bold text-accent-gold-text hover:bg-accent-gold/25 hover:scale-[1.04] active:scale-[0.98] transition-all shadow-[0_0_32px_-8px_rgba(200,57,46,0.6)]"
             >
               ▶ Play Now
             </Link>
@@ -72,7 +72,7 @@ export default function GameShowPage() {
       <GameShowLoader />
 
       <div className="mx-auto max-w-3xl px-4 pb-12 text-center">
-        <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors">← The Fun Wing</Link>
+        <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors">← The Fun Wing</Link>
       </div>
     </main>
   );
