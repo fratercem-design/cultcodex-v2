@@ -67,7 +67,9 @@ __pycache__/
 
 # Local runtime artefacts for data-ingest / ASR pipelines
 scripts/*.log
-scripts/cookies.txt
+# Glob, not the bare path: cookies.master.txt and any other jar are live
+# YouTube session cookies and must never be committable.
+scripts/cookies*.txt
 scripts/asr-pending.json
 scripts/remaining-episodes.json
 scripts/_download-list.json
