@@ -116,8 +116,14 @@ const nextConfig: NextConfig = {
       ],
     },
   ],
+  // /premium is the canonical pricing page. These must live here rather than as
+  // a `redirect()` inside a page component: a server-component redirect returns
+  // an HTTP 200 with a client-side hop, so crawlers indexed /subscribe as a
+  // real, `index, follow` URL with no canonical — the exact duplicate-content
+  // split this consolidation exists to close. A config redirect emits a true 308.
   redirects: async () => [
     { source: "/pricing", destination: "/premium", permanent: true },
+    { source: "/subscribe", destination: "/premium", permanent: true },
   ],
 };
 
