@@ -883,28 +883,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Initiate+ ($10) monthly meter — generous enough to be invisible to normal
-  // use (~100/mo, tune via INITIATE_MONTHLY_CAP), but aligns price with
-  // inference cost and gives heavy users a concrete upgrade trigger. Oracle
-  // tier (system) and admins are unmetered; hasSystemTier covers both.
-  if (canAccess && user && !(await hasSystemTier(user.id))) {
-    const meter = await consumeMonthlyMeter(
-      `oracle-u-${user.id}`,
-      Number(process.env.INITIATE_MONTHLY_CAP ?? "100")
-    );
-    if (!meter.ok) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "You've used all " + meter.cap + " Oracle questions in your Initiate+ month. " +
-            "They renew with your billing cycle — or Ascend to Oracle for unlimited communion.",
-        } satisfies OracleResponse,
-        { status: 403 }
-      );
-    }
-  }
-
   // Guard the expensive LLM + ElevenLabs path against rapid-fire calls.
   const rl = rateLimit(`oracle:${clientKey(req, user?.id)}`, {
     limit: 15,
@@ -957,6 +935,34 @@ export async function POST(req: NextRequest) {
       { ok: false, error: "Oracle not configured." } satisfies OracleResponse,
       { status: 500 }
     );
+  }
+
+  // Initiate+ ($10) monthly meter — generous enough to be invisible to normal
+  // use (~100/mo, tune via INITIATE_MONTHLY_CAP), but aligns price with
+  // inference cost and gives heavy users a concrete upgrade trigger. Oracle
+  // tier (system) and admins are unmetered; hasSystemTier covers both.
+  //
+  // Deliberately the LAST gate: it must run after the burst limiter, the
+  // global daily cap, question validation and the config check, so a request
+  // that is rejected for any of those reasons does not also cost a paying
+  // user one of their monthly questions. (It used to run first, so a 429 or
+  // a 503 "Oracle is resting" still burned quota.)
+  if (canAccess && user && !(await hasSystemTier(user.id))) {
+    const meter = await consumeMonthlyMeter(
+      `oracle-u-${user.id}`,
+      Number(process.env.INITIATE_MONTHLY_CAP ?? "100")
+    );
+    if (!meter.ok) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "You've used all " + meter.cap + " Oracle questions in your Initiate+ month. " +
+            "They renew with your billing cycle — or Ascend to Oracle for unlimited communion.",
+        } satisfies OracleResponse,
+        { status: 403 }
+      );
+    }
   }
 
   // Cache check — skip the expensive LLM + ElevenLabs call if we've seen this exact query.
