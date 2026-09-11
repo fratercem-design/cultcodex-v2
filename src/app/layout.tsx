@@ -25,6 +25,7 @@ import { SITE_URL } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
 import { CookieConsent } from "@/components/layout/cookie-consent";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 // Layout data fetches (getCounts, getLiveChannels) are already wrapped in
@@ -230,6 +231,7 @@ export default async function RootLayout({
         />
         <CookieConsent gaId="G-1ML217JXYV" />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
