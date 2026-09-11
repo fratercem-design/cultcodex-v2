@@ -13,6 +13,26 @@ export const SITE_URL = (() => {
 })();
 
 /**
+ * Minimum linked episodes for an auto-generated topic or lore page to be worth
+ * indexing. Below this the page is little more than the site chrome plus a
+ * title — ~24k such pages were in the sitemap, outnumbering the substantive
+ * episode and people pages 5:1 and diluting crawl budget. Pages under the
+ * threshold stay live and linked (`follow`), they just stop competing for
+ * index slots. Shared by the sitemap and the per-page metadata so the two
+ * never disagree about what is indexable.
+ */
+export const THIN_PAGE_MIN_EPISODES = 2;
+
+export function isThinPage(episodeCount: number): boolean {
+  return episodeCount < THIN_PAGE_MIN_EPISODES;
+}
+
+/** `robots` metadata for a generated page: noindex when thin, default otherwise. */
+export function thinPageRobots(episodeCount: number): Pick<Metadata, "robots"> {
+  return isThinPage(episodeCount) ? { robots: { index: false, follow: true } } : {};
+}
+
+/**
  * Serialize an object for embedding in a <script type="application/ld+json">.
  * Escapes `<`, `>` and `&` to their \uXXXX forms so a value containing
  * `</script>` (or other HTML) cannot break out of the script block — plain

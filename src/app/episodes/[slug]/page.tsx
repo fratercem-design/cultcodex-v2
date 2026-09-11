@@ -358,7 +358,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
           {/* Tab layout */}
           <Suspense fallback={<div className="h-40" />}>
-            <EpisodeTabLayout tabs={tabs}>
+            <EpisodeTabLayout tabs={tabs} prerender={["transcript"]}>
               {{
                 overview: (
                   <div className="space-y-6">
@@ -508,6 +508,12 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   // long-tail-searchable content. Premium value lives in the
                   // interactive tools (Oracle, Decode, Red Room, annotations),
                   // not behind the words themselves.
+                  //
+                  // "Indexable" only holds because this tab is listed in
+                  // `prerender` above: the layout otherwise renders just the
+                  // active tab, which left the transcript out of the canonical
+                  // URL's HTML entirely (it only existed inside the JSON-LD and
+                  // RSC <script> payloads, which are not page text to Google).
                   transcript: (
                     <TerminalPanel header="TRANSCRIPT">
                       <TranscriptViewer
