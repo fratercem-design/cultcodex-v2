@@ -190,7 +190,11 @@ async function enrichWithAnthropic(input: UserMessageInput): Promise<string> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const response = await (client as any).messages.create({
     model,
-    max_tokens: 4096,
+    // 4096 tokens is ~16.4k characters, and long episodes produce enrichment
+    // JSON past that - the response is cut mid-string and JSON.parse dies with
+    // "Unterminated string in JSON at position 17477". Deterministic: the same
+    // episodes fail every retry. Observed on 5 of 150 in run 34568545977.
+    max_tokens: 16000,
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: buildUserMessage(input) }],
   });
