@@ -25,7 +25,9 @@ const coverageConfig: Record<TranscriptCoverage, { label: string; indicator: str
     style: "border-amber-500/30 text-amber-400 bg-amber-500/10",
   },
   none: {
-    label: "No Transcript",
+    // Transient, not terminal: 99% of the archive is transcribed and the
+    // pipeline picks up new streams automatically, so read as "queued".
+    label: "Transcript Pending",
     indicator: "○○○",
     style: "border-border text-text-muted bg-surface",
   },

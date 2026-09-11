@@ -82,7 +82,11 @@ export default async function HomePage() {
       lore: 0, quotes: 0, totalHours: 0,
       transcribedEpisodes: 0, transcribedPct: 0,
     })),
-    getEpisodeCards({ take: 5, orderBy: "airDate", order: "desc" }).catch(() => []),
+    // Decoded episodes only. The newest stream is usually still in the
+    // transcription queue for a day or so, and a "No Transcript" card in the
+    // most prominent slot on the site undercuts the whole archive pitch. It
+    // surfaces here as soon as its segments land; until then /episodes has it.
+    getEpisodeCards({ take: 5, orderBy: "airDate", order: "desc", hasTranscript: true }).catch(() => []),
     getQuotes({ take: 2 }).catch(() => []),
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }).catch(() => null),
     getTopTopicsByEpisodes(10).catch(() => []),
