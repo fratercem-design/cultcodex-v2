@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PackOpener } from "@/components/cards/pack-opener";
+import { CreditBundlesStrip } from "@/components/cards/credit-bundles-strip";
 
 interface Pack {
   id: string;
@@ -244,6 +245,9 @@ export default function PackStorePage() {
           ← MY COLLECTION
         </Link>
       </div>
+
+      {/* Buy credits — the paid route in; earning stays free below */}
+      <CreditBundlesStrip />
 
       {/* How to earn credits */}
       <details style={{ marginBottom: 28 }}>
