@@ -26,7 +26,7 @@ const CODEX_REPORTS = [
     glyph: "◉",
     title: "The Pattern Report",
     cadence: "Monthly",
-    body: "What repeated across the archive this month — the recurring dynamics, the dominant signals, the behavioral structures that kept resurfacing. The forest, not the trees.",
+    body: "What repeated across the archive this month — the recurring dynamics, the dominant signals, the behavioral structures that kept resurfacing.",
     accent: "gold" as const,
   },
   {
@@ -139,7 +139,7 @@ export default async function ReportsPage() {
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">Every recurring figure has a signature.</h2>
             <p className="font-mono text-[11px] text-text-muted max-w-xl mx-auto leading-relaxed">
-              Not a bio — a behavioral dossier. Tactics, escalation triggers, alliances, and how they
+              A behavioral dossier, not a bio: tactics, escalation triggers, alliances, and how they
               act under pressure, traced across every appearance.
             </p>
           </div>
@@ -225,7 +225,7 @@ export default async function ReportsPage() {
         {!hasAccess ? (
           <section className="rounded-2xl border border-accent-gold/40 bg-gradient-to-b from-[#1a0033] via-[#0d001a] to-[#0d001a] p-8 text-center space-y-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-cyan/70">✦ &nbsp; intelligence on demand &nbsp; ✦</p>
-            <h3 className="font-display text-2xl font-bold text-accent-gold">Stop scrubbing. Start reading the reports.</h3>
+            <h3 className="font-display text-2xl font-bold text-accent-gold">Read the reports instead of scrubbing the VODs.</h3>
             <p className="font-mono text-[11px] text-text-muted max-w-sm mx-auto leading-relaxed">
               Initiate+ opens Guest Intelligence Reports, the Oracle, full transcripts, and the
               Psychenomicon — for $10/month.

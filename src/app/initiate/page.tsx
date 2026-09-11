@@ -36,7 +36,7 @@ export default function InitiatePage() {
     <div className="min-h-screen bg-void">
       <PageHero
         title="BECOME AN INITIATE"
-        subtitle="Two fields. The gate is not locked — it never was."
+        subtitle="Two fields. The gate was never locked."
         backgroundImage="/lore-header.jpg"
         label="first gate"
       />

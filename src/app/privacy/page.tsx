@@ -159,7 +159,7 @@ export default function PrivacyPage() {
             Content Policy
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/methodology" className="font-mono text-accent-gold hover:underline">
+          <Link href="/about/methodology" className="font-mono text-accent-gold hover:underline">
             Methodology
           </Link>
           <span className="text-text-muted">|</span>

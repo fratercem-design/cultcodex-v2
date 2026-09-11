@@ -31,7 +31,7 @@ export function ArchiveDisclaimer({ variant = "compact", className }: ArchiveDis
           All content is sourced from publicly available streams and recordings.
         </p>
         <div className="flex items-center gap-3 pt-1">
-          <Link href="/methodology" className="font-mono text-[10px] text-accent-gold/60 hover:text-accent-gold hover:underline">
+          <Link href="/about/methodology" className="font-mono text-[10px] text-accent-gold/60 hover:text-accent-gold hover:underline">
             Methodology
           </Link>
           <Link href="/content-policy" className="font-mono text-[10px] text-accent-gold/60 hover:text-accent-gold hover:underline">

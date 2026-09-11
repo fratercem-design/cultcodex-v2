@@ -70,7 +70,8 @@ const nextConfig: NextConfig = {
           key: "Content-Security-Policy",
           value: [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.youtube.com https://s.ytimg.com https://va.vercel-scripts.com",
+            // 'unsafe-eval' is dev-only: React reconstructs stack traces with eval() in development and never uses it in production builds.
+            `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV !== "production" ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.youtube.com https://s.ytimg.com https://va.vercel-scripts.com`,
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             "font-src 'self' https://fonts.gstatic.com",
             "img-src 'self' data: blob: https:",
@@ -124,6 +125,7 @@ const nextConfig: NextConfig = {
   redirects: async () => [
     { source: "/pricing", destination: "/premium", permanent: true },
     { source: "/subscribe", destination: "/premium", permanent: true },
+    { source: "/methodology", destination: "/about/methodology", permanent: true },
   ],
 };
 

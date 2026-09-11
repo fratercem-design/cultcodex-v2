@@ -42,7 +42,7 @@ export default function PremiumPage() {
           Two doors, past the archive.
         </h1>
         <p className="mx-auto max-w-lg font-serif text-sm italic leading-relaxed text-text-muted">
-          People don&rsquo;t upgrade for features here — they upgrade to change their role.
+          Each tier is a different role in the archive, with its own tools.
           Pick the one that matches what you came here to become.
         </p>
       </div>
@@ -105,7 +105,7 @@ export default function PremiumPage() {
       </div>
 
       <p className="text-center font-serif text-xs italic text-text-muted/50">
-        Pricing is not the wall. Framing is — cancel any time, instant access, no contracts.
+        Cancel any time. Instant access. No contracts.
       </p>
 
       <p className="text-center font-mono text-[10px] text-text-muted/40">

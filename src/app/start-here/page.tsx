@@ -194,7 +194,7 @@ export default async function StartHerePage() {
           </p>
           <p className="font-display text-lg text-text-primary">Start with what&apos;s pulling on you.</p>
           <p className="font-mono text-xs text-text-muted max-w-md mx-auto">
-            Forget categories. These are the six territories the archive keeps returning to.
+            These are the six territories the archive keeps returning to.
             Pick the one that resonates right now.
           </p>
         </div>
@@ -259,7 +259,7 @@ export default async function StartHerePage() {
           {[
             {
               num: "I",
-              title: "The archive captures behavior, not just content.",
+              title: "The archive captures behavior.",
               body: "\"Who said what\" is the surface. CultCodex tracks what happened underneath — recurring tactics, shifting dynamics, behavioral signatures across hundreds of appearances. That's what separates this from a YouTube playlist.",
               color: "border-accent-gold/20 text-accent-gold",
             },
@@ -272,7 +272,7 @@ export default async function StartHerePage() {
             {
               num: "III",
               title: "This is a living record.",
-              body: "The archive is still growing. New transmissions enter. Patterns are extracted. The mythology builds in real time. You're not looking at a completed artifact — you're looking at something that is still becoming what it is.",
+              body: "The archive is still growing. New transmissions enter. Patterns are extracted. The mythology builds in real time, so what you see today is a snapshot, not a finished work.",
               color: "border-accent-cyan/20 text-accent-cyan",
             },
           ].map((c) => (
@@ -333,7 +333,7 @@ export default async function StartHerePage() {
               The Oracle is an AI trained on the full archive — every transcript, every lore entry,
               every behavioral profile. Ask it about a person, a pattern, a specific episode,
               a recurring dynamic, or a concept the archive keeps returning to.
-              It doesn&apos;t search — it synthesizes.
+              It synthesizes rather than searches.
             </p>
             <p className="font-mono text-[11px] text-text-muted leading-relaxed">
               Try: <span className="text-accent-violet italic">&ldquo;What patterns repeat across every major conflict?&rdquo;</span>{" "}
