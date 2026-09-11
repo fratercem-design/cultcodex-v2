@@ -128,6 +128,8 @@ export async function getEpisodeCards(options?: {
   orderBy?: "airDate" | "episodeNumber" | "title";
   order?: "asc" | "desc";
   eraId?: string;
+  /** Only episodes with at least one transcript segment. */
+  hasTranscript?: boolean;
 }): Promise<EpisodeCardWithGuests[]> {
   const {
     status,
@@ -136,6 +138,7 @@ export async function getEpisodeCards(options?: {
     orderBy = "episodeNumber",
     order = "desc",
     eraId,
+    hasTranscript,
   } = options ?? {};
 
   const orderByClause =
@@ -145,6 +148,7 @@ export async function getEpisodeCards(options?: {
 
   const where: Prisma.EpisodeWhereInput = {
     ...(status ? { status } : {}),
+    ...(hasTranscript ? { segments: { some: {} } } : {}),
     ...buildEraWhere(eraId),
   };
 
