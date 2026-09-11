@@ -107,12 +107,19 @@ async function main() {
       continue;
     }
 
-    // createMany for speed; falls back to individual creates on adapter issues
+    // createMany for speed; falls back to individual creates on adapter issues.
+    // Both paths tolerate the natural-key unique index: skipDuplicates on the
+    // batch, and P2002 (unique violation) swallowed per row on the fallback,
+    // so a repeated Whisper cue or a concurrent writer can't abort the import.
     try {
-      await prisma.transcriptSegment.createMany({ data: rows });
+      await prisma.transcriptSegment.createMany({ data: rows, skipDuplicates: true });
     } catch {
       for (const r of rows) {
-        await prisma.transcriptSegment.create({ data: r });
+        try {
+          await prisma.transcriptSegment.create({ data: r });
+        } catch (err) {
+          if ((err as { code?: string }).code !== "P2002") throw err;
+        }
       }
     }
 

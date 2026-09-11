@@ -54,6 +54,7 @@ async function main() {
             text: seg.text,
             searchText: seg.text.toLowerCase(),
           })),
+          skipDuplicates: true,
         });
 
         console.log(`✓ ${segments.length} segments`);
