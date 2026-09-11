@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getLoreBySlug } from "@/lib/queries/lore";
 import { prisma } from "@/lib/db";
-import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd, thinPageRobots } from "@/lib/seo";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
@@ -42,11 +42,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
 
-  return buildMetadata({
-    title: entry.title,
-    description: entry.summary || entry.searchText || null,
-    path: `/lore/${entry.slug}`,
-  });
+  return {
+    ...buildMetadata({
+      title: entry.title,
+      description: entry.summary || entry.searchText || null,
+      path: `/lore/${entry.slug}`,
+    }),
+    ...thinPageRobots(entry.episodes.length),
+  };
 }
 
 const CANON_VARIANTS: Record<string, "green" | "purple" | "gold" | "muted"> = {

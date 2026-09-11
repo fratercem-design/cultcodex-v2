@@ -4,6 +4,7 @@ import { ARCHETYPES } from "@/lib/archetypes";
 import { SYMBOLS } from "@/lib/symbols/data";
 import { PILLARS } from "@/lib/pillars/pillars";
 import { getFreePreviewChapterNumbers } from "@/lib/psychenomicon";
+import { isThinPage } from "@/lib/seo";
 
 // Regenerate at most once per hour
 export const revalidate = 3600;
@@ -27,6 +28,26 @@ export function indexableChapterSubset<T extends { chapterNumber: number }>(
   return chapters.filter((c) => free.has(c.chapterNumber));
 }
 
+/**
+ * Same idea for auto-generated lore and topic pages: only the ones with enough
+ * linked episodes to carry real content belong in the sitemap.
+ *
+ * Before this, every lore entry (~10.6k) and topic (~13.9k) was listed — 24k of
+ * the ~29k submitted URLs — and most of them render a title plus the site
+ * chrome, nothing a crawler can rank. The threshold is THIN_PAGE_MIN_EPISODES,
+ * shared with the per-page `robots` in /lore/[slug] and /topics/[slug] so a URL
+ * is never in the sitemap while its own page says noindex.
+ */
+export function indexableLinkedSubset<T extends { _count: { episodes: number } }>(rows: T[]): T[] {
+  return rows.filter((r) => !isThinPage(r._count.episodes));
+}
+
+const LINKED_PAGE_SELECT = {
+  slug: true,
+  updatedAt: true,
+  _count: { select: { episodes: true } },
+} as const;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me";
 
@@ -36,8 +57,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       select: { slug: true, updatedAt: true, thumbnailUrl: true },
     }).catch(() => []),
     prisma.person.findMany({ select: { slug: true, updatedAt: true, avatarUrl: true } }).catch(() => []),
-    prisma.loreEntry.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
-    prisma.topic.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
+    prisma.loreEntry.findMany({ select: LINKED_PAGE_SELECT }).then(indexableLinkedSubset).catch(() => []),
+    prisma.topic.findMany({ select: LINKED_PAGE_SELECT }).then(indexableLinkedSubset).catch(() => []),
     prisma.series.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
     prisma.psychenomiconChapter.findMany({
       where: { status: "stable" },
