@@ -97,7 +97,7 @@ export default function ContentPolicyPage() {
         </SectionCard>
 
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
-          <Link href="/methodology" className="font-mono text-accent-gold-text hover:underline">
+          <Link href="/about/methodology" className="font-mono text-accent-gold-text hover:underline">
             Methodology
           </Link>
           <span className="text-text-muted">|</span>

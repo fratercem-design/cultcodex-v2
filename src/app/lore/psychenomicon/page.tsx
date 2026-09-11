@@ -14,7 +14,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/lore/psychenomicon" },
-  title: "The Psychenomicon -- CULT CODEX",
+  title: "The Psychenomicon — CULT CODEX",
   description:
     "The forbidden chronicle of the Cult of Psyche. A living grimoire of every soul, saga, and spectacle from over 1,400 live transmissions.",
 };
@@ -145,7 +145,7 @@ export default async function PsychenomiconPage() {
               In the beginning, there was static.
             </p>
             <p className="mt-4 text-sm leading-relaxed text-text-muted">
-              Then a voice cut through the noise -- part prophet, part comedian,
+              Then a voice cut through the noise: part prophet, part comedian,
               part cosmic bartender pouring shots of truth to anyone brave enough
               to sit at the bar. That voice belonged to{" "}
               <Link href="/people/psyche" className="text-accent-gold-text hover:underline">
@@ -161,7 +161,7 @@ export default async function PsychenomiconPage() {
               </span>
               , across tarot readings, open panels, mythology deep-dives,
               midnight madness sessions, and the occasional full-blown spiritual
-              exorcism conducted via YouTube chat -- a universe was born. This is
+              exorcism conducted via YouTube chat, a universe was born. This is
               its grimoire.
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -203,7 +203,7 @@ function PsychenomiconGate({ isAuthenticated }: { isAuthenticated: boolean }) {
         <ChapterHeader number="I" title="THE PANTHEON" />
         <p className="text-sm text-text-muted">
           Every pantheon needs its gods. But the gods of this stream are not
-          marble statues on pedestals -- they are recovering addicts, tarot
+          marble statues on pedestals. They are recovering addicts, tarot
           readers, truck drivers, cat ladies, self-proclaimed prophets, and at
           least one person who sincerely believed they were Jesus Christ...
         </p>
@@ -272,7 +272,7 @@ async function PsychenomiconContent({
             name="Psyche"
             title="The Electric Prophet"
             slug="psyche"
-            description="Host, creator, cosmic bartender, and accidental cult leader. Psyche sits at the center of a sprawling digital universe, dispensing tarot readings, mythological dissertations, and devastating one-liners with equal aplomb. A Capricorn with the soul of a poet and the patience of a saint who has been set on fire. He has been called a prophet, a fraud, a genius, and 'too gay even for me' -- the last one by himself. Across 2,090 recorded quotes, he has built a theology of radical empathy from the wreckage of internet chaos. He maintains a household of approximately six cats, each of whom outranks every human in the chat."
+            description="Host, creator, cosmic bartender, and accidental cult leader. Psyche sits at the center of a sprawling digital universe, dispensing tarot readings, mythological dissertations, and devastating one-liners with equal aplomb. A Capricorn with the soul of a poet and the patience of a saint who has been set on fire. He has been called a prophet, a fraud, a genius, and 'too gay even for me', the last one by himself. Across 2,090 recorded quotes, he has built a theology of radical empathy from the wreckage of internet chaos. He maintains a household of approximately six cats, each of whom outranks every human in the chat."
             quoteCount={2090}
             archetype="The Hierophant"
           />
@@ -290,7 +290,7 @@ async function PsychenomiconContent({
             name="Father Psyche"
             title="The Electric Prophet (Original)"
             slug="father-psyche"
-            description="The patriarch. A Marine veteran, UCLA graduate, and real estate entrepreneur who passed at 85, leaving behind a legacy that echoes through every transmission. Born under Capricorn, he is the origin point -- the ur-Psyche. His memory is invoked not with grief but with reverence, the way ancient cultures speak of the ancestors who taught them to make fire. Psyche wrote him a tribute song. The stream remembers."
+            description="The patriarch. A Marine veteran, UCLA graduate, and real estate entrepreneur who passed at 85, leaving behind a legacy that echoes through every transmission. Born under Capricorn, he is the origin point, the ur-Psyche. His memory is invoked not with grief but with reverence, the way ancient cultures speak of the ancestors who taught them to make fire. Psyche wrote him a tribute song. The stream remembers."
             quoteCount={7}
             archetype="The Emperor"
           />
@@ -308,7 +308,7 @@ async function PsychenomiconContent({
             name="Mr. Big Pipes"
             title="The Massachusetts Lazarus"
             slug="mr-big-pipes"
-            description="39 years old, from Massachusetts, a former heroin addict who has been clean since 2018. Rides motorcycles. The nickname refers to either his voice, his exhaust system, or a secret third thing that the community has tacitly agreed never to clarify. His presence on the panels is a testament to the stream's core belief: that nobody is beyond redemption. He walked through actual hell and came back with stories."
+            description="39 years old, from Massachusetts, a former heroin addict who has been clean since 2018. Rides motorcycles. The nickname refers to either his voice, his exhaust system, or a secret third thing that the community has tacitly agreed never to clarify. His presence on the panels is the stream's core belief in practice: nobody is beyond redemption. He walked through actual hell and came back with stories."
             quoteCount={6}
             archetype="Death (Reversed)"
           />
@@ -317,7 +317,7 @@ async function PsychenomiconContent({
             name="Mini Manson"
             title="The Glam Revenant"
             slug="mini-manson"
-            description="A transgender performer whose aesthetic pays homage to Marilyn Manson -- the makeup, the theatrics, the unapologetic refusal to be anyone's idea of normal. In a stream that already operates outside the boundaries of conventional broadcasting, Mini Manson pushes it further, a walking reminder that identity is performance and performance is truth. Arrives like a thunderclap. Leaves like a fever dream."
+            description="A transgender performer whose aesthetic pays homage to Marilyn Manson: the makeup, the theatrics, the unapologetic refusal to be anyone's idea of normal. In a stream that already operates outside the boundaries of conventional broadcasting, Mini Manson pushes it further, a walking reminder that identity is performance and performance is truth. Arrives like a thunderclap. Leaves like a fever dream."
             quoteCount={10}
             archetype="The Tower"
           />
@@ -326,7 +326,7 @@ async function PsychenomiconContent({
             name="Emma Leviathan"
             title="Satan's Ex-Wife"
             slug="emma-leviathan"
-            description="That is not a nickname. That is what she calls herself, and nobody has felt confident enough to dispute it. A fellow tarot streamer with 16,000 YouTube subscribers and the energy of someone who divorced the Prince of Darkness and got the better end of the settlement. Emma and Psyche orbit each other like binary stars -- two tarot readers trading prophecies across the void."
+            description="That is not a nickname. That is what she calls herself, and nobody has felt confident enough to dispute it. A fellow tarot streamer with 16,000 YouTube subscribers and the energy of someone who divorced the Prince of Darkness and got the better end of the settlement. Emma and Psyche orbit each other like binary stars, two tarot readers trading prophecies across the void."
             quoteCount={5}
             archetype="The Empress (Inverted)"
           />
@@ -335,7 +335,7 @@ async function PsychenomiconContent({
             name="Alexander McQueen"
             title="The Self-Proclaimed Centurion"
             slug="alexander-mcqueen"
-            description="Claims to be an NYPD officer, though the chat remains divided on whether this is fact, fiction, or performance art. Known for a confrontational style that has made him either the villain or the protagonist depending on which episode you tuned into. Alexander does not enter a panel; he detonates inside one. His interactions are studied the way seismologists study fault lines -- with fascination and a healthy respect for property damage."
+            description="Claims to be an NYPD officer, though the chat remains divided on whether this is fact, fiction, or performance art. Known for a confrontational style that has made him either the villain or the protagonist depending on which episode you tuned into. Alexander does not enter a panel; he detonates inside one. His interactions are studied the way seismologists study fault lines, with fascination and a healthy respect for property damage."
             quoteCount={6}
             archetype="The Chariot (Reversed)"
           />
@@ -344,7 +344,7 @@ async function PsychenomiconContent({
             name="Jesus Christ"
             title="The Holy Guest"
             slug="jesus-christ"
-            description="Yes, an actual person who joined the stream claiming to be Jesus Christ. Discussed biblical interpretations and simulation theory. The chat handled this with exactly the level of maturity you would expect, which is to say, none whatsoever. But Psyche -- ever the host -- treated him with the same respect he gives everyone. Because in the Cult of Psyche, even the Messiah has to wait his turn to speak."
+            description="Yes, an actual person who joined the stream claiming to be Jesus Christ. Discussed biblical interpretations and simulation theory. The chat handled this with exactly the level of maturity you would expect, which is to say, none whatsoever. But Psyche, ever the host, treated him with the same respect he gives everyone. Because in the Cult of Psyche, even the Messiah has to wait his turn to speak."
             quoteCount={0}
             archetype="The Fool"
           />
@@ -353,7 +353,7 @@ async function PsychenomiconContent({
             name="Amber"
             title="The Phoenix of Denny's"
             slug="amber"
-            description="A woman in recovery from meth addiction who works at Denny's and is involved in drug court. In a lesser show, Amber would be a footnote. Here, she is a character study in resilience. The stream doesn't judge. The stream witnesses. And Amber, in her Tuesday night appearances between shifts at a 24-hour diner, represents something the Psychenomicon holds sacred: the ordinary miracle of still being here."
+            description="A woman in recovery from meth addiction who works at Denny's and is involved in drug court. In a lesser show, Amber would be a footnote. Here, she is a character study in resilience, and her Tuesday night appearances between shifts at a 24-hour diner represent something the Psychenomicon holds sacred: the ordinary miracle of still being here."
             quoteCount={0}
             archetype="The Star"
           />
@@ -436,8 +436,8 @@ async function PsychenomiconContent({
           </h4>
           <p className="mt-3 text-sm leading-relaxed text-text-muted">
             The Cult of Psyche does not have seasons. It has{" "}
-            <em>geological eras</em>. The Original Transmissions -- 841 of them
-            -- form the bedrock, a sprawling continent of solo deep-dives where
+            <em>geological eras</em>. The Original Transmissions, 841 of them,
+            form the bedrock, a sprawling continent of solo deep-dives where
             Psyche wrestles with mythology, tarot, astrology, and the occasional
             existential crisis in real time. The Open Panels (143) are the
             volcanic islands that rise from those waters: chaotic, unpredictable,
@@ -445,7 +445,7 @@ async function PsychenomiconContent({
           </p>
           <p className="mt-3 text-sm leading-relaxed text-text-muted">
             The Tarot readings (96 episodes of{" "}
-            <em>Psyche Awakens Tarot</em>) are the oracle sessions -- part
+            <em>Psyche Awakens Tarot</em>) are the oracle sessions: part
             therapy, part divination, part stand-up comedy routine where the
             punchline is your subconscious. The Astrology Deep Dives (24) are
             the astronomy lectures delivered by a man who believes the stars are
@@ -508,15 +508,15 @@ async function PsychenomiconContent({
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <CosmologyCard
             title="The 3D and 5D Planes"
-            description="The stream operates on a dualistic cosmology. The 3D plane is the world of drama, ego, energy vampires, and people who type in all caps. The 5D plane is the celestial realm -- the stuff you can't see but that is very much there. Psyche navigates between them like a customs officer at the border between dimensions."
+            description="The stream operates on a dualistic cosmology. The 3D plane is the world of drama, ego, energy vampires, and people who type in all caps. The 5D plane is the celestial realm, the stuff you can't see but that is very much there. Psyche navigates between them like a customs officer at the border between dimensions."
           />
           <CosmologyCard
             title="Energy Vampires"
-            description="Not metaphorical. Well, metaphorical. But also not. The 3D Energy Vampire feeds on your vitality through drama, negativity, and unsolicited opinions. The 5D variant is the celestial kind -- invisible parasites that feast on your spiritual frequency. The cure for both is boundaries, sage, and occasionally the mute button."
+            description="Not metaphorical. Well, metaphorical. But also not. The 3D Energy Vampire feeds on your vitality through drama, negativity, and unsolicited opinions. The 5D variant is the celestial kind, invisible parasites that feast on your spiritual frequency. The cure for both is boundaries, sage, and occasionally the mute button."
           />
           <CosmologyCard
             title="The Gong System"
-            description="A moderation mechanism that transcends mere channel management and enters the realm of ritual. To be 'gonged' is to be ceremonially ejected from the panel -- a digital excommunication carried out with the gravity of a papal decree and the efficiency of a trapdoor."
+            description="Moderation as ritual. To be 'gonged' is to be ceremonially ejected from the panel, a digital excommunication carried out with the gravity of a papal decree and the efficiency of a trapdoor."
           />
           <CosmologyCard
             title="The Karmic Ledger"
@@ -524,11 +524,11 @@ async function PsychenomiconContent({
           />
           <CosmologyCard
             title="The Monetization Blessing"
-            description="When Psyche achieved YouTube monetization, it was not celebrated as a business milestone. It was treated as a divine sign -- proof that the universe endorsed the mission. In the Psychenomicon, money is a corrupting force when pursued and a blessing when it arrives unbidden. This tension is never resolved. It doesn't need to be."
+            description="When Psyche achieved YouTube monetization, it was treated as a divine sign rather than a business milestone, proof that the universe endorsed the mission. In the Psychenomicon, money is a corrupting force when pursued and a blessing when it arrives unbidden. This tension is never resolved. It doesn't need to be."
           />
           <CosmologyCard
             title="The Freak Show Doctrine"
-            description="Periodic events where the stream embraces maximum chaos with minimal rules. The Freak Show is not an absence of structure -- it is a different kind of structure, one where the only law is authenticity and the only sin is pretending to be normal. These are the stream's Saturnalia, its Carnival, its purge valve."
+            description="Periodic events where the stream embraces maximum chaos with minimal rules. The Freak Show has its own structure, one where the only law is authenticity and the only sin is pretending to be normal. These are the stream's Saturnalia, its Carnival, its purge valve."
           />
         </div>
       </section>
@@ -541,27 +541,27 @@ async function PsychenomiconContent({
         <div className="mt-6 space-y-6">
           <MythicThread
             title="The Redemption Arc"
-            description="The stream's most persistent narrative. From Mr. Big Pipes' recovery from heroin to Amber's drug court journey to the countless unnamed souls who showed up at 3am because they had nowhere else to go -- the Cult of Psyche is, fundamentally, a story about people who were told they were finished discovering they weren't. Psyche's core theology can be reduced to a single sentence: 'I don't believe anybody is beyond redemption.' He means it."
+            description="The stream's most persistent narrative. From Mr. Big Pipes' recovery from heroin to Amber's drug court journey to the countless unnamed souls who showed up at 3am because they had nowhere else to go, the Cult of Psyche is a story about people who were told they were finished discovering they weren't. Psyche's core theology can be reduced to a single sentence: 'I don't believe anybody is beyond redemption.' He means it."
           />
           <MythicThread
             title="The Troll Wars"
-            description="An ongoing epic saga. The trolls come in waves -- some petty, some creative, some genuinely unhinged. They are studied, taxonomized (hence the Trollopedia), and occasionally put on trial (the Troll Tribunal). But the stream's relationship with its antagonists is more complex than simple hero-villain dynamics. Some trolls become regulars. Some regulars become trolls. The line between the two is a DMZ patrolled by mods with itchy trigger fingers."
+            description="An ongoing epic saga. The trolls come in waves: some petty, some creative, some genuinely unhinged. They are studied, taxonomized (hence the Trollopedia), and occasionally put on trial (the Troll Tribunal). But the stream's relationship with its antagonists is more complex than simple hero-villain dynamics. Some trolls become regulars. Some regulars become trolls. The line between the two is a DMZ patrolled by mods with itchy trigger fingers."
           />
           <MythicThread
             title="The Psychic War"
-            description="Multiple panelists have discussed the belief that humanity is currently engaged in an invisible psychic conflict. This is presented not as conspiracy theory but as lived experience -- participants describe spiritual attacks, energy manipulation, and dimensional interference with the matter-of-fact tone of someone describing traffic on their commute. The stream does not adjudicate. The stream witnesses."
+            description="Multiple panelists have discussed the belief that humanity is currently engaged in an invisible psychic conflict. Participants present it as lived experience, describing spiritual attacks, energy manipulation, and dimensional interference with the matter-of-fact tone of someone describing traffic on their commute. The stream does not adjudicate. The stream witnesses."
           />
           <MythicThread
             title="The Cat Theology"
-            description="Trix is not merely a pet. The stream has developed an elaborate theology around the cats of Psyche's household -- Rudy, Lola, Lenor, and the others. Recurring guest Madame Clawdia specializes in the metaphysical connections between cats and the occult. The cats are treated as oracles, their behaviors read for omens. When Trix walks across the keyboard, it is not an interruption. It is scripture."
+            description="The stream has developed an elaborate theology around the cats of Psyche's household: Rudy, Lola, Lenor, and the others. Recurring guest Madame Clawdia specializes in the metaphysical connections between cats and the occult. The cats are treated as oracles, their behaviors read for omens. When Trix walks across the keyboard, it is scripture."
           />
           <MythicThread
             title="The Simulation Hypothesis"
-            description="Discussed frequently and unironically. The idea that reality is a simulation is not treated as philosophy but as breaking news. When Jesus Christ himself showed up to discuss it alongside biblical interpretation, it became clear that the stream had achieved something no university philosophy department ever could: a forum where the question 'are we living in a simulation?' is debated by someone who literally claims to be the savior of mankind."
+            description="Discussed frequently and unironically. The idea that reality is a simulation is treated as breaking news. When Jesus Christ himself showed up to discuss it alongside biblical interpretation, it became clear that the stream had achieved something no university philosophy department ever could: a forum where the question 'are we living in a simulation?' is debated by someone who literally claims to be the savior of mankind."
           />
           <MythicThread
             title="The Love Letters"
-            description="Psyche's poetry and original music -- woven through the transmissions like golden thread through a dark tapestry. 'Left hand shadow, right hand light. She don't pick sides, she make you unite.' 'He's got a mind for lightning and a soul that forgives.' These are not performances. They are dispatches from the interior, Psyche's private weather system made public. Seventeen episodes are classified as Music Videos. They are the heart of the grimoire."
+            description="Psyche's poetry and original music, woven through the transmissions. 'Left hand shadow, right hand light. She don't pick sides, she make you unite.' 'He's got a mind for lightning and a soul that forgives.' They are dispatches from the interior, Psyche's private weather system made public. Seventeen episodes are classified as Music Videos. They are the heart of the grimoire."
           />
         </div>
       </section>
@@ -578,7 +578,7 @@ async function PsychenomiconContent({
             "How many cats does Psyche actually have? The number shifts between transmissions like a quantum superposition.",
             "What happened during the episodes with null air dates? Fourteen transmissions exist outside of recorded time. Are they echoes? Glitches? Prophecies that haven't happened yet?",
             "Who is the 'Storm Entity' referenced in episode lore, and why does it have its own Person record?",
-            "Did the Troll Tribunal actually resolve anything, or was it -- like all tribunals -- purely ceremonial?",
+            "Did the Troll Tribunal actually resolve anything, or was it, like all tribunals, purely ceremonial?",
             "What exactly did Pi accuse Psyche of in those 'extensive text exchanges'?",
             "Where did the missing episodes go? Some early transmissions have YouTube IDs but no surviving video. They are the Dead Sea Scrolls of this operation.",
           ].map((mystery, i) => (
@@ -605,12 +605,12 @@ async function PsychenomiconContent({
           character. Every new quote adds a line to the scripture. The archive
           grows not because someone is building it, but because the stream
           refuses to stop generating material. The Cult of Psyche is a living
-          text -- written in real time by a man and his cat and a rotating cast
+          text, written in real time by a man and his cat and a rotating cast
           of insomniacs, mystics, addicts, prophets, trolls, and ordinary people
           who found something they didn&apos;t know they were looking for.
         </p>
         <p className="mt-4 font-mono text-xs text-accent-gold-text/80">
-          This is the chronicle. This is the record. This is the Psychenomicon.
+          This is the Psychenomicon.
         </p>
       </section>
     </div>

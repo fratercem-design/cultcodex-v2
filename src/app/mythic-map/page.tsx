@@ -131,13 +131,13 @@ const THEMES = [
     letter: "A",
     title: "Divination as Diagnosis",
     color: "text-accent-gold-text",
-    body: "Tarot is not fortune-telling here. It diagnoses relationships, protection issues, shadow material, mythic patterns, and audience questions in real time.",
+    body: "Here, tarot diagnoses relationships, protection issues, shadow material, mythic patterns, and audience questions in real time.",
   },
   {
     letter: "B",
     title: "Myth as Psychological Technology",
     color: "text-accent-cyan",
-    body: "Myth is not distant literature\u2014it is an active interpretive device. Stories like The Golden Ass and the Quantum Scary Tales function as instruments for reading consciousness, power, and misrecognition.",
+    body: "Myth works as an active interpretive device. Stories like The Golden Ass and the Quantum Scary Tales function as instruments for reading consciousness, power, and misrecognition.",
   },
   {
     letter: "C",
@@ -155,7 +155,7 @@ const THEMES = [
     letter: "E",
     title: "Hybrid Sacred-Tech Aesthetics",
     color: "text-text-primary",
-    body: "Codex, terminal, code, digital resurrection, livestream rain. Not old-world occultism and not pure internet culture. A cyber-mystical style where interface becomes altar.",
+    body: "Codex, terminal, code, digital resurrection, livestream rain: a cyber-mystical style where interface becomes altar.",
   },
 ];
 
@@ -273,8 +273,7 @@ export default function MythicMapPage() {
         {/* ── Intro ── */}
         <section className="text-center max-w-3xl mx-auto space-y-4">
           <p className="text-sm text-text-muted leading-relaxed">
-            The Cult of Psyche archive is not just a collection of episodes. It
-            behaves like a mythic-social system with recurring engines:
+            The Cult of Psyche archive behaves like a mythic-social system with recurring engines:
             divination, myth retelling, livestream community theater,
             psychological transformation, and digital-age spiritual boundary work.
           </p>

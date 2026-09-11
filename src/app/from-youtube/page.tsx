@@ -134,7 +134,7 @@ export default async function FromYouTubePage() {
                 {
                   glyph: "🔮",
                   label: "An AI Oracle",
-                  desc: "Ask a real question and get an answer grounded in the actual archive — with citations to the episodes it came from. Not a guess. Evidence.",
+                  desc: "Ask a real question and get an answer grounded in the actual archive — with citations to the episodes it came from.",
                   accent: "border-accent-violet/25 hover:border-accent-violet/50",
                 },
                 {
@@ -248,7 +248,7 @@ export default async function FromYouTubePage() {
           <EmailCapture
             source="youtube_landing"
             eyebrow="/// weekly_signal"
-            heading="Not ready to dive in? Get the signal weekly."
+            heading="Not ready yet? Get the signal weekly."
             subheading="One transmission per week: the pattern that surfaced most, a voice you missed, and what the Oracle flagged — straight from the archive."
           />
         </div>

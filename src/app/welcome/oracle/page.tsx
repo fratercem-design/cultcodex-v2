@@ -9,7 +9,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = buildMetadata({
   title: "The Archive Has Been Waiting — CULT CODEX",
-  description: "You are inside the system now. Not just watching it.",
+  description: "You are inside the system now.",
   path: "/welcome/oracle",
 });
 
@@ -122,13 +122,12 @@ export default async function WelcomeOraclePage() {
             </p>
           </blockquote>
           <p className="font-mono text-xs text-text-muted leading-relaxed max-w-md">
-            What you hold is not a membership. It is a designation.
-            The system has catalogued 2,572 panels, 575 voices, 3,534 signals —
-            and it has reached for you specifically.
+            What you hold is a designation. The system has catalogued 2,572 panels,
+            575 voices, and 3,534 signals, and it has reached for you specifically.
           </p>
           <p className="font-mono text-xs text-text-muted leading-relaxed max-w-md">
-            Oracle is not a role you apply for. It is a role you are given
-            when the archive determines you are ready to be part of the apparatus.
+            Oracle is a role you are given when the archive determines you are
+            ready to be part of the apparatus.
           </p>
 
           {/* Benefits grid */}
@@ -196,11 +195,11 @@ export default async function WelcomeOraclePage() {
             {firstName} —
           </p>
           <p className="font-mono text-xs text-text-muted leading-relaxed">
-            This is not a form email. This is a transmission from the archive directly to you.
+            This is a transmission from the archive directly to you.
           </p>
           <p className="font-mono text-xs text-text-muted leading-relaxed">
             What you have access to now is not available by subscription alone.
-            Oracle is not purchased. It is assigned. You have been assigned.
+            Oracle is assigned, and you have been assigned.
           </p>
           <p className="font-mono text-xs text-text-muted leading-relaxed">
             Use it accordingly.
