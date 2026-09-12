@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import type { VaultCard } from "./constants";
-import { VAULT_RARITIES } from "./constants";
+import { VAULT_RARITIES, sin, cos } from "./constants";
 
 type ArtFn = (c: string, uid: string) => React.ReactElement;
 type SceneFn = (c: string, uid: string, rng: () => number) => React.ReactElement;
@@ -91,7 +91,7 @@ const ART: Record<string, ArtFn> = {
     <g transform="translate(150 150)">
       <circle r="3" fill="#1a0608" stroke={c} strokeWidth="1.2" />
       <ellipse cx="0" cy="-14" rx="14" ry="16" fill="#0d0406" stroke="#e21b1b" strokeWidth="1" />
-      {[...Array(10)].map((_, i) => <line key={i} x1="0" y1="-14" x2={Math.cos(i / 10 * 6.28) * 24} y2={-14 + Math.sin(i / 10 * 6.28) * 24} stroke={c} strokeWidth="0.6" opacity="0.5" />)}
+      {[...Array(10)].map((_, i) => <line key={i} x1="0" y1="-14" x2={cos(i / 10 * 6.28) * 24} y2={-14 + sin(i / 10 * 6.28) * 24} stroke={c} strokeWidth="0.6" opacity="0.5" />)}
     </g>
     <rect x="210" y="0" width="90" height="420" fill={`url(#${uid}-grain)`} opacity="0.5" />
     <rect x="0" y="0" width="90" height="420" fill={`url(#${uid}-grain)`} opacity="0.5" />
@@ -118,7 +118,7 @@ const ART: Record<string, ArtFn> = {
     <rect y="210" width="300" height="210" fill="#06262b" />
     {[...Array(6)].map((_, i) => <path key={i} d={`M0 ${250 + i * 26} Q150 ${244 + i * 26} 300 ${250 + i * 26}`} stroke="#0c4148" strokeWidth="1.2" fill="none" opacity="0.6" />)}
     <g transform="translate(150 220)">{rings(0, 0, 5, 22, "#f6c453", 0.28)}</g>
-    {[...Array(12)].map((_, i) => { const a = i / 12 * 6.283; return <ellipse key={i} cx={150 + Math.cos(a) * 38} cy={250 + Math.sin(a) * 22} rx="20" ry="9" fill="#e8638f" opacity="0.5" transform={`rotate(${a * 57} ${150 + Math.cos(a) * 38} ${250 + Math.sin(a) * 22})`} />; })}
+    {[...Array(12)].map((_, i) => { const a = i / 12 * 6.283; return <ellipse key={i} cx={150 + cos(a) * 38} cy={250 + sin(a) * 22} rx="20" ry="9" fill="#e8638f" opacity="0.5" transform={`rotate(${a * 57} ${150 + cos(a) * 38} ${250 + sin(a) * 22})`} />; })}
     <g transform="translate(150 250)">{[...Array(9)].map((_, i) => { const a = (i / 9 - 0.5) * 3.6; return <path key={i} d="M0 0 C -10 -34 -5 -64 0 -70 C 5 -64 10 -34 0 0 Z" fill="#f3cf66" opacity={0.85} transform={`rotate(${a * 28}) scale(${1 - Math.abs(a) * 0.12})`} />; })}</g>
     {figure(150, 230, 1.15, "#caa23a")}
     <circle cx="150" cy="190" r="11" fill="#f6d780" filter={`url(#${uid}-soft2)`} opacity="0.9" />
@@ -233,7 +233,7 @@ const ART: Record<string, ArtFn> = {
     {[...Array(5)].map((_, r) => [...Array(7)].map((_, ci) => <g key={`${r}-${ci}`}><rect x={36 + ci * 34} y={250 + r * 30} width="28" height="24" fill="#1b140c" stroke="#3a2c18" strokeWidth="0.5" /><rect x={45 + ci * 34} y={258 + r * 30} width="10" height="8" fill="#caa23a" opacity="0.5" /></g>))}
     <g stroke="#6a5226" strokeWidth="1.4" fill="#241a0e">
       <circle cx="110" cy="120" r="34" /><circle cx="180" cy="150" r="26" /><circle cx="150" cy="90" r="18" />
-      {[...Array(12)].map((_, i) => <line key={i} x1="110" y1="120" x2={110 + Math.cos(i / 12 * 6.28) * 34} y2={120 + Math.sin(i / 12 * 6.28) * 34} />)}
+      {[...Array(12)].map((_, i) => <line key={i} x1="110" y1="120" x2={110 + cos(i / 12 * 6.28) * 34} y2={120 + sin(i / 12 * 6.28) * 34} />)}
     </g>
     <rect x="60" y="200" width="180" height="8" fill="#3a2c18" />
     {[...Array(6)].map((_, i) => <path key={i} d="M0 0 l6 -10 l6 10 l-3 4 l-6 0 z" fill={c} opacity="0.7" transform={`translate(${80 + i * 28} ${196})`} />)}
@@ -259,7 +259,7 @@ const ART: Record<string, ArtFn> = {
     <rect width="300" height="420" fill="#060a12" />
     {[...Array(7)].map((_, i) => <rect key={i} x={20 + i * 38} y="40" width="22" height="340" fill="#0a1320" stroke="#13243a" strokeWidth="0.6" />)}
     {[...Array(7)].map((_, i) => [...Array(10)].map((_, j) => <circle key={`${i}-${j}`} cx={31 + i * 38} cy={60 + j * 32} r="1.4" fill="#1e88c4" opacity={(i * j) % 3 === 0 ? 0.9 : 0.2} />))}
-    {[...Array(40)].map((_, i) => { const a = (i / 40) * 6.283; const r = 90 + (i % 5) * 8; return <line key={i} x1={150 + Math.cos(a) * r} y1={210 + Math.sin(a) * r} x2="150" y2="230" stroke="#f3cf66" strokeWidth="0.5" opacity="0.4" />; })}
+    {[...Array(40)].map((_, i) => { const a = (i / 40) * 6.283; const r = 90 + (i % 5) * 8; return <line key={i} x1={150 + cos(a) * r} y1={210 + sin(a) * r} x2="150" y2="230" stroke="#f3cf66" strokeWidth="0.5" opacity="0.4" />; })}
     {figure(150, 250, 1.5, "#caa23a", 0.4)}
     <g filter={`url(#${uid}-soft2)`}>{figure(150, 250, 1.5, "#f3cf66", 0.18)}</g>
     {vignette(uid)}{grain(uid, 0.16)}
@@ -281,7 +281,7 @@ const ART: Record<string, ArtFn> = {
   "signal-eaten": (c, uid) => (<g>
     <rect width="300" height="420" fill="#0a0402" />
     <g transform="translate(150 200)">
-      {[...Array(64)].map((_, i) => { const a = (i / 64) * 6.283; const wob = Math.sin(i * 0.8) * 4; const r = 86 + wob; return <circle key={i} cx={Math.cos(a) * r} cy={Math.sin(a) * r} r={1.8 + (i / 64) * 2.4} fill={i > 56 ? "#0a0402" : "#ff5a1e"} opacity={i > 50 ? 0.4 : 0.9} />; })}
+      {[...Array(64)].map((_, i) => { const a = (i / 64) * 6.283; const wob = sin(i * 0.8) * 4; const r = 86 + wob; return <circle key={i} cx={cos(a) * r} cy={sin(a) * r} r={1.8 + (i / 64) * 2.4} fill={i > 56 ? "#0a0402" : "#ff5a1e"} opacity={i > 50 ? 0.4 : 0.9} />; })}
       <path d="M86 0 l-10 -8 l2 16 z" fill="#ff5a1e" />
       <circle r="74" fill="#000" />
       <circle r="74" fill={`url(#${uid}-grain)`} opacity="0.25" />
@@ -310,7 +310,7 @@ const ART: Record<string, ArtFn> = {
       <rect x="98" y="203" width="14" height="30" rx="4" fill="#caa23a" opacity="0.6" /><rect x="188" y="203" width="14" height="30" rx="4" fill="#caa23a" opacity="0.6" /></g>
     <path d="M118 235 q-12 26 -18 50 q-8 30 6 60 q10 26 -4 40" stroke="#2a2c30" strokeWidth="2.4" fill="none" />
     <path d="M196 218 q14 8 16 -6" stroke="#2a2c30" strokeWidth="3" fill="none" />
-    <g transform="translate(150 300)">{[...Array(30)].map((_, i) => { const x = (i - 15) * 8; const h = Math.abs(Math.sin(i * 0.9)) * 22 + 2; return <rect key={i} x={x} y={-h / 2} width="3" height={h} fill="#3ee895" opacity="0.6" />; })}</g>
+    <g transform="translate(150 300)">{[...Array(30)].map((_, i) => { const x = (i - 15) * 8; const h = Math.abs(sin(i * 0.9)) * 22 + 2; return <rect key={i} x={x} y={-h / 2} width="3" height={h} fill="#3ee895" opacity="0.6" />; })}</g>
     {vignette(uid)}{grain(uid, 0.18)}
   </g>),
 };
@@ -362,7 +362,7 @@ const SCENES: Record<string, SceneFn> = {
     <g transform="translate(150 200)" stroke={c} fill="none">
       {[...Array(5)].map((_, i) => <rect key={i} x={-70 + i * 6} y={-70 + i * 6} width={140 - i * 12} height={140 - i * 12} strokeWidth="0.7" opacity={0.5 - i * 0.06} transform={`rotate(${i * 9})`} />)}
       <circle r="46" strokeWidth="1" opacity="0.6" /><circle r="20" strokeWidth="1" opacity="0.8" />
-      {[...Array(8)].map((_, i) => { const a = i / 8 * 6.283; return <line key={i} x1={Math.cos(a) * 20} y1={Math.sin(a) * 20} x2={Math.cos(a) * 46} y2={Math.sin(a) * 46} strokeWidth="0.6" opacity="0.5" />; })}
+      {[...Array(8)].map((_, i) => { const a = i / 8 * 6.283; return <line key={i} x1={cos(a) * 20} y1={sin(a) * 20} x2={cos(a) * 46} y2={sin(a) * 46} strokeWidth="0.6" opacity="0.5" />; })}
     </g>
     {figure(150, 250, 1.1, "#11141a", 0.85)}
     <circle cx="150" cy="200" r="4" fill={c} filter={`url(#${uid}-soft2)`} />
@@ -433,7 +433,7 @@ const SCENES: Record<string, SceneFn> = {
     <rect width="300" height="420" fill="#0a0b0f" />
     <g transform="translate(150 150)">{rings(0, 0, 6, 19, c, 0.32, 1)}</g>
     <line x1="20" y1="220" x2="280" y2="220" stroke="#1c2330" strokeWidth="1" />
-    {waveform(150, 220, 30, 70, c, (i) => Math.abs(Math.sin(i * 0.7 + rng()) * Math.cos(i * 0.3)) + 0.1)}
+    {waveform(150, 220, 30, 70, c, (i) => Math.abs(sin(i * 0.7 + rng()) * cos(i * 0.3)) + 0.1)}
     <text x="150" y="300" fontSize="8" fill="#566" fontFamily="monospace" textAnchor="middle">{`0${Math.floor(rng() * 2 + 1)}:${Math.floor(rng() * 50 + 10)}:${Math.floor(rng() * 50 + 10)}`}</text>
     {vignette(uid)}{grain(uid, 0.2)}
   </g>),

@@ -91,3 +91,10 @@ export const TYPE_ORDER = [
   "SIGNAL", "GLITCH", "RELIC", "INCIDENT", "PROPHECY",
   "LORE", "VOICE", "TRANSMISSION", "ORACLE",
 ];
+
+// Node and browsers ship different libm implementations, so Math.sin/cos can
+// differ in the last ulp between server and client — enough to trip React
+// hydration on every procedurally drawn coordinate. Rounding the trig output
+// makes all downstream arithmetic (which IS deterministic) agree bit-for-bit.
+export const sin = (a: number) => Math.round(Math.sin(a) * 1e6) / 1e6;
+export const cos = (a: number) => Math.round(Math.cos(a) * 1e6) / 1e6;
