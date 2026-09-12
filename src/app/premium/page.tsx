@@ -20,15 +20,6 @@ const VERB: Record<TierSlug, string> = {
   system: "Ascend to",
 };
 
-// Deep-link anchors keyed to the tiers' *display* names rather than their
-// internal slugs, because that is what the old /subscribe links used and what
-// anyone hand-writing a link would guess. /premium#initiate and /premium#oracle
-// therefore keep working; the slugs (access/system) stay an implementation detail.
-const ANCHOR: Record<TierSlug, string> = {
-  access: "initiate",
-  system: "oracle",
-};
-
 export default function PremiumPage() {
   return (
     <PremiumStatusProvider>
@@ -59,7 +50,7 @@ export default function PremiumPage() {
           return (
             <div
               key={tier.slug}
-              id={ANCHOR[tier.slug]}
+              id={tier.slug}
               className={`relative scroll-mt-20 rounded-2xl border ${accentBorder} bg-gradient-to-b ${accentBg} to-surface p-7 space-y-5 flex flex-col`}
             >
               {tier.badge && (

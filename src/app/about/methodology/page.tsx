@@ -110,9 +110,11 @@ export default function MethodologyPage() {
 
           <h3 className={`${STEP_CLS} mt-4`}>3. Database import</h3>
           <p>
-            Enriched data is imported into a PostgreSQL database (Xata) via Prisma. The import
-            deduplicates people, topics, and lore entries by slug, so one guest with three display
-            names still resolves to one profile.
+            Enriched data is imported into a PostgreSQL database (Xata) via Prisma. People, topics,
+            and lore entries are upserted by a slug generated from their name, so case and
+            punctuation variants (&ldquo;Chris Kay&rdquo; vs. &ldquo;chris kay&rdquo;) collapse into
+            one record. Unrelated aliases for the same person are not merged automatically — those
+            get fixed manually when we catch them.
           </p>
 
           <h3 className={`${STEP_CLS} mt-4`}>4. Provenance badges</h3>
