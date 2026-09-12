@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Bodoni_Moda, Cinzel } from "next/font/google";
@@ -17,7 +16,7 @@ import { DailyTransmission } from "@/components/home/daily-transmission";
 import { YouTubePlayer } from "@/components/home/youtube-player";
 import { TopAscenders } from "@/components/home/top-ascenders";
 import { getQuoteReactionCounts } from "@/lib/queries/quote-reactions";
-import { getCurrentUser } from "@/lib/auth";
+import { OnboardingGate } from "@/components/auth/onboarding-gate";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
@@ -36,7 +35,15 @@ import {
   IconLink,
 } from "@/components/graphics/codex-icons";
 
-export const dynamic = "force-dynamic";
+// ISR, not force-dynamic. The homepage has no per-visitor content left: the
+// session is read client-side (<OnboardingGate>, the user menu, the reaction
+// bar) and live status refreshes through /api/live/status. Rendering on demand
+// made the HTML `private, no-store`, so every visitor and every crawler paid
+// full TTFB for a page that is identical for all of them.
+//
+// 60s matches the root layout and bounds how stale the daily transmission,
+// episode counts and recent-episode strip can get.
+export const revalidate = 60;
 
 // Threshold typography — Bodoni Moda (display italic) + Cinzel (sigil), scoped
 // to the hero so the rest of the site keeps its own type system.
@@ -79,7 +86,7 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest, dailyChapter, bookEdition] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, latestDigest, dailyChapter, bookEdition] = await Promise.all([
     getCounts().catch(() => ({
       episodes: 0, segments: 0, people: 0, topics: 0,
       lore: 0, quotes: 0, totalHours: 0,
@@ -99,19 +106,17 @@ export default async function HomePage() {
       spotlightEpisode: null,
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
-    getCurrentUser().catch(() => null),
     prisma.weeklyDigest.findFirst({ where: { published: true }, orderBy: { weekOf: "desc" }, select: { title: true, blurb: true, weekOf: true } }).catch(() => null),
     getDailyIllustratedChapter().catch(() => null),
     prisma.bookEdition.findUnique({ where: { sku: "psychenomicon-vol-1" }, select: { title: true, pageCount: true, chapterFrom: true, chapterTo: true } }).catch(() => null),
   ]);
 
-  // Redirect new users to complete onboarding before they see the main app
-  if (currentUser && currentUser.onboardingCompleted === false) {
-    redirect("/onboarding");
-  }
-
+  // Reaction TOTALS are public and identical for every visitor, so they are
+  // fetched without a user id. The viewer's own reactions are resolved in the
+  // client bar. Passing a user id here would personalise the HTML and make it
+  // uncacheable - the same trap that <OnboardingGate> exists to avoid.
   const dailyQuoteReactions = dailyTransmission.quote
-    ? await getQuoteReactionCounts(dailyTransmission.quote.id, currentUser?.id).catch(() => undefined)
+    ? await getQuoteReactionCounts(dailyTransmission.quote.id).catch(() => undefined)
     : undefined;
 
   // getEpisodeCards returns card-shaped data directly (lean select, no segments)
@@ -129,6 +134,9 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* Renders nothing; sends half-onboarded members to /onboarding. */}
+      <OnboardingGate />
+
       {/* ── THE THRESHOLD (Dossier Ch. II §01) ───────────────────────── */}
       <ThresholdHero
         txId={txId}
@@ -321,7 +329,6 @@ export default async function HomePage() {
           <DailyTransmission
             data={dailyTransmission}
             quoteReactions={dailyQuoteReactions}
-            isAuthenticated={Boolean(currentUser)}
           />
 
           {/* ── ILLUSTRATED CHAPTER OF THE DAY ───────────────────────── */}

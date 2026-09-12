@@ -10,7 +10,16 @@ export async function GET() {
   return NextResponse.json(
     {
       user: user
-        ? { id: user.id, displayName: user.displayName, avatarUrl: user.avatarUrl ?? null, role: user.role }
+        ? {
+            id: user.id,
+            displayName: user.displayName,
+            avatarUrl: user.avatarUrl ?? null,
+            role: user.role,
+            // Needed by <OnboardingGate>. The homepage used to read the session
+            // server-side purely to run this check, which forced the whole route
+            // dynamic and made the HTML uncacheable.
+            onboardingCompleted: user.onboardingCompleted ?? true,
+          }
         : null,
     },
     { headers: { "Cache-Control": "private, no-store" } }

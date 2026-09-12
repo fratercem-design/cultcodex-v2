@@ -13,7 +13,6 @@ import { ShareSignalButton } from "@/components/home/share-signal-button";
 interface Props {
   data: DailyTransmissionData;
   quoteReactions?: QuoteReactionInitial;
-  isAuthenticated?: boolean;
 }
 
 function formatDateHuman(ymd: string): string {
@@ -30,7 +29,6 @@ function formatDateHuman(ymd: string): string {
 export function DailyTransmission({
   data,
   quoteReactions,
-  isAuthenticated = false,
 }: Props) {
   const { date, quote, spotlightEpisode, pulse } = data;
   const hasAnything = quote || spotlightEpisode || pulse.newEpisodes > 0;
@@ -120,7 +118,6 @@ export function DailyTransmission({
               <QuoteReactionBar
                 quoteId={quote.id}
                 initial={quoteReactions}
-                isAuthenticated={isAuthenticated}
                 variant="full"
               />
             </div>
