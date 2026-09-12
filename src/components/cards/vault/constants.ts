@@ -46,10 +46,32 @@ export const CARD_SPECIALS: Record<string, string> = {
   "signal-eaten": "signaleaten",
 };
 
+/** Which deck a card belongs to — the collectible Signal Archive or the 80-card tarot. */
+export type VaultDeck = "archive" | "arcana";
+
+/** Arcana sub-groups, keyed by the slug code (`cop-<code>-…`), in deck order. */
+export const ARCANA_GROUPS: Record<string, { label: string; glyph: string }> = {
+  maj: { label: "MAJOR ARCANA", glyph: "☉" },
+  sig: { label: "SIGNALS",      glyph: "((·))" },
+  mir: { label: "MIRRORS",      glyph: "◐" },
+  rel: { label: "RELICS",       glyph: "✛" },
+  gli: { label: "GLITCHES",     glyph: "▚" },
+};
+export const ARCANA_GROUP_ORDER = Object.keys(ARCANA_GROUPS);
+
+/** `cop-maj-00` → "maj"; anything unrecognised falls back to the majors group. */
+export function arcanaGroupOf(slug: string): string {
+  const code = slug.split("-")[1];
+  return code && ARCANA_GROUPS[code] ? code : "maj";
+}
+
 export interface VaultCard {
   id: string;
   slug: string;
   num: string;
+  deck: VaultDeck;
+  /** ARCANA_GROUPS key — only set when deck === "arcana". */
+  arcanaGroup?: string;
   cardType: string;
   rarity: string;
   title: string;

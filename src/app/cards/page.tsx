@@ -3,7 +3,8 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
 import { getAllCards, getUserCollection, getUserCollectionStats, getCollectionSets } from "@/lib/queries/cards";
-import { CARD_SPECIALS } from "@/components/cards/vault/constants";
+import { CARD_SPECIALS, arcanaGroupOf } from "@/components/cards/vault/constants";
+import { ALL_TAROT_CARDS } from "@/lib/cards/tarot-data";
 import type { VaultCard } from "@/components/cards/vault/constants";
 import { VaultApp } from "@/components/cards/vault/vault-app";
 import type { OwnedInfo } from "@/components/cards/vault/card";
@@ -21,10 +22,21 @@ export default async function CardsPage() {
     getAllCards().catch(() => []),
   ]);
 
-  const cards: VaultCard[] = dbCards.map((card, i) => ({
+  // Archive cards keep their original numbering (DB order, 1–204); the tarot
+  // follows in deck order (majors, then suits) so it reads as one deck.
+  const tarotIndex = new Map(ALL_TAROT_CARDS.map((t, i) => [t.slug, i]));
+  const isTarot = (c: (typeof dbCards)[number]) => c.sourceType === "tarot";
+  const ordered = [
+    ...dbCards.filter((c) => !isTarot(c)),
+    ...dbCards.filter(isTarot).sort((a, b) => (tarotIndex.get(a.slug) ?? 999) - (tarotIndex.get(b.slug) ?? 999)),
+  ];
+
+  const cards: VaultCard[] = ordered.map((card, i) => ({
     id:          card.id,
     slug:        card.slug,
     num:         String(i + 1).padStart(2, "0"),
+    deck:        isTarot(card) ? "arcana" : "archive",
+    arcanaGroup: isTarot(card) ? arcanaGroupOf(card.slug) : undefined,
     cardType:    card.cardType,
     rarity:      card.rarity,
     title:       card.title,
