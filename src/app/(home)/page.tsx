@@ -75,12 +75,20 @@ export async function generateMetadata() {
         "Every Cult of Psyche transmission indexed. Psychological patterns, behavioral archetypes, guest profiles, and searchable transcripts — live since October 2024.",
       type: "website" as const,
       url: "/",
+      // Required explicitly. Next replaces the `openGraph` object wholesale
+      // rather than deep-merging it, so declaring one here without `images`
+      // dropped the root layout's og:image and the page shipped with none -
+      // every share of the homepage rendered as a bare text link.
+      images: [{ url: "/images/site/og.jpg", width: 1200, height: 630, alt: "CultCodex - the Cult of Psyche archive" }],
     },
     twitter: {
       card: "summary_large_image" as const,
       title: "CultCodex — Decode Cult of Psyche",
       description:
         "AI breakdowns, guest profiles, behavioral maps, and full transcript coverage for every Cult of Psyche live stream.",
+      // Same replacement rule as openGraph above - `summary_large_image` with
+      // no image is the worst of both worlds.
+      images: ["/images/site/og.jpg"],
     },
   };
 }
