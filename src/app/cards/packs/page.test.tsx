@@ -8,6 +8,28 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 
 vi.mock("@/components/cards/pack-opener", () => ({ PackOpener: () => null }));
 
+// The store renders <CreditBundlesStrip /> under the wallet, and that component
+// calls useRouter(). RTL mounts the tree with no App Router context, so the hook
+// throws and every test in this file fails. Stub only the hook, via
+// importOriginal, so the rest of next/navigation keeps working and the strip
+// still renders -- these tests assert on the page's real composition, and the
+// strip adds no role="status"/"alert"/"Retry" of its own to collide with them.
+// Identity is stable (vi.hoisted) so the router is safe to use in effect deps.
+const nav = vi.hoisted(() => ({
+  router: {
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
+    prefetch: vi.fn(),
+  },
+}));
+vi.mock("next/navigation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("next/navigation")>()),
+  useRouter: () => nav.router,
+}));
+
 import PackStorePage from "./page";
 
 const PACK = {
