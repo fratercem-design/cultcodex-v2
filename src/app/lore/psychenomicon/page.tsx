@@ -609,6 +609,7 @@ async function PsychenomiconContent({
           of insomniacs, mystics, addicts, prophets, trolls, and ordinary people
           who found something they didn&apos;t know they were looking for.
         </p>
+        <p className="mt-4 font-mono text-xs text-accent-gold/60">
         <p className="mt-4 font-mono text-xs text-accent-gold-text/80">
           This is the Psychenomicon.
         </p>

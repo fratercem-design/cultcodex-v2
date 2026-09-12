@@ -49,6 +49,8 @@ export default function PsychenomiconChronicle() {
   if (!data.canRead) return (
     <main className="min-h-screen bg-void">
       <div className="mx-auto max-w-2xl px-4 py-24 text-center space-y-6">
+        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">{"/// access_restricted"}</p>
+        <h2 className="font-display text-2xl font-bold text-accent-violet">The Psychenomicon</h2>
         <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">{"/// access_restricted"}</p>
         <h2 className="font-display text-2xl font-bold text-accent-violet-text">The Psychenomicon</h2>
         <p className="text-sm text-text-muted leading-relaxed max-w-sm mx-auto">It is a system, not a recap.</p>

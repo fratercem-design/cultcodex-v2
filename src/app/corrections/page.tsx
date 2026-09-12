@@ -94,6 +94,7 @@ export default async function CorrectionsPage({
         </SectionCard>
 
         <div className="flex items-center justify-center gap-4 text-xs">
+          <Link href="/about/methodology" className="font-mono text-accent-gold hover:underline">
           <Link href="/about/methodology" className="font-mono text-accent-gold-text hover:underline">
             Methodology
           </Link>
