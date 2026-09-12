@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { indexableLinkedSubset } from "../sitemap";
+import { indexableLinkedSubset } from "@/lib/sitemap";
 import { THIN_PAGE_MIN_EPISODES, isThinPage, thinPageRobots } from "@/lib/seo";
 
 /**
