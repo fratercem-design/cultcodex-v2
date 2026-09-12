@@ -93,7 +93,7 @@ export default async function ThreadsIndexPage() {
           </p>
           <h1 className="font-display text-2xl font-bold text-text-primary">Thread Registry</h1>
           <p className="text-xs text-text-muted">
-            {totalThreads.toLocaleString()} thread{totalThreads !== 1 ? "s" : ""} tracked &middot;&nbsp;
+            {totalThreads.toLocaleString("en-US")} thread{totalThreads !== 1 ? "s" : ""} tracked &middot;&nbsp;
             <span className="text-accent-gold-text">{counts.emerging} emerging</span>
             &nbsp;&middot;&nbsp;
             <span className="text-accent-violet-text">{counts.active} active</span>

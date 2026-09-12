@@ -29,23 +29,51 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  // Deliberately NOT `.catch(() => null)`. Now that a missing row produces a
+  // real 404, swallowing errors here would turn a transient database failure
+  // into a 404 too — and this database hibernates when idle, so a wake-up blip
+  // could hand Google a 404 for a chapter that exists and get it deindexed.
+  // Letting the error propagate yields a 500, which crawlers retry.
   const chapter = await prisma.psychenomiconChapter.findUnique({
     where: { slug },
     select: { title: true, chapterNumber: true, canonText: true },
-  }).catch(() => null);
-  if (!chapter) return { title: "Chapter Not Found — CultCodex" };
+  });
+  if (!chapter) notFound();
 
-  // A real synopsis beats the old boilerplate: gated chapters were all
-  // shipping an identical description, which reads as duplicate content.
+  // A sealed chapter shows a crawler the same ~1,450-character "This chapter is
+  // sealed" shell as every other sealed chapter. There were 2,990 of them, all
+  // `index, follow` and all in the sitemap — near-duplicate thin content making
+  // up roughly 9% of the site's URLs, which is a sitewide quality signal rather
+  // than a per-page one. Only the free-preview chapters have anything for a
+  // crawler to read, so only those stay indexable. `follow` is kept either way
+  // so the links out of the shell still pass equity.
+  const isFree = await isFreePreviewChapter(chapter.chapterNumber).catch(() => false);
+  const label = `CH.${String(chapter.chapterNumber).padStart(3, "0")} ${chapter.title}`;
+
+  // A real synopsis beats the old boilerplate: gated chapters were all shipping
+  // an identical description, which reads as duplicate content. Derived from
+  // canonText, so it is unique per chapter even while the body stays sealed.
   const synopsis = chapterSynopsis(chapter.canonText);
 
-  return buildMetadata({
-    title: `CH.${String(chapter.chapterNumber).padStart(3, "0")} ${chapter.title}`,
+  // buildMetadata is what every other content route uses, and it supplies the
+  // absolute canonical plus the OpenGraph and Twitter tags these pages were
+  // missing entirely. The title is overridden back to the existing shape so the
+  // change does not quietly rewrite 2,990 titles.
+  const base = buildMetadata({
+    title: label,
     description:
       synopsis ||
-      `Chapter ${chapter.chapterNumber} of the Psychenomicon. A living record of evolving patterns.`,
+      (isFree
+        ? `Chapter ${chapter.chapterNumber} of the Psychenomicon: ${chapter.title}. A living record of evolving patterns from the Cult of Psyche archive.`
+        : `Chapter ${chapter.chapterNumber} of the Psychenomicon. A living record of evolving patterns.`),
     path: `/psychenomicon/chapters/${slug}`,
   });
+
+  return {
+    ...base,
+    title: `${label} — Psychenomicon`,
+    robots: { index: isFree, follow: true },
+  };
 }
 
 export default async function ChapterPage({ params }: PageProps) {
@@ -66,8 +94,7 @@ export default async function ChapterPage({ params }: PageProps) {
         updatedAt: true,
         episode: { select: { title: true, slug: true, episodeNumber: true, airDate: true } },
       },
-    })
-    .catch(() => null);
+    });
   if (!gateRow) notFound();
   const isFreePreview = await isFreePreviewChapter(gateRow.chapterNumber);
   const canRead = subscribed || isFreePreview;
@@ -167,6 +194,11 @@ export default async function ChapterPage({ params }: PageProps) {
           >
             ← All chapters
           </Link>
+          <p className="pt-2">
+            <Link href="/psychenomicon/chapters" className="font-mono text-[11px] text-accent-gold-text/80 hover:underline">
+              ← All chapters
+            </Link>
+          </p>
         </div>
       </main>
     );
@@ -183,8 +215,13 @@ export default async function ChapterPage({ params }: PageProps) {
         include: { thread: { select: { title: true, slug: true, status: true } } },
       },
     },
-  }).catch(() => null);
+  });
 
+  // Same reasoning as generateMetadata: this feeds notFound(), so a swallowed
+  // error would be indistinguishable from a chapter that does not exist. The
+  // gate query above already proved the row is there, so reaching null here
+  // means a genuine race (deleted mid-request); anything else should surface
+  // as a 500 rather than a 404 a crawler will act on.
   if (!chapter) notFound();
 
   // Adjacent + windowed chapters in BROADCAST order (episode air date).
@@ -288,7 +325,7 @@ export default async function ChapterPage({ params }: PageProps) {
               </Link>
               {chapter.episode.airDate && (
                 <span className="ml-2 opacity-60">
-                  ({new Date(chapter.episode.airDate).toLocaleDateString()})
+                  ({new Date(chapter.episode.airDate).toLocaleDateString("en-US", { timeZone: "UTC" })})
                 </span>
               )}
             </p>

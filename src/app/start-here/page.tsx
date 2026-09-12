@@ -169,12 +169,12 @@ export default async function StartHerePage() {
 
         <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
           {[
-            { n: stats.episodes.toLocaleString(), label: "Transmissions" },
-            { n: `${stats.totalHours.toLocaleString()}+`, label: "Hours" },
-            { n: stats.people.toLocaleString(), label: "Voices" },
-            { n: stats.segments.toLocaleString(), label: "Moments indexed" },
-            { n: stats.quotes.toLocaleString(), label: "Quotes" },
-            { n: stats.lore.toLocaleString(), label: "Lore entries" },
+            { n: stats.episodes.toLocaleString("en-US"), label: "Transmissions" },
+            { n: `${stats.totalHours.toLocaleString("en-US")}+`, label: "Hours" },
+            { n: stats.people.toLocaleString("en-US"), label: "Voices" },
+            { n: stats.segments.toLocaleString("en-US"), label: "Moments indexed" },
+            { n: stats.quotes.toLocaleString("en-US"), label: "Quotes" },
+            { n: stats.lore.toLocaleString("en-US"), label: "Lore entries" },
           ].map((s) => (
             <div key={s.label} className="rounded-lg border border-border bg-surface p-3 text-center">
               <p className="font-mono text-lg font-bold text-accent-gold-text">{s.n}</p>
@@ -194,7 +194,7 @@ export default async function StartHerePage() {
           </p>
           <p className="font-display text-lg text-text-primary">Start with what&apos;s pulling on you.</p>
           <p className="font-mono text-xs text-text-muted max-w-md mx-auto">
-            Forget categories. These are the six territories the archive keeps returning to.
+            These are the six territories the archive keeps returning to.
             Pick the one that resonates right now.
           </p>
         </div>
@@ -259,7 +259,7 @@ export default async function StartHerePage() {
           {[
             {
               num: "I",
-              title: "The archive captures behavior, not just content.",
+              title: "The archive captures behavior.",
               body: "\"Who said what\" is the surface. CultCodex tracks what happened underneath — recurring tactics, shifting dynamics, behavioral signatures across hundreds of appearances. That's what separates this from a YouTube playlist.",
               color: "border-accent-gold/20 text-accent-gold-text",
             },
@@ -272,7 +272,7 @@ export default async function StartHerePage() {
             {
               num: "III",
               title: "This is a living record.",
-              body: "The archive is still growing. New transmissions enter. Patterns are extracted. The mythology builds in real time. You're not looking at a completed artifact — you're looking at something that is still becoming what it is.",
+              body: "The archive is still growing. New transmissions enter. Patterns are extracted. The mythology builds in real time, so what you see today is a snapshot, not a finished work.",
               color: "border-accent-cyan/20 text-accent-cyan",
             },
           ].map((c) => (
@@ -333,7 +333,7 @@ export default async function StartHerePage() {
               The Oracle is an AI trained on the full archive — every transcript, every lore entry,
               every behavioral profile. Ask it about a person, a pattern, a specific episode,
               a recurring dynamic, or a concept the archive keeps returning to.
-              It doesn&apos;t search — it synthesizes.
+              It synthesizes rather than searches.
             </p>
             <p className="font-mono text-[11px] text-text-muted leading-relaxed">
               Try: <span className="text-accent-violet-text italic">&ldquo;What patterns repeat across every major conflict?&rdquo;</span>{" "}
@@ -419,8 +419,8 @@ export default async function StartHerePage() {
             label: "Voices & Moments",
             color: "gold" as const,
             items: [
-              { href: "/people", label: "People", desc: `${stats.people.toLocaleString()} voices, hosts, guests` },
-              { href: "/quotes", label: "Quotes", desc: `${stats.quotes.toLocaleString()} memorable moments` },
+              { href: "/people", label: "People", desc: `${stats.people.toLocaleString("en-US")} voices, hosts, guests` },
+              { href: "/quotes", label: "Quotes", desc: `${stats.quotes.toLocaleString("en-US")} memorable moments` },
               { href: "/lore", label: "Lore", desc: "Deep mythology entries" },
               { href: "/members", label: "Members", desc: "The cult community" },
               { href: "/timeline", label: "Timeline", desc: "All episodes, chronological" },
@@ -434,7 +434,7 @@ export default async function StartHerePage() {
               { href: "/graph", label: "Relationship Map", desc: "Who appeared with whom — as a live network" },
               { href: "/topics", label: "Signals", desc: "Every theme and concept" },
               { href: "/collections", label: "Collections", desc: "Curated groupings" },
-              { href: "/episodes", label: "Episodes", desc: `${stats.episodes.toLocaleString()} transmissions` },
+              { href: "/episodes", label: "Episodes", desc: `${stats.episodes.toLocaleString("en-US")} transmissions` },
             ],
           },
           {

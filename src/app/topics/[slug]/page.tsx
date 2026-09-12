@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTopicBySlug, getRelatedTopics } from "@/lib/queries/topics";
 import { prisma } from "@/lib/db";
-import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd, thinPageRobots } from "@/lib/seo";
 import { getCurrentUser } from "@/lib/auth";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
@@ -63,11 +63,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   let description = base.length >= 60 ? base : synthesized;
   if (description.length > 160) description = `${description.slice(0, 157).trimEnd()}…`;
 
-  return buildMetadata({
-    title,
-    description,
-    path: `/topics/${topic.slug}`,
-  });
+  return {
+    ...buildMetadata({
+      title,
+      description,
+      path: `/topics/${topic.slug}`,
+    }),
+    ...thinPageRobots(epCount),
+  };
 }
 
 // Split a description into its factual part and "In the Psycheverse:" part

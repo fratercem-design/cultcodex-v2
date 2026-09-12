@@ -15,7 +15,7 @@ const STEPS: Step[] = [
   {
     key: "interest",
     question: "What's pulling you?",
-    subtext: "Not a category — a territory. Pick what's alive for you right now.",
+    subtext: "Pick the territory that's alive for you right now.",
     options: [
       { value: "consciousness", label: "Consciousness & the Self", sub: "Non-duality, ego death, psychedelics, simulation", glyph: "◎" },
       { value: "ai", label: "AI & The Future", sub: "Machine intelligence, what's coming, post-human futures", glyph: "⟁" },

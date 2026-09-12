@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import webPush from "web-push";
 import { prisma } from "@/lib/db";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 
 let vapidConfigured = false;
 
@@ -459,6 +460,8 @@ export async function sendGospelDeeperEmail({
   recipientEmail: string;
   recipientName: string;
 }): Promise<void> {
+  const counts = await getCounts().catch(() => null);
+  const episodeCountCopy = fmtEpisodeCount(counts?.episodes ?? 0);
   const resend = getResend();
   if (!resend) return;
   await resend.emails.send({
@@ -471,7 +474,7 @@ export async function sendGospelDeeperEmail({
       heading: "There's more",
       accent: "beneath it.",
       paras: [
-        `Now that you're an Initiate, the Oracle answers anything from inside nearly 3,000 transmissions — behavioral patterns, guest dynamics, recurring moments, all cited to the source. Your first three questions are free.`,
+        `Now that you're an Initiate, the Oracle answers anything from inside ${episodeCountCopy} transmissions — behavioral patterns, guest dynamics, recurring moments, all cited to the source. Your first three questions are free.`,
         "Not sure where to begin? Start where others started — the curated entry points into the archive.",
       ],
       ctaHref: "https://cultcodex.me/oracle",

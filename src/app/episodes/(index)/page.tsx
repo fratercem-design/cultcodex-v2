@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 import { PageHero } from "@/components/ui/page-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EpisodeCard } from "@/components/archive/episode-card";
@@ -26,11 +27,14 @@ import { formatDate, formatRelativeDate } from "@/lib/format/date";
 
 export const revalidate = 3600;
 
-export const metadata = {
-  alternates: { canonical: "/episodes" },
-  title: "Episodes — CULT CODEX",
-  description: "Browse nearly 3,000 Cult of Psyche transmissions — sortable by era, type, topic, and guest. Transcripts for 97% of the archive, AI breakdowns, and behavioral profiles.",
-};
+export async function generateMetadata() {
+  const counts = await getCounts().catch(() => null);
+  return {
+    alternates: { canonical: "/episodes" },
+    title: "Episodes — CULT CODEX",
+    description: `Browse ${fmtEpisodeCount(counts?.episodes ?? 0)} Cult of Psyche transmissions — sortable by era, type, topic, and guest. Full transcripts, AI breakdowns, and behavioral profiles for every session.`,
+  };
+}
 
 const SORT_OPTIONS = [
   { label: "Newest", value: "newest" },

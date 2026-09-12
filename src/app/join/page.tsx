@@ -107,8 +107,8 @@ export default async function JoinPage() {
             around it: the panelists, the lurkers, the ride-or-dies, the trolls who secretly care.
           </p>
           <p className="font-mono text-[11px] text-text-muted/70 leading-relaxed">
-            {stats.episodes.toLocaleString()}+ transmissions · {stats.people.toLocaleString()} voices
-            · {stats.totalHours.toLocaleString()}+ hours · one growing mythology.
+            {stats.episodes.toLocaleString("en-US")}+ transmissions · {stats.people.toLocaleString("en-US")} voices
+            · {stats.totalHours.toLocaleString("en-US")}+ hours · one growing mythology.
           </p>
         </section>
 

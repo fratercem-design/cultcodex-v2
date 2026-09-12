@@ -94,7 +94,7 @@ export default async function LeaderboardPage() {
                   <div className="flex flex-col items-end gap-1 shrink-0">
                     <RankBadge rank={e.rank} size="sm" />
                     <span className="font-mono text-[10px] text-text-muted/60">
-                      {e.score.toLocaleString()} pts
+                      {e.score.toLocaleString("en-US")} pts
                     </span>
                   </div>
                 </div>

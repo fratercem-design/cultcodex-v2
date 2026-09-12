@@ -12,6 +12,7 @@ import {
   type Intent,
 } from "@/lib/queries/start-here";
 import { formatDate } from "@/lib/format/date";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 import type { Metadata } from "next";
 
 const INTEREST_LABELS: Record<Interest, string> = {
@@ -57,6 +58,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 }
 
 export default async function ResultsPage({ searchParams }: Props) {
+  const counts = await getCounts().catch(() => null);
   const p = await searchParams;
 
   const interest = p.interest as Interest;
@@ -167,7 +169,7 @@ export default async function ResultsPage({ searchParams }: Props) {
             href={`/episodes`}
             className={`font-mono text-[10px] uppercase tracking-widest ${accent.text} hover:opacity-80 transition-opacity inline-flex items-center gap-1.5`}
           >
-            Full archive → <span aria-hidden>(nearly 3,000 episodes)</span>
+            Full archive → <span aria-hidden>({fmtEpisodeCount(counts?.episodes ?? 0)} episodes)</span>
           </Link>
         </div>
       </section>
@@ -249,7 +251,7 @@ export default async function ResultsPage({ searchParams }: Props) {
             Ask the Oracle
           </h2>
           <p className="font-mono text-[11px] text-text-muted">
-            The Oracle synthesizes across all nearly 3,000 transmissions. These
+            The Oracle synthesizes across all {fmtEpisodeCount(counts?.episodes ?? 0)} transmissions. These
             questions are calibrated for what you told the archive.
           </p>
         </div>

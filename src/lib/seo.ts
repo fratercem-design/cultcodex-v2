@@ -1,3 +1,4 @@
+import { fmtEpisodeCount } from "@/lib/queries/stats";
 import type { Metadata } from "next";
 
 const SITE_NAME = "CultCodex";
@@ -11,6 +12,26 @@ export const SITE_URL = (() => {
   if (!url || /localhost|127\.0\.0\.1|0\.0\.0\.0/.test(url)) return PRODUCTION_URL;
   return url;
 })();
+
+/**
+ * Minimum linked episodes for an auto-generated topic or lore page to be worth
+ * indexing. Below this the page is little more than the site chrome plus a
+ * title — ~24k such pages were in the sitemap, outnumbering the substantive
+ * episode and people pages 5:1 and diluting crawl budget. Pages under the
+ * threshold stay live and linked (`follow`), they just stop competing for
+ * index slots. Shared by the sitemap and the per-page metadata so the two
+ * never disagree about what is indexable.
+ */
+export const THIN_PAGE_MIN_EPISODES = 2;
+
+export function isThinPage(episodeCount: number): boolean {
+  return episodeCount < THIN_PAGE_MIN_EPISODES;
+}
+
+/** `robots` metadata for a generated page: noindex when thin, default otherwise. */
+export function thinPageRobots(episodeCount: number): Pick<Metadata, "robots"> {
+  return isThinPage(episodeCount) ? { robots: { index: false, follow: true } } : {};
+}
 
 /**
  * Serialize an object for embedding in a <script type="application/ld+json">.
@@ -133,7 +154,7 @@ export function detailBreadcrumbJsonLd(
   ]);
 }
 
-export function organizationJsonLd(): Record<string, unknown> {
+export function organizationJsonLd(episodeCount?: number): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -141,7 +162,7 @@ export function organizationJsonLd(): Record<string, unknown> {
     url: SITE_URL,
     logo: `${SITE_URL}/logo.jpg`,
     description:
-      "The definitive intelligence archive for the Cult of Psyche. nearly 3,000 episodes indexed with full transcripts, AI psychological breakdowns, guest profiles, and behavioral pattern maps.",
+      `The definitive intelligence archive for the Cult of Psyche. ${fmtEpisodeCount(episodeCount ?? 0)} episodes indexed with full transcripts, AI psychological breakdowns, guest profiles, and behavioral pattern maps.`,
     sameAs: ["https://www.youtube.com/@CultofPsyche"],
   };
 }

@@ -276,10 +276,17 @@ async function processEpisode(target) {
 
   // Insert segments one at a time (simple, reliable)
   const now = new Date();
+  // Minutes pass between the "already transcribed?" check above and this
+  // insert, and the Vercel cron / GitHub Actions pipelines may have written
+  // this episode meanwhile. The explicit conflict target names the natural-key
+  // unique index so the ON CONFLICT is real (a bare ON CONFLICT DO NOTHING only
+  // matched the primary key, which a fresh id never hits) and errors loudly if
+  // the index is ever dropped.
   for (const seg of segments) {
     await db.query(
       `INSERT INTO "TranscriptSegment" (id, "episodeId", "startSeconds", "endSeconds", text, "createdAt", "updatedAt")
-       VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT DO NOTHING`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       ON CONFLICT ("episodeId", "startSeconds", "endSeconds", text) DO NOTHING`,
       [genId(), episode.id, seg.start, seg.end, seg.text, now, now]
     );
   }

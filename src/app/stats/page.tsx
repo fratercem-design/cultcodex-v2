@@ -89,7 +89,7 @@ export default async function StatsPage() {
               className="rounded-lg border border-border bg-surface p-4 text-center"
             >
               <div className="font-mono text-3xl font-bold text-accent-gold">
-                {card.value.toLocaleString()}
+                {card.value.toLocaleString("en-US")}
               </div>
               <div className="font-mono text-[10px] text-text-muted uppercase tracking-wider mt-1">
                 {card.label}

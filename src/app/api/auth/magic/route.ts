@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { Resend } from "resend";
 import crypto from "crypto";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { consumeDailyBudget } from "@/lib/llm-budget";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://cultcodex.me";
@@ -16,8 +17,12 @@ function getResend() {
 }
 
 export async function POST(req: NextRequest) {
-  // IP-level rate limit: 5 sends per minute per IP, independent of email.
-  // Prevents quota exhaustion by cycling through different addresses.
+  // IP-level speed bump: 5 sends per minute per IP. Note this does NOT cap
+  // anything on its own — rateLimit() is an in-memory Map, so on serverless each
+  // instance keeps its own counter and the effective ceiling is limit × live
+  // instances (measured: 75 sequential requests against a documented 60/min
+  // limit produced zero 429s). It is kept because it costs nothing and stops
+  // casual hammering; the global cap below is the control that actually holds.
   const ipRl = rateLimit(`magic-link-ip:${clientKey(req)}`, { limit: 5, windowMs: 60_000 });
   if (!ipRl.ok) {
     return NextResponse.json(
@@ -83,6 +88,29 @@ export async function POST(req: NextRequest) {
   if (!resend) {
     console.error("[magic-link] RESEND_API_KEY not configured");
     return NextResponse.json({ error: "Email service not available" }, { status: 503 });
+  }
+
+  // Global daily ceiling, consumed here rather than at the top of the handler:
+  // this is the line where money is actually spent, and charging the counter any
+  // earlier would let malformed requests burn the day's allowance without ever
+  // sending mail — locking real users out of sign-in for free.
+  //
+  // It exists because nothing above it genuinely bounds an attacker cycling
+  // through addresses. The per-email cooldown only guards repeat sends to the
+  // same address, and the per-IP limiter is an in-memory Map that does not hold
+  // on serverless. Unbounded, that is Resend quota plus a stream of CultCodex
+  // sign-in links mailed to strangers from this domain, which is a deliverability
+  // problem as much as a cost one. This counter is shared across instances and
+  // fails closed.
+  const budget = await consumeDailyBudget(
+    "magic-link",
+    Number(process.env.MAGIC_LINK_DAILY_CAP ?? "500")
+  );
+  if (!budget.ok) {
+    return NextResponse.json(
+      { error: "Sign-in email is temporarily unavailable. Please try again later." },
+      { status: 503, headers: { "Retry-After": "3600" } }
+    );
   }
 
   try {

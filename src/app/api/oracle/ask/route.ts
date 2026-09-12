@@ -983,12 +983,32 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Global daily ceiling on the expensive LLM path. The free trial is
+  // cookie-gated (clearable), so cap total calls/day across everyone. Tune via
+  // ORACLE_DAILY_CAP; AI_KILLSWITCH=1 disables instantly.
+  //
+  // Charged here, past the cache check, so a cache hit never spends global
+  // capacity on an LLM call that will not happen. Everything above this line
+  // (parse, validate, rate limit, cache lookup) runs first so malformed or
+  // duplicate requests cannot burn the day's budget.
+  const budget = await consumeLlmBudget("oracle", Number(process.env.ORACLE_DAILY_CAP ?? "500"));
+  if (!budget.ok) {
+    return NextResponse.json(
+      { ok: false, error: "The Oracle is resting. Try again later." } satisfies OracleResponse,
+      { status: 503, headers: { "Retry-After": "3600" } }
+    );
+  }
+
   // Initiate+ ($10) monthly meter — generous enough to be invisible to normal
   // use (~100/mo, tune via INITIATE_MONTHLY_CAP), but aligns price with
   // inference cost and gives heavy users a concrete upgrade trigger. Oracle
   // tier (system) and admins are unmetered; hasSystemTier covers both.
-  // Charged only after validation and a cache miss, immediately before the
-  // provider budget reservation.
+  // Deliberately the LAST gate: it runs after the burst limiter, question
+  // validation, the cache lookup, the config check and the global daily cap,
+  // so a request rejected for any of those reasons does not also cost a
+  // paying user one of their monthly questions. (It used to run first, so a
+  // 429 or a 503 "Oracle is resting" still burned quota.) The cache lookup
+  // sitting above it also means a repeat question is free.
   if (canAccess && user && !(await hasSystemTier(user.id))) {
     const meter = await consumeMonthlyMeter(
       `oracle-u-${user.id}`,
@@ -1005,22 +1025,6 @@ export async function POST(req: NextRequest) {
         { status: 403 }
       );
     }
-  }
-
-  // Global daily ceiling on the expensive LLM path. The free trial is
-  // cookie-gated (clearable), so cap total calls/day across everyone. Tune via
-  // ORACLE_DAILY_CAP; AI_KILLSWITCH=1 disables instantly.
-  //
-  // Charged here, past the cache check, so a cache hit never spends global
-  // capacity on an LLM call that will not happen. Everything above this line
-  // (parse, validate, rate limit, cache lookup, per-user meter) runs first so
-  // malformed or duplicate requests cannot burn the day's budget.
-  const budget = await consumeLlmBudget("oracle", Number(process.env.ORACLE_DAILY_CAP ?? "500"));
-  if (!budget.ok) {
-    return NextResponse.json(
-      { ok: false, error: "The Oracle is resting. Try again later." } satisfies OracleResponse,
-      { status: 503, headers: { "Retry-After": "3600" } }
-    );
   }
 
   // Pre-flight archive search

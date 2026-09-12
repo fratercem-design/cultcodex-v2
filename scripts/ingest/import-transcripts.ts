@@ -43,25 +43,24 @@ async function main() {
       continue;
     }
 
-    // Delete existing segments for this episode (idempotent)
-    await prisma.transcriptSegment.deleteMany({
-      where: { episodeId: episode.id },
-    });
-
-    // Create new segments
-    for (const seg of segments) {
-      await prisma.transcriptSegment.create({
-        data: {
+    // Replace this episode's segments atomically. skipDuplicates rides on the
+    // (episodeId, startSeconds, endSeconds, text) unique index, so a repeated
+    // cue in the input file or a concurrent writer can't double-insert.
+    const { count } = await prisma.$transaction(async (tx) => {
+      await tx.transcriptSegment.deleteMany({ where: { episodeId: episode.id } });
+      return tx.transcriptSegment.createMany({
+        data: segments.map((seg) => ({
           episodeId: episode.id,
           startSeconds: seg.startSeconds,
           endSeconds: seg.endSeconds,
           text: seg.text,
           speakerLabel: seg.speakerLabel || null,
           searchText: seg.text.toLowerCase(),
-        },
+        })),
+        skipDuplicates: true,
       });
-      segmentsCreated++;
-    }
+    });
+    segmentsCreated += count;
 
     episodesProcessed++;
   }

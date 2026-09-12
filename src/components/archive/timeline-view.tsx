@@ -39,7 +39,7 @@ function groupByMonth(episodes: TimelineEpisode[]) {
   const result = sorted.map(([key, eps]) => {
     const [year, month] = key.split("-");
     const d = new Date(Number(year), Number(month) - 1);
-    const label = d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    const label = d.toLocaleDateString("en-US", { timeZone: "UTC", month: "long", year: "numeric" });
     return { key, label, episodes: eps };
   });
 

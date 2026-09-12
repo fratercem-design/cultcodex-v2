@@ -66,7 +66,7 @@ export default function WelcomeInitiatePage() {
           Welcome, Initiate.
         </h1>
         <p className="font-mono text-sm text-text-muted max-w-xl mx-auto leading-relaxed">
-          You&rsquo;re no longer watching from the outside. The archive is now a tool —
+          You&rsquo;re no longer watching from the outside. The archive is now a tool,
           and you know how to use it.
         </p>
         <div className="flex flex-wrap justify-center gap-3 pt-2">

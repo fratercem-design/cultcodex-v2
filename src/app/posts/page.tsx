@@ -21,7 +21,7 @@ interface PostsPageProps {
 }
 
 function formatDate(d: Date): string {
-  return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+  return d.toLocaleDateString("en-US", { timeZone: "UTC", year: "numeric", month: "short", day: "numeric" });
 }
 
 function PostCard({
@@ -81,13 +81,13 @@ function PostCard({
             {post.likeCount != null && (
               <>
                 <span className="opacity-40">·</span>
-                <span>♥ {post.likeCount.toLocaleString()}</span>
+                <span>♥ {post.likeCount.toLocaleString("en-US")}</span>
               </>
             )}
             {post.commentCount != null && (
               <>
                 <span className="opacity-40">·</span>
-                <span>💬 {post.commentCount.toLocaleString()}</span>
+                <span>💬 {post.commentCount.toLocaleString("en-US")}</span>
               </>
             )}
           </div>
@@ -133,7 +133,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
     <div className="min-h-screen bg-void">
       <PageHero
         title="Community Posts"
-        subtitle={`${totalCount.toLocaleString()} posts from @CultofPsyche`}
+        subtitle={`${totalCount.toLocaleString("en-US")} posts from @CultofPsyche`}
         backgroundImage="/articles-bacgkground.jpg"
       />
 

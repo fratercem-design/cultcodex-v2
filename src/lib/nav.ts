@@ -110,6 +110,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { href: "https://dreamweave-darktales.vercel.app", label: "DREAMWEAVE", glyph: "☾", external: true },
       { href: "https://living-grimoire.vercel.app", label: "LIVING GRIMOIRE", glyph: "▤", external: true },
       { href: "https://cultos-zeta.vercel.app", label: "CULTOS", glyph: "⛧", external: true },
+      { href: "https://cultwatch.vercel.app", label: "CULTWATCH", glyph: "Ψ", external: true },
     ],
   },
 ];

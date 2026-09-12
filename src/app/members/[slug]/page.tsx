@@ -128,7 +128,7 @@ export default async function MemberProfilePage({ params }: Props) {
   ]);
 
   const joinYear = new Date(member.createdAt).getFullYear();
-  const joinMonth = new Date(member.createdAt).toLocaleDateString("en-US", { month: "long" });
+  const joinMonth = new Date(member.createdAt).toLocaleDateString("en-US", { timeZone: "UTC", month: "long" });
   const isAdmin = member.role === "admin";
   const isOracle = isAdmin || member.isLifetimeMember || member.subscriptionTier === "system";
 
@@ -244,12 +244,12 @@ export default async function MemberProfilePage({ params }: Props) {
             <div className="mt-3 flex items-center justify-center gap-2">
               <Link
                 href="/leaderboard"
-                title={`${memberRank.score.toLocaleString()} codex score`}
+                title={`${memberRank.score.toLocaleString("en-US")} codex score`}
                 className="flex items-center gap-2"
               >
                 <RankBadge rank={memberRank.progress.current} size="sm" />
                 <span className="font-mono text-[11px] font-bold" style={{ color: bannerTheme.accent }}>
-                  {memberRank.score.toLocaleString()}
+                  {memberRank.score.toLocaleString("en-US")}
                   <span className="ml-1 font-normal text-text-muted">codex score</span>
                 </span>
               </Link>
@@ -335,7 +335,7 @@ export default async function MemberProfilePage({ params }: Props) {
                 </p>
                 {collectionStats && collectionStats.ownedCount > 0 && (
                   <span className="font-mono text-[10px] text-text-muted">
-                    {collectionStats.ownedCount.toLocaleString()} card
+                    {collectionStats.ownedCount.toLocaleString("en-US")} card
                     {collectionStats.ownedCount === 1 ? "" : "s"}
                     <span className="text-text-muted/50">
                       {" · "}

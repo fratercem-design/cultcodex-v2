@@ -152,6 +152,8 @@ export async function getEpisodeCards(options?: {
   personSlug?: string;
   /** Restrict to episodes linked to this topic. */
   topicSlug?: string;
+  /** Only episodes with at least one transcript segment. */
+  hasTranscript?: boolean;
 }): Promise<EpisodeCardWithGuests[]> {
   const {
     status,
@@ -162,6 +164,7 @@ export async function getEpisodeCards(options?: {
     eraId,
     personSlug,
     topicSlug,
+    hasTranscript,
   } = options ?? {};
 
   const orderByClause =
@@ -171,6 +174,7 @@ export async function getEpisodeCards(options?: {
 
   const where: Prisma.EpisodeWhereInput = {
     ...(status ? { status } : {}),
+    ...(hasTranscript ? { segments: { some: {} } } : {}),
     ...buildEraWhere(eraId),
     ...buildPersonWhere(personSlug),
     ...buildTopicWhere(topicSlug),

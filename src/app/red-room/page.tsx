@@ -79,9 +79,8 @@ export default async function RedRoomPage() {
             className="mt-4 font-mono text-sm leading-relaxed max-w-xl"
             style={{ color: "rgba(220,160,160,0.8)" }}
           >
-            No filter. No softening. No performance of balance.
             Raw analysis of the patterns, the power structures, and what
-            the transmissions actually reveal when you stop being careful about it.
+            the transmissions reveal when you stop being careful about it.
           </p>
           <div
             className="mt-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-mono text-[10px] uppercase tracking-widest"
@@ -121,16 +120,15 @@ export default async function RedRoomPage() {
             style={{ color: "rgba(220,180,180,0.7)" }}
           >
             <p>
-              The archive contains everything that was said. The Red Room contains what it means —
-              without hedging, without diplomatic phrasing, without worrying whether the subject
-              would approve of the framing.
+              The archive contains everything that was said. The Red Room contains what it means,
+              without hedging and without worrying whether the subject would approve of the framing.
             </p>
             <p>
               Behavioral profiles. Power dynamics. Recurring deceptions. What the body language
               said when the words didn&apos;t. What the absences mean. Who protects whom and why.
             </p>
             <p style={{ color: "rgba(255,100,100,0.7)" }}>
-              This is the unedited version of the analysis. Nothing softened.
+              This is the unedited version of the analysis.
             </p>
           </div>
         </section>
@@ -170,7 +168,7 @@ export default async function RedRoomPage() {
                           className="font-mono text-[10px]"
                           style={{ color: "rgba(160,80,80,0.5)" }}
                         >
-                          {new Date(ep.airDate).toLocaleDateString("en-US", {
+                          {new Date(ep.airDate).toLocaleDateString("en-US", { timeZone: "UTC",
                             month: "short",
                             day: "numeric",
                             year: "numeric",
@@ -255,8 +253,7 @@ function RedRoomGate({
           {signedIn ? "Oracle Access Required" : "Enter the Red Room"}
         </h1>
         <p className="font-mono text-sm text-text-muted mb-6 leading-relaxed">
-          The Red Room is where the unfiltered analysis lives — no diplomatic phrasing,
-          no softening. Oracle-tier members only.
+          The Red Room is where the unfiltered analysis lives. Oracle-tier members only.
         </p>
         {samples.length > 0 && (
           <div className="mb-6 text-left">

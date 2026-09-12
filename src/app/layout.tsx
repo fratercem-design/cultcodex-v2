@@ -18,7 +18,7 @@ import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { RadialDialNav } from "@/components/layout/radial-dial-nav";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { ConsoleSigil } from "@/components/layout/console-sigil";
-import { getCounts } from "@/lib/queries/stats";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
 import { CRTOverlay } from "@/components/graphics/crt-overlay";
@@ -27,6 +27,7 @@ import { SITE_URL } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
 import { CookieConsent } from "@/components/layout/cookie-consent";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 // Layout data fetches (getCounts, getLiveChannels) are already wrapped in
@@ -196,7 +197,7 @@ export default async function RootLayout({
           <ScrollReset />
         </Suspense>
         <LiveBanner />
-        <EntryBanner />
+        <EntryBanner episodeCount={fmtEpisodeCount(counts.episodes)} />
         <div className="terminal-grid">
           <TerminalTopBar />
           <TerminalSidebar counts={counts} liveChannels={liveChannels} />
@@ -236,6 +237,7 @@ export default async function RootLayout({
         />
         <CookieConsent gaId="G-1ML217JXYV" />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

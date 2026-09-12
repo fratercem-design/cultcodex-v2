@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me";
+  const counts = await getCounts().catch(() => null);
 
   const episodes = await prisma.episode.findMany({
     where: { status: "published" },
@@ -44,7 +46,7 @@ export async function GET() {
   <channel>
     <title>CultCodex — The Living Archive</title>
     <link>${baseUrl}</link>
-    <description>2,600+ Cult of Psyche episodes — transcripts, lore, guest profiles, and AI analysis</description>
+    <description>${fmtEpisodeCount(counts?.episodes ?? 0)} Cult of Psyche episodes — transcripts, lore, guest profiles, and AI analysis</description>
     <language>en-us</language>
     <atom:link href="${baseUrl}/feed.xml" rel="self" type="application/rss+xml"/>
 ${items}

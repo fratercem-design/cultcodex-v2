@@ -46,12 +46,12 @@ export default async function MediaKitPage() {
   }));
 
   const FACTS = [
-    { value: stats.episodes.toLocaleString() + "+", label: "Episodes archived" },
-    { value: stats.totalHours.toLocaleString() + "+", label: "Hours of content" },
-    { value: stats.people.toLocaleString(), label: "People profiled" },
-    { value: stats.segments.toLocaleString(), label: "Transcript segments" },
-    { value: stats.quotes.toLocaleString(), label: "Notable quotes" },
-    { value: stats.lore.toLocaleString(), label: "Lore entries" },
+    { value: stats.episodes.toLocaleString("en-US") + "+", label: "Episodes archived" },
+    { value: stats.totalHours.toLocaleString("en-US") + "+", label: "Hours of content" },
+    { value: stats.people.toLocaleString("en-US"), label: "People profiled" },
+    { value: stats.segments.toLocaleString("en-US"), label: "Transcript segments" },
+    { value: stats.quotes.toLocaleString("en-US"), label: "Notable quotes" },
+    { value: stats.lore.toLocaleString("en-US"), label: "Lore entries" },
   ];
 
   return (

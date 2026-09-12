@@ -70,7 +70,7 @@ export default async function AdminAnnotationsPage() {
                       {a.user.displayName} · {a.user.email}
                     </span>
                     <span className="font-mono text-[10px] text-text-muted/60">
-                      {new Date(a.createdAt).toLocaleDateString()}
+                      {new Date(a.createdAt).toLocaleDateString("en-US", { timeZone: "UTC" })}
                     </span>
                   </div>
                   <p className="text-sm text-text-primary mb-3 leading-relaxed">{a.body}</p>

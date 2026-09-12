@@ -297,6 +297,12 @@ model TranscriptSegment {
 
   quotes Quote[]
 
+  // Natural key. Every ingest path (Vercel cron, GitHub Actions, the Windows
+  // whisper daemon, the admin API) does check-then-insert and they overlap in
+  // time; the `skipDuplicates` / ON CONFLICT DO NOTHING they all use is a no-op
+  // without this. Dedupe (scripts/maintenance/dedupe-transcript-segments.ts)
+  // before applying the migration that creates it.
+  @@unique([episodeId, startSeconds, endSeconds, text])
   @@index([episodeId])
   @@index([startSeconds])
 }

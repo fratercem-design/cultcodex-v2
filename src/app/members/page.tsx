@@ -327,7 +327,7 @@ function MemberCard({
   const isSystem = member.subscriptionTier === "system" || isAdmin || member.isLifetimeMember;
   const hasPage = isSystem && member.codexSlug && member.codexPagePublic;
   const joinYear = new Date(member.createdAt).getFullYear();
-  const joinMonth = new Date(member.createdAt).toLocaleDateString("en-US", {
+  const joinMonth = new Date(member.createdAt).toLocaleDateString("en-US", { timeZone: "UTC",
     month: "short",
   });
 

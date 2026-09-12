@@ -28,6 +28,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { YouTubeEmbed } from "@/components/media/youtube-embed";
 import { TranscriptViewer } from "@/components/media/transcript-viewer";
+import { groupSegments } from "@/lib/transcript/group-segments";
 import { isSubscribed } from "@/lib/subscription";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { ReactionBar } from "@/components/episodes/reaction-bar";
@@ -117,6 +118,10 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     : null;
 
   const hasTranscript = episode.segments.length > 0;
+  // Group raw caption cues into paragraph blocks on the server. Every word
+  // still ships in the HTML — the transcript is the archive's SEO engine — but
+  // a long episode renders ~1.2k rows instead of ~12k.
+  const transcriptBlocks = hasTranscript ? groupSegments(episode.segments) : [];
   const confidenceTier = getConfidenceTier(episode.segments.length, !!episode.summaryLong);
   const hasTranscriptAccess = user ? await isSubscribed(user.id).catch(() => false) : false;
   const hasDecodeAccess = hasTranscriptAccess; // same tier — Initiate+
@@ -358,7 +363,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
           {/* Tab layout */}
           <Suspense fallback={<div className="h-40" />}>
-            <EpisodeTabLayout tabs={tabs}>
+            <EpisodeTabLayout tabs={tabs} prerender={["transcript"]}>
               {{
                 overview: (
                   <div className="space-y-6">
@@ -508,10 +513,16 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   // long-tail-searchable content. Premium value lives in the
                   // interactive tools (Oracle, Decode, Red Room, annotations),
                   // not behind the words themselves.
+                  //
+                  // "Indexable" only holds because this tab is listed in
+                  // `prerender` above: the layout otherwise renders just the
+                  // active tab, which left the transcript out of the canonical
+                  // URL's HTML entirely (it only existed inside the JSON-LD and
+                  // RSC <script> payloads, which are not page text to Google).
                   transcript: (
                     <TerminalPanel header="TRANSCRIPT">
                       <TranscriptViewer
-                        segments={episode.segments}
+                        blocks={transcriptBlocks}
                         hasVideoEmbed={!!episode.youtubeVideoId}
                         initialTimestamp={initialTimestamp}
                         signalMap={signalMap}

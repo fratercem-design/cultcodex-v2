@@ -89,7 +89,7 @@ export default async function ChaptersIndexPage({
             </Link>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">The Chronicle</h1>
             <p className="text-xs text-text-muted">
-              {total.toLocaleString()} chapters, in broadcast order &middot; page {page} of {totalPages}
+              {total.toLocaleString("en-US")} chapters, in broadcast order &middot; page {page} of {totalPages}
             </p>
           </div>
         </div>

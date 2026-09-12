@@ -88,7 +88,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
       {/* ── Enrichment stats ── */}
       <div className="mb-6 rounded-lg border border-border bg-elevated p-4">
         <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-3">
-          Profile Enrichment — all {totalAll.toLocaleString()} people
+          Profile Enrichment — all {totalAll.toLocaleString("en-US")} people
         </p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <EnrichStat label="Lore Summary" count={withLoreSummary} total={totalAll} pct={enrichPct} color="text-accent-violet-text" barColor="bg-accent-violet" />
@@ -189,8 +189,8 @@ function EnrichStat({
   return (
     <div className={`rounded border p-3 ${highlight ? "border-green-400/30 bg-green-400/5" : "border-border bg-surface"}`}>
       <div className={`font-mono text-lg font-bold leading-tight ${color}`}>
-        {count.toLocaleString()}
-        <span className="text-xs text-text-muted font-normal ml-1">/ {total.toLocaleString()}</span>
+        {count.toLocaleString("en-US")}
+        <span className="text-xs text-text-muted font-normal ml-1">/ {total.toLocaleString("en-US")}</span>
       </div>
       <div className="font-mono text-[10px] text-text-muted mt-0.5 mb-2">{label}</div>
       <div className="h-1 rounded-full bg-border overflow-hidden">

@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const STORAGE_KEY = "codex_entry_banner_dismissed";
 
-export function EntryBanner() {
+export function EntryBanner({ episodeCount }: { episodeCount: string }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export function EntryBanner() {
         <p className="font-mono text-[11px] text-text-muted leading-relaxed">
           <span className="text-accent-gold-text font-bold">{"///"}</span>{" "}
           First time here?{" "}
-          <span className="text-text-primary">Pick a doorway — six ways into nearly 3,000 episodes.</span>{" "}
+          <span className="text-text-primary">Pick a doorway — six ways into {episodeCount} episodes.</span>{" "}
           <Link
             href="/start-here"
             className="text-accent-gold-text underline underline-offset-2 hover:text-accent-gold-text/80 transition-colors"
@@ -54,7 +54,7 @@ export function EntryBanner() {
           /* The glyph alone measured ~11x18 CSS px; WCAG 2.2 Target Size
              (Minimum) asks for 24x24. The box is sized here rather than the
              glyph so the hit area grows without enlarging the ×. */
-          className="flex h-6 w-6 shrink-0 items-center justify-center text-text-muted hover:text-text-primary transition-colors text-lg leading-none"
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center text-text-muted hover:text-text-primary transition-colors text-lg leading-none"
         >
           <span aria-hidden="true">×</span>
         </button>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ARCHETYPES } from "@/lib/archetypes";
 import { PageHero } from "@/components/ui/page-hero";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/archetypes" },
@@ -10,12 +11,14 @@ export const metadata: Metadata = {
     "Eight recurring patterns the Oracle has identified across the archive. Which one are you?",
 };
 
-export default function ArchetypesPage() {
+export default async function ArchetypesPage() {
+  const counts = await getCounts().catch(() => null);
+
   return (
     <div className="min-h-screen bg-void">
       <PageHero
         title="Archetypes"
-        subtitle="Eight patterns the Oracle has identified across nearly 3,000 transmissions"
+        subtitle={`Eight patterns the Oracle has identified across ${fmtEpisodeCount(counts?.episodes ?? 0)} transmissions`}
         backgroundImage="/articles-bacgkground.jpg"
       />
 

@@ -51,7 +51,7 @@ export default function PsychenomiconChronicle() {
       <div className="mx-auto max-w-2xl px-4 py-24 text-center space-y-6">
         <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">{"/// access_restricted"}</p>
         <h2 className="font-display text-2xl font-bold text-accent-violet-text">The Psychenomicon</h2>
-        <p className="text-sm text-text-muted leading-relaxed max-w-sm mx-auto">This is not a recap. It is a system.</p>
+        <p className="text-sm text-text-muted leading-relaxed max-w-sm mx-auto">It is a system, not a recap.</p>
         <div className="flex flex-wrap justify-center gap-3">
           <Link href="/premium#access" className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 hover:bg-accent-violet/20 px-5 py-2.5 font-mono text-xs font-bold text-accent-violet-text transition-colors">Become Initiate+ — $10/mo →</Link>
         </div>
@@ -84,7 +84,7 @@ export default function PsychenomiconChronicle() {
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">A Living Record of Evolving Patterns</h1>
             {chapterCount > 0 && (
               <p className="text-xs text-text-muted">
-                {chapterCount.toLocaleString()} chapters &middot; {majors?.length ?? 0} major events &middot; {entityCount} entities tracked &middot; {activeThreads.length} threads active
+                {chapterCount.toLocaleString("en-US")} chapters &middot; {majors?.length ?? 0} major events &middot; {entityCount} entities tracked &middot; {activeThreads.length} threads active
               </p>
             )}
           </div>

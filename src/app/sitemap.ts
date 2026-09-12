@@ -3,27 +3,71 @@ import { prisma } from "@/lib/db";
 import { ARCHETYPES } from "@/lib/archetypes";
 import { SYMBOLS } from "@/lib/symbols/data";
 import { PILLARS } from "@/lib/pillars/pillars";
+import { getFreePreviewChapterNumbers } from "@/lib/psychenomicon";
+import { isThinPage } from "@/lib/seo";
 
 // Regenerate at most once per hour
 export const revalidate = 3600;
 
+/**
+ * Only the free-preview chapters belong in the sitemap.
+ *
+ * Every other chapter serves a crawler the same ~1,450-character "This chapter
+ * is sealed" shell. Submitting all 2,990 asked Google to index thousands of
+ * near-duplicate pages — roughly 9% of the site's whole URL set, which reads as
+ * a sitewide quality signal rather than a per-page one. Those chapters now
+ * carry `noindex`, and listing a noindex URL in a sitemap only contradicts it.
+ *
+ * Exported so the rule is unit-testable without standing up the database.
+ */
+export function indexableChapterSubset<T extends { chapterNumber: number }>(
+  chapters: T[],
+  freeChapterNumbers: number[]
+): T[] {
+  const free = new Set(freeChapterNumbers);
+  return chapters.filter((c) => free.has(c.chapterNumber));
+}
+
+/**
+ * Same idea for auto-generated lore and topic pages: only the ones with enough
+ * linked episodes to carry real content belong in the sitemap.
+ *
+ * Before this, every lore entry (~10.6k) and topic (~13.9k) was listed — 24k of
+ * the ~29k submitted URLs — and most of them render a title plus the site
+ * chrome, nothing a crawler can rank. The threshold is THIN_PAGE_MIN_EPISODES,
+ * shared with the per-page `robots` in /lore/[slug] and /topics/[slug] so a URL
+ * is never in the sitemap while its own page says noindex.
+ */
+export function indexableLinkedSubset<T extends { _count: { episodes: number } }>(rows: T[]): T[] {
+  return rows.filter((r) => !isThinPage(r._count.episodes));
+}
+
+const LINKED_PAGE_SELECT = {
+  slug: true,
+  updatedAt: true,
+  _count: { select: { episodes: true } },
+} as const;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me";
 
-  const [episodes, people, lore, topics, series, psychenomiconChapters] = await Promise.all([
+  const [episodes, people, lore, topics, series, psychenomiconChapters, freeChapterNumbers] = await Promise.all([
     prisma.episode.findMany({
       where: { status: "published" },
       select: { slug: true, updatedAt: true, thumbnailUrl: true },
     }).catch(() => []),
     prisma.person.findMany({ select: { slug: true, updatedAt: true, avatarUrl: true } }).catch(() => []),
-    prisma.loreEntry.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
-    prisma.topic.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
+    prisma.loreEntry.findMany({ select: LINKED_PAGE_SELECT }).then(indexableLinkedSubset).catch(() => []),
+    prisma.topic.findMany({ select: LINKED_PAGE_SELECT }).then(indexableLinkedSubset).catch(() => []),
     prisma.series.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []),
     prisma.psychenomiconChapter.findMany({
       where: { status: "stable" },
-      select: { slug: true, updatedAt: true },
+      select: { slug: true, updatedAt: true, chapterNumber: true },
     }).catch(() => []),
+    getFreePreviewChapterNumbers().catch(() => [] as number[]),
   ]);
+
+  const indexableChapters = indexableChapterSubset(psychenomiconChapters, freeChapterNumbers);
 
   // Member pages are optional — schema drift on CodexUser columns must not break the build
   let memberPages: Array<{ codexSlug: string | null; updatedAt: Date }> = [];
@@ -150,7 +194,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),
-    ...psychenomiconChapters.map((c) => ({
+    ...indexableChapters.map((c) => ({
       url: `${baseUrl}/psychenomicon/chapters/${c.slug}`,
       lastModified: c.updatedAt,
       changeFrequency: "monthly" as const,

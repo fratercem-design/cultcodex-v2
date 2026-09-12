@@ -9,7 +9,7 @@ import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SearchInput } from "@/components/search/search-input";
 import { getEpisodeCards } from "@/lib/queries/episodes";
-import { getCounts } from "@/lib/queries/stats";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission, getDailyIllustratedChapter } from "@/lib/queries/daily";
@@ -54,26 +54,29 @@ const thresholdSigil = Cinzel({
   display: "swap",
 });
 
-export const metadata = {
-  robots: { index: true, follow: true },
-  alternates: { canonical: "/" },
-  title: "CultCodex — The Archive of Cult of Psyche | Tarot, Consciousness & Open Panels",
-  description:
-    "Cult of Psyche is a live, unscripted internet show — tarot, consciousness, spirituality, open-panel debates, and the strange edges of human behavior. CultCodex is its complete searchable archive: nearly 3,000 episodes with full transcripts, guest profiles, lore, and an AI Oracle.",
-  openGraph: {
-    title: "CultCodex — Decode Cult of Psyche",
+export async function generateMetadata() {
+  const counts = await getCounts().catch(() => null);
+    return {
+    robots: { index: true, follow: true },
+    alternates: { canonical: "/" },
+    title: "CultCodex — The Archive of Cult of Psyche | Tarot, Consciousness & Open Panels",
     description:
-      "Every Cult of Psyche transmission indexed. Psychological patterns, behavioral archetypes, guest profiles, and searchable transcripts — live since October 2024.",
-    type: "website" as const,
-    url: "/",
-  },
-  twitter: {
-    card: "summary_large_image" as const,
-    title: "CultCodex — Decode Cult of Psyche",
-    description:
-      "AI breakdowns, guest profiles, behavioral maps, and full transcript coverage for every Cult of Psyche live stream.",
-  },
-};
+      `Cult of Psyche is a live, unscripted internet show — tarot, consciousness, spirituality, open-panel debates, and the strange edges of human behavior. CultCodex is its complete searchable archive: ${fmtEpisodeCount(counts?.episodes ?? 0)} episodes with full transcripts, guest profiles, lore, and an AI Oracle.`,
+    openGraph: {
+      title: "CultCodex — Decode Cult of Psyche",
+      description:
+        "Every Cult of Psyche transmission indexed. Psychological patterns, behavioral archetypes, guest profiles, and searchable transcripts — live since October 2024.",
+      type: "website" as const,
+      url: "/",
+    },
+    twitter: {
+      card: "summary_large_image" as const,
+      title: "CultCodex — Decode Cult of Psyche",
+      description:
+        "AI breakdowns, guest profiles, behavioral maps, and full transcript coverage for every Cult of Psyche live stream.",
+    },
+  };
+}
 
 export default async function HomePage() {
   const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest, dailyChapter, bookEdition] = await Promise.all([
@@ -82,7 +85,11 @@ export default async function HomePage() {
       lore: 0, quotes: 0, totalHours: 0,
       transcribedEpisodes: 0, transcribedPct: 0,
     })),
-    getEpisodeCards({ take: 5, orderBy: "airDate", order: "desc" }).catch(() => []),
+    // Decoded episodes only. The newest stream is usually still in the
+    // transcription queue for a day or so, and a "No Transcript" card in the
+    // most prominent slot on the site undercuts the whole archive pitch. It
+    // surfaces here as soon as its segments land; until then /episodes has it.
+    getEpisodeCards({ take: 5, orderBy: "airDate", order: "desc", hasTranscript: true }).catch(() => []),
     getQuotes({ take: 2 }).catch(() => []),
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }).catch(() => null),
     getTopTopicsByEpisodes(10).catch(() => []),
@@ -185,7 +192,7 @@ export default async function HomePage() {
 
           <p className="font-mono text-[12px] text-text-muted max-w-lg mx-auto leading-relaxed">
             <span className="text-accent-gold-text font-bold">CultCodex</span> is the complete searchable
-            archive: <span className="text-accent-cyan">{stats.episodes.toLocaleString()}+ episodes</span>{" "}
+            archive: <span className="text-accent-cyan">{stats.episodes.toLocaleString("en-US")}+ episodes</span>{" "}
             indexed — full transcripts, guest profiles, lore, and an AI Oracle that answers questions
             from inside it all.
           </p>
@@ -219,10 +226,10 @@ export default async function HomePage() {
         <div className="border-b border-border/40 bg-void/80 backdrop-blur-sm py-3 px-4">
           <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-center gap-x-8 gap-y-1">
             {[
-              { value: stats.episodes.toLocaleString(), label: "transmissions archived" },
-              { value: stats.segments.toLocaleString(), label: "transcript segments" },
-              { value: stats.people.toLocaleString(), label: "voices profiled" },
-              { value: `${stats.totalHours.toLocaleString()}+`, label: "hours decoded" },
+              { value: stats.episodes.toLocaleString("en-US"), label: "transmissions archived" },
+              { value: stats.segments.toLocaleString("en-US"), label: "transcript segments" },
+              { value: stats.people.toLocaleString("en-US"), label: "voices profiled" },
+              { value: `${stats.totalHours.toLocaleString("en-US")}+`, label: "hours decoded" },
             ].map((s) => (
               <span key={s.label} className="font-mono text-[11px] text-text-muted whitespace-nowrap">
                 <span className="text-accent-gold-text font-bold">{s.value}</span>{" "}{s.label}
@@ -240,14 +247,14 @@ export default async function HomePage() {
                 href: "/episodes",
                 icon: <IconTransmission size={22} className="text-accent-gold-text" />,
                 label: "Episodes",
-                count: `${stats.episodes.toLocaleString()} transmissions`,
+                count: `${stats.episodes.toLocaleString("en-US")} transmissions`,
                 accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
               },
               {
                 href: "/people",
                 icon: <IconPerson size={22} className="text-accent-cyan" />,
                 label: "People",
-                count: `${stats.people.toLocaleString()} profiled`,
+                count: `${stats.people.toLocaleString("en-US")} profiled`,
                 accent: "hover:border-accent-cyan/40 hover:bg-accent-cyan/5",
               },
               {
@@ -484,7 +491,7 @@ export default async function HomePage() {
                 ))}
               </div>
               <Link href="/episodes" className="font-mono text-xs text-accent-gold-text hover:underline">
-                View all {stats.episodes.toLocaleString()} episodes →
+                View all {stats.episodes.toLocaleString("en-US")} episodes →
               </Link>
             </div>
           )}
@@ -606,7 +613,7 @@ export default async function HomePage() {
 
       {/* WebSite + SearchAction JSON-LD is emitted once in the root layout —
           avoid a second, conflicting WebSite block here. */}
-      <JsonLd data={organizationJsonLd()} />
+      <JsonLd data={organizationJsonLd(stats.episodes)} />
     </>
   );
 }

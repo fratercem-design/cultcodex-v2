@@ -32,7 +32,7 @@ function formatViewCount(n: number): string {
 }
 
 function formatDate(d: string): string {
-  return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+  return new Date(d).toLocaleDateString("en-US", { timeZone: "UTC", year: "numeric", month: "short", day: "numeric" });
 }
 
 function WikiCard({ item }: { item: PersonMediaItem }) {

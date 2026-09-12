@@ -82,13 +82,13 @@ export function PaywallGate({
                 <>
                   The other{" "}
                   <span className="text-text-primary">
-                    {Math.max(0, totalCount - previewSegments.length).toLocaleString()} segments of &ldquo;{episodeTitle}&rdquo;
+                    {Math.max(0, totalCount - previewSegments.length).toLocaleString("en-US")} segments of &ldquo;{episodeTitle}&rdquo;
                   </span>{" "}
                   — searchable, timestamped, clickable. Sign in to become one.
                 </>
               ) : (
                 <>
-                  <span className="text-text-primary">{totalCount.toLocaleString()} segments</span>{" "}
+                  <span className="text-text-primary">{totalCount.toLocaleString("en-US")} segments</span>{" "}
                   — searchable, timestamped, clickable. Sign in to become one.
                 </>
               )}

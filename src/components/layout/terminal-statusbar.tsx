@@ -91,7 +91,7 @@ export function TerminalStatusBar({ feedCount }: TerminalStatusBarProps) {
           <span style={{ color: "var(--neon)" }}>SIGNAL_OK</span>
         </span>
         <span style={cellStyle}>CONN: TLS/1.3</span>
-        <span style={cellStyle}>FEED: {feedCount.toLocaleString()}</span>
+        <span style={cellStyle}>FEED: {feedCount.toLocaleString("en-US")}</span>
       </div>
 
       <div className="statusbar-right" style={{ alignItems: "stretch" }}>
