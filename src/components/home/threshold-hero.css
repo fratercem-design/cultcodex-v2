@@ -339,3 +339,25 @@
     animation: none;
   }
 }
+
+/* ── Returning visitors ────────────────────────────────────────────────────
+ * The threshold is a full-viewport "you have arrived" moment. That is worth
+ * one screen of someone's attention exactly once. On every later visit it is
+ * a scroll tax in front of the archive they came back for, so once a visitor
+ * has crossed it we keep the framing but drop it to a band.
+ *
+ * Applied by a class from JS after mount, never during render - reading
+ * localStorage while rendering would desync hydration.
+ */
+.threshold--compact {
+  min-height: auto;
+  padding-block: clamp(2rem, 6vh, 3.5rem);
+}
+
+.threshold--compact .threshold__sigil {
+  height: clamp(72px, 12vw, 104px);
+}
+
+.threshold--compact .threshold__enter {
+  display: none;
+}

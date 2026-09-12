@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import "./threshold-hero.css";
+
+const THRESHOLD_SEEN_KEY = "ccx.threshold.seen";
 
 interface ThresholdHeroProps {
   /** e.g. "TX-20260710" */
@@ -31,8 +33,25 @@ export function ThresholdHero({
   fontClass = "",
 }: ThresholdHeroProps) {
   const rootRef = useRef<HTMLElement>(null);
+  const [compact, setCompact] = useState(false);
+
+  // Returning visitors get a band instead of a full screen. Read after mount,
+  // never during render: touching localStorage while rendering would make the
+  // server and client markup disagree.
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(THRESHOLD_SEEN_KEY)) setCompact(true);
+    } catch {
+      // Private mode or blocked storage - fall back to the full threshold.
+    }
+  }, []);
 
   const enter = useCallback(() => {
+    try {
+      localStorage.setItem(THRESHOLD_SEEN_KEY, "1");
+    } catch {
+      // Non-fatal - they simply see the full threshold again next time.
+    }
     const reduce =
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -90,7 +109,7 @@ export function ThresholdHero({
   return (
     <section
       ref={rootRef}
-      className={`threshold ${fontClass}`}
+      className={`threshold ${compact ? "threshold--compact" : ""} ${fontClass}`}
       aria-label="CultCodex — the threshold"
     >
       <div className="threshold__band">

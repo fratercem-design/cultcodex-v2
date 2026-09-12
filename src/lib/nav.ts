@@ -8,6 +8,16 @@ import type { LiveChannels } from "@/lib/queries/live-status";
 //
 // To add, remove, or reorder items: edit this file only.
 //
+// SIZE IS THE POINT. This was 36 persistent items across six groups, which is
+// a product dump rather than a map - it advertised /shop ("coming soon") and
+// five sister sites on *.vercel.app preview hosts, and split "SIGNALS"
+// (/topics) from "SIGNAL LAB" (/signals) in a way nobody could parse.
+//
+// Everything removed is still reachable: /explore links every former sidebar
+// destination, which was verified before the cut, so this collapses a
+// duplicate surface rather than orphaning pages. Park new experiments on
+// /explore and promote them here only once they earn a permanent slot.
+//
 // The countKey badge values come from the getCounts() SiteCounts object passed
 // through the root layout → TerminalSidebar at render time.
 
@@ -43,7 +53,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     color: "rgba(239,68,68,0.75)",
     textColor: "var(--accent-live-text)",
     items: [
-      { href: "/cult-live",    label: "CULT OF PSYCHE",   glyph: "◎", liveKey: "cultOfPsyche" },
+      { href: "/cult-live",    label: "CULT OF PSYCHE",  glyph: "◎", liveKey: "cultOfPsyche" },
     ],
   },
   {
@@ -51,66 +61,23 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     color: "var(--accent-gold)",
     textColor: "var(--accent-gold-text)",
     items: [
-      { href: "/",             label: "OVERVIEW",      glyph: "▢", key: "1" },
-      { href: "/episodes",     label: "ARCHIVE",       glyph: "▦", key: "2", countKey: "episodes" },
-      { href: "/oracle",       label: "ORACLE",        glyph: "◉", key: "3" },
-      { href: "/reports",      label: "REPORTS",       glyph: "▦" },
-      { href: "/topics",       label: "SIGNALS",       glyph: "◈", key: "4", countKey: "topics" },
-      { href: "/people",       label: "VOICES",        glyph: "◐", key: "5", countKey: "people" },
-      { href: "/graph",        label: "NETWORK MAP",   glyph: "✦", key: "6" },
-      { href: "/psychenomicon",label: "PSYCHENOMICON", glyph: "▲", key: "7" },
-      { href: "/collections",  label: "COLLECTIONS",   glyph: "▣", key: "8" },
+      { href: "/",              label: "OVERVIEW",      glyph: "▢", key: "1" },
+      { href: "/start-here",    label: "START HERE",    glyph: "↳", key: "2" },
+      { href: "/episodes",      label: "ARCHIVE",       glyph: "▦", key: "3", countKey: "episodes" },
+      { href: "/people",        label: "VOICES",        glyph: "◐", key: "4", countKey: "people" },
+      { href: "/topics",        label: "TOPICS",        glyph: "◈", key: "5", countKey: "topics" },
+      { href: "/oracle",        label: "ORACLE",        glyph: "◉", key: "6" },
+      { href: "/psychenomicon", label: "PSYCHENOMICON", glyph: "▲", key: "7" },
+      { href: "/search",        label: "SEARCH",        glyph: "◌", key: "8" },
+      { href: "/explore",       label: "EXPLORE",       glyph: "◇", key: "9" },
     ],
   },
   {
-    title: "DISCOVER",
-    color: "var(--accent-cyan)",
-    items: [
-      { href: "/start-here",    label: "START HERE",    glyph: "↳" },
-      { href: "/explore",       label: "EXPLORE",       glyph: "◇" },
-      { href: "/rank",          label: "YOUR RANK",     glyph: "▲" },
-      { href: "/leaderboard",   label: "LEADERBOARD",   glyph: "◆" },
-      { href: "/quests",        label: "THE TRIALS",    glyph: "◈" },
-      { href: "/this-week",     label: "THIS WEEK",     glyph: "◑" },
-      { href: "/timeline/explore", label: "TIMELINE",   glyph: "◆" },
-      { href: "/symbols",       label: "SYMBOL CODEX",  glyph: "✦" },
-      { href: "/lexicon",       label: "LEXICON",       glyph: "◈" },
-      { href: "/archetype-quiz",label: "ARCHETYPE QUIZ",glyph: "◈" },
-      { href: "/tarot",         label: "TAROT DECK",    glyph: "✦", accent: "neon-4" },
-      { href: "/cards",         label: "SIGNAL ARCHIVE", glyph: "⧬", accent: "neon-4" },
-      { href: "/cards/reading", label: "DRAW A READING", glyph: "☾", accent: "neon-4" },
-      { href: "/cards/grimoire",label: "THE GRIMOIRE",  glyph: "▤", accent: "neon-4" },
-      { href: "/trollopedia",   label: "TROLLOPEDIA",   glyph: "♛", accent: "neon-4" },
-    ],
-  },
-  {
-    title: "ORACLE",
+    title: "MEMBERS",
     color: "var(--neon-4)",
     items: [
-      { href: "/red-room",   label: "RED ROOM",    glyph: "◉" },
-      { href: "/signals",    label: "SIGNAL LAB",  glyph: "◈" },
-      { href: "/salon",      label: "THE SALON",   glyph: "◈" },
-      { href: "/corrections",label: "CORRECTIONS", glyph: "▢" },
       { href: "/premium",    label: "INITIATE+",   glyph: "✦" },
-    ],
-  },
-  {
-    title: "SHOP",
-    color: "#D6A017",
-    items: [
-      { href: "/shop", label: "VESTMENTS", glyph: "✦" },
-    ],
-  },
-  {
-    title: "SISTER SITES",
-    color: "var(--accent-violet)",
-    textColor: "var(--accent-violet-text)",
-    items: [
-      { href: "https://matangi.vercel.app", label: "MA MATANGI", glyph: "◬", external: true },
-      { href: "https://dreamweave-darktales.vercel.app", label: "DREAMWEAVE", glyph: "☾", external: true },
-      { href: "https://living-grimoire.vercel.app", label: "LIVING GRIMOIRE", glyph: "▤", external: true },
-      { href: "https://cultos-zeta.vercel.app", label: "CULTOS", glyph: "⛧", external: true },
-      { href: "https://cultwatch.vercel.app", label: "CULTWATCH", glyph: "Ψ", external: true },
+      { href: "/corrections",label: "CORRECTIONS", glyph: "▢" },
     ],
   },
 ];
