@@ -14,6 +14,8 @@
 //
 // Tips:
 //   --batch 50          process 50 topics per run (default: 30)
+//   --offset 200        skip the first 200 eligible (title order) — chunk a big pool
+//                       without re-visiting rows an earlier chunk kept
 //   --min-episodes 2    only topics with ≥ 2 linked episodes (skips orphans, which
 //                       have nothing to write from)
 //
@@ -44,25 +46,27 @@ function log(msg: string) {
   fs.appendFileSync(LOG_PATH, line + "\n");
 }
 
-function parseArgs(): { batch: number; force: boolean; regenMisgendered: boolean; minEpisodes: number } {
+function parseArgs(): { batch: number; offset: number; force: boolean; regenMisgendered: boolean; minEpisodes: number } {
   const args = process.argv.slice(2);
   let batch = parseInt(process.env.ENRICHMENT_BATCH_SIZE ?? "30", 10);
+  let offset = 0;
   let force = false;
   let regenMisgendered = false;
   let minEpisodes = 1;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--batch" && args[i + 1]) { batch = parseInt(args[i + 1], 10); i++; }
+    if (args[i] === "--offset" && args[i + 1]) { offset = parseInt(args[i + 1], 10); i++; }
     if (args[i] === "--min-episodes" && args[i + 1]) { minEpisodes = parseInt(args[i + 1], 10); i++; }
     if (args[i] === "--force") force = true;
     if (args[i] === "--regen-misgendered") regenMisgendered = true;
   }
   if (force && regenMisgendered) throw new Error("--force and --regen-misgendered are exclusive");
-  return { batch, force, regenMisgendered, minEpisodes };
+  return { batch, offset, force, regenMisgendered, minEpisodes };
 }
 
 async function main() {
-  const { batch, force, regenMisgendered, minEpisodes } = parseArgs();
+  const { batch, offset, force, regenMisgendered, minEpisodes } = parseArgs();
   const prisma = getPrisma();
 
   const mode = regenMisgendered ? "regen-misgendered" : force ? "force" : "fill-missing";
@@ -102,10 +106,10 @@ async function main() {
       t.episodes.length >= minEpisodes &&
       (!regenMisgendered || psycheverseParagraphMisgenders(t.description))
   );
-  const candidates = eligible.slice(0, batch);
+  const candidates = eligible.slice(offset, offset + batch);
 
   log(`Topics eligible: ${eligible.length} (min-episodes: ${minEpisodes})`);
-  log(`Processing batch of ${candidates.length}`);
+  log(`Processing batch of ${candidates.length} (offset ${offset})`);
 
   let success = 0;
   let failures = 0;
