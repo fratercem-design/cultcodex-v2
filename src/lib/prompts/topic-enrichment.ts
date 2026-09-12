@@ -64,3 +64,18 @@ export function buildTopicEnrichmentMessage(input: TopicEnrichmentContext): stri
 
   return parts.join("\n");
 }
+
+/**
+ * True when the "In the Psycheverse:" paragraph — which the prompt defines as
+ * being about Psyche — refers to him with she/her. Used to select rows written
+ * by the old prompt copy for regeneration, and to refuse a regenerated text
+ * that still gets it wrong. Part 1 is deliberately ignored: it may legitimately
+ * be about someone else.
+ */
+const FEMININE = /\b(she|her|hers|herself)\b/i;
+export function psycheverseParagraphMisgenders(description: string | null | undefined): boolean {
+  if (!description) return false;
+  const i = description.indexOf("In the Psycheverse:");
+  if (i === -1) return false;
+  return FEMININE.test(description.slice(i));
+}
