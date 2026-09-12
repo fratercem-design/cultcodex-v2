@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   TOPIC_ENRICHMENT_SYSTEM_PROMPT,
   buildTopicEnrichmentMessage,
+  psycheverseParagraphMisgenders,
 } from "./topic-enrichment";
 
 const ROOT = join(__dirname, "..", "..", "..");
@@ -96,5 +97,17 @@ describe("buildTopicEnrichmentMessage", () => {
     expect(out).not.toContain("Related lore");
     expect(out).not.toContain("People:");
     expect(out.trim()).toBe('Topic: "tarot cards"');
+  });
+});
+
+describe("psycheverseParagraphMisgenders", () => {
+  // This is the selector that decides which live rows get overwritten.
+  it("flags she/her only inside the Psycheverse paragraph", () => {
+    expect(psycheverseParagraphMisgenders("Cats are animals.\n\nIn the Psycheverse: Psyche treats cats as allies — particularly her own cats.")).toBe(true);
+    expect(psycheverseParagraphMisgenders("Cats are animals.\n\nIn the Psycheverse: Psyche treats cats as allies — particularly his own cats.")).toBe(false);
+    // "her" in part 1 (about someone else) does not count; the paragraph is what's about Psyche.
+    expect(psycheverseParagraphMisgenders("Paige and her serenade.\n\nIn the Psycheverse: Psyche laughs about it on stream.")).toBe(false);
+    expect(psycheverseParagraphMisgenders("No paragraph marker, she said.")).toBe(false);
+    expect(psycheverseParagraphMisgenders(null)).toBe(false);
   });
 });
