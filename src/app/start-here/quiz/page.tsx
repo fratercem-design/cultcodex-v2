@@ -2,15 +2,20 @@ import { StartHereQuiz } from "@/components/start-here/start-here-quiz";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/start-here/quiz" },
-  title: "Find Your Path — CULT CODEX",
-  description:
-    "Three questions. A personalized entry point into 2,600+ transmissions.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const counts = await getCounts().catch(() => null);
+  return {
+    alternates: { canonical: "/start-here/quiz" },
+    title: "Find Your Path — CULT CODEX",
+    description: `Three questions. A personalized entry point into ${fmtEpisodeCount(counts?.episodes ?? 0)} transmissions.`,
+  };
+}
 
-export default function StartHereQuizPage() {
+export default async function StartHereQuizPage() {
+  const counts = await getCounts().catch(() => null);
+
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-4 py-16 space-y-12">
       <div className="text-center space-y-3">
@@ -22,7 +27,7 @@ export default function StartHereQuizPage() {
         </h1>
         <p className="font-mono text-xs text-text-muted max-w-md mx-auto leading-relaxed">
           Three questions. The archive calibrates around your answers and gives
-          you a personal entry point into 2,600+ transmissions.
+          you a personal entry point into {fmtEpisodeCount(counts?.episodes ?? 0)} transmissions.
         </p>
       </div>
 

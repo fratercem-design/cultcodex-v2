@@ -16,7 +16,7 @@ import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { RadialDialNav } from "@/components/layout/radial-dial-nav";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { ConsoleSigil } from "@/components/layout/console-sigil";
-import { getCounts } from "@/lib/queries/stats";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
 import { CRTOverlay } from "@/components/graphics/crt-overlay";
@@ -191,7 +191,7 @@ export default async function RootLayout({
       >
         <SkipLink />
         <LiveBanner />
-        <EntryBanner />
+        <EntryBanner episodeCount={fmtEpisodeCount(counts.episodes)} />
         <div className="terminal-grid">
           <TerminalTopBar />
           <TerminalSidebar counts={counts} liveChannels={liveChannels} />
