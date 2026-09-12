@@ -26,10 +26,10 @@ export default async function SalonPage() {
         <PageHero title="THE SALON" subtitle="The room behind the room." label="oracle_only" backgroundImage="/hero-bg.jpg" />
         <main id="main-content" className="mx-auto max-w-2xl px-4 py-16">
           <div className="rounded-2xl border border-accent-violet/40 bg-gradient-to-b from-accent-violet/10 to-surface p-8 text-center space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
               {"/// oracle_tier_only"}
             </p>
-            <h2 className="font-display text-2xl font-bold text-accent-violet">
+            <h2 className="font-display text-2xl font-bold text-accent-violet-text">
               The Salon is for Oracle members.
             </h2>
             <p className="mx-auto max-w-md font-mono text-xs text-text-muted leading-relaxed">
@@ -39,7 +39,7 @@ export default async function SalonPage() {
             <div className="pt-2">
               <Link
                 href="/premium#system"
-                className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/25"
+                className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-sm font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25"
               >
                 {user ? "Become Oracle — $25/mo →" : "Sign in & become Oracle →"}
               </Link>
@@ -76,7 +76,7 @@ export default async function SalonPage() {
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   {t.pinned && (
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-accent-violet">
+                    <span className="font-mono text-[9px] uppercase tracking-widest text-accent-violet-text">
                       ✦ pinned
                     </span>
                   )}

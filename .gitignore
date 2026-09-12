@@ -67,7 +67,10 @@ __pycache__/
 
 # Local runtime artefacts for data-ingest / ASR pipelines
 scripts/*.log
-scripts/cookies.txt
+# Cookie jars (Netscape format, for yt-dlp/curl) hold live YouTube session
+# credentials. Globbed, not the bare path: scripts/cookies.txt alone left
+# cookies.master.txt untracked-but-committable.
+scripts/cookies*.txt
 scripts/asr-pending.json
 scripts/remaining-episodes.json
 scripts/_download-list.json

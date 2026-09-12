@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
+import { getPersonBySlug, getCoAppearances, getPersonEpisodeDates } from "@/lib/queries/people";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
 import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
@@ -24,7 +24,6 @@ import { formatDate } from "@/lib/format/date";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { editorialFrame } from "@/lib/format/editorial-frame";
 import { getExternalLinks } from "@/lib/format/external-links";
-import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { ArchiveNotice } from "@/components/notices/archive-notice";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import { ColorLegend } from "@/components/ui/color-legend";
@@ -50,7 +49,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
 
   if (!hasSections) {
     return (
-      <SectionCard title="Codex Entry">
+      <SectionCard headingLevel={2} title="Codex Entry">
         {loreSummary.split(/\n{2,}/).map((para, i) => (
           <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
             {editorialFrame(para.trim())}
@@ -87,7 +86,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
           <ul key={i} className="space-y-1 mb-3 last:mb-0">
             {bullets.map((b, j) => (
               <li key={j} className="flex gap-2 text-sm text-text-primary leading-relaxed">
-                <span className="text-accent-gold/60 flex-shrink-0 mt-0.5">·</span>
+                <span className="text-accent-gold-text/80 flex-shrink-0 mt-0.5">·</span>
                 <span>{editorialFrame(b)}</span>
               </li>
             ))}
@@ -106,7 +105,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
       {/* Codex entry header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold">{"/// codex_entry"}</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text">{"/// codex_entry"}</p>
         <p className="font-mono text-[9px] text-text-muted/50 tracking-widest">AI · ARCHIVAL</p>
       </div>
 
@@ -118,7 +117,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
           return (
             <div key={heading} className={`px-4 py-4 ${isControversy ? "bg-red-950/10" : ""}`}>
               <div className="flex items-center gap-2 mb-3">
-                <span className={`font-mono text-xs ${isControversy ? "text-red-400" : "text-accent-gold"}`}>
+                <span className={`font-mono text-xs ${isControversy ? "text-red-400" : "text-accent-gold-text"}`}>
                   {sigil}
                 </span>
                 <h4 className={`font-mono text-[10px] uppercase tracking-[0.3em] font-semibold ${isControversy ? "text-red-400/80" : "text-text-muted"}`}>
@@ -165,7 +164,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   // This reduces SEO risk for people who didn't actively participate.
   const shouldNoIndex = person.personType === "mentioned";
 
-  const appearanceCount = person.guestAppearances.length;
+  const appearanceCount = person._count.guestAppearances;
   const typeLabel =
     person.personType === "host" ? "host" :
     person.personType === "recurring" ? "recurring figure" : "guest";
@@ -210,14 +209,19 @@ export default async function PersonDetailPage({ params }: PageProps) {
     new Map(allEpisodes.map((e) => [e.id, e])).values()
   ).sort((a, b) => (b.airDate?.getTime() ?? 0) - (a.airDate?.getTime() ?? 0));
 
-  const coAppearances = person.guestAppearances.length >= 2
+  const coAppearances = person._count.guestAppearances >= 2
     ? await getCoAppearances(person.id, 6).catch(() => [])
     : [];
 
   const relationshipDossier = await getRelationshipDossier(person.id);
 
+  // Every appearance/mention air date (dates only) so era presence and the
+  // appearance total reflect the whole archive, not the capped page above.
+  const allAppearanceDates = await getPersonEpisodeDates(person.id);
+  const totalAppearances = allAppearanceDates.length;
+
   // Archetype evolution — query guest appearance episodes with decodeData (not null)
-  const archetypeEpisodes = person.guestAppearances.length > 0
+  const archetypeEpisodes = person._count.guestAppearances > 0
     ? await prisma.episode.findMany({
         where: {
           guests: { some: { personId: person.id } },
@@ -302,7 +306,8 @@ export default async function PersonDetailPage({ params }: PageProps) {
   const personMediaWiki = personMediaSerialized.find((m) => m.source === "wiki") ?? null;
   const hasPersonMedia = personMediaRaw.length > 0;
 
-  // Era presence — bucket uniqueEpisodes by era (client-side, no extra DB query)
+  // Era presence — bucket every appearance date by era (dates fetched separately
+  // so the chart covers the full archive, not just the rendered page).
   const ERA_BAR_COLOR: Record<string, string> = {
     gold:    "bg-accent-gold",
     violet:  "bg-accent-violet",
@@ -311,17 +316,16 @@ export default async function PersonDetailPage({ params }: PageProps) {
     muted:   "bg-text-muted",
   };
   const ERA_TEXT_COLOR: Record<string, string> = {
-    gold:    "text-accent-gold",
-    violet:  "text-accent-violet",
+    gold:    "text-accent-gold-text",
+    violet:  "text-accent-violet-text",
     cyan:    "text-accent-cyan",
-    crimson: "text-accent-crimson",
+    crimson: "text-accent-crimson-text",
     muted:   "text-text-muted",
   };
   const eraPresence = ERAS.map((era) => {
-    const count = uniqueEpisodes.filter((ep) => {
-      if (!ep.airDate) return false;
-      return getEraForEpisode(ep.airDate)?.id === era.id;
-    }).length;
+    const count = allAppearanceDates.filter(
+      (d) => d !== null && getEraForEpisode(d)?.id === era.id
+    ).length;
     return { era, count };
   }).filter((e) => e.count > 0);
   const maxEraCount = Math.max(...eraPresence.map((e) => e.count), 1);
@@ -358,17 +362,17 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
   const glanceItems = [
     { icon: "🎭", label: typeLabel },
-    ...(uniqueEpisodes.length > 0
-      ? [{ icon: "🎬", label: `${uniqueEpisodes.length} appearance${uniqueEpisodes.length !== 1 ? "s" : ""}` }]
+    ...(totalAppearances > 0
+      ? [{ icon: "🎬", label: `${totalAppearances} appearance${totalAppearances !== 1 ? "s" : ""}` }]
       : []),
-    ...(person.quotes.length > 0
-      ? [{ icon: "💬", label: `${person.quotes.length} quote${person.quotes.length !== 1 ? "s" : ""}` }]
+    ...(person._count.quotes > 0
+      ? [{ icon: "💬", label: `${person._count.quotes} quote${person._count.quotes !== 1 ? "s" : ""}` }]
       : []),
     ...(person.firstAppearanceEpisode?.airDate
       ? [{ icon: "📅", label: `First seen ${formatDate(person.firstAppearanceEpisode.airDate)}` }]
       : []),
-    ...(person.topics.length > 0
-      ? [{ icon: "🏷️", label: `${person.topics.length} topic${person.topics.length !== 1 ? "s" : ""}` }]
+    ...(person._count.topics > 0
+      ? [{ icon: "🏷️", label: `${person._count.topics} topic${person._count.topics !== 1 ? "s" : ""}` }]
       : []),
   ];
 
@@ -410,7 +414,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             {/* Codex profile — AI-generated character entry */}
             {person.loreSummary ? (
               <LoreSummaryCard loreSummary={person.loreSummary} />
-            ) : person.guestAppearances.length >= 2 && (
+            ) : person._count.guestAppearances >= 2 && (
               <div className="rounded-lg border border-border bg-surface overflow-hidden">
                 <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
                   <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">{"/// codex_entry"}</p>
@@ -427,7 +431,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
             {/* Archetype Evolution */}
             {archetypeEntries.length > 0 && (
-              <SectionCard title="Archetype Evolution">
+              <SectionCard headingLevel={2} title="Archetype Evolution">
                 <ArchetypeTimeline
                   entries={archetypeEntries}
                   personName={person.displayName}
@@ -439,9 +443,17 @@ export default async function PersonDetailPage({ params }: PageProps) {
             <ColorLegend />
 
             {/* Appearances */}
-            <SectionCard title={`Appearances (${uniqueEpisodes.length})`} accent="gold">
+            <SectionCard headingLevel={2} title={`Appearances (${totalAppearances})`} accent="gold">
               {uniqueEpisodes.length > 0 ? (
                 <div className="space-y-6">
+                  {totalAppearances > uniqueEpisodes.length && (
+                    <p className="font-mono text-[11px] text-text-muted">
+                      Showing the {uniqueEpisodes.length} most recent of {totalAppearances}.{" "}
+                      <Link href={`/episodes?person=${person.slug}`} className="underline hover:text-accent-gold-text">
+                        Browse all appearances →
+                      </Link>
+                    </p>
+                  )}
                   {episodesByEra.map((group) => (
                     <div key={group.eraId}>
                       <Link
@@ -461,7 +473,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                       </Link>
                       <div className="grid gap-3">
                         {group.episodes.map((ep) => (
-                          <EpisodeListItem
+                          <EpisodeListItem headingLevel={3}
                             key={ep.id}
                             slug={ep.slug}
                             title={ep.title}
@@ -481,7 +493,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                       </p>
                       <div className="grid gap-3">
                         {unclassified.map((ep) => (
-                          <EpisodeListItem
+                          <EpisodeListItem headingLevel={3}
                             key={ep.id}
                             slug={ep.slug}
                             title={ep.title}
@@ -502,8 +514,16 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
             {/* Quotes */}
             {person.quotes.length > 0 && (
-              <SectionCard title={`Quotes (${person.quotes.length})`} accent="red">
+              <SectionCard headingLevel={2} title={`Quotes (${person._count.quotes})`} accent="red">
                 <div className="space-y-4">
+                  {person._count.quotes > person.quotes.length && (
+                    <p className="font-mono text-[11px] text-text-muted">
+                      Showing {person.quotes.length} of {person._count.quotes}.{" "}
+                      <Link href={`/quotes?speaker=${person.slug}`} className="underline hover:text-accent-crimson">
+                        Browse all quotes →
+                      </Link>
+                    </p>
+                  )}
                   {person.quotes.map((q) => (
                     <QuoteHighlightCard
                       key={q.id}
@@ -525,11 +545,11 @@ export default async function PersonDetailPage({ params }: PageProps) {
           <div className="space-y-6">
             <EntityStatsPanel
               stats={[
-                { icon: "🎤", label: "Appearances", value: person.guestAppearances.length },
-                { icon: "📢", label: "Mentions", value: person.mentions.length },
-                { icon: "💬", label: "Quotes", value: person.quotes.length },
-                { icon: "🏷️", label: "Topics", value: person.topics.length },
-                { icon: "🔗", label: "Lore Links", value: person.loreConnections.length },
+                { icon: "🎤", label: "Appearances", value: person._count.guestAppearances },
+                { icon: "📢", label: "Mentions", value: person._count.mentions },
+                { icon: "💬", label: "Quotes", value: person._count.quotes },
+                { icon: "🏷️", label: "Topics", value: person._count.topics },
+                { icon: "🔗", label: "Lore Links", value: person._count.loreConnections },
               ]}
             />
 
@@ -575,7 +595,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </div>
                 {eraPresence.length === ERAS.length && (
                   <div className="border-t border-border/60 px-4 py-2">
-                    <p className="font-mono text-[9px] text-accent-gold/60 uppercase tracking-widest">
+                    <p className="font-mono text-[9px] text-accent-gold-text/80 uppercase tracking-widest">
                       ◈ Spans all eras
                     </p>
                   </div>
@@ -598,7 +618,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             <RelationshipDossier entries={relationshipDossier} personName={person.displayName} />
 
             {coAppearances.length > 0 && (
-              <SectionCard title="Frequently Appears With" accent="gold">
+              <SectionCard headingLevel={2} title="Frequently Appears With" accent="gold">
                 <div className="grid grid-cols-3 gap-3">
                   {coAppearances.map((coGuest) => (
                     <Link
@@ -615,11 +635,11 @@ export default async function PersonDetailPage({ params }: PageProps) {
                           className="h-10 w-10 rounded-full object-cover border border-border group-hover:border-accent-gold/50 transition-colors"
                         />
                       ) : (
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-gold/15 font-mono text-sm font-bold text-accent-gold border border-border group-hover:border-accent-gold/50 transition-colors">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-gold/15 font-mono text-sm font-bold text-accent-gold-text border border-border group-hover:border-accent-gold/50 transition-colors">
                           {coGuest.displayName[0]?.toUpperCase() ?? "?"}
                         </div>
                       )}
-                      <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-gold transition-colors line-clamp-1">
+                      <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-gold-text transition-colors line-clamp-1">
                         {coGuest.displayName}
                       </span>
                       <span className="font-mono text-[9px] text-text-muted">
@@ -630,7 +650,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </div>
                 <Link
                   href={`/graph/path?from=${person.slug}`}
-                  className="mt-4 block w-full rounded border border-accent-violet/30 bg-accent-violet/5 px-3 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-accent-violet hover:bg-accent-violet/10 transition-colors"
+                  className="mt-4 block w-full rounded border border-accent-violet/30 bg-accent-violet/5 px-3 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-accent-violet-text hover:bg-accent-violet/10 transition-colors"
                 >
                   Find a path to anyone →
                 </Link>
@@ -643,7 +663,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
               type="person"
             />
 
-            <SectionCard title="Dossier">
+            <SectionCard headingLevel={2} title="Dossier">
               <MetaRow
                 label="Type"
                 value={<StatusBadge label={typeLabel} variant={typeVariant} />}
@@ -672,7 +692,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
               const isYt = (url: string) => url.includes("youtube.com") || url.includes("youtu.be");
               return (
-                <SectionCard title="External Links">
+                <SectionCard headingLevel={2} title="External Links">
                   <ul className="space-y-2">
                     {allLinks.map((link) => (
                       <li key={link.url}>
@@ -768,7 +788,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
             ...(person.firstAppearanceEpisode?.airDate
               ? { firstAppearance: person.firstAppearanceEpisode.airDate.toISOString().slice(0, 10) }
               : {}),
-            numberOfAppearances: uniqueEpisodes.length,
+            numberOfAppearances: totalAppearances,
             // Topics this person discusses — knowledge-graph edges
             ...(person.topics.length > 0
               ? {

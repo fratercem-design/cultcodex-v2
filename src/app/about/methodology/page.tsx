@@ -30,7 +30,7 @@ function SectionBlock({
   return (
     <div className={SECTION_CLS}>
       <div className={HEADING_CLS}>
-        <span className="font-mono text-xs text-accent-gold">{sigil}</span>
+        <span className="font-mono text-xs text-accent-gold-text">{sigil}</span>
         <h2 className="font-mono text-[10px] uppercase tracking-[0.3em] font-semibold text-text-muted">
           {title}
         </h2>
@@ -68,7 +68,7 @@ export default function MethodologyPage() {
 
         {/* Page header */}
         <div className="space-y-1">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">
             {"/// transparency_log"}
           </p>
           <h1 className="text-2xl font-bold text-text-primary">How CultCodex Works</h1>
@@ -139,7 +139,7 @@ export default function MethodologyPage() {
           />
           <p className="text-text-secondary">
             AI-generated content is clearly marked with a{" "}
-            <span className="font-mono text-accent-violet text-xs">◈ AI-generated</span> notice
+            <span className="font-mono text-accent-violet-text text-xs">◈ AI-generated</span> notice
             wherever it appears.
           </p>
         </SectionBlock>
@@ -190,6 +190,7 @@ export default function MethodologyPage() {
             <Link
               href="/corrections"
               className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-accent-violet/10 px-3 py-1.5 font-mono text-xs text-accent-violet hover:border-accent-violet/60 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-accent-violet/10 px-3 py-1.5 font-mono text-xs text-accent-violet-text hover:border-accent-violet/60 transition-colors"
             >
               <span>◈</span>
               <span>Suggest a Correction</span>

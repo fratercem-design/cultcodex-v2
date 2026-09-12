@@ -16,10 +16,10 @@ interface Props {
 }
 
 const ACCENT_CLASS: Record<string, string> = {
-  gold:    "text-accent-gold border-accent-gold/30 hover:border-accent-gold/60 hover:bg-accent-gold/5",
-  violet:  "text-accent-violet border-accent-violet/30 hover:border-accent-violet/60 hover:bg-accent-violet/5",
+  gold:    "text-accent-gold-text border-accent-gold/30 hover:border-accent-gold/60 hover:bg-accent-gold/5",
+  violet:  "text-accent-violet-text border-accent-violet/30 hover:border-accent-violet/60 hover:bg-accent-violet/5",
   cyan:    "text-accent-cyan border-accent-cyan/30 hover:border-accent-cyan/60 hover:bg-accent-cyan/5",
-  crimson: "text-accent-crimson border-accent-crimson/30 hover:border-accent-crimson/60 hover:bg-accent-crimson/5",
+  crimson: "text-accent-crimson-text border-accent-crimson/30 hover:border-accent-crimson/60 hover:bg-accent-crimson/5",
   muted:   "text-text-muted border-border hover:border-border/60",
 };
 

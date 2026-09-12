@@ -38,7 +38,7 @@ function AnimatedCounter({ value }: { value: number }) {
     requestAnimationFrame(tick);
   }, [value]);
 
-  return <span>{display.toLocaleString()}</span>;
+  return <span>{display.toLocaleString("en-US")}</span>;
 }
 
 export function ArchiveStatsBar({ stats }: ArchiveStatsBarProps) {

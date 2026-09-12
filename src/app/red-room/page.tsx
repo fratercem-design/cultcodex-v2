@@ -168,7 +168,7 @@ export default async function RedRoomPage() {
                           className="font-mono text-[10px]"
                           style={{ color: "rgba(160,80,80,0.5)" }}
                         >
-                          {new Date(ep.airDate).toLocaleDateString("en-US", {
+                          {new Date(ep.airDate).toLocaleDateString("en-US", { timeZone: "UTC",
                             month: "short",
                             day: "numeric",
                             year: "numeric",

@@ -65,7 +65,7 @@ export default async function AdminCommentsPage() {
                       on{" "}
                       <a
                         href={`/episodes/${comment.episode.slug}`}
-                        className="text-accent-gold hover:underline"
+                        className="text-accent-gold-text hover:underline"
                       >
                         {comment.episode.title}
                       </a>

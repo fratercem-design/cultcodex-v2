@@ -50,7 +50,7 @@ function RedactedBlock({ tier }: RedactedBlockProps) {
   const label = isOracle ? "Oracle" : "Initiate+";
   const href = isOracle ? "/premium#system" : "/premium#access";
   const borderCls = isOracle ? "border-accent-violet/30" : "border-accent-gold/30";
-  const textCls = isOracle ? "text-accent-violet" : "text-accent-gold";
+  const textCls = isOracle ? "text-accent-violet-text" : "text-accent-gold-text";
   const bgCls = isOracle ? "bg-accent-violet/5" : "bg-accent-gold/5";
 
   return (
@@ -88,13 +88,13 @@ export function RedactedText({ text, viewerTier, className }: RedactedTextProps)
         if (seg.type === "locked") {
           // Initiate+ and Oracle can see this
           if (viewerTier === "access" || viewerTier === "system") {
-            return <span key={i} className="text-accent-gold/90">{seg.content}</span>;
+            return <span key={i} className="text-accent-gold-text/90">{seg.content}</span>;
           }
           return <RedactedBlock key={i} content={seg.content} tier="locked" />;
         }
         // oracle
         if (viewerTier === "system") {
-          return <span key={i} className="text-accent-violet/90">{seg.content}</span>;
+          return <span key={i} className="text-accent-violet-text/90">{seg.content}</span>;
         }
         return <RedactedBlock key={i} content={seg.content} tier="oracle" />;
       })}

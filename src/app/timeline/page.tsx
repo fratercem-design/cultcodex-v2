@@ -101,7 +101,7 @@ export default async function TimelinePage() {
             <a
               key={year}
               href={`#year-${year}`}
-              className="rounded border border-border bg-surface px-3 py-1.5 font-mono text-xs text-text-muted transition-colors hover:border-accent-gold/30 hover:text-accent-gold"
+              className="rounded border border-border bg-surface px-3 py-1.5 font-mono text-xs text-text-muted transition-colors hover:border-accent-gold/30 hover:text-accent-gold-text"
             >
               {year}
             </a>
@@ -173,14 +173,14 @@ export default async function TimelinePage() {
                                     className="group flex items-baseline gap-2 rounded border border-transparent px-2 py-1 transition-colors hover:border-border hover:bg-surface"
                                   >
                                     {epNum && (
-                                      <span className="flex-shrink-0 font-mono text-[10px] font-bold text-accent-gold">
+                                      <span className="flex-shrink-0 font-mono text-[10px] font-bold text-accent-gold-text">
                                         {epNum}
                                       </span>
                                     )}
                                     <span className="flex-shrink-0 font-mono text-[10px] text-text-muted">
                                       {formatDate(ep.airDate)}
                                     </span>
-                                    <span className="text-sm text-text-primary group-hover:text-accent-gold transition-colors truncate">
+                                    <span className="text-sm text-text-primary group-hover:text-accent-gold-text transition-colors truncate">
                                       {cleanTitle(ep.title)}
                                     </span>
                                     {/* Indicators */}
@@ -191,12 +191,12 @@ export default async function TimelinePage() {
                                         </span>
                                       )}
                                       {ep._count.quotes > 0 && (
-                                        <span className="font-mono text-[9px] text-accent-gold/60" title={`${ep._count.quotes} quotes`}>
+                                        <span className="font-mono text-[9px] text-accent-gold-text/80" title={`${ep._count.quotes} quotes`}>
                                           Q{ep._count.quotes}
                                         </span>
                                       )}
                                       {ep._count.guests > 0 && (
-                                        <span className="font-mono text-[9px] text-accent-violet/60" title={`${ep._count.guests} guests`}>
+                                        <span className="font-mono text-[9px] text-accent-violet-text/70" title={`${ep._count.guests} guests`}>
                                           G{ep._count.guests}
                                         </span>
                                       )}

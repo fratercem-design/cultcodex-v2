@@ -15,17 +15,17 @@ import { PrizeWheel } from "./prize-wheel";
 import bankJson from "@/lib/data/gameshow-questions.json";
 
 const ROUND_COLOR: Record<string, string> = {
-  "real-or-fake-lore": "text-accent-violet",
+  "real-or-fake-lore": "text-accent-violet-text",
   "two-truths-lie": "text-accent-cyan",
-  "prophecy-or-bogus": "text-accent-gold",
-  "did-psyche-say-it": "text-accent-violet",
-  "codex-cluedo": "text-accent-gold",
+  "prophecy-or-bogus": "text-accent-gold-text",
+  "did-psyche-say-it": "text-accent-violet-text",
+  "codex-cluedo": "text-accent-gold-text",
   "troll-or-not": "text-accent-cyan",
-  "who-is-it": "text-accent-violet",
-  "general-trivia": "text-accent-gold",
+  "who-is-it": "text-accent-violet-text",
+  "general-trivia": "text-accent-gold-text",
   "name-that-realm": "text-accent-cyan",
-  "real-title": "text-accent-gold",
-  "finish-the-lore": "text-accent-violet",
+  "real-title": "text-accent-gold-text",
+  "finish-the-lore": "text-accent-violet-text",
 };
 
 type MC = { id: string; round: string; type: "multiple-choice"; prompt: string; options: string[]; answerIndex: number; explain: string; sourceHref?: string; image?: string };
@@ -192,10 +192,10 @@ export function GameShow() {
         />
 
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <button onClick={surprise} className="rounded-lg border border-accent-gold/50 bg-accent-gold/10 px-6 py-3 font-mono text-sm font-bold uppercase tracking-widest text-accent-gold hover:bg-accent-gold/20 hover:scale-[1.03] active:scale-[0.98] transition-all">
+          <button onClick={surprise} className="rounded-lg border border-accent-gold/50 bg-accent-gold/10 px-6 py-3 font-mono text-sm font-bold uppercase tracking-widest text-accent-gold-text hover:bg-accent-gold/20 hover:scale-[1.03] active:scale-[0.98] transition-all">
             🎲 Surprise Me
           </button>
-          <button onClick={() => { setRoundKey("__all"); goto(0); }} className="rounded-lg border border-accent-violet/50 bg-accent-violet/10 px-6 py-3 font-mono text-sm font-bold uppercase tracking-widest text-accent-violet hover:bg-accent-violet/20 hover:scale-[1.03] active:scale-[0.98] transition-all">
+          <button onClick={() => { setRoundKey("__all"); goto(0); }} className="rounded-lg border border-accent-violet/50 bg-accent-violet/10 px-6 py-3 font-mono text-sm font-bold uppercase tracking-widest text-accent-violet-text hover:bg-accent-violet/20 hover:scale-[1.03] active:scale-[0.98] transition-all">
             ▶ Play All {bank.total}
           </button>
         </div>
@@ -222,13 +222,13 @@ export function GameShow() {
                     </>
                   )}
                   {Emblem
-                    ? <Emblem size={44} className={`relative flex-shrink-0 ${ROUND_COLOR[r.key] ?? "text-accent-violet"} transition-transform group-hover:rotate-6`} />
+                    ? <Emblem size={44} className={`relative flex-shrink-0 ${ROUND_COLOR[r.key] ?? "text-accent-violet-text"} transition-transform group-hover:rotate-6`} />
                     : <span className="relative text-3xl" aria-hidden>{r.icon}</span>}
                   <span className="relative min-w-0 flex-1">
                     <span className="flex items-center gap-2">
-                      <span className="font-display text-lg font-bold text-text-primary group-hover:text-accent-violet transition-colors">{meta?.name ?? r.label}</span>
+                      <span className="font-display text-lg font-bold text-text-primary group-hover:text-accent-violet-text transition-colors">{meta?.name ?? r.label}</span>
                     </span>
-                    {meta && <span className="mt-0.5 block font-mono text-[8px] uppercase tracking-[0.3em] text-accent-gold/70">{meta.tag}</span>}
+                    {meta && <span className="mt-0.5 block font-mono text-[8px] uppercase tracking-[0.3em] text-accent-gold-text/80">{meta.tag}</span>}
                     <span className="mt-1.5 block text-xs text-text-muted leading-relaxed">{meta?.desc}</span>
                     <span className="mt-2 block font-mono text-[10px] uppercase tracking-widest text-text-muted/50">{count} questions</span>
                   </span>
@@ -251,7 +251,7 @@ export function GameShow() {
         <p className="text-center font-mono text-[10px] text-text-muted/60 leading-relaxed">
           Screen-share in OBS / StreamYard. Chat calls a letter; you tap it.
           <br className="hidden sm:block" />
-          <span className="text-accent-violet">A–D / 1–4</span> select · <span className="text-accent-violet">Space</span> reveal &amp; advance · <span className="text-accent-violet">← →</span> navigate.
+          <span className="text-accent-violet-text">A–D / 1–4</span> select · <span className="text-accent-violet-text">Space</span> reveal &amp; advance · <span className="text-accent-violet-text">← →</span> navigate.
         </p>
 
         <Toasts toasts={toasts} />
@@ -263,15 +263,15 @@ export function GameShow() {
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-4"><ProgressHud progress={progress} rank={rank} compact /></div>
       <div className="mb-6 flex items-center justify-between gap-3 border-b border-border pb-3">
-        <button onClick={() => { setRoundKey(null); goto(0); }} className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-violet transition-colors">← Rounds</button>
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet/60">
+        <button onClick={() => { setRoundKey(null); goto(0); }} className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-violet-text transition-colors">← Rounds</button>
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/70">
           {roundKey === "__daily" ? "⚡ Daily Challenge" : ROUND_META[roundKey]?.name ?? bank.rounds.find((r) => r.key === roundKey)?.label ?? "The Whole Deck"} · {idx + 1}/{pool.length}
         </span>
         <div className="flex items-center gap-2">
-          <button onClick={surprise} title="Surprise me" className="rounded border border-border px-2 py-1 font-mono text-xs text-text-muted hover:border-accent-gold/40 hover:text-accent-gold transition-colors">🎲</button>
-          <button onClick={() => setMuted((m) => !m)} title={muted ? "Unmute" : "Mute"} className="rounded border border-border px-2 py-1 font-mono text-xs text-text-muted hover:border-accent-violet/40 hover:text-accent-violet transition-colors">{muted ? "🔇" : "🔊"}</button>
-          <button onClick={prev} className="rounded border border-border px-2.5 py-1 font-mono text-xs text-text-muted hover:border-accent-violet/40 hover:text-accent-violet transition-colors">←</button>
-          <button onClick={next} className="rounded border border-border px-2.5 py-1 font-mono text-xs text-text-muted hover:border-accent-violet/40 hover:text-accent-violet transition-colors">→</button>
+          <button onClick={surprise} title="Surprise me" className="rounded border border-border px-2 py-1 font-mono text-xs text-text-muted hover:border-accent-gold/40 hover:text-accent-gold-text transition-colors">🎲</button>
+          <button onClick={() => setMuted((m) => !m)} title={muted ? "Unmute" : "Mute"} className="rounded border border-border px-2 py-1 font-mono text-xs text-text-muted hover:border-accent-violet/40 hover:text-accent-violet-text transition-colors">{muted ? "🔇" : "🔊"}</button>
+          <button onClick={prev} className="rounded border border-border px-2.5 py-1 font-mono text-xs text-text-muted hover:border-accent-violet/40 hover:text-accent-violet-text transition-colors">←</button>
+          <button onClick={next} className="rounded border border-border px-2.5 py-1 font-mono text-xs text-text-muted hover:border-accent-violet/40 hover:text-accent-violet-text transition-colors">→</button>
         </div>
       </div>
 
@@ -291,16 +291,16 @@ function DailyChallenge({ done, streak, onPlay }: { done: boolean; streak: numbe
       <div className="gs-drift pointer-events-none absolute inset-0 opacity-20" aria-hidden />
       <div className="relative flex flex-wrap items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/70">
-            {"/// daily_challenge"}{streak > 0 && <span className="ml-2 text-accent-gold">🔥 {streak}-day streak</span>}
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+            {"/// daily_challenge"}{streak > 0 && <span className="ml-2 text-accent-gold-text">🔥 {streak}-day streak</span>}
           </p>
           <h3 className="mt-1 font-display text-xl font-bold text-text-primary">Today&rsquo;s Impossible Question</h3>
-          <p className="mt-0.5 text-xs text-text-muted">One question. The same for every cultist today. Nail it for <span className="text-accent-gold font-bold">+{DAILY_BONUS_XP} XP</span> and the streak.</p>
+          <p className="mt-0.5 text-xs text-text-muted">One question. The same for every cultist today. Nail it for <span className="text-accent-gold-text font-bold">+{DAILY_BONUS_XP} XP</span> and the streak.</p>
         </div>
         {done ? (
           <span className="flex-shrink-0 rounded-lg border border-emerald-400/40 bg-emerald-400/10 px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-emerald-400">✓ Done · back tomorrow</span>
         ) : (
-          <button onClick={onPlay} className="flex-shrink-0 rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-6 py-3 font-display text-base font-bold text-accent-gold hover:bg-accent-gold/25 hover:scale-[1.04] active:scale-[0.98] transition-all shadow-[0_0_24px_-8px_rgba(200,57,46,0.6)]">
+          <button onClick={onPlay} className="flex-shrink-0 rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-6 py-3 font-display text-base font-bold text-accent-gold-text hover:bg-accent-gold/25 hover:scale-[1.04] active:scale-[0.98] transition-all shadow-[0_0_24px_-8px_rgba(200,57,46,0.6)]">
             ⚡ Take the Challenge
           </button>
         )}
@@ -313,12 +313,12 @@ function ProgressHud({ progress, rank, compact }: { progress: ProgressState; ran
   return (
     <div className={`rounded-lg border border-accent-violet/20 bg-surface/60 ${compact ? "px-4 py-2" : "px-5 py-3.5"}`}>
       <div className="flex items-center justify-between gap-3">
-        <span className="font-display text-sm font-bold text-accent-violet">
-          {rank.name}{progress.activeTitle && <span className="ml-1.5 font-mono text-[10px] font-normal text-accent-gold">{progress.activeTitle}</span>}
+        <span className="font-display text-sm font-bold text-accent-violet-text">
+          {rank.name}{progress.activeTitle && <span className="ml-1.5 font-mono text-[10px] font-normal text-accent-gold-text">{progress.activeTitle}</span>}
         </span>
         <span className="font-mono text-[10px] text-text-muted">
           {progress.xp} XP{rank.next ? ` · ${rank.toNext} to ${rank.next}` : " · max rank"}
-          {progress.streak > 1 && <span className="ml-2 text-accent-gold">🔥 {progress.streak}</span>}
+          {progress.streak > 1 && <span className="ml-2 text-accent-gold-text">🔥 {progress.streak}</span>}
         </span>
       </div>
       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-void">
@@ -337,7 +337,7 @@ function AchievementShelf({ unlocked }: { unlocked: string[] }) {
         {ACHIEVEMENTS.map((a) => {
           const got = set.has(a.id);
           return (
-            <span key={a.id} title={a.hint} className={`rounded border px-2.5 py-1 font-mono text-[10px] transition-all ${got ? "border-accent-gold/40 bg-accent-gold/10 text-accent-gold" : "border-border bg-void text-text-muted/40"}`}>
+            <span key={a.id} title={a.hint} className={`rounded border px-2.5 py-1 font-mono text-[10px] transition-all ${got ? "border-accent-gold/40 bg-accent-gold/10 text-accent-gold-text" : "border-border bg-void text-text-muted/40"}`}>
               {got ? a.label : "🔒 ???"}
             </span>
           );
@@ -353,7 +353,7 @@ function Toasts({ toasts }: { toasts: Toast[] }) {
     <div className="pointer-events-none fixed bottom-5 right-5 z-50 flex flex-col gap-2">
       {toasts.map((t) => (
         <div key={t.id} className="animate-[fadein_0.3s] rounded-lg border border-accent-gold/40 bg-void/95 px-4 py-2.5 shadow-[0_0_24px_-6px_rgba(200,57,46,0.6)]">
-          <p className="font-display text-sm font-bold text-accent-gold">{t.text}</p>
+          <p className="font-display text-sm font-bold text-accent-gold-text">{t.text}</p>
           {t.sub && <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted">{t.sub}</p>}
         </div>
       ))}
@@ -368,7 +368,7 @@ function OptionRow({ letter, text, onClick, state }: { letter: string; text: str
     : state === "missed" ? "border-emerald-400/40 bg-emerald-400/5 text-text-muted"
     : state === "selected" ? "border-accent-violet/70 bg-accent-violet/10 text-text-primary"
     : "border-border bg-surface text-text-primary hover:border-accent-violet/50 hover:bg-accent-violet/5";
-  const badge = state === "correct" || state === "missed" ? "text-emerald-400" : state === "wrong" ? "text-red-400" : state === "selected" ? "text-accent-violet" : "text-accent-violet/70";
+  const badge = state === "correct" || state === "missed" ? "text-emerald-400" : state === "wrong" ? "text-red-400" : state === "selected" ? "text-accent-violet-text" : "text-accent-violet-text/70";
   return (
     <button type="button" onClick={onClick} disabled={!onClick} className={`flex w-full items-start gap-3 rounded-lg border px-4 py-3 text-left transition-all duration-200 ${cls} ${onClick ? "cursor-pointer active:scale-[0.99]" : "cursor-default"}`}>
       <span className={`font-mono text-sm font-bold ${badge}`}>{letter}</span>
@@ -418,10 +418,10 @@ function QuestionCard({ q, revealed, selected, onChoose, onReveal, onNext, onArc
         <div className="grid gap-4 sm:grid-cols-3">
           {([["SUSPECT", q.suspects, q.solution.suspect], ["LOCATION", q.locations, q.solution.location], ["ARTIFACT", q.artifacts, q.solution.artifact]] as const).map(([label, opts, sol]) => (
             <div key={label} className="space-y-2">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/60">{label}</p>
+              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">{label}</p>
               {opts.map((o, i) => (
                 <div key={i} className={`rounded border px-3 py-2 text-sm transition-all duration-300 ${revealed && o === sol ? "border-emerald-400/70 bg-emerald-400/10 text-text-primary shadow-[0_0_16px_-4px_rgba(52,211,153,0.5)]" : "border-border bg-surface text-text-muted"}`}>
-                  <span className="font-mono text-[10px] text-accent-violet/60 mr-2">{LETTERS[i]}</span>{o}
+                  <span className="font-mono text-[10px] text-accent-violet-text/70 mr-2">{LETTERS[i]}</span>{o}
                   {revealed && o === sol && <span className="ml-1 text-emerald-400">✓</span>}
                 </div>
               ))}
@@ -435,16 +435,16 @@ function QuestionCard({ q, revealed, selected, onChoose, onReveal, onNext, onArc
           <p className={`font-mono text-[9px] uppercase tracking-[0.3em] ${wasWrong ? "text-red-400" : "text-emerald-400"}`}>{wasWrong ? "/// the_codex_disagrees" : "/// the_codex_rules"}</p>
           <p className="text-sm text-text-muted leading-relaxed">{q.explain}</p>
           {"sourceHref" in q && q.sourceHref && (
-            <Link href={q.sourceHref} onClick={onArchive} className="inline-flex items-center gap-1.5 rounded border border-accent-violet/40 bg-accent-violet/10 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-accent-violet hover:bg-accent-violet/20 transition-colors">
+            <Link href={q.sourceHref} onClick={onArchive} className="inline-flex items-center gap-1.5 rounded border border-accent-violet/40 bg-accent-violet/10 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-accent-violet-text hover:bg-accent-violet/20 transition-colors">
               🗝 Open the archive →
             </Link>
           )}
           <div className="pt-1">
-            <button onClick={onNext} className="rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors">Next question →</button>
+            <button onClick={onNext} className="rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/20 transition-colors">Next question →</button>
           </div>
         </div>
       ) : (
-        <button onClick={onReveal} className="w-full rounded-lg border border-accent-violet/50 bg-accent-violet/10 py-3.5 font-mono text-sm font-bold uppercase tracking-widest text-accent-violet hover:bg-accent-violet/20 active:scale-[0.99] transition-all">
+        <button onClick={onReveal} className="w-full rounded-lg border border-accent-violet/50 bg-accent-violet/10 py-3.5 font-mono text-sm font-bold uppercase tracking-widest text-accent-violet-text hover:bg-accent-violet/20 active:scale-[0.99] transition-all">
           {q.type === "clue" ? "Reveal the case ⏎" : "Reveal the answer ⏎"}
         </button>
       )}

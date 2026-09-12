@@ -88,7 +88,7 @@ export default async function AdminDigestPage({ searchParams }: PageProps) {
         <h1 className="font-display text-2xl font-bold text-text-primary">Weekly Digest</h1>
         <p className="font-mono text-xs text-text-muted mt-1">
           Curate &quot;This week in the archive&quot; — published at{" "}
-          <a href="/this-week" target="_blank" className="text-accent-gold underline">/this-week</a>
+          <a href="/this-week" target="_blank" className="text-accent-gold-text underline">/this-week</a>
         </p>
       </div>
 
@@ -105,7 +105,7 @@ export default async function AdminDigestPage({ searchParams }: PageProps) {
           />
           <button
             type="submit"
-            className="rounded border border-border px-4 py-2 font-mono text-xs text-text-muted hover:border-accent-gold/40 hover:text-accent-gold transition-colors whitespace-nowrap"
+            className="rounded border border-border px-4 py-2 font-mono text-xs text-text-muted hover:border-accent-gold/40 hover:text-accent-gold-text transition-colors whitespace-nowrap"
           >
             Search →
           </button>
@@ -218,7 +218,7 @@ export default async function AdminDigestPage({ searchParams }: PageProps) {
             </label>
             <button
               type="submit"
-              className="ml-auto rounded border border-accent-gold bg-accent-gold/15 px-5 py-2 font-mono text-xs font-bold text-accent-gold hover:bg-accent-gold/25 transition-colors"
+              className="ml-auto rounded border border-accent-gold bg-accent-gold/15 px-5 py-2 font-mono text-xs font-bold text-accent-gold-text hover:bg-accent-gold/25 transition-colors"
             >
               Save digest →
             </button>
@@ -249,12 +249,12 @@ export default async function AdminDigestPage({ searchParams }: PageProps) {
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
                   <form action={togglePublished.bind(null, d.id, !d.published)}>
-                    <button className="font-mono text-[10px] text-text-muted hover:text-accent-gold transition-colors">
+                    <button className="font-mono text-[10px] text-text-muted hover:text-accent-gold-text transition-colors">
                       {d.published ? "Unpublish" : "Publish"}
                     </button>
                   </form>
                   <form action={deleteWeeklyDigest.bind(null, d.id)}>
-                    <button className="font-mono text-[10px] text-accent-crimson hover:text-accent-crimson/70 transition-colors">
+                    <button className="font-mono text-[10px] text-accent-crimson-text hover:text-accent-crimson-text/80 transition-colors">
                       Delete
                     </button>
                   </form>

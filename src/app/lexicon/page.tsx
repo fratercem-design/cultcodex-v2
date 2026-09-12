@@ -45,7 +45,7 @@ const CATEGORY_META: Record<
 > = {
   psycheverse: {
     label: "Psycheverse",
-    color: "text-accent-gold",
+    color: "text-accent-gold-text",
     dotColor: "bg-accent-gold",
     borderColor: "border-accent-gold/30",
     bgHover: "hover:bg-accent-gold-dim",
@@ -53,7 +53,7 @@ const CATEGORY_META: Record<
   },
   panelverse: {
     label: "Panelverse",
-    color: "text-accent-gold",
+    color: "text-accent-gold-text",
     dotColor: "bg-accent-gold",
     borderColor: "border-accent-gold/30",
     bgHover: "hover:bg-accent-gold-dim",
@@ -77,7 +77,7 @@ const CATEGORY_META: Record<
   },
   tarot: {
     label: "Tarot & Mystic",
-    color: "text-accent-violet",
+    color: "text-accent-violet-text",
     dotColor: "bg-accent-violet",
     borderColor: "border-accent-violet/30",
     bgHover: "hover:bg-accent-violet-dim",
@@ -2657,9 +2657,9 @@ export default function LexiconPage() {
 
   // Group categories by color family for the legend
   const colorGroups = [
-    { color: "text-accent-gold", dot: "bg-accent-gold", label: "Show & Panel", categories: ["psycheverse", "panelverse"] },
+    { color: "text-accent-gold-text", dot: "bg-accent-gold", label: "Show & Panel", categories: ["psycheverse", "panelverse"] },
     { color: "text-accent-cyan", dot: "bg-accent-cyan", label: "Platform & Moderation", categories: ["streaming", "moderation"] },
-    { color: "text-accent-violet", dot: "bg-accent-violet", label: "Spiritual & Mystic", categories: ["tarot"] },
+    { color: "text-accent-violet-text", dot: "bg-accent-violet", label: "Spiritual & Mystic", categories: ["tarot"] },
     { color: "text-red-400", dot: "bg-red-400", label: "Social & Slang", categories: ["community", "slang"] },
     { color: "text-pink-400", dot: "bg-pink-400", label: "Music & Performance", categories: ["music"] },
   ];
@@ -2694,7 +2694,7 @@ export default function LexiconPage() {
             <a
               key={letter}
               href={`#letter-${letter}`}
-              className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-text-muted hover:text-accent-gold hover:border-accent-gold/40 transition-colors"
+              className="w-7 h-7 flex items-center justify-center rounded border border-white/10 text-text-muted hover:text-accent-gold-text hover:border-accent-gold/40 transition-colors"
             >
               {letter}
             </a>
@@ -2727,7 +2727,7 @@ export default function LexiconPage() {
               const terms = letterIndex.get(letter)!;
               return (
                 <div key={letter} id={`letter-${letter}`}>
-                  <h3 className="font-display text-lg font-bold text-accent-gold border-b border-accent-gold/20 pb-1 mb-3">
+                  <h3 className="font-display text-lg font-bold text-accent-gold-text border-b border-accent-gold/20 pb-1 mb-3">
                     {letter}
                   </h3>
                   <dl className="space-y-4">

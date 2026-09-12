@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 import { PageHero } from "@/components/ui/page-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EpisodeCard } from "@/components/archive/episode-card";
@@ -15,7 +16,7 @@ import {
   getEpisodeCount,
 } from "@/lib/queries/episodes";
 import { getEpisodeAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
-import { getEraById, ERAS } from "@/lib/eras";
+import { getEraById } from "@/lib/eras";
 import {
   DEFAULT_PAGE_SIZE,
   parsePage,
@@ -26,11 +27,14 @@ import { formatDate, formatRelativeDate } from "@/lib/format/date";
 
 export const revalidate = 3600;
 
-export const metadata = {
-  alternates: { canonical: "/episodes" },
-  title: "Episodes — CULT CODEX",
-  description: "Browse 2,600+ Cult of Psyche transmissions — sortable by era, type, topic, and guest. Full transcripts, AI breakdowns, and behavioral profiles for every session.",
-};
+export async function generateMetadata() {
+  const counts = await getCounts().catch(() => null);
+  return {
+    alternates: { canonical: "/episodes" },
+    title: "Episodes — CULT CODEX",
+    description: `Browse ${fmtEpisodeCount(counts?.episodes ?? 0)} Cult of Psyche transmissions — sortable by era, type, topic, and guest. Full transcripts, AI breakdowns, and behavioral profiles for every session.`,
+  };
+}
 
 const SORT_OPTIONS = [
   { label: "Newest", value: "newest" },
@@ -46,7 +50,7 @@ const FILTER_OPTIONS = [
 ];
 
 interface EpisodesPageProps {
-  searchParams: Promise<{ sort?: string; page?: string; filter?: string; view?: string; era?: string }>;
+  searchParams: Promise<{ sort?: string; page?: string; filter?: string; view?: string; era?: string; person?: string; topic?: string }>;
 }
 
 function resolveSort(sort?: string): {
@@ -73,17 +77,20 @@ export default async function EpisodesPage({
   const { orderBy, order } = resolveSort(currentSort);
   const activeEraId = params.era && getEraById(params.era) ? params.era : undefined;
   const activeEra = activeEraId ? getEraById(activeEraId) : null;
+  // /people/[slug] caps its appearance list; this is the full paginated view.
+  const personSlug = params.person?.trim() || undefined;
+  const topicSlug = params.topic?.trim() || undefined;
 
   const [aggregates, totalCount, lastUpdated] = await Promise.all([
     getEpisodeAggregates(),
-    getEpisodeCount(undefined, activeEraId),
+    getEpisodeCount(undefined, activeEraId, personSlug, topicSlug),
     getArchiveLastUpdated(),
   ]);
 
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
-  const cards = await getEpisodeCards({ take, skip, orderBy, order, eraId: activeEraId });
+  const cards = await getEpisodeCards({ take, skip, orderBy, order, eraId: activeEraId, personSlug, topicSlug });
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
@@ -111,6 +118,40 @@ export default async function EpisodesPage({
     />
     <EntityGlanceBar items={glanceItems} />
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+      {topicSlug && (
+        <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-border bg-elevated px-4 py-3">
+          <p className="font-mono text-xs text-text-muted">
+            Filtered to the topic{" "}
+            <Link href={`/topics/${topicSlug}`} className="text-text-primary underline">
+              {topicSlug.replace(/-/g, " ")}
+            </Link>{" "}
+            · {totalCount} episode{totalCount !== 1 ? "s" : ""}
+          </p>
+          <Link
+            href="/episodes"
+            className="font-mono text-[10px] text-text-muted hover:text-text-primary transition-colors"
+          >
+            Clear ×
+          </Link>
+        </div>
+      )}
+      {personSlug && (
+        <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-border bg-elevated px-4 py-3">
+          <p className="font-mono text-xs text-text-muted">
+            Filtered to appearances by{" "}
+            <Link href={`/people/${personSlug}`} className="text-text-primary underline">
+              {personSlug.replace(/-/g, " ")}
+            </Link>{" "}
+            · {totalCount} episode{totalCount !== 1 ? "s" : ""}
+          </p>
+          <Link
+            href="/episodes"
+            className="font-mono text-[10px] text-text-muted hover:text-text-primary transition-colors"
+          >
+            Clear ×
+          </Link>
+        </div>
+      )}
       {activeEra && (
         <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-border bg-elevated px-4 py-3">
           <div className="flex items-center gap-3">
@@ -138,7 +179,7 @@ export default async function EpisodesPage({
           {!activeEra && (
             <Link
               href="/eras"
-              className="font-mono text-[10px] text-text-muted border border-border rounded px-2.5 py-1.5 hover:border-accent-gold/40 hover:text-accent-gold transition-colors"
+              className="font-mono text-[10px] text-text-muted border border-border rounded px-2.5 py-1.5 hover:border-accent-gold/40 hover:text-accent-gold-text transition-colors"
             >
               Browse by Era
             </Link>

@@ -46,7 +46,7 @@ export function BookBuyButton({
         type="button"
         onClick={buy}
         disabled={loading}
-        className="w-full rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-sm font-bold text-accent-violet transition-all hover:bg-accent-violet/25 hover:shadow-lg disabled:opacity-50"
+        className="w-full rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-sm font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25 hover:shadow-lg disabled:opacity-50"
       >
         {loading
           ? "Redirecting to checkout…"

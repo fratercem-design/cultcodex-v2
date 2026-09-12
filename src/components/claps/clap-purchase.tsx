@@ -42,11 +42,11 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
   return (
     <section className="space-y-4 rounded-xl border border-accent-gold/30 bg-surface/60 p-5">
       <div className="space-y-1">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/70">
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
           {"/// buy_a_clap"}
         </p>
         <p className="text-sm text-text-muted leading-relaxed">
-          <span className="text-accent-gold font-bold">$20</span> buys a{" "}
+          <span className="text-accent-gold-text font-bold">$20</span> buys a{" "}
           <span className="text-text-primary">24-hour clap spotlight</span> and a token{" "}
           <span className="text-text-primary">vested forever</span> to your nickname on the board.
         </p>
@@ -102,7 +102,7 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
         <button
           onClick={buyWithStripe}
           disabled={busy}
-          className="rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-6 py-2.5 font-display text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+          className="rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-6 py-2.5 font-display text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
         >
           {busy ? "Opening checkout…" : `👏 Clap with card — $${total}`}
         </button>

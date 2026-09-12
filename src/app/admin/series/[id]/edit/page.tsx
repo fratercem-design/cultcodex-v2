@@ -30,7 +30,7 @@ export default async function EditSeriesPage({ params }: PageProps) {
         </h1>
         <Link
           href="/admin/series"
-          className="font-mono text-xs text-text-muted hover:text-accent-gold transition-colors"
+          className="font-mono text-xs text-text-muted hover:text-accent-gold-text transition-colors"
         >
           &larr; Back to Series
         </Link>

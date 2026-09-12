@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTopicBySlug, getRelatedTopics } from "@/lib/queries/topics";
 import { prisma } from "@/lib/db";
-import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd, thinPageRobots } from "@/lib/seo";
 import { getCurrentUser } from "@/lib/auth";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
@@ -38,8 +38,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
 
-  const epCount = topic.episodes.length;
-  const peopleCount = topic.people.length;
+  const epCount = topic._count.episodes;
+  const peopleCount = topic._count.people;
 
   // Keyword-targeted title: lead with the topic term (what people actually
   // search), then add episode count + "Cult of Psyche" context for long-tail
@@ -63,11 +63,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   let description = base.length >= 60 ? base : synthesized;
   if (description.length > 160) description = `${description.slice(0, 157).trimEnd()}…`;
 
-  return buildMetadata({
-    title,
-    description,
-    path: `/topics/${topic.slug}`,
-  });
+  return {
+    ...buildMetadata({
+      title,
+      description,
+      path: `/topics/${topic.slug}`,
+    }),
+    ...thinPageRobots(epCount),
+  };
 }
 
 // Split a description into its factual part and "In the Psycheverse:" part
@@ -108,14 +111,14 @@ export default async function TopicDetailPage({ params }: PageProps) {
   );
 
   const glanceItems = [
-    ...(topic.episodes.length > 0
-      ? [{ icon: "🎬", label: `${topic.episodes.length} episode${topic.episodes.length !== 1 ? "s" : ""}` }]
+    ...(topic._count.episodes > 0
+      ? [{ icon: "🎬", label: `${topic._count.episodes} episode${topic._count.episodes !== 1 ? "s" : ""}` }]
       : []),
-    ...(topic.people.length > 0
-      ? [{ icon: "👤", label: `${topic.people.length} ${topic.people.length !== 1 ? "people" : "person"}` }]
+    ...(topic._count.people > 0
+      ? [{ icon: "👤", label: `${topic._count.people} ${topic._count.people !== 1 ? "people" : "person"}` }]
       : []),
-    ...(topic.lore.length > 0
-      ? [{ icon: "📜", label: `${topic.lore.length} lore entr${topic.lore.length !== 1 ? "ies" : "y"}` }]
+    ...(topic._count.lore > 0
+      ? [{ icon: "📜", label: `${topic._count.lore} lore entr${topic._count.lore !== 1 ? "ies" : "y"}` }]
       : []),
     ...(relatedTopics.length > 0
       ? [{ icon: "🔗", label: `${relatedTopics.length} related topics` }]
@@ -153,7 +156,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
 
             {descPsycheverse && (
               <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-5 py-4">
-                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold/60 mb-2">
+                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold-text/80 mb-2">
                   In the Psycheverse
                 </p>
                 <p className="text-sm text-text-primary leading-relaxed">
@@ -162,11 +165,19 @@ export default async function TopicDetailPage({ params }: PageProps) {
               </div>
             )}
 
-            <SectionCard title={`Episodes (${topic.episodes.length})`} accent="gold">
+            <SectionCard headingLevel={2} title={`Episodes (${topic._count.episodes})`} accent="gold">
               {sortedEpisodes.length > 0 ? (
                 <div className="grid gap-3">
+                  {topic._count.episodes > sortedEpisodes.length && (
+                    <p className="font-mono text-[11px] text-text-muted">
+                      Showing the {sortedEpisodes.length} most recent of {topic._count.episodes}.{" "}
+                      <Link href={`/episodes?topic=${topic.slug}`} className="underline hover:text-accent-gold-text">
+                        Browse all episodes →
+                      </Link>
+                    </p>
+                  )}
                   {sortedEpisodes.map((e) => (
-                    <EpisodeListItem
+                    <EpisodeListItem headingLevel={3}
                       key={e.episode.id}
                       slug={e.episode.slug}
                       title={e.episode.title}
@@ -183,7 +194,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
             </SectionCard>
 
             {relatedTopics.length > 0 && (
-              <SectionCard title="🐇 Rabbit Hole" accent="cyan">
+              <SectionCard headingLevel={2} title="🐇 Rabbit Hole" accent="cyan">
                 <p className="text-xs text-text-muted mb-4">
                   Topics that frequently appear alongside{" "}
                   <strong className="text-text-primary">{topic.title}</strong>
@@ -213,9 +224,9 @@ export default async function TopicDetailPage({ params }: PageProps) {
           <div className="space-y-6">
             <EntityStatsPanel
               stats={[
-                { icon: "🎬", label: "Episodes", value: topic.episodes.length },
-                { icon: "👤", label: "People", value: topic.people.length },
-                { icon: "📜", label: "Lore Entries", value: topic.lore.length },
+                { icon: "🎬", label: "Episodes", value: topic._count.episodes },
+                { icon: "👤", label: "People", value: topic._count.people },
+                { icon: "📜", label: "Lore Entries", value: topic._count.lore },
               ]}
             />
 
@@ -262,7 +273,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
               url: "https://cultcodex.me/topics",
             },
             // Cross-entity mentions — knowledge-graph edges
-            ...(topic.people.length > 0 || topic.lore.length > 0
+            ...(topic._count.people > 0 || topic._count.lore > 0
               ? {
                   mentions: [
                     ...topic.people.slice(0, 5).map((tp) => ({

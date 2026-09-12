@@ -53,7 +53,7 @@ export default async function OGImage({
     : null;
 
   const airDate = episode.airDate
-    ? new Date(episode.airDate).toLocaleDateString("en-US", {
+    ? new Date(episode.airDate).toLocaleDateString("en-US", { timeZone: "UTC",
         year: "numeric",
         month: "long",
         day: "numeric",

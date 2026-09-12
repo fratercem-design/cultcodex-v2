@@ -13,10 +13,10 @@ export const metadata: Metadata = {
 
 const CANON_BADGE: Record<string, { label: string; cls: string }> = {
   canonical: { label: "CANON", cls: "border-accent-cyan/40 text-accent-cyan bg-accent-cyan/10" },
-  speculative: { label: "SPECULATIVE", cls: "border-accent-gold/40 text-accent-gold bg-accent-gold/10" },
-  community_myth: { label: "COMMUNITY MYTH", cls: "border-accent-violet/40 text-accent-violet bg-accent-violet/10" },
+  speculative: { label: "SPECULATIVE", cls: "border-accent-gold/40 text-accent-gold-text bg-accent-gold/10" },
+  community_myth: { label: "COMMUNITY MYTH", cls: "border-accent-violet/40 text-accent-violet-text bg-accent-violet/10" },
   disputed: { label: "DISPUTED", cls: "border-red-400/40 text-red-400 bg-red-500/10" },
-  humorous: { label: "HUMOROUS", cls: "border-accent-gold/40 text-accent-gold bg-accent-gold/10" },
+  humorous: { label: "HUMOROUS", cls: "border-accent-gold/40 text-accent-gold-text bg-accent-gold/10" },
 };
 
 export default async function TrollopediaPage() {
@@ -94,7 +94,7 @@ export default async function TrollopediaPage() {
         )}
 
         <div className="pt-6 text-center">
-          <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors">
+          <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors">
             ← The Fun Wing
           </Link>
         </div>

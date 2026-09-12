@@ -54,7 +54,7 @@ export default async function QuestRewardPage({ params }: Props) {
 
       <main id="main-content" className="mx-auto max-w-2xl px-4 py-12 space-y-10">
         <nav aria-label="Breadcrumb" className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
-          <Link href="/quests" className="hover:text-accent-gold transition-colors">The Trials</Link>
+          <Link href="/quests" className="hover:text-accent-gold-text transition-colors">The Trials</Link>
           <span className="mx-2">/</span>
           <span style={{ color: hex }}>{quest.title}</span>
         </nav>
@@ -78,7 +78,7 @@ export default async function QuestRewardPage({ params }: Props) {
             </div>
             <MysticalDivider />
             <div className="text-center">
-              <Link href="/quests" className="font-mono text-[11px] uppercase tracking-widest text-text-muted hover:text-accent-gold transition-colors">
+              <Link href="/quests" className="font-mono text-[11px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors">
                 ← Back to the Trials
               </Link>
             </div>

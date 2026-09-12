@@ -84,8 +84,11 @@ async function main() {
         speakerLabel: null as string | null,
       }));
 
-      // Use createMany for speed
-      await prisma.transcriptSegment.createMany({ data });
+      // Use createMany for speed. The alreadyImported snapshot above is taken
+      // once per run, so a concurrent ingest can beat us to an episode —
+      // skipDuplicates (backed by the natural-key unique index) makes that a
+      // silent no-op instead of a second copy.
+      await prisma.transcriptSegment.createMany({ data, skipDuplicates: true });
 
       totalSegments += data.length;
       imported++;

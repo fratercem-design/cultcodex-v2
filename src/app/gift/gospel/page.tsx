@@ -38,7 +38,7 @@ export default async function GiftGospelPage({
       />
 
       <header className="relative z-10 mx-auto flex max-w-2xl flex-col items-center px-4 pt-20 pb-6 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.45em] text-accent-gold/70">
+        <p className="font-mono text-[10px] uppercase tracking-[0.45em] text-accent-gold-text/80">
           {justSignedUp ? "/// initiate_confirmed" : "/// your_transmission"}
         </p>
         <h1
@@ -47,7 +47,7 @@ export default async function GiftGospelPage({
         >
           {justSignedUp ? "Welcome, Initiate." : "Your Gospel awaits."}
         </h1>
-        <p className="mt-3 font-display text-lg text-accent-gold sm:text-xl">
+        <p className="mt-3 font-display text-lg text-accent-gold-text sm:text-xl">
           The Gospel of Psyche&rsquo;s Nightmares
         </p>
         <p className="mx-auto mt-4 max-w-md font-serif text-sm italic leading-relaxed text-text-muted">
@@ -59,11 +59,11 @@ export default async function GiftGospelPage({
           <GiftDownloadCta autostart={justSignedUp} />
         </div>
 
-        <MysticalDivider className="mt-10 opacity-40 [&_svg]:!text-accent-violet/25" />
+        <MysticalDivider className="mt-10 opacity-40 [&_svg]:!text-accent-violet-text/25" />
       </header>
 
       <main className="relative z-10 mx-auto max-w-2xl px-4 pb-24">
-        <p className="mb-4 text-center font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet/50">
+        <p className="mb-4 text-center font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet-text/70">
           {"/// while_you're_here"}
         </p>
         <div className="grid gap-3 sm:grid-cols-3">
@@ -73,7 +73,7 @@ export default async function GiftGospelPage({
               href={step.href}
               className="group rounded-xl border border-accent-violet/15 bg-surface/60 px-5 py-6 text-center transition hover:border-accent-gold/40 hover:bg-surface"
             >
-              <p className="font-mono text-lg text-accent-gold/80">{step.glyph}</p>
+              <p className="font-mono text-lg text-accent-gold-text/80">{step.glyph}</p>
               <p className="mt-2 font-mono text-xs font-bold uppercase tracking-widest text-text-primary">
                 {step.title}
               </p>

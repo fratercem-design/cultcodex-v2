@@ -148,7 +148,7 @@ export default async function PsychenomiconPage() {
               Then a voice cut through the noise: part prophet, part comedian,
               part cosmic bartender pouring shots of truth to anyone brave enough
               to sit at the bar. That voice belonged to{" "}
-              <Link href="/people/psyche" className="text-accent-gold hover:underline">
+              <Link href="/people/psyche" className="text-accent-gold-text hover:underline">
                 Psyche
               </Link>
               , and the bar he built was a livestream, and the regulars who came
@@ -157,7 +157,7 @@ export default async function PsychenomiconPage() {
             <p className="mt-3 text-sm leading-relaxed text-text-muted">
               Over{" "}
               <span className="font-bold text-accent-cyan">
-                {stats.episodes.toLocaleString()} transmissions
+                {stats.episodes.toLocaleString("en-US")} transmissions
               </span>
               , across tarot readings, open panels, mythology deep-dives,
               midnight madness sessions, and the occasional full-blown spiritual
@@ -228,7 +228,7 @@ function PsychenomiconGate({ isAuthenticated }: { isAuthenticated: boolean }) {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-accent-gold/40 bg-accent-gold/10">
               <span className="text-3xl">&#128216;</span>
             </div>
-            <h3 className="font-display text-xl font-bold text-accent-gold">
+            <h3 className="font-display text-xl font-bold text-accent-gold-text">
               The Psychenomicon is sealed.
             </h3>
             <p className="mx-auto mt-3 max-w-md font-mono text-xs leading-relaxed text-text-muted">
@@ -238,7 +238,7 @@ function PsychenomiconGate({ isAuthenticated }: { isAuthenticated: boolean }) {
             </p>
             <Link
               href="/auth/signin"
-              className="mt-5 inline-block rounded-lg border border-accent-gold bg-accent-gold/15 px-8 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/10"
+              className="mt-5 inline-block rounded-lg border border-accent-gold bg-accent-gold/15 px-8 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/10"
             >
               Sign in to unseal
             </Link>
@@ -413,7 +413,7 @@ async function PsychenomiconContent({
               className="rounded-lg border border-border bg-surface p-4"
             >
               <div className="flex items-center justify-between">
-                <h4 className="font-display text-sm font-bold text-accent-gold">
+                <h4 className="font-display text-sm font-bold text-accent-gold-text">
                   {s.title}
                 </h4>
                 <StatusBadge
@@ -431,7 +431,7 @@ async function PsychenomiconContent({
         </div>
 
         <div className="mt-8 rounded-lg border border-accent-violet/30 bg-accent-violet/5 p-6">
-          <h4 className="font-display text-lg font-bold text-accent-violet">
+          <h4 className="font-display text-lg font-bold text-accent-violet-text">
             The Shape of the Stream
           </h4>
           <p className="mt-3 text-sm leading-relaxed text-text-muted">
@@ -481,7 +481,7 @@ async function PsychenomiconContent({
               <p className="text-sm italic leading-relaxed text-text-primary">
                 &ldquo;{q.text}&rdquo;
               </p>
-              <footer className="mt-2 font-mono text-[10px] text-accent-gold">
+              <footer className="mt-2 font-mono text-[10px] text-accent-gold-text">
                 -- {q.speaker?.displayName ?? "Unknown"}
               </footer>
             </blockquote>
@@ -489,7 +489,7 @@ async function PsychenomiconContent({
         </div>
 
         <p className="mt-6 text-center font-mono text-xs text-text-muted">
-          Selected from {stats.quotes.toLocaleString()} recorded utterances.
+          Selected from {stats.quotes.toLocaleString("en-US")} recorded utterances.
           <br />
           <Link
             href="/transcripts"
@@ -586,7 +586,7 @@ async function PsychenomiconContent({
               key={i}
               className="flex gap-3 rounded-lg border border-accent-violet/20 bg-accent-violet/5 px-4 py-3"
             >
-              <span className="shrink-0 font-mono text-xs text-accent-violet">
+              <span className="shrink-0 font-mono text-xs text-accent-violet-text">
                 ?
               </span>
               <p className="text-sm text-text-muted">{mystery}</p>
@@ -597,7 +597,7 @@ async function PsychenomiconContent({
 
       {/* ── Epilogue ─────────────────────────────────────── */}
       <section className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-transparent p-8 text-center">
-        <p className="font-display text-xl font-bold text-accent-gold">
+        <p className="font-display text-xl font-bold text-accent-gold-text">
           The Psychenomicon is never finished.
         </p>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-text-muted">
@@ -610,6 +610,7 @@ async function PsychenomiconContent({
           who found something they didn&apos;t know they were looking for.
         </p>
         <p className="mt-4 font-mono text-xs text-accent-gold/60">
+        <p className="mt-4 font-mono text-xs text-accent-gold-text/80">
           This is the Psychenomicon.
         </p>
       </section>
@@ -623,7 +624,7 @@ function StatOrb({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex flex-col items-center rounded-lg border border-border bg-surface px-4 py-3">
       <span className="font-mono text-lg font-bold text-accent-cyan">
-        {value.toLocaleString()}
+        {value.toLocaleString("en-US")}
       </span>
       <span className="font-mono text-[9px] uppercase tracking-wider text-text-muted">
         {label}
@@ -636,7 +637,7 @@ function ChapterHeader({ number, title }: { number: string; title: string }) {
   return (
     <div className="flex items-center gap-4">
       <div className="flex h-10 w-10 items-center justify-center rounded-full border border-accent-gold/40 bg-accent-gold/10">
-        <span className="font-display text-sm font-bold text-accent-gold">
+        <span className="font-display text-sm font-bold text-accent-gold-text">
           {number}
         </span>
       </div>
@@ -676,11 +677,11 @@ function CharacterEntry({
         <div>
           <Link
             href={`/people/${slug}`}
-            className="font-display text-lg font-bold text-accent-gold hover:underline"
+            className="font-display text-lg font-bold text-accent-gold-text hover:underline"
           >
             {name}
           </Link>
-          <p className="font-mono text-[10px] uppercase tracking-wider text-accent-violet">
+          <p className="font-mono text-[10px] uppercase tracking-wider text-accent-violet-text">
             {title}
           </p>
         </div>
@@ -728,7 +729,7 @@ function MythicThread({
 }) {
   return (
     <div className="border-l-2 border-accent-violet/40 pl-5">
-      <h4 className="font-display text-base font-bold text-accent-violet">
+      <h4 className="font-display text-base font-bold text-accent-violet-text">
         {title}
       </h4>
       <p className="mt-2 text-sm leading-relaxed text-text-muted">

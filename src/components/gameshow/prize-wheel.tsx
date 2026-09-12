@@ -40,14 +40,14 @@ export function PrizeWheel({ progress, onUpdate, onPrize }: {
       <div className="absolute inset-0 bg-gradient-to-b from-void/85 via-void/80 to-void/90" />
       <div className="relative space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold/70">{"/// the_prize_wheel"}</p>
+        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// the_prize_wheel"}</p>
         <span className="font-mono text-[10px] text-text-muted">🎡 {progress.spins} spin{progress.spins === 1 ? "" : "s"} · earn one every 5 correct</span>
       </div>
 
       <div className="flex flex-col items-center gap-3">
         <div className="relative h-52 w-52">
           {/* pointer */}
-          <div className="absolute left-1/2 top-[-6px] z-10 -translate-x-1/2 text-accent-gold text-xl drop-shadow">▼</div>
+          <div className="absolute left-1/2 top-[-6px] z-10 -translate-x-1/2 text-accent-gold-text text-xl drop-shadow">▼</div>
           <svg viewBox="0 0 100 100" className="h-full w-full" style={{ transform: `rotate(${rotation}deg)`, transition: spinning ? "transform 3.1s cubic-bezier(0.17,0.67,0.12,0.99)" : "none" }}>
             {WHEEL.map((_, i) => {
               const a0 = (i * SEG - 90) * (Math.PI / 180);
@@ -70,7 +70,7 @@ export function PrizeWheel({ progress, onUpdate, onPrize }: {
         <button
           onClick={doSpin}
           disabled={spinning || progress.spins <= 0}
-          className="rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-8 py-3 font-display text-base font-bold text-accent-gold hover:bg-accent-gold/25 hover:scale-[1.04] active:scale-[0.98] disabled:opacity-40 disabled:hover:scale-100 transition-all shadow-[0_0_24px_-8px_rgba(200,57,46,0.6)]"
+          className="rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-8 py-3 font-display text-base font-bold text-accent-gold-text hover:bg-accent-gold/25 hover:scale-[1.04] active:scale-[0.98] disabled:opacity-40 disabled:hover:scale-100 transition-all shadow-[0_0_24px_-8px_rgba(200,57,46,0.6)]"
         >
           {spinning ? "spinning…" : progress.spins > 0 ? "🎡 SPIN" : "No spins — go play"}
         </button>
@@ -84,9 +84,9 @@ export function PrizeWheel({ progress, onUpdate, onPrize }: {
         <div className="border-t border-border pt-3 space-y-2">
           <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/60">{`/// wear_a_title · ${progress.titles.length} won`}</p>
           <div className="flex flex-wrap gap-2">
-            <button onClick={() => onUpdate(setActiveTitle(""))} className={`rounded border px-2.5 py-1 font-mono text-[10px] transition-all ${progress.activeTitle === "" ? "border-accent-violet/50 bg-accent-violet/10 text-accent-violet" : "border-border text-text-muted hover:text-accent-violet"}`}>none</button>
+            <button onClick={() => onUpdate(setActiveTitle(""))} className={`rounded border px-2.5 py-1 font-mono text-[10px] transition-all ${progress.activeTitle === "" ? "border-accent-violet/50 bg-accent-violet/10 text-accent-violet-text" : "border-border text-text-muted hover:text-accent-violet-text"}`}>none</button>
             {progress.titles.map((t) => (
-              <button key={t} onClick={() => onUpdate(setActiveTitle(t))} className={`rounded border px-2.5 py-1 font-mono text-[10px] transition-all ${progress.activeTitle === t ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold" : "border-border text-text-muted hover:text-accent-gold"}`}>{t}</button>
+              <button key={t} onClick={() => onUpdate(setActiveTitle(t))} className={`rounded border px-2.5 py-1 font-mono text-[10px] transition-all ${progress.activeTitle === t ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold-text" : "border-border text-text-muted hover:text-accent-gold-text"}`}>{t}</button>
             ))}
           </div>
         </div>

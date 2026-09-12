@@ -69,7 +69,7 @@ export default async function CodexPage() {
       >
         {/* Mythic framing */}
         <section className="text-center max-w-2xl mx-auto space-y-2">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-accent-gold">
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-accent-gold-text">
             {"/// private · "}{user.displayName}
           </p>
           <p className="text-sm text-text-muted leading-relaxed">
@@ -149,7 +149,7 @@ export default async function CodexPage() {
                   )}
                   <div className="flex items-center gap-2 mb-1">
                     {fav.episode.episodeNumber != null && (
-                      <span className="font-mono text-[10px] text-accent-gold font-bold">
+                      <span className="font-mono text-[10px] text-accent-gold-text font-bold">
                         EP.{String(fav.episode.episodeNumber).padStart(3, "0")}
                       </span>
                     )}
@@ -159,7 +159,7 @@ export default async function CodexPage() {
                       </span>
                     )}
                   </div>
-                  <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
+                  <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-2">
                     {fav.episode.title}
                   </h3>
                 </Link>
@@ -204,7 +204,7 @@ export default async function CodexPage() {
                         className="h-5 w-5 rounded-full object-cover"
                       />
                     )}
-                    <p className="font-mono text-[10px] text-accent-violet">
+                    <p className="font-mono text-[10px] text-accent-violet-text">
                       {row.quote.speaker?.displayName ?? "Unknown speaker"}
                     </p>
                   </div>
@@ -249,9 +249,9 @@ function CodexSection({
   const a =
     accent === "gold"
       ? {
-          eyebrow: "text-accent-gold",
-          title: "text-accent-gold",
-          cta: "text-accent-gold hover:text-accent-gold/80",
+          eyebrow: "text-accent-gold-text",
+          title: "text-accent-gold-text",
+          cta: "text-accent-gold-text hover:text-accent-gold-text/80",
         }
       : accent === "cyan"
         ? {
@@ -260,9 +260,9 @@ function CodexSection({
             cta: "text-accent-cyan hover:text-accent-cyan/80",
           }
         : {
-            eyebrow: "text-accent-violet",
-            title: "text-accent-violet",
-            cta: "text-accent-violet hover:text-accent-violet/80",
+            eyebrow: "text-accent-violet-text",
+            title: "text-accent-violet-text",
+            cta: "text-accent-violet-text hover:text-accent-violet-text/80",
           };
 
   return (

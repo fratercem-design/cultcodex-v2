@@ -58,7 +58,7 @@ export default async function RankPage() {
                 {data.progress.current.blurb}
               </p>
               <p className="font-mono text-xs text-text-muted/60">
-                Codex score: <span className="text-accent-gold font-bold">{data.score.toLocaleString()}</span>
+                Codex score: <span className="text-accent-gold-text font-bold">{data.score.toLocaleString("en-US")}</span>
               </p>
             </div>
 
@@ -67,7 +67,7 @@ export default async function RankPage() {
               <div className="space-y-2 pt-2">
                 <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-text-muted/60">
                   <span>{data.progress.current.title}</span>
-                  <span>{data.progress.toNext.toLocaleString()} pts to {data.progress.next.title}</span>
+                  <span>{data.progress.toNext.toLocaleString("en-US")} pts to {data.progress.next.title}</span>
                 </div>
                 <div className="h-2 w-full rounded-full bg-void overflow-hidden border border-border">
                   <div
@@ -80,14 +80,14 @@ export default async function RankPage() {
                 </div>
               </div>
             ) : (
-              <p className="font-mono text-xs text-accent-crimson pt-2">
+              <p className="font-mono text-xs text-accent-crimson-text pt-2">
                 Maximum rank reached. You are the archive.
               </p>
             )}
           </section>
         ) : (
           <section className="rounded-2xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-7 text-center space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60">
+            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
               {"/// claim_your_rank"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
@@ -99,7 +99,7 @@ export default async function RankPage() {
             </p>
             <Link
               href="/auth/signin"
-              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
+              className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25"
             >
               Sign in →
             </Link>
@@ -124,9 +124,9 @@ export default async function RankPage() {
                   .map((l) => (
                     <div key={l.label} className="flex items-center justify-between px-5 py-2.5">
                       <span className="font-mono text-xs text-text-muted">
-                        {l.label} <span className="text-text-muted/60">× {l.count.toLocaleString()}</span>
+                        {l.label} <span className="text-text-muted/60">× {l.count.toLocaleString("en-US")}</span>
                       </span>
-                      <span className="font-mono text-xs font-bold text-accent-gold">+{l.points.toLocaleString()}</span>
+                      <span className="font-mono text-xs font-bold text-accent-gold-text">+{l.points.toLocaleString("en-US")}</span>
                     </div>
                   ))
               )}
@@ -138,7 +138,7 @@ export default async function RankPage() {
 
         {/* The ladder */}
         <section className="space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet/60 text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70 text-center">
             {"/// the_path"}
           </p>
           <div className="space-y-3">
@@ -162,14 +162,14 @@ export default async function RankPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-display text-base font-bold text-text-primary">{r.title}</h3>
                       {isCurrent && (
-                        <span className="font-mono text-[9px] uppercase tracking-widest text-accent-gold">
+                        <span className="font-mono text-[9px] uppercase tracking-widest text-accent-gold-text">
                           ◂ you are here
                         </span>
                       )}
                     </div>
                     <p className="font-mono text-[11px] text-text-muted leading-relaxed">{r.blurb}</p>
                     <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">
-                      {r.minScore === 0 ? "Starting rank" : `${r.minScore.toLocaleString()} codex score`}
+                      {r.minScore === 0 ? "Starting rank" : `${r.minScore.toLocaleString("en-US")} codex score`}
                     </p>
                   </div>
                 </div>
@@ -186,17 +186,17 @@ export default async function RankPage() {
             and go deep into the archive.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/signals" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet hover:bg-accent-violet/5 transition-colors">
+            <Link href="/signals" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet-text hover:bg-accent-violet/5 transition-colors">
               Propose a signal →
             </Link>
             <Link href="/explore" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-cyan/30 text-accent-cyan hover:bg-accent-cyan/5 transition-colors">
               Explore the archive →
             </Link>
-            <Link href="/leaderboard" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold hover:bg-accent-gold/5 transition-colors">
+            <Link href="/leaderboard" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold/5 transition-colors">
               Leaderboard →
             </Link>
             {!isMember && (
-              <Link href="/premium" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold hover:bg-accent-gold/5 transition-colors">
+              <Link href="/premium" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold/5 transition-colors">
                 Become Initiate+ →
               </Link>
             )}

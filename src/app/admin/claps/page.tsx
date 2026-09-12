@@ -83,7 +83,7 @@ export default async function AdminClapsPage() {
           </label>
           <button
             type="submit"
-            className="rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-5 py-2 font-display text-sm font-bold text-accent-gold hover:bg-accent-gold/25"
+            className="rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-5 py-2 font-display text-sm font-bold text-accent-gold-text hover:bg-accent-gold/25"
           >
             Grant
           </button>
@@ -99,7 +99,7 @@ export default async function AdminClapsPage() {
               <span className="font-mono text-sm text-accent-cyan">👏 × {h.tokens}</span>
               {h.hidden && <span className="font-mono text-[10px] uppercase text-red-400/70">hidden</span>}
               {h.claps.some((c) => c.spotlightUntil && c.spotlightUntil > now) && (
-                <span className="font-mono text-[10px] uppercase text-accent-gold">clapping now</span>
+                <span className="font-mono text-[10px] uppercase text-accent-gold-text">clapping now</span>
               )}
               <div className="ml-auto flex items-center gap-2">
                 <form action={renameClapHolder} className="flex items-center gap-1.5">
@@ -110,7 +110,7 @@ export default async function AdminClapsPage() {
                     maxLength={32}
                     className="w-36 rounded border border-border bg-elevated px-2 py-1 font-mono text-xs text-text-primary focus:border-accent-gold focus:outline-none"
                   />
-                  <button type="submit" className="font-mono text-[10px] text-text-muted hover:text-accent-gold">
+                  <button type="submit" className="font-mono text-[10px] text-text-muted hover:text-accent-gold-text">
                     rename
                   </button>
                 </form>

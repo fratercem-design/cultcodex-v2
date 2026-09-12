@@ -1,11 +1,47 @@
 import { prisma } from "@/lib/db";
 import type { Prisma } from "@/generated/prisma/client";
 
+/** Card-shaped episode fields — the only ones a topic page renders. The old
+ *  `include: { episode: true }` pulled every column for every linked episode,
+ *  which is most of why /topics/tarot-readings shipped ~1 MB of HTML
+ *  (2026-08 audit). */
+const TOPIC_EPISODE_SELECT = {
+  id: true,
+  slug: true,
+  title: true,
+  episodeNumber: true,
+  airDate: true,
+  summaryShort: true,
+  thumbnailUrl: true,
+} satisfies Prisma.EpisodeSelect;
+
+/** Linked episodes rendered before deferring to /episodes?topic=<slug>. */
+export const TOPIC_EPISODES_TAKE = 100;
+/** Linked people/lore rendered as chips — full rows were being loaded for
+ *  every link, only four/two fields of which are ever rendered. */
+export const TOPIC_PEOPLE_TAKE = 60;
+export const TOPIC_LORE_TAKE = 60;
+
 export function buildTopicInclude() {
   return {
-    episodes: { include: { episode: true } },
-    people: { include: { person: true } },
-    lore: { include: { loreEntry: true } },
+    _count: { select: { episodes: true, people: true, lore: true } },
+    episodes: {
+      select: { episode: { select: TOPIC_EPISODE_SELECT } },
+      orderBy: { episode: { airDate: "desc" } },
+      take: TOPIC_EPISODES_TAKE,
+    },
+    people: {
+      select: {
+        person: {
+          select: { displayName: true, slug: true, avatarUrl: true, personType: true },
+        },
+      },
+      take: TOPIC_PEOPLE_TAKE,
+    },
+    lore: {
+      select: { loreEntry: { select: { title: true, slug: true } } },
+      take: TOPIC_LORE_TAKE,
+    },
   } satisfies Prisma.TopicInclude;
 }
 

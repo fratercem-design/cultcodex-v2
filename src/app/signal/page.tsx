@@ -45,7 +45,7 @@ export default async function SignalPage() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-4 py-16 space-y-8 text-center">
       <div className="space-y-2">
-        <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-gold/70">
+        <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-gold-text/80">
           ✦ today&rsquo;s signal ✦
         </p>
         {data && (
@@ -61,10 +61,10 @@ export default async function SignalPage() {
             &ldquo;{cleanTranscriptText(quote.text)}&rdquo;
           </blockquote>
           <div className="flex flex-wrap items-center justify-center gap-2 font-mono text-xs text-text-muted">
-            {quote.speaker && <span className="text-accent-gold">{quote.speaker.displayName}</span>}
+            {quote.speaker && <span className="text-accent-gold-text">{quote.speaker.displayName}</span>}
             {quote.speaker && episode && <span className="opacity-50">·</span>}
             {episode && (
-              <Link href={`/episodes/${episode.slug}`} className="hover:text-accent-gold transition-colors">
+              <Link href={`/episodes/${episode.slug}`} className="hover:text-accent-gold-text transition-colors">
                 {episode.episodeNumber != null ? `EP.${String(episode.episodeNumber).padStart(3, "0")} · ` : ""}
                 {episode.title}
               </Link>
@@ -80,7 +80,7 @@ export default async function SignalPage() {
 
       <div className="flex flex-col items-center gap-3 pt-4">
         <ShareSignalButton hasQuote={!!quote} />
-        <Link href="/" className="font-mono text-[11px] text-text-muted hover:text-accent-gold transition-colors underline underline-offset-4">
+        <Link href="/" className="font-mono text-[11px] text-text-muted hover:text-accent-gold-text transition-colors underline underline-offset-4">
           ← back to the archive
         </Link>
       </div>

@@ -3,6 +3,8 @@ import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/db";
 import { getStripe } from "@/lib/stripe";
 import { getTierByPriceId } from "@/lib/subscription-tiers";
+import { getCreditBundle } from "@/lib/credit-bundles";
+import { grantPurchasedCredits } from "@/lib/queries/credit-purchases";
 import { sendInitiateWelcomeEmail, sendOracleWelcomeEmail } from "@/lib/notifications";
 import type Stripe from "stripe";
 
@@ -175,6 +177,47 @@ export async function POST(request: NextRequest) {
               update: { stripeSessionId: session.id },
             })
             .catch((err) => console.error("[webhook] book entitlement failed:", err));
+        }
+
+        // Signal Credit bundle → credit the wallet. Two guards stack here:
+        // the event-level dedup above, and grantPurchasedCredits' own check on
+        // the session id. Unlike the clap/book branches this one does NOT
+        // swallow a failure: markEventProcessed has already recorded the
+        // event, so a 500 alone would make Stripe's retry look like a
+        // duplicate and the paid grant would be lost. Release the dedup row
+        // first, then 500, so the retry is genuinely re-processed — and the
+        // session-id guard means a retry after a committed grant is a no-op.
+        if (session.mode === "payment" && session.metadata?.kind === "credits") {
+          const userId = session.metadata.codexUserId;
+          const bundle = getCreditBundle(session.metadata.bundle ?? "");
+          const claimed = parseInt(session.metadata.credits ?? "", 10);
+          if (!userId || !bundle || claimed !== bundle.credits) {
+            // Metadata this server didn't write. Log loudly; don't grant, and
+            // don't retry — a retry would carry the same bad metadata.
+            console.error("[webhook] credits grant refused: bad metadata", {
+              sessionId: session.id,
+              metadata: session.metadata,
+            });
+          } else {
+            try {
+              const result = await grantPurchasedCredits({
+                userId,
+                bundle: bundle.slug,
+                credits: bundle.credits,
+                stripeSessionId: session.id,
+                amountCents: session.amount_total ?? null,
+              });
+              if (!result.granted) {
+                console.log(`[webhook] credits already granted for ${session.id} — skipping`);
+              }
+            } catch (err) {
+              console.error("[webhook] credits grant failed — releasing event for retry:", err);
+              await prisma.stripeWebhookEvent
+                .delete({ where: { id: event.id } })
+                .catch((e) => console.error("[webhook] could not release dedup row:", e));
+              return NextResponse.json({ error: "Credit grant failed" }, { status: 500 });
+            }
+          }
         }
         break;
       }

@@ -11,6 +11,13 @@ interface EpisodeListItemProps {
   summaryShort?: string | null;
   thumbnailUrl?: string | null;
   segmentCount?: number;
+  /**
+   * Heading level for the item title. Defaults to 2, which is correct on the
+   * archive index where these sit directly under the page `<h1>`. Pass 3 when
+   * the list is nested inside a titled section — otherwise each item outranks
+   * the section heading that contains it.
+   */
+  headingLevel?: 2 | 3 | 4;
 }
 
 export function EpisodeListItem({
@@ -21,7 +28,9 @@ export function EpisodeListItem({
   summaryShort,
   thumbnailUrl,
   segmentCount,
+  headingLevel = 2,
 }: EpisodeListItemProps) {
+  const Heading = `h${headingLevel}` as "h2" | "h3" | "h4";
   const epNum = episodeNumber
     ? `EP.${String(episodeNumber).padStart(3, "0")}`
     : null;
@@ -47,7 +56,7 @@ export function EpisodeListItem({
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-0.5">
           {epNum && (
-            <span className="font-mono text-[10px] text-accent-gold font-bold">
+            <span className="font-mono text-[10px] text-accent-gold-text font-bold">
               {epNum}
             </span>
           )}
@@ -63,9 +72,9 @@ export function EpisodeListItem({
             <TranscriptBadge segmentCount={segmentCount} />
           )}
         </div>
-        <h2 className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
+        <Heading className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-2">
           {title}
-        </h2>
+        </Heading>
         {summaryShort && (
           <p className="mt-1 text-xs text-text-muted line-clamp-2">
             {summaryShort}

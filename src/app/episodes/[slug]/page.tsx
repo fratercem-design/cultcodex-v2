@@ -28,6 +28,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { YouTubeEmbed } from "@/components/media/youtube-embed";
 import { TranscriptViewer } from "@/components/media/transcript-viewer";
+import { groupSegments } from "@/lib/transcript/group-segments";
 import { isSubscribed } from "@/lib/subscription";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { ReactionBar } from "@/components/episodes/reaction-bar";
@@ -117,6 +118,10 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     : null;
 
   const hasTranscript = episode.segments.length > 0;
+  // Group raw caption cues into paragraph blocks on the server. Every word
+  // still ships in the HTML — the transcript is the archive's SEO engine — but
+  // a long episode renders ~1.2k rows instead of ~12k.
+  const transcriptBlocks = hasTranscript ? groupSegments(episode.segments) : [];
   const confidenceTier = getConfidenceTier(episode.segments.length, !!episode.summaryLong);
   const hasTranscriptAccess = user ? await isSubscribed(user.id).catch(() => false) : false;
   const hasDecodeAccess = hasTranscriptAccess; // same tier — Initiate+
@@ -358,7 +363,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
           {/* Tab layout */}
           <Suspense fallback={<div className="h-40" />}>
-            <EpisodeTabLayout tabs={tabs}>
+            <EpisodeTabLayout tabs={tabs} prerender={["transcript"]}>
               {{
                 overview: (
                   <div className="space-y-6">
@@ -373,7 +378,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         humanReviewedAt={episode.humanReviewedAt}
                       />
                     ) : episode.summaryLong ? (
-                      <SectionCard title="Summary">
+                      <SectionCard headingLevel={2} title="Summary">
                         <p className="text-sm text-text-primary leading-relaxed">
                           {renderWithTimestamps(episode.summaryLong, episode.youtubeVideoId)}
                         </p>
@@ -388,13 +393,13 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
                     {/* Guests (inline for mobile) — hosts filtered out */}
                     {actualGuests.length > 0 && (
-                      <SectionCard title={`Guests (${actualGuests.length})`} accent="gold">
+                      <SectionCard headingLevel={2} title={`Guests (${actualGuests.length})`} accent="gold">
                         <div className="flex flex-wrap gap-1.5">
                           {actualGuests.map((g) => (
                             <Link
                               key={g.person.slug}
                               href={`/people/${g.person.slug}`}
-                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-text-primary hover:border-accent-gold/30 hover:text-accent-gold transition-colors"
+                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-text-primary hover:border-accent-gold/30 hover:text-accent-gold-text transition-colors"
                             >
                               {g.person.displayName}
                             </Link>
@@ -405,7 +410,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
                     {/* Topics (inline for mobile) */}
                     {episode.topics.length > 0 && (
-                      <SectionCard title={`Topics (${episode.topics.length})`} accent="cyan">
+                      <SectionCard headingLevel={2} title={`Topics (${episode.topics.length})`} accent="cyan">
                         <div className="flex flex-wrap gap-1.5">
                           {episode.topics.map((t) => (
                             <Link
@@ -422,7 +427,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
                     {/* Transcript status — show when no transcript */}
                     {!hasTranscript && (
-                      <SectionCard title="Transcript">
+                      <SectionCard headingLevel={2} title="Transcript">
                         <div className="flex items-center gap-3 py-2">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface border border-border">
                             <span className="font-mono text-[10px] text-text-muted">░░░</span>
@@ -443,10 +448,10 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                     {/* Related episodes */}
                     {relatedEpisodes.length > 0 && (
                       <section>
-                        <SectionCard title={`Related Episodes (${relatedEpisodes.length})`}>
+                        <SectionCard headingLevel={2} title={`Related Episodes (${relatedEpisodes.length})`}>
                           <div className="grid gap-3 sm:grid-cols-2">
                             {relatedEpisodes.map((ep) => (
-                              <EpisodeListItem
+                              <EpisodeListItem headingLevel={3}
                                 key={ep.id}
                                 slug={ep.slug}
                                 title={ep.title}
@@ -471,7 +476,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         .slice(0, 3);
                       if (topicsWithDesc.length === 0) return null;
                       return (
-                        <SectionCard title="🐇 Go Deeper">
+                        <SectionCard headingLevel={2} title="🐇 Go Deeper">
                           <p className="text-xs text-text-muted mb-4">
                             Explore the ideas at the heart of this episode
                           </p>
@@ -508,10 +513,16 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   // long-tail-searchable content. Premium value lives in the
                   // interactive tools (Oracle, Decode, Red Room, annotations),
                   // not behind the words themselves.
+                  //
+                  // "Indexable" only holds because this tab is listed in
+                  // `prerender` above: the layout otherwise renders just the
+                  // active tab, which left the transcript out of the canonical
+                  // URL's HTML entirely (it only existed inside the JSON-LD and
+                  // RSC <script> payloads, which are not page text to Google).
                   transcript: (
                     <TerminalPanel header="TRANSCRIPT">
                       <TranscriptViewer
-                        segments={episode.segments}
+                        blocks={transcriptBlocks}
                         hasVideoEmbed={!!episode.youtubeVideoId}
                         initialTimestamp={initialTimestamp}
                         signalMap={signalMap}
@@ -551,7 +562,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 ),
                 discussion: (
                   <div className="space-y-6">
-                    <SectionCard title={`Comments (${commentsData.totalCount})`}>
+                    <SectionCard headingLevel={2} title={`Comments (${commentsData.totalCount})`}>
                       <CommentSection
                         slug={episode.slug}
                         initialComments={JSON.parse(JSON.stringify(commentsData.comments))}
@@ -560,7 +571,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         currentUserId={user?.id}
                       />
                     </SectionCard>
-                    <SectionCard title="Community Annotations">
+                    <SectionCard headingLevel={2} title="Community Annotations">
                       <AnnotationSection
                         targetType="episode"
                         targetId={episode.slug}
@@ -578,7 +589,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Meta */}
-          <SectionCard title="Metadata">
+          <SectionCard headingLevel={2} title="Metadata">
             <div className="space-y-0">
               {epNum && <MetaRow label="Episode" value={epNum} />}
               <MetaRow label="Aired" value={formatDate(episode.airDate)} />
@@ -650,8 +661,8 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           {/* Upgrade CTA — only for non-subscribers */}
           {!hasTranscriptAccess && (
             <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-5 space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">{"/// initiate_layer"}</p>
-              <p className="font-mono text-xs font-bold text-accent-gold">Observers see the surface.</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text">{"/// initiate_layer"}</p>
+              <p className="font-mono text-xs font-bold text-accent-gold-text">Observers see the surface.</p>
               <ul className="space-y-1.5">
                 {[
                   "Decode Mode — AI analysis of every episode",
@@ -660,14 +671,14 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   "Add annotations & help shape the canon",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 font-mono text-[10px] text-text-muted">
-                    <span className="text-accent-gold mt-0.5">✦</span>
+                    <span className="text-accent-gold-text mt-0.5">✦</span>
                     {f}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/premium"
-                className="block w-full rounded-lg border border-accent-gold bg-accent-gold/15 px-4 py-2.5 text-center font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
+                className="block w-full rounded-lg border border-accent-gold bg-accent-gold/15 px-4 py-2.5 text-center font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25"
               >
                 Become Initiate+ — $10/mo
               </Link>

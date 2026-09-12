@@ -28,7 +28,7 @@ export const CONFIDENCE_TIER_CONFIG: Record<ConfidenceTier, TierConfig> = {
     shortLabel: "HIGH",
     tooltip:
       "Summary generated from a full transcript — the most reliable AI interpretation available.",
-    color: "text-accent-gold",
+    color: "text-accent-gold-text",
     bg: "bg-accent-gold/10",
     border: "border-accent-gold/30",
     glyph: "●●●",

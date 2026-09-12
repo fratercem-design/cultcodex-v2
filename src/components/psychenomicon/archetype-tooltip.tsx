@@ -34,7 +34,7 @@ export function ArchetypeTooltip({ entity, children }: TooltipProps) {
       <span
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
-        className="cursor-help border-b border-dashed border-accent-violet/40 text-accent-violet/90 hover:text-accent-violet transition-colors"
+        className="cursor-help border-b border-dashed border-accent-violet/40 text-accent-violet-text/90 hover:text-accent-violet-text transition-colors"
       >
         {children}
       </span>
@@ -42,10 +42,10 @@ export function ArchetypeTooltip({ entity, children }: TooltipProps) {
       {open && (
         <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 pointer-events-none">
           <span className="block w-56 rounded-lg border border-accent-violet/30 bg-void/98 backdrop-blur-sm p-3 shadow-2xl shadow-accent-violet/10 space-y-2">
-            <span className="block font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/60">{"/// entity"}</span>
+            <span className="block font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">{"/// entity"}</span>
             <span className="block font-mono text-xs font-bold text-text-primary">{entity.name}</span>
             {entity.primaryArchetype && (
-              <span className="block font-mono text-[10px] text-accent-violet">{entity.primaryArchetype}</span>
+              <span className="block font-mono text-[10px] text-accent-violet-text">{entity.primaryArchetype}</span>
             )}
             {entity.behaviorPatterns && entity.behaviorPatterns.length > 0 && (
               <span className="block flex flex-wrap gap-1 mt-1">
@@ -58,7 +58,7 @@ export function ArchetypeTooltip({ entity, children }: TooltipProps) {
             )}
             <Link
               href={`/psychenomicon/entities/${entity.slug}`}
-              className="pointer-events-auto block font-mono text-[9px] text-accent-violet/60 hover:text-accent-violet transition-colors mt-1"
+              className="pointer-events-auto block font-mono text-[9px] text-accent-violet-text/70 hover:text-accent-violet-text transition-colors mt-1"
             >
               View full profile →
             </Link>

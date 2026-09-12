@@ -97,7 +97,7 @@ export default async function JoinPage() {
 
         {/* Intro */}
         <section className="max-w-2xl mx-auto text-center space-y-5">
-          <div className="flex justify-center text-accent-gold">
+          <div className="flex justify-center text-accent-gold-text">
             <CodexSigil size={56} glow />
           </div>
           <p className="text-sm text-text-muted leading-relaxed">
@@ -107,8 +107,8 @@ export default async function JoinPage() {
             around it: the panelists, the lurkers, the ride-or-dies, the trolls who secretly care.
           </p>
           <p className="font-mono text-[11px] text-text-muted/70 leading-relaxed">
-            {stats.episodes.toLocaleString()}+ transmissions · {stats.people.toLocaleString()} voices
-            · {stats.totalHours.toLocaleString()}+ hours · one growing mythology.
+            {stats.episodes.toLocaleString("en-US")}+ transmissions · {stats.people.toLocaleString("en-US")} voices
+            · {stats.totalHours.toLocaleString("en-US")}+ hours · one growing mythology.
           </p>
         </section>
 
@@ -125,13 +125,13 @@ export default async function JoinPage() {
                 className="group rounded-xl border border-border bg-surface p-6 space-y-3 transition-all hover:border-accent-gold/40 hover:bg-elevated"
               >
                 <div className="flex items-center gap-3">
-                  <span className="font-mono text-xl text-accent-gold/70">{w.glyph}</span>
-                  <h2 className="font-display text-lg font-bold text-text-primary group-hover:text-accent-gold transition-colors">
+                  <span className="font-mono text-xl text-accent-gold-text/80">{w.glyph}</span>
+                  <h2 className="font-display text-lg font-bold text-text-primary group-hover:text-accent-gold-text transition-colors">
                     {w.title}
                   </h2>
                 </div>
                 <p className="text-sm text-text-muted leading-relaxed">{w.body}</p>
-                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold/70 group-hover:text-accent-gold transition-colors">
+                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold-text/80 group-hover:text-accent-gold-text transition-colors">
                   {w.cta} →
                 </p>
               </Link>
@@ -143,7 +143,7 @@ export default async function JoinPage() {
 
         {/* Tiers */}
         <section className="space-y-6">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60 text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80 text-center">
             {"/// choose_your_level"}
           </p>
           <div className="grid gap-4 sm:grid-cols-2 max-w-3xl mx-auto">
@@ -159,12 +159,12 @@ export default async function JoinPage() {
                   }`}
                 >
                   <div className="space-y-1">
-                    <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${featured ? "text-accent-gold/60" : "text-accent-cyan/60"}`}>
+                    <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${featured ? "text-accent-gold-text/80" : "text-accent-cyan/60"}`}>
                       {t.tagline}
                     </p>
                     <div className="flex items-baseline justify-between">
                       <h3 className="font-display text-xl font-bold text-text-primary">{t.name}</h3>
-                      <span className={`font-mono text-sm font-bold ${featured ? "text-accent-gold" : "text-accent-cyan"}`}>
+                      <span className={`font-mono text-sm font-bold ${featured ? "text-accent-gold-text" : "text-accent-cyan"}`}>
                         {t.price}
                       </span>
                     </div>
@@ -172,7 +172,7 @@ export default async function JoinPage() {
                   <ul className="space-y-2">
                     {t.perks.map((p) => (
                       <li key={p} className="flex items-start gap-2 font-mono text-[11px] text-text-muted leading-relaxed">
-                        <span className={`mt-0.5 shrink-0 ${featured ? "text-accent-gold" : "text-accent-cyan"}`}>✦</span>
+                        <span className={`mt-0.5 shrink-0 ${featured ? "text-accent-gold-text" : "text-accent-cyan"}`}>✦</span>
                         {p}
                       </li>
                     ))}
@@ -181,7 +181,7 @@ export default async function JoinPage() {
                     href={t.cta.href}
                     className={`inline-flex w-full items-center justify-center gap-2 rounded-lg border px-5 py-2.5 font-mono text-xs font-bold transition-all ${
                       featured
-                        ? "border-accent-gold bg-accent-gold/15 text-accent-gold hover:bg-accent-gold/25"
+                        ? "border-accent-gold bg-accent-gold/15 text-accent-gold-text hover:bg-accent-gold/25"
                         : "border-accent-cyan/40 bg-accent-cyan/10 text-accent-cyan hover:bg-accent-cyan/20"
                     }`}
                   >
@@ -202,10 +202,10 @@ export default async function JoinPage() {
         <section className="text-center space-y-3">
           <p className="font-serif text-sm italic text-text-muted/60">What is remembered, lives.</p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/start-here" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold hover:bg-accent-gold/5 transition-colors">
+            <Link href="/start-here" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold/5 transition-colors">
               Start here →
             </Link>
-            <Link href="/appear" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet hover:bg-accent-violet/5 transition-colors">
+            <Link href="/appear" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet-text hover:bg-accent-violet/5 transition-colors">
               Appear on the show →
             </Link>
           </div>

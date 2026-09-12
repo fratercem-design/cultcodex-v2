@@ -37,7 +37,7 @@ export function LoreCard({ lore }: LoreCardProps) {
       className={`group block rounded-lg border border-border border-l-[3px] ${canonBorder[lore.canonStatus]} bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated`}
     >
       <div className="flex items-start justify-between gap-2">
-        <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+        <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
           {lore.title}
         </h3>
         <StatusBadge

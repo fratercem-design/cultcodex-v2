@@ -8,7 +8,7 @@ export function SearchTrigger() {
   return (
     <button
       onClick={open}
-      className="inline-flex items-center gap-2 font-mono text-xs text-text-muted hover:text-accent-gold border border-border rounded px-3 py-1 transition-colors"
+      className="inline-flex items-center gap-2 font-mono text-xs text-text-muted hover:text-accent-gold-text border border-border rounded px-3 py-1 transition-colors"
       aria-label="Search the archive (⌘K)"
     >
       <span className="text-[13px]">⌕</span>

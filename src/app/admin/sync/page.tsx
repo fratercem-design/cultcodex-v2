@@ -62,21 +62,21 @@ export default async function SyncPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
         {[
           { label: "Total episodes", value: totalEpisodes, color: "text-text-primary" },
-          { label: "Have transcript", value: withTranscript, color: "text-accent-violet" },
+          { label: "Have transcript", value: withTranscript, color: "text-accent-violet-text" },
           { label: "Need transcript", value: withoutTranscript, color: "text-accent-cyan" },
-          { label: "Need enrichment", value: unenrichedEpisodes, color: "text-accent-gold" },
-          { label: "⚡ Enrich queued", value: enrichmentQueued, color: "text-accent-gold" },
+          { label: "Need enrichment", value: unenrichedEpisodes, color: "text-accent-gold-text" },
+          { label: "⚡ Enrich queued", value: enrichmentQueued, color: "text-accent-gold-text" },
           { label: "With YouTube ID", value: withYoutubeId, color: "text-text-muted" },
           { label: "Total people", value: totalPeople, color: "text-text-muted" },
-          { label: "Need profiles", value: unenrichedPeople, color: "text-accent-crimson" },
+          { label: "Need profiles", value: unenrichedPeople, color: "text-accent-crimson-text" },
           {
             label: "Profiles done",
             value: totalPeople - unenrichedPeople,
-            color: "text-accent-gold",
+            color: "text-accent-gold-text",
           },
         ].map((s) => (
           <div key={s.label} className="rounded-lg border border-border bg-surface p-4 text-center">
-            <p className={`font-display text-3xl font-bold ${s.color}`}>{s.value.toLocaleString()}</p>
+            <p className={`font-display text-3xl font-bold ${s.color}`}>{s.value.toLocaleString("en-US")}</p>
             <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted mt-1">{s.label}</p>
           </div>
         ))}

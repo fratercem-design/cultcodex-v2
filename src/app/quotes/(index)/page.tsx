@@ -76,11 +76,11 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
   if (search) subtitleParts.push(`matching "${search}"`);
   if (activeSpeaker) subtitleParts.push(`by ${activeSpeaker.displayName}`);
   const subtitle = subtitleParts.length > 0
-    ? `${totalCount.toLocaleString()} quotes ${subtitleParts.join(" ")}`
-    : `${allQuoteCount.toLocaleString()} notable quotes from the archive`;
+    ? `${totalCount.toLocaleString("en-US")} quotes ${subtitleParts.join(" ")}`
+    : `${allQuoteCount.toLocaleString("en-US")} notable quotes from the archive`;
 
   const glanceItems = [
-    { icon: <IconQuote size={14} />, label: `${allQuoteCount.toLocaleString()} quotes` },
+    { icon: <IconQuote size={14} />, label: `${allQuoteCount.toLocaleString("en-US")} quotes` },
     { icon: "\uD83C\uDFA4", label: `${topSpeakers.length} speakers` },
     ...(lastUpdated ? [{ icon: "\uD83D\uDD04", label: `Updated ${formatRelativeDate(lastUpdated)}` }] : []),
   ];
@@ -122,7 +122,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
                 />
                 <button
                   type="submit"
-                  className="rounded-lg border border-accent-crimson/30 bg-accent-crimson/10 px-5 py-2.5 font-mono text-xs font-bold text-accent-crimson transition-colors hover:bg-accent-crimson/20"
+                  className="rounded-lg border border-accent-crimson/30 bg-accent-crimson/10 px-5 py-2.5 font-mono text-xs font-bold text-accent-crimson-text transition-colors hover:bg-accent-crimson/20"
                 >
                   Search
                 </button>
@@ -136,7 +136,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
                 {search && (
                   <Link
                     href={speakerFilter ? `/quotes?speaker=${speakerFilter}` : "/quotes"}
-                    className="inline-flex items-center gap-1 rounded-full border border-accent-crimson/30 bg-accent-crimson/10 px-2.5 py-0.5 font-mono text-[10px] text-accent-crimson hover:bg-accent-crimson/20"
+                    className="inline-flex items-center gap-1 rounded-full border border-accent-crimson/30 bg-accent-crimson/10 px-2.5 py-0.5 font-mono text-[10px] text-accent-crimson-text hover:bg-accent-crimson/20"
                   >
                     &ldquo;{search}&rdquo; ✕
                   </Link>
@@ -144,14 +144,14 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
                 {activeSpeaker && (
                   <Link
                     href={search ? `/quotes?q=${encodeURIComponent(search)}` : "/quotes"}
-                    className="inline-flex items-center gap-1 rounded-full border border-accent-gold/30 bg-accent-gold/10 px-2.5 py-0.5 font-mono text-[10px] text-accent-gold hover:bg-accent-gold/20"
+                    className="inline-flex items-center gap-1 rounded-full border border-accent-gold/30 bg-accent-gold/10 px-2.5 py-0.5 font-mono text-[10px] text-accent-gold-text hover:bg-accent-gold/20"
                   >
                     {activeSpeaker.displayName} ✕
                   </Link>
                 )}
                 <Link
                   href="/quotes"
-                  className="font-mono text-[10px] text-text-muted hover:text-accent-crimson"
+                  className="font-mono text-[10px] text-text-muted hover:text-accent-crimson-text"
                 >
                   Clear all
                 </Link>
@@ -187,7 +187,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
                             <span className="font-mono text-[10px] text-text-muted">from</span>
                             <Link
                               href={`/episodes/${quote.episode.slug}`}
-                              className="font-mono text-[10px] text-accent-gold hover:underline line-clamp-1"
+                              className="font-mono text-[10px] text-accent-gold-text hover:underline line-clamp-1"
                             >
                               {quote.episode.episodeNumber != null && `EP ${quote.episode.episodeNumber}: `}
                               {quote.episode.title}
@@ -227,14 +227,14 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
                   >
                     <span className={`font-mono text-xs line-clamp-1 ${
                       speakerFilter === speaker.slug
-                        ? "text-accent-gold font-bold"
-                        : "text-text-muted group-hover:text-accent-gold"
+                        ? "text-accent-gold-text font-bold"
+                        : "text-text-muted group-hover:text-accent-gold-text"
                     }`}>
                       {speaker.displayName}
                     </span>
                     <span className={`ml-2 font-mono text-[10px] ${
                       speakerFilter === speaker.slug
-                        ? "text-accent-gold"
+                        ? "text-accent-gold-text"
                         : "text-text-muted"
                     }`}>
                       {speaker.quoteCount}
@@ -251,14 +251,14 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
                   className="group flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 transition-colors hover:border-accent-gold/40 hover:bg-elevated"
                 >
                   <span className="text-sm">👤</span>
-                  <span className="font-mono text-xs text-text-muted group-hover:text-accent-gold">People</span>
+                  <span className="font-mono text-xs text-text-muted group-hover:text-accent-gold-text">People</span>
                 </Link>
                 <Link
                   href="/episodes"
                   className="group flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 transition-colors hover:border-accent-gold/40 hover:bg-elevated"
                 >
                   <span className="text-sm">🎬</span>
-                  <span className="font-mono text-xs text-text-muted group-hover:text-accent-gold">Episodes</span>
+                  <span className="font-mono text-xs text-text-muted group-hover:text-accent-gold-text">Episodes</span>
                 </Link>
                 <Link
                   href="/transcripts"

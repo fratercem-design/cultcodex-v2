@@ -73,13 +73,13 @@ export function TierCheckoutButton({
 
   const accentClasses =
     accent === "violet"
-      ? "border-accent-violet bg-accent-violet/15 text-accent-violet hover:bg-accent-violet/25 hover:shadow-accent-violet/20"
-      : "border-accent-gold bg-accent-gold/15 text-accent-gold hover:bg-accent-gold/25 hover:shadow-accent-gold/20";
+      ? "border-accent-violet bg-accent-violet/15 text-accent-violet-text hover:bg-accent-violet/25 hover:shadow-accent-violet/20"
+      : "border-accent-gold bg-accent-gold/15 text-accent-gold-text hover:bg-accent-gold/25 hover:shadow-accent-gold/20";
 
   const activeToggle =
     accent === "violet"
-      ? "bg-accent-violet/20 text-accent-violet border-accent-violet/50"
-      : "bg-accent-gold/20 text-accent-gold border-accent-gold/50";
+      ? "bg-accent-violet/20 text-accent-violet-text border-accent-violet/50"
+      : "bg-accent-gold/20 text-accent-gold-text border-accent-gold/50";
 
   return (
     <div className="space-y-3">

@@ -111,7 +111,7 @@ export function LiveBanner() {
             type="button"
             aria-label="Dismiss"
             onClick={() => setDismissed((prev) => new Set([...prev, entry.key]))}
-            className="flex-shrink-0 rounded p-1 text-white/30 hover:text-white/70 transition-colors"
+            className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-white/70 hover:text-white transition-colors"
           >
             ✕
           </button>

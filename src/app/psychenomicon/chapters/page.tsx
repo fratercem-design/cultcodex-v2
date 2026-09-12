@@ -84,12 +84,12 @@ export default async function ChaptersIndexPage({
       <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-4xl flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="space-y-2">
-            <Link href="/psychenomicon" className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/60 hover:text-accent-violet transition-colors">
+            <Link href="/psychenomicon" className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70 hover:text-accent-violet-text transition-colors">
               ← The Psychenomicon
             </Link>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">The Chronicle</h1>
             <p className="text-xs text-text-muted">
-              {total.toLocaleString()} chapters, in broadcast order &middot; page {page} of {totalPages}
+              {total.toLocaleString("en-US")} chapters, in broadcast order &middot; page {page} of {totalPages}
             </p>
           </div>
         </div>
@@ -99,17 +99,17 @@ export default async function ChaptersIndexPage({
         {!canRead && (
           <div className="rounded border border-accent-gold/30 bg-accent-gold/5 px-4 py-3 flex flex-wrap items-center justify-between gap-2">
             <p className="font-mono text-[10px] text-text-muted">
-              <span className="uppercase tracking-[0.3em] text-accent-gold mr-2">{"/// free_preview"}</span>
+              <span className="uppercase tracking-[0.3em] text-accent-gold-text mr-2">{"/// free_preview"}</span>
               A few chapters are unsealed for all. The full chronicle is Initiate+.
             </p>
-            <Link href="/premium#access" className="font-mono text-[10px] font-bold text-accent-gold hover:underline">
+            <Link href="/premium#access" className="font-mono text-[10px] font-bold text-accent-gold-text hover:underline">
               Become Initiate+ — $10/mo →
             </Link>
           </div>
         )}
         {groups.map((g) => (
           <section key={g.label} className="space-y-2">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold/70 sticky top-0 bg-void/90 backdrop-blur-sm py-1.5 z-10">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80 sticky top-0 bg-void/90 backdrop-blur-sm py-1.5 z-10">
               {g.label}
             </p>
             <div className="space-y-1.5">
@@ -128,10 +128,10 @@ export default async function ChaptersIndexPage({
                   >
                     <span className={`h-1.5 w-1.5 rounded-full flex-shrink-0 ${STATUS_DOT[s] ?? STATUS_DOT.stable}`} />
                     <ChapterCover art={c.artImageUrls} size={32} />
-                    <span className={`font-mono text-[10px] w-16 flex-shrink-0 ${c.isMajorEvent ? "text-accent-gold" : "text-text-muted"}`}>
+                    <span className={`font-mono text-[10px] w-16 flex-shrink-0 ${c.isMajorEvent ? "text-accent-gold-text" : "text-text-muted"}`}>
                       CH.{String(c.chapterNumber).padStart(3, "0")}{c.isMajorEvent && " ✦"}
                     </span>
-                    <span className={`flex-1 min-w-0 truncate font-mono text-xs group-hover:text-accent-violet transition-colors ${c.isMajorEvent ? "text-accent-gold" : "text-text-primary"}`}>
+                    <span className={`flex-1 min-w-0 truncate font-mono text-xs group-hover:text-accent-violet-text transition-colors ${c.isMajorEvent ? "text-accent-gold-text" : "text-text-primary"}`}>
                       {c.title}
                     </span>
                     {c.episode?.episodeNumber != null && (
@@ -141,7 +141,7 @@ export default async function ChaptersIndexPage({
                     )}
                     {!canRead && (
                       free ? (
-                        <span className="flex-shrink-0 rounded border border-accent-gold/40 bg-accent-gold/10 px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase text-accent-gold">
+                        <span className="flex-shrink-0 rounded border border-accent-gold/40 bg-accent-gold/10 px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase text-accent-gold-text">
                           Free
                         </span>
                       ) : (
@@ -160,13 +160,13 @@ export default async function ChaptersIndexPage({
         {/* Pagination */}
         <nav className="flex items-center justify-between gap-3 border-t border-border pt-6" aria-label="Pagination">
           {page > 1 ? (
-            <Link href={pageHref(page - 1)} className="font-mono text-[11px] uppercase tracking-widest text-accent-violet hover:underline">
+            <Link href={pageHref(page - 1)} className="font-mono text-[11px] uppercase tracking-widest text-accent-violet-text hover:underline">
               ← Earlier
             </Link>
           ) : <span />}
           <span className="font-mono text-[10px] text-text-muted/50">{page} / {totalPages}</span>
           {page < totalPages ? (
-            <Link href={pageHref(page + 1)} className="font-mono text-[11px] uppercase tracking-widest text-accent-violet hover:underline">
+            <Link href={pageHref(page + 1)} className="font-mono text-[11px] uppercase tracking-widest text-accent-violet-text hover:underline">
               Later →
             </Link>
           ) : <span />}

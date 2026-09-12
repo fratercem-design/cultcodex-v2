@@ -24,7 +24,7 @@ export async function generateMetadata({
   const era = getEraById(eraId);
   if (!era) return {};
   return buildMetadata({
-    title: `${era.label} — Eras — CULT CODEX`,
+    title: `${era.label} — Eras`,
     description: era.description,
     path: `/eras/${era.id}`,
   });
@@ -32,10 +32,10 @@ export async function generateMetadata({
 
 // ── Color maps (mirror the graph component) ───────────────────────────────────
 const ERA_ACCENT: Record<string, string> = {
-  gold:    "text-accent-gold",
-  violet:  "text-accent-violet",
+  gold:    "text-accent-gold-text",
+  violet:  "text-accent-violet-text",
   cyan:    "text-accent-cyan",
-  crimson: "text-accent-crimson",
+  crimson: "text-accent-crimson-text",
   muted:   "text-text-muted",
 };
 const ERA_BORDER_L: Record<string, string> = {
@@ -53,10 +53,10 @@ const ERA_BG: Record<string, string> = {
   muted:   "bg-surface",
 };
 const ERA_SIGIL_BG: Record<string, string> = {
-  gold:    "bg-accent-gold/10 text-accent-gold",
-  violet:  "bg-accent-violet/10 text-accent-violet",
+  gold:    "bg-accent-gold/10 text-accent-gold-text",
+  violet:  "bg-accent-violet/10 text-accent-violet-text",
   cyan:    "bg-accent-cyan/10 text-accent-cyan",
-  crimson: "bg-accent-crimson/10 text-accent-crimson",
+  crimson: "bg-accent-crimson/10 text-accent-crimson-text",
   muted:   "bg-surface text-text-muted",
 };
 
@@ -175,7 +175,7 @@ export default async function EraDetailPage({
               className="rounded-lg border border-border bg-surface px-5 py-4 space-y-1"
             >
               <p className={`font-display text-2xl font-bold tabular-nums ${accentClass}`}>
-                {s.n.toLocaleString()}
+                {s.n.toLocaleString("en-US")}
               </p>
               <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
                 {s.label}
@@ -270,7 +270,7 @@ export default async function EraDetailPage({
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors truncate">
+                    <p className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors truncate">
                       {guest.name}
                     </p>
                     {guest.archetype ? (

@@ -30,7 +30,7 @@ export default function PrivacyPage() {
           <div className="space-y-3 text-sm text-text-primary leading-relaxed">
             <p>
               CultCodex is an independent fan archive of the Cult of Psyche livestream community.
-              We operate the website at <span className="font-mono text-accent-gold">cultcodex.me</span>.
+              We operate the website at <span className="font-mono text-accent-gold-text">cultcodex.me</span>.
             </p>
           </div>
         </SectionCard>
@@ -59,7 +59,7 @@ export default function PrivacyPage() {
                 We use Google Analytics (via Google Tag Manager) to measure aggregate page views
                 and performance metrics. Analytics data is anonymised — no personally identifiable
                 information is sent to Google. You can opt out via the{" "}
-                <a href="https://tools.google.com/dlpage/gaoptout" className="text-accent-gold hover:underline" target="_blank" rel="noopener noreferrer">
+                <a href="https://tools.google.com/dlpage/gaoptout" className="text-accent-gold-text hover:underline" target="_blank" rel="noopener noreferrer">
                   Google Analytics opt-out add-on
                 </a>.
               </p>
@@ -120,6 +120,7 @@ export default function PrivacyPage() {
               <li><span className="text-text-primary font-medium">Resend</span> — transactional and newsletter email</li>
               <li><span className="text-text-primary font-medium">Anthropic Claude</span> — AI enrichment of archive data (content only, not user data)</li>
               <li><span className="text-text-primary font-medium">ElevenLabs</span> — voice synthesis for Oracle audio (query text only, not user data)</li>
+              <li><span className="text-text-primary font-medium">YouTube (Google)</span> — video playback. Embedded players load only after you press play, and use YouTube&apos;s privacy-enhanced <span className="font-mono">youtube-nocookie.com</span> mode.</li>
             </ul>
           </div>
         </SectionCard>
@@ -146,7 +147,7 @@ export default function PrivacyPage() {
           <div className="space-y-3 text-sm text-text-muted leading-relaxed">
             <p>
               For privacy-related requests or questions, use our{" "}
-              <Link href="/corrections" className="text-accent-gold hover:underline">
+              <Link href="/corrections" className="text-accent-gold-text hover:underline">
                 corrections page
               </Link>{" "}
               or reach out through the community channels linked in the archive.
@@ -155,15 +156,16 @@ export default function PrivacyPage() {
         </SectionCard>
 
         <div className="flex items-center justify-center gap-4 text-xs">
-          <Link href="/content-policy" className="font-mono text-accent-gold hover:underline">
+          <Link href="/content-policy" className="font-mono text-accent-gold-text hover:underline">
             Content Policy
           </Link>
           <span className="text-text-muted">|</span>
           <Link href="/about/methodology" className="font-mono text-accent-gold hover:underline">
+          <Link href="/about/methodology" className="font-mono text-accent-gold-text hover:underline">
             Methodology
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/corrections" className="font-mono text-accent-gold hover:underline">
+          <Link href="/corrections" className="font-mono text-accent-gold-text hover:underline">
             Corrections
           </Link>
         </div>

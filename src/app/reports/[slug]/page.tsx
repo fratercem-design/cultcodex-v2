@@ -34,7 +34,7 @@ function LockedCard({ label }: { label: string }) {
     <div className="rounded-xl border border-border bg-surface p-6 text-center space-y-2">
       <p className="text-3xl text-text-muted/20" aria-hidden="true">🔒</p>
       <p className="font-mono text-[11px] text-text-muted">{label}</p>
-      <Link href="/premium" className="inline-block font-mono text-[10px] uppercase tracking-widest text-accent-gold hover:underline">
+      <Link href="/premium" className="inline-block font-mono text-[10px] uppercase tracking-widest text-accent-gold-text hover:underline">
         Unlock with Initiate+ →
       </Link>
     </div>
@@ -57,7 +57,7 @@ export default async function GuestReportPage({ params }: Props) {
     .filter((e): e is NonNullable<typeof e> => Boolean(e?.airDate));
   const latest = dated[0]?.airDate ?? null;
   const earliest = person.firstAppearanceEpisode?.airDate ?? dated[dated.length - 1]?.airDate ?? null;
-  const totalAppearances = appearances.length;
+  const totalAppearances = person._count.guestAppearances;
   const topics = (person.topics ?? []).slice(0, 10);
   const quotes = (person.quotes ?? []).filter((q) => q.text && q.text.length > 30).slice(0, 5);
 
@@ -80,7 +80,7 @@ export default async function GuestReportPage({ params }: Props) {
       <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-12">
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
-          <Link href="/reports" className="hover:text-accent-gold transition-colors">Codex Reports</Link>
+          <Link href="/reports" className="hover:text-accent-gold-text transition-colors">Codex Reports</Link>
           <span className="mx-2">/</span>
           <span className="text-accent-cyan">{person.displayName}</span>
         </nav>
@@ -115,7 +115,7 @@ export default async function GuestReportPage({ params }: Props) {
               The full behavioral report — key quotes, recurring patterns, and frequent collaborators —
               opens with Initiate+.
             </p>
-            <Link href="/premium" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25">
+            <Link href="/premium" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25">
               Unlock the report — $10/mo →
             </Link>
           </section>
@@ -147,7 +147,7 @@ export default async function GuestReportPage({ params }: Props) {
 
         {/* Key quotes */}
         <section className="space-y-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60">{"/// on_the_record"}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">{"/// on_the_record"}</p>
           {hasAccess ? (
             quotes.length > 0 ? (
               <div className="space-y-3">
@@ -167,7 +167,7 @@ export default async function GuestReportPage({ params }: Props) {
 
         {/* Frequent collaborators */}
         <section className="space-y-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet/60">{"/// frequent_collaborators"}</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/70">{"/// frequent_collaborators"}</p>
           {hasAccess ? (
             coStars.length > 0 ? (
               <div className="grid gap-2 sm:grid-cols-2">
@@ -186,7 +186,7 @@ export default async function GuestReportPage({ params }: Props) {
                         {c.displayName.charAt(0).toUpperCase()}
                       </div>
                     )}
-                    <span className="min-w-0 flex-1 truncate font-mono text-xs text-text-primary group-hover:text-accent-violet transition-colors">{c.displayName}</span>
+                    <span className="min-w-0 flex-1 truncate font-mono text-xs text-text-primary group-hover:text-accent-violet-text transition-colors">{c.displayName}</span>
                     <span className="shrink-0 font-mono text-[9px] text-text-muted/50">{c.sharedEpisodes}×</span>
                   </Link>
                 ))}
@@ -211,9 +211,9 @@ export default async function GuestReportPage({ params }: Props) {
                   className="group flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-2.5 transition-all hover:border-accent-gold/30"
                 >
                   {e.episodeNumber != null && (
-                    <span className="shrink-0 font-mono text-[10px] font-bold text-accent-gold/70">EP.{String(e.episodeNumber).padStart(3, "0")}</span>
+                    <span className="shrink-0 font-mono text-[10px] font-bold text-accent-gold-text/80">EP.{String(e.episodeNumber).padStart(3, "0")}</span>
                   )}
-                  <span className="min-w-0 flex-1 truncate text-sm text-text-primary group-hover:text-accent-gold transition-colors">{cleanTitle(e.title)}</span>
+                  <span className="min-w-0 flex-1 truncate text-sm text-text-primary group-hover:text-accent-gold-text transition-colors">{cleanTitle(e.title)}</span>
                   {e.airDate && <span className="shrink-0 font-mono text-[10px] text-text-muted/50">{formatDate(e.airDate)}</span>}
                 </Link>
               ))}
@@ -224,11 +224,11 @@ export default async function GuestReportPage({ params }: Props) {
         <MysticalDivider />
 
         <section className="flex flex-wrap items-center justify-center gap-3">
-          <Link href={`/people/${person.slug}`} className="font-mono text-[11px] uppercase tracking-widest text-text-muted hover:text-accent-gold transition-colors">
+          <Link href={`/people/${person.slug}`} className="font-mono text-[11px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors">
             Full profile →
           </Link>
           {hasAccess && (
-            <Link href="/oracle" className="font-mono text-[11px] uppercase tracking-widest text-accent-violet hover:text-accent-violet/80 transition-colors">
+            <Link href="/oracle" className="font-mono text-[11px] uppercase tracking-widest text-accent-violet-text hover:text-accent-violet-text/80 transition-colors">
               Ask the Oracle about {person.displayName} →
             </Link>
           )}

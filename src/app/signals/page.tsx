@@ -34,7 +34,7 @@ async function getProposals() {
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   open: { label: "Open", color: "text-text-muted/70" },
-  under_review: { label: "Under Review", color: "text-accent-gold" },
+  under_review: { label: "Under Review", color: "text-accent-gold-text" },
   investigating: { label: "Investigating", color: "text-accent-cyan" },
   published: { label: "Published", color: "text-green-400" },
   declined: { label: "Declined", color: "text-red-400/60" },
@@ -78,7 +78,7 @@ export default async function SignalsPage() {
       <section className="relative overflow-hidden border-b border-accent-gold/10 bg-gradient-to-b from-[#0d0020] via-[#07001a] to-void">
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top,rgba(180,100,255,0.3)_0%,transparent_70%)]" />
         <div className="relative mx-auto max-w-4xl px-6 py-14">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold/60 mb-3">
+          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-3">
             ✦ &nbsp; Oracle Feature &nbsp; ✦
           </p>
           <h1
@@ -98,7 +98,7 @@ export default async function SignalsPage() {
       <div className="mx-auto max-w-4xl px-6 py-10">
         {/* Submit Form */}
         <section className="mb-10">
-          <h2 className="font-mono text-xs uppercase tracking-widest text-accent-gold mb-5">
+          <h2 className="font-mono text-xs uppercase tracking-widest text-accent-gold-text mb-5">
             Propose an Investigation
           </h2>
           <form action={submitSignalProposal} className="rounded-xl border border-accent-gold/20 bg-surface p-6 space-y-4">
@@ -168,7 +168,7 @@ export default async function SignalsPage() {
                           className="flex flex-col items-center gap-0.5 rounded-lg border border-border px-2.5 py-2 hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-all group"
                           title="Upvote this proposal"
                         >
-                          <span className="text-accent-gold/60 group-hover:text-accent-gold text-xs">▲</span>
+                          <span className="text-accent-gold-text/80 group-hover:text-accent-gold-text text-xs">▲</span>
                           <span className="font-mono text-sm font-bold text-text-primary">{proposal.votes}</span>
                         </button>
                       </form>
@@ -183,12 +183,12 @@ export default async function SignalsPage() {
                           <span className="font-mono text-[10px] text-text-muted/50">
                             {proposal.user.displayName}
                             {proposal.user.memberTitle && (
-                              <span className="text-accent-gold/50"> · {proposal.user.memberTitle}</span>
+                              <span className="text-accent-gold-text/80"> · {proposal.user.memberTitle}</span>
                             )}
                           </span>
                           <span className="text-text-muted/30">·</span>
                           <span className="font-mono text-[10px] text-text-muted/60">
-                            {new Date(proposal.createdAt).toLocaleDateString("en-US", {
+                            {new Date(proposal.createdAt).toLocaleDateString("en-US", { timeZone: "UTC",
                               month: "short",
                               day: "numeric",
                             })}
@@ -196,7 +196,7 @@ export default async function SignalsPage() {
                           {i < 3 && (
                             <>
                               <span className="text-text-muted/30">·</span>
-                              <span className="font-mono text-[10px] text-accent-gold">
+                              <span className="font-mono text-[10px] text-accent-gold-text">
                                 #{i + 1} Ranked
                               </span>
                             </>

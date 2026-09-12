@@ -51,7 +51,7 @@ export default function ContentPolicyPage() {
             <p>
               Individuals mentioned in the archive may request corrections or removal
               via our{" "}
-              <Link href="/corrections" className="text-accent-gold hover:underline">
+              <Link href="/corrections" className="text-accent-gold-text hover:underline">
                 corrections page
               </Link>.
             </p>
@@ -98,18 +98,19 @@ export default function ContentPolicyPage() {
 
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs">
           <Link href="/about/methodology" className="font-mono text-accent-gold hover:underline">
+          <Link href="/about/methodology" className="font-mono text-accent-gold-text hover:underline">
             Methodology
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/corrections" className="font-mono text-accent-gold hover:underline">
+          <Link href="/corrections" className="font-mono text-accent-gold-text hover:underline">
             Corrections
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/privacy" className="font-mono text-accent-gold hover:underline">
+          <Link href="/privacy" className="font-mono text-accent-gold-text hover:underline">
             Privacy Policy
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/terms" className="font-mono text-accent-gold hover:underline">
+          <Link href="/terms" className="font-mono text-accent-gold-text hover:underline">
             Terms of Service
           </Link>
         </div>

@@ -116,7 +116,7 @@ export default async function AdminDashboard() {
               >
                 <div className="flex items-center gap-2 min-w-0">
                   {ep.episodeNumber && (
-                    <span className="font-mono text-[10px] text-accent-gold font-bold">
+                    <span className="font-mono text-[10px] text-accent-gold-text font-bold">
                       EP.{String(ep.episodeNumber).padStart(3, "0")}
                     </span>
                   )}
@@ -150,7 +150,7 @@ export default async function AdminDashboard() {
               </div>
               <Link
                 href="/admin/live"
-                className="font-mono text-[10px] text-accent-gold hover:underline"
+                className="font-mono text-[10px] text-accent-gold-text hover:underline"
               >
                 Manage →
               </Link>

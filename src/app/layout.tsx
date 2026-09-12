@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import {
   Space_Grotesk,
   Inter,
@@ -8,6 +9,7 @@ import {
   VT323,
 } from "next/font/google";
 import { LiveBanner } from "@/components/layout/live-banner";
+import { ScrollReset } from "@/components/layout/scroll-reset";
 import { EntryBanner } from "@/components/layout/entry-banner";
 import { TerminalTopBar } from "@/components/layout/terminal-topbar";
 import { TerminalSidebar } from "@/components/layout/terminal-sidebar";
@@ -16,7 +18,7 @@ import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { RadialDialNav } from "@/components/layout/radial-dial-nav";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { ConsoleSigil } from "@/components/layout/console-sigil";
-import { getCounts } from "@/lib/queries/stats";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
 import { CRTOverlay } from "@/components/graphics/crt-overlay";
@@ -25,6 +27,7 @@ import { SITE_URL } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
 import { CookieConsent } from "@/components/layout/cookie-consent";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 // Layout data fetches (getCounts, getLiveChannels) are already wrapped in
@@ -77,7 +80,7 @@ const vt323 = VT323({preload: false,
 });
 
 const SITE_DESCRIPTION =
-  "The complete archive of the Cult of Psyche: 2,500+ transmissions, searchable transcripts, lore entries, guest profiles, relationship maps, and AI-powered exploration of every word ever spoken in the stream.";
+  "The complete archive of the Cult of Psyche: nearly 3,000 transmissions, searchable transcripts, lore entries, guest profiles, relationship maps, and AI-powered exploration of every word ever spoken in the stream.";
 
 // SITE_URL comes from @/lib/seo — single source of truth with a localhost guard,
 // so a stray dev value in NEXT_PUBLIC_SITE_URL can never become metadataBase.
@@ -94,7 +97,13 @@ export const metadata: Metadata = {
   // NOTE: no global `alternates.canonical` here. Setting it at the root made
   // every page inherit the homepage URL as its canonical, so Google treated
   // all routes as duplicates of `/`. Each page declares its own canonical.
-  robots: { index: true, follow: true },
+  // NOTE: no global `robots` here either. "index, follow" is already what a
+  // crawler assumes when no robots meta is present, so declaring it bought
+  // nothing — and it collided with the `noindex` Next emits automatically on a
+  // 404, leaving not-found pages carrying both directives at once. Google
+  // resolves such a conflict by taking the most restrictive, so the outcome
+  // happened to be right, but it was luck rather than intent. Pages that need
+  // to be excluded set `robots` themselves.
   verification: { google: "QfWzbm45sKbw9uEbINbuPaWLQEbVsVpP3J8umJYCUAo" },
   other: { "build-commit": process.env.VERCEL_GIT_COMMIT_SHA ?? "dev" },
   icons: {
@@ -184,14 +193,18 @@ export default async function RootLayout({
         style={{ backgroundColor: "var(--term-bg)" }}
       >
         <SkipLink />
+        <Suspense fallback={null}>
+          <ScrollReset />
+        </Suspense>
         <LiveBanner />
-        <EntryBanner />
+        <EntryBanner episodeCount={fmtEpisodeCount(counts.episodes)} />
         <div className="terminal-grid">
           <TerminalTopBar />
           <TerminalSidebar counts={counts} liveChannels={liveChannels} />
           <div
-            id="main-content"
-            className="terminal-main"
+            id="terminal-scroll"
+            tabIndex={-1}
+            className="terminal-main outline-none"
             style={{ backgroundColor: "var(--term-bg)" }}
           >
             {children}
@@ -224,6 +237,7 @@ export default async function RootLayout({
         />
         <CookieConsent gaId="G-1ML217JXYV" />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

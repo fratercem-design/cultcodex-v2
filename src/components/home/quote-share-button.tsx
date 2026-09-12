@@ -36,12 +36,12 @@ export function QuoteShareButton({ text, speakerName, episodeSlug, episodeNumber
       <button
         type="button"
         onClick={handleCopy}
-        className="flex items-center gap-1.5 rounded-full border border-accent-gold/20 bg-surface px-3 py-1 font-mono text-[9px] uppercase tracking-widest text-text-muted/60 transition-all hover:border-accent-gold/40 hover:text-accent-gold"
+        className="flex items-center gap-1.5 rounded-full border border-accent-gold/20 bg-surface px-3 py-1 font-mono text-[9px] uppercase tracking-widest text-text-muted/60 transition-all hover:border-accent-gold/40 hover:text-accent-gold-text"
         title="Copy quote link"
       >
         {copied ? (
           <>
-            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" className="text-accent-gold">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" className="text-accent-gold-text">
               <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             Copied
@@ -60,7 +60,7 @@ export function QuoteShareButton({ text, speakerName, episodeSlug, episodeNumber
         href={xUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center gap-1.5 rounded-full border border-accent-gold/20 bg-surface px-3 py-1 font-mono text-[9px] uppercase tracking-widest text-text-muted/60 transition-all hover:border-accent-gold/40 hover:text-accent-gold"
+        className="flex items-center gap-1.5 rounded-full border border-accent-gold/20 bg-surface px-3 py-1 font-mono text-[9px] uppercase tracking-widest text-text-muted/60 transition-all hover:border-accent-gold/40 hover:text-accent-gold-text"
         title="Share on X"
       >
         <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">

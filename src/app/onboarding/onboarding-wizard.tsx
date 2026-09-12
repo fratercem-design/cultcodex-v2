@@ -550,7 +550,7 @@ export function OnboardingWizard({ displayName }: WizardProps) {
             INITIATE+ · UNLOCK THE FULL ARCHIVE
           </div>
           <p style={{ fontSize: 12, color: C.muted, lineHeight: 1.6, margin: "0 0 16px" }}>
-            Oracle AI search across 2,500+ transmissions. The Psychenomicon. Personal codex page.
+            Oracle AI search across nearly 3,000 transmissions. The Psychenomicon. Personal codex page.
             Priority access to new features.
           </p>
           <button

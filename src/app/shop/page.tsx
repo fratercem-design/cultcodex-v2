@@ -22,7 +22,7 @@ export const metadata: Metadata = buildMetadata({
 });
 
 const HOUSE_ACCENT: Record<House, { text: string; border: string; rule: string }> = {
-  signal:  { text: "text-accent-gold",       border: "border-accent-gold/30",   rule: "bg-accent-gold/40" },
+  signal:  { text: "text-accent-gold-text",       border: "border-accent-gold/30",   rule: "bg-accent-gold/40" },
   shadow:  { text: "text-accent-violet-text", border: "border-accent-violet/40", rule: "bg-accent-violet/50" },
   archive: { text: "text-accent-cyan",        border: "border-accent-cyan/30",   rule: "bg-accent-cyan/40" },
 };
@@ -55,8 +55,8 @@ function ProductCard({ item }: { item: MerchItem }) {
           {item.colourways.join(" · ")}
         </p>
         <div className="mt-1 flex items-baseline justify-between border-t border-border pt-3">
-          <span className="font-mono text-base tabular-nums text-accent-gold">${item.price}</span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted group-hover:text-accent-gold">
+          <span className="font-mono text-base tabular-nums text-accent-gold-text">${item.price}</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted group-hover:text-accent-gold-text">
             View →
           </span>
         </div>
@@ -154,7 +154,7 @@ export default function ShopPage() {
           </div>
           <p className="mt-5 font-mono text-[11px] text-text-muted">
             Editions are enquiry-only —{" "}
-            <Link href="/contact" className="text-accent-gold hover:underline">
+            <Link href="/contact" className="text-accent-gold-text hover:underline">
               get in touch
             </Link>{" "}
             for availability.

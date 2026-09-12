@@ -24,7 +24,7 @@ export function AiNotice({ variant = "inline", tier, className = "" }: AiNoticeP
         role="note"
         aria-label="AI-generated content notice"
       >
-        <span className="shrink-0 text-[10px] text-accent-violet mt-0.5">◈</span>
+        <span className="shrink-0 text-[10px] text-accent-violet-text mt-0.5">◈</span>
         <p className="text-[11px] text-text-muted leading-snug">
           {tierCfg && (
             <span
@@ -40,7 +40,7 @@ export function AiNotice({ variant = "inline", tier, className = "" }: AiNoticeP
           real-world claims. Content may be inaccurate or incomplete.{" "}
           <Link
             href="/about/methodology"
-            className="text-accent-violet hover:underline underline-offset-2"
+            className="text-accent-violet-text hover:underline underline-offset-2"
           >
             How this works
           </Link>{" "}
@@ -48,6 +48,7 @@ export function AiNotice({ variant = "inline", tier, className = "" }: AiNoticeP
           <Link
             href="/corrections"
             className="text-accent-violet hover:underline underline-offset-2"
+            className="text-accent-violet-text hover:underline underline-offset-2"
           >
             Suggest a correction
           </Link>
@@ -61,7 +62,7 @@ export function AiNotice({ variant = "inline", tier, className = "" }: AiNoticeP
       className={`text-[10px] text-text-muted font-mono leading-relaxed ${className}`}
       role="note"
     >
-      <span className="text-accent-violet/70">◈</span>
+      <span className="text-accent-violet-text/70">◈</span>
       {tierCfg && tier !== "none" && (
         <span
           className={`mx-1 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[8px] uppercase tracking-wider ${tierCfg.bg} ${tierCfg.border} ${tierCfg.color}`}
@@ -74,7 +75,7 @@ export function AiNotice({ variant = "inline", tier, className = "" }: AiNoticeP
       AI-generated · summarizes on-stream discussion, not verified claims ·{" "}
       <Link
         href="/about/methodology"
-        className="hover:text-accent-violet underline-offset-2 hover:underline"
+        className="hover:text-accent-violet-text underline-offset-2 hover:underline"
       >
         methodology
       </Link>

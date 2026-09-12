@@ -28,7 +28,7 @@ export default async function EditPersonPage({ params }: PageProps) {
     <main id="main-content" className="p-8 max-w-3xl">
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display text-2xl font-bold text-accent-gold">Edit Person</h1>
-        <Link href="/admin/people" className="font-mono text-xs text-text-muted hover:text-accent-gold">← Back</Link>
+        <Link href="/admin/people" className="font-mono text-xs text-text-muted hover:text-accent-gold-text">← Back</Link>
       </div>
 
       <form action={handleSubmit} className="space-y-4">
@@ -72,7 +72,7 @@ export default async function EditPersonPage({ params }: PageProps) {
 
       {/* Merge section */}
       <div className="mt-10 border-t border-border pt-6">
-        <h2 className="font-display text-lg font-bold text-accent-gold mb-3">Merge Into Another Person</h2>
+        <h2 className="font-display text-lg font-bold text-accent-gold-text mb-3">Merge Into Another Person</h2>
         <p className="text-xs text-text-muted mb-4">
           All appearances, quotes, and connections will be moved to the target person. This person will be marked as merged.
         </p>
