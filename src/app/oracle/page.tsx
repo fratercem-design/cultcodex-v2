@@ -8,15 +8,18 @@ import { OracleExampleExchanges } from "@/components/oracle/oracle-example-excha
 import { OracleAmbience } from "@/components/oracle/oracle-ambience";
 import { LilithOracle } from "@/components/oracle/lilith-oracle";
 import Link from "next/link";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  alternates: { canonical: "/oracle" },
-  title: "Ask the Oracle — AI Search — CULT CODEX",
-  description:
-    "Ask the archive anything. The Oracle synthesizes 2,600+ transmissions into precise answers — behavioral patterns, guest dynamics, recurring moments — all cited back to the source. Initiate+ feature.",
-};
+export async function generateMetadata() {
+  const counts = await getCounts().catch(() => null);
+  return {
+    alternates: { canonical: "/oracle" },
+    title: "Ask the Oracle — AI Search — CULT CODEX",
+    description: `Ask the archive anything. The Oracle synthesizes ${fmtEpisodeCount(counts?.episodes ?? 0)} transmissions into precise answers — behavioral patterns, guest dynamics, recurring moments — all cited back to the source. Initiate+ feature.`,
+  };
+}
 
 export default async function OraclePage() {
   const user = await getCurrentUser();

@@ -2,20 +2,18 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { formatSeconds } from "@/lib/format/duration";
-
-interface Segment {
-  id: string;
-  startSeconds: number;
-  endSeconds: number;
-  speakerLabel: string | null;
-  text: string;
-}
+import type { TranscriptBlock } from "@/lib/transcript/group-segments";
 
 type SignalClass = "signal" | "noise" | "neutral";
 type FilterMode = "all" | "signal" | "highlighted";
 
 interface TranscriptViewerProps {
-  segments: Segment[];
+  /**
+   * Paragraph-sized blocks, grouped on the server. Raw caption cues average
+   * ~31 characters, so rendering one row per cue costs ~10x the DOM for the
+   * same words; see lib/transcript/group-segments.
+   */
+  blocks: TranscriptBlock[];
   hasVideoEmbed?: boolean;
   initialSearchQuery?: string;
   initialTimestamp?: number;
@@ -31,7 +29,7 @@ const SPEAKER_COLORS = [
 ];
 
 export function TranscriptViewer({
-  segments,
+  blocks,
   hasVideoEmbed,
   initialSearchQuery,
   initialTimestamp,
@@ -51,42 +49,55 @@ export function TranscriptViewer({
   // Build speaker color map
   const speakerColorMap = useMemo(() => {
     const map = new Map<string, string>();
-    const uniqueSpeakers = [...new Set(segments.map((s) => s.speakerLabel).filter(Boolean))] as string[];
+    const uniqueSpeakers = [...new Set(blocks.map((b) => b.speakerLabel).filter(Boolean))] as string[];
     uniqueSpeakers.forEach((speaker, i) => {
       map.set(speaker, SPEAKER_COLORS[i % SPEAKER_COLORS.length]);
     });
     return map;
-  }, [segments]);
+  }, [blocks]);
 
-  // Filter segments by search and signal mode
+  // A block covers several cues, so it counts as signal if any cue in it does.
+  const classifyBlock = useCallback(
+    (block: TranscriptBlock): SignalClass => {
+      if (!signalMap) return "neutral";
+      let sawNoise = false;
+      for (const start of block.cueStarts) {
+        const cls = signalMap[String(start)];
+        if (cls === "signal") return "signal";
+        if (cls === "noise") sawNoise = true;
+      }
+      return sawNoise ? "noise" : "neutral";
+    },
+    [signalMap]
+  );
+
+  // Filter blocks by search and signal mode
   const filtered = useMemo(() => {
-    let result = segments;
+    let result = blocks;
 
     // Signal filter
     if (filterMode === "signal" && signalMap) {
-      result = result.filter(
-        (s) => (signalMap[String(s.startSeconds)] ?? "neutral") === "signal"
-      );
+      result = result.filter((b) => classifyBlock(b) === "signal");
     }
 
     // Text search
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       result = result.filter(
-        (s) =>
-          s.text.toLowerCase().includes(q) ||
-          (s.speakerLabel && s.speakerLabel.toLowerCase().includes(q))
+        (b) =>
+          b.text.toLowerCase().includes(q) ||
+          (b.speakerLabel && b.speakerLabel.toLowerCase().includes(q))
       );
     }
 
     return result;
-  }, [segments, searchQuery, filterMode, signalMap]);
+  }, [blocks, searchQuery, filterMode, signalMap, classifyBlock]);
 
   // Scroll to initial timestamp
   useEffect(() => {
     if (initialTimestamp != null) {
-      const idx = segments.findIndex(
-        (s) => s.startSeconds <= initialTimestamp && s.endSeconds > initialTimestamp
+      const idx = blocks.findIndex(
+        (b) => b.startSeconds <= initialTimestamp && b.endSeconds > initialTimestamp
       );
       if (idx >= 0) {
         // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -96,7 +107,7 @@ export function TranscriptViewer({
         }, 100);
       }
     }
-  }, [initialTimestamp, segments]);
+  }, [initialTimestamp, blocks]);
 
   function seekTo(seconds: number) {
     const iframe = document.querySelector<HTMLIFrameElement>(
@@ -137,7 +148,7 @@ export function TranscriptViewer({
     [activeIndex, filtered, hasVideoEmbed]
   );
 
-  async function copySegment(seg: Segment) {
+  async function copySegment(seg: TranscriptBlock) {
     const text = `[${formatSeconds(seg.startSeconds)}]${seg.speakerLabel ? ` ${seg.speakerLabel}:` : ""} ${seg.text}`;
     await navigator.clipboard.writeText(text);
     setCopiedId(seg.id);
@@ -147,7 +158,7 @@ export function TranscriptViewer({
   // Share a deep link straight to this moment — the growth loop. The ?t= param
   // scrolls a new visitor to this exact line. Uses the Web Share sheet on
   // mobile, clipboard everywhere else.
-  async function shareSegment(seg: Segment) {
+  async function shareSegment(seg: TranscriptBlock) {
     if (!episodeSlug) return;
     const t = Math.floor(seg.startSeconds);
     const url = `${window.location.origin}/episodes/${episodeSlug}?t=${t}`;
@@ -219,7 +230,7 @@ export function TranscriptViewer({
         />
         {searchQuery && (
           <span className="font-mono text-[10px] text-text-muted whitespace-nowrap">
-            {filtered.length} of {segments.length}
+            {filtered.length} of {blocks.length}
           </span>
         )}
       </div>
@@ -228,7 +239,7 @@ export function TranscriptViewer({
       <div ref={containerRef} className="space-y-1 max-h-[600px] overflow-y-auto pr-1">
         {filtered.map((seg, idx) => {
           const isActive = idx === activeIndex;
-          const signalClass = signalMap ? (signalMap[String(seg.startSeconds)] ?? "neutral") : "neutral";
+          const signalClass = classifyBlock(seg);
           const showHighlight = filterMode === "highlighted" && hasSignalData;
 
           const borderCls = isActive

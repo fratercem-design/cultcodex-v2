@@ -9,7 +9,7 @@ import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SearchInput } from "@/components/search/search-input";
 import { getEpisodeCards } from "@/lib/queries/episodes";
-import { getCounts } from "@/lib/queries/stats";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getQuotes } from "@/lib/queries/quotes";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission, getDailyIllustratedChapter } from "@/lib/queries/daily";
@@ -54,26 +54,29 @@ const thresholdSigil = Cinzel({
   display: "swap",
 });
 
-export const metadata = {
-  robots: { index: true, follow: true },
-  alternates: { canonical: "/" },
-  title: "CultCodex — The Archive of Cult of Psyche | Tarot, Consciousness & Open Panels",
-  description:
-    "Cult of Psyche is a live, unscripted internet show — tarot, consciousness, spirituality, open-panel debates, and the strange edges of human behavior. CultCodex is its complete searchable archive: 2,600+ episodes with full transcripts, guest profiles, lore, and an AI Oracle.",
-  openGraph: {
-    title: "CultCodex — Decode Cult of Psyche",
+export async function generateMetadata() {
+  const counts = await getCounts().catch(() => null);
+    return {
+    robots: { index: true, follow: true },
+    alternates: { canonical: "/" },
+    title: "CultCodex — The Archive of Cult of Psyche | Tarot, Consciousness & Open Panels",
     description:
-      "Every Cult of Psyche transmission indexed. Psychological patterns, behavioral archetypes, guest profiles, and searchable transcripts — live since October 2024.",
-    type: "website" as const,
-    url: "/",
-  },
-  twitter: {
-    card: "summary_large_image" as const,
-    title: "CultCodex — Decode Cult of Psyche",
-    description:
-      "AI breakdowns, guest profiles, behavioral maps, and full transcript coverage for every Cult of Psyche live stream.",
-  },
-};
+      `Cult of Psyche is a live, unscripted internet show — tarot, consciousness, spirituality, open-panel debates, and the strange edges of human behavior. CultCodex is its complete searchable archive: ${fmtEpisodeCount(counts?.episodes ?? 0)} episodes with full transcripts, guest profiles, lore, and an AI Oracle.`,
+    openGraph: {
+      title: "CultCodex — Decode Cult of Psyche",
+      description:
+        "Every Cult of Psyche transmission indexed. Psychological patterns, behavioral archetypes, guest profiles, and searchable transcripts — live since October 2024.",
+      type: "website" as const,
+      url: "/",
+    },
+    twitter: {
+      card: "summary_large_image" as const,
+      title: "CultCodex — Decode Cult of Psyche",
+      description:
+        "AI breakdowns, guest profiles, behavioral maps, and full transcript coverage for every Cult of Psyche live stream.",
+    },
+  };
+}
 
 export default async function HomePage() {
   const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest, dailyChapter, bookEdition] = await Promise.all([
@@ -610,7 +613,7 @@ export default async function HomePage() {
 
       {/* WebSite + SearchAction JSON-LD is emitted once in the root layout —
           avoid a second, conflicting WebSite block here. */}
-      <JsonLd data={organizationJsonLd()} />
+      <JsonLd data={organizationJsonLd(stats.episodes)} />
     </>
   );
 }

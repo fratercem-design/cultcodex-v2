@@ -28,6 +28,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { YouTubeEmbed } from "@/components/media/youtube-embed";
 import { TranscriptViewer } from "@/components/media/transcript-viewer";
+import { groupSegments } from "@/lib/transcript/group-segments";
 import { isSubscribed } from "@/lib/subscription";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { ReactionBar } from "@/components/episodes/reaction-bar";
@@ -117,6 +118,10 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     : null;
 
   const hasTranscript = episode.segments.length > 0;
+  // Group raw caption cues into paragraph blocks on the server. Every word
+  // still ships in the HTML — the transcript is the archive's SEO engine — but
+  // a long episode renders ~1.2k rows instead of ~12k.
+  const transcriptBlocks = hasTranscript ? groupSegments(episode.segments) : [];
   const confidenceTier = getConfidenceTier(episode.segments.length, !!episode.summaryLong);
   const hasTranscriptAccess = user ? await isSubscribed(user.id).catch(() => false) : false;
   const hasDecodeAccess = hasTranscriptAccess; // same tier — Initiate+
@@ -517,7 +522,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   transcript: (
                     <TerminalPanel header="TRANSCRIPT">
                       <TranscriptViewer
-                        segments={episode.segments}
+                        blocks={transcriptBlocks}
                         hasVideoEmbed={!!episode.youtubeVideoId}
                         initialTimestamp={initialTimestamp}
                         signalMap={signalMap}

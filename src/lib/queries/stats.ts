@@ -118,6 +118,25 @@ export function fmtPlus(n: number): string {
   return `${n.toLocaleString("en-US")}+`;
 }
 
+/**
+ * Floor used for marketing copy when the live count is unavailable.
+ * The Xata branch hibernates on low traffic and every getCounts() call site
+ * falls back to `episodes: 0`, so copy must never interpolate the raw value —
+ * "0+ episodes" is worse than a stale string. Bump this when the archive
+ * comfortably clears the next thousand.
+ */
+export const EPISODE_COUNT_COPY_FLOOR = 3000;
+
+/**
+ * Episode count for user-facing copy, metadata, OG images and feeds.
+ * Uses the exact live number — precision is the selling point for an archive —
+ * and degrades to a conservative "3,000+" only when the DB is unreachable.
+ */
+export function fmtEpisodeCount(n: number): string {
+  if (!Number.isFinite(n) || n <= 0) return `${EPISODE_COUNT_COPY_FLOOR.toLocaleString()}+`;
+  return n.toLocaleString();
+}
+
 /** Format as a percentage string: 58 → "58%" */
 export function fmtPct(n: number): string {
   return `${n}%`;

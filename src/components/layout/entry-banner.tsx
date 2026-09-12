@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const STORAGE_KEY = "codex_entry_banner_dismissed";
 
-export function EntryBanner() {
+export function EntryBanner({ episodeCount }: { episodeCount: string }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export function EntryBanner() {
         <p className="font-mono text-[11px] text-text-muted leading-relaxed">
           <span className="text-accent-gold-text font-bold">{"///"}</span>{" "}
           First time here?{" "}
-          <span className="text-text-primary">Pick a doorway — six ways into 2,600+ episodes.</span>{" "}
+          <span className="text-text-primary">Pick a doorway — six ways into {episodeCount} episodes.</span>{" "}
           <Link
             href="/start-here"
             className="text-accent-gold-text underline underline-offset-2 hover:text-accent-gold-text/80 transition-colors"

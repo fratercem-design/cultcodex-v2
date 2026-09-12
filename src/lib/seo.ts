@@ -1,3 +1,4 @@
+import { fmtEpisodeCount } from "@/lib/queries/stats";
 import type { Metadata } from "next";
 
 const SITE_NAME = "CultCodex";
@@ -153,7 +154,7 @@ export function detailBreadcrumbJsonLd(
   ]);
 }
 
-export function organizationJsonLd(): Record<string, unknown> {
+export function organizationJsonLd(episodeCount?: number): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -161,7 +162,7 @@ export function organizationJsonLd(): Record<string, unknown> {
     url: SITE_URL,
     logo: `${SITE_URL}/logo.jpg`,
     description:
-      "The definitive intelligence archive for the Cult of Psyche. 2,600+ episodes indexed with full transcripts, AI psychological breakdowns, guest profiles, and behavioral pattern maps.",
+      `The definitive intelligence archive for the Cult of Psyche. ${fmtEpisodeCount(episodeCount ?? 0)} episodes indexed with full transcripts, AI psychological breakdowns, guest profiles, and behavioral pattern maps.`,
     sameAs: ["https://www.youtube.com/@CultofPsyche"],
   };
 }

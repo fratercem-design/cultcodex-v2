@@ -1,3 +1,4 @@
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 import { ImageResponse } from "next/og";
 import { ogFonts } from "@/lib/og-fonts";
 
@@ -7,6 +8,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function OGImage() {
+  const counts = await getCounts().catch(() => null);
   return new ImageResponse(
     (
       <div
@@ -29,7 +31,7 @@ export default async function OGImage() {
               CULTCODEX.ME / EPISODES
             </div>
             <div style={{ color: "#f5f0e8", fontSize: 74, fontWeight: 700, lineHeight: 1.05 }}>
-              2,600+ Transmissions.
+              {`${fmtEpisodeCount(counts?.episodes ?? 0)} Transmissions.`}
             </div>
             <div style={{ color: "#888", fontSize: 26, lineHeight: 1.5, maxWidth: 700 }}>
               Every Cult of Psyche episode — with full transcripts, AI behavioral breakdowns, guest profiles, and searchable quotes.
