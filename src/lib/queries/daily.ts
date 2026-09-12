@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { frontDoorTextExclusions } from "@/lib/content-hygiene";
 
 export interface DailyQuote {
   id: string;
@@ -97,7 +98,13 @@ async function getDailyQuote(seed: number): Promise<DailyQuote | null> {
     speakerPersonId: { not: null },
     episodeId: { not: null },
     text: { not: "" as const },
-    NOT: { text: { contains: "[ __" } },
+    // `AND` rather than a second `NOT` key - an object literal can only carry
+    // one `NOT`, so combining the placeholder filter with the front-door list
+    // any other way would silently drop one of them.
+    AND: [
+      { NOT: { text: { contains: "[ __" } } },
+      ...frontDoorTextExclusions("text"),
+    ],
   };
   const total = await prisma.quote.count({ where });
   if (total === 0) return null;

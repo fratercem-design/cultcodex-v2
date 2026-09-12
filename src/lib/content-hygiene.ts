@@ -202,3 +202,61 @@ export function isJunkSummary(cleaned: string): boolean {
   const t = cleaned.trim();
   return t.length < 20 || /^no transcript available/i.test(t);
 }
+
+/**
+ * Terms that disqualify a quote from the FRONT DOOR only.
+ *
+ * The homepage rotates a "daily transmission" quote drawn from the whole
+ * archive. On 2026-09-12 that rotation surfaced "Have you been to one of my
+ * free freak offs?" from EP.316 - the first sentence a stranger read.
+ *
+ * This is not sitewide censorship, and it must not become that. Episode
+ * pages, search and the archive keep the show as it actually is; the only
+ * claim here is that a randomly chosen line should not be the thing that
+ * introduces the site to someone who has never seen it. Anything matched
+ * stays fully readable one click deeper.
+ *
+ * Matched case-insensitively as substrings, so keep entries short and
+ * distinctive. Add to this list rather than filtering at the call site.
+ */
+export const FRONT_DOOR_BLOCKED_TERMS: string[] = [
+  "freak off",
+  "freak-off",
+  "blowjob",
+  "blow job",
+  "cum",
+  "porn",
+  "rape",
+  "pedo",
+  "incest",
+  "orgy",
+  "anal",
+  "dick",
+  "cock",
+  "pussy",
+  "tits",
+  "whore",
+  "slut",
+  "nigg",
+  "faggot",
+  "retard",
+  "kys",
+  "kill yourself",
+];
+
+/**
+ * Prisma `NOT` clauses excluding front-door-blocked terms from a text field.
+ * Spread into a `where` alongside whatever else it already filters.
+ */
+export function frontDoorTextExclusions(field = "text") {
+  return FRONT_DOOR_BLOCKED_TERMS.map((term) => ({
+    NOT: { [field]: { contains: term, mode: "insensitive" as const } },
+  }));
+}
+
+/** In-memory equivalent, for pools already loaded. */
+export function isFrontDoorSafe(text: string | null | undefined): boolean {
+  if (!text) return false;
+  const haystack = text.toLowerCase();
+  return !FRONT_DOOR_BLOCKED_TERMS.some((t) => haystack.includes(t));
+}
