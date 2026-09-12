@@ -67,6 +67,20 @@ async function pagesSegment(): Promise<SitemapEntry[]> {
       .catch(() => undefined),
   ]);
 
+  // Archived years, minus the newest - that one is /timeline itself.
+  const yearRows = await prisma.episode
+    .findMany({ where: { airDate: { not: null } }, select: { airDate: true } })
+    .catch(() => []);
+  const timelineYears = [
+    ...new Set(
+      yearRows
+        .map((r) => r.airDate?.getUTCFullYear())
+        .filter((y): y is number => typeof y === "number")
+    ),
+  ]
+    .sort((a, b) => b - a)
+    .slice(1);
+
   // A sitemap lastmod must describe the content, not the moment the file was
   // built - stamping generation time made ~79 URLs claim an hourly change they
   // never had (2026-08 audit). Genuinely static pages omit lastmod entirely,
@@ -112,6 +126,11 @@ async function pagesSegment(): Promise<SitemapEntry[]> {
     { url: `${b}/content-policy`, changeFrequency: "monthly", priority: 0.3 },
     { url: `${b}/privacy`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${b}/terms`, changeFrequency: "yearly", priority: 0.2 },
+    ...timelineYears.map((y) => ({
+      url: `${b}/timeline/${y}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
     ...ARCHETYPES.map((a) => ({ url: `${b}/archetypes/${a.slug}`, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...SYMBOLS.map((s) => ({ url: `${b}/symbols/${s.slug}`, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...PILLARS.map((p) => ({ url: `${b}/explore/${p.slug}`, changeFrequency: "weekly" as const, priority: 0.8 })),
