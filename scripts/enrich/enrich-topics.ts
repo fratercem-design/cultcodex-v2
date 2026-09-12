@@ -15,6 +15,10 @@ import * as fs from "fs";
 import * as path from "path";
 import Anthropic from "@anthropic-ai/sdk";
 import { getPrisma, disconnect } from "../ingest/lib";
+import {
+  TOPIC_ENRICHMENT_SYSTEM_PROMPT,
+  buildTopicEnrichmentMessage,
+} from "../../src/lib/prompts/topic-enrichment";
 
 const LOG_PATH = path.join(__dirname, "enrich-topics.log");
 
@@ -22,55 +26,6 @@ function log(msg: string) {
   const line = `[${new Date().toISOString()}] ${msg}`;
   console.log(line);
   fs.appendFileSync(LOG_PATH, line + "\n");
-}
-
-const SYSTEM_PROMPT = `You are an expert archivist for CultCodex.me — the living archive of the "Cult of Psyche" show. The show is hosted by Psyche (also called Trix): a spiritual teacher, tarot reader, occultist, and livestreamer. The show covers consciousness, mythology, tarot, astrology, esoteric philosophy, panelverse drama, and community lore.
-
-You are writing short topic descriptions for the archive's knowledge graph. Each topic is a subject that appears across multiple episodes.
-
-Write a description in two parts separated by a blank line:
-
-Part 1 (1–2 sentences): A concise, factual definition of what this topic IS — as a neutral encyclopedia entry would describe it.
-
-Part 2 (1–2 sentences, start with "In the Psycheverse:"): How Psyche engages with this topic on the show — the angle, recurring themes, or why it's significant in this universe. Be specific and interesting, not generic.
-
-Rules:
-- Total length: 3–5 sentences maximum
-- Do not mention episode numbers or specific dates
-- Use present tense
-- Do not use filler phrases like "delves into" or "explores the intersection"
-- Return ONLY the description text — no JSON, no headers, no extra commentary`;
-
-function buildUserMessage(input: {
-  title: string;
-  episodeTitles: string[];
-  loreTitles: string[];
-  peopleName: string[];
-  sampleSummaries: string[];
-}): string {
-  const parts = [
-    `Topic: "${input.title}"`,
-  ];
-
-  if (input.sampleSummaries.length > 0) {
-    parts.push(
-      `\nSample episode summaries mentioning this topic:\n${input.sampleSummaries.slice(0, 5).map((s) => `- ${s}`).join("\n")}`
-    );
-  } else if (input.episodeTitles.length > 0) {
-    parts.push(
-      `\nEpisode titles where this topic appears:\n${input.episodeTitles.slice(0, 10).map((t) => `- ${t}`).join("\n")}`
-    );
-  }
-
-  if (input.loreTitles.length > 0) {
-    parts.push(`\nRelated lore entries: ${input.loreTitles.slice(0, 5).join(", ")}`);
-  }
-
-  if (input.peopleName.length > 0) {
-    parts.push(`\nPeople associated: ${input.peopleName.slice(0, 5).join(", ")}`);
-  }
-
-  return parts.join("\n");
 }
 
 function parseArgs(): { batch: number; force: boolean; minEpisodes: number } {
@@ -145,7 +100,7 @@ async function main() {
         title: topic.title,
         episodeTitles: topic.episodes.map((e) => e.episode.title),
         loreTitles: topic.lore.map((l) => l.loreEntry.title),
-        peopleName: topic.people.map((p) => p.person.displayName),
+        peopleNames: topic.people.map((p) => p.person.displayName),
         sampleSummaries,
       });
 
@@ -175,13 +130,13 @@ async function main() {
 async function generateDescription(
   client: Anthropic,
   model: string,
-  input: Parameters<typeof buildUserMessage>[0]
+  input: TopicEnrichmentContext
 ): Promise<string> {
   const response = await client.messages.create({
     model,
     max_tokens: 300,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: buildUserMessage(input) }],
+    system: TOPIC_ENRICHMENT_SYSTEM_PROMPT,
+    messages: [{ role: "user", content: buildTopicEnrichmentMessage(input) }],
   });
 
   const textBlock = response.content.find((b) => b.type === "text");
