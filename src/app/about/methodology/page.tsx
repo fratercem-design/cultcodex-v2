@@ -189,7 +189,6 @@ export default function MethodologyPage() {
           <div className="mt-2 flex flex-wrap items-center gap-3">
             <Link
               href="/corrections"
-              className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-accent-violet/10 px-3 py-1.5 font-mono text-xs text-accent-violet hover:border-accent-violet/60 transition-colors"
               className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-accent-violet/10 px-3 py-1.5 font-mono text-xs text-accent-violet-text hover:border-accent-violet/60 transition-colors"
             >
               <span>◈</span>

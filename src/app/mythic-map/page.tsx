@@ -130,7 +130,6 @@ const THEMES = [
   {
     letter: "A",
     title: "Divination as Diagnosis",
-    color: "text-accent-gold",
     color: "text-accent-gold-text",
     body: "Here, tarot diagnoses relationships, protection issues, shadow material, mythic patterns, and audience questions in real time.",
   },

@@ -47,7 +47,6 @@ export function AiNotice({ variant = "inline", tier, className = "" }: AiNoticeP
           ·{" "}
           <Link
             href="/corrections"
-            className="text-accent-violet hover:underline underline-offset-2"
             className="text-accent-violet-text hover:underline underline-offset-2"
           >
             Suggest a correction
