@@ -24,7 +24,7 @@ export async function generateMetadata({
   const era = getEraById(eraId);
   if (!era) return {};
   return buildMetadata({
-    title: `${era.label} — Eras — CULT CODEX`,
+    title: `${era.label} — Eras`,
     description: era.description,
     path: `/eras/${era.id}`,
   });

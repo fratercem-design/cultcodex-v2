@@ -38,7 +38,7 @@ export async function generateMetadata({
   });
   if (!quote) {
     return buildMetadata({
-      title: "Quote not found — CULT CODEX",
+      title: "Quote not found",
       description: "This quote could not be found.",
       path: `/quotes/${id}`,
     });

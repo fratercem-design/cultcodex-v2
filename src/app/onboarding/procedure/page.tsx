@@ -6,7 +6,7 @@ import { SectionCard } from "@/components/ui/section-card";
 export const revalidate = 3600;
 
 export const metadata = buildMetadata({
-  title: "The First Gate Procedure — CULT CODEX",
+  title: "The First Gate Procedure",
   description:
     "How a stranger becomes a fellow traveler, how a fellow traveler becomes a gatekeeper, and how a guest gets onto the Open Panel. The onboarding procedure of the Cult of Psyche, written down and public.",
   path: "/onboarding/procedure",

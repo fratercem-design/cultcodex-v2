@@ -65,6 +65,7 @@ export function HomeOraclePreview() {
             type="text"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
+            aria-label="Ask the Oracle a question"
             placeholder="Ask anything about the archive…"
             disabled={state === "loading"}
             maxLength={300}

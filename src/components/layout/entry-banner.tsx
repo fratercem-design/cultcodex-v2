@@ -48,11 +48,15 @@ export function EntryBanner({ episodeCount }: { episodeCount: string }) {
           </Link>
         </p>
         <button
+          type="button"
           onClick={dismiss}
           aria-label="Dismiss"
-          className="inline-flex h-6 w-6 shrink-0 items-center justify-center text-text-muted/70 hover:text-text-muted transition-colors text-lg leading-none"
+          /* The glyph alone measured ~11x18 CSS px; WCAG 2.2 Target Size
+             (Minimum) asks for 24x24. The box is sized here rather than the
+             glyph so the hit area grows without enlarging the ×. */
+          className="inline-flex h-6 w-6 shrink-0 items-center justify-center text-text-muted hover:text-text-primary transition-colors text-lg leading-none"
         >
-          ×
+          <span aria-hidden="true">×</span>
         </button>
       </div>
     </div>

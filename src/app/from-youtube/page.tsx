@@ -128,7 +128,7 @@ export default async function FromYouTubePage() {
                 {
                   glyph: "🔍",
                   label: "Every episode, searchable",
-                  desc: "Full transcripts of every broadcast since October 2024. Find the exact moment something was said — by episode and timestamp.",
+                  desc: "Transcripts for 97% of broadcasts since October 2024. Find the exact moment something was said — by episode and timestamp.",
                   accent: "border-accent-gold/25 hover:border-accent-gold/50",
                 },
                 {

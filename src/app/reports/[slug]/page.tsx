@@ -57,7 +57,7 @@ export default async function GuestReportPage({ params }: Props) {
     .filter((e): e is NonNullable<typeof e> => Boolean(e?.airDate));
   const latest = dated[0]?.airDate ?? null;
   const earliest = person.firstAppearanceEpisode?.airDate ?? dated[dated.length - 1]?.airDate ?? null;
-  const totalAppearances = appearances.length;
+  const totalAppearances = person._count.guestAppearances;
   const topics = (person.topics ?? []).slice(0, 10);
   const quotes = (person.quotes ?? []).filter((q) => q.text && q.text.length > 30).slice(0, 5);
 

@@ -237,6 +237,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
             ref={textareaRef}
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
+            aria-label="Ask the Oracle a question"
             placeholder="Ask the Oracle anything about the archive…"
             disabled={state === "loading"}
             rows={3}
@@ -575,6 +576,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
                 <input
                   type="email"
                   required
+                  aria-label="Email address"
                   placeholder="your@email.com"
                   value={captureEmail}
                   onChange={(e) => setCaptureEmail(e.target.value)}

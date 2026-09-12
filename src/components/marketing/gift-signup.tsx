@@ -76,6 +76,7 @@ export function GiftSignup({ source = "gift:gospel", className = "" }: GiftSignu
       <form onSubmit={handleSubmit} className="relative mx-auto mt-5 flex max-w-md flex-col gap-2.5">
         <input
           type="text"
+          aria-label="Your name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Your name"
@@ -87,6 +88,7 @@ export function GiftSignup({ source = "gift:gospel", className = "" }: GiftSignu
         <div className="flex flex-col gap-2 sm:flex-row">
           <input
             type="email"
+            aria-label="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="your@email.com"

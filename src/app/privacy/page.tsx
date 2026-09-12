@@ -120,6 +120,7 @@ export default function PrivacyPage() {
               <li><span className="text-text-primary font-medium">Resend</span> — transactional and newsletter email</li>
               <li><span className="text-text-primary font-medium">Anthropic Claude</span> — AI enrichment of archive data (content only, not user data)</li>
               <li><span className="text-text-primary font-medium">ElevenLabs</span> — voice synthesis for Oracle audio (query text only, not user data)</li>
+              <li><span className="text-text-primary font-medium">YouTube (Google)</span> — video playback. Embedded players load only after you press play, and use YouTube&apos;s privacy-enhanced <span className="font-mono">youtube-nocookie.com</span> mode.</li>
             </ul>
           </div>
         </SectionCard>

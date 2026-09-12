@@ -7,7 +7,7 @@ import { InitiateSignup } from "@/components/marketing/initiate-signup";
 export const revalidate = 600;
 
 export const metadata = buildMetadata({
-  title: "Become an Initiate — CULT CODEX",
+  title: "Become an Initiate",
   description:
     "Take The Gospel of Psyche's Nightmares and get a Codex account made in your name at the same time. Free, no password, and the archive stays open either way.",
   path: "/initiate",

@@ -3,14 +3,25 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { isFreePreviewChapter } from "@/lib/psychenomicon";
-import { buildMetadata } from "@/lib/seo";
 import { LayerViewer } from "@/components/psychenomicon/layer-viewer";
 import { TimelineStrip } from "@/components/psychenomicon/timeline-strip";
 import { ScrollReveal } from "@/components/psychenomicon/scroll-reveal";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { buildMetadata, SITE_URL } from "@/lib/seo";
 
 export const revalidate = 300;
+
+/** First couple of sentences of the canon layer, trimmed to a meta-description
+ *  length. Used for both the page description and the public teaser, so a
+ *  sealed chapter still says what it is about. */
+function chapterSynopsis(canonText: string, max = 280): string {
+  const flat = canonText.replace(/\s+/g, " ").trim();
+  if (flat.length <= max) return flat;
+  const cut = flat.slice(0, max);
+  const lastStop = Math.max(cut.lastIndexOf(". "), cut.lastIndexOf("? "), cut.lastIndexOf("! "));
+  return lastStop > max * 0.5 ? cut.slice(0, lastStop + 1) : `${cut.trimEnd()}…`;
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -25,7 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   // Letting the error propagate yields a 500, which crawlers retry.
   const chapter = await prisma.psychenomiconChapter.findUnique({
     where: { slug },
-    select: { title: true, chapterNumber: true },
+    select: { title: true, chapterNumber: true, canonText: true },
   });
   if (!chapter) notFound();
 
@@ -39,15 +50,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const isFree = await isFreePreviewChapter(chapter.chapterNumber).catch(() => false);
   const label = `CH.${String(chapter.chapterNumber).padStart(3, "0")} ${chapter.title}`;
 
+  // A real synopsis beats the old boilerplate: gated chapters were all shipping
+  // an identical description, which reads as duplicate content. Derived from
+  // canonText, so it is unique per chapter even while the body stays sealed.
+  const synopsis = chapterSynopsis(chapter.canonText);
+
   // buildMetadata is what every other content route uses, and it supplies the
   // absolute canonical plus the OpenGraph and Twitter tags these pages were
   // missing entirely. The title is overridden back to the existing shape so the
   // change does not quietly rewrite 2,990 titles.
   const base = buildMetadata({
     title: label,
-    description: isFree
-      ? `Chapter ${chapter.chapterNumber} of the Psychenomicon: ${chapter.title}. A living record of evolving patterns from the Cult of Psyche archive.`
-      : `Chapter ${chapter.chapterNumber} of the Psychenomicon. A living record of evolving patterns.`,
+    description:
+      synopsis ||
+      (isFree
+        ? `Chapter ${chapter.chapterNumber} of the Psychenomicon: ${chapter.title}. A living record of evolving patterns from the Cult of Psyche archive.`
+        : `Chapter ${chapter.chapterNumber} of the Psychenomicon. A living record of evolving patterns.`),
     path: `/psychenomicon/chapters/${slug}`,
   });
 
@@ -66,30 +84,115 @@ export default async function ChapterPage({ params }: PageProps) {
 
   // Free-preview pipeline: a configured set of chapters is readable by anyone.
   const gateRow = await prisma.psychenomiconChapter
-    .findUnique({ where: { slug }, select: { chapterNumber: true, title: true } });
+    .findUnique({
+      where: { slug },
+      select: {
+        chapterNumber: true,
+        title: true,
+        canonText: true,
+        emergingSignals: true,
+        updatedAt: true,
+        episode: { select: { title: true, slug: true, episodeNumber: true, airDate: true } },
+      },
+    });
   if (!gateRow) notFound();
   const isFreePreview = await isFreePreviewChapter(gateRow.chapterNumber);
   const canRead = subscribed || isFreePreview;
 
   if (!canRead) {
+    // A sealed chapter still gets a real, indexable page: an H1, a synopsis,
+    // its episode link and signal taxonomy. Previously every one of ~2,800
+    // chapter URLs served an identical contentless shell, which is a crawl
+    // liability rather than an asset (2026-08 audit). The gated body is
+    // declared to search engines via schema.org paywall markup below, which is
+    // the supported way to keep subscription content indexable.
+    const chapterLabel = `CH.${String(gateRow.chapterNumber).padStart(3, "0")}`;
+    const synopsis = chapterSynopsis(gateRow.canonText);
+    const paywallLd = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: `${chapterLabel} ${gateRow.title}`,
+      description: synopsis,
+      url: `${SITE_URL}/psychenomicon/chapters/${slug}`,
+      isAccessibleForFree: false,
+      dateModified: gateRow.updatedAt.toISOString(),
+      isPartOf: {
+        "@type": ["CreativeWork", "Product"],
+        name: "The Psychenomicon",
+        productID: "cultcodex.me:initiate-plus",
+      },
+      hasPart: {
+        "@type": "WebPageElement",
+        isAccessibleForFree: false,
+        cssSelector: ".paywalled-chapter-body",
+      },
+    };
+
     return (
-      <main id="main-content" className="min-h-screen bg-void flex items-center justify-center">
-        <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">{"/// initiate_only"}</p>
-          {/* The shell had no <h1> at all, so every sealed chapter was a page
-              with no heading. The title is already public in <title> and in the
-              chapter index, so naming it here reveals nothing the crawler
-              cannot already see, and it gives the page a real document
-              outline. The body stays sealed. */}
-          <h1 className="font-display text-xl font-bold text-text-primary">
-            <span className="block font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
-              {`CH.${String(gateRow.chapterNumber).padStart(3, "0")}`}
-            </span>
+      <main id="main-content" className="min-h-screen bg-void px-4 py-16">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(paywallLd) }}
+        />
+        <div className="mx-auto max-w-2xl space-y-6">
+          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">
+            {"/// psychenomicon"} · {chapterLabel}
+          </p>
+          <h1 className="font-display text-3xl font-bold text-text-primary">
             {gateRow.title}
           </h1>
-          <p className="font-display text-lg font-bold text-text-primary">This chapter is sealed.</p>
-          <Link href="/premium#access" className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/20 transition-colors">
-            Become Initiate+ →
+
+          <p className="text-sm leading-relaxed text-text-secondary">{synopsis}</p>
+
+          {gateRow.episode && (
+            <p className="font-mono text-xs text-text-muted">
+              Derived from{" "}
+              <Link
+                href={`/episodes/${gateRow.episode.slug}`}
+                className="text-text-primary underline hover:text-accent-violet-text"
+              >
+                {gateRow.episode.episodeNumber
+                  ? `EP.${gateRow.episode.episodeNumber} — `
+                  : ""}
+                {gateRow.episode.title}
+              </Link>
+            </p>
+          )}
+
+          {gateRow.emergingSignals.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {gateRow.emergingSignals.slice(0, 12).map((signal) => (
+                <span
+                  key={signal}
+                  className="rounded border border-border px-2 py-1 font-mono text-[10px] text-text-secondary"
+                >
+                  {signal}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="paywalled-chapter-body rounded border border-accent-violet/40 bg-accent-violet/5 p-6 space-y-4">
+            <p className="font-display text-lg font-bold text-text-primary">
+              The rest of this chapter is sealed.
+            </p>
+            <p className="font-mono text-xs text-text-muted">
+              The canon, interpretation, and mythic layers are open to Initiate+
+              members.
+            </p>
+            <Link
+              href="/premium#access"
+              className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/20 transition-colors"
+            >
+              Become Initiate+ →
+            </Link>
+          </div>
+
+          <Link
+            href="/psychenomicon/chapters"
+            className="inline-block font-mono text-xs text-text-muted underline hover:text-text-primary"
+          >
+            ← All chapters
           </Link>
           <p className="pt-2">
             <Link href="/psychenomicon/chapters" className="font-mono text-[11px] text-accent-gold-text/80 hover:underline">

@@ -12,6 +12,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Member Profile — CultCodex",
   description: "Manage your cult flair title and public member roll listing.",
+  // Private account surface — nothing here belongs in search results.
+  robots: { index: false, follow: false },
 };
 
 export default async function ProfilePage() {
@@ -74,7 +76,7 @@ export default async function ProfilePage() {
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-accent-gold/30 bg-accent-gold/10 text-2xl">
               🔐
             </div>
-            <h3 className="font-display text-xl font-bold text-accent-gold">
+            <h3 className="font-display text-xl font-bold text-accent-gold-text">
               Premium Members Only
             </h3>
             <p className="mt-2 font-mono text-xs leading-relaxed text-text-muted">

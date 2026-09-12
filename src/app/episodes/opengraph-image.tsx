@@ -34,7 +34,7 @@ export default async function OGImage() {
               {`${fmtEpisodeCount(counts?.episodes ?? 0)} Transmissions.`}
             </div>
             <div style={{ color: "#888", fontSize: 26, lineHeight: 1.5, maxWidth: 700 }}>
-              Every Cult of Psyche episode — with full transcripts, AI behavioral breakdowns, guest profiles, and searchable quotes.
+              Every Cult of Psyche episode — with transcripts for 97% of the archive, AI behavioral breakdowns, guest profiles, and searchable quotes.
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>

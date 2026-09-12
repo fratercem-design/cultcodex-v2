@@ -66,6 +66,7 @@ export function EmailCapture({
         <form onSubmit={handleSubmit} className="flex w-full max-w-sm flex-col gap-2 sm:flex-row">
           <input
             type="email"
+            aria-label="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="your@email.com"
@@ -103,6 +104,7 @@ export function EmailCapture({
       <form onSubmit={handleSubmit} className="mx-auto flex max-w-md flex-col gap-2 sm:flex-row">
         <input
           type="email"
+          aria-label="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"

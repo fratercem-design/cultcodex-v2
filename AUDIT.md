@@ -1710,3 +1710,72 @@ optionally `SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`) in
 then every Sentry path is inert by design. Also note `npm` blocked `@sentry/cli`'s postinstall
 under `allowScripts` — source-map upload will need that approved (`npm install-scripts approve
 @sentry/cli`), though it is skipped entirely without an auth token.
+
+---
+
+## Decision log
+
+### 2026-09-09 — Committed secrets in git history: risk accepted, no history rewrite
+
+**Decision (John, 2026-09-09): do not rewrite git history to purge the leaked
+credentials.** Rotation is the compensating control. This is a settled decision —
+please do not re-raise it in a future audit without new information.
+
+**What is actually exposed.** Three real credentials are reachable from `master`'s
+history. All three are absent from the current tip.
+
+| Credential | File | Introduced | Removed |
+|---|---|---|---|
+| Anthropic API key | `scripts/enrich/browser-enrich-topics.js` | `5e51de0` 2026-04-29 | `056daf7` 2026-09-02 |
+| `ENRICH_SECRET` | same file | same window | `056daf7` |
+| Google/YouTube API key | `src/app/api/admin/sync-transcripts/route.ts` | ≤ `6253d0b` 2026-05-15 | `e8a5ba6` |
+
+The YouTube key was missed by both the 2026-08-28 audit and the 2026-09-01 re-audit,
+which only scanned the enrich script. `ghp_` and `whsec_` matches elsewhere in history
+are false positives — the literal pattern list inside this document, plus
+`whsec_your…` / `whsec_plac…` placeholders in `.env.example` and `ci.yml`.
+
+**Why a rewrite was rejected.** `git filter-repo` from the 2026-04-29 introduction
+would re-SHA **917 of 1,185 commits on `master` (77%)**, invalidating **80 of 82**
+remote branches, all local branches, every worktree and every open PR — every clone
+has to be re-made. Against that, a force-push does not reliably erase anything from
+GitHub: unreachable objects stay fetchable by SHA through the API and cached views
+until GitHub Support runs GC on request. The repository is **private**. So the rewrite
+buys hygiene rather than erasure, at a cost out of proportion to the benefit.
+**Revisit this decision if the repository is ever made public.**
+
+**The control is rotation, and it is NOT complete.** Verified 2026-09-09 without
+sending any attack traffic, using `gh secret list` dates plus workflow outcomes:
+
+| Secret | GH Actions last set | Status |
+|---|---|---|
+| `ENRICH_SECRET` | 2026-04-30 | **NOT ROTATED — still the leaked value** |
+| `YOUTUBE_API_KEY` | 2026-04-30 | Almost certainly not rotated |
+| `ANTHROPIC_API_KEY` | 2026-09-04 | Set after the 2026-09-02 removal; probably rotated |
+
+`ENRICH_SECRET` is provable rather than inferred: `episodes-pipeline.yml` sends it as
+`X-Enrich-Secret` to production admin endpoints and **succeeded on 2026-09-09**, while
+the GitHub Actions value has not been touched since 2026-04-30. A succeeding workflow
+plus an untouched secret means the production value still equals the leaked one.
+
+**Why `ENRICH_SECRET` is the urgent one.** It is not merely an API quota risk. It is an
+authentication bypass: `src/lib/admin-guard.ts` exposes `requireEnrichSecret()` and
+`enrichSecretMatches()`, which authorize machine-to-machine admin routes on the header
+alone, **with no session**. Roughly 15 routes accept it, including
+`/api/admin/grant-access` — which sets `role: "admin"` and grants a lifetime top tier.
+Anyone who can read this repository's history holds a live skeleton key to the admin API.
+
+**To rotate** (no code changes needed — all workflow references are
+`${{ secrets.ENRICH_SECRET }}` by name; `ci.yml` uses the literal `ci-placeholder` and
+is unaffected): set the new value in the Vercel environment variable **and** the GitHub
+Actions secret. Only `channel-sweep.yml`, `episodes-pipeline.yml` and
+`nightmares-pipeline.yml` consume it. It is a shared symmetric secret, so there is no
+overlap window — change Vercel, redeploy, then update the GitHub secret, and time it
+just after a scheduled run rather than before. Operators also paste it by hand into
+`/admin/data-ops` and `/admin/cards`.
+
+**Note on this document.** Until this commit, the evidence block in Phase 4.1 reproduced
+the `ENRICH_SECRET` value in full — so `AUDIT.md` was itself a copy of the credential it
+was reporting, and merging this branch would have re-published it to `master`. It is now
+redacted. An audit document is a distribution channel; treat findings in it the way you
+would treat the code.

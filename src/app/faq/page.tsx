@@ -7,7 +7,7 @@ import { SectionCard } from "@/components/ui/section-card";
 
 
 export const metadata: Metadata = buildMetadata({
-  title: "FAQ — CultCodex",
+  title: "FAQ",
   description:
     "Frequently asked questions about CultCodex: what it is, how the Oracle works, AI reliability, subscriptions, corrections, and privacy.",
   path: "/faq",

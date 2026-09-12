@@ -3,7 +3,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 
 export const metadata = buildMetadata({
-  title: "The Cult Master's Guide — CULT CODEX",
+  title: "The Cult Master's Guide",
   description:
     "The Cult Master's Guide to a Safe, Intelligent, and Transformative Community — the philosophy, rules, and moderation doctrine of the Cult of Psyche.",
   path: "/guide",

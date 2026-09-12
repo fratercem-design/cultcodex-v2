@@ -107,7 +107,7 @@ export function ReactionBar({
                 : "border-border bg-surface text-text-muted hover:border-accent-gold/30 hover:text-text-primary"
             } ${pending === type ? "opacity-50" : ""}`}
           >
-            <span className="text-sm">{emoji}</span>
+            <span aria-hidden="true" className="text-sm">{emoji}</span>
             {count > 0 && <span>{count}</span>}
           </button>
         );

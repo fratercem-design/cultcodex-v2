@@ -1,7 +1,17 @@
+import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/page-hero";
 import { GoogleSignInButton } from "@/components/auth/google-signin-button";
 
 export const dynamic = "force-dynamic";
+
+// Account utility route: route-specific title, and kept out of the index —
+// it has no archive content and its callbackUrl variants would multiply into
+// near-duplicate URLs (2026-08 audit).
+export const metadata: Metadata = {
+  title: "Sign In — CultCodex",
+  description: "Sign in to your CultCodex account.",
+  robots: { index: false, follow: false },
+};
 
 interface PageProps {
   searchParams: Promise<{ callbackUrl?: string }>;

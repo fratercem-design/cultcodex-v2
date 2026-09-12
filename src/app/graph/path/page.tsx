@@ -14,7 +14,7 @@ import { buildMetadata } from "@/lib/seo";
 export const revalidate = 300;
 
 export const metadata: Metadata = buildMetadata({
-  title: "Connection Paths — The Network — CULT CODEX",
+  title: "Connection Paths — The Network",
   description:
     "Find the shortest chain between any two figures in the Cult of Psyche archive. Six-degrees through co-appearance.",
   path: "/graph/path",

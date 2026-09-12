@@ -245,7 +245,7 @@ export default async function HomePage() {
             {([
               {
                 href: "/episodes",
-                icon: <IconTransmission size={22} className="text-accent-gold" />,
+                icon: <IconTransmission size={22} className="text-accent-gold-text" />,
                 label: "Episodes",
                 count: `${stats.episodes.toLocaleString("en-US")} transmissions`,
                 accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
@@ -259,7 +259,7 @@ export default async function HomePage() {
               },
               {
                 href: "/symbols",
-                icon: <IconScroll size={22} className="text-accent-gold" />,
+                icon: <IconScroll size={22} className="text-accent-gold-text" />,
                 label: "Symbol Codex",
                 count: "esoteric encyclopedia",
                 accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",
@@ -287,7 +287,7 @@ export default async function HomePage() {
               },
               {
                 href: "/reports",
-                icon: <IconTransmission size={22} className="text-accent-gold" />,
+                icon: <IconTransmission size={22} className="text-accent-gold-text" />,
                 label: "Codex Reports",
                 count: "guest intelligence",
                 accent: "hover:border-accent-gold/40 hover:bg-accent-gold/5",

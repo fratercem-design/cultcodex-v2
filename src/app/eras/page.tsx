@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 export const revalidate = 3600;
 
 export const metadata: Metadata = buildMetadata({
-  title: "Eras of the Archive — CULT CODEX",
+  title: "Eras of the Archive",
   description:
     "The Cult of Psyche archive divided into its five defining eras — from the first raw transmissions to the ongoing signal. Browse episodes by the period that shaped them.",
   path: "/eras",

@@ -4,7 +4,7 @@ import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Welcome, Initiate — CULT CODEX",
+  title: "Welcome, Initiate",
   description: "You're in. The archive is now a tool you can use.",
   path: "/welcome/initiate",
 });

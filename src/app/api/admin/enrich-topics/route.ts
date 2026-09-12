@@ -4,11 +4,12 @@
  * Temporary enrichment relay — generates AI descriptions for Topic records
  * using Claude Haiku, called from an external script via HTTPS.
  * Auth: X-Enrich-Secret header must match ENRICH_SECRET env var.
+ * The LLM provider key is read from server env only and is never accepted
+ * from the request body.
  *
  * Body (JSON):
  *   batch        number of topics to process (default 8)
  *   minEpisodes  skip topics with fewer linked episodes (default 2)
- *   anthropicKey Anthropic API key (can be passed here or set as env var)
  *
  * Returns:
  *   { processed, remaining, results: [{title, ok, error?}] }

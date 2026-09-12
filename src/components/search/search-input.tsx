@@ -76,6 +76,7 @@ export function SearchInput({ defaultValue = "" }: SearchInputProps) {
         <input
           ref={inputRef}
           type="search"
+          aria-label="Search the archive"
           name="q"
           defaultValue={defaultValue}
           placeholder="Search episodes, people, lore…"

@@ -71,7 +71,7 @@ export function RankUpToast({ currentRankId }: Props) {
         <button
           onClick={() => setShown(null)}
           aria-label="Dismiss"
-          className="absolute top-2 right-3 font-mono text-xs text-text-muted/50 hover:text-text-primary transition-colors"
+          className="absolute top-2 right-3 flex h-6 w-6 items-center justify-center font-mono text-xs text-text-muted hover:text-text-primary transition-colors"
         >
           ✕
         </button>
