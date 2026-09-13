@@ -140,7 +140,7 @@ function buildMagicLinkHtml(url: string, ttlMinutes: number): string {
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0c0c14;border-radius:12px;overflow:hidden;">
 
       <tr><td align="center" style="padding:36px 40px 24px;">
-        <img src="https://cultcodex.me/logo.jpg" alt="CultCodex" width="60"
+        <img src="https://cultcodex.me/logo-512.jpg" alt="CultCodex" width="60"
           style="width:60px;border-radius:50%;border:2px solid rgba(200, 57, 46,0.5);display:block;margin:0 auto 20px;" />
         <p style="font-family:'Courier New',monospace;font-size:8px;color:rgba(200, 57, 46,0.4);
           letter-spacing:0.7em;text-transform:uppercase;margin:0 0 10px;">CultCodex &nbsp;&bull;&nbsp; Access Granted</p>

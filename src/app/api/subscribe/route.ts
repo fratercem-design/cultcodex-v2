@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod/v4";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/db";
-import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
 
 const subscribeSchema = z.object({
   email: z.email().optional(),
@@ -10,9 +10,14 @@ const subscribeSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const rl = rateLimit(`subscribe:${clientKey(req)}`, { limit: 5, windowMs: 60_000 });
-  if (!rl.ok) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  const callerKey = clientKey(req);
+  const localRl = rateLimit(`subscribe:${callerKey}`, { limit: 5, windowMs: 60_000 });
+  if (!localRl.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: { "Retry-After": String(localRl.retryAfterSec) } });
+  }
+  const sharedRl = await sharedRateLimit("subscribe", callerKey, { limit: 5, windowMs: 60_000 });
+  if (!sharedRl.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: { "Retry-After": String(sharedRl.retryAfterSec) } });
   }
 
   try {

@@ -100,7 +100,7 @@ curl -s -X POST https://cultcodex.me/api/admin/data-ops \
 
 - Route: `src/app/api/oracle/ask/route.ts`.
 - **Free taste:** 3 questions/month, no account (trial-tracked). This is the top conversion asset — never fully gate it.
-- **Initiate+ meter:** ~100 questions/month (`INITIATE_MONTHLY_CAP` env, default 100). Oracle tier + admins unmetered.
+- **Initiate+ meter:** 100 questions/month, defined with the public tier contract in `src/lib/subscription-tiers.ts`. Oracle tier + admins are unmetered.
 - **Cost protection, layered:** per-IP rate limit (15/window) → per-user monthly meter → global daily LLM budget (`consumeLlmBudget`) → Groq free-model fallback when throttled. Meter fails OPEN (never lock out a paying user over a counter error); the daily breaker fails CLOSED.
 - Spend caps outside the app: AWS Budget $50/mo + alerts, OpenAI $10 cap, Cloudflare rate rule on `/api/`.
 

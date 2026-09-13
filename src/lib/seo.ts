@@ -160,7 +160,10 @@ export function organizationJsonLd(episodeCount?: number): Record<string, unknow
     "@type": "Organization",
     name: SITE_NAME,
     url: SITE_URL,
-    logo: `${SITE_URL}/logo.jpg`,
+    // 512x512, 36 KB. /logo.jpg is a 307 KB source kept for next/image, which
+    // downscales it per use. Raw references like this one and the magic-link
+    // email pay the full weight, so they point at the derived file instead.
+    logo: `${SITE_URL}/logo-512.jpg`,
     description:
       `The definitive intelligence archive for the Cult of Psyche. ${fmtEpisodeCount(episodeCount ?? 0)} episodes indexed with full transcripts, AI psychological breakdowns, guest profiles, and behavioral pattern maps.`,
     sameAs: ["https://www.youtube.com/@CultofPsyche"],

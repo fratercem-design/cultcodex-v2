@@ -3,6 +3,9 @@ import Link from "next/link";
 import { getCounts } from "@/lib/queries/stats";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { EmailCapture } from "@/components/marketing/email-capture";
+import { getTier, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
+
+const initiateTier = getTier("access");
 
 export const dynamic = "force-dynamic";
 
@@ -210,10 +213,10 @@ export default async function FromYouTubePage() {
               </ul>
             </div>
             <div className="rounded-xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface px-5 py-5 space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">{"/// initiate+ · $10/mo"}</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">{`/// initiate+ · $${initiateTier.priceMonthly}/mo`}</p>
               <p className="font-display text-base font-bold text-white">Open the whole archive</p>
               <ul className="space-y-1.5 font-mono text-[11px] text-text-muted">
-                <li className="text-accent-gold-text/90">✦ Unlimited AI Oracle</li>
+                <li className="text-accent-gold-text/90">✦ {INITIATE_ORACLE_MONTHLY_LIMIT} cited Oracle questions each month</li>
                 <li>✦ Full transcript access + Decode Mode</li>
                 <li>✦ Your member identity profile</li>
                 <li>✦ No contracts — cancel anytime</li>
@@ -224,16 +227,16 @@ export default async function FromYouTubePage() {
           {/* ── SUBSCRIBE CTA ────────────────────────────────────────── */}
           <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// unlock_the_archive"}</p>
-            <p className="font-display text-xl font-bold text-white">Full transcripts. Unlimited Oracle. The Psychenomicon.</p>
+            <p className="font-display text-xl font-bold text-white">Full transcripts. {INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions a month. The Psychenomicon.</p>
             <p className="font-mono text-xs text-text-muted max-w-md mx-auto">
-              Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.
+              Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — ${initiateTier.priceMonthly}/mo. No contracts.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
                 href="/premium"
                 className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
               >
-                Become Initiate+ — $10/mo →
+                Become Initiate+ — ${initiateTier.priceMonthly}/mo →
               </Link>
               <Link
                 href="/episodes"

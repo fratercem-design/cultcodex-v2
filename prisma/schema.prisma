@@ -1188,6 +1188,17 @@ model LlmBudget {
   count      Int    @default(0)
 }
 
+// Shared fixed-window counters for abuse controls that must hold across every
+// serverless instance. One row is reused per endpoint + hashed caller key.
+model RateLimitBucket {
+  key       String   @id
+  count     Int      @default(0)
+  resetAt   DateTime
+  updatedAt DateTime @updatedAt
+
+  @@index([resetAt])
+}
+
 model CardPack {
   id                 String   @id @default(cuid())
   slug               String   @unique

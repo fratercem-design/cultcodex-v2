@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Bodoni_Moda, Cinzel } from "next/font/google";
@@ -17,7 +16,7 @@ import { DailyTransmission } from "@/components/home/daily-transmission";
 import { YouTubePlayer } from "@/components/home/youtube-player";
 import { TopAscenders } from "@/components/home/top-ascenders";
 import { getQuoteReactionCounts } from "@/lib/queries/quote-reactions";
-import { getCurrentUser } from "@/lib/auth";
+import { OnboardingGate } from "@/components/auth/onboarding-gate";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
@@ -28,6 +27,7 @@ import { EmailCapture } from "@/components/marketing/email-capture";
 import { GiftSignup } from "@/components/marketing/gift-signup";
 import { organizationJsonLd } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
+import { getTier, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
 import {
   IconTransmission,
   IconPerson,
@@ -36,7 +36,17 @@ import {
   IconLink,
 } from "@/components/graphics/codex-icons";
 
-export const dynamic = "force-dynamic";
+const initiateTier = getTier("access");
+
+// ISR, not force-dynamic. The homepage has no per-visitor content left: the
+// session is read client-side (<OnboardingGate>, the user menu, the reaction
+// bar) and live status refreshes through /api/live/status. Rendering on demand
+// made the HTML `private, no-store`, so every visitor and every crawler paid
+// full TTFB for a page that is identical for all of them.
+//
+// 60s matches the root layout and bounds how stale the daily transmission,
+// episode counts and recent-episode strip can get.
+export const revalidate = 60;
 
 // Threshold typography — Bodoni Moda (display italic) + Cinzel (sigil), scoped
 // to the hero so the rest of the site keeps its own type system.
@@ -68,18 +78,26 @@ export async function generateMetadata() {
         "Every Cult of Psyche transmission indexed. Psychological patterns, behavioral archetypes, guest profiles, and searchable transcripts — live since October 2024.",
       type: "website" as const,
       url: "/",
+      // Required explicitly. Next replaces the `openGraph` object wholesale
+      // rather than deep-merging it, so declaring one here without `images`
+      // dropped the root layout's og:image and the page shipped with none -
+      // every share of the homepage rendered as a bare text link.
+      images: [{ url: "/images/site/og.jpg", width: 1200, height: 630, alt: "CultCodex - the Cult of Psyche archive" }],
     },
     twitter: {
       card: "summary_large_image" as const,
       title: "CultCodex — Decode Cult of Psyche",
       description:
         "AI breakdowns, guest profiles, behavioral maps, and full transcript coverage for every Cult of Psyche live stream.",
+      // Same replacement rule as openGraph above - `summary_large_image` with
+      // no image is the worst of both worlds.
+      images: ["/images/site/og.jpg"],
     },
   };
 }
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, currentUser, latestDigest, dailyChapter, bookEdition] = await Promise.all([
+  const [stats, recentEpisodes, recentQuotes, liveStatus, popularTopics, dailyTransmission, latestDigest, dailyChapter, bookEdition] = await Promise.all([
     getCounts().catch(() => ({
       episodes: 0, segments: 0, people: 0, topics: 0,
       lore: 0, quotes: 0, totalHours: 0,
@@ -99,19 +117,17 @@ export default async function HomePage() {
       spotlightEpisode: null,
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
-    getCurrentUser().catch(() => null),
     prisma.weeklyDigest.findFirst({ where: { published: true }, orderBy: { weekOf: "desc" }, select: { title: true, blurb: true, weekOf: true } }).catch(() => null),
     getDailyIllustratedChapter().catch(() => null),
     prisma.bookEdition.findUnique({ where: { sku: "psychenomicon-vol-1" }, select: { title: true, pageCount: true, chapterFrom: true, chapterTo: true } }).catch(() => null),
   ]);
 
-  // Redirect new users to complete onboarding before they see the main app
-  if (currentUser && currentUser.onboardingCompleted === false) {
-    redirect("/onboarding");
-  }
-
+  // Reaction TOTALS are public and identical for every visitor, so they are
+  // fetched without a user id. The viewer's own reactions are resolved in the
+  // client bar. Passing a user id here would personalise the HTML and make it
+  // uncacheable - the same trap that <OnboardingGate> exists to avoid.
   const dailyQuoteReactions = dailyTransmission.quote
-    ? await getQuoteReactionCounts(dailyTransmission.quote.id, currentUser?.id).catch(() => undefined)
+    ? await getQuoteReactionCounts(dailyTransmission.quote.id).catch(() => undefined)
     : undefined;
 
   // getEpisodeCards returns card-shaped data directly (lean select, no segments)
@@ -129,6 +145,9 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* Renders nothing; sends half-onboarded members to /onboarding. */}
+      <OnboardingGate />
+
       {/* ── THE THRESHOLD (Dossier Ch. II §01) ───────────────────────── */}
       <ThresholdHero
         txId={txId}
@@ -321,7 +340,6 @@ export default async function HomePage() {
           <DailyTransmission
             data={dailyTransmission}
             quoteReactions={dailyQuoteReactions}
-            isAuthenticated={Boolean(currentUser)}
           />
 
           {/* ── ILLUSTRATED CHAPTER OF THE DAY ───────────────────────── */}
@@ -398,7 +416,7 @@ export default async function HomePage() {
             </div>
             <OracleCathedral />
             <p className="font-mono text-[9px] text-text-muted/60 uppercase tracking-widest">
-              The live Oracle above · cites exact episodes &amp; timestamps · Initiate+ $10/mo
+              The live Oracle above · cites exact episodes &amp; timestamps · Initiate+ ${initiateTier.priceMonthly}/mo
             </p>
           </div>
 
@@ -409,13 +427,14 @@ export default async function HomePage() {
           <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// unlock_the_archive"}</p>
             <p className="font-display text-xl font-bold text-white">Full transcripts. AI Oracle. The Psychenomicon.</p>
-            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.</p>
+            <p className="font-mono text-[11px] text-text-muted max-w-lg mx-auto">Observer opens the public index and samples. Initiate+ opens the sealed transcript layer.</p>
+            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens {INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions each month, every transcript, Decode Mode, and your member identity — ${initiateTier.priceMonthly}/mo. No contracts.</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
                 href="/premium"
                 className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
               >
-                Become Initiate+ — $10/mo →
+                Become Initiate+ — ${initiateTier.priceMonthly}/mo →
               </Link>
               <Link
                 href="/premium"

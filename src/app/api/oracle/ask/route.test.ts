@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   isSubscribed: vi.fn(),
   hasSystemTier: vi.fn(),
   rateLimit: vi.fn(),
+  sharedRateLimit: vi.fn(),
   consumeLlmBudget: vi.fn(),
   consumeMonthlyMeter: vi.fn(),
   oracleCacheGet: vi.fn(),
@@ -27,6 +28,7 @@ vi.mock("@/lib/subscription", () => ({
 }));
 vi.mock("@/lib/rate-limit", () => ({
   rateLimit: mocks.rateLimit,
+  sharedRateLimit: mocks.sharedRateLimit,
   clientKey: (_req: Request, userId?: string | null) => (userId ? `user:${userId}` : "ip:test"),
 }));
 vi.mock("@/lib/llm-budget", () => ({
@@ -65,6 +67,7 @@ describe("POST /api/oracle/ask — gate order", () => {
     mocks.isSubscribed.mockResolvedValue(true);
     mocks.hasSystemTier.mockResolvedValue(false);
     mocks.rateLimit.mockReturnValue(ALLOW);
+    mocks.sharedRateLimit.mockResolvedValue(ALLOW);
     mocks.consumeLlmBudget.mockResolvedValue({ ok: true, used: 1, cap: 500 });
     mocks.consumeMonthlyMeter.mockResolvedValue({ ok: true, used: 1, cap: 100 });
     // Default to a cache MISS so requests reach the gates under test. The

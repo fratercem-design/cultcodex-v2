@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { indexableChapterSubset } from "../sitemap";
+import { indexableChapterSubset } from "@/lib/sitemap";
 
 /**
  * The sitemap carried all 2,990 psychenomicon chapters. Only three of them

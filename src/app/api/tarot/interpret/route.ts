@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { anthropic as client, bedrockModelId } from "@/lib/anthropic";
-import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
 import { consumeLlmBudget } from "@/lib/llm-budget";
 import { groqChat, groqConfigured } from "@/lib/free-llm";
 
@@ -85,27 +85,6 @@ Interpret this reading.`;
 }
 
 export async function POST(req: NextRequest) {
-  const rl = rateLimit(`tarot-interpret:${clientKey(req)}`, { limit: 10, windowMs: 60_000 });
-  if (!rl.ok) {
-    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
-  }
-
-  // Global daily cap on this open, unauthenticated LLM endpoint — an IP-rotating
-  // attacker can't exceed the day's total. Tune via TAROT_DAILY_CAP; AI_KILLSWITCH=1
-  // disables it instantly. Bounds spend regardless of attack volume.
-  const budget = await consumeLlmBudget("tarot", Number(process.env.TAROT_DAILY_CAP ?? "300"));
-  if (!budget.ok) {
-    return NextResponse.json(
-      { error: "The Oracle is resting. Please try again later." },
-      { status: 503, headers: { "Retry-After": "3600" } }
-    );
-  }
-
-  const hasBedrock = !!(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY);
-  if (!groqConfigured() && !hasBedrock) {
-    return NextResponse.json({ error: "Oracle not configured" }, { status: 500 });
-  }
-
   let body: InterpretRequest;
   try {
     body = await req.json() as InterpretRequest;
@@ -118,6 +97,30 @@ export async function POST(req: NextRequest) {
   }
   if (body.cards.length === 0 || body.cards.length > 5) {
     return NextResponse.json({ error: "Invalid card count" }, { status: 400 });
+  }
+
+  const callerKey = clientKey(req);
+  const localRl = rateLimit(`tarot-interpret:${callerKey}`, { limit: 10, windowMs: 60_000 });
+  if (!localRl.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: { "Retry-After": String(localRl.retryAfterSec) } });
+  }
+  const sharedRl = await sharedRateLimit("tarot-interpret", callerKey, { limit: 10, windowMs: 60_000 });
+  if (!sharedRl.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: { "Retry-After": String(sharedRl.retryAfterSec) } });
+  }
+
+  // Invalid requests are rejected above, before consuming paid-provider budget.
+  const budget = await consumeLlmBudget("tarot", Number(process.env.TAROT_DAILY_CAP ?? "300"));
+  if (!budget.ok) {
+    return NextResponse.json(
+      { error: "The Oracle is resting. Please try again later." },
+      { status: 503, headers: { "Retry-After": "3600" } }
+    );
+  }
+
+  const hasBedrock = !!(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY);
+  if (!groqConfigured() && !hasBedrock) {
+    return NextResponse.json({ error: "Oracle not configured" }, { status: 500 });
   }
 
   const prompt = buildPrompt(body);

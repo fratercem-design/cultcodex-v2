@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useSessionLite } from "@/lib/session-lite";
 
 export interface QuoteReactionInitial {
   fire: number;
@@ -14,7 +15,12 @@ export interface QuoteReactionInitial {
 interface Props {
   quoteId: string;
   initial: QuoteReactionInitial;
-  isAuthenticated: boolean;
+  /**
+   * Omit on statically rendered pages. When undefined the bar resolves the
+   * session itself (via the shared session-lite fetch) rather than forcing the
+   * server to read a cookie and make the whole route dynamic.
+   */
+  isAuthenticated?: boolean;
   /** Compact (default) hides labels and only shows non-zero counts. */
   variant?: "compact" | "full";
 }
@@ -32,11 +38,16 @@ type ReactionKey = (typeof REACTIONS)[number]["type"];
 export function QuoteReactionBar({
   quoteId,
   initial,
-  isAuthenticated,
+  isAuthenticated: isAuthenticatedProp,
   variant = "compact",
 }: Props) {
   const [counts, setCounts] = useState<QuoteReactionInitial>(initial);
   const [pending, setPending] = useState<string | null>(null);
+
+  // Only pay for the session lookup when the server did not already tell us.
+  const { user } = useSessionLite();
+  const isAuthenticated =
+    isAuthenticatedProp !== undefined ? isAuthenticatedProp : Boolean(user);
 
   const handle = useCallback(
     async (type: ReactionKey) => {

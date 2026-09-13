@@ -6,7 +6,8 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed, hasSystemTier } from "@/lib/subscription";
 import { getEraById } from "@/lib/eras";
-import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
+import { FREE_ORACLE_MONTHLY_LIMIT, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
 import { consumeLlmBudget, consumeMonthlyMeter } from "@/lib/llm-budget";
 import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cache";
 import { groqChat, groqConfigured } from "@/lib/free-llm";
@@ -846,7 +847,7 @@ async function runOracleAgent(
 // ─── Trial cookie helpers ────────────────────────────────────────────────────
 
 const TRIAL_COOKIE = "oracle_trial";
-const TRIAL_LIMIT = 3;
+const TRIAL_LIMIT = FREE_ORACLE_MONTHLY_LIMIT;
 
 function parseTrialCookie(raw: string | undefined): { used: number; month: string } {
   const now = new Date();
@@ -907,14 +908,22 @@ export async function POST(req: NextRequest) {
       : undefined;
 
   // Guard the expensive LLM + ElevenLabs path against rapid-fire calls.
-  const rl = rateLimit(`oracle:${clientKey(req, user?.id)}`, {
+  const callerKey = clientKey(req, user?.id);
+  const localRl = rateLimit(`oracle:${callerKey}`, {
     limit: 15,
     windowMs: 60_000,
   });
-  if (!rl.ok) {
+  if (!localRl.ok) {
     return NextResponse.json(
       { ok: false, error: "The Oracle needs a moment. Try again shortly." } satisfies OracleResponse,
-      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
+      { status: 429, headers: { "Retry-After": String(localRl.retryAfterSec) } }
+    );
+  }
+  const sharedRl = await sharedRateLimit("oracle", callerKey, { limit: 15, windowMs: 60_000 });
+  if (!sharedRl.ok) {
+    return NextResponse.json(
+      { ok: false, error: "The Oracle needs a moment. Try again shortly." } satisfies OracleResponse,
+      { status: 429, headers: { "Retry-After": String(sharedRl.retryAfterSec) } }
     );
   }
 
@@ -999,8 +1008,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Initiate+ ($10) monthly meter — generous enough to be invisible to normal
-  // use (~100/mo, tune via INITIATE_MONTHLY_CAP), but aligns price with
+  // Initiate+ monthly meter. The contractual cap is shared with the public
+  // tier definition so an environment override cannot silently change what
+  // customers bought. It aligns price with
   // inference cost and gives heavy users a concrete upgrade trigger. Oracle
   // tier (system) and admins are unmetered; hasSystemTier covers both.
   // Deliberately the LAST gate: it runs after the burst limiter, question
@@ -1012,7 +1022,7 @@ export async function POST(req: NextRequest) {
   if (canAccess && user && !(await hasSystemTier(user.id))) {
     const meter = await consumeMonthlyMeter(
       `oracle-u-${user.id}`,
-      Number(process.env.INITIATE_MONTHLY_CAP ?? "100")
+      INITIATE_ORACLE_MONTHLY_LIMIT
     );
     if (!meter.ok) {
       return NextResponse.json(

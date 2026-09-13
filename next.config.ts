@@ -61,7 +61,9 @@ const nextConfig: NextConfig = {
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         { key: "X-DNS-Prefetch-Control", value: "on" },
         { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
-        { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
+        // Site assets are not an embedding API. YouTube remains a framed
+        // third-party origin and is governed separately by frame-src.
+        { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
         {
           key: "Permissions-Policy",
           value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()",

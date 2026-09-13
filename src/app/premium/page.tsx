@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buildMetadata } from "@/lib/seo";
-import { TIERS, type TierSlug } from "@/lib/subscription-tiers";
+import { TIERS, getTier, type TierSlug } from "@/lib/subscription-tiers";
 import { PremiumStatusProvider } from "@/components/subscription/premium-status-provider";
 import { PremiumManagePanel } from "@/components/subscription/premium-manage-panel";
 import { PremiumTierAction } from "@/components/subscription/premium-tier-action";
 
 export const revalidate = 3600;
 
+const initiateTier = getTier("access");
+const oracleTier = getTier("system");
+
 export const metadata: Metadata = buildMetadata({
   title: "Join the Archive — Choose Your Role",
-  description: "Initiate+ ($10/mo) unlocks the intelligence layer. Oracle ($25/mo) puts you inside it.",
+  description: `Initiate+ ($${initiateTier.priceMonthly}/mo) unlocks the intelligence layer. Oracle ($${oracleTier.priceMonthly}/mo) puts you inside it.`,
   path: "/premium",
 });
 

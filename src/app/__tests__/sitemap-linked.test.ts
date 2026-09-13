@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { indexableLinkedSubset } from "../sitemap";
+import { indexableLinkedSubset, renderUrlSet, SITEMAP_SEGMENTS } from "@/lib/sitemap";
 import { THIN_PAGE_MIN_EPISODES, isThinPage, thinPageRobots } from "@/lib/seo";
 
 /**
@@ -38,5 +38,17 @@ describe("sitemap lore/topic filtering", () => {
   it("noindex pages still pass link equity through", () => {
     expect(thinPageRobots(0)).toEqual({ robots: { index: false, follow: true } });
     expect(thinPageRobots(5)).toEqual({});
+  });
+});
+
+describe("sitemap contract", () => {
+  it("does not submit member URLs that robots.txt disallows", () => {
+    expect(SITEMAP_SEGMENTS).not.toHaveProperty("members");
+  });
+
+  it("omits image extensions from lean child sitemaps", () => {
+    const xml = renderUrlSet([{ url: "https://cultcodex.me/episodes/example" }]);
+    expect(xml).not.toContain("xmlns:image");
+    expect(xml).not.toContain("image:loc");
   });
 });

@@ -29,8 +29,17 @@ export async function GET(
 
   const user = await getCurrentUser();
   const counts = await getQuoteReactionCounts(quote.id, user?.id);
+
+  // `counts.userReactions` is per-user. A shared CDN cache keyed only on the
+  // URL would hand one signed-in member's reaction state to the next caller,
+  // so only the anonymous response — where userReactions is always [] — is
+  // publicly cacheable. Signed-in responses must stay private.
   return NextResponse.json(counts, {
-    headers: { "Cache-Control": "public, s-maxage=10, stale-while-revalidate=30" },
+    headers: {
+      "Cache-Control": user
+        ? "private, no-store"
+        : "public, s-maxage=10, stale-while-revalidate=30",
+    },
   });
 }
 

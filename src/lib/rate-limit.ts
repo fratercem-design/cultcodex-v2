@@ -1,13 +1,12 @@
+import { createHash } from "node:crypto";
+import { prisma } from "@/lib/db";
+
 /**
  * In-memory fixed-window rate limiter.
  *
- * Scope is per-process. NOTE: on Vercel each serverless instance is its own
- * process with its own Map, and instances scale out under load — so the
- * effective limit is (configured limit x live instances), and a cold start
- * resets a caller's window. This is now a soft speed-bump on the paid AI
- * endpoints (Anthropic, OpenAI, ElevenLabs), not a real cap. For a hard limit,
- * swap the Map for a shared Redis/Upstash store — the call sites only depend
- * on the `rateLimit()` signature.
+ * Scope is per-process. On Vercel each serverless instance has its own Map,
+ * so this is only a local speed bump. Cost-bearing routes pair it with the
+ * PostgreSQL-backed sharedRateLimit() below.
  */
 
 interface Bucket {
@@ -83,4 +82,57 @@ export function clientKey(req: Request, userId?: string | null): string {
     req.headers.get("x-real-ip") ||
     "unknown";
   return `ip:${ip}`;
+}
+
+/**
+ * Consume a fixed-window limit in PostgreSQL. Unlike `rateLimit`, this counter
+ * is shared by every Vercel instance and survives cold starts. Caller keys are
+ * hashed before storage so raw IP addresses are not retained in the table.
+ * Store failures fail closed on the paid/cost-bearing routes that use this.
+ */
+export async function sharedRateLimit(
+  namespace: string,
+  key: string,
+  opts: RateLimitOptions
+): Promise<RateLimitResult> {
+  const now = Date.now();
+  const initialResetAt = new Date(now + opts.windowMs);
+  const digest = createHash("sha256").update(key).digest("hex").slice(0, 32);
+  const bucketKey = `${namespace}:${digest}`;
+
+  try {
+    const rows = await prisma.$queryRawUnsafe<Array<{ count: number; resetAt: Date }>>(
+      `INSERT INTO "RateLimitBucket"("key", "count", "resetAt", "updatedAt")
+       VALUES($1, 1, $2, NOW())
+       ON CONFLICT("key") DO UPDATE SET
+         "count" = CASE
+           WHEN "RateLimitBucket"."resetAt" <= NOW() THEN 1
+           ELSE "RateLimitBucket"."count" + 1
+         END,
+         "resetAt" = CASE
+           WHEN "RateLimitBucket"."resetAt" <= NOW() THEN $2
+           ELSE "RateLimitBucket"."resetAt"
+         END,
+         "updatedAt" = NOW()
+       RETURNING "count", "resetAt"`,
+      bucketKey,
+      initialResetAt
+    );
+    const count = Number(rows[0]?.count ?? opts.limit + 1);
+    const resetAt = rows[0]?.resetAt?.getTime?.() ?? initialResetAt.getTime();
+    const ok = count <= opts.limit;
+    return {
+      ok,
+      remaining: ok ? Math.max(0, opts.limit - count) : 0,
+      resetAt,
+      retryAfterSec: ok ? 0 : Math.max(1, Math.ceil((resetAt - now) / 1000)),
+    };
+  } catch {
+    return {
+      ok: false,
+      remaining: 0,
+      resetAt: initialResetAt.getTime(),
+      retryAfterSec: Math.max(1, Math.ceil(opts.windowMs / 1000)),
+    };
+  }
 }

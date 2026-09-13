@@ -16,6 +16,10 @@
 export type TierSlug = "access" | "system";
 export type BillingInterval = "month" | "year";
 
+/** Public entitlement numbers live here so sales copy and enforcement cannot drift. */
+export const FREE_ORACLE_MONTHLY_LIMIT = 3;
+export const INITIATE_ORACLE_MONTHLY_LIMIT = 100;
+
 export interface Tier {
   slug: TierSlug;
   name: string;
@@ -46,7 +50,7 @@ export const TIERS: Tier[] = [
     priceEnvVarAnnual: "STRIPE_PRICE_ACCESS_ANNUAL_ID",
     features: [
       "Read every word ever spoken — searchable, timestamped",
-      "100 Oracle questions a month — twenty-five times the free allowance",
+      `${INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions a month — cited to the source archive`,
       "Jump to any moment in any transmission, instantly",
       "Search by what's actually happening — not just keywords",
       "AI extracts behavioral patterns from every panel — what repeats, what shifts",

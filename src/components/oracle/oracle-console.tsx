@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import type { OracleCitation, OracleResponse } from "@/app/api/oracle/ask/route";
 import { LilithOracle } from "@/components/oracle/lilith-oracle";
+import { INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
 
 type ConsoleState = "idle" | "loading" | "answered" | "error";
 
@@ -553,7 +554,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
                 The Oracle has more to say.
               </p>
               <p className="font-mono text-[11px] text-text-muted leading-relaxed">
-                Initiate+ opens unlimited Oracle access — plus transcripts, behavioral profiles,
+                Initiate+ opens {INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions each month — plus transcripts, behavioral profiles,
                 and the full intelligence layer. Drop your email and we&apos;ll send you in.
               </p>
               <form

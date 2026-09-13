@@ -13,6 +13,9 @@ import {
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { getCounts } from "@/lib/queries/stats";
 import type { Metadata } from "next";
+import { getTier, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
+
+const initiateTier = getTier("access");
 
 export const metadata: Metadata = {
   alternates: { canonical: "/start-here" },
@@ -367,9 +370,9 @@ export default async function StartHerePage() {
         <div className="rounded-2xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface overflow-hidden">
           <div className="p-7 space-y-4">
             <p className="font-mono text-[11px] text-text-muted leading-relaxed">
-              As an <span className="text-text-primary font-bold">Observer</span>, you can see the full
-              shape of the archive — every episode, every person, every lore entry, every quote.
-              You know something is here.
+              <span className="text-text-primary font-bold">Observer</span> opens the public index and
+              samples. <span className="text-accent-gold-text font-bold">Initiate+</span> opens the sealed
+              transcripts and intelligence layer.
             </p>
             <p className="font-mono text-[11px] text-text-muted leading-relaxed">
               <span className="text-accent-gold-text font-bold">Initiate+</span> is where the archive
@@ -383,6 +386,7 @@ export default async function StartHerePage() {
                 "AI-extracted behavioral patterns from every panel",
                 "Build your own intelligence file — save signals, quotes, observations",
                 "The Psychenomicon — full access to the living myth-engine",
+                `${INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions every month, cited to the archive`,
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2 font-mono text-[11px] text-text-muted">
                   <span className="text-accent-gold-text mt-0.5 shrink-0">✦</span>
@@ -394,7 +398,7 @@ export default async function StartHerePage() {
           <div className="border-t border-accent-gold/20 bg-accent-gold/5 px-7 py-4 flex flex-wrap items-center justify-between gap-3">
             <p className="font-mono text-xs text-text-muted">
               Initiate+ opens for{" "}
-              <span className="text-accent-gold-text font-bold">$10/month</span>. Cancel any time.
+              <span className="text-accent-gold-text font-bold">${initiateTier.priceMonthly}/month</span>. Cancel any time.
             </p>
             <Link
               href="/premium"
@@ -445,7 +449,7 @@ export default async function StartHerePage() {
               { href: "/psychenomicon", label: "Psychenomicon", desc: "Living myth-engine — chapters, entities, threads" },
               { href: "/psychenomicon/entities", label: "Entities", desc: "Tracked archetypes across the archive" },
               { href: "/lexicon", label: "Lexicon", desc: "Panelverse terms defined" },
-              { href: "/premium", label: "Initiate+", desc: "$10/mo · Full access" },
+              { href: "/premium", label: "Initiate+", desc: `$${initiateTier.priceMonthly}/mo · Sealed archive access` },
             ],
           },
         ].map((group) => {
