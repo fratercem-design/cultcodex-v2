@@ -52,6 +52,16 @@ describe("clientKey", () => {
     expect(clientKey(req)).toBe("ip:1.2.3.4");
   });
 
+  it("prefers Vercel's preserved forwarded IP", () => {
+    const req = new Request("https://x.test", {
+      headers: {
+        "x-vercel-forwarded-for": "203.0.113.10",
+        "x-forwarded-for": "198.51.100.7",
+      },
+    });
+    expect(clientKey(req)).toBe("ip:203.0.113.10");
+  });
+
   it("uses 'unknown' when no identifier is available", () => {
     const req = new Request("https://x.test");
     expect(clientKey(req)).toBe("ip:unknown");

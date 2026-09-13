@@ -76,7 +76,12 @@ export function rateLimit(key: string, opts: RateLimitOptions): RateLimitResult 
  */
 export function clientKey(req: Request, userId?: string | null): string {
   if (userId) return `user:${userId}`;
-  const fwd = req.headers.get("x-forwarded-for");
+  // Vercel preserves its own copy even when another proxy in front of Vercel
+  // rewrites x-forwarded-for. Prefer that platform-authored value, while
+  // retaining the standard headers for local/self-hosted development.
+  const fwd =
+    req.headers.get("x-vercel-forwarded-for") ||
+    req.headers.get("x-forwarded-for");
   const ip =
     fwd?.split(",")[0]?.trim() ||
     req.headers.get("x-real-ip") ||
@@ -102,7 +107,11 @@ export async function sharedRateLimit(
 
   try {
     const rows = await prisma.$queryRawUnsafe<Array<{ count: number; resetAt: Date }>>(
-      `INSERT INTO "RateLimitBucket"("key", "count", "resetAt", "updatedAt")
+      `WITH expired AS (
+         DELETE FROM "RateLimitBucket"
+         WHERE "resetAt" < NOW() - INTERVAL '1 day'
+       )
+       INSERT INTO "RateLimitBucket"("key", "count", "resetAt", "updatedAt")
        VALUES($1, 1, $2, NOW())
        ON CONFLICT("key") DO UPDATE SET
          "count" = CASE

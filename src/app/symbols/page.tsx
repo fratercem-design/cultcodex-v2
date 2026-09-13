@@ -41,8 +41,8 @@ export default function SymbolsPage({
 }: {
   searchParams: Promise<{ category?: string }>;
 }) {
-  {"// We use searchParams for static-safe filtering hint but since force-static"}
-  {"// we render all — filtering is handled client-free via hash or just show all"}
+  // Keep the parameter in the signature for stable routing. This force-static
+  // page renders the full collection rather than applying server-side filters.
   void searchParams;
 
   return (

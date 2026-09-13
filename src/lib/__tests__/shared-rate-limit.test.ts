@@ -15,6 +15,8 @@ describe("sharedRateLimit", () => {
     expect(result.ok).toBe(true);
     expect(result.remaining).toBe(3);
     expect(queryRaw.mock.calls[0][1]).not.toContain("203.0.113.42");
+    expect(queryRaw.mock.calls[0][0]).toContain('DELETE FROM "RateLimitBucket"');
+    expect(queryRaw.mock.calls[0][0]).toContain("INTERVAL '1 day'");
   });
 
   it("denies calls over the shared limit", async () => {

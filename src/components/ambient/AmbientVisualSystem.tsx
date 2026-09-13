@@ -129,9 +129,11 @@ function poly(ctx: CanvasRenderingContext2D, n: number, r: number, color: string
   ctx.beginPath();
   for (let i = 0; i < n; i++) {
     const a = (i / n) * Math.PI * 2 - Math.PI / 2;
-    i === 0
-      ? ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r)
-      : ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+    if (i === 0) {
+      ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+    } else {
+      ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+    }
   }
   ctx.closePath();
   ctx.strokeStyle = color;

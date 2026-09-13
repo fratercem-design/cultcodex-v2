@@ -25,7 +25,21 @@ function resolveConnectionString(): string | null {
     );
     return null;
   }
-  return raw;
+  // pg currently treats these modes as verify-full but will change their
+  // semantics in its next major release. Make the existing strict behavior
+  // explicit now and silence the runtime deprecation warning.
+  let parsed: URL;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    console.error("[db] DATABASE_URL is not a parseable PostgreSQL connection URL.");
+    return null;
+  }
+  const sslMode = parsed.searchParams.get("sslmode")?.toLowerCase();
+  if (sslMode && ["prefer", "require", "verify-ca"].includes(sslMode)) {
+    parsed.searchParams.set("sslmode", "verify-full");
+  }
+  return parsed.toString();
 }
 
 function createPrismaClient(): PrismaClient {

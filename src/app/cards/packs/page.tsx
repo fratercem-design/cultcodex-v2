@@ -374,7 +374,7 @@ export default function PackStorePage() {
           packAccentColor={ACCENT_VAR[activePack.artTheme ?? "terminal"] ?? "var(--neon)"}
           onClose={() => {
             setActivePack(null);
-            {"// Refresh wallet"}
+            // Refresh wallet after the pack animation closes.
             fetch("/api/cards/stats").then((r) => r.json()).then(setWallet).catch(() => {});
           }}
         />

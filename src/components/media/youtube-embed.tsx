@@ -69,7 +69,8 @@ export function YouTubeEmbed({ videoId, title, startSeconds }: YouTubeEmbedProps
           onError(e) {
             if (UNAVAILABLE_ERRORS.has(e.data)) {
               setUnavailable(true);
-              // Report back so the DB marks the episode unavailable — future renders skip the embed
+              // Report telemetry only. Public player callbacks must not mutate
+              // the episode's canonical archive status.
               fetch("/api/episodes/report-unavailable", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
