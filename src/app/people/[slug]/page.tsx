@@ -39,6 +39,7 @@ import {
   PERSON_TYPE_BADGE as PERSON_TYPE_VARIANTS,
 } from "@/lib/people/person-type";
 import type { Metadata } from "next";
+import { isIndexablePerson } from "@/lib/people/noise-slugs";
 
 // ── Lore Summary renderer ─────────────────────────────────────────────────────
 // Handles two formats:
@@ -160,11 +161,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
 
-  // Noindex for "mentioned" people — they were only name-dropped, never appeared as guests.
-  // This reduces SEO risk for people who didn't actively participate.
-  const shouldNoIndex = person.personType === "mentioned";
-
   const appearanceCount = person._count.guestAppearances;
+  const shouldNoIndex = !isIndexablePerson({
+    slug: person.slug,
+    displayName: person.displayName,
+    personType: person.personType,
+    appearanceCount,
+  });
   const typeLabel =
     person.personType === "host" ? "host" :
     person.personType === "recurring" ? "recurring figure" : "guest";

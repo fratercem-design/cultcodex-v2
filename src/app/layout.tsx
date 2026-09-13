@@ -2,11 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import {
   Space_Grotesk,
-  Inter,
-  IBM_Plex_Mono,
-  Playfair_Display,
   JetBrains_Mono,
-  VT323,
 } from "next/font/google";
 import { LiveBanner } from "@/components/layout/live-banner";
 import { ScrollReset } from "@/components/layout/scroll-reset";
@@ -40,41 +36,12 @@ const spaceGrotesk = Space_Grotesk({
   display: "swap",
 });
 
-const inter = Inter({preload: false,
-  variable: "--font-body",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({preload: false,
-  variable: "--font-mono-fallback",
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const playfairDisplay = Playfair_Display({preload: false,
-  variable: "--font-serif",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "700", "900"],
-});
-
 // JetBrains Mono — primary monospace for the neon-terminal aesthetic.
 // Overrides --font-mono so all existing `font-mono` consumers pick it up
 // without per-component changes.
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   weight: ["300", "400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-// VT323 — CRT large-number font, exposed as --font-crt for opt-in use
-// (large stat counters, retro headers). Single weight is all VT323 ships.
-const vt323 = VT323({preload: false,
-  variable: "--font-crt",
-  weight: "400",
   subsets: ["latin"],
   display: "swap",
 });
@@ -151,11 +118,7 @@ export default async function RootLayout({
 
   const fontVariables = [
     spaceGrotesk.variable,
-    inter.variable,
-    ibmPlexMono.variable,
-    playfairDisplay.variable,
     jetbrainsMono.variable,
-    vt323.variable,
   ].join(" ");
 
   return (

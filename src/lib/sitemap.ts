@@ -4,6 +4,7 @@ import { SYMBOLS } from "@/lib/symbols/data";
 import { PILLARS } from "@/lib/pillars/pillars";
 import { getFreePreviewChapterNumbers } from "@/lib/psychenomicon";
 import { isThinPage } from "@/lib/seo";
+import { isIndexablePerson } from "@/lib/people/noise-slugs";
 
 export interface SitemapEntry {
   url: string;
@@ -116,7 +117,6 @@ async function pagesSegment(): Promise<SitemapEntry[]> {
     { url: `${b}/tarot`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${b}/tarot/oracle`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${b}/people/the-rest`, lastModified: peopleUpdated, changeFrequency: "weekly", priority: 0.5 },
-    { url: `${b}/members`, changeFrequency: "weekly", priority: 0.6 },
     { url: `${b}/graph`, lastModified: archiveUpdated, changeFrequency: "weekly", priority: 0.6 },
     { url: `${b}/symbols`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${b}/archetypes`, changeFrequency: "monthly", priority: 0.7 },
@@ -140,28 +140,39 @@ async function pagesSegment(): Promise<SitemapEntry[]> {
 async function episodesSegment(): Promise<SitemapEntry[]> {
   const b = baseUrl();
   const rows = await prisma.episode
-    .findMany({ where: { status: "published" }, select: { slug: true, updatedAt: true, thumbnailUrl: true } })
+    .findMany({ where: { status: "published" }, select: { slug: true, updatedAt: true } })
     .catch(() => []);
   return rows.map((e) => ({
     url: `${b}/episodes/${e.slug}`,
     lastModified: e.updatedAt,
     changeFrequency: "weekly" as const,
     priority: 0.8,
-    ...(e.thumbnailUrl ? { images: [e.thumbnailUrl] } : {}),
   }));
 }
 
 async function peopleSegment(): Promise<SitemapEntry[]> {
   const b = baseUrl();
   const rows = await prisma.person
-    .findMany({ select: { slug: true, updatedAt: true, avatarUrl: true } })
+    .findMany({
+      select: {
+        slug: true,
+        displayName: true,
+        personType: true,
+        updatedAt: true,
+        _count: { select: { guestAppearances: true } },
+      },
+    })
     .catch(() => []);
-  return rows.map((p) => ({
+  return rows.filter((p) => isIndexablePerson({
+    slug: p.slug,
+    displayName: p.displayName,
+    personType: p.personType,
+    appearanceCount: p._count.guestAppearances,
+  })).map((p) => ({
     url: `${b}/people/${p.slug}`,
     lastModified: p.updatedAt,
     changeFrequency: "monthly" as const,
     priority: 0.7,
-    ...(p.avatarUrl ? { images: [p.avatarUrl] } : {}),
   }));
 }
 
@@ -220,32 +231,6 @@ async function chaptersSegment(): Promise<SitemapEntry[]> {
   }));
 }
 
-async function membersSegment(): Promise<SitemapEntry[]> {
-  const b = baseUrl();
-  // Optional - schema drift on CodexUser columns must not break the sitemap.
-  try {
-    const rows = await prisma.codexUser.findMany({
-      where: {
-        isPublicMember: true,
-        codexPagePublic: true,
-        codexSlug: { not: null },
-        OR: [{ role: "admin" }, { subscriptionStatus: "active" }, { isLifetimeMember: true }],
-      },
-      select: { codexSlug: true, updatedAt: true },
-    });
-    return rows
-      .filter((m) => m.codexSlug)
-      .map((m) => ({
-        url: `${b}/members/${m.codexSlug}`,
-        lastModified: m.updatedAt,
-        changeFrequency: "monthly" as const,
-        priority: 0.5,
-      }));
-  } catch {
-    return [];
-  }
-}
-
 export const SITEMAP_SEGMENTS: Record<string, () => Promise<SitemapEntry[]>> = {
   pages: pagesSegment,
   episodes: episodesSegment,
@@ -254,7 +239,6 @@ export const SITEMAP_SEGMENTS: Record<string, () => Promise<SitemapEntry[]>> = {
   topics: topicsSegment,
   series: seriesSegment,
   chapters: chaptersSegment,
-  members: membersSegment,
 };
 
 export function isSitemapSegment(name: string): boolean {
@@ -278,13 +262,10 @@ export function renderUrlSet(entries: SitemapEntry[]): string {
       if (e.lastModified) parts.push(`    <lastmod>${e.lastModified.toISOString()}</lastmod>`);
       if (e.changeFrequency) parts.push(`    <changefreq>${e.changeFrequency}</changefreq>`);
       if (e.priority != null) parts.push(`    <priority>${e.priority.toFixed(1)}</priority>`);
-      for (const img of e.images ?? []) {
-        parts.push(`    <image:image><image:loc>${xmlEscape(img)}</image:loc></image:image>`);
-      }
       return `  <url>\n${parts.join("\n")}\n  </url>`;
     })
     .join("\n");
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${body}\n</urlset>\n`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
 }
 
 export function renderSitemapIndex(locs: Array<{ url: string; lastModified?: Date }>): string {

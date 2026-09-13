@@ -23,7 +23,7 @@ export default function PrivacyPage() {
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
 
         <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-4 py-3 font-mono text-[11px] text-text-muted">
-          Last updated: June 2026. This policy applies to cultcodex.me.
+          Last updated: September 2026. This policy applies to cultcodex.me.
         </div>
 
         <SectionCard title="Who We Are">
@@ -56,9 +56,11 @@ export default function PrivacyPage() {
             <div>
               <h3 className="font-mono text-xs uppercase tracking-wider text-accent-cyan mb-2">Usage Data</h3>
               <p className="text-text-muted">
-                We use Google Analytics (via Google Tag Manager) to measure aggregate page views
-                and performance metrics. Analytics data is anonymised — no personally identifiable
-                information is sent to Google. You can opt out via the{" "}
+                If you accept analytics in the consent banner, we load Google Analytics to measure
+                page views and site usage. We do not intentionally send your account name or email
+                address to Google, but Google may process technical data such as your IP address,
+                browser, device, and pages visited. If you decline, Google Analytics is not loaded.
+                You can also opt out via the{" "}
                 <a href="https://tools.google.com/dlpage/gaoptout" className="text-accent-gold-text hover:underline" target="_blank" rel="noopener noreferrer">
                   Google Analytics opt-out add-on
                 </a>.
@@ -114,7 +116,7 @@ export default function PrivacyPage() {
             <ul className="space-y-2 list-disc list-inside">
               <li><span className="text-text-primary font-medium">Google OAuth</span> — sign-in authentication</li>
               <li><span className="text-text-primary font-medium">Stripe</span> — payment processing</li>
-              <li><span className="text-text-primary font-medium">Google Analytics / Tag Manager</span> — anonymised usage analytics</li>
+              <li><span className="text-text-primary font-medium">Google Analytics</span> — consent-based site usage measurement</li>
               <li><span className="text-text-primary font-medium">Vercel</span> — application hosting</li>
               <li><span className="text-text-primary font-medium">Xata</span> — database hosting (PostgreSQL)</li>
               <li><span className="text-text-primary font-medium">Resend</span> — transactional and newsletter email</li>
@@ -150,7 +152,10 @@ export default function PrivacyPage() {
               <Link href="/corrections" className="text-accent-gold-text hover:underline">
                 corrections page
               </Link>{" "}
-              or reach out through the community channels linked in the archive.
+              or email{" "}
+              <a href="mailto:psychetarotchannel@gmail.com" className="font-mono text-accent-gold-text hover:underline">
+                psychetarotchannel@gmail.com
+              </a>.
             </p>
           </div>
         </SectionCard>

@@ -40,6 +40,8 @@ export function ThresholdHero({
   // server and client markup disagree.
   useEffect(() => {
     try {
+      // Reading the persisted client-only preference requires a post-mount update.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (localStorage.getItem(THRESHOLD_SEEN_KEY)) setCompact(true);
     } catch {
       // Private mode or blocked storage - fall back to the full threshold.

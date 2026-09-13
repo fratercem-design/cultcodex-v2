@@ -985,7 +985,7 @@ export default function DossierPage() {
               <div className="tier tier--initiate">
                 <span className="tier__num">II</span>
                 <div className="tier__name">Initiate<small>The Vow</small></div>
-                <div className="tier__perks">Unlimited Oracle · full transcripts · daily card pull · 4 packs/month · public wall · share-card export</div>
+                <div className="tier__perks">100 Oracle questions/month · full transcripts · daily card pull · 4 packs/month · public wall · share-card export</div>
                 <span className="tier__price">$10 / mo · $96 / yr</span>
               </div>
               <div className="tier tier--magus">

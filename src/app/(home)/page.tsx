@@ -27,6 +27,7 @@ import { EmailCapture } from "@/components/marketing/email-capture";
 import { GiftSignup } from "@/components/marketing/gift-signup";
 import { organizationJsonLd } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
+import { getTier, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
 import {
   IconTransmission,
   IconPerson,
@@ -34,6 +35,8 @@ import {
   IconRecurring,
   IconLink,
 } from "@/components/graphics/codex-icons";
+
+const initiateTier = getTier("access");
 
 // ISR, not force-dynamic. The homepage has no per-visitor content left: the
 // session is read client-side (<OnboardingGate>, the user menu, the reaction
@@ -413,7 +416,7 @@ export default async function HomePage() {
             </div>
             <OracleCathedral />
             <p className="font-mono text-[9px] text-text-muted/60 uppercase tracking-widest">
-              The live Oracle above · cites exact episodes &amp; timestamps · Initiate+ $10/mo
+              The live Oracle above · cites exact episodes &amp; timestamps · Initiate+ ${initiateTier.priceMonthly}/mo
             </p>
           </div>
 
@@ -424,13 +427,14 @@ export default async function HomePage() {
           <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// unlock_the_archive"}</p>
             <p className="font-display text-xl font-bold text-white">Full transcripts. AI Oracle. The Psychenomicon.</p>
-            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — $10/mo. No contracts.</p>
+            <p className="font-mono text-[11px] text-text-muted max-w-lg mx-auto">Observer opens the public index and samples. Initiate+ opens the sealed transcript layer.</p>
+            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens {INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions each month, every transcript, Decode Mode, and your member identity — ${initiateTier.priceMonthly}/mo. No contracts.</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
                 href="/premium"
                 className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
               >
-                Become Initiate+ — $10/mo →
+                Become Initiate+ — ${initiateTier.priceMonthly}/mo →
               </Link>
               <Link
                 href="/premium"

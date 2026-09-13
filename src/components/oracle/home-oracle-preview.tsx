@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { OracleCitation, OracleResponse } from "@/app/api/oracle/ask/route";
+import { INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
 
 type PreviewState = "idle" | "loading" | "answered" | "gated" | "limit" | "error";
 
@@ -134,7 +135,7 @@ export function HomeOraclePreview() {
               {"/// unlock full answer + citations"}
             </p>
             <p className="font-serif text-sm text-text-muted italic">
-              Initiate+ reveals the complete Oracle response with archive citations — unlimited queries.
+              Initiate+ reveals complete Oracle responses with archive citations — up to {INITIATE_ORACLE_MONTHLY_LIMIT} questions each month.
             </p>
             <Link
               href="/premium"
@@ -166,7 +167,7 @@ export function HomeOraclePreview() {
         <div className="rounded-xl border border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-surface p-5 text-center space-y-2">
           <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/70">{"/// preview_exhausted"}</p>
           <p className="font-display text-sm font-bold text-text-primary">Your free preview is complete.</p>
-          <p className="font-mono text-xs text-text-muted">Initiate+ unlocks unlimited Oracle access — every question, every citation.</p>
+          <p className="font-mono text-xs text-text-muted">Initiate+ unlocks {INITIATE_ORACLE_MONTHLY_LIMIT} cited Oracle questions each month.</p>
           <Link
             href="/premium"
             className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25"

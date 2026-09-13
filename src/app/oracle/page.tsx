@@ -9,6 +9,9 @@ import { OracleAmbience } from "@/components/oracle/oracle-ambience";
 import { LilithOracle } from "@/components/oracle/lilith-oracle";
 import Link from "next/link";
 import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
+import { getTier, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
+
+const initiateTier = getTier("access");
 
 export const dynamic = "force-dynamic";
 
@@ -139,9 +142,9 @@ export default async function OraclePage() {
           <OracleConsole />
           {!canAccess && (
             <p className="mt-3 text-center font-mono text-[10px] text-text-muted/60 uppercase tracking-widest">
-              Initiate+ — unlimited Oracle access ·{" "}
+              Initiate+ — {INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions/month ·{" "}
               <Link href="/premium" className="text-accent-gold-text/80 hover:text-accent-gold-text transition-colors">
-                $10/mo
+                ${initiateTier.priceMonthly}/mo
               </Link>
             </p>
           )}
@@ -259,7 +262,7 @@ export default async function OraclePage() {
                   href="/premium"
                   className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-7 py-3 font-mono text-sm font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25 hover:shadow-lg hover:shadow-accent-violet/20"
                 >
-                  Become Initiate+ — $10/mo →
+                  Become Initiate+ — ${initiateTier.priceMonthly}/mo →
                 </Link>
                 <Link
                   href="/premium"
