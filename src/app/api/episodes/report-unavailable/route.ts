@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
-import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Called client-side when the YouTube embed fires an unavailability error.
-// No auth required — only marks episodes as unavailable, a safe one-way flag.
+// Called client-side when the YouTube embed reports a player error. A public
+// browser signal is useful telemetry, but it must never mutate canonical
+// archive state: any visitor can manufacture this request. Confirmed status
+// changes belong to the authenticated admin/transcript workflows.
 export async function POST(req: NextRequest) {
-  const rl = rateLimit(`report-unavail:${clientKey(req)}`, { limit: 20, windowMs: 60_000 });
+  const callerKey = clientKey(req);
+  const rl = rateLimit(`report-unavail:${callerKey}`, { limit: 20, windowMs: 60_000 });
   if (!rl.ok) {
     return NextResponse.json({ ok: false }, { status: 429 });
   }
@@ -18,11 +20,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
-  // Only update episodes that are currently published (don't touch already-unavailable ones)
-  await prisma.episode.updateMany({
-    where: { youtubeVideoId: videoId, status: "published" },
-    data: { status: "unavailable" },
-  });
+  const sharedRl = await sharedRateLimit("report-unavailable", callerKey, { limit: 20, windowMs: 60_000 });
+  if (!sharedRl.ok) {
+    return NextResponse.json({ ok: false }, { status: 429, headers: { "Retry-After": String(sharedRl.retryAfterSec) } });
+  }
+
+  console.warn("[youtube-embed] client reported an unavailable video", { videoId });
 
   return NextResponse.json({ ok: true });
 }

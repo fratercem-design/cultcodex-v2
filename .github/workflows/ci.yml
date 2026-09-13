@@ -130,11 +130,10 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
 
   # ── Job 4: Security audit ────────────────────────────────────────────────────
-  # Gate: critical vulnerabilities block merge.
-  # Level is "critical" (not "high") because the current high advisories for
-  # next@16.1.6 and prisma@7.x are either false positives on the stable
-  # channel or via internal dev-only sub-packages with no production call-path.
-  # Raise to --audit-level=high once those advisories have stable-channel fixes.
+  # Gate production dependencies at high severity, and the complete dependency
+  # tree at critical. The current high advisories are confined to Prisma CLI
+  # transitive packages (including an unused MySQL driver), so they should not
+  # hide a future high-severity issue in code that actually ships at runtime.
   audit:
     name: Security Audit
     runs-on: ubuntu-latest
@@ -152,4 +151,6 @@ jobs:
         run: npm ci
 
       - name: Audit dependencies
-        run: npm audit --audit-level=critical
+        run: |
+          npm audit --omit=dev --audit-level=high
+          npm audit --audit-level=critical

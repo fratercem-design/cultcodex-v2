@@ -16,7 +16,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod/v4";
 import { prisma } from "@/lib/db";
-import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
 import { sendGospelDeliveryEmail } from "@/lib/notifications";
 import { provisionCodexUser } from "@/lib/initiate";
 
@@ -32,7 +32,8 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  const rl = rateLimit(`initiate:${clientKey(req)}`, { limit: 5, windowMs: 60_000 });
+  const callerKey = clientKey(req);
+  const rl = rateLimit(`initiate:${callerKey}`, { limit: 5, windowMs: 60_000 });
   if (!rl.ok) {
     return NextResponse.json({ error: "Too many requests. Please wait a moment." }, { status: 429 });
   }
@@ -42,6 +43,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     parsed = schema.parse(await req.json().catch(() => ({})));
   } catch {
     return NextResponse.json({ error: "A name and a valid email are required." }, { status: 400 });
+  }
+
+  const sharedRl = await sharedRateLimit("initiate", callerKey, { limit: 5, windowMs: 60_000 });
+  if (!sharedRl.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait a moment." },
+      { status: 429, headers: { "Retry-After": String(sharedRl.retryAfterSec) } },
+    );
   }
 
   const { name, email } = parsed;

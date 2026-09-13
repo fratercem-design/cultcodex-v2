@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
+import { withSentryConfig } from "@sentry/nextjs/config";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -66,7 +66,7 @@ const nextConfig: NextConfig = {
         { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
         {
           key: "Permissions-Policy",
-          value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()",
+          value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
         },
         {
           key: "Content-Security-Policy",
@@ -95,12 +95,6 @@ const nextConfig: NextConfig = {
     },
     {
       source: "/:path*.woff",
-      headers: [
-        { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-      ],
-    },
-    {
-      source: "/_next/static/:path*",
       headers: [
         { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
       ],
@@ -148,7 +142,6 @@ export default withSentryConfig(nextConfig, {
   silent: !process.env.CI,
   tunnelRoute: "/monitoring",
   widenClientFileUpload: true,
-  disableLogger: true,
   sourcemaps: {
     disable: !process.env.SENTRY_AUTH_TOKEN,
   },

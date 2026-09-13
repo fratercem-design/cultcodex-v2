@@ -15,7 +15,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { semanticSearch } from "@/lib/queries/semantic";
 import { getEraById } from "@/lib/eras";
-import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
 import { consumeLlmBudget } from "@/lib/llm-budget";
 
 export const runtime = "nodejs";
@@ -36,7 +36,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   // Each query embeds its concepts via OpenAI — throttle to bound cost.
-  const rl = rateLimit(`semantic:${clientKey(req, user?.id)}`, {
+  const callerKey = clientKey(req, user?.id);
+  const rl = rateLimit(`semantic:${callerKey}`, {
     limit: 30,
     windowMs: 60_000,
   });
@@ -44,6 +45,16 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json(
       { error: "Too many searches. Please wait a moment." },
       { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
+    );
+  }
+  const sharedRl = await sharedRateLimit("semantic", callerKey, {
+    limit: 30,
+    windowMs: 60_000,
+  });
+  if (!sharedRl.ok) {
+    return NextResponse.json(
+      { error: "Too many searches. Please wait a moment." },
+      { status: 429, headers: { "Retry-After": String(sharedRl.retryAfterSec) } }
     );
   }
 

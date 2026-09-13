@@ -167,7 +167,11 @@ export function GameShow() {
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (!roundKey) return;
-      if (e.key === " " || e.key === "Enter") { e.preventDefault(); revealed ? next() : reveal(); }
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        if (revealed) next();
+        else reveal();
+      }
       else if (e.key === "ArrowRight") next();
       else if (e.key === "ArrowLeft") prev();
       else if (["1", "2", "3", "4"].includes(e.key)) choose(Number(e.key) - 1);

@@ -56,7 +56,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
     const hasAccess = userId ? await isSubscribed(userId).catch(() => false) : false;
 
     if (!hasAccess) {
-      {"// Count results without returning any content — used to tease the paywall"}
+      // Count results without returning content; the total supports the paywall preview.
       const { totalCount: teasedCount } = await searchWithinTranscripts(query, { take: 0, skip: 0 });
 
       return (
