@@ -108,7 +108,7 @@ export async function TimelineView({ requestedYear }: { requestedYear?: number }
         title="TIMELINE"
         subtitle={`${episodes.length} episodes in ${activeYear} · ${years.length} years archived`}
         backgroundImage="/articles-bacgkground.jpg"
-      
+
       label="timeline"
     />
       <main id="main-content" className="mx-auto max-w-5xl px-4 py-8">
