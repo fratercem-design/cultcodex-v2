@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
-import type { VaultCard as VaultCardType } from "./constants";
-import { VAULT_RARITIES, VAULT_CARD_TYPES, TYPE_ORDER } from "./constants";
+import type { VaultCard as VaultCardType, VaultDeck } from "./constants";
+import { VAULT_RARITIES, VAULT_CARD_TYPES, TYPE_ORDER, ARCANA_GROUPS, ARCANA_GROUP_ORDER } from "./constants";
 import { VaultCard } from "./card";
 import type { OwnedInfo } from "./card";
 
@@ -32,6 +32,13 @@ const SORT_OPTIONS = [
   ["sig", "Signal"], ["res", "Resonance"], ["ent", "Entropy"],
 ] as const;
 type SortKey = typeof SORT_OPTIONS[number][0];
+type DeckFilter = "all" | VaultDeck;
+
+/** "SIGNAL" for an archive card, "ARCANA · SIGNALS" for a tarot card. */
+function deckLabel(card: VaultCardType): string {
+  if (card.deck !== "arcana") return card.cardType;
+  return `ARCANA · ${ARCANA_GROUPS[card.arcanaGroup ?? "maj"]?.label ?? "MAJOR ARCANA"}`;
+}
 
 function ZoomModal({
   card,
@@ -60,7 +67,7 @@ function ZoomModal({
       <div className="zoom-stage" onClick={e => e.stopPropagation()}>
         <div className="zoom-card-scale"><VaultCard card={card} mode="zoom" /></div>
         <div className="zoom-side">
-          <div className="zoom-kicker">{card.cardType} · {R.label} · #{card.num}</div>
+          <div className="zoom-kicker">{deckLabel(card)} · {R.label} · #{card.num}</div>
           <h2 className="zoom-h">{card.title}</h2>
           <div className="zoom-subh">{card.subtitle}</div>
           <div className="zoom-flav">{card.flavourText}</div>
@@ -151,6 +158,7 @@ export function VaultApp({
   sets?: CollectionSet[];
 }) {
   const [type, setType] = useState("all");
+  const [deck, setDeck] = useState<DeckFilter>("all");
   const [rarity, setRarity] = useState("all");
   const [sort, setSort] = useState<SortKey>("num");
   const [q, setQ] = useState("");
@@ -206,6 +214,7 @@ export function VaultApp({
 
   const filtered = useMemo(() => {
     const list = cards.filter(c =>
+      (deck === "all" || c.deck === deck) &&
       (type === "all" || c.cardType === type) &&
       (rarity === "all" || c.rarity === rarity) &&
       (!showOwned || (ownership && !!ownership[c.slug])) &&
@@ -220,16 +229,32 @@ export function VaultApp({
       power:  (a, b) => (b.statA + b.statB + b.statC) - (a.statA + a.statB + a.statC),
     };
     return [...list].sort(cmp[sort]);
-  }, [cards, type, rarity, sort, q]);
+  }, [cards, deck, type, rarity, sort, q, showOwned, ownership]);
 
+  // Archive cards group by type; the tarot groups by Major + suit so it reads as
+  // one deck rather than leaking into the trading-card types it borrows.
   const grouped = useMemo(() => {
-    if (sort !== "num" || type !== "all") return [{ head: null as string | null, cards: filtered }];
-    const by: Record<string, VaultCardType[]> = {};
-    filtered.forEach(c => { (by[c.cardType] ||= []).push(c); });
-    return TYPE_ORDER
-      .filter(t => by[t])
-      .map(t => ({ head: t, cards: by[t] }));
+    type Group = { head: string | null; glyph?: string; cards: VaultCardType[] };
+    if (sort !== "num" || type !== "all") return [{ head: null, cards: filtered } as Group];
+    const byType: Record<string, VaultCardType[]> = {};
+    const byArcana: Record<string, VaultCardType[]> = {};
+    filtered.forEach(c => {
+      if (c.deck === "arcana") (byArcana[c.arcanaGroup ?? "maj"] ||= []).push(c);
+      else (byType[c.cardType] ||= []).push(c);
+    });
+    const archive: Group[] = TYPE_ORDER
+      .filter(t => byType[t])
+      .map(t => ({ head: t, glyph: VAULT_CARD_TYPES[t]?.glyph, cards: byType[t] }));
+    const arcana: Group[] = ARCANA_GROUP_ORDER
+      .filter(k => byArcana[k])
+      .map(k => ({ head: `ARCANA · ${ARCANA_GROUPS[k].label}`, glyph: ARCANA_GROUPS[k].glyph, cards: byArcana[k] }));
+    return [...archive, ...arcana];
   }, [filtered, sort, type]);
+
+  const deckCounts = useMemo(() => ({
+    archive: cards.filter(c => c.deck === "archive").length,
+    arcana:  cards.filter(c => c.deck === "arcana").length,
+  }), [cards]);
 
   const ownedCount = useMemo(
     () => ownership ? Object.keys(ownership).length : 0,
@@ -264,6 +289,8 @@ export function VaultApp({
         <div className="sub-meta">
           <span className="rec"><span className="blip" /> SIGNAL LIVE</span>
           <span><b>{cards.length}</b> CARDS TOTAL</span>
+          <span><b>{deckCounts.archive}</b> ARCHIVE</span>
+          <span><b>{deckCounts.arcana}</b> ARCANA</span>
           <span><b>{cardTypes.length}</b> TYPES</span>
           <span><b>8</b> RARITY TIERS</span>
           {ownership && (
@@ -417,6 +444,14 @@ export function VaultApp({
 
       <div className="controls">
         <div className="controls-in">
+          {deckCounts.arcana > 0 && (
+            <div className="ctl-group">
+              <span className="ctl-label">Deck</span>
+              <button className={`pill ${deck === "all" ? "active" : ""}`} onClick={() => setDeck("all")}>All</button>
+              <button className={`pill ${deck === "archive" ? "active" : ""}`} onClick={() => setDeck("archive")}>Archive</button>
+              <button className={`pill ${deck === "arcana" ? "active" : ""}`} onClick={() => setDeck("arcana")}>☉ Arcana</button>
+            </div>
+          )}
           <div className="ctl-group">
             <span className="ctl-label">Type</span>
             <button className={`pill ${type === "all" ? "active" : ""}`} onClick={() => setType("all")}>All</button>
@@ -464,7 +499,7 @@ export function VaultApp({
             <React.Fragment key={gi}>
               {g.head && (
                 <div className="expansion-head">
-                  <h2>{VAULT_CARD_TYPES[g.head]?.glyph} {g.head}</h2>
+                  <h2>{g.glyph} {g.head}</h2>
                   <div className="ln" />
                   <span className="ct">{g.cards.length} CARDS</span>
                 </div>

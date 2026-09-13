@@ -271,8 +271,23 @@ export async function POST(req: NextRequest) {
   const denied = await requireAdminOrEnrichSecret(req);
   if (denied) return denied;
 
-  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
-    return NextResponse.json({ error: "Bedrock credentials not configured" }, { status: 500 });
+  // Enrichment runs through a provider ladder (see src/lib/enrichment-llm.ts), so
+  // gate on "at least one provider is configured" rather than on Bedrock alone —
+  // an AWS-only check rejected requests that a working Anthropic or OpenRouter key
+  // could have served.
+  const hasBedrock = Boolean(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY);
+  const hasAnthropic = Boolean(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
+  const hasOpenRouter = Boolean(process.env.OPENROUTER_API_KEY);
+  const hasGroq = Boolean(process.env.GROQ_API_KEY);
+  const hasMistral = Boolean(process.env.MISTRAL_API_KEY);
+  if (!hasBedrock && !hasAnthropic && !hasOpenRouter && !hasGroq && !hasMistral) {
+    return NextResponse.json(
+      {
+        error:
+          "No enrichment provider configured. Set one of ANTHROPIC_API_KEY, OPENROUTER_API_KEY, GROQ_API_KEY, MISTRAL_API_KEY, or AWS credentials for Bedrock.",
+      },
+      { status: 500 },
+    );
   }
 
   const body = await req.json().catch(() => ({})) as {

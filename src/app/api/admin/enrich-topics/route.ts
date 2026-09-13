@@ -19,45 +19,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdminOrEnrichSecret } from "@/lib/admin-guard";
 import { enrichComplete } from "@/lib/enrichment-llm";
 import { prisma } from "@/lib/db";
+import {
+  TOPIC_ENRICHMENT_SYSTEM_PROMPT,
+  buildTopicEnrichmentMessage,
+} from "@/lib/prompts/topic-enrichment";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
-
-const SYSTEM_PROMPT = `You are an expert archivist for CultCodex.me — the living archive of the "Cult of Psyche" show. The show is hosted by Psyche (also called Trix): a spiritual teacher, tarot reader, occultist, and livestreamer. Psyche is MALE — use he/him/his pronouns for Psyche at all times. The show covers consciousness, mythology, tarot, astrology, esoteric philosophy, panelverse drama, and community lore.
-
-You are writing short topic descriptions for the archive's knowledge graph. Each topic is a subject that appears across multiple episodes.
-
-Write a description in two parts separated by a blank line:
-
-Part 1 (1–2 sentences): A concise, factual definition of what this topic IS — as a neutral encyclopedia entry would describe it.
-
-Part 2 (1–2 sentences, start with "In the Psycheverse:"): How Psyche engages with this topic on the show — the angle, recurring themes, or why it's significant in this universe. Be specific and interesting, not generic.
-
-Rules:
-- Total length: 3–5 sentences maximum
-- Do not mention episode numbers or specific dates
-- Use present tense
-- Do not use filler phrases like "delves into" or "explores the intersection"
-- Return ONLY the description text — no JSON, no headers, no extra commentary`;
-
-function buildUserMessage(input: {
-  title: string;
-  episodeTitles: string[];
-  loreTitles: string[];
-  peopleNames: string[];
-  sampleSummaries: string[];
-}): string {
-  const parts = [`Topic: "${input.title}"`];
-  if (input.sampleSummaries.length > 0) {
-    parts.push(`\nSample episode summaries:\n${input.sampleSummaries.slice(0, 5).map((s) => `- ${s}`).join("\n")}`);
-  } else if (input.episodeTitles.length > 0) {
-    parts.push(`\nEpisode titles:\n${input.episodeTitles.slice(0, 10).map((t) => `- ${t}`).join("\n")}`);
-  }
-  if (input.loreTitles.length > 0) parts.push(`\nRelated lore: ${input.loreTitles.slice(0, 5).join(", ")}`);
-  if (input.peopleNames.length > 0) parts.push(`\nPeople: ${input.peopleNames.slice(0, 5).join(", ")}`);
-  return parts.join("\n");
-}
 
 export async function POST(req: NextRequest) {
   // Auth check
@@ -115,7 +84,7 @@ export async function POST(req: NextRequest) {
         .map((e) => e.episode.summaryShort)
         .filter((s): s is string => !!s && s.length > 20);
 
-      const msg = buildUserMessage({
+      const msg = buildTopicEnrichmentMessage({
         title: topic.title,
         episodeTitles: topic.episodes.map((e) => e.episode.title),
         loreTitles: topic.lore.map((l) => l.loreEntry.title),
@@ -123,7 +92,7 @@ export async function POST(req: NextRequest) {
         sampleSummaries,
       });
 
-      const responseText = await enrichComplete({ system: SYSTEM_PROMPT, user: msg, maxTokens: 300 });
+      const responseText = await enrichComplete({ system: TOPIC_ENRICHMENT_SYSTEM_PROMPT, user: msg, maxTokens: 300 });
       if (!responseText) throw new Error("No text response");
 
       await prisma.topic.update({ where: { id: topic.id }, data: { description: responseText.trim() } });

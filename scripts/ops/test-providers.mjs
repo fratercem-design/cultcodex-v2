@@ -46,8 +46,8 @@ const checks = [
   { name: "Mistral (chat)", key: env.MISTRAL_API_KEY, run: () => openAICompatChat("https://api.mistral.ai/v1/chat/completions", env.MISTRAL_API_KEY, "mistral-small-latest") },
   { name: "HuggingFace (chat)", key: env.HUGGINGFACE_API_KEY, run: () => openAICompatChat("https://router.huggingface.co/v1/chat/completions", env.HUGGINGFACE_API_KEY, "meta-llama/Llama-3.3-70B-Instruct") },
   { name: "Gemini (chat)", key: env.GEMINI_API_KEY, run: async () => {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${env.GEMINI_API_KEY}`, {
-        method: "POST", headers: { "Content-Type": "application/json" },
+      const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent", {
+        method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
         body: JSON.stringify({ contents: [{ parts: [{ text: "Reply with exactly: OK" }] }] }),
       });
       if (!res.ok) throw new Error(`${res.status}: ${(await res.text()).slice(0, 80)}`);

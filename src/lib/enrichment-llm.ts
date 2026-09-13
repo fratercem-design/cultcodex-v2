@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { bedrockModelId } from "@/lib/anthropic";
 
@@ -83,6 +84,50 @@ const viaMistral = (args: EnrichArgs) =>
     label: "mistral",
   });
 
+// Direct Anthropic API (api.anthropic.com), billed against prepaid Anthropic
+// credits. This is a SEPARATE wallet from Bedrock below, which bills through AWS
+// even though it serves the same Claude models — so having Bedrock working tells
+// you nothing about whether this tier will.
+async function viaAnthropic({ system, user, maxTokens }: EnrichArgs): Promise<string> {
+  // Zero-arg constructor also picks up ANTHROPIC_AUTH_TOKEN or an `ant auth login`
+  // profile, so an unset ANTHROPIC_API_KEY doesn't necessarily mean no credentials.
+  // The explicit check keeps the ladder's "skip silently if unconfigured" contract.
+  if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
+    throw new Error("anthropic: ANTHROPIC_API_KEY not set");
+  }
+  // An org-level (unscoped) API key must name a workspace on every request, or the
+  // API returns 400 "not scoped to a workspace". Workspace-scoped keys carry it
+  // implicitly and must NOT send the header. Setting ANTHROPIC_WORKSPACE_ID makes
+  // an unscoped key work; leaving it unset is correct for a scoped key.
+  const workspaceId = process.env.ANTHROPIC_WORKSPACE_ID;
+  const client = new Anthropic(
+    workspaceId ? { defaultHeaders: { "anthropic-workspace-id": workspaceId } } : {},
+  );
+  const model = process.env.ENRICHMENT_ANTHROPIC_MODEL ?? "claude-opus-5";
+  const effort = (process.env.ENRICHMENT_EFFORT ?? "medium") as
+    | "low"
+    | "medium"
+    | "high"
+    | "xhigh"
+    | "max";
+
+  // Thinking is on by default on Opus 5 and its tokens count toward max_tokens,
+  // so give headroom — 4096 can truncate the JSON body mid-object. max_tokens is
+  // a ceiling, not a charge: only tokens actually produced are billed.
+  const r = await client.messages.create({
+    model,
+    max_tokens: Math.max(maxTokens, 16000),
+    output_config: { effort },
+    system,
+    messages: [{ role: "user", content: user }],
+  });
+
+  // Callers JSON.parse this. Return only the text block — a thinking block
+  // reaching the parser would throw.
+  const tb = r.content.find((b) => b.type === "text");
+  return tb && tb.type === "text" ? tb.text : "";
+}
+
 async function viaBedrock({ system, user, maxTokens }: EnrichArgs): Promise<string> {
   const client = new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
   // A KNOWN-enabled Bedrock model (Opus isn't enabled on this account).
@@ -106,8 +151,14 @@ function ladder(): Tier[] {
   if (process.env.ENRICHMENT_PROVIDER === "bedrock") {
     return [{ name: "bedrock", run: viaBedrock }];
   }
-  // Default ladder: cheap proxy → free Groq → free Mistral → paid Bedrock backstop.
+  if (process.env.ENRICHMENT_PROVIDER === "anthropic") {
+    return [{ name: "anthropic", run: viaAnthropic }];
+  }
+  // Default ladder: prepaid Anthropic credits → cheap proxy → free Groq → free
+  // Mistral → paid Bedrock backstop. Anthropic leads when a key is present so
+  // prepaid credits are actually consumed; it throws and falls through when not.
   return [
+    { name: "anthropic", run: viaAnthropic },
     { name: "openrouter", run: viaOpenRouter },
     { name: "groq", run: viaGroq },
     { name: "mistral", run: viaMistral },
