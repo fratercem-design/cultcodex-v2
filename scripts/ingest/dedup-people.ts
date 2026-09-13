@@ -10,6 +10,8 @@ const MERGE_MAP: Record<string, string> = {
   // Psyche is the main host — merge combo names into Psyche
   "psyche-trix": "psyche",
   "trix-psyche": "psyche",
+  // Trix the cat had several rows; "Mr. Trix" (bio "Psyche's cat") is canonical.
+  "trixs": "mr-trix",
   // Unknown speakers → merge into one
   "unknown-speaker-2": "unknown-speaker-1",
   "unknown-speaker-3": "unknown-speaker-1",

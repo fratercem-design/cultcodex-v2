@@ -5,16 +5,3 @@ export interface NavItem {
   href: string;
   icon?: string;
 }
-
-export interface ArchiveStats {
-  episodes: number;
-  people: number;
-  loreEntries: number;
-  quotes: number;
-  series: number;
-  topics: number;
-  segments: number;
-  totalHours: number;
-  comments: number;
-  reactions: number;
-}

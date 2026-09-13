@@ -96,7 +96,7 @@ scripts/psychenomicon-art/output/STOP
 .vercel
 .env*
 
-# cron/sync logs — committed once by mistake, ignored since
+# cron/sync logs ï¿½ committed once by mistake, ignored since
 logs/
 modify_schema.py
 prisma/*.bak
