@@ -1,0 +1,96 @@
+name: Refresh production schema snapshot
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - ops/production-schema-snapshot
+    paths:
+      - .github/workflows/production-schema.yml
+      - scripts/dump-production-schema.sh
+
+permissions:
+  contents: write
+
+concurrency:
+  group: production-schema-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cultcodex_restore
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d cultcodex_restore"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+
+    env:
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      RESTORE_URL: postgresql://postgres:postgres@127.0.0.1:5432/cultcodex_restore
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client
+
+      - name: Verify source connection secret
+        run: |
+          if [[ -z "${DIRECT_URL:-}" && -z "${DATABASE_URL:-}" ]]; then
+            echo "::error::DIRECT_URL or DATABASE_URL repository secret is required"
+            exit 1
+          fi
+
+      - name: Dump production schema
+        run: bash scripts/dump-production-schema.sh prisma/production-schema.sql
+
+      - name: Restore snapshot into empty database
+        run: |
+          psql "$RESTORE_URL" -X -v ON_ERROR_STOP=1 \
+            -f prisma/production-schema.sql
+          psql "$RESTORE_URL" -XAtq -v ON_ERROR_STOP=1 \
+            -c 'SELECT count(*) FROM information_schema.tables WHERE table_schema = $$public$$;' \
+            | awk '$1 > 1 { ok=1 } END { exit !ok }'
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Verify Prisma migration state after restore
+        env:
+          DIRECT_URL: ${{ env.RESTORE_URL }}
+          DATABASE_URL: ${{ env.RESTORE_URL }}
+        run: npx prisma migrate status
+
+      - name: Commit refreshed snapshot
+        run: |
+          if git diff --quiet -- prisma/production-schema.sql; then
+            echo "Production schema snapshot is already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add prisma/production-schema.sql
+          git commit -m "ops: refresh production schema snapshot"
+          git push
