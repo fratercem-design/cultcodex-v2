@@ -40,13 +40,13 @@ fi
   echo "-- is included so prisma migrate deploy remains safe after a clean restore."
   echo
   echo "-- Required PostgreSQL extensions"
-  psql "$source_url" -XAtq -v ON_ERROR_STOP=1 -c '
-    SELECT format($CREATE EXTENSION IF NOT EXISTS %I WITH SCHEMA %I;$, e.extname, n.nspname)
-    FROM pg_extension e
-    JOIN pg_namespace n ON n.oid = e.extnamespace
-    WHERE e.extname <> $plpgsql$
-    ORDER BY e.extname;
-  '
+  psql "$source_url" -XAtq -v ON_ERROR_STOP=1 <<'SQL'
+SELECT format('CREATE EXTENSION IF NOT EXISTS %I WITH SCHEMA %I;', e.extname, n.nspname)
+FROM pg_extension e
+JOIN pg_namespace n ON n.oid = e.extnamespace
+WHERE e.extname <> 'plpgsql'
+ORDER BY e.extname;
+SQL
   echo
   pg_dump "$source_url" \
     --schema-only \
