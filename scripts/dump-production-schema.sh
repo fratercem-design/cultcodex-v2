@@ -39,11 +39,18 @@ fi
   echo "-- Contains no application rows. Only successful Prisma migration metadata"
   echo "-- is included so prisma migrate deploy remains safe after a clean restore."
   echo
+  echo "-- Required PostgreSQL extensions"
+  psql "$source_url" -XAtq -v ON_ERROR_STOP=1 -c '
+    SELECT format($CREATE EXTENSION IF NOT EXISTS %I WITH SCHEMA %I;$, e.extname, n.nspname)
+    FROM pg_extension e
+    JOIN pg_namespace n ON n.oid = e.extnamespace
+    WHERE e.extname <> $plpgsql$
+    ORDER BY e.extname;
+  '
+  echo
   pg_dump "$source_url" \
     --schema-only \
     --schema=public \
-    --clean \
-    --if-exists \
     --no-owner \
     --no-privileges \
     --no-security-labels
