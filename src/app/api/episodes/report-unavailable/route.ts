@@ -25,7 +25,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false }, { status: 429, headers: { "Retry-After": String(sharedRl.retryAfterSec) } });
   }
 
-  console.warn("[youtube-embed] client reported an unavailable video", { videoId });
+  console.warn(JSON.stringify({
+    metric: "youtube_player_unavailable",
+    event: "client_report",
+    videoId,
+  }));
 
   return NextResponse.json({ ok: true });
 }
