@@ -251,20 +251,6 @@ export default async function HomePage() {
           ]}
         />
 
-        <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-center gap-x-8 gap-y-1">
-            {[
-              { value: stats.episodes.toLocaleString("en-US"), label: "transmissions archived" },
-              { value: stats.segments.toLocaleString("en-US"), label: "transcript segments" },
-              { value: stats.people.toLocaleString("en-US"), label: "voices profiled" },
-              { value: `${stats.totalHours.toLocaleString("en-US")}+`, label: "hours decoded" },
-            ].map((s) => (
-              <span key={s.label} className="font-mono text-[11px] text-text-muted whitespace-nowrap">
-                <span className="text-accent-gold-text font-bold">{s.value}</span>{" "}{s.label}
-              </span>
-            ))}
-          </div>
-        </div>
-
         <div className="mx-auto max-w-7xl px-4 py-10 space-y-12">
 
           <WhyCultCodex />
