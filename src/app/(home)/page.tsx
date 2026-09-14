@@ -25,6 +25,7 @@ import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { EmailCapture } from "@/components/marketing/email-capture";
 import { GiftSignup } from "@/components/marketing/gift-signup";
+import { AnimatedArchiveStats, WhyCultCodex } from "@/components/home/value-proposition";
 import { organizationJsonLd } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
 import { getTier, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
@@ -195,7 +196,7 @@ export default async function HomePage() {
               className="font-display text-3xl sm:text-5xl font-bold leading-tight text-white"
               style={{ textShadow: "0 0 60px rgba(200, 57, 46,0.3)" }}
             >
-              The searchable memory of the Cult of Psyche.
+              Discover {stats.episodes.toLocaleString("en-US")}+ episodes of human behavior.
               <br />
               <span className="text-accent-gold-text" style={{ textShadow: "0 0 40px rgba(200, 57, 46,0.6)" }}>
                 Every pattern — still decoding.
@@ -241,23 +242,18 @@ export default async function HomePage() {
 
       <main id="main-content" className="space-y-0">
 
-        {/* ── STATS STRIP ──────────────────────────────────────────────── */}
-        <div className="border-b border-border/40 bg-void/80 backdrop-blur-sm py-3 px-4">
-          <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-center gap-x-8 gap-y-1">
-            {[
-              { value: stats.episodes.toLocaleString("en-US"), label: "transmissions archived" },
-              { value: stats.segments.toLocaleString("en-US"), label: "transcript segments" },
-              { value: stats.people.toLocaleString("en-US"), label: "voices profiled" },
-              { value: `${stats.totalHours.toLocaleString("en-US")}+`, label: "hours decoded" },
-            ].map((s) => (
-              <span key={s.label} className="font-mono text-[11px] text-text-muted whitespace-nowrap">
-                <span className="text-accent-gold-text font-bold">{s.value}</span>{" "}{s.label}
-              </span>
-            ))}
-          </div>
-        </div>
+        <AnimatedArchiveStats
+          stats={[
+            { value: stats.episodes, label: "transmissions archived" },
+            { value: stats.segments, label: "transcript segments" },
+            { value: stats.people, label: "voices profiled" },
+            { value: stats.totalHours, suffix: "+", label: "hours decoded" },
+          ]}
+        />
 
         <div className="mx-auto max-w-7xl px-4 py-10 space-y-12">
+
+          <WhyCultCodex />
 
           {/* ── SECTION NAV ──────────────────────────────────────────── */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
