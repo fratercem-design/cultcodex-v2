@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 type Stat = { value: number; suffix?: string; label: string };
 
 function AnimatedNumber({ value, suffix = "" }: Stat) {
-  const [display, setDisplay] = useState(0);
+  const [display, setDisplay] = useState(value);
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -24,6 +24,7 @@ function AnimatedNumber({ value, suffix = "" }: Stat) {
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting || started) return;
       started = true;
+      setDisplay(0);
       const start = performance.now();
       const duration = 1100;
       const tick = (now: number) => {
