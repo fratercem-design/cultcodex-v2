@@ -91,7 +91,7 @@ jobs:
 
       - name: Commit refreshed snapshot
         run: |
-          if git diff --quiet -- prisma/production-schema.sql; then
+          if [[ -z "$(git status --porcelain -- prisma/production-schema.sql)" ]]; then
             echo "Production schema snapshot is already current."
             exit 0
           fi
