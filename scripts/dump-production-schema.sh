@@ -44,6 +44,8 @@ fi
   pg_dump "$source_url" \
     --schema-only \
     --schema=public \
+    --clean \
+    --if-exists \
     --no-owner \
     --no-privileges \
     --no-security-labels
@@ -57,12 +59,13 @@ fi
     --no-privileges
 } > "$temporary"
 
-if rg -n '^(COPY |INSERT INTO (?!public\."_prisma_migrations"))' "$temporary" --pcre2; then
+if grep -En '^(COPY |INSERT INTO )' "$temporary" \
+  | grep -Ev '^.*INSERT INTO public\."_prisma_migrations"'; then
   echo "Refusing snapshot: unexpected data statement detected" >&2
   exit 1
 fi
 
-if rg -ni '(postgres(?:ql)?://|password=|sslpassword=)' "$temporary"; then
+if grep -Eni '(postgres(ql)?://|password=|sslpassword=)' "$temporary"; then
   echo "Refusing snapshot: possible credential material detected" >&2
   exit 1
 fi
