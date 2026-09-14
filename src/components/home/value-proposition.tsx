@@ -15,8 +15,8 @@ function AnimatedNumber({ value, suffix = "" }: Stat) {
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduceMotion) {
-      setDisplay(value);
-      return;
+      const frame = requestAnimationFrame(() => setDisplay(value));
+      return () => cancelAnimationFrame(frame);
     }
 
     let frame = 0;
