@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { isIP } from "node:net";
 import { prisma } from "@/lib/db";
 
 /**
@@ -76,17 +77,33 @@ export function rateLimit(key: string, opts: RateLimitOptions): RateLimitResult 
  */
 export function clientKey(req: Request, userId?: string | null): string {
   if (userId) return `user:${userId}`;
-  // Vercel preserves its own copy even when another proxy in front of Vercel
-  // rewrites x-forwarded-for. Prefer that platform-authored value, while
-  // retaining the standard headers for local/self-hosted development.
-  const fwd =
-    req.headers.get("x-vercel-forwarded-for") ||
-    req.headers.get("x-forwarded-for");
-  const ip =
-    fwd?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
-    "unknown";
+
+  // Vercel overwrites x-vercel-forwarded-for at its edge. The standard
+  // fallbacks are for known reverse-proxy/local deployments only; callers
+  // serving the app directly must strip client-supplied forwarding headers.
+  const candidates = [
+    req.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim(),
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
+    req.headers.get("x-real-ip")?.trim(),
+  ];
+  const ip = candidates.find((candidate) => candidate && isIP(candidate)) ?? "unknown";
+
+  // Unknown callers intentionally share a fail-closed bucket. This is safer
+  // than inventing a spoofable browser fingerprint for cost-bearing routes.
   return `ip:${ip}`;
+}
+
+function emitRateLimitMetric(
+  event: "denied" | "store_error",
+  namespace: string,
+  fields: Record<string, number | string> = {},
+): void {
+  console.warn(JSON.stringify({
+    metric: "rate_limit",
+    event,
+    namespace,
+    ...fields,
+  }));
 }
 
 /**
@@ -130,13 +147,23 @@ export async function sharedRateLimit(
     const count = Number(rows[0]?.count ?? opts.limit + 1);
     const resetAt = rows[0]?.resetAt?.getTime?.() ?? initialResetAt.getTime();
     const ok = count <= opts.limit;
+    if (!ok) {
+      emitRateLimitMetric("denied", namespace, {
+        retryAfterSec: Math.max(1, Math.ceil((resetAt - now) / 1000)),
+        queryDurationMs: Date.now() - now,
+      });
+    }
     return {
       ok,
       remaining: ok ? Math.max(0, opts.limit - count) : 0,
       resetAt,
       retryAfterSec: ok ? 0 : Math.max(1, Math.ceil((resetAt - now) / 1000)),
     };
-  } catch {
+  } catch (error) {
+    emitRateLimitMetric("store_error", namespace, {
+      queryDurationMs: Date.now() - now,
+      error: error instanceof Error ? error.name : "unknown",
+    });
     return {
       ok: false,
       remaining: 0,
