@@ -170,16 +170,25 @@ jobs:
           npm audit --omit=dev --audit-level=high
           npm audit --audit-level=critical
 
-  # Review lockfile changes before merge; unlike npm audit, this catches newly
-  # introduced vulnerable dependencies at the PR boundary.
+  # Private repositories require GitHub Advanced Security for the hosted
+  # dependency-review action. Keep a PR-specific lockfile gate that works on
+  # the current plan; enable GHAS before switching back to that action.
   dependency-review:
-    name: Dependency Review
+    name: Lockfile Security Review
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48 # v4.9.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
-          fail-on-severity: high
+          node-version: '22'
+          cache: 'npm'
+      - name: Install exactly the reviewed lockfile
+        run: npm ci
+      - name: Review production and complete dependency trees
+        run: |
+          npm audit --omit=dev --audit-level=high
+          npm audit --audit-level=critical
