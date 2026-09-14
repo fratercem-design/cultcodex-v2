@@ -62,8 +62,27 @@ describe("clientKey", () => {
     expect(clientKey(req)).toBe("ip:203.0.113.10");
   });
 
-  it("uses 'unknown' when no identifier is available", () => {
-    const req = new Request("https://x.test");
+  it("falls back past malformed forwarding headers", () => {
+    const req = new Request("https://x.test", {
+      headers: {
+        "x-vercel-forwarded-for": "attacker-controlled",
+        "x-forwarded-for": "198.51.100.9, 10.0.0.1",
+      },
+    });
+    expect(clientKey(req)).toBe("ip:198.51.100.9");
+  });
+
+  it("accepts IPv6 addresses", () => {
+    const req = new Request("https://x.test", {
+      headers: { "x-vercel-forwarded-for": "2001:db8::1" },
+    });
+    expect(clientKey(req)).toBe("ip:2001:db8::1");
+  });
+
+  it("puts unidentifiable callers in the documented fail-closed bucket", () => {
+    const req = new Request("https://x.test", {
+      headers: { "x-forwarded-for": "not-an-ip" },
+    });
     expect(clientKey(req)).toBe("ip:unknown");
   });
 });

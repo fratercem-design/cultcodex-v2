@@ -14,7 +14,7 @@ const globalForPrisma = globalThis as unknown as {
  * which sails past a plain `if (!connectionString)` check and then fails deep
  * inside pg with an opaque parse/connect error. Validate the shape instead.
  */
-function resolveConnectionString(): string | null {
+export function resolveConnectionString(): string | null {
   const raw = process.env.DATABASE_URL?.trim();
   if (!raw) return null;
   if (!/^postgres(ql)?:\/\//i.test(raw)) {
@@ -36,7 +36,17 @@ function resolveConnectionString(): string | null {
     return null;
   }
   const sslMode = parsed.searchParams.get("sslmode")?.toLowerCase();
-  if (sslMode && ["prefer", "require", "verify-ca"].includes(sslMode)) {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  // Production must authenticate both the server certificate and hostname.
+  // An absent mode is not a secure default in node-postgres, and explicitly
+  // weak/disabled modes must never be accepted silently.
+  if (isProduction) {
+    if (sslMode === "disable" || sslMode === "allow") {
+      throw new Error("[db] Refusing an insecure PostgreSQL TLS mode in production.");
+    }
+    parsed.searchParams.set("sslmode", "verify-full");
+  } else if (sslMode && ["prefer", "require", "verify-ca"].includes(sslMode)) {
     parsed.searchParams.set("sslmode", "verify-full");
   }
   return parsed.toString();
