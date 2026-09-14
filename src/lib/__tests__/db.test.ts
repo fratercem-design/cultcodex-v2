@@ -32,7 +32,7 @@ describe("resolveConnectionString", () => {
   it("rejects malformed and non-PostgreSQL URLs", () => {
     vi.stubEnv("DATABASE_URL", "https://db.example.test/app");
     expect(resolveConnectionString()).toBeNull();
-    vi.stubEnv("DATABASE_URL", "postgresql://%");
+    vi.stubEnv("DATABASE_URL", "postgresql://[invalid");
     expect(resolveConnectionString()).toBeNull();
   });
 });
