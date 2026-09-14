@@ -46,7 +46,7 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
 
-      - name: Install PostgreSQL client
+      - name: Install restore client
         run: |
           sudo apt-get update
           sudo apt-get install --yes postgresql-client
@@ -58,8 +58,14 @@ jobs:
             exit 1
           fi
 
-      - name: Dump production schema
-        run: bash scripts/dump-production-schema.sh prisma/production-schema.sql
+      - name: Dump production schema with matching client
+        run: |
+          docker run --rm --network host \
+            --user "$(id -u):$(id -g)" \
+            -e DIRECT_URL -e DATABASE_URL \
+            -v "$PWD:/work" -w /work \
+            postgres:18 \
+            bash scripts/dump-production-schema.sh prisma/production-schema.sql
 
       - name: Restore snapshot into empty database
         run: |
