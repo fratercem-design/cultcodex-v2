@@ -72,7 +72,10 @@ SQL
 
 # PostgreSQL 18 emits this session setting, but it is unknown to PostgreSQL 16.
 # It does not describe a database object and is safe to remove for portability.
-sed -i '/^SET transaction_timeout = 0;$/d' "$temporary"
+sed -i \
+  -e '/^SET transaction_timeout = 0;$/d' \
+  -e '/^CREATE SCHEMA public;$/d' \
+  "$temporary"
 
 if grep -En '^(COPY |INSERT INTO )' "$temporary" \
   | grep -Ev '^.*INSERT INTO public\."_prisma_migrations"'; then
