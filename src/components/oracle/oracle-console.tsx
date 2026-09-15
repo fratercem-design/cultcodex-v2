@@ -89,6 +89,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
   const answerRef = useRef<HTMLDivElement | null>(null);
   const playButtonRef = useRef<HTMLButtonElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   const displayedAnswer = useTypewriter(answer, typewriterActive, 16);
 
@@ -222,7 +223,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
     <div className="space-y-6">
 
       {/* ── Question form ── */}
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-3">
         <div className="relative group">
           {/* Focus glow border */}
           <div
@@ -334,10 +335,11 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
         <div className="rounded-lg border border-red-500/20 bg-red-950/10 px-4 py-3 text-center">
           <p className="font-mono text-xs text-red-400">{errorMsg || "The Oracle is unavailable."}</p>
           <button
-            onClick={handleReset}
+            type="button"
+            onClick={() => formRef.current?.requestSubmit()}
             className="mt-2 font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
-            Try again →
+            Retry this question →
           </button>
         </div>
       )}
@@ -614,6 +616,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
 
           {/* ── Ask again ── */}
           <button
+            type="button"
             onClick={handleReset}
             className="w-full text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/35 hover:text-accent-violet-text/70 transition-colors py-2"
           >

@@ -254,7 +254,7 @@ export default async function OraclePage() {
                 <span className="text-accent-violet-text">everything.</span>
               </h3>
               <p className="font-mono text-[11px] text-text-muted max-w-sm mx-auto leading-relaxed">
-                Unlimited questions. Every transcript, every behavioral profile, every pattern
+                {INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions each month. Every transcript, every behavioral profile, every pattern
                 the archive has identified — synthesized on demand, with citations.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">

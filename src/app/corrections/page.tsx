@@ -16,6 +16,11 @@ export default async function CorrectionsPage({
 }) {
   const { type, title } = await searchParams;
   const bannerTitle = title ? title.slice(0, 120) : null;
+  const subject = bannerTitle
+    ? `CultCodex correction: ${bannerTitle}`
+    : "CultCodex correction request";
+  const correctionEmail = `mailto:psychetarotchannel@gmail.com?subject=${encodeURIComponent(subject)}`;
+  const removalEmail = `mailto:psychetarotchannel@gmail.com?subject=${encodeURIComponent("Private CultCodex content removal request")}`;
 
   return (
     <>
@@ -60,16 +65,14 @@ export default async function CorrectionsPage({
               <li>Any supporting context (e.g., timestamp in the episode)</li>
             </ol>
             <p className="mt-4">
-              Contact the archive maintainers via the{" "}
+              Email the archive maintainers at{" "}
               <a
-                href="https://github.com/fratercem-design/cultcodex-v2/issues"
-                target="_blank"
-                rel="noopener noreferrer"
+                href={correctionEmail}
                 className="text-accent-gold-text hover:underline"
               >
-                GitHub Issues
-              </a>{" "}
-              page.
+                psychetarotchannel@gmail.com
+              </a>
+              . The subject line will include the page you came from when available.
             </p>
           </div>
         </SectionCard>
@@ -78,9 +81,12 @@ export default async function CorrectionsPage({
           <div className="space-y-3 text-sm text-text-primary leading-relaxed">
             <p>
               If you are mentioned in this archive and would like your information
-              modified or removed, please submit a request through GitHub Issues
-              with the subject &ldquo;Content Removal Request&rdquo;. We will review
-              and respond to all requests promptly.
+              modified or removed, please send a{" "}
+              <a href={removalEmail} className="text-accent-gold-text hover:underline">
+                private content removal request
+              </a>
+              . Include the page URL and the change you need. We will review and
+              respond promptly; do not put sensitive personal information in a public issue.
             </p>
             <p className="text-text-muted text-xs">
               All content in this archive is derived from publicly available streams

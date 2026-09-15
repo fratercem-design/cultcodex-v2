@@ -18,7 +18,10 @@ const mocks = vi.hoisted(() => ({
   sharedRateLimit: vi.fn(),
   consumeLlmBudget: vi.fn(),
   consumeMonthlyMeter: vi.fn(),
+  refundMonthlyMeter: vi.fn(),
   oracleCacheGet: vi.fn(),
+  groqConfigured: vi.fn(),
+  groqChat: vi.fn(),
 }));
 
 vi.mock("@/lib/auth", () => ({ getCurrentUser: mocks.getCurrentUser }));
@@ -34,6 +37,7 @@ vi.mock("@/lib/rate-limit", () => ({
 vi.mock("@/lib/llm-budget", () => ({
   consumeLlmBudget: mocks.consumeLlmBudget,
   consumeMonthlyMeter: mocks.consumeMonthlyMeter,
+  refundMonthlyMeter: mocks.refundMonthlyMeter,
 }));
 vi.mock("@/lib/oracle-cache", () => ({
   oracleCacheKey: (q: string) => `key:${q}`,
@@ -41,10 +45,27 @@ vi.mock("@/lib/oracle-cache", () => ({
   oracleCacheSet: vi.fn(),
 }));
 // Never reached by these tests, but the module imports them at load time.
-vi.mock("@/lib/db", () => ({ prisma: {} }));
+vi.mock("@/lib/db", () => {
+  const emptyModel = { findMany: vi.fn().mockResolvedValue([]), findUnique: vi.fn().mockResolvedValue(null) };
+  return {
+    prisma: {
+      quote: emptyModel,
+      transcriptSegment: emptyModel,
+      episode: emptyModel,
+      person: emptyModel,
+      loreEntry: emptyModel,
+      psychenomiconChapter: emptyModel,
+      psychenomiconEntity: emptyModel,
+      psychenomiconThread: emptyModel,
+    },
+  };
+});
 vi.mock("@/lib/anthropic", () => ({ bedrockModelId: () => "test-model" }));
 vi.mock("@/lib/eras", () => ({ getEraById: () => undefined }));
-vi.mock("@/lib/free-llm", () => ({ groqChat: vi.fn(), groqConfigured: () => false }));
+vi.mock("@/lib/free-llm", () => ({
+  groqChat: mocks.groqChat,
+  groqConfigured: mocks.groqConfigured,
+}));
 vi.mock("@anthropic-ai/bedrock-sdk", () => ({ default: class {} }));
 
 import { POST } from "./route";
@@ -69,12 +90,15 @@ describe("POST /api/oracle/ask — gate order", () => {
     mocks.rateLimit.mockReturnValue(ALLOW);
     mocks.sharedRateLimit.mockResolvedValue(ALLOW);
     mocks.consumeLlmBudget.mockResolvedValue({ ok: true, used: 1, cap: 500 });
-    mocks.consumeMonthlyMeter.mockResolvedValue({ ok: true, used: 1, cap: 100 });
+    mocks.consumeMonthlyMeter.mockResolvedValue({ ok: true, used: 1, cap: 100, persisted: true });
+    mocks.refundMonthlyMeter.mockResolvedValue(undefined);
+    mocks.groqConfigured.mockReturnValue(false);
     // Default to a cache MISS so requests reach the gates under test. The
     // cache lookup now runs BEFORE any charging, so a hit short-circuits
     // ahead of both the global cap and the per-user meter.
     mocks.oracleCacheGet.mockReturnValue(null);
     process.env.AWS_REGION = "us-west-2";
+    process.env.ORACLE_USE_BEDROCK = "true";
     delete process.env.ELEVENLABS_API_KEY;
   });
 
@@ -129,6 +153,44 @@ describe("POST /api/oracle/ask — gate order", () => {
     expect(mocks.consumeMonthlyMeter).not.toHaveBeenCalled();
   });
 
+  it("uses Groq without requiring AWS configuration", async () => {
+    delete process.env.AWS_REGION;
+    delete process.env.AWS_ACCESS_KEY_ID;
+    delete process.env.ORACLE_USE_BEDROCK;
+    mocks.groqConfigured.mockReturnValue(true);
+    mocks.groqChat.mockResolvedValue("The archive answers from Groq.");
+
+    const res = await POST(request({ question: "what is the codex" }));
+    const json = (await res.json()) as { answer?: string };
+
+    expect(res.status).toBe(200);
+    expect(json.answer).toBe("The archive answers from Groq.");
+  });
+
+  it("refunds member quota and returns an actionable retry window when providers fail", async () => {
+    delete process.env.ORACLE_USE_BEDROCK;
+    mocks.groqConfigured.mockReturnValue(true);
+    mocks.groqChat.mockRejectedValue(new Error("provider unavailable"));
+
+    const res = await POST(request({ question: "what is the codex" }));
+
+    expect(res.status).toBe(503);
+    expect(res.headers.get("Retry-After")).toBe("30");
+    expect(mocks.refundMonthlyMeter).toHaveBeenCalledWith("oracle-u-user_1");
+  });
+
+  it("does not refund an allowance increment that failed open", async () => {
+    delete process.env.ORACLE_USE_BEDROCK;
+    mocks.groqConfigured.mockReturnValue(true);
+    mocks.groqChat.mockRejectedValue(new Error("provider unavailable"));
+    mocks.consumeMonthlyMeter.mockResolvedValue({ ok: true, used: 0, cap: 100, persisted: false });
+
+    const res = await POST(request({ question: "what is the codex" }));
+
+    expect(res.status).toBe(503);
+    expect(mocks.refundMonthlyMeter).not.toHaveBeenCalled();
+  });
+
   it("does not spend the meter when the global daily cap rejects (503)", async () => {
     mocks.consumeLlmBudget.mockResolvedValue({ ok: false, reason: "daily_cap", used: 501, cap: 500 });
 
@@ -139,7 +201,7 @@ describe("POST /api/oracle/ask — gate order", () => {
   });
 
   it("charges the meter last — after the cache lookup and the global cap", async () => {
-    mocks.consumeMonthlyMeter.mockResolvedValue({ ok: false, used: 101, cap: 100 });
+    mocks.consumeMonthlyMeter.mockResolvedValue({ ok: false, used: 101, cap: 100, persisted: true });
 
     const res = await POST(request({ question: "what is the codex" }));
     const json = (await res.json()) as { ok: boolean; error?: string };
