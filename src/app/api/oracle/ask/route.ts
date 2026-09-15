@@ -1041,6 +1041,7 @@ export async function POST(req: NextRequest) {
         { status: 403 }
       );
     }
+    if (!meter.persisted) monthlyMeterBucket = null;
   }
 
   // Pre-flight archive search

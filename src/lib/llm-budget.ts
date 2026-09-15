@@ -105,7 +105,7 @@ export async function consumeMonthlyMeter(
   bucket: string,
   cap: number,
   units = 1
-): Promise<{ ok: boolean; used: number; cap: number }> {
+): Promise<{ ok: boolean; used: number; cap: number; persisted: boolean }> {
   try {
     const month = new Date().toISOString().slice(0, 7);
     const key = `${bucket}:${month}`;
@@ -117,9 +117,9 @@ export async function consumeMonthlyMeter(
       units
     );
     const used = Number(rows[0]?.count ?? 0);
-    return { ok: used <= cap, used, cap };
+    return { ok: used <= cap, used, cap, persisted: true };
   } catch {
-    return { ok: true, used: 0, cap };
+    return { ok: true, used: 0, cap, persisted: false };
   }
 }
 

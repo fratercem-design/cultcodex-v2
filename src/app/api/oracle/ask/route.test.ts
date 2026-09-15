@@ -90,7 +90,7 @@ describe("POST /api/oracle/ask — gate order", () => {
     mocks.rateLimit.mockReturnValue(ALLOW);
     mocks.sharedRateLimit.mockResolvedValue(ALLOW);
     mocks.consumeLlmBudget.mockResolvedValue({ ok: true, used: 1, cap: 500 });
-    mocks.consumeMonthlyMeter.mockResolvedValue({ ok: true, used: 1, cap: 100 });
+    mocks.consumeMonthlyMeter.mockResolvedValue({ ok: true, used: 1, cap: 100, persisted: true });
     mocks.refundMonthlyMeter.mockResolvedValue(undefined);
     mocks.groqConfigured.mockReturnValue(false);
     // Default to a cache MISS so requests reach the gates under test. The
@@ -179,6 +179,18 @@ describe("POST /api/oracle/ask — gate order", () => {
     expect(mocks.refundMonthlyMeter).toHaveBeenCalledWith("oracle-u-user_1");
   });
 
+  it("does not refund an allowance increment that failed open", async () => {
+    delete process.env.ORACLE_USE_BEDROCK;
+    mocks.groqConfigured.mockReturnValue(true);
+    mocks.groqChat.mockRejectedValue(new Error("provider unavailable"));
+    mocks.consumeMonthlyMeter.mockResolvedValue({ ok: true, used: 0, cap: 100, persisted: false });
+
+    const res = await POST(request({ question: "what is the codex" }));
+
+    expect(res.status).toBe(503);
+    expect(mocks.refundMonthlyMeter).not.toHaveBeenCalled();
+  });
+
   it("does not spend the meter when the global daily cap rejects (503)", async () => {
     mocks.consumeLlmBudget.mockResolvedValue({ ok: false, reason: "daily_cap", used: 501, cap: 500 });
 
@@ -189,7 +201,7 @@ describe("POST /api/oracle/ask — gate order", () => {
   });
 
   it("charges the meter last — after the cache lookup and the global cap", async () => {
-    mocks.consumeMonthlyMeter.mockResolvedValue({ ok: false, used: 101, cap: 100 });
+    mocks.consumeMonthlyMeter.mockResolvedValue({ ok: false, used: 101, cap: 100, persisted: true });
 
     const res = await POST(request({ question: "what is the codex" }));
     const json = (await res.json()) as { ok: boolean; error?: string };
