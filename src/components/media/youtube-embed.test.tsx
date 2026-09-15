@@ -10,14 +10,20 @@ describe("YouTubeEmbed", () => {
   });
 
   it("does not contact YouTube until the visitor presses play", async () => {
-    const player = vi.fn(() => ({ destroy: vi.fn() }));
+    const player = vi.fn();
+    class MockPlayer {
+      destroy = vi.fn();
+      constructor(element: HTMLElement, options: Record<string, unknown>) {
+        player(element, options);
+      }
+    }
     render(<YouTubeEmbed videoId="abc123" title="Archive episode" startSeconds={42} />);
 
     expect(document.querySelector('script[src*="youtube.com"]')).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Play Archive episode" }));
     expect(document.querySelector('script[src="https://www.youtube.com/iframe_api"]')).not.toBeNull();
 
-    window.YT = { Player: player as unknown as typeof window.YT.Player };
+    window.YT = { Player: MockPlayer as unknown as typeof window.YT.Player };
     window.onYouTubeIframeAPIReady?.();
 
     await waitFor(() => expect(player).toHaveBeenCalled());
