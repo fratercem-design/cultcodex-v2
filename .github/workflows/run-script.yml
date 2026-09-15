@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       script:
-        description: 'Script path relative to scripts/ (e.g. _merge-alexandria.ts)'
+        description: 'Script path relative to scripts/ (use _backup-production for a private pg_dump artifact)'
         required: true
 
 jobs:
@@ -21,17 +21,21 @@ jobs:
       - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v7
+        if: github.event.inputs.script != '_backup-production'
         with:
           node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
+        if: github.event.inputs.script != '_backup-production'
         run: npm ci --ignore-scripts
 
       - name: Generate Prisma client
+        if: github.event.inputs.script != '_backup-production'
         run: npx prisma generate
 
       - name: Run script
+        if: github.event.inputs.script != '_backup-production'
         env:
           # Keep the Gemini key scoped to the dedicated smoke test rather than
           # exposing it to every script this generic workflow can execute.
@@ -42,3 +46,33 @@ jobs:
           npx tsx "scripts/${{ github.event.inputs.script }}" | tee /tmp/script-output.txt
           SUMMARY=$(tail -5 /tmp/script-output.txt | tr '\n' ' ')
           echo "::notice title=Script output::$SUMMARY"
+
+      - name: Create read-only production backup
+        if: github.event.inputs.script == '_backup-production'
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test -n "${DATABASE_URL:-}"
+          mkdir -p backup
+          pg_dump \
+            --dbname="$DATABASE_URL" \
+            --format=custom \
+            --no-owner \
+            --no-acl \
+            --file=backup/cultcodex-production.dump
+          pg_restore --list backup/cultcodex-production.dump > backup/cultcodex-production.contents.txt
+          sha256sum backup/cultcodex-production.dump > backup/SHA256SUMS
+          test -s backup/cultcodex-production.dump
+          echo "Backup archive created and verified."
+          du -h backup/cultcodex-production.dump
+
+      - name: Upload private production backup
+        if: github.event.inputs.script == '_backup-production'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cultcodex-production-backup-${{ github.run_id }}
+          path: backup/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
