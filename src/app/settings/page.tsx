@@ -38,6 +38,10 @@ export default async function SettingsPage() {
   if (!user) redirect("/auth/signin");
 
   const subscription = await getSubscriptionStatus(user.id).catch(() => null);
+  const allowAdminPortalTest =
+    process.env.FLY_APP_NAME?.endsWith("-staging") === true &&
+    subscription?.isAdmin === true &&
+    subscription.hasStripeCustomer;
 
   return (
     <div>
@@ -75,6 +79,7 @@ export default async function SettingsPage() {
                 status={subscription.isAdmin ? null : subscription.status}
                 periodEnd={subscription.periodEnd?.toISOString() ?? null}
                 isAdmin={subscription.isAdmin}
+                allowAdminPortalTest={allowAdminPortalTest}
               />
             ) : (
               <p className="font-mono text-[10px] text-text-muted">
