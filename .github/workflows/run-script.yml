@@ -55,13 +55,21 @@ jobs:
           umask 077
           test -n "${DATABASE_URL:-}"
           mkdir -p backup
-          pg_dump \
-            --dbname="$DATABASE_URL" \
-            --format=custom \
-            --no-owner \
-            --no-acl \
-            --file=backup/cultcodex-production.dump
-          pg_restore --list backup/cultcodex-production.dump > backup/cultcodex-production.contents.txt
+          docker run --rm \
+            --env DATABASE_URL \
+            --volume "$PWD/backup:/backup" \
+            postgres:18-alpine \
+            pg_dump \
+              --dbname="$DATABASE_URL" \
+              --format=custom \
+              --no-owner \
+              --no-acl \
+              --file=/backup/cultcodex-production.dump
+          docker run --rm \
+            --volume "$PWD/backup:/backup" \
+            postgres:18-alpine \
+            pg_restore --list /backup/cultcodex-production.dump \
+              > backup/cultcodex-production.contents.txt
           sha256sum backup/cultcodex-production.dump > backup/SHA256SUMS
           test -s backup/cultcodex-production.dump
           echo "Backup archive created and verified."
