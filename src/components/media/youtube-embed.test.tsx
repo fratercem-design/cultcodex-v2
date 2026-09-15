@@ -10,7 +10,7 @@ describe("YouTubeEmbed", () => {
   });
 
   it("does not contact YouTube until the visitor presses play", async () => {
-    const player = vi.fn();
+    const player = vi.fn(() => ({ destroy: vi.fn() }));
     render(<YouTubeEmbed videoId="abc123" title="Archive episode" startSeconds={42} />);
 
     expect(document.querySelector('script[src*="youtube.com"]')).toBeNull();
@@ -28,3 +28,4 @@ describe("YouTubeEmbed", () => {
     });
   });
 });
+
