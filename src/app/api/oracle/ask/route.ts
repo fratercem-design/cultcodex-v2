@@ -8,7 +8,7 @@ import { isSubscribed, hasSystemTier } from "@/lib/subscription";
 import { getEraById } from "@/lib/eras";
 import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
 import { FREE_ORACLE_MONTHLY_LIMIT, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
-import { consumeLlmBudget, consumeMonthlyMeter } from "@/lib/llm-budget";
+import { consumeLlmBudget, consumeMonthlyMeter, refundMonthlyMeter } from "@/lib/llm-budget";
 import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cache";
 import { groqChat, groqConfigured } from "@/lib/free-llm";
 
@@ -984,8 +984,12 @@ export async function POST(req: NextRequest) {
   // A cache miss is the first point where an LLM call may be required. Do not
   // reject cached answers or consume a member's allowance when the provider is
   // unavailable or no inference will occur.
-  // Credentials come from the AWS credential chain.
-  if (!process.env.AWS_REGION && !process.env.AWS_ACCESS_KEY_ID) {
+  // The free Groq path does not need AWS credentials. Require AWS only when
+  // Bedrock is the configured fallback and no free provider is available.
+  const bedrockConfigured =
+    process.env.ORACLE_USE_BEDROCK === "true" &&
+    Boolean(process.env.AWS_REGION || process.env.AWS_ACCESS_KEY_ID);
+  if (!groqConfigured() && !bedrockConfigured) {
     return NextResponse.json(
       { ok: false, error: "Oracle not configured." } satisfies OracleResponse,
       { status: 500 }
@@ -1019,9 +1023,11 @@ export async function POST(req: NextRequest) {
   // paying user one of their monthly questions. (It used to run first, so a
   // 429 or a 503 "Oracle is resting" still burned quota.) The cache lookup
   // sitting above it also means a repeat question is free.
+  let monthlyMeterBucket: string | null = null;
   if (canAccess && user && !(await hasSystemTier(user.id))) {
+    monthlyMeterBucket = `oracle-u-${user.id}`;
     const meter = await consumeMonthlyMeter(
-      `oracle-u-${user.id}`,
+      monthlyMeterBucket,
       INITIATE_ORACLE_MONTHLY_LIMIT
     );
     if (!meter.ok) {
@@ -1083,7 +1089,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Paid fallback — only if the free path came up empty AND Bedrock is enabled.
-  if (answer == null && process.env.ORACLE_USE_BEDROCK === "true") {
+  if (answer == null && bedrockConfigured) {
     try {
       const client = new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
       const model = bedrockModelId(process.env.ORACLE_MODEL ?? "claude-opus-4-8");
@@ -1096,9 +1102,10 @@ export async function POST(req: NextRequest) {
   }
 
   if (answer == null) {
+    if (monthlyMeterBucket) await refundMonthlyMeter(monthlyMeterBucket);
     return NextResponse.json(
       { ok: false, error: "The Oracle is resting. Try again in a moment." } satisfies OracleResponse,
-      { status: 503 }
+      { status: 503, headers: { "Retry-After": "30" } }
     );
   }
 

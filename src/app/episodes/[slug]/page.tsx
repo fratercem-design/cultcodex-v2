@@ -667,7 +667,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 {[
                   "Decode Mode — AI analysis of every episode",
                   "Ask the Oracle across the whole archive",
-                  "The Red Room — unfiltered, no softening",
+                  "The Psychenomicon — the archive's living myth engine",
                   "Add annotations & help shape the canon",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 font-mono text-[10px] text-text-muted">

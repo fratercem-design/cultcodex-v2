@@ -122,3 +122,20 @@ export async function consumeMonthlyMeter(
     return { ok: true, used: 0, cap };
   }
 }
+
+/** Return a monthly unit when the downstream provider failed to produce an answer. */
+export async function refundMonthlyMeter(bucket: string, units = 1): Promise<void> {
+  try {
+    const month = new Date().toISOString().slice(0, 7);
+    const key = `${bucket}:${month}`;
+    await prisma.$executeRawUnsafe(
+      `UPDATE "LlmBudget"
+       SET count = GREATEST(count - $2, 0)
+       WHERE bucket_day = $1`,
+      key,
+      units
+    );
+  } catch {
+    // Best effort: provider errors must still return promptly even if accounting is unavailable.
+  }
+}

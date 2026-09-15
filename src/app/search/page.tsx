@@ -11,6 +11,7 @@ import { formatDate } from "@/lib/format/date";
 import { formatSeconds } from "@/lib/format/duration";
 import { SearchInput } from "@/components/search/search-input";
 import { QuoteShareButton } from "@/components/quotes/share-button";
+import { PaginationControls } from "@/components/ui/pagination-controls";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ interface SearchPageProps {
     transcript?: string;  // "yes" or "no"
     from?: string;        // date YYYY-MM-DD
     to?: string;          // date YYYY-MM-DD
+    page?: string;        // paginates a single selected entity type
   }>;
 }
 
@@ -56,6 +58,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   if (params.to) {
     filters.dateTo = params.to;
   }
+  const selectedTypes = params.type?.split(",").filter(Boolean) ?? [];
+  const page = /^\d+$/.test(params.page ?? "") ? Math.max(1, Number(params.page)) : 1;
+  if (selectedTypes.length === 1) filters.page = page;
 
   const results = query ? await globalSearch(query, filters) : null;
 
@@ -261,7 +266,26 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   </li>
                 ))}
               </ul>
+              {selectedTypes.length !== 1 && results.episodeTotalCount > results.episodes.length && (
+                <Link
+                  href={buildSearchUrl(query, { ...params, type: "episodes" })}
+                  className="mt-3 inline-flex font-mono text-xs text-accent-gold-text hover:underline"
+                >
+                  View all {results.episodeTotalCount} matching episodes →
+                </Link>
+              )}
             </SectionCard>
+          )}
+          {selectedTypes.length === 1 && selectedTypes[0] === "episodes" && (
+            <PaginationControls
+              basePath="/search"
+              meta={{
+                page,
+                pageSize: 20,
+                totalCount: results.episodeTotalCount,
+                totalPages: Math.max(1, Math.ceil(results.episodeTotalCount / 20)),
+              }}
+            />
           )}
 
           {/* ── People ──────────────────────────── */}
@@ -495,7 +519,7 @@ function HighlightMatch({
   return (
     <>
       {parts.map((part, i) =>
-        regex.test(part) ? (
+        i % 2 === 1 ? (
           <mark
             key={i}
             className="bg-accent-gold/20 text-accent-gold-text rounded-sm px-0.5"
