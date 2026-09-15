@@ -10,7 +10,7 @@
  *   3. Print Psychenomicon-ready episode list
  *
  * Env vars required (already in your .env):
- *   DATABASE_URL      — Neon connection string
+ *   DATABASE_URL      — Xata PostgreSQL connection string
  *   YOUTUBE_API_KEY   — YouTube Data API v3
  */
 import "dotenv/config";

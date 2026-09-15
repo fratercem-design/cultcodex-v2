@@ -80,7 +80,7 @@ export async function requireAdminOrEnrichSecret(req: NextRequest): Promise<Next
 
 /**
  * Timing-safe check that the request carries `Authorization: Bearer <secret>`
- * where `<secret>` matches the given env var name. Used by Vercel Cron routes
+ * where `<secret>` matches the given env var name. Used by scheduled job routes
  * (which set the header when `CRON_SECRET` exists) and by the live-toggle
  * route. Fails closed when the env var is unset.
  */

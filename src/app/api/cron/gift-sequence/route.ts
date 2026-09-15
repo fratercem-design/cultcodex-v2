@@ -6,8 +6,8 @@
  * steps, time-gated by lastEmailAt, and increments giftStage until the sequence
  * is complete (giftStage reaches STEP_COUNT + 1).
  *
- * Auth: Bearer CRON_SECRET (Vercel Cron sets the Authorization header when the
- * CRON_SECRET env var exists; manual callers must pass it).
+ * Auth: Bearer CRON_SECRET. GitHub Actions invokes this route on schedule and
+ * supplies the header explicitly.
  */
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";

@@ -1,4 +1,4 @@
-# ASR pipeline dependencies — install on your LOCAL machine (not Railway).
+# ASR pipeline dependencies — install on your local workstation, not the web host.
 # This is the pipeline that transcribes episodes whose YouTube captions are disabled.
 #
 #   pip install -r scripts/asr-requirements.txt

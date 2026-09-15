@@ -2,9 +2,8 @@
  * Daily cron: poll @CultofPsyche and @PsychesNightmares for new uploads
  * and insert any not-yet-seen videos as Episode rows.
  *
- * - Auth: Bearer CRON_SECRET (Vercel Cron sets Authorization header
- *   automatically when CRON_SECRET env var exists; manual callers need
- *   to send it themselves).
+ * - Auth: Bearer CRON_SECRET. GitHub Actions invokes this route on schedule
+ *   and supplies the header explicitly.
  * - Runtime: Node.js (googleapis requires Node, not Edge).
  * - Strategy: fetch only the most-recent page of each channel's uploads
  *   playlist (50 videos per channel). More than enough to catch a day's
