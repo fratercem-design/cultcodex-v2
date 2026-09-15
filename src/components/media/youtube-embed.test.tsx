@@ -21,7 +21,8 @@ describe("YouTubeEmbed", () => {
     window.onYouTubeIframeAPIReady?.();
 
     await waitFor(() => expect(player).toHaveBeenCalled());
-    expect(player.mock.calls[0][1]).toMatchObject({
+    const [, options] = player.mock.calls[0] as unknown as [HTMLElement, Record<string, unknown>];
+    expect(options).toMatchObject({
       videoId: "abc123",
       host: "https://www.youtube-nocookie.com",
       playerVars: { autoplay: 1, start: 42 },
