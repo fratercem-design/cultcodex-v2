@@ -3,14 +3,18 @@
 FROM node:22-bookworm-slim AS dependencies
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
-COPY package.json package-lock.json ./
-RUN npm ci
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssl \
+    && rm -rf /var/lib/apt/lists/*
+COPY package.json package-lock.json .npmrc ./
+RUN npm ci --ignore-scripts
 
-FROM node:22-bookworm-slim AS builder
+FROM dependencies AS builder
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
-COPY --from=dependencies /app/node_modules ./node_modules
+ENV NODE_OPTIONS=--max-old-space-size=4096
 COPY . .
+RUN npm run postinstall
 
 # Public values are embedded in the browser bundle. DATABASE_URL is a BuildKit
 # secret because this application prerenders database-backed routes at build
@@ -34,7 +38,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
-RUN groupadd --system --gid 1001 nodejs \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssl \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system --gid 1001 nodejs \
     && useradd --system --uid 1001 --gid nodejs nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
