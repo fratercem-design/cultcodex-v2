@@ -105,7 +105,7 @@ jobs:
           set -euo pipefail
           test -n "${TARGET_DATABASE_URL:-}"
           cd restore
-          sha256sum --check SHA256SUMS
+          echo 'A0107F43E5167597A11F652C29098FC636261C2DFF27A104761D3BE2A9D7E128  cultcodex-production.dump' | sha256sum --check -
           docker run --rm \
             --env TARGET_DATABASE_URL \
             postgres:18-alpine \
