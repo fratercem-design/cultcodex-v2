@@ -97,6 +97,35 @@ Public values embedded during the Docker build include `NEXT_PUBLIC_SITE_URL`,
 `NEXT_PUBLIC_SENTRY_DSN`, `NEXT_PUBLIC_DEPLOY_ENV`, and optionally
 `SOURCE_COMMIT`. They are not secrets.
 
+### Parity check
+
+Fly prints names and digests but never values, so parity against this inventory
+is checkable without exposing anything:
+
+```bash
+flyctl secrets list --app <app> --json | jq -r '.[].name' | sort
+```
+
+Two digest rules worth asserting:
+
+- `DIRECT_URL` must **differ** from `DATABASE_URL`. Identical digests mean the
+  direct URL was copied from the pooled one, and `prisma migrate deploy` will
+  take its advisory lock through PgBouncer, which can silently drop or refuse
+  it. The same secret must also exist in GitHub Actions — an unset secret
+  arrives as `""`, and `prisma.config.ts` then falls back to the pooled URL.
+- `STRIPE_PRICE_ID` sharing a digest with `STRIPE_PRICE_ACCESS_ID` is expected:
+  the legacy single-price variable points at Initiate+ monthly.
+
+As of 2026-09-16 the staging app carries 18 secrets and is missing
+`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `ADMIN_EMAILS`, `SUPADATA_API_KEY`,
+`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, and every `SENTRY_*` value.
+`RESEND_API_KEY` is absent deliberately so staging cannot send mail. The rest
+are gaps, and two of them invalidate smoke tests below: semantic search embeds
+its query at request time via `embedOne()`, which throws without
+`OPENAI_API_KEY`, and Sentry cannot receive anything without a DSN. Oracle and
+Psychenomicon are equally untested without `ANTHROPIC_API_KEY`. Production must
+carry all of them.
+
 ## Staging smoke tests
 
 - [ ] `/api/health` returns HTTP 200 and Fly marks the Machine healthy.
@@ -106,8 +135,12 @@ Public values embedded during the Docker build include `NEXT_PUBLIC_SITE_URL`,
 - [ ] Stripe test checkout and billing portal work.
 - [ ] A signed Stripe test webhook is accepted once and deduplicated on replay.
 - [ ] Both SSE endpoints maintain connections through the Fly proxy.
-- [ ] Semantic search uses the existing Xata `pgvector` HNSW index.
-- [ ] Sentry receives a controlled server and browser error.
+- [ ] Semantic search uses the existing Xata `pgvector` HNSW index. Blocked
+      until `OPENAI_API_KEY` is set — the query is embedded per request.
+- [ ] Sentry receives a controlled server and browser error. Blocked until the
+      `SENTRY_*` values are set.
+- [ ] Oracle streams a reply and a Psychenomicon chapter generates. Blocked
+      until `ANTHROPIC_API_KEY` is set.
 - [ ] Database connections remain below the Xata limit with a five-connection
       application pool per running Fly Machine.
 - [ ] Both scheduled endpoints return 401 without a bearer secret and 2xx with
@@ -125,6 +158,34 @@ Public values embedded during the Docker build include `NEXT_PUBLIC_SITE_URL`,
    `https://cultcodex.me`.
 7. Keep `.github/workflows/scheduled-jobs.yml` disabled until after DNS cutover,
    while the two Vercel Cron definitions are still active.
+
+## Pre-cutover gates
+
+Run these against production and the production Fly app immediately before the
+maintenance window. Each is read-only.
+
+- [ ] Secret parity, plus both digest rules above, on the **production** Fly app.
+- [ ] Migration state is clean. `Run DB Migrations` with `diagnose_only` enabled
+      reports `0 unresolved failures`. P3009 fires only on a row that started,
+      never finished, and was never rolled back — a `rolled_back_at` timestamp is
+      the resolution, not the problem, so rolled-back rows are expected history
+      and must not be "resolved" again.
+- [ ] Production `/api/health` on the `*.fly.dev` hostname returns `{"ok":true}`
+      before any DNS record changes.
+- [ ] Both scheduled routes answer 401 without a bearer token.
+
+Stripe needs **no change at cutover**. The live event destination already points
+at `https://cultcodex.me/api/stripe/webhook`, so it follows the domain rather
+than the origin. Do not create a `*.fly.dev` live endpoint; there is none today,
+and adding one would double-deliver. The live secret key in production use is the
+one named `cc` — confirm the Fly production `STRIPE_SECRET_KEY` digest matches
+whatever Vercel holds before cutting over, and do not revoke that key while
+pruning unused ones.
+
+Note what makes rollback cheap here: this is a **compute-only** cutover. Both
+origins read and write the same Xata production database, so during DNS
+propagation Vercel and Fly serve identical data, and reverting the record is
+sufficient on its own — there is nothing to restore or replay.
 
 ## Cloudflare cutover
 
