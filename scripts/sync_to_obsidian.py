@@ -2,7 +2,7 @@
 """
 CultCodex → Obsidian Vault Sync Script
 =======================================
-Reads from the CultCodex PostgreSQL database (Railway) and writes
+Reads from the configured CultCodex PostgreSQL database and writes
 Obsidian-compatible markdown files to the vault.
 
 One-way sync: DB is source of truth, Obsidian is the readable wiki view.

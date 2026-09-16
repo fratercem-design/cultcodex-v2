@@ -1,4 +1,4 @@
--- Enable pgvector extension (Neon supports this natively)
+-- Enable the pgvector extension used by semantic search.
 CREATE EXTENSION IF NOT EXISTS vector;
 
 -- Add embedding column to TranscriptSegment

@@ -1,0 +1,15 @@
+.git
+.github
+.next
+.vercel
+node_modules
+npm-debug.log*
+.env
+.env.*
+!.env.example
+work
+outputs
+docs/archive
+scripts/scrape/data
+scripts/**/*.log
+scripts/**/*.jsonl

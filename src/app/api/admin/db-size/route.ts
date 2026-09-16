@@ -2,8 +2,8 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 
-// Reports total DB size + biggest tables, server-side (internal DB host),
-// to scope a migration to Neon free tier (0.5 GB). Gated by admin session or
+// Reports total DB size + biggest tables for capacity and cost planning.
+// Gated by admin session or
 // a `?key=` token = base64url(HMAC-SHA256(AUTH_SECRET, "db-size")).
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

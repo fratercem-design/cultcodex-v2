@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run dev              # start dev server (Turbopack)
 npm run build            # production build (no migration)
-npm run vercel-build     # what Vercel runs: migrate (production only) + build
+npm run db:migrate       # apply committed Prisma migrations
 npm run lint             # eslint
 npm run test             # vitest (run once)
 npm run test:watch       # vitest watch mode
@@ -69,7 +69,8 @@ ENRICH_SECRET         # protects all /api/admin/* routes
 
 ## Schema notes
 
-- Migrations live in `prisma/migrations/`. Deploys run on **Vercel**, and `vercel.json` points `buildCommand` at `scripts/vercel-build.mjs`, which runs `prisma migrate deploy` **only when `VERCEL_ENV === "production"`** and then `next build`. Preview builds skip migrations on purpose — they share the production database. A failed migration fails the build, and Vercel keeps the previous deployment serving. The `Run DB Migrations` GitHub Action (workflow_dispatch) remains available for applying a migration without deploying. Railway config (`railway.toml`, `nixpacks.toml`) and the `build:migrate` script have been removed.
+- Migrations live in `prisma/migrations/`. Run the existing `Run DB Migrations` GitHub Action as an explicit pre-deploy gate whenever a release contains migrations. The Fly runtime image is intentionally lean and does not contain Prisma's development CLI.
+- The two daily jobs live in `.github/workflows/scheduled-jobs.yml`. They call the bearer-protected production routes at 15:00 and 17:00 UTC. See `docs/operations/fly-cloudflare-xata-migration.md` for service settings, cutover order, and rollback triggers.
 - `prisma.config.ts` uses `DIRECT_URL` (non-pooled) for migrations, falls back to `DATABASE_URL`.
 - If a migration fails, clear it with: `npx prisma migrate resolve --rolled-back <migration_name>`
 - The Xata branch hibernates when idle; `.github/workflows/keep-alive.yml` pings `/api/keep-alive` so builds (which prerender thousands of DB-backed pages) don't hit a sleeping branch.

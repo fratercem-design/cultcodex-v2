@@ -12,6 +12,9 @@ const { version } = JSON.parse(readFileSync(join(process.cwd(), "package.json"),
 // `process.cwd()` works because `next dev`is always launched from the
 // project root; matches the launch.json cwd setup.
 const nextConfig: NextConfig = {
+  // Fly runs the app as a persistent Node service. Standalone output keeps
+  // the production artifact self-contained and avoids shipping dev tooling.
+  output: "standalone",
   // The OG routes read these font files from disk at render time (see
   // src/lib/og-fonts.ts). Nothing imports them, so tracing cannot infer the
   // dependency — without this they are absent from the lambda and every OG
@@ -73,12 +76,12 @@ const nextConfig: NextConfig = {
           value: [
             "default-src 'self'",
             // 'unsafe-eval' is dev-only: React reconstructs stack traces with eval() in development and never uses it in production builds.
-            `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV !== "production" ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.youtube.com https://s.ytimg.com https://va.vercel-scripts.com`,
+            `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV !== "production" ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.youtube.com https://s.ytimg.com`,
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             "font-src 'self' https://fonts.gstatic.com",
             "img-src 'self' data: blob: https:",
             "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
-            "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://va.vercel-scripts.com",
+            "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self' https://checkout.stripe.com https://billing.stripe.com",

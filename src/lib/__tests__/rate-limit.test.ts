@@ -3,6 +3,7 @@ import { rateLimit, clientKey } from "../rate-limit";
 
 afterEach(() => {
   vi.useRealTimers();
+  vi.unstubAllEnvs();
 });
 
 describe("rateLimit", () => {
@@ -52,29 +53,37 @@ describe("clientKey", () => {
     expect(clientKey(req)).toBe("ip:1.2.3.4");
   });
 
-  it("prefers Vercel's preserved forwarded IP", () => {
+  it("prefers Cloudflare's client IP when the origin secret matches", () => {
+    vi.stubEnv("CLOUDFLARE_ORIGIN_SECRET", "test-origin-secret");
     const req = new Request("https://x.test", {
       headers: {
-        "x-vercel-forwarded-for": "203.0.113.10",
-        "x-forwarded-for": "198.51.100.7",
+        "x-origin-verify": "test-origin-secret",
+        "cf-connecting-ip": "203.0.113.10",
+        "fly-client-ip": "198.51.100.7",
       },
     });
     expect(clientKey(req)).toBe("ip:203.0.113.10");
   });
 
-  it("falls back past malformed forwarding headers", () => {
+  it("ignores spoofed Cloudflare headers when the origin secret is absent", () => {
+    vi.stubEnv("CLOUDFLARE_ORIGIN_SECRET", "test-origin-secret");
     const req = new Request("https://x.test", {
       headers: {
-        "x-vercel-forwarded-for": "attacker-controlled",
-        "x-forwarded-for": "198.51.100.9, 10.0.0.1",
+        "x-origin-verify": "wrong-secret",
+        "cf-connecting-ip": "203.0.113.10",
+        "fly-client-ip": "198.51.100.9",
       },
     });
     expect(clientKey(req)).toBe("ip:198.51.100.9");
   });
 
   it("accepts IPv6 addresses", () => {
+    vi.stubEnv("CLOUDFLARE_ORIGIN_SECRET", "test-origin-secret");
     const req = new Request("https://x.test", {
-      headers: { "x-vercel-forwarded-for": "2001:db8::1" },
+      headers: {
+        "x-origin-verify": "test-origin-secret",
+        "cf-connecting-ip": "2001:db8::1",
+      },
     });
     expect(clientKey(req)).toBe("ip:2001:db8::1");
   });

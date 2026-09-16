@@ -68,29 +68,24 @@ function createPrismaClient(): PrismaClient {
   }
 
   const isBuild = process.env.NEXT_PHASE === "phase-production-build";
-  // On Vercel every serverless function instance is its own process with its
-  // own pool, so the per-process ceiling has to stay low or concurrent lambdas
-  // collectively exhaust the Postgres connection limit. On a long-lived Node
-  // server (local `next start`, a container) one process serves everything, so
-  // a larger pool is both safe and faster.
-  const isServerless = Boolean(process.env.VERCEL);
+  // Fly runs one long-lived Node process per Machine, so this pool is
+  // shared by all requests handled by that replica.
 
   // `next build` spawns roughly one static-generation worker per CPU, each
   // importing this module and opening its own pool. max:2 keeps the total in
   // budget while still clearing each worker's internal queue (max:1 serialises
   // pages that render several queries concurrently and blows the timeout).
-  const max = isBuild ? 2 : isServerless ? 3 : 5;
+  const max = isBuild ? 2 : 5;
 
   // Xata branches hibernate when idle: the first query after a sleep has to
   // wait for the branch to reactivate. Allow generous time during builds (which
   // prerender thousands of pages) and a shorter, user-facing budget at runtime.
-  const connectionTimeoutMillis = isBuild ? 30000 : isServerless ? 10000 : 5000;
+  const connectionTimeoutMillis = isBuild ? 30000 : 5000;
 
   const adapter = new PrismaPg({
     connectionString,
     connectionTimeoutMillis,
-    // Release idle connections promptly so scaled-down lambdas stop holding
-    // slots against the branch's connection limit.
+    // Release idle connections promptly when Fly replaces or stops a Machine.
     idleTimeoutMillis: 10000,
     max,
   });

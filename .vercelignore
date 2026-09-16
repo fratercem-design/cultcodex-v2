@@ -1,8 +1,0 @@
-node_modules
-.next
-.git
-dbmigrate
-scripts/scrape/data
-*.log
-.env*
-!.env.example

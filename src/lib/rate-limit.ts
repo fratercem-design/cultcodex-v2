@@ -5,8 +5,8 @@ import { prisma } from "@/lib/db";
 /**
  * In-memory fixed-window rate limiter.
  *
- * Scope is per-process. On Vercel each serverless instance has its own Map,
- * so this is only a local speed bump. Cost-bearing routes pair it with the
+ * Scope is per-process. On Fly this Map is shared by requests handled by one
+ * Machine, so it is only a local speed bump. Cost-bearing routes pair it with the
  * PostgreSQL-backed sharedRateLimit() below.
  */
 
@@ -78,11 +78,17 @@ export function rateLimit(key: string, opts: RateLimitOptions): RateLimitResult 
 export function clientKey(req: Request, userId?: string | null): string {
   if (userId) return `user:${userId}`;
 
-  // Vercel overwrites x-vercel-forwarded-for at its edge. The standard
-  // fallbacks are for known reverse-proxy/local deployments only; callers
-  // serving the app directly must strip client-supplied forwarding headers.
+  // The public Fly hostname remains reachable during staging and rollback, so
+  // Cloudflare's client-IP headers are trusted only when Cloudflare also sends
+  // the shared origin-verification header. Fly-Client-IP is set by Fly Proxy
+  // and is the safe fallback for requests that bypass Cloudflare.
+  const originSecret = process.env.CLOUDFLARE_ORIGIN_SECRET;
+  const cloudflareIp = originSecret && req.headers.get("x-origin-verify") === originSecret
+    ? req.headers.get("cf-connecting-ip")?.trim()
+    : null;
   const candidates = [
-    req.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim(),
+    cloudflareIp,
+    req.headers.get("fly-client-ip")?.trim(),
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
     req.headers.get("x-real-ip")?.trim(),
   ];
@@ -108,7 +114,7 @@ function emitRateLimitMetric(
 
 /**
  * Consume a fixed-window limit in PostgreSQL. Unlike `rateLimit`, this counter
- * is shared by every Vercel instance and survives cold starts. Caller keys are
+ * is shared by every Fly Machine and survives restarts. Caller keys are
  * hashed before storage so raw IP addresses are not retained in the table.
  * Store failures fail closed on the paid/cost-bearing routes that use this.
  */
