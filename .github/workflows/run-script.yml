@@ -4,18 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       script:
-        description: 'Script path relative to scripts/ (use _backup-production or _restore-production-backup for migration operations)'
+        description: 'Script path relative to scripts/ (e.g. _merge-alexandria.ts)'
         required: true
 
 permissions:
   contents: read
-  actions: read
 
 jobs:
   run:
     name: Run script
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 30
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -25,22 +24,20 @@ jobs:
       - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v7
-        if: github.event.inputs.script != '_backup-production' && github.event.inputs.script != '_restore-production-backup'
         with:
           node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
-        if: github.event.inputs.script != '_backup-production' && github.event.inputs.script != '_restore-production-backup'
         run: npm ci --ignore-scripts
 
       - name: Generate Prisma client
-        if: github.event.inputs.script != '_backup-production' && github.event.inputs.script != '_restore-production-backup'
         run: npx prisma generate
 
       - name: Run script
-        if: github.event.inputs.script != '_backup-production' && github.event.inputs.script != '_restore-production-backup'
         env:
+          # Keep the Gemini key scoped to the dedicated smoke test rather than
+          # exposing it to every script this generic workflow can execute.
           GEMINI_API_KEY: ${{ github.event.inputs.script == 'ops/test-gemini.mjs' && secrets.GEMINI_API_KEY || '' }}
         run: |
           set -o pipefail
@@ -48,87 +45,3 @@ jobs:
           npx tsx "scripts/${{ github.event.inputs.script }}" | tee /tmp/script-output.txt
           SUMMARY=$(tail -5 /tmp/script-output.txt | tr '\n' ' ')
           echo "::notice title=Script output::$SUMMARY"
-
-      - name: Create read-only production backup
-        if: github.event.inputs.script == '_backup-production'
-        shell: bash
-        run: |
-          set -euo pipefail
-          umask 077
-          test -n "${DATABASE_URL:-}"
-          mkdir -p backup
-          docker run --rm \
-            --env DATABASE_URL \
-            --volume "$PWD/backup:/backup" \
-            postgres:18-alpine \
-            pg_dump \
-              --dbname="$DATABASE_URL" \
-              --format=custom \
-              --no-owner \
-              --no-acl \
-              --file=/backup/cultcodex-production.dump
-          docker run --rm \
-            --volume "$PWD/backup:/backup" \
-            postgres:18-alpine \
-            pg_restore --list /backup/cultcodex-production.dump \
-              > backup/cultcodex-production.contents.txt
-          sha256sum backup/cultcodex-production.dump > backup/SHA256SUMS
-          test -s backup/cultcodex-production.dump
-          echo "Backup archive created and verified."
-          du -h backup/cultcodex-production.dump
-
-      - name: Upload private production backup
-        if: github.event.inputs.script == '_backup-production'
-        uses: actions/upload-artifact@v4
-        with:
-          name: cultcodex-production-backup-${{ github.run_id }}
-          path: backup/
-          if-no-files-found: error
-          retention-days: 7
-          compression-level: 0
-
-      - name: Download verified production backup
-        if: github.event.inputs.script == '_restore-production-backup'
-        uses: actions/download-artifact@v4
-        with:
-          name: cultcodex-production-backup-34982079185
-          path: restore
-          run-id: 34982079185
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Restore into isolated Xata staging branch
-        if: github.event.inputs.script == '_restore-production-backup'
-        env:
-          TARGET_DATABASE_URL: ${{ secrets.XATA_MIGRATION_STAGING_URL }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -n "${TARGET_DATABASE_URL:-}"
-          cd restore
-          echo 'A0107F43E5167597A11F652C29098FC636261C2DFF27A104761D3BE2A9D7E128  cultcodex-production.dump' | sha256sum --check -
-          docker run --rm \
-            --env TARGET_DATABASE_URL \
-            postgres:18-alpine \
-            sh -c 'psql "$TARGET_DATABASE_URL" -v ON_ERROR_STOP=1 -c "CREATE EXTENSION IF NOT EXISTS vector"'
-          docker run --rm \
-            --env TARGET_DATABASE_URL \
-            --volume "$PWD:/restore:ro" \
-            postgres:18-alpine \
-            sh -c 'pg_restore --dbname="$TARGET_DATABASE_URL" --clean --if-exists --schema=public --no-owner --no-acl --exit-on-error /restore/cultcodex-production.dump'
-          docker run --rm -i \
-            --env TARGET_DATABASE_URL \
-            postgres:18-alpine \
-            sh -c 'psql "$TARGET_DATABASE_URL" -v ON_ERROR_STOP=1 -At' <<'SQL'
-          SELECT 'Episode', count(*) FROM public."Episode"
-          UNION ALL SELECT 'TranscriptSegment', count(*) FROM public."TranscriptSegment"
-          UNION ALL SELECT 'Person', count(*) FROM public."Person"
-          UNION ALL SELECT 'Topic', count(*) FROM public."Topic"
-          UNION ALL SELECT 'LoreEntry', count(*) FROM public."LoreEntry"
-          UNION ALL SELECT 'Quote', count(*) FROM public."Quote"
-          UNION ALL SELECT 'PsychenomiconChapter', count(*) FROM public."PsychenomiconChapter"
-          UNION ALL SELECT 'CodexUser', count(*) FROM public."CodexUser"
-          UNION ALL SELECT 'StripeWebhookEvent', count(*) FROM public."StripeWebhookEvent"
-          UNION ALL SELECT 'ChatMessage', count(*) FROM public."ChatMessage"
-          UNION ALL SELECT '_prisma_migrations', count(*) FROM public."_prisma_migrations"
-          ORDER BY 1;
-          SQL
