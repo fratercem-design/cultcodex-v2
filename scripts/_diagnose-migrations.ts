@@ -26,9 +26,18 @@ interface MigrationRow {
 
 const iso = (value: Date | null): string => value?.toISOString() ?? "null";
 
-// A row blocks `migrate deploy` only if it never finished or was rolled back.
+// P3009 fires only on an UNRESOLVED failure: started, never finished, and never
+// marked rolled back. A `rolled_back_at` timestamp is the resolution, not the
+// problem — it is what `prisma migrate resolve --rolled-back` writes to clear
+// the block — so those rows are history, and deploy steps over them.
 const isBlocking = (row: MigrationRow): boolean =>
-  row.finished_at === null || row.rolled_back_at !== null;
+  row.finished_at === null && row.rolled_back_at === null;
+
+const label = (row: MigrationRow): string => {
+  if (isBlocking(row)) return "FAILED — blocks deploy";
+  if (row.rolled_back_at !== null) return "resolved: rolled back";
+  return "ok";
+};
 
 async function main(): Promise<void> {
   const url = process.env.DIRECT_URL?.trim() || process.env.DATABASE_URL;
@@ -60,7 +69,7 @@ async function main(): Promise<void> {
     console.log(`MIGRATION ROWS CARRYING MARKERS (${rows.length}):\n`);
     for (const row of rows) {
       console.log(
-        `  [${isBlocking(row) ? "BLOCKING" : "ok"}] ${row.migration_name}\n` +
+        `  [${label(row)}] ${row.migration_name}\n` +
           `      started=${iso(row.started_at)}\n` +
           `      finished=${iso(row.finished_at)}\n` +
           `      rolled_back=${iso(row.rolled_back_at)}\n` +
@@ -71,8 +80,8 @@ async function main(): Promise<void> {
     const blockers = rows.filter(isBlocking);
     console.log(
       blockers.length === 0
-        ? "0 blocking rows. Every row above finished cleanly and merely recorded logs."
-        : `${blockers.length} row(s) would fail \`migrate deploy\` with P3009: ` +
+        ? "0 unresolved failures. `migrate deploy` is clear of P3009."
+        : `${blockers.length} unresolved failure(s) will fail \`migrate deploy\` with P3009: ` +
             blockers.map((r) => r.migration_name).join(", "),
     );
   } finally {
