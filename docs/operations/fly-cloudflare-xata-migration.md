@@ -153,11 +153,15 @@ carry all of them.
    production observations show adequate headroom.
 3. Set runtime secrets directly with Fly. Never put them in `fly.toml`.
 4. Deploy the reviewed commit and test the generated `*.fly.dev` hostname.
-5. Store the exact same `CRON_SECRET` as a GitHub Actions repository secret.
-6. Optionally set the repository variable `PRODUCTION_BASE_URL`; it defaults to
-   `https://cultcodex.me`.
-7. Keep `.github/workflows/scheduled-jobs.yml` disabled until after DNS cutover,
-   while the two Vercel Cron definitions are still active.
+5. Store the production Fly `CRON_SECRET` as the GitHub Actions repository
+   secret `CRON_SECRET`. Store the staging Fly secret separately as
+   `STAGING_CRON_SECRET`.
+6. Set `STAGING_BASE_URL` to `https://cultcodex-v2-staging.fly.dev` and
+   `PRODUCTION_BASE_URL` to `https://cultcodex.me`. Manual dispatches are
+   staging-only; arbitrary target URLs are not accepted.
+7. Keep the repository variable `ENABLE_PRODUCTION_SCHEDULES` unset or set to
+   `false` while the two Vercel Cron definitions are active. Set it to `true`
+   only after Vercel Cron has been disabled during cutover.
 
 ## Pre-cutover gates
 
