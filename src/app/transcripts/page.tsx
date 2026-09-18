@@ -143,13 +143,6 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
             Search across all {stats.totalSegments.toLocaleString("en-US")} transcript segments from {stats.episodeCount} episodes.
           </p>
           <TranscriptSearchBox defaultValue="" />
-          <p className="mt-3 font-mono text-[11px] text-text-muted">
-            Looking for an idea rather than exact words?{" "}
-            <Link href="/search/deep" className="text-accent-cyan hover:underline">
-              Try Deep Search
-            </Link>{" "}
-            — it matches by meaning across every transcript.
-          </p>
         </SectionCard>
 
         {/* Quick stats */}

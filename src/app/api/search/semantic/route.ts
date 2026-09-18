@@ -17,12 +17,23 @@ import { semanticSearch } from "@/lib/queries/semantic";
 import { getEraById } from "@/lib/eras";
 import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
 import { consumeLlmBudget } from "@/lib/llm-budget";
+import { isDeepSearchEnabled } from "@/lib/deep-search";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  // Offline until the TranscriptSegment.embedding column and its vectors are
+  // restored on Xata; the column did not survive the migration. Set
+  // DEEP_SEARCH_ENABLED=1 on the Fly app to turn it back on.
+  if (!isDeepSearchEnabled()) {
+    return NextResponse.json(
+      { error: "Deep Search is temporarily offline. Full-text transcript search at /transcripts still works." },
+      { status: 503 }
+    );
+  }
+
   const user = await getCurrentUser();
 
   // Each query embeds its concepts via OpenAI — throttle to bound cost.
