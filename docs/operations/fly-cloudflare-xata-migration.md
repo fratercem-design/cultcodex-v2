@@ -500,9 +500,22 @@ ability to **ship anything through the rollback target** — if the cutover were
 reverted and the reason for reverting then needed a code fix, there was no path
 to deploy it on Vercel. The fallback was frozen at its last good build.
 
-**Resolution:** restore the build, which this repository now does. The
-`vercel.json` at the root sets `buildCommand` to `next build`, which overrides
-the project's stale Build Command without needing a dashboard change.
+**Status: partly fixed, still red.** The `vercel.json` at the root sets
+`buildCommand` to `next build`. That is the repository's half of the fix and it
+is in place, but it did **not** turn the Vercel check green — the deployment on
+`9bc8c57` failed the same way. So the remaining cause is something only the
+Vercel project can show, and the next step needs someone with access to run:
+
+```bash
+npx vercel inspect <deployment-id> --logs
+```
+
+The deployment id is in the failing check's own description on each commit. Two
+candidates worth checking first in that log, in order: an **Install Command**
+override (which `vercel.json`'s `buildCommand` does not touch), and a build-time
+environment variable the project lost when the Vercel-specific plumbing was
+removed. Do not assume the build command is still the problem — that hypothesis
+has now been tested and is not sufficient on its own.
 
 The deleted script did exactly two things: `prisma migrate deploy` when
 `VERCEL_ENV === "production"`, then `next build`. Only the second needed
@@ -517,8 +530,9 @@ workflow; it is where the step already lives.
 `next build` alone is verified to succeed on this repository, with no database
 reachable — `src/lib/db.ts` returns a rejecting proxy when `DATABASE_URL` is
 absent and the sitemap and page loaders catch it, so the build completes and
-simply prerenders less. That is what makes the fix a one-line override rather
-than a rebuild of the entrypoint.
+simply prerenders less. Whatever Vercel is failing on, it is therefore not the
+repository's build itself. Netlify building the same commits successfully says
+the same thing from the other direction.
 
 Two loose ends this does not close, neither of them blocking:
 
@@ -526,9 +540,9 @@ Two loose ends this does not close, neither of them blocking:
   deploys just upload more than they need to (`scripts/scrape/data` in
   particular). Restore it if Vercel deploy times become annoying during the
   rollback window.
-- If a Vercel build still fails after this lands, the cause is an **Install
-  Command** override rather than the build command, and that one does need the
-  dashboard.
+- Until the Vercel check is green, treat the rollback target as still frozen.
+  Reverting DNS would restore availability from the last good deployment, but
+  shipping a fix through Vercel is not yet possible.
 
 ## Post-deploy checks
 
