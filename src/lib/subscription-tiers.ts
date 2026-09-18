@@ -49,10 +49,7 @@ export const TIERS: Tier[] = [
     priceEnvVar: "STRIPE_PRICE_ACCESS_ID",
     priceEnvVarAnnual: "STRIPE_PRICE_ACCESS_ANNUAL_ID",
     features: [
-      "Read every word ever spoken — searchable, timestamped",
       `${INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions a month — cited to the source archive`,
-      "Jump to any moment in any transmission, instantly",
-      "Search by what's actually happening — not just keywords",
       "AI extracts behavioral patterns from every panel — what repeats, what shifts",
       "Find the exact moment a dynamic changed",
       "Trace behavioral signatures across years of appearances",
