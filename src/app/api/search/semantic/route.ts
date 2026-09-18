@@ -2,7 +2,8 @@
  * POST /api/search/semantic
  *
  * Multi-concept vector similarity search over transcript segments.
- * Subscription-gated — admin or active subscriber only.
+ * Public. Anonymous callers get a tighter per-IP limit; everyone shares the
+ * global daily LLM budget below.
  *
  * Body:
  *   concepts  Array<{ concept: string; threshold?: number }> (1–5 concepts)
@@ -12,7 +13,6 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { isSubscribed } from "@/lib/subscription";
 import { semanticSearch } from "@/lib/queries/semantic";
 import { getEraById } from "@/lib/eras";
 import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
@@ -24,21 +24,12 @@ export const maxDuration = 60;
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const user = await getCurrentUser();
-  const canAccess = user
-    ? user.role === "admin" || (await isSubscribed(user.id))
-    : false;
-
-  if (!canAccess) {
-    return NextResponse.json(
-      { error: "Deep search requires an active subscription." },
-      { status: 403 }
-    );
-  }
 
   // Each query embeds its concepts via OpenAI — throttle to bound cost.
   const callerKey = clientKey(req, user?.id);
+  const perMinute = user ? 30 : 10;
   const rl = rateLimit(`semantic:${callerKey}`, {
-    limit: 30,
+    limit: perMinute,
     windowMs: 60_000,
   });
   if (!rl.ok) {
@@ -48,7 +39,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   }
   const sharedRl = await sharedRateLimit("semantic", callerKey, {
-    limit: 30,
+    limit: perMinute,
     windowMs: 60_000,
   });
   if (!sharedRl.ok) {

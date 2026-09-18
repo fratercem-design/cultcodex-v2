@@ -227,7 +227,7 @@ export default async function ReportsPage() {
             <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-cyan/70">✦ &nbsp; intelligence on demand &nbsp; ✦</p>
             <h3 className="font-display text-2xl font-bold text-accent-gold">Read the reports instead of scrubbing the VODs.</h3>
             <p className="font-mono text-[11px] text-text-muted max-w-sm mx-auto leading-relaxed">
-              Initiate+ opens Guest Intelligence Reports, the Oracle, full transcripts, and the
+              Initiate+ opens Guest Intelligence Reports, the Oracle, Decode Mode, and the
               Psychenomicon — for $10/month.
             </p>
             <Link href="/premium" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-7 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25">

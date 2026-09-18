@@ -424,7 +424,7 @@ export default async function HomePage() {
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// unlock_the_archive"}</p>
             <p className="font-display text-xl font-bold text-white">Full transcripts. AI Oracle. The Psychenomicon.</p>
             <p className="font-mono text-[11px] text-text-muted max-w-lg mx-auto">Observer opens the public index and samples. Initiate+ opens the sealed transcript layer.</p>
-            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens {INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions each month, every transcript, Decode Mode, and your member identity — ${initiateTier.priceMonthly}/mo. No contracts.</p>
+            <p className="font-mono text-xs text-text-muted max-w-md mx-auto">Initiate+ opens {INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions each month, Decode Mode, and your member identity — ${initiateTier.priceMonthly}/mo. No contracts.</p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
                 href="/premium"

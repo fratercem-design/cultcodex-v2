@@ -371,8 +371,8 @@ export default async function StartHerePage() {
           <div className="p-7 space-y-4">
             <p className="font-mono text-[11px] text-text-muted leading-relaxed">
               <span className="text-text-primary font-bold">Observer</span> opens the public index and
-              samples. <span className="text-accent-gold-text font-bold">Initiate+</span> opens the sealed
-              transcripts and intelligence layer.
+              every transcript. <span className="text-accent-gold-text font-bold">Initiate+</span> opens the
+              intelligence layer.
             </p>
             <p className="font-mono text-[11px] text-text-muted leading-relaxed">
               <span className="text-accent-gold-text font-bold">Initiate+</span> is where the archive
@@ -380,9 +380,6 @@ export default async function StartHerePage() {
             </p>
             <ul className="space-y-2.5">
               {[
-                "Read every word ever spoken — full transcripts, searchable, timestamped",
-                "Jump to any moment in any transmission instantly",
-                "Search by what's actually happening — archetype, behavior, conflict type",
                 "AI-extracted behavioral patterns from every panel",
                 "Build your own intelligence file — save signals, quotes, observations",
                 "The Psychenomicon — full access to the living myth-engine",

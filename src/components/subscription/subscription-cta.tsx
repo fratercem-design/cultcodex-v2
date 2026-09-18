@@ -54,8 +54,8 @@ export function SubscriptionCTA({ variant = "card" }: SubscriptionCTAProps) {
         Observers see the surface.
       </h3>
       <p className="font-mono text-xs text-text-muted leading-relaxed max-w-sm mx-auto">
-        Initiates see everything underneath — full transcripts, click-to-seek,
-        Decode Mode, and the intelligence layer. $10/month.
+        Initiates see everything underneath — Decode Mode, the Oracle,
+        and the intelligence layer. $10/month.
       </p>
       <div className="flex flex-wrap justify-center gap-3 pt-1">
         <button

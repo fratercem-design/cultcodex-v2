@@ -229,7 +229,7 @@ export default async function FromYouTubePage() {
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// unlock_the_archive"}</p>
             <p className="font-display text-xl font-bold text-white">Full transcripts. {INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions a month. The Psychenomicon.</p>
             <p className="font-mono text-xs text-text-muted max-w-md mx-auto">
-              Initiate+ opens the AI Oracle, every transcript, Decode Mode, and your member identity — ${initiateTier.priceMonthly}/mo. No contracts.
+              Initiate+ opens the AI Oracle, Decode Mode, and your member identity — ${initiateTier.priceMonthly}/mo. No contracts.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link
