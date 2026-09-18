@@ -77,26 +77,130 @@ existing `Run DB Migrations` GitHub workflow and its non-pooled `DIRECT_URL`.
 
 ## Runtime secret inventory
 
-- Database: `DATABASE_URL`, `DIRECT_URL` (the unchanged Xata pooled/direct pair)
-- Auth: `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`,
-  `ADMIN_EMAILS`; `NEXTAUTH_URL` and `AUTH_TRUST_HOST` are non-secret config
-- Scheduled/admin: `CRON_SECRET`, `ENRICH_SECRET`, `LIVE_TOGGLE_SECRET`
-- Origin verification: `CLOUDFLARE_ORIGIN_SECRET`; configure Cloudflare to
-  overwrite `X-Origin-Verify` with the same high-entropy value on origin requests
-- Ingest: `YOUTUBE_API_KEY`, `SUPADATA_API_KEY`
-- AI: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, and any configured provider
-  fallback credentials
-- Stripe: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and every configured
-  `STRIPE_PRICE_*` value
-- Email/push: `RESEND_API_KEY`, `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`
-- Sentry: `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_DSN`, `SENTRY_ORG`,
-  `SENTRY_PROJECT`, and optionally `SENTRY_AUTH_TOKEN`
-- Any AWS/S3 or art-pipeline secrets present in the Vercel production inventory
+Derived from the variables the deployed image actually reads. The runner stage
+copies only `.next/standalone`, `.next/static` and `public`, so nothing under
+`scripts/` ever executes on Fly — variables used only there belong to GitHub
+Actions, not to `fly secrets`. The split is stated explicitly below because the
+two sets were previously conflated.
+
+### Set on the Fly app
+
+**Database.** `DATABASE_URL` only. `DIRECT_URL` is read by `prisma.config.ts`
+and by `scripts/`; the runtime image never reads it, so it belongs to the
+`Run DB Migrations` workflow rather than to the Fly app. Setting it on Fly is
+harmless but does not migrate anything.
+
+**Auth.** `AUTH_SECRET`, `NEXTAUTH_SECRET`, `GOOGLE_CLIENT_ID`,
+`GOOGLE_CLIENT_SECRET`, `ADMIN_EMAILS`. `NEXTAUTH_URL` and `AUTH_TRUST_HOST`
+are non-secret config and already live in `fly.toml`.
+
+Two things about the secret itself:
+
+- `AUTH_SECRET` is a distinct, load-bearing variable, not an alias. Auth.js
+  signs sessions with `AUTH_SECRET ?? NEXTAUTH_SECRET`, so either name keeps
+  sign-in working — but four routes read `AUTH_SECRET` alone with no fallback
+  and 500 without it: `/api/admin/db-size`, `/api/admin/build-book`,
+  `/api/admin/migrate-art-r2` and `/api/psychenomicon/book/[sku]` (the
+  HMAC-signed gift-link path). Set both names to the same value.
+- Whatever value Vercel holds must be carried over **unchanged**. The session
+  cookie is a JWT signed with it, so a fresh value silently signs out every
+  logged-in member the moment DNS moves. This is the one secret where "generate
+  a new one for the new host" is wrong.
+
+**Scheduled and admin.** `CRON_SECRET`, `ENRICH_SECRET`, `LIVE_TOGGLE_SECRET`,
+`SWEEP_SECRET`, `PEOPLE_MAINT_KEY`.
+
+**Origin verification.** `CLOUDFLARE_ORIGIN_SECRET`; configure Cloudflare to
+overwrite `X-Origin-Verify` with the same high-entropy value on origin requests.
+Note what this does and does not do today: `src/lib/rate-limit.ts` uses it to
+decide whether `CF-Connecting-IP` may be trusted for rate-limit bucketing. It
+is not an origin lock. The app's only edge-level code is `src/proxy.ts` (Next 16
+renamed `middleware.ts` to `proxy.ts`), which canonicalises `www.cultcodex.me`
+and the `cultcodex.xyz` pair to the apex with a 308 and does nothing else — so
+the `*.fly.dev` hostname stays reachable and serves the full site. Rejecting
+unverified origin traffic would be a separate change, and `src/proxy.ts` is
+where it would go.
+
+Worth noting while that file is in view: the 2026-09-01 audit recorded
+`www.cultcodex.me` redirecting with a **307 from Vercel's edge** rather than the
+308 this proxy emits, because Vercel's domain settings shortcut it before the
+app ran. On Fly there is no such shortcut — the redirect will be served by this
+code, on the Machine. Re-check the status code after cutover rather than
+assuming it is unchanged.
+
+**Ingest.** `YOUTUBE_API_KEY`, `SUPADATA_API_KEY`.
+
+**AI.** The provider wiring is not what the previous version of this list
+implied, so it is spelled out per feature:
+
+| Feature | Route | Credential it actually needs |
+|---|---|---|
+| Oracle | `/api/oracle/ask` | `GROQ_API_KEY` (primary path) |
+| Oracle paid fallback | same | `ORACLE_USE_BEDROCK=true` + `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` |
+| Tarot | `/api/tarot/interpret` | `GROQ_API_KEY`, else the same AWS trio |
+| Comment moderation | `src/lib/moderation.ts` | AWS trio (Bedrock, no Groq path) |
+| Psychenomicon chapters | `/api/admin/psychenomicon/...` | AWS trio (Bedrock) |
+| Semantic search | `src/lib/embeddings.ts` | `OPENAI_API_KEY` |
+| Admin enrichment | `/api/admin/enrich-episodes` | any of `ANTHROPIC_API_KEY`, `OPENROUTER_API_KEY`, `GROQ_API_KEY`, `MISTRAL_API_KEY`, or the AWS trio |
+
+`src/lib/anthropic.ts` exports an `AnthropicBedrock` client, so every
+Claude-backed feature except admin enrichment authenticates with **AWS
+credentials, not `ANTHROPIC_API_KEY`**. `ANTHROPIC_API_KEY` is used by exactly
+one route. Optional spoken Oracle answers additionally need
+`ELEVENLABS_API_KEY`; `ELEVENLABS_VOICE_ID` is optional and defaults in code.
+
+Daily-cap and model-selection variables (`ORACLE_MODEL`, `ORACLE_DAILY_CAP`,
+`TAROT_DAILY_CAP`, `MODERATION_DAILY_CAP`, `SEMANTIC_DAILY_CAP`,
+`MAGIC_LINK_DAILY_CAP`, `ENRICHMENT_*`, `AI_KILLSWITCH`) are non-secret tuning
+with defaults in code. `ORACLE_MODEL` is worth setting explicitly: unset, the
+Bedrock fallback defaults to `claude-opus-4-8`.
+
+**Stripe.** `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and all ten price
+ids. Most are read dynamically through `process.env[...]` and so do not show up
+in a plain grep for `process.env.STRIPE_PRICE_`:
+
+```text
+STRIPE_PRICE_ACCESS_ID           STRIPE_PRICE_ACCESS_ANNUAL_ID
+STRIPE_PRICE_SYSTEM_ID           STRIPE_PRICE_SYSTEM_ANNUAL_ID
+STRIPE_PRICE_ID                  (legacy, points at Initiate+ monthly)
+STRIPE_PRICE_CREDITS_SPARK_ID    STRIPE_PRICE_CREDITS_SURGE_ID
+STRIPE_PRICE_CREDITS_FLOOD_ID
+STRIPE_PRICE_BOOK_VOL1_ID        STRIPE_PRICE_BOOK_HANDBOOK_ID
+```
+
+A price id that is unset fails closed — its checkout returns a logged 500
+rather than charging anything — so a missing one is a silently broken purchase
+path, not an outage. Check all of them.
+
+**Email and push.** `RESEND_API_KEY`, `ALERT_EMAIL`, `ALERT_FROM`,
+`VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`.
+
+**Art storage.** `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`,
+`R2_BUCKET`. These are runtime, not ops-only: `/api/psychenomicon-art/[slug]/[slot]`
+streams chapter art out of R2 on every request.
+
+**Sentry.** `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_DSN`, `SENTRY_ORG`,
+`SENTRY_PROJECT`, and optionally `SENTRY_AUTH_TOKEN`.
+
+### Set on GitHub Actions, not on Fly
+
+`DIRECT_URL` and `DATABASE_URL` (migrations), `CRON_SECRET` and
+`STAGING_CRON_SECRET` (scheduled jobs), and the pipeline credentials the
+`scripts/` workflows use: `ANTHROPIC_API_KEY`, `OPENROUTER_API_KEY`,
+`GEMINI_API_KEY`, `ELEVENLABS_API_KEY`, `ENRICH_SECRET`, `YOUTUBE_API_KEY`,
+`YOUTUBE_COOKIES`. Repository variables: `ENABLE_PRODUCTION_SCHEDULES`,
+`STAGING_BASE_URL`, `PRODUCTION_BASE_URL`.
+
+The art pipeline (`HCNSEC_API_KEY`, `ART_*`) is local-CLI only and belongs on
+neither.
+
+### Build-time values
 
 Public values embedded during the Docker build include `NEXT_PUBLIC_SITE_URL`,
 `NEXT_PUBLIC_SENTRY_DSN`, `NEXT_PUBLIC_DEPLOY_ENV`, and optionally
-`SOURCE_COMMIT`. They are not secrets.
-
+`SOURCE_COMMIT`. They are not secrets. `DATABASE_URL` is a BuildKit secret, as
+described under Build design. `SENTRY_AUTH_TOKEN` is build-time only —
+source-map upload is opt-in on it and its absence cannot fail a deploy.
 ### Parity check
 
 Fly prints names and digests but never values, so parity against this inventory
@@ -122,9 +226,22 @@ As of 2026-09-16 the staging app carries 18 secrets and is missing
 `RESEND_API_KEY` is absent deliberately so staging cannot send mail. The rest
 are gaps, and two of them invalidate smoke tests below: semantic search embeds
 its query at request time via `embedOne()`, which throws without
-`OPENAI_API_KEY`, and Sentry cannot receive anything without a DSN. Oracle and
-Psychenomicon are equally untested without `ANTHROPIC_API_KEY`. Production must
-carry all of them.
+`OPENAI_API_KEY`, and Sentry cannot receive anything without a DSN. Production
+must carry all of them.
+
+That list is a floor, not a ceiling. It was drawn against the earlier version
+of the inventory above and so does not cover the variables that version omitted.
+Re-run parity against the current inventory before trusting it — `AUTH_SECRET`,
+`GROQ_API_KEY`, the `AWS_*` trio, the `R2_*` group, `SWEEP_SECRET`,
+`PEOPLE_MAINT_KEY`, the annual and book Stripe price ids, and `VAPID_SUBJECT`
+were never on it.
+
+One correction to carry forward: Oracle and Psychenomicon are **not** blocked on
+`ANTHROPIC_API_KEY`. Oracle's primary path is Groq and needs `GROQ_API_KEY`;
+Psychenomicon chapter generation goes through Bedrock and needs the `AWS_*`
+trio. `ANTHROPIC_API_KEY` gates only `/api/admin/enrich-episodes`, which has
+four other providers to fall back on. Setting it would not have unblocked
+either smoke test.
 
 ## Staging smoke tests
 
@@ -134,23 +251,148 @@ carry all of them.
 - [ ] An authenticated route and an admin-only route enforce authorization.
 - [ ] Stripe test checkout and billing portal work.
 - [ ] A signed Stripe test webhook is accepted once and deduplicated on replay.
-- [ ] Both SSE endpoints maintain connections through the Fly proxy.
+- [ ] Both SSE endpoints maintain connections through the Fly proxy **and
+      deliver an event**. Holding the socket open is not the test:
+      `src/lib/sse/event-bus.ts` opens a dedicated `pg.Client` and `LISTEN`s on
+      the pooled `DATABASE_URL`. A transaction-pooling endpoint accepts
+      `LISTEN` and then never delivers a `NOTIFY`, which looks identical to a
+      healthy idle stream. Publish one and confirm it arrives.
 - [ ] Semantic search uses the existing Xata `pgvector` HNSW index. Blocked
       until `OPENAI_API_KEY` is set — the query is embedded per request.
 - [ ] Sentry receives a controlled server and browser error. Blocked until the
       `SENTRY_*` values are set.
-- [ ] Oracle streams a reply and a Psychenomicon chapter generates. Blocked
-      until `ANTHROPIC_API_KEY` is set.
+- [ ] Oracle streams a reply. Blocked until `GROQ_API_KEY` is set (not
+      `ANTHROPIC_API_KEY` — see the correction above).
+- [ ] A Psychenomicon chapter generates, and `/api/psychenomicon-art/...`
+      serves an image. Blocked until the `AWS_*` trio and the `R2_*` group are
+      set respectively.
+- [ ] Tarot returns an interpretation. Needs `GROQ_API_KEY` or the `AWS_*` trio.
 - [ ] Database connections remain below the Xata limit with a five-connection
       application pool per running Fly Machine.
 - [ ] Both scheduled endpoints return 401 without a bearer secret and 2xx with
-      the correct staging secret.
+      the correct staging secret. A **503** means `CRON_SECRET` is unset on the
+      app — `requireBearerSecret()` fails closed with `503` before it ever
+      compares a token, so a 503 here is a missing secret, not a passing gate.
+
+## Capacity: one Machine behind a static-assets-only edge
+
+The plan is one `shared-cpu-1x`/2 GB Machine with Cloudflare caching static
+assets only. Two figures are usually raised against it — 161 pages of which 71
+render dynamically, and a sitemap once measured at 27,882 URLs. They are not the
+same problem, and only one of them is real.
+
+### The sitemap is fine
+
+The 27,882-URL figure was measured on 2026-09-01 against a single monolithic
+`/sitemap.xml` that serialised every URL into one 5.39 MB document per render
+and intermittently returned a 500 doing it. That route no longer exists in that
+shape. `/sitemap.xml` is now an index of seven children; each
+`/sitemaps/<segment>.xml` declares `revalidate = 3600`, has a real
+`generateStaticParams`, and ships `s-maxage=3600, stale-while-revalidate=86400`.
+Chapters were cut to the free-preview subset and thin topics and lore are
+filtered out by `isThinPage`, so the live total is well below the 2026-09-01
+number. The largest remaining segment is episodes at roughly 2,900 URLs, which
+serialises to a few hundred kilobytes and is served from cache between hourly
+regenerations. One Machine serves this without difficulty.
+
+### What the sitemap points at is not fine
+
+`force-dynamic` appears on 71 of 161 `page.tsx` files. Four of them matter more
+than the rest: `episodes/[slug]`, `topics/[slug]`, `lore/[slug]` and
+`quests/[slug]` together serve 23,680 of the sitemap's URLs. `force-dynamic`
+makes Next send `Cache-Control: private, no-store`, so those responses are
+uncacheable by construction — a more permissive Cloudflare config could not
+cache them either.
+
+Confirm this from the build rather than from the directives, because the build
+summary is misleading here: it marks `/episodes/[slug]`, `/topics/[slug]` and
+`/lore/[slug]` with ● (SSG), which reflects only that they declare
+`generateStaticParams`. The authoritative answer is
+`.next/prerender-manifest.json`. After `npm run build`:
+
+```bash
+node -e "const m=require('./.next/prerender-manifest.json'); \
+  console.log(Object.keys(m.dynamicRoutes).join('\n'))"
+```
+
+It lists ten routes — `people/[slug]`, `series/[slug]`, `symbols/[slug]`,
+`timeline/[year]`, `sitemaps/[segment]` and friends. None of the four appear,
+and neither do any of their paths under `routes`. They have no cache entry of
+any kind: every request is a fresh render. That is the measurement to re-run
+after any attempt to make them cacheable — a route is fixed when it shows up in
+that manifest, not when the directive is deleted. Every hit, from a reader or a crawler, is a cold React
+render plus live Xata queries on that one shared vCPU. The measured
+`/episodes/<slug>` response is 2.86 MB, 97% of it RSC flight payload.
+
+The arithmetic is unforgiving. Vercel served those pages at a 237 ms TTFB while
+scaling functions horizontally; a single shared vCPU cannot. Even taking
+250 ms of CPU per render as a floor, one Machine tops out near 4 renders/second
+with nothing left over. A Googlebot recrawl of ~24,000 URLs at a routine
+2 req/s consumes half the machine for several hours; at 5 req/s it saturates it.
+
+`http_service.concurrency` does not protect against this. `soft_limit = 75`
+exists to trigger `auto_start_machines`, and with `min_machines_running = 1` and
+one Machine ever created there is nothing to start — requests queue behind a
+saturated event loop. The health check then becomes the failure amplifier:
+`/api/health` runs `SELECT 1` against Xata every 15 s with a 10 s timeout, so a
+loaded Machine starts failing it, Fly restarts the Machine, and the restart
+drops every open SSE connection and empties the on-disk ISR cache, which makes
+the next wave of requests more expensive still.
+
+Two smaller constraints on the same Machine:
+
+- **SSE holds concurrency slots.** Both `/api/sse/episodes/[slug]` and
+  `/api/sse/live/chat` keep a request open for the life of the connection, and
+  Fly counts held-open requests against the concurrency limit. 75 concurrent
+  viewers reach the soft limit with no page traffic at all.
+- **Connections.** Five Prisma pool connections plus the event bus's dedicated
+  `LISTEN` client, plus the health check, per Machine. Comfortable at one
+  Machine; record the Xata limit before adding a second.
+
+### What this means for the plan
+
+One Machine is sufficient **if the four templates stop rendering dynamically**,
+and insufficient if they do not. Scaling the Machine is the expensive way to buy
+the same outcome, and it does not help crawl traffic much, because the cost is
+per-render rather than per-concurrent-user.
+
+The cheapest real win is `lore/[slug]`: 8,815 of the 23,680 URLs, and its
+`force-dynamic` is gratuitous — the page reads no cookies, no headers, and never
+calls `getCurrentUser()`. Removing the directive and giving it a `revalidate`
+should make it cacheable on its own (confirm no child server component in its
+tree reaches for a dynamic API). `episodes/[slug]`, `topics/[slug]` and
+`quests/[slug]` are a genuine refactor, not a flag change: each calls
+`getCurrentUser()` in the server render, which opts the route into dynamic
+rendering no matter what the directive says, and the first three return `[]`
+from `generateStaticParams`. Making them cacheable means moving the
+per-user branch into a client component or a Suspense boundary first.
+
+This is the same defect `AUDIT.md` tracks as **F5**, reached from the
+performance side rather than the hosting side. Treat F5 as a prerequisite for
+sizing rather than a follow-up: until it lands, size the Machine for crawl
+traffic, not for readers.
+
+### Cloudflare
+
+Static-assets-only is the right starting point and does not need widening yet —
+while the HTML carries `no-store`, there is nothing to widen it onto. Two
+specifics when the rules are written:
+
+- `/api/psychenomicon-art/[slug]/[slot]` streams immutable chapter art out of
+  R2 on every request. It is the one path under `/api/*` that wants caching,
+  and the blanket "do not cache `/api/*`" rule would send every image to the
+  origin. Carve it out explicitly.
+- `/monitoring` is the Sentry tunnel route, not a dashboard. It must stay
+  uncached and must not be blocked, or browser error reporting goes silent.
 
 ## Production preparation
 
 1. Create the production Fly app in the Xata-adjacent region.
 2. Start with one `shared-cpu-1x` Machine and 2 GB RAM. Do not reduce memory until
-   production observations show adequate headroom.
+   production observations show adequate headroom. Read the capacity section
+   above first: one Machine is sized for the site *after* the four
+   `force-dynamic` templates become cacheable, and for crawl traffic rather
+   than reader traffic before that.
 3. Set runtime secrets directly with Fly. Never put them in `fly.toml`.
 4. Deploy the reviewed commit and test the generated `*.fly.dev` hostname.
 5. Store the production Fly `CRON_SECRET` as the GitHub Actions repository
@@ -176,7 +418,8 @@ maintenance window. Each is read-only.
       and must not be "resolved" again.
 - [ ] Production `/api/health` on the `*.fly.dev` hostname returns `{"ok":true}`
       before any DNS record changes.
-- [ ] Both scheduled routes answer 401 without a bearer token.
+- [ ] Both scheduled routes answer 401 without a bearer token. A 503 means
+      `CRON_SECRET` is unset on the app, not that the gate passed.
 
 Stripe needs **no change at cutover**. The live event destination already points
 at `https://cultcodex.me/api/stripe/webhook`, so it follows the domain rather
@@ -234,6 +477,72 @@ Rollback procedure:
 4. Keep the Fly release and logs for diagnosis.
 5. Do not reverse an applied database migration without a separately reviewed
    down procedure. In the compute-only cutover, Xata remains unchanged.
+
+### The rollback target was frozen — keep it unfrozen
+
+Rollback assumes Vercel can still serve. Between 2026-09-16 and 2026-09-18 it
+could, but only from the build it already had.
+
+This migration's own merge (PR #181) removed the Vercel build entrypoint in two
+places: it renamed the `vercel-build` npm script — which Vercel prefers over
+`build` by convention — to `db:migrate`, and deleted the
+`scripts/vercel-build.mjs` that script called, along with `.vercelignore`.
+Removing the npm script alone would have been harmless, since Vercel falls back
+to `build`. Builds kept failing anyway, which means the project also carries a
+dashboard **Build Command** override still naming the deleted file. Every Vercel
+build in that window failed there, visible as a red `Vercel` commit status on
+every PR opened since.
+
+Nothing was broken by that in the meantime: Vercel keeps the last successful
+deployment serving when a build fails, so the DNS record still pointed at a
+working origin and reverting it would still have worked. What was gone was the
+ability to **ship anything through the rollback target** — if the cutover were
+reverted and the reason for reverting then needed a code fix, there was no path
+to deploy it on Vercel. The fallback was frozen at its last good build.
+
+**Status: partly fixed, still red.** The `vercel.json` at the root sets
+`buildCommand` to `next build`. That is the repository's half of the fix and it
+is in place, but it did **not** turn the Vercel check green — the deployment on
+`9bc8c57` failed the same way. So the remaining cause is something only the
+Vercel project can show, and the next step needs someone with access to run:
+
+```bash
+npx vercel inspect <deployment-id> --logs
+```
+
+The deployment id is in the failing check's own description on each commit. Two
+candidates worth checking first in that log, in order: an **Install Command**
+override (which `vercel.json`'s `buildCommand` does not touch), and a build-time
+environment variable the project lost when the Vercel-specific plumbing was
+removed. Do not assume the build command is still the problem — that hypothesis
+has now been tested and is not sufficient on its own.
+
+The deleted script did exactly two things: `prisma migrate deploy` when
+`VERCEL_ENV === "production"`, then `next build`. Only the second needed
+restoring — the first is already covered, and covered better. The
+`Run DB Migrations` workflow applies migrations over the non-pooled
+`DIRECT_URL`, whereas the build script ran them over whatever
+`prisma.config.ts` resolved and warned that a pooled endpoint could refuse the
+advisory lock. Migrations are now an explicit pre-deploy gate, as the Build
+design section above already describes, so nothing should be moved into that
+workflow; it is where the step already lives.
+
+`next build` alone is verified to succeed on this repository, with no database
+reachable — `src/lib/db.ts` returns a rejecting proxy when `DATABASE_URL` is
+absent and the sitemap and page loaders catch it, so the build completes and
+simply prerenders less. Whatever Vercel is failing on, it is therefore not the
+repository's build itself. Netlify building the same commits successfully says
+the same thing from the other direction.
+
+Two loose ends this does not close, neither of them blocking:
+
+- `.vercelignore` was deleted alongside the script. Nothing breaks without it;
+  deploys just upload more than they need to (`scripts/scrape/data` in
+  particular). Restore it if Vercel deploy times become annoying during the
+  rollback window.
+- Until the Vercel check is green, treat the rollback target as still frozen.
+  Reverting DNS would restore availability from the last good deployment, but
+  shipping a fix through Vercel is not yet possible.
 
 ## Post-deploy checks
 
