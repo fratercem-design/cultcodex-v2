@@ -12,7 +12,9 @@ function host(name: string) {
   const raw = process.env[name];
   if (!raw) return "(unset)";
   try {
-    return new URL(raw).hostname;
+    const u = new URL(raw);
+    const schema = u.searchParams.get("schema") ?? "(default)";
+    return `${u.hostname} db=${u.pathname} user=${u.username} schema=${schema}`;
   } catch {
     return "(unparseable)";
   }
@@ -21,6 +23,12 @@ function host(name: string) {
 async function main() {
   console.log(`DATABASE_URL host: ${host("DATABASE_URL")}`);
   console.log(`DIRECT_URL host:   ${host("DIRECT_URL")}`);
+
+  const [who] = await prisma.$queryRawUnsafe<Record<string, string>[]>(
+    `SELECT current_database() AS db, current_user AS usr, current_schema() AS schema,
+            current_setting('search_path') AS search_path`
+  );
+  console.log(`session: ${JSON.stringify(who)}`);
 
   const [m] = await prisma.$queryRawUnsafe<{ applied: number; latest: string }[]>(
     `SELECT count(*)::int AS applied, max(migration_name) AS latest
