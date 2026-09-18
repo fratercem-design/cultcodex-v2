@@ -268,3 +268,20 @@ and conservatively sampled traces, Fly logs for application runtime, GitHub
 Actions logs for scheduled jobs, Xata observability for the database, and
 Cloudflare analytics for edge traffic. Do not add another paid log vendor until
 retention and query requirements justify it.
+
+## 2026-09-18 cutover rollback: root cause
+
+The first cutover rolled back on `/auth/error?error=Configuration` (Prisma
+P2021, `public.CodexUser` missing). Production had no schema drift. Fly
+production's `DATABASE_URL` and `DIRECT_URL` point at the right Xata branch
+(`g4323jhord5ojc2gbse9idelo4`) with the right user, but at database **`/xata`**.
+That database holds 3 old migrations and no episodes. Production data lives in
+database **`/postgres`** on the same branch: 59 applied migrations, latest
+`20260913000000_add_shared_rate_limit`, 3,047 episodes (verified by
+`scripts/_xata-branch.ts` through `Run DB Script`).
+
+Fix: change the path of both Fly secrets from `/xata` to `/postgres`. Do not run
+migrations against production, and leave the `/xata` database alone.
+Pre-cutover gate: `scripts/_xata-branch.ts` output from CI and the same facts
+read from inside the Fly Machine must match (host, `db=/postgres`, migration
+count, episode count).
