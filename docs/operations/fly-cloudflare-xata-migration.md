@@ -114,9 +114,19 @@ Two things about the secret itself:
 overwrite `X-Origin-Verify` with the same high-entropy value on origin requests.
 Note what this does and does not do today: `src/lib/rate-limit.ts` uses it to
 decide whether `CF-Connecting-IP` may be trusted for rate-limit bucketing. It
-is not an origin lock — there is no middleware, and the `*.fly.dev` hostname
-stays reachable and serves the full site. Rejecting unverified origin traffic
-would be a separate change.
+is not an origin lock. The app's only edge-level code is `src/proxy.ts` (Next 16
+renamed `middleware.ts` to `proxy.ts`), which canonicalises `www.cultcodex.me`
+and the `cultcodex.xyz` pair to the apex with a 308 and does nothing else — so
+the `*.fly.dev` hostname stays reachable and serves the full site. Rejecting
+unverified origin traffic would be a separate change, and `src/proxy.ts` is
+where it would go.
+
+Worth noting while that file is in view: the 2026-09-01 audit recorded
+`www.cultcodex.me` redirecting with a **307 from Vercel's edge** rather than the
+308 this proxy emits, because Vercel's domain settings shortcut it before the
+app ran. On Fly there is no such shortcut — the redirect will be served by this
+code, on the Machine. Re-check the status code after cutover rather than
+assuming it is unchanged.
 
 **Ingest.** `YOUTUBE_API_KEY`, `SUPADATA_API_KEY`.
 
@@ -292,7 +302,25 @@ than the rest: `episodes/[slug]`, `topics/[slug]`, `lore/[slug]` and
 `quests/[slug]` together serve 23,680 of the sitemap's URLs. `force-dynamic`
 makes Next send `Cache-Control: private, no-store`, so those responses are
 uncacheable by construction — a more permissive Cloudflare config could not
-cache them either. Every hit, from a reader or a crawler, is a cold React
+cache them either.
+
+Confirm this from the build rather than from the directives, because the build
+summary is misleading here: it marks `/episodes/[slug]`, `/topics/[slug]` and
+`/lore/[slug]` with ● (SSG), which reflects only that they declare
+`generateStaticParams`. The authoritative answer is
+`.next/prerender-manifest.json`. After `npm run build`:
+
+```bash
+node -e "const m=require('./.next/prerender-manifest.json'); \
+  console.log(Object.keys(m.dynamicRoutes).join('\n'))"
+```
+
+It lists ten routes — `people/[slug]`, `series/[slug]`, `symbols/[slug]`,
+`timeline/[year]`, `sitemaps/[segment]` and friends. None of the four appear,
+and neither do any of their paths under `routes`. They have no cache entry of
+any kind: every request is a fresh render. That is the measurement to re-run
+after any attempt to make them cacheable — a route is fixed when it shows up in
+that manifest, not when the directive is deleted. Every hit, from a reader or a crawler, is a cold React
 render plus live Xata queries on that one shared vCPU. The measured
 `/episodes/<slug>` response is 2.86 MB, 97% of it RSC flight payload.
 
@@ -450,34 +478,57 @@ Rollback procedure:
 5. Do not reverse an applied database migration without a separately reviewed
    down procedure. In the compute-only cutover, Xata remains unchanged.
 
-### The rollback target is frozen, and that has to be checked first
+### The rollback target was frozen — keep it unfrozen
 
-Rollback assumes Vercel can still serve. It can — but only from the build it
-already has. This migration's own merge (PR #181) deleted
-`scripts/vercel-build.mjs`, the project's build entrypoint, and `.vercelignore`
-with it. Every Vercel build since 2026-09-16 has failed at the missing script,
-which is visible as a red `Vercel` commit status on every PR opened since.
+Rollback assumes Vercel can still serve. Between 2026-09-16 and 2026-09-18 it
+could, but only from the build it already had.
 
-Nothing is currently broken by that: Vercel keeps the last successful
-deployment serving when a build fails, so the DNS record still points at a
-working origin and reverting it still works. What is gone is the ability to
-**ship anything through the rollback target**. If the cutover is reverted and
-the reason for reverting then needs a code fix, there is no path to deploy it
-on Vercel — the fallback is frozen at its last good build.
+This migration's own merge (PR #181) removed the Vercel build entrypoint in two
+places: it renamed the `vercel-build` npm script — which Vercel prefers over
+`build` by convention — to `db:migrate`, and deleted the
+`scripts/vercel-build.mjs` that script called, along with `.vercelignore`.
+Removing the npm script alone would have been harmless, since Vercel falls back
+to `build`. Builds kept failing anyway, which means the project also carries a
+dashboard **Build Command** override still naming the deleted file. Every Vercel
+build in that window failed there, visible as a red `Vercel` commit status on
+every PR opened since.
 
-Settle this before the maintenance window, not during it. Either:
+Nothing was broken by that in the meantime: Vercel keeps the last successful
+deployment serving when a build fails, so the DNS record still pointed at a
+working origin and reverting it would still have worked. What was gone was the
+ability to **ship anything through the rollback target** — if the cutover were
+reverted and the reason for reverting then needed a code fix, there was no path
+to deploy it on Vercel. The fallback was frozen at its last good build.
 
-- confirm the Vercel project still has a working build (restore the build
-  entrypoint, or point its Build Command at `next build` and move the
-  `prisma migrate deploy` step the script performed into the existing
-  `Run DB Migrations` workflow), or
-- accept a frozen fallback deliberately, and record that a rollback buys
-  availability but not the ability to patch.
+**Resolution:** restore the build, which this repository now does. The
+`vercel.json` at the root sets `buildCommand` to `next build`, which overrides
+the project's stale Build Command without needing a dashboard change.
 
-The first is a few minutes of work and keeps the "reverting the record is
-sufficient on its own" claim above literally true. The second is defensible for
-a compute-only cutover with a short rollback window, but it should be a
-decision rather than a discovery.
+The deleted script did exactly two things: `prisma migrate deploy` when
+`VERCEL_ENV === "production"`, then `next build`. Only the second needed
+restoring — the first is already covered, and covered better. The
+`Run DB Migrations` workflow applies migrations over the non-pooled
+`DIRECT_URL`, whereas the build script ran them over whatever
+`prisma.config.ts` resolved and warned that a pooled endpoint could refuse the
+advisory lock. Migrations are now an explicit pre-deploy gate, as the Build
+design section above already describes, so nothing should be moved into that
+workflow; it is where the step already lives.
+
+`next build` alone is verified to succeed on this repository, with no database
+reachable — `src/lib/db.ts` returns a rejecting proxy when `DATABASE_URL` is
+absent and the sitemap and page loaders catch it, so the build completes and
+simply prerenders less. That is what makes the fix a one-line override rather
+than a rebuild of the entrypoint.
+
+Two loose ends this does not close, neither of them blocking:
+
+- `.vercelignore` was deleted alongside the script. Nothing breaks without it;
+  deploys just upload more than they need to (`scripts/scrape/data` in
+  particular). Restore it if Vercel deploy times become annoying during the
+  rollback window.
+- If a Vercel build still fails after this lands, the cause is an **Install
+  Command** override rather than the build command, and that one does need the
+  dashboard.
 
 ## Post-deploy checks
 
