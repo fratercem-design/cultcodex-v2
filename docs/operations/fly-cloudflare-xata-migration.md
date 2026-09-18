@@ -450,6 +450,35 @@ Rollback procedure:
 5. Do not reverse an applied database migration without a separately reviewed
    down procedure. In the compute-only cutover, Xata remains unchanged.
 
+### The rollback target is frozen, and that has to be checked first
+
+Rollback assumes Vercel can still serve. It can — but only from the build it
+already has. This migration's own merge (PR #181) deleted
+`scripts/vercel-build.mjs`, the project's build entrypoint, and `.vercelignore`
+with it. Every Vercel build since 2026-09-16 has failed at the missing script,
+which is visible as a red `Vercel` commit status on every PR opened since.
+
+Nothing is currently broken by that: Vercel keeps the last successful
+deployment serving when a build fails, so the DNS record still points at a
+working origin and reverting it still works. What is gone is the ability to
+**ship anything through the rollback target**. If the cutover is reverted and
+the reason for reverting then needs a code fix, there is no path to deploy it
+on Vercel — the fallback is frozen at its last good build.
+
+Settle this before the maintenance window, not during it. Either:
+
+- confirm the Vercel project still has a working build (restore the build
+  entrypoint, or point its Build Command at `next build` and move the
+  `prisma migrate deploy` step the script performed into the existing
+  `Run DB Migrations` workflow), or
+- accept a frozen fallback deliberately, and record that a rollback buys
+  availability but not the ability to patch.
+
+The first is a few minutes of work and keeps the "reverting the record is
+sufficient on its own" claim above literally true. The second is defensible for
+a compute-only cutover with a short rollback window, but it should be a
+decision rather than a discovery.
+
 ## Post-deploy checks
 
 - [ ] Monitor Fly CPU, memory, restarts, request latency, and health for at least
