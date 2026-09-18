@@ -788,6 +788,16 @@ with `includeSubDomains; preload`. `object-src 'none'`, `base-uri 'self'`,
 `frame-ancestors 'self'` and a `form-action` restricted to self + Stripe are all present.
 This is a better header posture than most production sites.
 
+> **CORRECTION (issued 2026-09-18, after further verification).** The `vr=()` directive in
+> the capture above — the one unregistered feature in the set, which every browser warns
+> about and which was superseded by `xr-spatial-tracking` — is gone. Commit `b54135f`
+> ("Fix post-audit runtime hardening", #173, 2026-09-13) dropped it from `next.config.ts`;
+> `master` now configures `camera=(), microphone=(), geolocation=(), payment=(), usb=()`,
+> and the running app serves exactly that (verified against a local `next dev` server, since
+> production egress is not reachable from the audit environment). A regression test,
+> `src/__tests__/security-headers.test.ts`, now fails the build if an unregistered feature
+> name reappears in the header. **BUG-02 is resolved; no further action required.**
+
 The one real weakness: **`script-src` includes `'unsafe-inline'`**, which removes most of the
 CSP's XSS value. Next.js App Router needs either a nonce or `'unsafe-inline'` for its inline
 bootstrap; the nonce route is available via middleware and is the correct fix. Given that no
