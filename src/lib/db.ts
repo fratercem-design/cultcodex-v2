@@ -61,10 +61,28 @@ function createPrismaClient(): PrismaClient {
     // the outer Proxy returns a model-level Proxy, which returns a function for
     // any method name; that function returns a rejected Promise so all existing
     // `.catch(() => fallback)` guards keep working during static rendering.
+    //
+    // The model-level Proxy wraps a function, not a plain object, so it is also
+    // callable. Client-level members such as `prisma.$queryRaw\`...\`` resolve to
+    // it directly and are invoked; over a plain object that call threw a
+    // synchronous TypeError. Inside `Promise.all([count(), ..., $queryRaw\`\`])`
+    // the throw aborted the array before Promise.all attached handlers, leaving
+    // every earlier rejected promise unhandled.
+    //
+    // Neither Proxy may answer `then`. A callable `prisma.then` makes the client
+    // itself a thenable, so anything that awaits or resolves a value holding it
+    // calls `then`, gets a rejected promise back instead of a settle callback,
+    // and never resolves — in dev that surfaced as routes 404ing. Symbol keys
+    // (Symbol.toPrimitive, inspect hooks) are left undefined for the same reason.
     const methodProxy = () =>
       Promise.reject(new Error("DATABASE_URL is not set (or is not a valid postgres:// URL)"));
-    const modelProxy = new Proxy({} as object, { get: () => methodProxy });
-    return new Proxy({} as PrismaClient, { get: () => modelProxy });
+    const passThrough = (key: string | symbol) => key === "then" || typeof key === "symbol";
+    const modelProxy = new Proxy(methodProxy, {
+      get: (_, key) => (passThrough(key) ? undefined : methodProxy),
+    });
+    return new Proxy({} as PrismaClient, {
+      get: (_, key) => (passThrough(key) ? undefined : modelProxy),
+    });
   }
 
   const isBuild = process.env.NEXT_PHASE === "phase-production-build";
