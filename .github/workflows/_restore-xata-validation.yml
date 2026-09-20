@@ -84,8 +84,6 @@ jobs:
             pg_restore --dbname="$TARGET_URL" --clean --if-exists \
               --no-owner --no-acl --exit-on-error "/backup/${DUMP_PATH#backup/}"
           '
-        env:
-          DUMP_PATH: ${{ env.DUMP_PATH }}
 
       - name: Verify restored critical counts
         if: inputs.phase == 'restore'
