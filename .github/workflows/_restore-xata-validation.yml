@@ -1,0 +1,94 @@
+name: Restore Xata validation branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      phase:
+        description: Run read-only preflight first, then explicitly select restore
+        required: true
+        type: choice
+        options:
+          - preflight
+          - restore
+      branch_id:
+        description: Exact Xata target branch ID
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: xata-restore-stgaoe23c15fv729oulq1av964
+  cancel-in-progress: false
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      TARGET_URL: ${{ secrets.XATA_MIGRATION_STAGING_URL }}
+      EXPECTED_BRANCH_ID: stgaoe23c15fv729oulq1av964
+      BACKUP_SHA256: fcd21b7c73c6daddecda348cd92c5007b118dc573d708d8c5808d48a44e3610c
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify branch identity and dispatch input
+        env:
+          INPUT_BRANCH_ID: ${{ inputs.branch_id }}
+        run: |
+          python3 - <<'PY'
+          import os
+          from urllib.parse import urlparse
+          expected = os.environ['EXPECTED_BRANCH_ID']
+          assert os.environ['INPUT_BRANCH_ID'] == expected, 'Branch confirmation does not match'
+          url = urlparse(os.environ['TARGET_URL'])
+          assert url.scheme in ('postgres', 'postgresql'), 'Not a PostgreSQL URL'
+          assert url.hostname == f'{expected}.us-east-1.xata.tech', 'Refusing unexpected database host'
+          assert url.username == 'xata' and url.password, 'Database credential missing'
+          print(f'Validated isolated Xata branch {expected}; production is not a target')
+          PY
+
+      - name: Download pinned private backup artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 34982079185 \
+            --repo fratercem-design/cultcodex-v2 \
+            --name cultcodex-production-backup-34982079185 \
+            --dir backup
+          find backup -maxdepth 3 -type f -printf '%P\n'
+
+      - name: Verify backup checksum and manifest
+        run: |
+          dump=$(find backup -type f -name 'cultcodex-production.dump' -print -quit)
+          test -n "$dump"
+          test "$(find backup -type f -name 'cultcodex-production.dump' | wc -l)" -eq 1
+          echo "$BACKUP_SHA256  $dump" | sha256sum --check
+          echo "DUMP_PATH=$dump" >> "$GITHUB_ENV"
+          docker run --rm -v "$PWD/backup:/backup:ro" postgres:18 \
+            pg_restore --list "/backup/${dump#backup/}" > restore-manifest.txt
+          test "$(grep -c ' TABLE public ' restore-manifest.txt)" -eq 83
+          echo 'Pinned backup checksum and 83-table manifest verified'
+
+      - name: Verify target contains no application rows
+        run: |
+          docker run --rm -e TARGET_URL -v "$PWD/scripts/ops:/scripts:ro" postgres:18 \
+            psql "$TARGET_URL" -X -v ON_ERROR_STOP=1 -At -f /scripts/precheck-xata-restore.sql
+
+      - name: Restore into verified isolated branch
+        if: inputs.phase == 'restore'
+        run: |
+          docker run --rm -e TARGET_URL -e DUMP_PATH -v "$PWD/backup:/backup:ro" postgres:18 bash -euc '
+            pg_restore --dbname="$TARGET_URL" --clean --if-exists \
+              --no-owner --no-acl --exit-on-error "/backup/${DUMP_PATH#backup/}"
+          '
+        env:
+          DUMP_PATH: ${{ env.DUMP_PATH }}
+
+      - name: Verify restored critical counts
+        if: inputs.phase == 'restore'
+        run: |
+          docker run --rm -e TARGET_URL -v "$PWD/scripts/ops:/scripts:ro" postgres:18 \
+            psql "$TARGET_URL" -X -v ON_ERROR_STOP=1 -At -f /scripts/check-xata-restored.sql
