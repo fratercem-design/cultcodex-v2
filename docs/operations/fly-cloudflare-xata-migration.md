@@ -577,3 +577,53 @@ and conservatively sampled traces, Fly logs for application runtime, GitHub
 Actions logs for scheduled jobs, Xata observability for the database, and
 Cloudflare analytics for edge traffic. Do not add another paid log vendor until
 retention and query requirements justify it.
+
+## 2026-09-18 cutover rollback: root cause
+
+The first cutover rolled back on `/auth/error?error=Configuration` (Prisma
+P2021, `public.CodexUser` missing). Production had no schema drift. Fly
+production's `DATABASE_URL` and `DIRECT_URL` point at the right Xata branch
+(`g4323jhord5ojc2gbse9idelo4`) with the right user, but at database **`/xata`**.
+That database holds 3 old migrations and no episodes. Production data lives in
+database **`/postgres`** on the same branch: 59 applied migrations, latest
+`20260913000000_add_shared_rate_limit`, 3,047 episodes (verified by
+`scripts/_xata-branch.ts` through `Run DB Script`).
+
+Fix: change the path of both Fly secrets from `/xata` to `/postgres`. Do not run
+migrations against production, and leave the `/xata` database alone.
+Pre-cutover gate: `scripts/_xata-branch.ts` output from CI and the same facts
+read from inside the Fly Machine must match (host, `db=/postgres`, migration
+count, episode count).
+
+## 2026-09-18 cutover: production on Fly
+
+DNS for `cultcodex.me` and `www` points at Fly (DNS-only), and both Fly
+certificates are issued. Vercel is untouched and remains the rollback target.
+
+Smoke tests on `cultcodex.me` (all passing):
+
+- Google sign-in; the session carries `codexUser` from the `/postgres` database
+- Session survives a reload
+- Checkout for access/system, month/year: all four return live
+  `checkout.stripe.com` sessions (no payment made)
+- Billing portal returns a `billing.stripe.com` session
+- SSE `live/chat` and `episodes/[slug]` connect and emit `connected`
+- Webhook: the live endpoint is enabled, an unsigned POST gets 400, and Stripe
+  reports 0 undelivered events in the last 24 h
+- Health 200; archive shows 3,052 episodes
+
+Defect found and fixed during the tests: five `STRIPE_PRICE_*` Fly secrets held
+their own names as values (placeholder import), so checkout returned
+`resource_missing`. They now hold the live price ids: Initiate+
+`price_1TSJQgPLMWc5NC9F1QBHClFT` (month) / `price_1TjLWjPLMWc5NC9FAnD6SQ1a`
+(year), Oracle `price_1TSJQiPLMWc5NC9FfDxOjooG` (month) /
+`price_1TjLWkPLMWc5NC9F4x08iaxe` (year). Legacy `STRIPE_PRICE_ID` = Initiate+ monthly.
+
+Open items:
+
+- `AUTH_SECRET` differs from Vercel's, so sessions issued on Vercel don't carry
+  over (`JWTSessionError: no matching decryption secret`). Users sign in once.
+- Scheduled jobs still run on Vercel Cron. `ENABLE_PRODUCTION_SCHEDULES` stays
+  false until Vercel Cron is disabled, so the jobs never run on both.
+- Replace the price-check gate with one that fails on any `STRIPE_PRICE_*` value
+  that does not start with `price_`.

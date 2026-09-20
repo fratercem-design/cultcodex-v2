@@ -11,9 +11,9 @@ CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA public;
 -- PostgreSQL database dump
 --
 
-\restrict 5jVcyL4rqqypETw04RFtwQT4vl4cm4INWqDcvlwhuIgh0XUCFae3gUzYU98cugY
+\restrict 5O8cSl6wjbMpdsuetJ00ccIiLZsstkrLwrJmAubDMKtMtstxs8ZPQALX1Hn5qvK
 
--- Dumped from database version 18.4 (Debian 18.4-1.pgdg12+1)
+-- Dumped from database version 18.6 (Debian 18.6-1.pgdg12+2)
 -- Dumped by pg_dump version 18.6 (Debian 18.6-1.pgdg13+2)
 
 SET statement_timeout = 0;
@@ -31,6 +31,13 @@ SET row_security = off;
 -- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
 
+
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 --
@@ -4171,7 +4178,7 @@ ALTER TABLE ONLY public."UserWallet"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 5jVcyL4rqqypETw04RFtwQT4vl4cm4INWqDcvlwhuIgh0XUCFae3gUzYU98cugY
+\unrestrict 5O8cSl6wjbMpdsuetJ00ccIiLZsstkrLwrJmAubDMKtMtstxs8ZPQALX1Hn5qvK
 
 
 -- Successful Prisma migration metadata (no application data)
