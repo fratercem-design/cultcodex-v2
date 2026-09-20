@@ -3,7 +3,15 @@ name: Scheduled jobs
 on:
   schedule:
     - cron: "0 15 * * *"
-    - cron: "0 17 * * *"
+    # 17:30, not 17:00, while the old Vercel deployment still exists. Its crons
+    # live in the deployment, not in vercel.json on master, so removing them
+    # from the repo did not stop them, and a failed redeploy cannot either.
+    # Both schedulers reading the same "due" subscribers in the same minute
+    # would email some of them twice; half an hour later the first run's
+    # updates are committed and this one correctly finds nobody due.
+    # ingest-latest needs no such offset: it skips videos already stored.
+    # Restore 17:00 once the Vercel project is gone.
+    - cron: "30 17 * * *"
   workflow_dispatch:
     inputs:
       job:
@@ -55,7 +63,7 @@ jobs:
   gift-sequence:
     if: >-
       (github.event_name == 'workflow_dispatch' && inputs.job == 'gift-sequence') ||
-      (github.event_name == 'schedule' && github.event.schedule == '0 17 * * *' && vars.ENABLE_PRODUCTION_SCHEDULES == 'true')
+      (github.event_name == 'schedule' && github.event.schedule == '30 17 * * *' && vars.ENABLE_PRODUCTION_SCHEDULES == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 7
     steps:
