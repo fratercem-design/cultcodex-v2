@@ -32,7 +32,7 @@ jobs:
       EXPECTED_BRANCH_ID: stgaoe23c15fv729oulq1av964
       BACKUP_SHA256: fcd21b7c73c6daddecda348cd92c5007b118dc573d708d8c5808d48a44e3610c
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Verify branch identity and dispatch input
         env:
