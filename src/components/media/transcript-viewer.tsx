@@ -25,7 +25,7 @@ const SPEAKER_COLORS = [
   "text-accent-gold-text",
   "text-accent-gold-text",
   "text-accent-cyan",
-  "text-accent-purple",
+  "text-accent-violet-text",
 ];
 
 export function TranscriptViewer({
@@ -192,12 +192,12 @@ export function TranscriptViewer({
       {/* Signal/Noise filter bar */}
       {hasSignalData && (
         <div className="mb-3 flex items-center gap-1.5">
-          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-text-muted mr-1">Filter:</span>
+          <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted mr-1">Filter:</span>
           {(["all", "signal", "highlighted"] as FilterMode[]).map((mode) => (
             <button
               key={mode}
               onClick={() => setFilterMode(mode)}
-              className={`px-2.5 py-1 rounded font-mono text-[9px] uppercase tracking-wider transition-colors border ${
+              className={`px-2.5 py-1 rounded font-mono text-[12px] uppercase tracking-wider transition-colors border ${
                 filterMode === mode
                   ? mode === "signal"
                     ? "border-green-500/60 bg-green-500/15 text-green-400"
@@ -209,7 +209,7 @@ export function TranscriptViewer({
             </button>
           ))}
           {filterMode === "signal" && (
-            <span className="font-mono text-[9px] text-text-muted ml-1">
+            <span className="font-mono text-[12px] text-text-muted ml-1">
               {filtered.length} signal moment{filtered.length !== 1 ? "s" : ""}
             </span>
           )}
@@ -229,7 +229,7 @@ export function TranscriptViewer({
           className="flex-1 rounded border border-border bg-elevated px-3 py-1.5 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent-gold focus:outline-none"
         />
         {searchQuery && (
-          <span className="font-mono text-[10px] text-text-muted whitespace-nowrap">
+          <span className="font-mono text-[12px] text-text-muted whitespace-nowrap">
             {filtered.length} of {blocks.length}
           </span>
         )}
@@ -266,13 +266,13 @@ export function TranscriptViewer({
                     e.stopPropagation();
                     seekTo(seg.startSeconds);
                   }}
-                  className="shrink-0 font-mono text-[10px] text-accent-gold-text/80 w-14 text-right pt-0.5 hover:text-accent-gold-text transition-colors cursor-pointer"
+                  className="shrink-0 font-mono text-[12px] text-accent-gold-text/80 w-14 text-right pt-0.5 hover:text-accent-gold-text transition-colors cursor-pointer"
                   title={`Jump to ${formatSeconds(seg.startSeconds)}`}
                 >
                   {formatSeconds(seg.startSeconds)}
                 </button>
               ) : (
-                <span className="shrink-0 font-mono text-[10px] text-accent-gold-text/80 w-14 text-right pt-0.5">
+                <span className="shrink-0 font-mono text-[12px] text-accent-gold-text/80 w-14 text-right pt-0.5">
                   {formatSeconds(seg.startSeconds)}
                 </span>
               )}
@@ -281,8 +281,8 @@ export function TranscriptViewer({
               <div className="min-w-0 flex-1">
                 {seg.speakerLabel && (
                   <span
-                    className={`font-mono text-[10px] font-bold uppercase ${
-                      speakerColorMap.get(seg.speakerLabel) ?? "text-accent-purple"
+                    className={`font-mono text-[12px] font-bold uppercase ${
+                      speakerColorMap.get(seg.speakerLabel) ?? "text-accent-violet-text"
                     }`}
                   >
                     {seg.speakerLabel}
@@ -299,7 +299,7 @@ export function TranscriptViewer({
                   <button
                     onClick={(e) => { e.stopPropagation(); shareSegment(seg); }}
                     title="Share a link to this moment"
-                    className="font-mono text-[10px] text-text-muted hover:text-accent-cyan transition-colors"
+                    className="font-mono text-[12px] text-text-muted hover:text-accent-cyan transition-colors"
                   >
                     {sharedId === seg.id ? "✓ link" : "🔗"}
                   </button>
@@ -307,7 +307,7 @@ export function TranscriptViewer({
                 <button
                   onClick={(e) => { e.stopPropagation(); copySegment(seg); }}
                   title="Copy segment text"
-                  className="font-mono text-[10px] text-text-muted hover:text-accent-gold-text transition-colors"
+                  className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors"
                 >
                   {copiedId === seg.id ? "✓" : "⎘"}
                 </button>
@@ -324,7 +324,7 @@ export function TranscriptViewer({
       </div>
 
       {/* Keyboard hint */}
-      <p className="mt-2 font-mono text-[9px] text-text-muted/50">
+      <p className="mt-2 font-mono text-[12px] text-text-muted">
         ↑↓ navigate{hasVideoEmbed ? " · Enter seek" : ""} · Click to select
       </p>
     </div>

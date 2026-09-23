@@ -132,11 +132,11 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
             {/* Active filters */}
             {(search || speakerFilter) && (
               <div className="mb-4 flex flex-wrap items-center gap-2">
-                <span className="font-mono text-[10px] text-text-muted uppercase tracking-wider">Filters:</span>
+                <span className="font-mono text-[12px] text-text-muted uppercase tracking-wider">Filters:</span>
                 {search && (
                   <Link
                     href={speakerFilter ? `/quotes?speaker=${speakerFilter}` : "/quotes"}
-                    className="inline-flex items-center gap-1 rounded-full border border-accent-crimson/30 bg-accent-crimson/10 px-2.5 py-0.5 font-mono text-[10px] text-accent-crimson-text hover:bg-accent-crimson/20"
+                    className="inline-flex items-center gap-1 rounded-full border border-accent-crimson/30 bg-accent-crimson/10 px-2.5 py-0.5 font-mono text-[12px] text-accent-crimson-text hover:bg-accent-crimson/20"
                   >
                     &ldquo;{search}&rdquo; ✕
                   </Link>
@@ -144,14 +144,14 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
                 {activeSpeaker && (
                   <Link
                     href={search ? `/quotes?q=${encodeURIComponent(search)}` : "/quotes"}
-                    className="inline-flex items-center gap-1 rounded-full border border-accent-gold/30 bg-accent-gold/10 px-2.5 py-0.5 font-mono text-[10px] text-accent-gold-text hover:bg-accent-gold/20"
+                    className="inline-flex items-center gap-1 rounded-full border border-accent-gold/30 bg-accent-gold/10 px-2.5 py-0.5 font-mono text-[12px] text-accent-gold-text hover:bg-accent-gold/20"
                   >
                     {activeSpeaker.displayName} ✕
                   </Link>
                 )}
                 <Link
                   href="/quotes"
-                  className="font-mono text-[10px] text-text-muted hover:text-accent-crimson-text"
+                  className="font-mono text-[12px] text-text-muted hover:text-accent-crimson-text"
                 >
                   Clear all
                 </Link>
@@ -184,10 +184,10 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
                       <div className="mt-1 ml-4 flex items-center justify-between gap-2">
                         {quote.episode ? (
                           <div className="flex items-center gap-2 min-w-0">
-                            <span className="font-mono text-[10px] text-text-muted">from</span>
+                            <span className="font-mono text-[12px] text-text-muted">from</span>
                             <Link
                               href={`/episodes/${quote.episode.slug}`}
-                              className="font-mono text-[10px] text-accent-gold-text hover:underline line-clamp-1"
+                              className="font-mono text-[12px] text-accent-gold-text hover:underline line-clamp-1"
                             >
                               {quote.episode.episodeNumber != null && `EP ${quote.episode.episodeNumber}: `}
                               {quote.episode.title}
@@ -232,7 +232,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
                     }`}>
                       {speaker.displayName}
                     </span>
-                    <span className={`ml-2 font-mono text-[10px] ${
+                    <span className={`ml-2 font-mono text-[12px] ${
                       speakerFilter === speaker.slug
                         ? "text-accent-gold-text"
                         : "text-text-muted"

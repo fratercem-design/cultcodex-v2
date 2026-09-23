@@ -78,7 +78,7 @@ export function FavoriteButton({
         {favorited ? "\u2665" : "\u2661"}
       </span>
       {count > 0 && (
-        <span className={`font-mono ${isSm ? "text-[9px]" : "text-[10px]"}`}>
+        <span className={`font-mono ${isSm ? "text-[12px]" : "text-[12px]"}`}>
           {count}
         </span>
       )}

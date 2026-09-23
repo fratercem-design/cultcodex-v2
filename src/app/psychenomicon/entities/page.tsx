@@ -29,7 +29,7 @@ export default async function EntitiesPage() {
     return (
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">{"/// initiate_only"}</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">{"/// initiate_only"}</p>
           <p className="font-display text-xl font-bold text-text-primary">Entity network sealed.</p>
           <Link href="/premium#access" className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/20 transition-colors">
             Become Initiate+ →
@@ -125,12 +125,12 @@ export default async function EntitiesPage() {
     <main className="min-h-screen bg-void">
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-5xl space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">ψ PSYCHENOMICON · ENTITIES ψ</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">ψ PSYCHENOMICON · ENTITIES ψ</p>
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <h1 className="font-display text-2xl font-bold text-text-primary">Entity Network</h1>
             <Link
               href="/psychenomicon/archetypes"
-              className="font-mono text-[10px] uppercase tracking-widest text-accent-violet-text/70 hover:text-accent-violet-text transition-colors"
+              className="font-mono text-[12px] uppercase tracking-widest text-accent-violet-text/70 hover:text-accent-violet-text transition-colors"
             >
               Archetype atlas →
             </Link>
@@ -148,7 +148,7 @@ export default async function EntitiesPage() {
         {nodes.length === 0 ? (
           <div className="py-20 text-center space-y-6">
             <p className="font-mono text-4xl text-accent-violet-text/55">ψ</p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/70">{"/// no_entities_recorded"}</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">{"/// no_entities_recorded"}</p>
             <p className="text-sm text-text-muted leading-relaxed max-w-sm mx-auto">
               Entities are extracted automatically when Psychenomicon chapters are generated. Each significant person becomes a tracked entity with archetype evolution, radar traits, and chapter appearances.
             </p>
@@ -160,11 +160,11 @@ export default async function EntitiesPage() {
                 Generate Chapters →
               </Link>
             ) : (
-              <p className="font-mono text-[10px] text-text-muted/50 uppercase tracking-widest">
+              <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
                 Entities will appear as chapters are processed.
               </p>
             )}
-            <Link href="/psychenomicon" className="block font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors">
+            <Link href="/psychenomicon" className="block font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors">
               ← Return to Psychenomicon
             </Link>
           </div>
@@ -177,7 +177,7 @@ export default async function EntitiesPage() {
 
         {/* Entity grid */}
         <div className="space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// most_connected_entities"}</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// most_connected_entities"}</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {entities.map((e) => {
               const latestEvent = e.archetypeEvents[0];
@@ -201,7 +201,7 @@ export default async function EntitiesPage() {
                         />
                       ) : (
                         <div className="h-7 w-7 rounded-full flex-shrink-0 border border-border bg-accent-violet/10 flex items-center justify-center">
-                          <span className="font-mono text-[9px] text-accent-violet-text/60">ψ</span>
+                          <span className="font-mono text-[12px] text-accent-violet-text/60">ψ</span>
                         </div>
                       )}
                       <div className="min-w-0">
@@ -209,16 +209,16 @@ export default async function EntitiesPage() {
                           {e.name}
                         </p>
                         {e.primaryArchetype && (
-                          <p className="font-mono text-[9px] text-accent-violet-text/70 mt-0.5">{e.primaryArchetype}</p>
+                          <p className="font-mono text-[12px] text-accent-violet-text/70 mt-0.5">{e.primaryArchetype}</p>
                         )}
                       </div>
                     </div>
-                    <span className={`flex-shrink-0 font-mono text-[8px] uppercase px-1.5 py-0.5 rounded border ${statusStyle}`}>
+                    <span className={`flex-shrink-0 font-mono text-[12px] uppercase px-1.5 py-0.5 rounded border ${statusStyle}`}>
                       {e.status}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between text-[9px] font-mono text-text-muted">
+                  <div className="flex items-center justify-between text-[12px] font-mono text-text-muted">
                     <span>{e._count.appearances} chapter{e._count.appearances !== 1 ? "s" : ""}</span>
                     {latestEvent && (
                       <span className="text-accent-gold-text/80">
@@ -230,7 +230,7 @@ export default async function EntitiesPage() {
                   {e.behaviorPatterns.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {e.behaviorPatterns.slice(0, 2).map((p) => (
-                        <span key={p} className="rounded border border-border px-1.5 py-0.5 font-mono text-[8px] text-text-muted">
+                        <span key={p} className="rounded border border-border px-1.5 py-0.5 font-mono text-[12px] text-text-muted">
                           {p}
                         </span>
                       ))}
@@ -239,7 +239,7 @@ export default async function EntitiesPage() {
 
                   {/* Archive profile cross-link */}
                   {e.personSlug && (
-                    <p className="font-mono text-[8px] text-accent-gold-text/80 group-hover:text-accent-gold-text/80 transition-colors">
+                    <p className="font-mono text-[12px] text-accent-gold-text/80 group-hover:text-accent-gold-text/80 transition-colors">
                       ◈ archive profile →
                     </p>
                   )}
@@ -249,7 +249,7 @@ export default async function EntitiesPage() {
           </div>
         </div>
 
-        <Link href="/psychenomicon" className="block font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors">
+        <Link href="/psychenomicon" className="block font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors">
           ← Return to Psychenomicon
         </Link>
         </>

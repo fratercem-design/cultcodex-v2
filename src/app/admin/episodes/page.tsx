@@ -98,7 +98,7 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
             <Link
               key={s}
               href={`/admin/episodes${s !== "all" ? `?status=${s}` : ""}`}
-              className={`rounded-full border px-3 py-1 font-mono text-[10px] transition-colors ${
+              className={`rounded-full border px-3 py-1 font-mono text-[12px] transition-colors ${
                 !filterMode && ((statusFilter ?? "all") === s || (!statusFilter && s === "all"))
                   ? "border-accent-gold text-accent-gold-text bg-accent-gold/10"
                   : "border-border text-text-muted hover:border-accent-gold/50"
@@ -109,7 +109,7 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
           ))}
           <Link
             href="/admin/episodes?filter=enrich"
-            className={`rounded-full border px-3 py-1 font-mono text-[10px] transition-colors ${
+            className={`rounded-full border px-3 py-1 font-mono text-[12px] transition-colors ${
               filterMode === "enrich"
                 ? "border-accent-gold text-accent-gold-text bg-accent-gold/10"
                 : "border-border text-text-muted hover:border-accent-gold/50"
@@ -126,13 +126,13 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
         <table className="w-full">
           <thead>
             <tr className="border-b border-border bg-elevated">
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">EP#</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">Title</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">Status</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">Air Date</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">Guests</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">Topics</th>
-              <th className="px-3 py-2 text-right font-mono text-[10px] uppercase tracking-wider text-text-muted">Actions</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">EP#</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">Title</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">Status</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">Air Date</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">Guests</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">Topics</th>
+              <th className="px-3 py-2 text-right font-mono text-[12px] uppercase tracking-wider text-text-muted">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -150,7 +150,7 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
                     variant={ep.status === "published" ? "green" : "muted"}
                   />
                 </td>
-                <td className="px-3 py-2 font-mono text-[10px] text-text-muted">
+                <td className="px-3 py-2 font-mono text-[12px] text-text-muted">
                   {ep.airDate ? formatDate(ep.airDate) : "\u2014"}
                 </td>
                 <td className="px-3 py-2 font-mono text-xs text-text-muted">
@@ -167,7 +167,7 @@ export default async function AdminEpisodesPage({ searchParams }: PageProps) {
                     />
                     <Link
                       href={`/admin/episodes/${ep.id}/edit`}
-                      className="font-mono text-[10px] text-accent-gold-text hover:underline"
+                      className="font-mono text-[12px] text-accent-gold-text hover:underline"
                     >
                       Edit
                     </Link>

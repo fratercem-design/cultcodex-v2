@@ -116,7 +116,7 @@ export default async function AdminDashboard() {
               >
                 <div className="flex items-center gap-2 min-w-0">
                   {ep.episodeNumber && (
-                    <span className="font-mono text-[10px] text-accent-gold-text font-bold">
+                    <span className="font-mono text-[12px] text-accent-gold-text font-bold">
                       EP.{String(ep.episodeNumber).padStart(3, "0")}
                     </span>
                   )}
@@ -129,7 +129,7 @@ export default async function AdminDashboard() {
                     label={ep.status}
                     variant={ep.status === "published" ? "green" : "muted"}
                   />
-                  <span className="font-mono text-[10px] text-text-muted">
+                  <span className="font-mono text-[12px] text-text-muted">
                     {formatDate(ep.updatedAt)}
                   </span>
                 </div>
@@ -150,7 +150,7 @@ export default async function AdminDashboard() {
               </div>
               <Link
                 href="/admin/live"
-                className="font-mono text-[10px] text-accent-gold-text hover:underline"
+                className="font-mono text-[12px] text-accent-gold-text hover:underline"
               >
                 Manage →
               </Link>
@@ -174,7 +174,7 @@ export default async function AdminDashboard() {
               >
                 <span>💬</span> Moderate Comments
                 {flaggedCount > 0 && (
-                  <span className="ml-auto rounded-full bg-red-500/20 px-2 py-0.5 font-mono text-[10px] text-red-400">
+                  <span className="ml-auto rounded-full bg-red-500/20 px-2 py-0.5 font-mono text-[12px] text-red-400">
                     {flaggedCount}
                   </span>
                 )}
@@ -200,7 +200,7 @@ export default async function AdminDashboard() {
       <div className="mt-8">
         <SectionCard title={`Archive Health — ${healthScore}%`}>
           {lastUpdate?.updatedAt && (
-            <p className="mb-3 font-mono text-[10px] text-text-muted">
+            <p className="mb-3 font-mono text-[12px] text-text-muted">
               Last data change: {formatRelativeDate(lastUpdate.updatedAt)} ({formatDate(lastUpdate.updatedAt)})
             </p>
           )}
@@ -214,11 +214,11 @@ export default async function AdminDashboard() {
                 <div key={m.label} className="flex items-center gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
-                      <span className="font-mono text-[10px] text-text-muted truncate">
+                      <span className="font-mono text-[12px] text-text-muted truncate">
                         {m.label}
-                        {(m.scoreWeight ?? 1) === 0 && <span className="ml-1 text-text-muted/60">(cosmetic)</span>}
+                        {(m.scoreWeight ?? 1) === 0 && <span className="ml-1 text-text-muted">(cosmetic)</span>}
                       </span>
-                      <span className={`font-mono text-[10px] font-bold ${textColor}`}>
+                      <span className={`font-mono text-[12px] font-bold ${textColor}`}>
                         {m.count > 0 ? m.count : "\u2714"} {m.count > 0 && `/ ${m.total}`}
                       </span>
                     </div>
@@ -226,7 +226,7 @@ export default async function AdminDashboard() {
                       <div className={`h-full rounded-full ${barColor} transition-all`} style={{ width: `${pct}%` }} />
                     </div>
                   </div>
-                  <span className={`font-mono text-[10px] w-8 text-right ${textColor}`}>{pct}%</span>
+                  <span className={`font-mono text-[12px] w-8 text-right ${textColor}`}>{pct}%</span>
                 </div>
               );
             })}

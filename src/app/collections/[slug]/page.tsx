@@ -151,7 +151,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
         {/* Breadcrumb */}
         <nav
           aria-label="Breadcrumb"
-          className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted"
+          className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted"
         >
           <Link href="/start-here" className="hover:text-accent-gold-text transition-colors">
             Enter the Codex
@@ -186,7 +186,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
                 className="flex gap-3 text-sm text-text-primary leading-relaxed"
               >
                 <span
-                  className={`font-mono text-[10px] ${a.eyebrow} flex-shrink-0 mt-1`}
+                  className={`font-mono text-[12px] ${a.eyebrow} flex-shrink-0 mt-1`}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -274,7 +274,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
                 &ldquo;{collection.quoteHook.text}&rdquo;
               </blockquote>
               {collection.quoteHook.attribution && (
-                <figcaption className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+                <figcaption className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
                   — {collection.quoteHook.attribution}
                 </figcaption>
               )}
@@ -287,7 +287,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
           <>
             <MysticalDivider />
             <section className="space-y-6">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted text-center">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted text-center">
                 {"/// follow the signal further"}
               </p>
 
@@ -302,7 +302,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
                         className={`group rounded-lg border ${ra.border} bg-surface p-4 transition-colors ${ra.hoverBorder} ${ra.hoverBg}`}
                       >
                         <p
-                          className={`font-mono text-[10px] uppercase tracking-[0.3em] ${ra.eyebrow}`}
+                          className={`font-mono text-[12px] uppercase tracking-[0.12em] ${ra.eyebrow}`}
                         >
                           {rc.eyebrow}
                         </p>
@@ -326,7 +326,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
                     <Link
                       key={rs.href}
                       href={rs.href}
-                      className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-border text-text-muted hover:text-accent-gold-text hover:border-accent-gold/40 transition-colors"
+                      className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-border text-text-muted hover:text-accent-gold-text hover:border-accent-gold/40 transition-colors"
                     >
                       {rs.label} →
                     </Link>

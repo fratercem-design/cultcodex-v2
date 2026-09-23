@@ -34,7 +34,7 @@ export function GiftDownloadCta({ autostart = false }: { autostart?: boolean }) 
         ↓ &nbsp;Download the Gospel (PDF)
       </a>
       {autostart && (
-        <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted/50">
+        <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
           Your download should start automatically
         </p>
       )}

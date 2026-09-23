@@ -146,22 +146,22 @@ function UserTable({
               >
                 <td className="px-4 py-3">
                   <p className="text-text-primary font-bold truncate max-w-[180px]">{user.displayName}</p>
-                  <p className="text-text-muted/70 truncate max-w-[180px]">{user.email}</p>
+                  <p className="text-text-muted truncate max-w-[180px]">{user.email}</p>
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex flex-col gap-0.5">
                     {user.role === "admin" && (
-                      <span className="inline-block rounded px-1.5 py-0.5 text-[10px] bg-accent-gold/15 text-accent-gold-text">
+                      <span className="inline-block rounded px-1.5 py-0.5 text-[12px] bg-accent-gold/15 text-accent-gold-text">
                         admin
                       </span>
                     )}
                     {user.isLifetimeMember && (
-                      <span className="inline-block rounded px-1.5 py-0.5 text-[10px] bg-purple-500/15 text-purple-400">
+                      <span className="inline-block rounded px-1.5 py-0.5 text-[12px] bg-purple-500/15 text-purple-400">
                         lifetime
                       </span>
                     )}
                     {user.subscriptionTier && (
-                      <span className={`inline-block rounded px-1.5 py-0.5 text-[10px] ${
+                      <span className={`inline-block rounded px-1.5 py-0.5 text-[12px] ${
                         user.subscriptionTier === "system"
                           ? "bg-accent-cyan/15 text-accent-cyan"
                           : "bg-text-muted/10 text-text-muted"
@@ -175,14 +175,14 @@ function UserTable({
                   <SetTitleForm userId={user.id} currentTitle={user.memberTitle} />
                 </td>
                 <td className="px-4 py-3">
-                  <span className={user.isPublicMember ? "text-accent-gold-text" : "text-text-muted/50"}>
+                  <span className={user.isPublicMember ? "text-accent-gold-text" : "text-text-muted"}>
                     {user.isPublicMember ? "yes" : "no"}
                   </span>
                   {user.codexSlug && (
-                    <p className="text-text-muted/50 text-[10px]">/{user.codexSlug}</p>
+                    <p className="text-text-muted text-[12px]">/{user.codexSlug}</p>
                   )}
                 </td>
-                <td className="px-4 py-3 text-text-muted/70">
+                <td className="px-4 py-3 text-text-muted">
                   {new Date(user.createdAt).toLocaleDateString("en-US", { timeZone: "UTC",
                     month: "short",
                     year: "numeric",
@@ -211,11 +211,11 @@ function SetTitleForm({ userId, currentTitle }: { userId: string; currentTitle: 
         name="title"
         defaultValue={currentTitle ?? ""}
         placeholder="Oracle"
-        className="w-24 rounded border border-border/50 bg-elevated/50 px-1.5 py-1 text-[10px] text-text-primary placeholder:text-text-muted/60 focus:border-accent-gold/40 focus:outline-none"
+        className="w-24 rounded border border-border/50 bg-elevated/50 px-1.5 py-1 text-[12px] text-text-primary placeholder:text-text-muted focus:border-accent-gold/40 focus:outline-none"
       />
       <button
         type="submit"
-        className="rounded px-1.5 py-1 text-[10px] bg-border/50 text-text-muted hover:text-text-primary transition-colors"
+        className="rounded px-1.5 py-1 text-[12px] bg-border/50 text-text-muted hover:text-text-primary transition-colors"
       >
         set
       </button>

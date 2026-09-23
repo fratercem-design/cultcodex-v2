@@ -55,12 +55,12 @@ function RedactedBlock({ tier }: RedactedBlockProps) {
 
   return (
     <span className={`inline-flex items-center gap-2 rounded border ${borderCls} ${bgCls} px-3 py-1 my-0.5`}>
-      <span className="font-mono text-[10px] text-text-muted/50 select-none tracking-wider">
+      <span className="font-mono text-[12px] text-text-muted select-none tracking-wider">
         ████████████████████
       </span>
       <Link
         href={href}
-        className={`font-mono text-[9px] uppercase tracking-[0.2em] ${textCls} hover:underline whitespace-nowrap`}
+        className={`font-mono text-[12px] uppercase tracking-[0.12em] ${textCls} hover:underline whitespace-nowrap`}
         onClick={(e) => e.stopPropagation()}
       >
         {label} to unlock →

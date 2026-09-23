@@ -42,7 +42,7 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
   return (
     <section className="space-y-4 rounded-xl border border-accent-gold/30 bg-surface/60 p-5">
       <div className="space-y-1">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
           {"/// buy_a_clap"}
         </p>
         <p className="text-sm text-text-muted leading-relaxed">
@@ -54,7 +54,7 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
 
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="space-y-1">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-text-muted">Nickname</span>
+          <span className="font-mono text-[12px] uppercase tracking-wider text-text-muted">Nickname</span>
           <input
             type="text"
             value={nickname}
@@ -66,7 +66,7 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
         </label>
         <div className="grid grid-cols-2 gap-3">
           <label className="space-y-1">
-            <span className="font-mono text-[10px] uppercase tracking-wider text-text-muted">Tokens</span>
+            <span className="font-mono text-[12px] uppercase tracking-wider text-text-muted">Tokens</span>
             <input
               type="number"
               min={1}
@@ -77,7 +77,7 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
             />
           </label>
           <label className="space-y-1">
-            <span className="font-mono text-[10px] uppercase tracking-wider text-text-muted">Coupon</span>
+            <span className="font-mono text-[12px] uppercase tracking-wider text-text-muted">Coupon</span>
             <input
               type="text"
               value={coupon}
@@ -94,9 +94,9 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
       </div>
 
       {couponApplied && (
-        <p className="font-mono text-[11px] text-accent-cyan">✓ Coupon applied — $10 per token</p>
+        <p className="font-mono text-[12px] text-accent-cyan">✓ Coupon applied — $10 per token</p>
       )}
-      {error && <p className="font-mono text-[11px] text-red-400">{error}</p>}
+      {error && <p className="font-mono text-[12px] text-red-400">{error}</p>}
 
       <div className="flex flex-wrap items-center gap-3">
         <button
@@ -118,7 +118,7 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
         )}
       </div>
       {cashtag && (
-        <p className="font-mono text-[10px] text-text-muted/70">
+        <p className="font-mono text-[12px] text-text-muted">
           Paying by CashApp? Put your <span className="text-text-primary">nickname in the payment note</span> —
           tokens are credited by the Cult within a day.
         </p>

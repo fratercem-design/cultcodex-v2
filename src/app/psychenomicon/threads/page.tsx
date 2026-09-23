@@ -45,7 +45,7 @@ export default async function ThreadsIndexPage() {
     return (
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">{"/// initiate_only"}</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">{"/// initiate_only"}</p>
           <p className="font-display text-xl font-bold text-text-primary">The thread registry is sealed.</p>
           <Link
             href="/premium"
@@ -88,7 +88,7 @@ export default async function ThreadsIndexPage() {
     <main className="min-h-screen bg-void">
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-5xl space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
             ψ PSYCHENOMICON · THREADS ψ
           </p>
           <h1 className="font-display text-2xl font-bold text-text-primary">Thread Registry</h1>
@@ -113,7 +113,7 @@ export default async function ThreadsIndexPage() {
             <section key={status} className="space-y-4">
               <div className="flex items-center gap-3">
                 <div className={`h-2 w-2 rounded-full flex-shrink-0 ${meta.dot}`} />
-                <p className={`font-mono text-[10px] uppercase tracking-[0.35em] ${meta.heading}`}>
+                <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${meta.heading}`}>
                   {meta.label} — {totalForStatus}{group.length < totalForStatus ? ` · showing ${group.length}` : ""}
                 </p>
                 <div className="h-px flex-1 bg-border" />
@@ -130,27 +130,27 @@ export default async function ThreadsIndexPage() {
                       <p className="font-mono text-xs font-bold text-text-primary group-hover:text-accent-violet-text transition-colors leading-snug">
                         {thread.title}
                       </p>
-                      <span className={`flex-shrink-0 inline-flex items-center rounded border px-1.5 py-0.5 font-mono text-[8px] uppercase ${meta.badge}`}>
+                      <span className={`flex-shrink-0 inline-flex items-center rounded border px-1.5 py-0.5 font-mono text-[12px] uppercase ${meta.badge}`}>
                         {meta.label}
                       </span>
                     </div>
 
                     {thread.description && (
-                      <p className="text-[11px] text-text-muted leading-relaxed line-clamp-3">
+                      <p className="text-[12px] text-text-muted leading-relaxed line-clamp-3">
                         {thread.description}
                       </p>
                     )}
 
                     {thread._count.chapterLinks > 0 && (
                       <div className="space-y-1.5 pt-1 border-t border-border/60">
-                        <p className="font-mono text-[8px] uppercase tracking-widest text-text-muted/50">
+                        <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
                           {thread._count.chapterLinks} chapter{thread._count.chapterLinks !== 1 ? "s" : ""}
                         </p>
                         <div className="flex flex-wrap gap-1.5">
                           {thread.chapterLinks.map(({ chapter: c }) => (
                             <span
                               key={c.slug}
-                              className={`inline-flex items-center rounded border px-1.5 py-0.5 font-mono text-[8px] ${
+                              className={`inline-flex items-center rounded border px-1.5 py-0.5 font-mono text-[12px] ${
                                 c.isMajorEvent
                                   ? "border-accent-gold/30 text-accent-gold-text bg-accent-gold/5"
                                   : "border-border text-text-muted"
@@ -160,7 +160,7 @@ export default async function ThreadsIndexPage() {
                             </span>
                           ))}
                           {thread._count.chapterLinks > thread.chapterLinks.length && (
-                            <span className="font-mono text-[8px] text-text-muted/50 self-center">
+                            <span className="font-mono text-[12px] text-text-muted self-center">
                               +{thread._count.chapterLinks - thread.chapterLinks.length} more
                             </span>
                           )}
@@ -182,7 +182,7 @@ export default async function ThreadsIndexPage() {
 
         <Link
           href="/psychenomicon"
-          className="block font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
+          className="block font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
         >
           ← Return to Psychenomicon
         </Link>

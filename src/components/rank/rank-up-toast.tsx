@@ -76,7 +76,7 @@ export function RankUpToast({ currentRankId }: Props) {
           ✕
         </button>
         <div className="relative space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/60">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             {"/// rank_ascended"}
           </p>
           <div
@@ -89,7 +89,7 @@ export function RankUpToast({ currentRankId }: Props) {
           <p className="font-display text-lg font-bold text-white">
             You are now {rank.title}.
           </p>
-          <p className="font-mono text-[11px] text-text-muted leading-relaxed">{rank.blurb}</p>
+          <p className="font-mono text-[12px] text-text-muted leading-relaxed">{rank.blurb}</p>
         </div>
       </div>
     </div>

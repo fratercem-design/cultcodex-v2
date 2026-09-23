@@ -35,7 +35,7 @@ export function CollectionHero({
     <header className="space-y-5">
       <div className={`${a.icon}`}>{icon}</div>
       <div className="space-y-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-text-muted">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           {eyebrow}
         </p>
         <h1

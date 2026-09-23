@@ -20,8 +20,8 @@ export function EntityGlanceBar({ items }: EntityGlanceBarProps) {
         {items.map((item, i) => {
           const className =
             item.variant === "purple"
-              ? "inline-flex items-center gap-1.5 rounded-full border border-accent-purple/30 bg-accent-purple-dim px-2.5 py-1 font-mono text-[10px] text-accent-purple transition-colors hover:border-accent-purple/50"
-              : "inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 font-mono text-[10px] text-text-muted";
+              ? "inline-flex items-center gap-1.5 rounded-full border border-accent-purple/30 bg-accent-purple-dim px-2.5 py-1 font-mono text-[12px] text-accent-violet-text transition-colors hover:border-accent-purple/50"
+              : "inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 font-mono text-[12px] text-text-muted";
 
           const content = (
             <>

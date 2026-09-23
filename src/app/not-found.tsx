@@ -117,7 +117,7 @@ export default function NotFound() {
       </div>
 
       {/* Easter egg hint */}
-      <p className="mt-12 font-mono text-[9px] text-text-muted/30 tracking-widest">
+      <p className="mt-12 font-mono text-[12px] text-text-muted tracking-widest">
         Psst... have you tried /oracle?
       </p>
     </main>

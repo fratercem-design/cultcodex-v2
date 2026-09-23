@@ -53,7 +53,7 @@ export function QuoteShareButton({ quoteId, quoteText, speakerName }: ShareButto
       <button
         onClick={handleTwitter}
         title="Share on X / Twitter"
-        className="inline-flex items-center gap-1.5 font-mono text-[10px] text-text-muted hover:text-accent-gold-text transition-colors"
+        className="inline-flex items-center gap-1.5 font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors"
       >
         <XIcon />
         Post
@@ -66,7 +66,7 @@ export function QuoteShareButton({ quoteId, quoteText, speakerName }: ShareButto
           if (!shared) handleCopy();
         }}
         title="Copy link"
-        className="font-mono text-[10px] text-text-muted hover:text-accent-gold-text transition-colors"
+        className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors"
       >
         {copied ? "Copied!" : "Copy link"}
       </button>

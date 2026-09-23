@@ -17,7 +17,6 @@ import { ConsoleSigil } from "@/components/layout/console-sigil";
 import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
-import { CRTOverlay } from "@/components/graphics/crt-overlay";
 import { SkipLink } from "@/components/ui/skip-link";
 import { SITE_URL } from "@/lib/seo";
 import { JsonLd } from "@/components/JsonLd";
@@ -177,7 +176,6 @@ export default async function RootLayout({
         <RadialDialNav />
         <ConsoleSigil />
         <ClientOverlays />
-        <CRTOverlay />
         {/* WebSite + SearchAction JSON-LD — enables sitelinks search box in Google */}
         <JsonLd
           data={{

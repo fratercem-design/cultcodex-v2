@@ -26,7 +26,7 @@ export default async function SalonPage() {
         <PageHero title="THE SALON" subtitle="The room behind the room." label="oracle_only" backgroundImage="/hero-bg.jpg" />
         <main id="main-content" className="mx-auto max-w-2xl px-4 py-16">
           <div className="rounded-2xl border border-accent-violet/40 bg-gradient-to-b from-accent-violet/10 to-surface p-8 text-center space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
               {"/// oracle_tier_only"}
             </p>
             <h2 className="font-display text-2xl font-bold text-accent-violet-text">
@@ -76,12 +76,12 @@ export default async function SalonPage() {
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   {t.pinned && (
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-accent-violet-text">
+                    <span className="font-mono text-[12px] uppercase tracking-widest text-accent-violet-text">
                       ✦ pinned
                     </span>
                   )}
                   {t.closed && (
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted">
+                    <span className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
                       closed
                     </span>
                   )}
@@ -92,7 +92,7 @@ export default async function SalonPage() {
                 </p>
               </div>
             </div>
-            <div className="mt-4 flex items-center gap-3 font-mono text-[10px] text-text-muted/70">
+            <div className="mt-4 flex items-center gap-3 font-mono text-[12px] text-text-muted">
               <span>{t._count.posts} {t._count.posts === 1 ? "voice" : "voices"}</span>
               <span>·</span>
               <span>opened {relativeTime(t.createdAt)}</span>

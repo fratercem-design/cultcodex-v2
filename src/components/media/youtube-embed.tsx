@@ -106,7 +106,7 @@ export function YouTubeEmbed({ videoId, title, startSeconds }: YouTubeEmbedProps
         >
           <span className="text-4xl text-accent-gold-text" aria-hidden="true">▶</span>
           <span className="font-mono text-xs text-text-primary">{title || "Play video"}</span>
-          <span className="font-mono text-[10px] text-text-muted">
+          <span className="font-mono text-[12px] text-text-muted">
             Loads from YouTube when you press play.
           </span>
         </button>

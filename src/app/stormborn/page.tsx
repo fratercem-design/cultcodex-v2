@@ -25,7 +25,7 @@ export default function StormbornPage() {
         STORMBORN
       </h1>
 
-      <p className="mt-3 font-mono text-xs tracking-[0.3em] text-text-muted">
+      <p className="mt-3 font-mono text-xs tracking-[0.12em] text-text-muted">
         Architect of the Panelverse
       </p>
 
@@ -65,7 +65,7 @@ export default function StormbornPage() {
             <p className="font-display text-2xl font-bold text-accent-violet-text">
               {stat.value}
             </p>
-            <p className="mt-1 font-mono text-[10px] tracking-wider text-text-muted">
+            <p className="mt-1 font-mono text-[12px] tracking-wider text-text-muted">
               {stat.label}
             </p>
           </div>
@@ -73,13 +73,13 @@ export default function StormbornPage() {
       </div>
 
       {/* Footer */}
-      <p className="mt-16 font-mono text-[10px] tracking-wider text-text-muted/60">
+      <p className="mt-16 font-mono text-[12px] tracking-wider text-text-muted">
         This page exists because someone cared enough to look.
       </p>
 
       <Link
         href="/"
-        className="mt-6 font-mono text-[10px] tracking-widest text-text-muted/60 transition-colors hover:text-accent-violet-text/70"
+        className="mt-6 font-mono text-[12px] tracking-widest text-text-muted transition-colors hover:text-accent-violet-text/70"
       >
         &larr; return to the archive
       </Link>

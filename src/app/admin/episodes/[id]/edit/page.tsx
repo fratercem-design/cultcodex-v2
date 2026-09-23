@@ -167,7 +167,7 @@ export default async function EditEpisodePage({ params }: PageProps) {
             <p className="font-mono text-xs font-semibold text-text-primary">
               Human Review
             </p>
-            <p className="text-[11px] text-text-muted">
+            <p className="text-[12px] text-text-muted">
               Mark this episode&apos;s AI summary as reviewed by a human.
               Adds a visible &ldquo;Reviewed&rdquo; badge on the public page.
             </p>
@@ -184,7 +184,7 @@ export default async function EditEpisodePage({ params }: PageProps) {
             >
               <button
                 type="submit"
-                className={`rounded border px-3 py-1.5 font-mono text-[11px] font-semibold transition-colors ${
+                className={`rounded border px-3 py-1.5 font-mono text-[12px] font-semibold transition-colors ${
                   episode.isHumanReviewed
                     ? "border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20"
                     : "border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"

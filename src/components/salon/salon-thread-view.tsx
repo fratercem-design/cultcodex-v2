@@ -97,11 +97,11 @@ export function SalonThreadView({
                 {p.user.displayName}
               </span>
               {p.user.memberTitle && (
-                <span className="font-mono text-[9px] uppercase tracking-widest text-accent-violet-text">
+                <span className="font-mono text-[12px] uppercase tracking-widest text-accent-violet-text">
                   {p.user.memberTitle}
                 </span>
               )}
-              <span className="font-mono text-[10px] text-text-muted/60">
+              <span className="font-mono text-[12px] text-text-muted">
                 {relativeTime(p.createdAt)}
               </span>
             </div>
@@ -123,10 +123,10 @@ export function SalonThreadView({
             rows={4}
             maxLength={4000}
             disabled={status === "sending"}
-            className="w-full rounded-lg border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted/60 focus:border-accent-violet/60 focus:outline-none resize-y disabled:opacity-50"
+            className="w-full rounded-lg border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-violet/60 focus:outline-none resize-y disabled:opacity-50"
           />
           <div className="flex items-center justify-between">
-            <span className="font-mono text-[10px] text-text-muted/50">{content.length}/4000</span>
+            <span className="font-mono text-[12px] text-text-muted">{content.length}/4000</span>
             <button
               type="submit"
               disabled={!content.trim() || status === "sending"}

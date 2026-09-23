@@ -46,17 +46,17 @@ function ProductCard({ item }: { item: MerchItem }) {
         />
       </div>
       <div className="flex flex-1 flex-col gap-2 border-t border-border p-4">
-        <p className={`font-mono text-[10px] uppercase tracking-[0.24em] ${accent.text}`}>
+        <p className={`font-mono text-[12px] uppercase tracking-[0.24em] ${accent.text}`}>
           {item.product}
         </p>
         <h3 className="font-serif text-lg font-bold text-text-primary">{item.name}</h3>
         <p className="flex-1 text-sm text-text-muted">{item.blurb}</p>
-        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-text-muted">
+        <p className="font-mono text-[12px] uppercase tracking-[0.18em] text-text-muted">
           {item.colourways.join(" · ")}
         </p>
         <div className="mt-1 flex items-baseline justify-between border-t border-border pt-3">
           <span className="font-mono text-base tabular-nums text-accent-gold-text">${item.price}</span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted group-hover:text-accent-gold-text">
+          <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted group-hover:text-accent-gold-text">
             View →
           </span>
         </div>
@@ -77,7 +77,7 @@ export default function ShopPage() {
 
       <main id="main-content" className="mx-auto max-w-7xl px-4 py-8 space-y-14">
         {!PRICING_APPROVED && (
-          <div className="rounded-lg border border-accent-sulphur/40 bg-accent-sulphur/5 px-4 py-3 font-mono text-[11px] text-text-muted">
+          <div className="rounded-lg border border-accent-sulphur/40 bg-accent-sulphur/5 px-4 py-3 font-mono text-[12px] text-text-muted">
             <span className="text-accent-sulphur">Coming soon —</span> the designs below are
             final, but the store is not open yet. Prices are provisional and the product links
             go live when the shop opens.
@@ -101,7 +101,7 @@ export default function ShopPage() {
                   href={meta.href}
                   target={meta.href.startsWith("http") ? "_blank" : undefined}
                   rel={meta.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className={`font-mono text-[11px] uppercase tracking-[0.24em] ${accent.text} hover:underline`}
+                  className={`font-mono text-[12px] uppercase tracking-[0.24em] ${accent.text} hover:underline`}
                 >
                   {meta.handle}
                 </a>
@@ -123,7 +123,7 @@ export default function ShopPage() {
         })}
 
         <section aria-labelledby="editions" className="border-t border-border pt-5">
-          <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-accent-sulphur">
+          <p className="font-mono text-[12px] uppercase tracking-[0.24em] text-accent-sulphur">
             made by hand
           </p>
           <h2
@@ -144,7 +144,7 @@ export default function ShopPage() {
               >
                 <div className="flex flex-wrap items-baseline justify-between gap-3">
                   <h3 className="font-serif text-lg font-bold text-text-primary">{ed.name}</h3>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-accent-sulphur">
+                  <span className="font-mono text-[12px] uppercase tracking-[0.18em] text-accent-sulphur">
                     {ed.run}
                   </span>
                 </div>
@@ -152,7 +152,7 @@ export default function ShopPage() {
               </article>
             ))}
           </div>
-          <p className="mt-5 font-mono text-[11px] text-text-muted">
+          <p className="mt-5 font-mono text-[12px] text-text-muted">
             Editions are enquiry-only —{" "}
             <Link href="/contact" className="text-accent-gold-text hover:underline">
               get in touch

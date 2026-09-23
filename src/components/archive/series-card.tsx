@@ -41,7 +41,7 @@ export function SeriesCard({ series }: SeriesCardProps) {
               variant={typeVariant[series.type] ?? "muted"}
             />
           )}
-          <span className="font-mono text-[10px] text-text-muted">
+          <span className="font-mono text-[12px] text-text-muted">
             {series._count.episodes} episode{series._count.episodes !== 1 ? "s" : ""}
           </span>
         </div>

@@ -69,7 +69,7 @@ export function TimelineView({ episodes }: TimelineViewProps) {
 
           <h2 className="sticky top-0 z-10 mb-3 bg-void/90 py-1 font-display text-sm font-bold text-accent-gold-text backdrop-blur-sm">
             {group.label}
-            <span className="ml-2 font-mono text-[10px] font-normal text-text-muted">
+            <span className="ml-2 font-mono text-[12px] font-normal text-text-muted">
               ({group.episodes.length})
             </span>
           </h2>

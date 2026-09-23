@@ -42,7 +42,7 @@ export default async function RankPage() {
         {/* Current standing */}
         {data ? (
           <section className="rounded-2xl border border-border bg-surface p-7 space-y-5 text-center">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
               {"/// your_standing"}
             </p>
             <div className="flex flex-col items-center gap-3">
@@ -57,7 +57,7 @@ export default async function RankPage() {
               <p className="font-mono text-sm text-text-muted max-w-md leading-relaxed">
                 {data.progress.current.blurb}
               </p>
-              <p className="font-mono text-xs text-text-muted/60">
+              <p className="font-mono text-xs text-text-muted">
                 Codex score: <span className="text-accent-gold-text font-bold">{data.score.toLocaleString("en-US")}</span>
               </p>
             </div>
@@ -65,7 +65,7 @@ export default async function RankPage() {
             {/* Progress to next */}
             {data.progress.next ? (
               <div className="space-y-2 pt-2">
-                <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-text-muted/60">
+                <div className="flex items-center justify-between font-mono text-[12px] uppercase tracking-widest text-text-muted">
                   <span>{data.progress.current.title}</span>
                   <span>{data.progress.toNext.toLocaleString("en-US")} pts to {data.progress.next.title}</span>
                 </div>
@@ -87,13 +87,13 @@ export default async function RankPage() {
           </section>
         ) : (
           <section className="rounded-2xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-7 text-center space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
               {"/// claim_your_rank"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
               Sign in to begin your ascent.
             </h2>
-            <p className="font-mono text-[11px] text-text-muted max-w-md mx-auto leading-relaxed">
+            <p className="font-mono text-[12px] text-text-muted max-w-md mx-auto leading-relaxed">
               Every action in the archive — favoriting transmissions, saving signals, proposing
               investigations, going deep — raises your rank from Initiate to Archivist.
             </p>
@@ -109,7 +109,7 @@ export default async function RankPage() {
         {/* Score breakdown */}
         {data && (
           <section className="space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-cyan/60">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/60">
               {"/// how_your_score_is_built"}
             </p>
             <div className="rounded-xl border border-border bg-surface divide-y divide-border">
@@ -124,7 +124,7 @@ export default async function RankPage() {
                   .map((l) => (
                     <div key={l.label} className="flex items-center justify-between px-5 py-2.5">
                       <span className="font-mono text-xs text-text-muted">
-                        {l.label} <span className="text-text-muted/60">× {l.count.toLocaleString("en-US")}</span>
+                        {l.label} <span className="text-text-muted">× {l.count.toLocaleString("en-US")}</span>
                       </span>
                       <span className="font-mono text-xs font-bold text-accent-gold-text">+{l.points.toLocaleString("en-US")}</span>
                     </div>
@@ -138,7 +138,7 @@ export default async function RankPage() {
 
         {/* The ladder */}
         <section className="space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70 text-center">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70 text-center">
             {"/// the_path"}
           </p>
           <div className="space-y-3">
@@ -162,13 +162,13 @@ export default async function RankPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-display text-base font-bold text-text-primary">{r.title}</h3>
                       {isCurrent && (
-                        <span className="font-mono text-[9px] uppercase tracking-widest text-accent-gold-text">
+                        <span className="font-mono text-[12px] uppercase tracking-widest text-accent-gold-text">
                           ◂ you are here
                         </span>
                       )}
                     </div>
-                    <p className="font-mono text-[11px] text-text-muted leading-relaxed">{r.blurb}</p>
-                    <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">
+                    <p className="font-mono text-[12px] text-text-muted leading-relaxed">{r.blurb}</p>
+                    <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
                       {r.minScore === 0 ? "Starting rank" : `${r.minScore.toLocaleString("en-US")} codex score`}
                     </p>
                   </div>
@@ -181,22 +181,22 @@ export default async function RankPage() {
         {/* Ways to climb */}
         <section className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface p-6 text-center space-y-4">
           <h2 className="font-display text-lg font-bold text-text-primary">Climb faster.</h2>
-          <p className="font-mono text-[11px] text-text-muted max-w-md mx-auto leading-relaxed">
+          <p className="font-mono text-[12px] text-text-muted max-w-md mx-auto leading-relaxed">
             Contribution is worth the most. Propose a signal for investigation, save what resonates,
             and go deep into the archive.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/signals" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet-text hover:bg-accent-violet/5 transition-colors">
+            <Link href="/signals" className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet-text hover:bg-accent-violet/5 transition-colors">
               Propose a signal →
             </Link>
-            <Link href="/explore" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-cyan/30 text-accent-cyan hover:bg-accent-cyan/5 transition-colors">
+            <Link href="/explore" className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-accent-cyan/30 text-accent-cyan hover:bg-accent-cyan/5 transition-colors">
               Explore the archive →
             </Link>
-            <Link href="/leaderboard" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold/5 transition-colors">
+            <Link href="/leaderboard" className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold/5 transition-colors">
               Leaderboard →
             </Link>
             {!isMember && (
-              <Link href="/premium" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold/5 transition-colors">
+              <Link href="/premium" className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold/5 transition-colors">
                 Become Initiate+ →
               </Link>
             )}

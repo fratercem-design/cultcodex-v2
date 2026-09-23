@@ -119,13 +119,13 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
     <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
       {/* Graph teaser */}
       <div className="mb-3 flex items-center justify-between gap-4 rounded-lg border border-accent-violet/20 bg-accent-violet/5 px-4 py-3">
-        <p className="font-mono text-[11px] text-text-muted">
+        <p className="font-mono text-[12px] text-text-muted">
           <span className="text-accent-violet-text font-bold">Relationship Map</span>
           {" "}— see who appeared with whom across the entire archive, as a live network graph.
         </p>
         <Link
           href="/graph"
-          className="shrink-0 inline-flex items-center gap-1 rounded border border-accent-violet/40 bg-surface px-3 py-1.5 font-mono text-[10px] font-bold text-accent-violet-text hover:bg-accent-violet/10 transition-colors whitespace-nowrap"
+          className="shrink-0 inline-flex items-center gap-1 rounded border border-accent-violet/40 bg-surface px-3 py-1.5 font-mono text-[12px] font-bold text-accent-violet-text hover:bg-accent-violet/10 transition-colors whitespace-nowrap"
         >
           View map →
         </Link>
@@ -170,16 +170,16 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
         <section className="mt-10 border-t border-border pt-8">
           <div className="mb-4 flex items-baseline justify-between gap-4">
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
                 {"/// special_mentions"}
               </p>
-              <p className="mt-1 font-mono text-[11px] text-text-muted/60">
+              <p className="mt-1 font-mono text-[12px] text-text-muted">
                 {specialMentions.length} celebrities, one-off guests &amp; name-drops — no standalone profiles.
               </p>
             </div>
             <Link
               href="/people/the-rest"
-              className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
+              className="shrink-0 font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
             >
               Full entry →
             </Link>
@@ -191,7 +191,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
               return (
                 <span
                   key={p.id}
-                  className="inline-flex items-center gap-1 rounded border border-border bg-surface px-2.5 py-1 font-mono text-[10px] text-text-muted"
+                  className="inline-flex items-center gap-1 rounded border border-border bg-surface px-2.5 py-1 font-mono text-[12px] text-text-muted"
                   title={`${p.personType === "mentioned" ? "Mentioned" : "One-off guest"}${count > 0 ? ` · ${count} appearance${count !== 1 ? "s" : ""}` : ""}`}
                 >
                   <span
@@ -204,7 +204,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
             {mentionsOverflow > 0 && (
               <Link
                 href="/people/the-rest"
-                className="inline-flex items-center gap-1 rounded border border-border bg-surface px-2.5 py-1 font-mono text-[10px] text-text-muted hover:text-accent-gold-text hover:border-accent-gold/30 transition-colors"
+                className="inline-flex items-center gap-1 rounded border border-border bg-surface px-2.5 py-1 font-mono text-[12px] text-text-muted hover:text-accent-gold-text hover:border-accent-gold/30 transition-colors"
               >
                 +{mentionsOverflow} more →
               </Link>

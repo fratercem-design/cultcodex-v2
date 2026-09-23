@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
-import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { MysticalDivider, OrnamentalBreak } from "@/components/graphics/mystical-divider";
 import { OracleConsole } from "@/components/oracle/oracle-console";
 import { OracleExampleExchanges } from "@/components/oracle/oracle-example-exchanges";
@@ -59,8 +58,6 @@ export default async function OraclePage() {
 
   return (
     <div className="relative min-h-screen bg-void">
-      <SacredGeometryOverlay />
-      <FloatingParticles count={20} />
       <OracleAmbience />
 
       {/* Ambient violet glow */}
@@ -95,24 +92,41 @@ export default async function OraclePage() {
         <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-[0.08em] text-accent-gold drop-shadow-lg">
           THE ORACLE
         </h1>
-        <p className="mt-1.5 font-mono text-xs uppercase tracking-[0.45em] text-accent-violet-text/70">
+        <p className="mt-1.5 font-mono text-xs uppercase tracking-[0.12em] text-accent-violet-text/70">
           AI synthesis of the complete archive
         </p>
 
         <div className="mt-5 w-24 h-px bg-gradient-to-r from-transparent via-accent-gold/40 to-transparent" />
         <MysticalDivider className="mt-4 opacity-40 [&_svg]:!text-accent-violet-text/25" />
 
-        <p className="mx-auto mt-4 max-w-md px-4 font-serif text-sm leading-relaxed text-text-muted italic">
-          Ask anything.{" "}
-          <span className="text-accent-cyan">{archiveSize.toLocaleString("en-US")}+ archive moments</span>{" "}
-          synthesized in real time — with citations back to the source.
+        <p className="mx-auto mt-4 max-w-md px-4 font-display text-[17px] leading-relaxed text-ink-2">
+          Ask a question. The Oracle searches{" "}
+          <span className="text-evidence">{archiveSize.toLocaleString("en-US")} archive moments</span>{" "}
+          and answers with citations back to the source.
         </p>
+
+        {/* What it knows, what it doesn't, how it cites — stated before the
+            ask box, not in a footer (2026-09 audit, OR-01). */}
+        <dl className="mx-auto mt-6 grid max-w-2xl gap-4 px-4 text-left font-display text-[15px] leading-relaxed sm:grid-cols-3">
+          <div className="border-t border-line pt-3">
+            <dt className="font-mono text-[12px] uppercase tracking-[0.08em] text-ink-3">What it reads</dt>
+            <dd className="mt-1 text-ink-2">Transcripts, lore and profiles in this archive.</dd>
+          </div>
+          <div className="border-t border-line pt-3">
+            <dt className="font-mono text-[12px] uppercase tracking-[0.08em] text-ink-3">What it doesn&apos;t</dt>
+            <dd className="mt-1 text-ink-2">Anything outside the archive, or episodes still waiting on a transcript.</dd>
+          </div>
+          <div className="border-t border-line pt-3">
+            <dt className="font-mono text-[12px] uppercase tracking-[0.08em] text-ink-3">How it answers</dt>
+            <dd className="mt-1 text-ink-2">With episode + timestamp citations. It can be wrong — check the sources.</dd>
+          </div>
+        </dl>
 
         {/* Trial callout for non-subscribers */}
         {!canAccess && (
           <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-accent-gold/30 bg-accent-gold/5 px-5 py-2">
             <span className="text-accent-gold-text text-sm">✦</span>
-            <p className="font-mono text-[11px] text-accent-gold-text/80">
+            <p className="font-mono text-[12px] text-accent-gold-text/80">
               3 free questions every month — no account required to start
             </p>
           </div>
@@ -130,7 +144,7 @@ export default async function OraclePage() {
 
             <div className="relative">
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-violet/30 to-transparent" />
-              <p className="pt-6 text-center font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet-text/70">
+              <p className="pt-6 text-center font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
                 {"/// now_ask_yours"}
               </p>
             </div>
@@ -141,7 +155,7 @@ export default async function OraclePage() {
         <section>
           <OracleConsole />
           {!canAccess && (
-            <p className="mt-3 text-center font-mono text-[10px] text-text-muted/60 uppercase tracking-widest">
+            <p className="mt-3 text-center font-mono text-[12px] text-text-muted uppercase tracking-widest">
               Initiate+ — {INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions/month ·{" "}
               <Link href="/premium" className="text-accent-gold-text/80 hover:text-accent-gold-text transition-colors">
                 ${initiateTier.priceMonthly}/mo
@@ -153,7 +167,7 @@ export default async function OraclePage() {
         {/* ── For subscribers: show what they've unlocked ── */}
         {canAccess && (
           <section className="rounded-xl border border-accent-violet/15 bg-surface/60 px-6 py-5 space-y-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
               {"/// oracle_capabilities"}
             </p>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -167,7 +181,7 @@ export default async function OraclePage() {
               ].map((cap) => (
                 <div key={cap} className="flex items-start gap-2">
                   <span className="text-accent-violet-text/70 mt-0.5 shrink-0">◈</span>
-                  <p className="font-mono text-[10px] text-text-muted leading-snug">{cap}</p>
+                  <p className="font-mono text-[12px] text-text-muted leading-snug">{cap}</p>
                 </div>
               ))}
             </div>
@@ -179,7 +193,7 @@ export default async function OraclePage() {
         {/* ── Transmission fragment (quality-filtered random quote) ── */}
         {quote && (
           <section>
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70 text-center mb-4">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70 text-center mb-4">
               {"/// transmission_fragment"}
             </p>
             <div className="relative rounded-xl border border-accent-violet/20 bg-surface/80 backdrop-blur-sm p-1">
@@ -219,7 +233,7 @@ export default async function OraclePage() {
                   </p>
                 )}
                 {quote.context && (
-                  <p className="mt-3 text-center font-mono text-xs text-text-muted/70 italic">
+                  <p className="mt-3 text-center font-mono text-xs text-text-muted italic">
                     {quote.context}
                   </p>
                 )}
@@ -246,14 +260,14 @@ export default async function OraclePage() {
               <div className="absolute -top-12 left-1/2 h-40 w-80 -translate-x-1/2 rounded-full bg-accent-violet/10 blur-3xl" />
             </div>
             <div className="relative space-y-4">
-              <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
                 ✦ &nbsp; unlock the full archive &nbsp; ✦
               </p>
               <h3 className="font-display text-2xl font-bold text-white sm:text-3xl">
                 The Oracle answers{" "}
                 <span className="text-accent-violet-text">everything.</span>
               </h3>
-              <p className="font-mono text-[11px] text-text-muted max-w-sm mx-auto leading-relaxed">
+              <p className="font-mono text-[12px] text-text-muted max-w-sm mx-auto leading-relaxed">
                 {INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions each month. Every transcript, every behavioral profile, every pattern
                 the archive has identified — synthesized on demand, with citations.
               </p>
@@ -266,12 +280,12 @@ export default async function OraclePage() {
                 </Link>
                 <Link
                   href="/premium"
-                  className="font-mono text-[11px] text-text-muted/50 hover:text-accent-violet-text/70 transition-colors"
+                  className="font-mono text-[12px] text-text-muted hover:text-accent-violet-text/70 transition-colors"
                 >
                   See what opens →
                 </Link>
               </div>
-              <p className="font-mono text-[10px] text-text-muted/60">
+              <p className="font-mono text-[12px] text-text-muted">
                 Cancel any time · Instant access · Includes transcripts, Psychenomicon & more
               </p>
             </div>
@@ -281,10 +295,10 @@ export default async function OraclePage() {
         {/* Sibling divination tool — the Tarot reading is a distinct mode from AI Q&A */}
         <section className="rounded-xl border border-accent-gold/15 bg-surface/40 px-6 py-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
               {"/// also_in_the_codex"}
             </p>
-            <p className="max-w-md font-mono text-[11px] leading-relaxed text-text-muted">
+            <p className="max-w-md font-mono text-[12px] leading-relaxed text-text-muted">
               Prefer your answers in symbols? The{" "}
               <span className="text-accent-gold-text">Cult of Psyche Tarot</span> pulls a reading from the
               same archive — 80 cards of its archetypes and recurring forces.
@@ -299,7 +313,7 @@ export default async function OraclePage() {
         </section>
 
         <OrnamentalBreak className="mt-4 opacity-30 [&_svg]:!text-accent-violet-text/70" />
-        <p className="mt-4 text-center font-serif text-xs text-text-muted/30 italic">
+        <p className="mt-4 text-center font-serif text-xs text-text-muted italic">
           What is remembered, lives.
         </p>
       </main>

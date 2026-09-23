@@ -41,7 +41,7 @@ export function PaginationControls({
       className="mt-8 flex flex-col items-center gap-3"
       aria-label="Pagination"
     >
-      <p className="font-mono text-[10px] text-text-muted">
+      <p className="font-mono text-[12px] text-text-muted">
         Showing {start}–{end} of {totalCount}
       </p>
 
@@ -50,12 +50,12 @@ export function PaginationControls({
         {page > 1 ? (
           <Link
             href={href(page - 1)}
-            className="rounded border border-border px-3 py-1 font-mono text-[11px] text-text-muted hover:text-accent-gold-text hover:border-accent-gold/30 transition-colors"
+            className="rounded border border-border px-3 py-1 font-mono text-[12px] text-text-muted hover:text-accent-gold-text hover:border-accent-gold/30 transition-colors"
           >
             ← Prev
           </Link>
         ) : (
-          <span className="rounded border border-border/50 px-3 py-1 font-mono text-[11px] text-text-muted/60 cursor-not-allowed">
+          <span className="rounded border border-border/50 px-3 py-1 font-mono text-[12px] text-text-muted cursor-not-allowed">
             ← Prev
           </span>
         )}
@@ -65,7 +65,7 @@ export function PaginationControls({
           n === null ? (
             <span
               key={`gap-${i}`}
-              className="px-1 font-mono text-[11px] text-text-muted/60"
+              className="px-1 font-mono text-[12px] text-text-muted"
             >
               …
             </span>
@@ -73,7 +73,7 @@ export function PaginationControls({
             <Link
               key={n}
               href={href(n)}
-              className={`rounded border px-2.5 py-1 font-mono text-[11px] transition-colors ${
+              className={`rounded border px-2.5 py-1 font-mono text-[12px] transition-colors ${
                 n === page
                   ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold-text"
                   : "border-border text-text-muted hover:text-accent-gold-text hover:border-accent-gold/30"
@@ -88,12 +88,12 @@ export function PaginationControls({
         {page < totalPages ? (
           <Link
             href={href(page + 1)}
-            className="rounded border border-border px-3 py-1 font-mono text-[11px] text-text-muted hover:text-accent-gold-text hover:border-accent-gold/30 transition-colors"
+            className="rounded border border-border px-3 py-1 font-mono text-[12px] text-text-muted hover:text-accent-gold-text hover:border-accent-gold/30 transition-colors"
           >
             Next →
           </Link>
         ) : (
-          <span className="rounded border border-border/50 px-3 py-1 font-mono text-[11px] text-text-muted/60 cursor-not-allowed">
+          <span className="rounded border border-border/50 px-3 py-1 font-mono text-[12px] text-text-muted cursor-not-allowed">
             Next →
           </span>
         )}

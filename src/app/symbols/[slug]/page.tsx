@@ -81,7 +81,7 @@ export default async function SymbolDetailPage({
       <main className="min-h-screen bg-void">
         <div className="mx-auto max-w-3xl px-4 py-8">
           {/* Breadcrumb */}
-          <nav className="mb-8 flex items-center gap-2 font-mono text-[10px] text-text-muted">
+          <nav className="mb-8 flex items-center gap-2 font-mono text-[12px] text-text-muted">
             <Link href="/" className="hover:text-accent-gold-text transition-colors">
               CODEX
             </Link>
@@ -109,7 +109,7 @@ export default async function SymbolDetailPage({
                   {symbol.name}
                 </h1>
                 <span
-                  className={`inline-flex items-center rounded border px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest ${CATEGORY_COLORS[symbol.category]}`}
+                  className={`inline-flex items-center rounded border px-2.5 py-1 font-mono text-[12px] uppercase tracking-widest ${CATEGORY_COLORS[symbol.category]}`}
                 >
                   {symbol.category}
                 </span>
@@ -124,7 +124,7 @@ export default async function SymbolDetailPage({
           <div className="space-y-10">
             {/* History */}
             <section>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-3">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80 mb-3">
                 {"/// history"}
               </p>
               <p className="text-sm text-text-muted leading-relaxed">{symbol.history}</p>
@@ -134,7 +134,7 @@ export default async function SymbolDetailPage({
 
             {/* Occult Meaning */}
             <section>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-3">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80 mb-3">
                 {"/// occult_meaning"}
               </p>
               <p className="text-sm text-text-muted leading-relaxed">{symbol.occultMeaning}</p>
@@ -144,7 +144,7 @@ export default async function SymbolDetailPage({
 
             {/* Modern Interpretation */}
             <section>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-3">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80 mb-3">
                 {"/// modern_interpretation"}
               </p>
               <p className="text-sm text-text-muted leading-relaxed">
@@ -156,7 +156,7 @@ export default async function SymbolDetailPage({
 
             {/* Associated Archetypes */}
             <section>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-3">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80 mb-3">
                 {"/// associated_archetypes"}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -178,7 +178,7 @@ export default async function SymbolDetailPage({
               <>
                 <div className="h-px bg-border" />
                 <section>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-4">
+                  <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80 mb-4">
                     {"/// related_symbols"}
                   </p>
                   <div className="grid gap-3 sm:grid-cols-3">
@@ -194,7 +194,7 @@ export default async function SymbolDetailPage({
                         <span className="font-mono text-xs text-text-primary group-hover:text-accent-gold-text transition-colors">
                           {related.name}
                         </span>
-                        <span className="font-mono text-[9px] text-text-muted line-clamp-1">
+                        <span className="font-mono text-[12px] text-text-muted line-clamp-1">
                           {related.tagline}
                         </span>
                       </Link>
@@ -206,14 +206,14 @@ export default async function SymbolDetailPage({
 
             {/* Keywords (for SEO, visually subtle) */}
             <section className="rounded-xl border border-border/50 bg-surface/40 px-5 py-4">
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/60 mb-2">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted mb-2">
                 {"/// related_topics"}
               </p>
               <div className="flex flex-wrap gap-2">
                 {symbol.keywords.map((kw) => (
                   <span
                     key={kw}
-                    className="font-mono text-[9px] text-text-muted/50 border border-border/40 rounded px-2 py-0.5"
+                    className="font-mono text-[12px] text-text-muted border border-border/40 rounded px-2 py-0.5"
                   >
                     {kw}
                   </span>
@@ -224,7 +224,7 @@ export default async function SymbolDetailPage({
 
           {/* Footer CTAs */}
           <footer className="mt-12 pt-8 border-t border-border">
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-4">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80 mb-4">
               {"/// continue_your_research"}
             </p>
             <div className="flex flex-wrap gap-3">

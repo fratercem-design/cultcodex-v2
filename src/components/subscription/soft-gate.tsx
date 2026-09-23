@@ -81,7 +81,7 @@ export function SoftGate({
 
       {/* Unlock panel */}
       <div className={`relative -mt-2 rounded-b-lg border ${accentBorderCls} bg-gradient-to-b from-surface to-elevated p-6 text-center space-y-3 shadow-xl`}>
-        <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${accentTextCls}`}>
+        <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${accentTextCls}`}>
           {"/// "}{t.role}{"_only"}
         </p>
         <h3 className={`font-display text-lg font-bold ${accentTextCls}`}>

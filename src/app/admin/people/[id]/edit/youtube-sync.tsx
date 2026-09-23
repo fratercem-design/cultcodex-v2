@@ -74,7 +74,7 @@ export function YouTubeSync({ personId, initialChannelUrl, initialAvatarUrl }: P
           value={channelUrl}
           onChange={(e) => { setChannelUrl(e.target.value); setStatus("idle"); }}
           placeholder="https://www.youtube.com/@handle  or  @handle"
-          className="flex-1 rounded border border-border bg-void px-3 py-1.5 font-mono text-xs text-text-primary placeholder:text-text-muted/60 focus:border-red-500/50 focus:outline-none"
+          className="flex-1 rounded border border-border bg-void px-3 py-1.5 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-red-500/50 focus:outline-none"
           // Also surfaces value to the enclosing <form> so the server action saves it
           name="youtubeChannelUrl"
         />
@@ -82,7 +82,7 @@ export function YouTubeSync({ personId, initialChannelUrl, initialAvatarUrl }: P
           type="button"
           onClick={handleSync}
           disabled={status === "loading"}
-          className="rounded border border-red-800/60 bg-red-900/20 px-3 py-1.5 font-mono text-[11px] font-bold text-red-400 uppercase tracking-widest hover:bg-red-900/40 disabled:opacity-40 transition-colors whitespace-nowrap"
+          className="rounded border border-red-800/60 bg-red-900/20 px-3 py-1.5 font-mono text-[12px] font-bold text-red-400 uppercase tracking-widest hover:bg-red-900/40 disabled:opacity-40 transition-colors whitespace-nowrap"
         >
           {status === "loading" ? "Syncing…" : "Sync Avatar"}
         </button>
@@ -90,7 +90,7 @@ export function YouTubeSync({ personId, initialChannelUrl, initialAvatarUrl }: P
 
       {/* Status message */}
       {message && (
-        <p className={`font-mono text-[11px] ${status === "error" ? "text-red-400" : "text-green-400"}`}>
+        <p className={`font-mono text-[12px] ${status === "error" ? "text-red-400" : "text-green-400"}`}>
           {status === "ok" ? "✓ " : "✗ "}{message}
         </p>
       )}
@@ -107,13 +107,13 @@ export function YouTubeSync({ personId, initialChannelUrl, initialAvatarUrl }: P
             unoptimized
           />
           <div>
-            <p className="font-mono text-[10px] text-text-muted">Avatar preview</p>
-            <p className="font-mono text-[10px] text-text-muted/50 truncate max-w-xs">{avatarPreview}</p>
+            <p className="font-mono text-[12px] text-text-muted">Avatar preview</p>
+            <p className="font-mono text-[12px] text-text-muted truncate max-w-xs">{avatarPreview}</p>
           </div>
         </div>
       )}
 
-      <p className="font-mono text-[10px] text-text-muted/50">
+      <p className="font-mono text-[12px] text-text-muted">
         Sync pulls the channel profile picture from the YouTube Data API and saves it as this person&apos;s avatar.
         The channel URL is also stored and shown as a link on the public voice page.
       </p>

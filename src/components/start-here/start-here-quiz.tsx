@@ -104,7 +104,7 @@ export function StartHereQuiz() {
             />
           </div>
         ))}
-        <span className="font-mono text-[10px] text-text-muted ml-2 tracking-widest uppercase">
+        <span className="font-mono text-[12px] text-text-muted ml-2 tracking-widest uppercase">
           {step + 1} / {STEPS.length}
         </span>
       </div>
@@ -147,13 +147,13 @@ export function StartHereQuiz() {
                 >
                   {opt.label}
                 </p>
-                <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+                <p className="font-mono text-[12px] text-text-muted leading-relaxed">
                   {opt.sub}
                 </p>
               </div>
               <span
                 className={`ml-auto font-mono text-xs mt-1 shrink-0 transition-all ${
-                  isSelected ? accent : "text-text-muted/0 group-hover:text-text-muted/60"
+                  isSelected ? accent : "text-text-muted/0 group-hover:text-text-muted"
                 }`}
               >
                 {isSelected ? "✓" : "→"}
@@ -168,7 +168,7 @@ export function StartHereQuiz() {
         <div className="text-center">
           <button
             onClick={() => setStep(step - 1)}
-            className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-text-primary transition-colors"
+            className="font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-text-primary transition-colors"
           >
             ← back
           </button>

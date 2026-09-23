@@ -54,7 +54,7 @@ export default async function OracleSharePage({ searchParams }: PageProps) {
       />
       <main className="mx-auto max-w-2xl px-4 py-12 space-y-6">
         {question && (
-          <div className="font-mono text-xs text-text-muted/60 uppercase tracking-[0.2em]">
+          <div className="font-mono text-xs text-text-muted uppercase tracking-[0.12em]">
             Question asked:
           </div>
         )}
@@ -73,7 +73,7 @@ export default async function OracleSharePage({ searchParams }: PageProps) {
         >
           <div className="flex items-center gap-3 mb-4">
             <span className="text-2xl text-accent-violet-text" aria-hidden="true">◉</span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/70">
+            <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
               The Oracle Responds
             </span>
           </div>

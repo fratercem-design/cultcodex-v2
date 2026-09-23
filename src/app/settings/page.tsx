@@ -63,7 +63,7 @@ export default async function SettingsPage() {
                   <span className="font-mono text-xs font-bold text-accent-gold-text">
                     {link.label}
                   </span>
-                  <p className="mt-1 font-mono text-[10px] text-text-muted">
+                  <p className="mt-1 font-mono text-[12px] text-text-muted">
                     {link.description}
                   </p>
                 </Link>
@@ -82,12 +82,12 @@ export default async function SettingsPage() {
                 allowAdminPortalTest={allowAdminPortalTest}
               />
             ) : (
-              <p className="font-mono text-[10px] text-text-muted">
+              <p className="font-mono text-[12px] text-text-muted">
                 Subscription details are unavailable right now. Please try again shortly.
               </p>
             )}
             {subscription && !subscription.isAdmin && subscription.status !== "active" && (
-              <p className="mt-3 font-mono text-[10px] text-text-muted">
+              <p className="mt-3 font-mono text-[12px] text-text-muted">
                 No active subscription.{" "}
                 <Link href="/premium" className="text-accent-gold-text hover:underline">
                   See membership tiers
@@ -98,7 +98,7 @@ export default async function SettingsPage() {
           </div>
         </SectionCard>
 
-        <p className="text-center font-mono text-[10px] text-text-muted">
+        <p className="text-center font-mono text-[12px] text-text-muted">
           Need help?{" "}
           <Link href="/contact" className="text-accent-gold-text hover:underline">
             Contact us

@@ -27,8 +27,8 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<
   const { trait, value } = payload[0].payload;
   return (
     <div className="rounded border border-accent-violet/30 bg-void/95 px-2.5 py-1.5 shadow-xl">
-      <p className="font-mono text-[9px] text-text-muted">{trait}</p>
-      <p className="font-mono text-[11px] text-accent-violet-text font-bold">{value}/10</p>
+      <p className="font-mono text-[12px] text-text-muted">{trait}</p>
+      <p className="font-mono text-[12px] text-accent-violet-text font-bold">{value}/10</p>
     </div>
   );
 }

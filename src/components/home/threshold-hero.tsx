@@ -1,38 +1,38 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./threshold-hero.css";
 
 const THRESHOLD_SEEN_KEY = "ccx.threshold.seen";
 
 interface ThresholdHeroProps {
-  /** e.g. "TX-20260710" */
-  txId: string;
-  /** e.g. "2026.07.10" */
+  /** e.g. "2026.07.10" — the date the counts below are true as of */
   dateLabel: string;
   episodeCount: number;
   transcribedPct: number;
-  /** next/font variable classes for Bodoni Moda + Cinzel */
+  /** next/font variable classes for Bodoni Moda */
   fontClass?: string;
 }
 
 /**
- * The Threshold — a full-viewport cinematic opening.
+ * The Threshold — the one authored ritual moment on the site.
  *
- * Implements Ch. II §01 + Ch. VII of the Visual Audit Dossier: the "you have
- * arrived" moment the audit flagged as entirely missing. A single rotating
- * sigil (two counter-rotating rings — never one), a staggered title reveal,
- * and a keyboard/scroll affordance to enter. Pure-CSS entrance so it renders
- * on first paint; JS only wires SPACE/scroll and honours reduced-motion.
+ * Ritual Research Instrument rules (2026-09 audit):
+ *   - Say what this is before asking anyone to decode it: a plain one-liner
+ *     sits directly under "the Codex."
+ *   - No fake telemetry (TX ids, "UPLINK STABLE", "TLS/1.3"). The band is a
+ *     plain eyebrow; the meta row carries real counts with an "as of" date.
+ *   - No key hijacking. SPACE / Enter / ArrowDown used to be intercepted to
+ *     scroll 900px, which broke the browser's own behaviour. The page simply
+ *     scrolls; the button is an optional shortcut.
+ * Returning visitors still get the compact band.
  */
 export function ThresholdHero({
-  txId,
   dateLabel,
   episodeCount,
   transcribedPct,
   fontClass = "",
 }: ThresholdHeroProps) {
-  const rootRef = useRef<HTMLElement>(null);
   const [compact, setCompact] = useState(false);
 
   // Returning visitors get a band instead of a full screen. Read after mount,
@@ -57,69 +57,19 @@ export function ThresholdHero({
     const reduce =
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    const target = document.getElementById("codex-enter");
-    if (target) {
-      target.scrollIntoView({
-        behavior: reduce ? "auto" : "smooth",
-        block: "start",
-      });
-    } else {
-      window.scrollTo({
-        top: window.innerHeight,
-        behavior: reduce ? "auto" : "smooth",
-      });
-    }
+    document.getElementById("codex-enter")?.scrollIntoView({
+      behavior: reduce ? "auto" : "smooth",
+      block: "start",
+    });
   }, []);
-
-  // Keyboard: SPACE / ↓ / Enter cross the threshold — but only while it's
-  // actually on screen. The app's scroll container isn't the window (the
-  // terminal shell scrolls `.terminal-main`, not `body`), so `window.scrollY`
-  // never changes and can't gate this — track real visibility instead via
-  // IntersectionObserver, which works regardless of which ancestor scrolls.
-  useEffect(() => {
-    const node = rootRef.current;
-    if (!node) return;
-
-    const visible = { current: true };
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        visible.current = entry.isIntersecting;
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(node);
-
-    const onKey = (e: KeyboardEvent) => {
-      if (!visible.current) return;
-      const target = e.target as HTMLElement | null;
-      // Never hijack keys meant for a focused interactive control.
-      if (target?.closest("input, textarea, select, button, a, [contenteditable='true'], [role='button']")) {
-        return;
-      }
-      if (e.key === " " || e.key === "ArrowDown" || e.key === "Enter") {
-        e.preventDefault();
-        enter();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      observer.disconnect();
-    };
-  }, [enter]);
 
   return (
     <section
-      ref={rootRef}
       className={`threshold ${compact ? "threshold--compact" : ""} ${fontClass}`}
-      aria-label="CultCodex — the threshold"
+      aria-label="CultCodex — the Cult of Psyche archive"
     >
       <div className="threshold__band">
-        <span className="threshold__mono">{txId}</span>
-        <span className="threshold__pip">
-          <span className="threshold__pip-dot" aria-hidden="true" /> UPLINK STABLE
-        </span>
-        <span className="threshold__mono threshold__mono--dim">TLS/1.3</span>
+        <span className="threshold__mono">{"///"} the Cult of Psyche archive</span>
       </div>
 
       <div className="threshold__center">
@@ -134,10 +84,13 @@ export function ThresholdHero({
         <p className="threshold__title">
           <em>the Codex.</em>
         </p>
+        <p className="threshold__lede">
+          Every episode of Cult of Psyche — searchable to the second.
+        </p>
 
         <dl className="threshold__meta">
           <div>
-            <dt>Transmissions</dt>
+            <dt>Episodes</dt>
             <dd>{episodeCount.toLocaleString("en-US")}</dd>
           </div>
           <div className="threshold__meta-div" aria-hidden="true" />
@@ -147,17 +100,14 @@ export function ThresholdHero({
           </div>
           <div className="threshold__meta-div" aria-hidden="true" />
           <div>
-            <dt>Sealed</dt>
+            <dt>As of</dt>
             <dd>{dateLabel}</dd>
           </div>
         </dl>
       </div>
 
       <button type="button" className="threshold__enter" onClick={enter}>
-        <span className="threshold__enter-label">
-          <span className="threshold__enter-key">press SPACE to enter</span>
-          <span className="threshold__enter-scroll">scroll to enter</span>
-        </span>
+        <span className="threshold__enter-label">Enter the archive</span>
         <span className="threshold__enter-chevron" aria-hidden="true">
           ↓
         </span>

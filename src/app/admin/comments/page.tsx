@@ -50,7 +50,7 @@ export default async function AdminCommentsPage() {
                     <span className="font-mono text-xs font-bold text-text-primary">
                       {comment.user.displayName}
                     </span>
-                    <span className="font-mono text-[10px] text-text-muted">
+                    <span className="font-mono text-[12px] text-text-muted">
                       {comment.user.email}
                     </span>
                     {comment.flagged && (
@@ -60,7 +60,7 @@ export default async function AdminCommentsPage() {
                   <p className="text-sm text-text-primary mb-2">
                     {comment.content}
                   </p>
-                  <div className="flex items-center gap-3 font-mono text-[10px] text-text-muted">
+                  <div className="flex items-center gap-3 font-mono text-[12px] text-text-muted">
                     <span>
                       on{" "}
                       <a
@@ -78,7 +78,7 @@ export default async function AdminCommentsPage() {
                     )}
                   </div>
                   {comment.flaggedReason && (
-                    <p className="mt-1 font-mono text-[10px] text-red-400 italic">
+                    <p className="mt-1 font-mono text-[12px] text-red-400 italic">
                       Reason: {comment.flaggedReason}
                     </p>
                   )}

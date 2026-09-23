@@ -50,7 +50,7 @@ export default function SymbolsPage({
       {/* Hero */}
       <section className="border-b border-border bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-5xl space-y-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// symbol_encyclopedia"}
           </p>
           <div className="flex items-center gap-4">
@@ -70,13 +70,13 @@ export default function SymbolsPage({
       <section className="border-b border-border px-4 py-5 bg-surface/40">
         <div className="mx-auto max-w-5xl">
           <div className="flex flex-wrap gap-2 items-center">
-            <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted mr-2">
+            <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted mr-2">
               filter:
             </span>
             {CATEGORIES.map((cat) => (
               <span
                 key={cat}
-                className={`inline-flex items-center rounded border px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest cursor-default transition-colors ${CATEGORY_COLORS[cat]}`}
+                className={`inline-flex items-center rounded border px-2.5 py-1 font-mono text-[12px] uppercase tracking-widest cursor-default transition-colors ${CATEGORY_COLORS[cat]}`}
               >
                 {cat}
               </span>
@@ -113,7 +113,7 @@ function SymbolCard({ symbol }: { symbol: SymbolEntry }) {
         <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold-text transition-colors">
           {symbol.name}
         </p>
-        <p className="font-mono text-[10px] text-text-muted leading-relaxed line-clamp-2">
+        <p className="font-mono text-[12px] text-text-muted leading-relaxed line-clamp-2">
           {symbol.tagline}
         </p>
       </div>
@@ -121,7 +121,7 @@ function SymbolCard({ symbol }: { symbol: SymbolEntry }) {
       {/* Category badge */}
       <div>
         <span
-          className={`inline-flex items-center rounded border px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest ${CATEGORY_COLORS[symbol.category]}`}
+          className={`inline-flex items-center rounded border px-2 py-0.5 font-mono text-[12px] uppercase tracking-widest ${CATEGORY_COLORS[symbol.category]}`}
         >
           {symbol.category}
         </span>

@@ -25,14 +25,14 @@ export default async function AuthErrorPage({ searchParams }: PageProps) {
   return (
     <main className="min-h-screen bg-void flex items-center justify-center px-4">
       <div className="text-center space-y-5 max-w-sm">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-crimson-text">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-crimson-text">
           {"/// auth_error"}
         </p>
         <p className="font-display text-xl font-bold text-text-primary">
           Sign-in failed
         </p>
         {error && (
-          <p className="font-mono text-[10px] text-text-muted/60 uppercase tracking-wider">
+          <p className="font-mono text-[12px] text-text-muted uppercase tracking-wider">
             code: {error}
           </p>
         )}
@@ -46,7 +46,7 @@ export default async function AuthErrorPage({ searchParams }: PageProps) {
           </Link>
           <Link
             href="/"
-            className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
+            className="font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             ← Home
           </Link>

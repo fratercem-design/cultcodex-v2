@@ -35,7 +35,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-surface border border-border rounded px-3 py-2 font-mono text-xs shadow-lg space-y-1">
-      <div className="text-text-muted text-[10px]">{formatMonth(label as string)}</div>
+      <div className="text-text-muted text-[12px]">{formatMonth(label as string)}</div>
       {payload.map((p: { name: string; value: number; color: string }) => (
         <div key={p.name} className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full" style={{ background: p.color }} />

@@ -105,7 +105,7 @@ export function SubscribeForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
-          className="flex-1 rounded border border-border bg-void px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted/50 focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30"
+          className="flex-1 rounded border border-border bg-void px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30"
           required
           disabled={status === "loading" || status === "success"}
         />

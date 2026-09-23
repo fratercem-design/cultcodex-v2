@@ -90,7 +90,7 @@ export default async function MembersPage() {
 
         {/* Decorative rune line */}
         <div className="relative mx-auto max-w-4xl px-4 pb-12 pt-16 text-center">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-cyan/60">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/60">
             ✦ &nbsp; Official Record &nbsp; ✦
           </p>
           <h1
@@ -106,7 +106,7 @@ export default async function MembersPage() {
 
           <Link
             href="/leaderboard"
-            className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent-gold/30 bg-accent-gold/5 px-5 py-2 font-mono text-[11px] uppercase tracking-widest text-accent-gold-text transition-colors hover:bg-accent-gold/10"
+            className="mt-5 inline-flex items-center gap-2 rounded-full border border-accent-gold/30 bg-accent-gold/5 px-5 py-2 font-mono text-[12px] uppercase tracking-widest text-accent-gold-text transition-colors hover:bg-accent-gold/10"
           >
             ◆ View the rank leaderboard →
           </Link>
@@ -123,7 +123,7 @@ export default async function MembersPage() {
               <span className="font-mono text-xs text-text-muted">
                 souls initiated
                 {privateCount > 0 && (
-                  <span className="ml-1 text-text-muted/50">
+                  <span className="ml-1 text-text-muted">
                     · {privateCount} prefer anonymity
                   </span>
                 )}
@@ -134,12 +134,12 @@ export default async function MembersPage() {
           {(oracleMembers.length > 0 || members.length > 0) && (
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
               {oracleMembers.length > 0 && (
-                <span className="rounded-full border border-accent-violet/30 bg-accent-violet/10 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-accent-violet-text">
+                <span className="rounded-full border border-accent-violet/30 bg-accent-violet/10 px-3 py-1 font-mono text-[12px] uppercase tracking-widest text-accent-violet-text">
                   {oracleMembers.length} Oracle
                 </span>
               )}
               {members.length > 0 && (
-                <span className="rounded-full border border-accent-gold/30 bg-accent-gold/10 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-accent-gold-text">
+                <span className="rounded-full border border-accent-gold/30 bg-accent-gold/10 px-3 py-1 font-mono text-[12px] uppercase tracking-widest text-accent-gold-text">
                   {members.length} Initiate+
                 </span>
               )}
@@ -153,7 +153,7 @@ export default async function MembersPage() {
       <section className="border-b border-border bg-void">
         <div className="mx-auto max-w-5xl px-4 py-10">
           <div className="mb-6 text-center">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
               {"/// what_initiation_unlocks"}
             </p>
             <h2 className="mt-2 font-display text-xl font-bold text-text-primary">
@@ -172,24 +172,24 @@ export default async function MembersPage() {
                   className={`relative flex flex-col rounded-xl border ${ring} bg-gradient-to-b ${bg} to-surface p-6`}
                 >
                   {t.badge && (
-                    <span className={`absolute right-4 top-4 rounded-full border ${ring} bg-surface px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-widest ${text}`}>
+                    <span className={`absolute right-4 top-4 rounded-full border ${ring} bg-surface px-2.5 py-0.5 font-mono text-[12px] uppercase tracking-widest ${text}`}>
                       {t.badge}
                     </span>
                   )}
                   <div className="flex items-baseline justify-between gap-3">
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">{t.role}</p>
+                      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{t.role}</p>
                       <h3 className={`font-display text-lg font-bold ${text}`}>{t.name}</h3>
                     </div>
                     <p className={`font-display text-2xl font-bold ${text}`}>
                       ${t.priceMonthly}
-                      <span className="font-mono text-[10px] text-text-muted">/mo</span>
+                      <span className="font-mono text-[12px] text-text-muted">/mo</span>
                     </p>
                   </div>
-                  <p className="mt-2 font-mono text-[11px] italic text-text-muted">&ldquo;{t.psychologyHook}&rdquo;</p>
+                  <p className="mt-2 font-mono text-[12px] italic text-text-muted">&ldquo;{t.psychologyHook}&rdquo;</p>
                   <ul className="mt-3 flex-1 space-y-1.5">
                     {t.features.slice(0, 4).map((f) => (
-                      <li key={f} className="flex items-start gap-2 font-mono text-[11px] text-text-muted">
+                      <li key={f} className="flex items-start gap-2 font-mono text-[12px] text-text-muted">
                         <span className={`mt-0.5 shrink-0 ${text}`}>✦</span>
                         {f}
                       </li>
@@ -197,7 +197,7 @@ export default async function MembersPage() {
                   </ul>
                   <Link
                     href={`/premium#${t.slug}`}
-                    className={`mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold ${text} hover:underline`}
+                    className={`mt-4 inline-flex items-center gap-1.5 font-mono text-[12px] font-bold ${text} hover:underline`}
                   >
                     {t.slug === "access" ? "Become Initiate+" : "Ascend to Oracle"} →
                   </Link>
@@ -217,7 +217,7 @@ export default async function MembersPage() {
                 className="h-px flex-1"
                 style={{ background: "linear-gradient(to right, rgba(200, 57, 46,0.4), transparent)" }}
               />
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
                 ✦ Archive Contributors — Oracle Tier
               </p>
               <div
@@ -256,7 +256,7 @@ export default async function MembersPage() {
                   className="h-px flex-1"
                   style={{ background: "linear-gradient(to right, rgba(100,200,255,0.2), transparent)" }}
                 />
-                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/50">
+                <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/50">
                   Initiate+ Members
                 </p>
                 <div
@@ -369,7 +369,7 @@ function MemberCard({
       {/* Oracle badge — violet to match the Oracle tier identity */}
       {oracle && (
         <div className="absolute right-3 top-3">
-          <span className="rounded-full border border-accent-violet/50 bg-accent-violet/15 px-2 py-0.5 font-mono text-[8px] uppercase tracking-widest text-accent-violet-text">
+          <span className="rounded-full border border-accent-violet/50 bg-accent-violet/15 px-2 py-0.5 font-mono text-[12px] uppercase tracking-widest text-accent-violet-text">
             ✦ Oracle
           </span>
         </div>
@@ -377,7 +377,7 @@ function MemberCard({
       {/* Founding member glow for early joiners */}
       {!oracle && index < 10 && (
         <div className="absolute right-3 top-3">
-          <span className="rounded-full border border-accent-gold/30 bg-accent-gold/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-widest text-accent-gold-text">
+          <span className="rounded-full border border-accent-gold/30 bg-accent-gold/10 px-2 py-0.5 font-mono text-[12px] uppercase tracking-widest text-accent-gold-text">
             Founder
           </span>
         </div>
@@ -405,17 +405,17 @@ function MemberCard({
             {member.displayName}
           </p>
           {member.memberTitle ? (
-            <p className={`truncate font-mono text-[11px] italic ${ACCENT.text}`}>
+            <p className={`truncate font-mono text-[12px] italic ${ACCENT.text}`}>
               {member.memberTitle}
             </p>
           ) : isAdmin ? (
-            <p className="font-mono text-[11px] text-accent-gold-text">Admin</p>
+            <p className="font-mono text-[12px] text-accent-gold-text">Admin</p>
           ) : null}
-          <p className="mt-0.5 font-mono text-[10px] text-text-muted/60">
+          <p className="mt-0.5 font-mono text-[12px] text-text-muted">
             Member since {joinMonth} {joinYear}
           </p>
           {hasPage && (
-            <p className={`mt-1 font-mono text-[10px] ${ACCENT.soft}`}>
+            <p className={`mt-1 font-mono text-[12px] ${ACCENT.soft}`}>
               View page →
             </p>
           )}

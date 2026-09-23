@@ -35,7 +35,7 @@ export function UserMenu({ user }: UserMenuProps) {
         {user.avatarUrl ? (
           <img src={user.avatarUrl} alt="" className="h-5 w-5 rounded-full" />
         ) : (
-          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-gold/20 text-[10px] text-accent-gold-text">
+          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-gold/20 text-[12px] text-accent-gold-text">
             {user.displayName[0]?.toUpperCase()}
           </div>
         )}
@@ -46,7 +46,7 @@ export function UserMenu({ user }: UserMenuProps) {
         <div className="absolute right-0 z-50 mt-1 w-48 rounded-lg border border-border bg-surface py-1 shadow-lg">
           <div className="px-3 py-2 border-b border-border">
             <p className="text-xs text-text-primary font-medium truncate">{user.displayName}</p>
-            <p className="text-[10px] text-text-muted font-mono">{user.role.toUpperCase()}</p>
+            <p className="text-[12px] text-text-muted font-mono">{user.role.toUpperCase()}</p>
           </div>
           <Link
             href={`/user/${user.id}`}

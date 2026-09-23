@@ -31,7 +31,7 @@ const CONFIDENCE_LABEL: Record<ConfidenceLevel, string> = {
 function StateBadge({ state }: { state: RelationType }) {
   const cls = STATE_CLS[state] ?? "border-border text-text-muted bg-elevated";
   return (
-    <span className={`rounded border px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-widest ${cls}`}>
+    <span className={`rounded border px-1.5 py-0.5 font-mono text-[12px] uppercase tracking-widest ${cls}`}>
       {RELATION_LABELS[state]}
     </span>
   );
@@ -46,7 +46,7 @@ export function RelationshipDossier({ entries, personName }: { entries: Relation
 
   return (
     <SectionCard title="Relationship Dossier" accent="violet">
-      <p className="mb-4 font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/60">
+      <p className="mb-4 font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
         {"/// evolving_states · cited_to_episodes"}
       </p>
       <div className="space-y-5">
@@ -90,7 +90,7 @@ export function RelationshipDossier({ entries, personName }: { entries: Relation
                     {beat.isTurn && <StateBadge state={beat.relationType} />}
                     <span className="text-sm text-text-primary leading-snug">{beat.headline}</span>
                   </div>
-                  <div className="mt-0.5 flex flex-wrap items-center gap-x-2 font-mono text-[9px] text-text-muted">
+                  <div className="mt-0.5 flex flex-wrap items-center gap-x-2 font-mono text-[12px] text-text-muted">
                     {beat.occurredAt && <span>{formatDate(beat.occurredAt)}</span>}
                     {beat.episode && (
                       <Link
@@ -116,7 +116,7 @@ export function RelationshipDossier({ entries, personName }: { entries: Relation
           </div>
         ))}
       </div>
-      <p className="mt-4 font-mono text-[9px] text-text-muted/50">
+      <p className="mt-4 font-mono text-[12px] text-text-muted">
         Relationship states are editorial synthesis of {personName}&apos;s archive history — see cited episodes.
       </p>
       <AiNotice className="mt-2" />

@@ -62,7 +62,7 @@ export default async function JoinPage() {
             the strange edges of human behavior. The &ldquo;cult&rdquo; is the community that grew
             around it: the panelists, the lurkers, the ride-or-dies, the trolls who secretly care.
           </p>
-          <p className="font-mono text-[11px] text-text-muted/70 leading-relaxed">
+          <p className="font-mono text-[12px] text-text-muted leading-relaxed">
             {stats.episodes.toLocaleString("en-US")}+ transmissions · {stats.people.toLocaleString("en-US")} voices
             · {stats.totalHours.toLocaleString("en-US")}+ hours · one growing mythology.
           </p>
@@ -78,7 +78,7 @@ export default async function JoinPage() {
 
         {/* Ways to join */}
         <section className="space-y-6">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-cyan/60 text-center">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/60 text-center">
             {"/// ways_in"}
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -95,7 +95,7 @@ export default async function JoinPage() {
                   </h2>
                 </div>
                 <p className="text-sm text-text-muted leading-relaxed">{w.body}</p>
-                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold-text/80 group-hover:text-accent-gold-text transition-colors">
+                <p className="font-mono text-[12px] uppercase tracking-widest text-accent-gold-text/80 group-hover:text-accent-gold-text transition-colors">
                   {w.cta} →
                 </p>
               </Link>
@@ -107,7 +107,7 @@ export default async function JoinPage() {
         <MysticalDivider />
 
         <section className="mx-auto max-w-2xl rounded-xl border border-border bg-surface p-6 text-center space-y-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-text-muted">{"/// looking_for_membership"}</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// looking_for_membership"}</p>
           <p className="text-sm leading-relaxed text-text-muted">
             Observer access opens the public index and samples. Initiate+ opens the sealed transcript and intelligence layer.
           </p>
@@ -120,12 +120,12 @@ export default async function JoinPage() {
 
         {/* Close */}
         <section className="text-center space-y-3">
-          <p className="font-serif text-sm italic text-text-muted/60">What is remembered, lives.</p>
+          <p className="font-serif text-sm italic text-text-muted">What is remembered, lives.</p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/start-here" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold/5 transition-colors">
+            <Link href="/start-here" className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold/5 transition-colors">
               Start here →
             </Link>
-            <Link href="/appear" className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet-text hover:bg-accent-violet/5 transition-colors">
+            <Link href="/appear" className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet-text hover:bg-accent-violet/5 transition-colors">
               Appear on the show →
             </Link>
           </div>

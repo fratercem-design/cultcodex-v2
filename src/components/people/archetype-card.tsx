@@ -204,11 +204,11 @@ export function ArchetypeCard({
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/70">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           ψ archetype_profile
         </p>
         <span
-          className={`inline-flex items-center rounded border px-2 py-0.5 font-mono text-[8px] uppercase tracking-widest ${statusStyle}`}
+          className={`inline-flex items-center rounded border px-2 py-0.5 font-mono text-[12px] uppercase tracking-widest ${statusStyle}`}
         >
           {status}
         </span>
@@ -218,7 +218,7 @@ export function ArchetypeCard({
         {/* Primary archetype */}
         {primaryArchetype && (
           <div>
-            <p className="font-mono text-[9px] text-text-muted/50 uppercase tracking-widest mb-1">
+            <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest mb-1">
               Primary
             </p>
             <p className={`font-display text-base font-bold leading-snug ${theme.text}`}>
@@ -230,7 +230,7 @@ export function ArchetypeCard({
         {/* Radar chart */}
         {radar && (
           <div className="space-y-1">
-            <p className="font-mono text-[9px] text-text-muted/50 uppercase tracking-widest">
+            <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
               Behavioral profile
             </p>
             <RadarChart data={radar} dot={theme.dot} />
@@ -241,14 +241,14 @@ export function ArchetypeCard({
                 const pct = (val / 10) * 100;
                 return (
                   <div key={a.key} className="flex items-center gap-1.5">
-                    <span className="font-mono text-[8px] text-text-muted/60 w-8 shrink-0">{a.label}</span>
+                    <span className="font-mono text-[12px] text-text-muted w-8 shrink-0">{a.label}</span>
                     <div className="flex-1 h-0.5 bg-border rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full"
                         style={{ width: `${pct}%`, backgroundColor: theme.dot, opacity: 0.7 }}
                       />
                     </div>
-                    <span className="font-mono text-[8px] text-text-muted/50 w-4 text-right tabular-nums">
+                    <span className="font-mono text-[12px] text-text-muted w-4 text-right tabular-nums">
                       {val.toFixed(0)}
                     </span>
                   </div>
@@ -261,16 +261,16 @@ export function ArchetypeCard({
         {/* Behavioral patterns */}
         {patterns.length > 0 && (
           <div className="space-y-1.5">
-            <p className="font-mono text-[9px] text-text-muted/50 uppercase tracking-widest">
+            <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
               Behavioral patterns
             </p>
             <ul className="space-y-1">
               {patterns.map((p, i) => (
                 <li key={i} className="flex items-start gap-1.5">
-                  <span className={`mt-0.5 shrink-0 font-mono text-[9px] ${theme.text} opacity-60`}>
+                  <span className={`mt-0.5 shrink-0 font-mono text-[12px] ${theme.text} opacity-60`}>
                     ·
                   </span>
-                  <span className="font-mono text-[10px] text-text-muted leading-snug">{p}</span>
+                  <span className="font-mono text-[12px] text-text-muted leading-snug">{p}</span>
                 </li>
               ))}
             </ul>
@@ -281,7 +281,7 @@ export function ArchetypeCard({
         <div className="flex flex-wrap gap-x-4 gap-y-1.5">
           <Link
             href={`/psychenomicon/entities/${entitySlug}`}
-            className={`inline-flex items-center gap-1.5 font-mono text-[10px] ${theme.text} hover:opacity-80 transition-opacity`}
+            className={`inline-flex items-center gap-1.5 font-mono text-[12px] ${theme.text} hover:opacity-80 transition-opacity`}
           >
             Full Psychenomicon entry
             <span aria-hidden>→</span>
@@ -289,7 +289,7 @@ export function ArchetypeCard({
           {archetypeAtlasSlug && (
             <Link
               href={`/psychenomicon/archetypes/${archetypeAtlasSlug}`}
-              className="inline-flex items-center gap-1.5 font-mono text-[10px] text-text-muted/60 hover:text-text-muted transition-colors"
+              className="inline-flex items-center gap-1.5 font-mono text-[12px] text-text-muted hover:text-text-muted transition-colors"
             >
               Archetype atlas
               <span aria-hidden>↗</span>

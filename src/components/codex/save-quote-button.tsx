@@ -85,7 +85,7 @@ export function SaveQuoteButton({
         {saved ? "\u2605" : "\u2606"}
       </span>
       {count > 0 && (
-        <span className={`font-mono ${isSm ? "text-[9px]" : "text-[10px]"}`}>
+        <span className={`font-mono ${isSm ? "text-[12px]" : "text-[12px]"}`}>
           {count}
         </span>
       )}

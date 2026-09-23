@@ -26,7 +26,7 @@ export function QuoteCard({
         </p>
       </blockquote>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3 font-mono text-[10px] text-text-muted">
+      <div className="mt-3 flex flex-wrap items-center gap-3 font-mono text-[12px] text-text-muted">
         {quote.speaker && (
           <Link
             href={`/people/${quote.speaker.slug}`}
@@ -45,7 +45,7 @@ export function QuoteCard({
           </Link>
         )}
         {quote.timestampSeconds != null && (
-          <span className="text-text-muted/60">
+          <span className="text-text-muted">
             {formatSeconds(quote.timestampSeconds)}
           </span>
         )}

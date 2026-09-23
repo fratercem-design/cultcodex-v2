@@ -44,7 +44,7 @@ export function HumanReviewBadge({
     <span
       title={title}
       className={cn(
-        "inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] text-emerald-400",
+        "inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[12px] text-emerald-400",
         className
       )}
     >

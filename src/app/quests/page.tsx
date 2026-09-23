@@ -47,7 +47,7 @@ export default async function QuestsPage() {
             lore fragment — and climb the <Link href="/rank" className="text-accent-gold-text hover:underline">ranks</Link>.
           </p>
           {progress && (
-            <p className="font-mono text-[11px] text-text-muted/60">
+            <p className="font-mono text-[12px] text-text-muted">
               {completed} of {QUESTS.length} trials complete
             </p>
           )}
@@ -55,8 +55,8 @@ export default async function QuestsPage() {
 
         {!user && (
           <section className="rounded-2xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-6 text-center space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// sign_in_to_begin"}</p>
-            <p className="font-mono text-[11px] text-text-muted max-w-md mx-auto">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">{"/// sign_in_to_begin"}</p>
+            <p className="font-mono text-[12px] text-text-muted max-w-md mx-auto">
               The Trials track your real activity in the archive. Sign in to begin your rites.
             </p>
             <Link href="/auth/signin" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25">
@@ -79,21 +79,21 @@ export default async function QuestsPage() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1 min-w-0">
-                    <p className={`font-mono text-[9px] uppercase tracking-[0.3em] ${a.text}`}>{q.rite}</p>
+                    <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${a.text}`}>{q.rite}</p>
                     <h2 className="font-display text-lg font-bold text-text-primary">{q.title}</h2>
-                    <p className="font-mono text-[11px] text-text-muted leading-relaxed">{q.description}</p>
+                    <p className="font-mono text-[12px] text-text-muted leading-relaxed">{q.description}</p>
                   </div>
                   {done ? (
-                    <span className={`shrink-0 font-mono text-[9px] uppercase tracking-widest ${a.text}`}>✓ complete</span>
+                    <span className={`shrink-0 font-mono text-[12px] uppercase tracking-widest ${a.text}`}>✓ complete</span>
                   ) : (
-                    <span className="shrink-0 font-mono text-[9px] uppercase tracking-widest text-text-muted/60">locked</span>
+                    <span className="shrink-0 font-mono text-[12px] uppercase tracking-widest text-text-muted">locked</span>
                   )}
                 </div>
 
                 {/* Progress */}
                 {p && (
                   <div className="space-y-1.5">
-                    <div className="flex items-center justify-between font-mono text-[10px] text-text-muted/60">
+                    <div className="flex items-center justify-between font-mono text-[12px] text-text-muted">
                       <span>{p.current} / {p.target} {q.metricLabel}</span>
                       <span>{p.pct}%</span>
                     </div>
@@ -106,11 +106,11 @@ export default async function QuestsPage() {
                 {/* Action */}
                 <div className="flex items-center gap-3 pt-1">
                   {done ? (
-                    <Link href={`/quests/${q.slug}`} className={`font-mono text-[11px] uppercase tracking-widest rounded border ${a.border} ${a.text} px-3 py-1.5 hover:bg-white/5 transition-colors`}>
+                    <Link href={`/quests/${q.slug}`} className={`font-mono text-[12px] uppercase tracking-widest rounded border ${a.border} ${a.text} px-3 py-1.5 hover:bg-white/5 transition-colors`}>
                       Claim fragment →
                     </Link>
                   ) : (
-                    <Link href={q.hintHref} className="font-mono text-[11px] uppercase tracking-widest text-text-muted/60 hover:text-text-primary transition-colors">
+                    <Link href={q.hintHref} className="font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-text-primary transition-colors">
                       {q.hint} →
                     </Link>
                   )}

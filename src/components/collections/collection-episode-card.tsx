@@ -1,3 +1,4 @@
+import { trustedSummary } from "@/lib/format/speculative-summary";
 /**
  * CollectionEpisodeCard — An episode card styled to match the themed-
  * collection surface. Wraps the same EpisodeCardData shape used by the
@@ -56,14 +57,14 @@ export function CollectionEpisodeCard({
         <div className="flex items-center gap-2 flex-wrap">
           {pinned && (
             <span
-              className={`font-mono text-[9px] uppercase tracking-widest ${a.eyebrow}`}
+              className={`font-mono text-[12px] uppercase tracking-widest ${a.eyebrow}`}
             >
               {"/// pinned"}
             </span>
           )}
           {epNum && (
             <span
-              className={`font-mono text-[10px] font-bold ${a.eyebrow}`}
+              className={`font-mono text-[12px] font-bold ${a.eyebrow}`}
             >
               {epNum}
             </span>
@@ -77,7 +78,7 @@ export function CollectionEpisodeCard({
               )}
               <time
                 dateTime={episode.airDate.toISOString()}
-                className="font-mono text-[10px] text-text-muted"
+                className="font-mono text-[12px] text-text-muted"
               >
                 {formatDate(episode.airDate)}
               </time>
@@ -89,13 +90,13 @@ export function CollectionEpisodeCard({
         >
           {episode.title}
         </h3>
-        {episode.summaryShort && (
+        {trustedSummary(episode.summaryShort) && (
           <p className="text-xs text-text-muted line-clamp-2 leading-relaxed">
-            {episode.summaryShort}
+            {trustedSummary(episode.summaryShort)}
           </p>
         )}
         {episode.topicNames.length > 0 && (
-          <p className="font-mono text-[10px] text-text-muted/70 truncate">
+          <p className="font-mono text-[12px] text-text-muted truncate">
             {episode.topicNames.slice(0, 3).join(" · ")}
           </p>
         )}

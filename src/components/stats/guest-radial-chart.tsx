@@ -79,10 +79,10 @@ export function GuestRadialChart({ data }: Props) {
               className="w-2 h-2 rounded-full shrink-0"
               style={{ background: COLORS[i] ?? "#6b7280" }}
             />
-            <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-gold-text transition-colors truncate">
+            <span className="font-mono text-[12px] text-text-muted group-hover:text-accent-gold-text transition-colors truncate">
               {g.displayName}
             </span>
-            <span className="font-mono text-[10px] text-text-muted/50 ml-auto shrink-0">
+            <span className="font-mono text-[12px] text-text-muted ml-auto shrink-0">
               {g.count}
             </span>
           </Link>

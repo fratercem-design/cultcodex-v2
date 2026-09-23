@@ -21,7 +21,7 @@ export function TerminalPathSeg() {
   }));
 
   return (
-    <span className="font-mono text-[11px] tracking-wide" style={{ color: "var(--term-fg-dim)" }}>
+    <span className="font-mono text-[12px] tracking-wide" style={{ color: "var(--term-fg-dim)" }}>
       <Link href="/" style={{ color: "var(--term-fg-faint)" }} className="hover:opacity-80 transition-opacity">
         ~/codex/
       </Link>

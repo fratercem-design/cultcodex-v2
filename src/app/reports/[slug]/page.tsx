@@ -32,9 +32,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 function LockedCard({ label }: { label: string }) {
   return (
     <div className="rounded-xl border border-border bg-surface p-6 text-center space-y-2">
-      <p className="text-3xl text-text-muted/20" aria-hidden="true">🔒</p>
-      <p className="font-mono text-[11px] text-text-muted">{label}</p>
-      <Link href="/premium" className="inline-block font-mono text-[10px] uppercase tracking-widest text-accent-gold-text hover:underline">
+      <p className="text-3xl text-text-muted" aria-hidden="true">🔒</p>
+      <p className="font-mono text-[12px] text-text-muted">{label}</p>
+      <Link href="/premium" className="inline-block font-mono text-[12px] uppercase tracking-widest text-accent-gold-text hover:underline">
         Unlock with Initiate+ →
       </Link>
     </div>
@@ -79,7 +79,7 @@ export default async function GuestReportPage({ params }: Props) {
 
       <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-12">
         {/* Breadcrumb */}
-        <nav aria-label="Breadcrumb" className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+        <nav aria-label="Breadcrumb" className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           <Link href="/reports" className="hover:text-accent-gold-text transition-colors">Codex Reports</Link>
           <span className="mx-2">/</span>
           <span className="text-accent-cyan">{person.displayName}</span>
@@ -99,11 +99,11 @@ export default async function GuestReportPage({ params }: Props) {
           <div className="grid grid-cols-3 gap-4 flex-1 text-center sm:text-left">
             <div>
               <p className="font-display text-2xl font-bold text-accent-gold">{totalAppearances}</p>
-              <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">Appearances</p>
+              <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">Appearances</p>
             </div>
             <div className="col-span-2">
               <p className="font-mono text-sm text-text-primary">{spanLabel}</p>
-              <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">Active span</p>
+              <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">Active span</p>
             </div>
           </div>
         </section>
@@ -111,7 +111,7 @@ export default async function GuestReportPage({ params }: Props) {
         {/* Gate notice for non-members */}
         {!hasAccess && (
           <section className="rounded-xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-5 text-center space-y-2">
-            <p className="font-mono text-[11px] text-text-muted leading-relaxed max-w-md mx-auto">
+            <p className="font-mono text-[12px] text-text-muted leading-relaxed max-w-md mx-auto">
               The full behavioral report — key quotes, recurring patterns, and frequent collaborators —
               opens with Initiate+.
             </p>
@@ -123,7 +123,7 @@ export default async function GuestReportPage({ params }: Props) {
 
         {/* Recurring signals */}
         <section className="space-y-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60">{"/// recurring_signals"}</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/60">{"/// recurring_signals"}</p>
           {hasAccess ? (
             topics.length > 0 ? (
               <div className="flex flex-wrap gap-2">
@@ -131,14 +131,14 @@ export default async function GuestReportPage({ params }: Props) {
                   <Link
                     key={t.topic.slug}
                     href={`/topics/${t.topic.slug}`}
-                    className="rounded-full border border-border px-3 py-1.5 font-mono text-[11px] text-accent-cyan hover:border-accent-cyan/40 transition-colors"
+                    className="rounded-full border border-border px-3 py-1.5 font-mono text-[12px] text-accent-cyan hover:border-accent-cyan/40 transition-colors"
                   >
                     {t.topic.title}
                   </Link>
                 ))}
               </div>
             ) : (
-              <p className="font-mono text-xs text-text-muted/50 italic">No signals tagged for this figure yet.</p>
+              <p className="font-mono text-xs text-text-muted italic">No signals tagged for this figure yet.</p>
             )
           ) : (
             <LockedCard label="Recurring themes and signals tied to this figure." />
@@ -147,7 +147,7 @@ export default async function GuestReportPage({ params }: Props) {
 
         {/* Key quotes */}
         <section className="space-y-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">{"/// on_the_record"}</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">{"/// on_the_record"}</p>
           {hasAccess ? (
             quotes.length > 0 ? (
               <div className="space-y-3">
@@ -158,7 +158,7 @@ export default async function GuestReportPage({ params }: Props) {
                 ))}
               </div>
             ) : (
-              <p className="font-mono text-xs text-text-muted/50 italic">No quotes captured yet.</p>
+              <p className="font-mono text-xs text-text-muted italic">No quotes captured yet.</p>
             )
           ) : (
             <LockedCard label="Key quotes and on-the-record moments." />
@@ -167,7 +167,7 @@ export default async function GuestReportPage({ params }: Props) {
 
         {/* Frequent collaborators */}
         <section className="space-y-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/70">{"/// frequent_collaborators"}</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">{"/// frequent_collaborators"}</p>
           {hasAccess ? (
             coStars.length > 0 ? (
               <div className="grid gap-2 sm:grid-cols-2">
@@ -187,12 +187,12 @@ export default async function GuestReportPage({ params }: Props) {
                       </div>
                     )}
                     <span className="min-w-0 flex-1 truncate font-mono text-xs text-text-primary group-hover:text-accent-violet-text transition-colors">{c.displayName}</span>
-                    <span className="shrink-0 font-mono text-[9px] text-text-muted/50">{c.sharedEpisodes}×</span>
+                    <span className="shrink-0 font-mono text-[12px] text-text-muted">{c.sharedEpisodes}×</span>
                   </Link>
                 ))}
               </div>
             ) : (
-              <p className="font-mono text-xs text-text-muted/50 italic">Not enough shared appearances to map collaborators.</p>
+              <p className="font-mono text-xs text-text-muted italic">Not enough shared appearances to map collaborators.</p>
             )
           ) : (
             <LockedCard label="Who this figure appears with most — the collaboration map." />
@@ -202,7 +202,7 @@ export default async function GuestReportPage({ params }: Props) {
         {/* Appearances */}
         {hasAccess && dated.length > 0 && (
           <section className="space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">{"/// appearance_log"}</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// appearance_log"}</p>
             <div className="space-y-2">
               {dated.slice(0, 12).map((e) => (
                 <Link
@@ -211,10 +211,10 @@ export default async function GuestReportPage({ params }: Props) {
                   className="group flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-2.5 transition-all hover:border-accent-gold/30"
                 >
                   {e.episodeNumber != null && (
-                    <span className="shrink-0 font-mono text-[10px] font-bold text-accent-gold-text/80">EP.{String(e.episodeNumber).padStart(3, "0")}</span>
+                    <span className="shrink-0 font-mono text-[12px] font-bold text-accent-gold-text/80">EP.{String(e.episodeNumber).padStart(3, "0")}</span>
                   )}
                   <span className="min-w-0 flex-1 truncate text-sm text-text-primary group-hover:text-accent-gold-text transition-colors">{cleanTitle(e.title)}</span>
-                  {e.airDate && <span className="shrink-0 font-mono text-[10px] text-text-muted/50">{formatDate(e.airDate)}</span>}
+                  {e.airDate && <span className="shrink-0 font-mono text-[12px] text-text-muted">{formatDate(e.airDate)}</span>}
                 </Link>
               ))}
             </div>
@@ -224,11 +224,11 @@ export default async function GuestReportPage({ params }: Props) {
         <MysticalDivider />
 
         <section className="flex flex-wrap items-center justify-center gap-3">
-          <Link href={`/people/${person.slug}`} className="font-mono text-[11px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors">
+          <Link href={`/people/${person.slug}`} className="font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors">
             Full profile →
           </Link>
           {hasAccess && (
-            <Link href="/oracle" className="font-mono text-[11px] uppercase tracking-widest text-accent-violet-text hover:text-accent-violet-text/80 transition-colors">
+            <Link href="/oracle" className="font-mono text-[12px] uppercase tracking-widest text-accent-violet-text hover:text-accent-violet-text/80 transition-colors">
               Ask the Oracle about {person.displayName} →
             </Link>
           )}

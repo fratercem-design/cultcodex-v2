@@ -125,7 +125,7 @@ export default async function ReportsPage() {
             by AI from the full corpus and cited back to the source.
           </p>
           {!hasAccess && (
-            <p className="font-mono text-[11px] text-accent-gold-text/80">
+            <p className="font-mono text-[12px] text-accent-gold-text/80">
               An Initiate+ feature · $10/mo
             </p>
           )}
@@ -134,11 +134,11 @@ export default async function ReportsPage() {
         {/* Guest Intelligence Reports */}
         <section className="space-y-5">
           <div className="text-center space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-cyan/60">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/60">
               {"/// guest_intelligence_reports"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">Every recurring figure has a signature.</h2>
-            <p className="font-mono text-[11px] text-text-muted max-w-xl mx-auto leading-relaxed">
+            <p className="font-mono text-[12px] text-text-muted max-w-xl mx-auto leading-relaxed">
               A behavioral dossier, not a bio: tactics, escalation triggers, alliances, and how they
               act under pressure, traced across every appearance.
             </p>
@@ -161,12 +161,12 @@ export default async function ReportsPage() {
                       )}
                       <div className="min-w-0">
                         <p className="truncate font-mono text-xs font-bold text-text-primary">{g.displayName}</p>
-                        <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/50">
+                        <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
                           {g._count.guestAppearances} appearance{g._count.guestAppearances === 1 ? "" : "s"}
                         </p>
                       </div>
                     </div>
-                    <p className={`mt-3 font-mono text-[10px] uppercase tracking-widest ${hasAccess ? "text-accent-cyan/70" : "text-text-muted/60"}`}>
+                    <p className={`mt-3 font-mono text-[12px] uppercase tracking-widest ${hasAccess ? "text-accent-cyan/70" : "text-text-muted"}`}>
                       {hasAccess ? "Open report →" : "🔒 Initiate+"}
                     </p>
                   </div>
@@ -180,7 +180,7 @@ export default async function ReportsPage() {
 
           {!hasAccess && (
             <div className="rounded-xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-6 text-center space-y-3">
-              <p className="font-mono text-[11px] text-text-muted max-w-md mx-auto leading-relaxed">
+              <p className="font-mono text-[12px] text-text-muted max-w-md mx-auto leading-relaxed">
                 Full Guest Intelligence Reports — behavioral signatures, appearance histories, and
                 pattern analysis — open with Initiate+.
               </p>
@@ -196,11 +196,11 @@ export default async function ReportsPage() {
         {/* Codex Reports */}
         <section className="space-y-5">
           <div className="text-center space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
               {"/// codex_reports"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">Standing intelligence on the archive.</h2>
-            <p className="font-mono text-[11px] text-text-muted max-w-xl mx-auto leading-relaxed">
+            <p className="font-mono text-[12px] text-text-muted max-w-xl mx-auto leading-relaxed">
               Recurring AI syntheses that watch the whole archive so you don&apos;t have to.
             </p>
           </div>
@@ -213,9 +213,9 @@ export default async function ReportsPage() {
                     <span className={`text-lg ${ACCENT[r.accent]}`}>{r.glyph}</span>
                     <h3 className="font-display text-base font-bold text-text-primary">{r.title}</h3>
                   </div>
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">{r.cadence}</span>
+                  <span className="font-mono text-[12px] uppercase tracking-widest text-text-muted">{r.cadence}</span>
                 </div>
-                <p className="font-mono text-[11px] text-text-muted leading-relaxed">{r.body}</p>
+                <p className="font-mono text-[12px] text-text-muted leading-relaxed">{r.body}</p>
               </div>
             ))}
           </div>
@@ -224,9 +224,9 @@ export default async function ReportsPage() {
         {/* CTA */}
         {!hasAccess ? (
           <section className="rounded-2xl border border-accent-gold/40 bg-gradient-to-b from-[#1a0033] via-[#0d001a] to-[#0d001a] p-8 text-center space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-cyan/70">✦ &nbsp; intelligence on demand &nbsp; ✦</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/70">✦ &nbsp; intelligence on demand &nbsp; ✦</p>
             <h3 className="font-display text-2xl font-bold text-accent-gold">Read the reports instead of scrubbing the VODs.</h3>
-            <p className="font-mono text-[11px] text-text-muted max-w-sm mx-auto leading-relaxed">
+            <p className="font-mono text-[12px] text-text-muted max-w-sm mx-auto leading-relaxed">
               Initiate+ opens Guest Intelligence Reports, the Oracle, Decode Mode, and the
               Psychenomicon — for $10/month.
             </p>
@@ -237,7 +237,7 @@ export default async function ReportsPage() {
         ) : (
           <section className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface p-6 text-center space-y-3">
             <h3 className="font-display text-lg font-bold text-text-primary">Want a report run on demand?</h3>
-            <p className="font-mono text-[11px] text-text-muted max-w-md mx-auto leading-relaxed">
+            <p className="font-mono text-[12px] text-text-muted max-w-md mx-auto leading-relaxed">
               Ask the Oracle for a behavioral profile, a conflict timeline, or a pattern analysis —
               it answers from the full archive with citations.
             </p>

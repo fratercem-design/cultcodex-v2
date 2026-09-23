@@ -90,7 +90,7 @@ export function LiveChat({ isLive, isAuthenticated, initialMessages }: LiveChatP
           Live Chat
           <ConnectionDot status={status} />
         </span>
-        <span className="ml-auto font-mono text-[10px] text-text-muted">
+        <span className="ml-auto font-mono text-[12px] text-text-muted">
           {messages.length} messages
         </span>
       </div>
@@ -109,14 +109,14 @@ export function LiveChat({ isLive, isAuthenticated, initialMessages }: LiveChatP
               />
             ) : (
               <div className="h-6 w-6 rounded-full bg-accent-purple/30 shrink-0 mt-0.5 flex items-center justify-center">
-                <span className="text-[10px] text-accent-purple font-bold">
+                <span className="text-[12px] text-accent-violet-text font-bold">
                   {msg.displayName[0]?.toUpperCase()}
                 </span>
               </div>
             )}
             <div className="min-w-0">
               <Link href={`/user/${msg.userId}`} className="hover:text-accent-gold-text transition-colors">
-                <span className="font-mono text-[10px] text-accent-cyan font-bold">
+                <span className="font-mono text-[12px] text-accent-cyan font-bold">
                   {msg.displayName}
                 </span>
               </Link>
@@ -160,7 +160,7 @@ export function LiveChat({ isLive, isAuthenticated, initialMessages }: LiveChatP
 
       {error && (
         <div className="px-3 pb-2">
-          <p className="font-mono text-[10px] text-red-400">{error}</p>
+          <p className="font-mono text-[12px] text-red-400">{error}</p>
         </div>
       )}
     </div>

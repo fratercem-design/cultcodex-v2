@@ -25,7 +25,7 @@ export const metadata = {
 };
 
 const SORT_OPTIONS = [
-  { label: "Most Connected", value: "connected" },
+  { label: "Most episodes", value: "connected" },
   { label: "A → Z", value: "az" },
   { label: "Z → A", value: "za" },
 ];
@@ -46,18 +46,11 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
-  const topics = await getTopics({ take, skip });
-
-  const sorted = [...topics].sort((a, b) => {
-    if (currentSort === "connected") {
-      const aTotal = a._count.episodes + a._count.people + a._count.lore;
-      const bTotal = b._count.episodes + b._count.people + b._count.lore;
-      return bTotal - aTotal || a.title.localeCompare(b.title);
-    }
-    if (currentSort === "za") {
-      return b.title.localeCompare(a.title);
-    }
-    return a.title.localeCompare(b.title);
+  // "connected" stays as the URL value so existing links keep working.
+  const sorted = await getTopics({
+    take,
+    skip,
+    sort: currentSort === "za" ? "za" : currentSort === "az" ? "az" : "episodes",
   });
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);

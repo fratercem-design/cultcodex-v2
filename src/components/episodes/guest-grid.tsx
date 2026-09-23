@@ -58,14 +58,14 @@ export function GuestGrid({ guests, archetypes, bare = false }: GuestGridProps) 
                   className="rounded-full border-2 border-transparent transition-colors group-hover:border-accent-gold"
                 />
               )}
-              <span className="w-full truncate text-center font-mono text-[10px] text-text-muted transition-colors group-hover:text-accent-gold-text">
+              <span className="w-full truncate text-center font-mono text-[12px] text-text-muted transition-colors group-hover:text-accent-gold-text">
                 {guest.displayName}
               </span>
             </Link>
             {archetype && archetypeHexColor && (
               <Link
                 href={`/psychenomicon/archetypes/${archetypeToSlug(archetype)}`}
-                className="font-mono text-[9px] hover:underline truncate max-w-full px-1"
+                className="font-mono text-[12px] hover:underline truncate max-w-full px-1"
                 style={{ color: archetypeHexColor }}
                 title={`Atlas: ${archetype}`}
               >

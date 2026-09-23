@@ -51,7 +51,7 @@ export default async function ConnectionPathPage({ searchParams }: PageProps) {
 
       {/* ── Header ─────────────────────────────────────────────── */}
       <div className="space-y-3 max-w-2xl">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           {"/// connection_paths"}
         </p>
         <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">
@@ -64,7 +64,7 @@ export default async function ConnectionPathPage({ searchParams }: PageProps) {
         </p>
         <Link
           href="/graph"
-          className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
+          className="inline-flex items-center gap-1 font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
         >
           ← Open the full network map
         </Link>
@@ -92,7 +92,7 @@ export default async function ConnectionPathPage({ searchParams }: PageProps) {
           />
           <div
             aria-hidden
-            className="hidden sm:flex items-center justify-center pb-2 font-mono text-2xl text-text-muted/60 select-none"
+            className="hidden sm:flex items-center justify-center pb-2 font-mono text-2xl text-text-muted select-none"
           >
             →
           </div>
@@ -105,7 +105,7 @@ export default async function ConnectionPathPage({ searchParams }: PageProps) {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-border/60">
-          <p className="font-mono text-[10px] text-text-muted/50">
+          <p className="font-mono text-[12px] text-text-muted">
             type a slug (lowercase, no spaces) or pick from the top {picker.length} figures
           </p>
           <button
@@ -146,7 +146,7 @@ function PathInput({
 }) {
   return (
     <label className="block space-y-1.5">
-      <span className="block font-mono text-[10px] uppercase tracking-widest text-text-muted">
+      <span className="block font-mono text-[12px] uppercase tracking-widest text-text-muted">
         {label}
       </span>
       <input
@@ -186,13 +186,13 @@ function EmptyHint({
                   ? `/graph/path?from=${encodeURIComponent(samples[0].slug)}&to=${encodeURIComponent(s.slug)}`
                   : `/graph/path?from=${encodeURIComponent(samples[0].slug)}&to=${encodeURIComponent(s.slug)}`
             }
-            className="rounded-full border border-border bg-surface px-3 py-1 font-mono text-[10px] text-text-muted hover:border-accent-violet/40 hover:text-accent-violet-text transition-colors"
+            className="rounded-full border border-border bg-surface px-3 py-1 font-mono text-[12px] text-text-muted hover:border-accent-violet/40 hover:text-accent-violet-text transition-colors"
           >
             {s.displayName}
           </Link>
         ))}
       </div>
-      <p className="font-mono text-[10px] text-text-muted/60 uppercase tracking-widest">
+      <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
         try: {samples[0].displayName} → {samples[1].displayName}
       </p>
     </div>
@@ -248,14 +248,14 @@ function PathResult({
     <section className="space-y-6">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <div className="space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             {"/// chain_resolved"}
           </p>
           <h2 className="font-display text-lg font-bold text-text-primary">
             {fromName} → {toName}
           </h2>
         </div>
-        <div className="rounded-full border border-accent-violet/40 bg-accent-violet/10 px-3 py-1 font-mono text-[11px] text-accent-violet-text tabular-nums">
+        <div className="rounded-full border border-accent-violet/40 bg-accent-violet/10 px-3 py-1 font-mono text-[12px] text-accent-violet-text tabular-nums">
           {result.degree} {result.degree === 1 ? "degree" : "degrees"} of separation
         </div>
       </div>
@@ -268,7 +268,7 @@ function PathResult({
         </ol>
       </div>
 
-      <p className="font-mono text-[10px] text-text-muted/60 uppercase tracking-widest text-center">
+      <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest text-center">
         the chain connects through shared episodes — each link is real
       </p>
     </section>
@@ -292,14 +292,14 @@ function PathRow({ step, index }: { step: PathStep; index: number }) {
             href={`/episodes/${step.via.slug}`}
             className="min-w-0 flex-1 group"
           >
-            <p className="font-mono text-[9px] uppercase tracking-widest text-accent-violet-text/70">
+            <p className="font-mono text-[12px] uppercase tracking-widest text-accent-violet-text/70">
               via{" "}
               {step.via.episodeNumber != null
                 ? `EP.${String(step.via.episodeNumber).padStart(3, "0")}`
                 : "episode"}
               {step.via.airDate && ` · ${formatDate(step.via.airDate)}`}
             </p>
-            <p className="font-mono text-[11px] text-text-muted group-hover:text-accent-violet-text transition-colors line-clamp-1">
+            <p className="font-mono text-[12px] text-text-muted group-hover:text-accent-violet-text transition-colors line-clamp-1">
               {step.via.title}
             </p>
           </Link>
@@ -310,7 +310,7 @@ function PathRow({ step, index }: { step: PathStep; index: number }) {
         href={`/people/${step.person.slug}`}
         className="group flex items-center gap-3"
       >
-        <span className="shrink-0 font-mono text-[10px] text-text-muted/60 w-5 tabular-nums">
+        <span className="shrink-0 font-mono text-[12px] text-text-muted w-5 tabular-nums">
           {String(index).padStart(2, "0")}
         </span>
         {step.person.avatarUrl ? (
@@ -330,7 +330,7 @@ function PathRow({ step, index }: { step: PathStep; index: number }) {
           <p className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
             {step.person.displayName}
           </p>
-          <p className="font-mono text-[9px] text-text-muted/50 capitalize">
+          <p className="font-mono text-[12px] text-text-muted capitalize">
             {step.person.personType}
           </p>
         </div>

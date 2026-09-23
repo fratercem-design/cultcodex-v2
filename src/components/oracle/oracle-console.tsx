@@ -244,7 +244,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
             disabled={state === "loading"}
             rows={3}
             maxLength={500}
-            className="relative w-full rounded-xl border border-accent-violet/25 bg-black/60 px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted/30 focus:border-accent-violet/50 focus:outline-none resize-none disabled:opacity-50 transition-all"
+            className="relative w-full rounded-xl border border-accent-violet/25 bg-black/60 px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-violet/50 focus:outline-none resize-none disabled:opacity-50 transition-all"
             style={{ backdropFilter: "blur(8px)" }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
@@ -253,7 +253,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
               }
             }}
           />
-          <p className="absolute bottom-2.5 right-3 font-mono text-[9px] text-text-muted/25">
+          <p className="absolute bottom-2.5 right-3 font-mono text-[12px] text-text-muted">
             {question.length}/500
           </p>
         </div>
@@ -303,7 +303,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
               <LilithOracle />
             </div>
           </div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-violet-text/70 animate-pulse">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70 animate-pulse">
             searching_the_archive
           </p>
         </div>
@@ -312,7 +312,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
       {/* ── Gated ── */}
       {state === "error" && gated && (
         <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-6 text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// initiate_required"}
           </p>
           <p className="font-display text-base font-bold text-text-primary">
@@ -337,7 +337,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
           <button
             type="button"
             onClick={() => formRef.current?.requestSubmit()}
-            className="mt-2 font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
+            className="mt-2 font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             Retry this question →
           </button>
@@ -407,11 +407,11 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
 
                 {/* Status label */}
                 {autoPlayBlocked && !isPlaying ? (
-                  <p className="font-mono text-[11px] font-bold text-accent-violet-text tracking-[0.2em] uppercase animate-pulse text-center">
+                  <p className="font-mono text-[12px] font-bold text-accent-violet-text tracking-[0.12em] uppercase animate-pulse text-center">
                     ◈ The Oracle speaks — tap to hear ◈
                   </p>
                 ) : (
-                  <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-accent-violet-text/70 text-center">
+                  <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70 text-center">
                     {isPlaying ? "The Oracle speaks" : "Voice ready"}
                   </p>
                 )}
@@ -441,7 +441,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
                 </div>
 
                 {/* Timestamp */}
-                <p className="font-mono text-[9px] text-text-muted/35 uppercase tracking-widest">
+                <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
                   {formatTime(currentTime)} / {formatTime(duration)}
                 </p>
               </div>
@@ -495,7 +495,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
                     />
                   )}
                 </div>
-                <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-cyan/45">
+                <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/45">
                   {"/// oracle_response"}
                 </p>
               </div>
@@ -517,7 +517,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
               </blockquote>
 
               {/* Question echo */}
-              <p className="font-mono text-[9px] text-text-muted/30 uppercase tracking-widest text-center pt-1 border-t border-accent-violet/10">
+              <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest text-center pt-1 border-t border-accent-violet/10">
                 Re: &ldquo;{question}&rdquo;
               </p>
             </div>
@@ -526,7 +526,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
           {/* ── Citations ── */}
           {citations.length > 0 && (
             <div className="space-y-2">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/60">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
                 {"/// archive_sources"}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -534,7 +534,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
                   <Link
                     key={i}
                     href={c.href}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-border/50 bg-black/30 px-2.5 py-1.5 font-mono text-[9px] text-text-muted hover:border-accent-violet/40 hover:text-accent-violet-text transition-all truncate max-w-[200px]"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-border/50 bg-black/30 px-2.5 py-1.5 font-mono text-[12px] text-text-muted hover:border-accent-violet/40 hover:text-accent-violet-text transition-all truncate max-w-[200px]"
                   >
                     <CitationIcon type={c.type} />
                     <span className="truncate">{c.label}</span>
@@ -547,7 +547,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
           {/* ── Email capture after free trial ── */}
           {trialUsed && captureState !== "done" && (
             <div className="rounded-xl border border-accent-gold/30 bg-accent-gold/5 p-5 space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
                 {trialRemaining !== null && trialRemaining > 0
                   ? `/// ${trialRemaining} free question${trialRemaining === 1 ? "" : "s"} remaining this month`
                   : "/// free questions exhausted"}
@@ -555,7 +555,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
               <p className="font-display text-sm font-bold text-text-primary">
                 The Oracle has more to say.
               </p>
-              <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+              <p className="font-mono text-[12px] text-text-muted leading-relaxed">
                 Initiate+ opens {INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions each month — plus transcripts, behavioral profiles,
                 and the full intelligence layer. Drop your email and we&apos;ll send you in.
               </p>
@@ -588,12 +588,12 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
                 <button
                   type="submit"
                   disabled={captureState === "saving"}
-                  className="rounded border border-accent-gold bg-accent-gold/15 px-4 py-2 font-mono text-[11px] font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 disabled:opacity-50"
+                  className="rounded border border-accent-gold bg-accent-gold/15 px-4 py-2 font-mono text-[12px] font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 disabled:opacity-50"
                 >
                   {captureState === "saving" ? "…" : "Send me in →"}
                 </button>
               </form>
-              <p className="font-mono text-[10px] text-text-muted/50">
+              <p className="font-mono text-[12px] text-text-muted">
                 Or{" "}
                 <Link href="/premium" className="text-accent-gold-text underline hover:text-accent-gold-text/80">
                   subscribe now →
@@ -605,7 +605,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
           {trialUsed && captureState === "done" && (
             <div className="rounded-xl border border-accent-gold/30 bg-accent-gold/5 px-5 py-4 text-center space-y-1">
               <p className="font-mono text-xs font-bold text-accent-gold-text">Received.</p>
-              <p className="font-mono text-[11px] text-text-muted">
+              <p className="font-mono text-[12px] text-text-muted">
                 Check your inbox.{" "}
                 <Link href="/premium" className="text-accent-gold-text underline">
                   Subscribe now →
@@ -618,7 +618,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
           <button
             type="button"
             onClick={handleReset}
-            className="w-full text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/35 hover:text-accent-violet-text/70 transition-colors py-2"
+            className="w-full text-center font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted hover:text-accent-violet-text/70 transition-colors py-2"
           >
             ◈ ask another question ◈
           </button>

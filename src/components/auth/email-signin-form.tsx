@@ -41,20 +41,20 @@ export function EmailSignInForm({ callbackUrl }: EmailSignInFormProps) {
   if (state === "sent") {
     return (
       <div className="space-y-3 rounded-lg border border-accent-gold/30 bg-accent-gold/5 p-5 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
           {"/// transmission_sent"}
         </p>
         <p className="font-display text-sm font-semibold text-text-primary">
           Check your inbox
         </p>
-        <p className="font-mono text-[11px] text-text-muted">
+        <p className="font-mono text-[12px] text-text-muted">
           We sent a sign-in link to <span className="text-accent-gold-text">{email}</span>.
           It expires in 15 minutes.
         </p>
         <button
           type="button"
           onClick={() => { setState("idle"); setEmail(""); }}
-          className="font-mono text-[10px] text-text-muted/60 hover:text-text-muted transition-colors underline underline-offset-2"
+          className="font-mono text-[12px] text-text-muted hover:text-text-muted transition-colors underline underline-offset-2"
         >
           Use a different email
         </button>
@@ -65,7 +65,7 @@ export function EmailSignInForm({ callbackUrl }: EmailSignInFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <div>
-        <label htmlFor="magic-email" className="block font-mono text-[10px] uppercase tracking-wider text-text-muted mb-1.5">
+        <label htmlFor="magic-email" className="block font-mono text-[12px] uppercase tracking-wider text-text-muted mb-1.5">
           Email address
         </label>
         <input
@@ -76,13 +76,13 @@ export function EmailSignInForm({ callbackUrl }: EmailSignInFormProps) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
-          className="w-full rounded border border-border bg-void px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/60 focus:border-accent-gold/60 focus:outline-none focus:ring-1 focus:ring-accent-gold/20 transition-colors disabled:opacity-50"
+          className="w-full rounded border border-border bg-void px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold/60 focus:outline-none focus:ring-1 focus:ring-accent-gold/20 transition-colors disabled:opacity-50"
           disabled={state === "loading"}
         />
       </div>
 
       {state === "error" && (
-        <p className="font-mono text-[10px] text-red-400/80">{errorMsg}</p>
+        <p className="font-mono text-[12px] text-red-400/80">{errorMsg}</p>
       )}
 
       <button

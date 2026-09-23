@@ -129,7 +129,7 @@ export default async function EpisodesPage({
           </p>
           <Link
             href="/episodes"
-            className="font-mono text-[10px] text-text-muted hover:text-text-primary transition-colors"
+            className="font-mono text-[12px] text-text-muted hover:text-text-primary transition-colors"
           >
             Clear ×
           </Link>
@@ -146,7 +146,7 @@ export default async function EpisodesPage({
           </p>
           <Link
             href="/episodes"
-            className="font-mono text-[10px] text-text-muted hover:text-text-primary transition-colors"
+            className="font-mono text-[12px] text-text-muted hover:text-text-primary transition-colors"
           >
             Clear ×
           </Link>
@@ -160,7 +160,7 @@ export default async function EpisodesPage({
           </div>
           <Link
             href="/episodes"
-            className="font-mono text-[10px] text-text-muted hover:text-text-primary transition-colors"
+            className="font-mono text-[12px] text-text-muted hover:text-text-primary transition-colors"
           >
             Clear ×
           </Link>
@@ -179,7 +179,7 @@ export default async function EpisodesPage({
           {!activeEra && (
             <Link
               href="/eras"
-              className="font-mono text-[10px] text-text-muted border border-border rounded px-2.5 py-1.5 hover:border-accent-gold/40 hover:text-accent-gold-text transition-colors"
+              className="font-mono text-[12px] text-text-muted border border-border rounded px-2.5 py-1.5 hover:border-accent-gold/40 hover:text-accent-gold-text transition-colors"
             >
               Browse by Era
             </Link>

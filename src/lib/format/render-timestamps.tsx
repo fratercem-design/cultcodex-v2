@@ -64,7 +64,7 @@ export function renderWithTimestamps(
           target="_blank"
           rel="noopener noreferrer"
           title={`Jump to ${ts} on YouTube`}
-          className="mx-0.5 inline-flex items-center rounded bg-accent-gold/10 border border-accent-gold/20 px-1 font-mono text-[11px] text-accent-gold-text hover:bg-accent-gold/20 hover:text-accent-gold-text transition-colors"
+          className="mx-0.5 inline-flex items-center rounded bg-accent-gold/10 border border-accent-gold/20 px-1 font-mono text-[12px] text-accent-gold-text hover:bg-accent-gold/20 hover:text-accent-gold-text transition-colors"
         >
           ▶ {ts}
         </a>
@@ -75,7 +75,7 @@ export function renderWithTimestamps(
         <span
           key={key}
           title={`Timestamp: ${ts}`}
-          className="mx-0.5 inline-flex items-center rounded bg-surface border border-border px-1 font-mono text-[11px] text-text-muted"
+          className="mx-0.5 inline-flex items-center rounded bg-surface border border-border px-1 font-mono text-[12px] text-text-muted"
         >
           {ts}
         </span>

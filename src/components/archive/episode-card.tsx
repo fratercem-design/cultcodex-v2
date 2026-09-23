@@ -8,6 +8,7 @@ import { HumanReviewBadge } from "@/components/ui/human-review-badge";
 import { EraTag } from "@/components/ui/era-tag";
 import { getEraForEpisode } from "@/lib/eras";
 import { getConfidenceTier } from "@/lib/format/confidence-tier";
+import { trustedSummary } from "@/lib/format/speculative-summary";
 import type { EpisodeCardData } from "@/lib/queries/episodes";
 
 interface EpisodeCardProps {
@@ -43,7 +44,7 @@ export function EpisodeCard({ episode, hideDescription = false }: EpisodeCardPro
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-1">
           {epNum && (
-            <span className="font-mono text-[10px] text-accent-gold-text font-bold">
+            <span className="font-mono text-[12px] text-accent-gold-text font-bold">
               {epNum}
             </span>
           )}
@@ -51,17 +52,18 @@ export function EpisodeCard({ episode, hideDescription = false }: EpisodeCardPro
             <span className="text-text-muted" aria-hidden="true">·</span>
           )}
           {episode.airDate && (
-            <time dateTime={episode.airDate.toISOString()} className="font-mono text-[10px] text-text-muted">
+            <time dateTime={episode.airDate.toISOString()} className="font-mono text-[12px] text-text-muted">
               {formatDate(episode.airDate)}
             </time>
           )}
         </div>
-        <h2 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-2">
+        {/* h3: cards always sit inside a section that owns the h2. */}
+        <h3 className="font-sans text-[15px] font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-2">
           {episode.title}
-        </h2>
-        {!hideDescription && episode.summaryShort && (
-          <p className="mt-1 text-xs text-text-muted line-clamp-2">
-            {episode.summaryShort}
+        </h3>
+        {!hideDescription && trustedSummary(episode.summaryShort) && (
+          <p className="mt-1 text-[13px] text-ink-2 line-clamp-2">
+            {trustedSummary(episode.summaryShort)}
           </p>
         )}
         <div className="mt-2 flex flex-wrap gap-1.5">
@@ -81,7 +83,7 @@ export function EpisodeCard({ episode, hideDescription = false }: EpisodeCardPro
             <StatusBadge key={name} label={name} variant="gold" />
           ))}
           {episode.guestNames.length > 3 && (
-            <span className="font-mono text-[9px] text-accent-gold-text/80">
+            <span className="font-mono text-[12px] text-accent-gold-text/80">
               +{episode.guestNames.length - 3} more
             </span>
           )}
@@ -89,7 +91,7 @@ export function EpisodeCard({ episode, hideDescription = false }: EpisodeCardPro
             <StatusBadge key={name} label={name} variant="cyan" />
           ))}
           {episode.topicNames.length > 3 && (
-            <span className="font-mono text-[9px] text-text-muted">
+            <span className="font-mono text-[12px] text-text-muted">
               +{episode.topicNames.length - 3} topics
             </span>
           )}

@@ -51,7 +51,7 @@ export function DataQualityBadge(props: DataQualityBadgeProps) {
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[10px] ${grade.bg}`}
+      className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[12px] ${grade.bg}`}
       title={`Data completeness: ${score}% (Grade ${grade.letter})`}
     >
       <span className={`font-bold ${grade.color}`}>{grade.letter}</span>

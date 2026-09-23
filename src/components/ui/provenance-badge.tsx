@@ -42,7 +42,7 @@ export function ProvenanceBadge({ hasTranscript, hasSummary, className }: Proven
     <span
       title={config.title}
       className={cn(
-        "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider cursor-help",
+        "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[12px] uppercase tracking-wider cursor-help",
         config.style,
         className,
       )}

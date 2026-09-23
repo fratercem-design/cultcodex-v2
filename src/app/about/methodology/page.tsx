@@ -31,7 +31,7 @@ function SectionBlock({
     <div className={SECTION_CLS}>
       <div className={HEADING_CLS}>
         <span className="font-mono text-xs text-accent-gold-text">{sigil}</span>
-        <h2 className="font-mono text-[10px] uppercase tracking-[0.3em] font-semibold text-text-muted">
+        <h2 className="font-mono text-[12px] uppercase tracking-[0.12em] font-semibold text-text-muted">
           {title}
         </h2>
       </div>
@@ -68,7 +68,7 @@ export default function MethodologyPage() {
 
         {/* Page header */}
         <div className="space-y-1">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">
             {"/// transparency_log"}
           </p>
           <h1 className="text-2xl font-bold text-text-primary">How CultCodex Works</h1>
@@ -217,7 +217,7 @@ export default function MethodologyPage() {
           </ul>
         </SectionBlock>
 
-        <p className="text-[11px] text-text-muted font-mono text-center pt-2">
+        <p className="text-[12px] text-text-muted font-mono text-center pt-2">
           Last updated: September 2026 · CultCodex is an independent fan project
         </p>
       </main>

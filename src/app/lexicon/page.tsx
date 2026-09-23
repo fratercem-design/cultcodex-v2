@@ -2677,7 +2677,7 @@ export default function LexiconPage() {
 
         {/* Color legend */}
         <div className="rounded-lg border border-border bg-surface p-4">
-          <h2 className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-3">Color Key</h2>
+          <h2 className="font-mono text-[12px] uppercase tracking-widest text-text-muted mb-3">Color Key</h2>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             {colorGroups.map((g) => (
               <span key={g.label} className="flex items-center gap-2 text-xs">
@@ -2747,7 +2747,7 @@ export default function LexiconPage() {
                                   aka {term.aka.join(", ")}
                                 </span>
                               )}
-                              <span className={`ml-2 text-[10px] font-mono uppercase tracking-wider ${meta.color} opacity-60`}>
+                              <span className={`ml-2 text-[12px] font-mono uppercase tracking-wider ${meta.color} opacity-60`}>
                                 {meta.label}
                               </span>
                             </span>
@@ -2761,7 +2761,7 @@ export default function LexiconPage() {
                             </dd>
                           )}
                           {term.origin && (
-                            <dd className="text-[10px] text-text-muted mt-1 ml-4 font-mono opacity-60">
+                            <dd className="text-[12px] text-text-muted mt-1 ml-4 font-mono opacity-60">
                               Origin: {term.origin}
                             </dd>
                           )}
@@ -2824,7 +2824,7 @@ export default function LexiconPage() {
                       </dd>
                     )}
                     {term.origin && (
-                      <dd className="text-[10px] text-text-muted mt-1 font-mono opacity-60">
+                      <dd className="text-[12px] text-text-muted mt-1 font-mono opacity-60">
                         Origin: {term.origin}
                       </dd>
                     )}
@@ -2847,7 +2847,7 @@ export default function LexiconPage() {
               applicable.
             </p>
             <div className="rounded border border-border bg-void p-3 space-y-2">
-              <h3 className="font-mono text-[10px] uppercase tracking-widest text-text-muted">Reading the colors</h3>
+              <h3 className="font-mono text-[12px] uppercase tracking-widest text-text-muted">Reading the colors</h3>
               <div className="grid gap-1.5 text-xs">
                 {colorGroups.map((g) => (
                   <div key={g.label} className="flex items-center gap-2">

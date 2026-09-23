@@ -87,13 +87,13 @@ export function ShareSignalButton({ hasQuote }: Props) {
       </button>
       <button
         onClick={handleTwitter}
-        className="font-mono text-[11px] text-text-muted hover:text-accent-gold-text transition-colors"
+        className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors"
       >
         Post to X
       </button>
       <button
         onClick={handleCopyLink}
-        className="font-mono text-[11px] text-text-muted hover:text-accent-gold-text transition-colors"
+        className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors"
       >
         {state === "copied" ? "Copied!" : "Copy link"}
       </button>

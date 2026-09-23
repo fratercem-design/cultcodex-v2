@@ -54,7 +54,7 @@ export function BookBuyButton({
           ? `Buy the PDF — $${price}`
           : `Sign in to buy — $${price}`}
       </button>
-      {error && <p className="font-mono text-[10px] text-red-400 text-center">{error}</p>}
+      {error && <p className="font-mono text-[12px] text-red-400 text-center">{error}</p>}
     </div>
   );
 }

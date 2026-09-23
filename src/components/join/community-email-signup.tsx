@@ -58,7 +58,7 @@ export function CommunityEmailSignup() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@example.com"
-          className="min-w-0 flex-1 rounded-lg border border-border bg-void px-4 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/60 focus:border-accent-cyan focus:outline-none"
+          className="min-w-0 flex-1 rounded-lg border border-border bg-void px-4 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-cyan focus:outline-none"
         />
         <button
           type="submit"
@@ -71,12 +71,12 @@ export function CommunityEmailSignup() {
 
       <div aria-live="polite" className="min-h-4">
         {message && (
-          <p className={`font-mono text-[11px] ${state === "error" ? "text-red-400" : "text-accent-cyan"}`}>
+          <p className={`font-mono text-[12px] ${state === "error" ? "text-red-400" : "text-accent-cyan"}`}>
             {message}
           </p>
         )}
       </div>
-      <p className="font-mono text-[9px] leading-relaxed text-text-muted/60">
+      <p className="font-mono text-[12px] leading-relaxed text-text-muted">
         Unsubscribe any time. See the <Link href="/privacy" className="underline hover:text-text-primary">privacy policy</Link>.
       </p>
     </form>

@@ -22,7 +22,7 @@ export default function TermsPage() {
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
 
-        <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-4 py-3 font-mono text-[11px] text-text-muted">
+        <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-4 py-3 font-mono text-[12px] text-text-muted">
           Last updated: May 2025. By using cultcodex.me you agree to these terms.
         </div>
 

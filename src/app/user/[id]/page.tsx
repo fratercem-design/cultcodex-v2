@@ -79,7 +79,7 @@ export default async function UserProfilePage({ params }: PageProps) {
               <h1 className="font-mono text-xl font-bold text-text-primary">
                 {profile.displayName}
               </h1>
-              <p className="font-mono text-[10px] text-text-muted">
+              <p className="font-mono text-[12px] text-text-muted">
                 Member since {formatDate(profile.createdAt)}
               </p>
             </div>
@@ -138,7 +138,7 @@ export default async function UserProfilePage({ params }: PageProps) {
                             </p>
                           )}
                         </div>
-                        <span className="shrink-0 font-mono text-[9px] text-text-muted">
+                        <span className="shrink-0 font-mono text-[12px] text-text-muted">
                           {relativeTime(item.createdAt)}
                         </span>
                       </Link>
@@ -161,14 +161,14 @@ export default async function UserProfilePage({ params }: PageProps) {
                       >
                         <div className="flex items-center gap-2 mb-1">
                           {c.episode.episodeNumber != null && (
-                            <span className="font-mono text-[10px] text-accent-gold-text font-bold">
+                            <span className="font-mono text-[12px] text-accent-gold-text font-bold">
                               EP.{String(c.episode.episodeNumber).padStart(3, "0")}
                             </span>
                           )}
                           <span className="font-mono text-xs text-text-primary">
                             {c.episode.title}
                           </span>
-                          <span className="ml-auto font-mono text-[9px] text-text-muted">
+                          <span className="ml-auto font-mono text-[12px] text-text-muted">
                             {relativeTime(c.createdAt)}
                           </span>
                         </div>
@@ -208,7 +208,7 @@ export default async function UserProfilePage({ params }: PageProps) {
                           )}
                           <div className="flex items-center gap-2 mb-1">
                             {fav.episode.episodeNumber != null && (
-                              <span className="font-mono text-[10px] text-accent-gold-text font-bold">
+                              <span className="font-mono text-[12px] text-accent-gold-text font-bold">
                                 EP.{String(fav.episode.episodeNumber).padStart(3, "0")}
                               </span>
                             )}

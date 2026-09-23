@@ -66,7 +66,7 @@ export function QuoteHighlightCard({
                   className="rounded-full border border-accent-gold/30"
                 />
               ) : (
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-gold/20 text-[10px] font-bold text-accent-gold-text">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-gold/20 text-[12px] font-bold text-accent-gold-text">
                   {speakerName[0]?.toUpperCase()}
                 </div>
               )}
@@ -76,7 +76,7 @@ export function QuoteHighlightCard({
             </>
           )}
           {timestampSeconds != null && (
-            <span className="font-mono text-[10px] text-text-muted">
+            <span className="font-mono text-[12px] text-text-muted">
               at {formatSeconds(timestampSeconds)}
             </span>
           )}

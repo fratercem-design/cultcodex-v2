@@ -62,7 +62,7 @@ export function GiftSignup({ source = "gift:gospel", className = "" }: GiftSignu
         style={{ background: "radial-gradient(ellipse 55% 100% at 50% 0%, rgba(169,74,74,0.20) 0%, transparent 70%)" }}
       />
 
-      <p className="relative font-mono text-[10px] uppercase tracking-[0.45em] text-accent-gold-text/80">
+      <p className="relative font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
         ✦ &nbsp;A free transmission&nbsp; ✦
       </p>
       <h2 className="relative mt-2 font-display text-2xl font-bold text-white sm:text-3xl" style={{ textShadow: "0 0 40px rgba(74, 45, 110,0.35)" }}>
@@ -83,7 +83,7 @@ export function GiftSignup({ source = "gift:gospel", className = "" }: GiftSignu
           autoComplete="name"
           required
           disabled={busy}
-          className="rounded-lg border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
+          className="rounded-lg border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
         />
         <div className="flex flex-col gap-2 sm:flex-row">
           <input
@@ -95,7 +95,7 @@ export function GiftSignup({ source = "gift:gospel", className = "" }: GiftSignu
             autoComplete="email"
             required
             disabled={busy}
-            className="flex-1 rounded-lg border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
+            className="flex-1 rounded-lg border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
           />
           <button
             type="submit"
@@ -106,7 +106,7 @@ export function GiftSignup({ source = "gift:gospel", className = "" }: GiftSignu
           </button>
         </div>
       </form>
-      <p className="relative mt-2.5 font-mono text-[10px] uppercase tracking-widest text-text-muted/50">
+      <p className="relative mt-2.5 font-mono text-[12px] uppercase tracking-widest text-text-muted">
         Free forever · No card · Unsubscribe anytime
       </p>
       {status === "error" && message && (

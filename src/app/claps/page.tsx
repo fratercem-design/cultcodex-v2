@@ -58,7 +58,7 @@ export default async function ClapsPage() {
         {/* Active 24-hour claps */}
         {spotlights.length > 0 && (
           <section className="space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
               {"/// clapping_right_now"}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -81,7 +81,7 @@ export default async function ClapsPage() {
 
         {/* The board */}
         <section className="space-y-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/60">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             {"/// the_clap_board · tokens vest forever"}
           </p>
           {holders.length === 0 ? (

@@ -217,21 +217,21 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
 
             {quote.episode && (
               <>
-                <span className="font-mono text-[10px] text-text-muted/60">·</span>
+                <span className="font-mono text-[12px] text-text-muted">·</span>
                 <Link
                   href={
                     quote.timestampSeconds != null
                       ? `/episodes/${quote.episode.slug}?t=${quote.timestampSeconds}#quote-${quote.id}`
                       : `/episodes/${quote.episode.slug}`
                   }
-                  className="font-mono text-[11px] text-text-muted hover:text-accent-gold-text transition-colors"
+                  className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors"
                 >
                   {quote.episode.episodeNumber != null
                     ? `EP.${String(quote.episode.episodeNumber).padStart(3, "0")} · `
                     : ""}
                   {quote.episode.title}
                   {quote.timestampSeconds != null && (
-                    <span className="ml-1.5 text-text-muted/60">
+                    <span className="ml-1.5 text-text-muted">
                       @ {formatSeconds(quote.timestampSeconds)}
                     </span>
                   )}
@@ -241,10 +241,10 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
 
             {era && (
               <>
-                <span className="font-mono text-[10px] text-text-muted/60">·</span>
+                <span className="font-mono text-[12px] text-text-muted">·</span>
                 <Link
                   href={`/eras/${era.id}`}
-                  className="font-mono text-[10px] text-text-muted/70 hover:text-accent-gold-text transition-colors"
+                  className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors"
                 >
                   {era.sigil} {era.label}
                 </Link>
@@ -276,11 +276,11 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
       {/* ── Surrounding context ──────────────────────────────────── */}
       {quote.transcriptSegment && (
         <section className="space-y-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             {"/// surrounding_context"}
           </p>
           {canReadTranscript ? (
-            <div className="rounded-xl border border-border bg-surface p-5 space-y-3 font-mono text-[11px] text-text-muted leading-relaxed">
+            <div className="rounded-xl border border-border bg-surface p-5 space-y-3 font-mono text-[12px] text-text-muted leading-relaxed">
               {surroundingContext.map((seg) => {
                 const isPivot = seg.id === quote.transcriptSegment?.id;
                 return (
@@ -290,7 +290,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
                   >
                     <span
                       className={`shrink-0 tabular-nums ${
-                        isPivot ? "text-accent-gold-text" : "text-text-muted/60"
+                        isPivot ? "text-accent-gold-text" : "text-text-muted"
                       }`}
                     >
                       {formatSeconds(seg.startSeconds)}
@@ -303,7 +303,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
                       }`}
                     >
                       {seg.speakerLabel && (
-                        <span className={`mr-2 ${isPivot ? "text-accent-gold-text" : "text-text-muted/60"}`}>
+                        <span className={`mr-2 ${isPivot ? "text-accent-gold-text" : "text-text-muted"}`}>
                           {seg.speakerLabel}:
                         </span>
                       )}
@@ -316,7 +316,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
                 <div className="pt-2 border-t border-border">
                   <Link
                     href={`/episodes/${quote.episode.slug}?t=${quote.transcriptSegment.startSeconds}#quote-${quote.id}`}
-                    className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-accent-violet-text hover:text-accent-violet-text/80 transition-colors"
+                    className="inline-flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-widest text-accent-violet-text hover:text-accent-violet-text/80 transition-colors"
                   >
                     Open in transcript <span aria-hidden>→</span>
                   </Link>
@@ -328,7 +328,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
               <p className="font-mono text-sm text-accent-violet-text">
                 The surrounding transcript is sealed.
               </p>
-              <p className="font-mono text-[11px] text-text-muted">
+              <p className="font-mono text-[12px] text-text-muted">
                 Initiate+ unlocks every line before and after this quote.
               </p>
               <Link
@@ -346,14 +346,14 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
       {moreFromEpisode.length > 0 && quote.episode && (
         <section className="space-y-3">
           <div className="flex items-baseline justify-between">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
               {"/// more_from_"}{quote.episode.episodeNumber != null
                 ? `ep_${String(quote.episode.episodeNumber).padStart(3, "0")}`
                 : "this_episode"}
             </p>
             <Link
               href={`/episodes/${quote.episode.slug}`}
-              className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
+              className="font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
             >
               Open episode →
             </Link>
@@ -369,7 +369,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
                   &ldquo;{q.text}&rdquo;
                 </p>
                 {q.speaker && (
-                  <p className="font-mono text-[9px] text-accent-gold-text/80">
+                  <p className="font-mono text-[12px] text-accent-gold-text/80">
                     — {q.speaker.displayName}
                   </p>
                 )}
@@ -383,12 +383,12 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
       {moreFromSpeaker.length > 0 && quote.speaker && (
         <section className="space-y-3">
           <div className="flex items-baseline justify-between">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
               {"/// more_from_"}{quote.speaker.displayName.toLowerCase().replace(/\s+/g, "_")}
             </p>
             <Link
               href={`/people/${quote.speaker.slug}`}
-              className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
+              className="font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
             >
               Profile →
             </Link>
@@ -404,7 +404,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
                   &ldquo;{q.text}&rdquo;
                 </p>
                 {q.episode && (
-                  <p className="font-mono text-[9px] text-text-muted">
+                  <p className="font-mono text-[12px] text-text-muted">
                     {q.episode.episodeNumber != null
                       ? `EP.${String(q.episode.episodeNumber).padStart(3, "0")} · `
                       : ""}
@@ -429,14 +429,14 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
       <div className="pt-6 border-t border-border flex flex-wrap items-center justify-between gap-3">
         <Link
           href="/quotes"
-          className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
+          className="font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
         >
           ← All quotes
         </Link>
         {quote.episode && (
           <Link
             href={`/episodes/${quote.episode.slug}`}
-            className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
+            className="font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
           >
             {quote.episode.episodeNumber != null
               ? `EP.${String(quote.episode.episodeNumber).padStart(3, "0")}`

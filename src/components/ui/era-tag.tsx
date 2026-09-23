@@ -16,8 +16,8 @@ interface EraTagProps {
 export function EraTag({ era, size = "xs" }: EraTagProps) {
   const colors = COLOR_CLASSES[era.color];
   const sizeClasses = size === "sm"
-    ? "px-2 py-0.5 text-[9px]"
-    : "px-1.5 py-0.5 text-[8px]";
+    ? "px-2 py-0.5 text-[12px]"
+    : "px-1.5 py-0.5 text-[12px]";
 
   return (
     <span

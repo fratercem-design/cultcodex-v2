@@ -68,12 +68,12 @@ export function PersonCard({ person }: PersonCardProps) {
           </p>
         )}
         <div className="mt-1.5 flex items-center gap-2">
-          <span className="font-mono text-[10px] text-text-muted">
+          <span className="font-mono text-[12px] text-text-muted">
             {person.appearanceCount} appearance{person.appearanceCount !== 1 ? "s" : ""}
           </span>
           {isProfileComplete && (
             <span
-              className="font-mono text-[9px] text-accent-violet-text border border-accent-violet/30 rounded px-1 py-px leading-none"
+              className="font-mono text-[12px] text-accent-violet-text border border-accent-violet/30 rounded px-1 py-px leading-none"
               title="Full profile — bio, lore summary, and photo all present"
             >
               PROFILE

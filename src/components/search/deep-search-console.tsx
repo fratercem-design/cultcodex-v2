@@ -162,7 +162,7 @@ export function DeepSearchConsole() {
             />
           )}
         </div>
-        <p className="text-xs text-text-muted/60">Press Enter or comma to add each concept. Only episodes matching ALL concepts will surface.</p>
+        <p className="text-xs text-text-muted">Press Enter or comma to add each concept. Only episodes matching ALL concepts will surface.</p>
       </div>
 
       {/* Threshold + Era filters */}
@@ -289,7 +289,7 @@ export function DeepSearchConsole() {
                 >
                   {r.episodeTitle}
                   {r.episodeNumber && (
-                    <span className="ml-2 text-xs text-text-muted/50">#{r.episodeNumber}</span>
+                    <span className="ml-2 text-xs text-text-muted">#{r.episodeNumber}</span>
                   )}
                 </Link>
                 <Link
@@ -301,7 +301,7 @@ export function DeepSearchConsole() {
               </div>
 
               {r.speakerLabel && (
-                <p className="text-xs text-text-muted/60 uppercase tracking-wide">{r.speakerLabel}</p>
+                <p className="text-xs text-text-muted uppercase tracking-wide">{r.speakerLabel}</p>
               )}
 
               <blockquote className="text-sm text-text-primary leading-relaxed border-l-2 border-accent-violet/40 pl-3">
@@ -312,7 +312,7 @@ export function DeepSearchConsole() {
               <div className="flex flex-wrap gap-3 pt-1">
                 {Object.entries(r.conceptScores).map(([concept, score]) => (
                   <div key={concept} className="flex items-center gap-1.5 text-xs text-text-muted">
-                    <span className="text-text-muted/60">{concept}</span>
+                    <span className="text-text-muted">{concept}</span>
                     <ScoreBar score={score} />
                   </div>
                 ))}

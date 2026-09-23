@@ -45,11 +45,11 @@ export default async function SignalPage() {
   return (
     <main id="main-content" className="mx-auto max-w-2xl px-4 py-16 space-y-8 text-center">
       <div className="space-y-2">
-        <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-gold-text/80">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
           ✦ today&rsquo;s signal ✦
         </p>
         {data && (
-          <p className="font-mono text-[10px] text-text-muted/50 tabular-nums">
+          <p className="font-mono text-[12px] text-text-muted tabular-nums">
             transmission #{data.date.replace(/-/g, "")}
           </p>
         )}
@@ -71,7 +71,7 @@ export default async function SignalPage() {
             )}
           </div>
           {episode?.airDate && (
-            <p className="font-mono text-[10px] text-text-muted/50">{formatDate(episode.airDate)}</p>
+            <p className="font-mono text-[12px] text-text-muted">{formatDate(episode.airDate)}</p>
           )}
         </div>
       ) : (
@@ -80,7 +80,7 @@ export default async function SignalPage() {
 
       <div className="flex flex-col items-center gap-3 pt-4">
         <ShareSignalButton hasQuote={!!quote} />
-        <Link href="/" className="font-mono text-[11px] text-text-muted hover:text-accent-gold-text transition-colors underline underline-offset-4">
+        <Link href="/" className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors underline underline-offset-4">
           ← back to the archive
         </Link>
       </div>

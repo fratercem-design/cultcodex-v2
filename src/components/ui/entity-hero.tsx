@@ -66,7 +66,7 @@ export function EntityHero({
           <div>
             {label && (
               <p
-                className="mb-1 font-mono text-[10px] uppercase tracking-[0.4em]"
+                className="mb-1 font-mono text-[12px] uppercase tracking-[0.12em]"
                 style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}
               >
                 {"// "}{label}

@@ -45,7 +45,7 @@ export default function ExploreIndexPage() {
               >
                 <h2 className={`font-display text-xl font-bold ${a.title}`}>{p.title}</h2>
                 <p className="text-sm text-text-muted leading-relaxed">{p.tagline}</p>
-                <p className={`font-mono text-[10px] uppercase tracking-widest ${a.eyebrow} inline-flex items-center gap-2 group-hover:gap-3 transition-all pt-1`}>
+                <p className={`font-mono text-[12px] uppercase tracking-widest ${a.eyebrow} inline-flex items-center gap-2 group-hover:gap-3 transition-all pt-1`}>
                   Explore <span aria-hidden>→</span>
                 </p>
               </Link>

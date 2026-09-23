@@ -13,7 +13,7 @@ export function SearchTrigger() {
     >
       <span className="text-[13px]">⌕</span>
       <span className="hidden sm:inline">Search</span>
-      <kbd className="hidden md:inline-flex items-center font-mono text-[9px] text-text-muted border border-border/60 rounded px-1 py-0.5 leading-none">
+      <kbd className="hidden md:inline-flex items-center font-mono text-[12px] text-text-muted border border-border/60 rounded px-1 py-0.5 leading-none">
         ⌘K
       </kbd>
     </button>

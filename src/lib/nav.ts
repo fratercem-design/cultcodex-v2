@@ -57,27 +57,39 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     ],
   },
   {
+    // Plain word first, codex word in the page itself (2026-09 redesign):
+    // six destinations built on three verbs — Search finds, People/Explore
+    // trace, the Oracle asks. Topics now lives inside Explore; the Network
+    // Map lives inside People.
     title: "MAIN",
     color: "var(--accent-gold)",
     textColor: "var(--accent-gold-text)",
     items: [
       { href: "/",              label: "OVERVIEW",      glyph: "▢", key: "1" },
-      { href: "/start-here",    label: "START HERE",    glyph: "↳", key: "2" },
-      { href: "/episodes",      label: "ARCHIVE",       glyph: "▦", key: "3", countKey: "episodes" },
-      { href: "/people",        label: "VOICES",        glyph: "◐", key: "4", countKey: "people" },
-      { href: "/topics",        label: "TOPICS",        glyph: "◈", key: "5", countKey: "topics" },
+      { href: "/search",        label: "SEARCH",        glyph: "◌", key: "2" },
+      { href: "/episodes",      label: "EPISODES",      glyph: "▦", key: "3", countKey: "episodes" },
+      { href: "/people",        label: "PEOPLE",        glyph: "◐", key: "4", countKey: "people" },
+      { href: "/explore",       label: "EXPLORE",       glyph: "◇", key: "5" },
       { href: "/oracle",        label: "ORACLE",        glyph: "◉", key: "6" },
       { href: "/psychenomicon", label: "PSYCHENOMICON", glyph: "▲", key: "7" },
-      { href: "/search",        label: "SEARCH",        glyph: "◌", key: "8" },
-      { href: "/explore",       label: "EXPLORE",       glyph: "◇", key: "9" },
+    ],
+  },
+  {
+    title: "GUIDE",
+    color: "var(--color-ink-3)",
+    textColor: "var(--color-ink-2)",
+    items: [
+      { href: "/start-here",         label: "START HERE",  glyph: "↳" },
+      { href: "/about/methodology",  label: "METHODOLOGY", glyph: "◆" },
+      { href: "/corrections",        label: "CORRECTIONS", glyph: "▢" },
     ],
   },
   {
     title: "MEMBERS",
-    color: "var(--neon-4)",
+    color: "var(--color-member)",
+    textColor: "var(--color-member)",
     items: [
       { href: "/premium",    label: "INITIATE+",   glyph: "✦" },
-      { href: "/corrections",label: "CORRECTIONS", glyph: "▢" },
     ],
   },
 ];

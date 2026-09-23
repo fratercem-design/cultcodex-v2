@@ -79,7 +79,7 @@ export function YouTubePlayer({ videoId, playlistId, title = "Play" }: YouTubePl
             ▶
           </span>
           <span className="font-mono text-sm font-bold text-text-primary">{title}</span>
-          <span className="max-w-xs px-4 text-center font-mono text-[10px] leading-relaxed text-text-muted">
+          <span className="max-w-xs px-4 text-center font-mono text-[12px] leading-relaxed text-text-muted">
             Loads from YouTube (youtube-nocookie.com) when you press play.
           </span>
         </button>

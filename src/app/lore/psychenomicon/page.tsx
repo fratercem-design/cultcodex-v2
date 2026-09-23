@@ -392,7 +392,7 @@ async function PsychenomiconContent({
                   <span className="text-sm text-text-primary">
                     {s.person!.displayName}
                   </span>
-                  <span className="font-mono text-[10px] text-accent-cyan">
+                  <span className="font-mono text-[12px] text-accent-cyan">
                     {s.count} quotes
                   </span>
                 </Link>
@@ -481,7 +481,7 @@ async function PsychenomiconContent({
               <p className="text-sm italic leading-relaxed text-text-primary">
                 &ldquo;{q.text}&rdquo;
               </p>
-              <footer className="mt-2 font-mono text-[10px] text-accent-gold-text">
+              <footer className="mt-2 font-mono text-[12px] text-accent-gold-text">
                 -- {q.speaker?.displayName ?? "Unknown"}
               </footer>
             </blockquote>
@@ -625,7 +625,7 @@ function StatOrb({ label, value }: { label: string; value: number }) {
       <span className="font-mono text-lg font-bold text-accent-cyan">
         {value.toLocaleString("en-US")}
       </span>
-      <span className="font-mono text-[9px] uppercase tracking-wider text-text-muted">
+      <span className="font-mono text-[12px] uppercase tracking-wider text-text-muted">
         {label}
       </span>
     </div>
@@ -680,14 +680,14 @@ function CharacterEntry({
           >
             {name}
           </Link>
-          <p className="font-mono text-[10px] uppercase tracking-wider text-accent-violet-text">
+          <p className="font-mono text-[12px] uppercase tracking-wider text-accent-violet-text">
             {title}
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
           <StatusBadge label={archetype} variant="gold" />
           {quoteCount > 0 && (
-            <span className="font-mono text-[9px] text-accent-cyan">
+            <span className="font-mono text-[12px] text-accent-cyan">
               {quoteCount} quotes
             </span>
           )}

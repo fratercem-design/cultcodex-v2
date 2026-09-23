@@ -45,7 +45,7 @@ function WikiCard({ item }: { item: PersonMediaItem }) {
     <div className="rounded-lg border border-accent-cyan/20 bg-accent-cyan/5 p-4 space-y-3">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-cyan/70 mb-1">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/70 mb-1">
             {"/// ip2wiki.info"}
           </p>
           <p className="font-mono text-xs font-bold text-text-primary">{item.title}</p>
@@ -54,7 +54,7 @@ function WikiCard({ item }: { item: PersonMediaItem }) {
           href={item.sourceUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-shrink-0 flex items-center gap-1 rounded border border-accent-cyan/30 bg-accent-cyan/10 px-2 py-1 font-mono text-[9px] text-accent-cyan hover:bg-accent-cyan/20 transition-colors"
+          className="flex-shrink-0 flex items-center gap-1 rounded border border-accent-cyan/30 bg-accent-cyan/10 px-2 py-1 font-mono text-[12px] text-accent-cyan hover:bg-accent-cyan/20 transition-colors"
         >
           Full article ↗
         </a>
@@ -69,7 +69,7 @@ function WikiCard({ item }: { item: PersonMediaItem }) {
           {hasMore && (
             <button
               onClick={() => setExpanded((v) => !v)}
-              className="font-mono text-[10px] text-accent-cyan hover:underline"
+              className="font-mono text-[12px] text-accent-cyan hover:underline"
             >
               {expanded ? "Show less ▲" : "Read more ▼"}
             </button>
@@ -117,7 +117,7 @@ function VideoCard({ item }: { item: PersonMediaItem }) {
         </div>
         {/* Duration badge */}
         {item.durationStr && (
-          <span className="absolute bottom-1.5 right-1.5 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[10px] text-white">
+          <span className="absolute bottom-1.5 right-1.5 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[12px] text-white">
             {item.durationStr}
           </span>
         )}
@@ -128,7 +128,7 @@ function VideoCard({ item }: { item: PersonMediaItem }) {
         <p className="font-mono text-xs font-medium text-text-primary group-hover:text-red-400 transition-colors line-clamp-2 leading-relaxed">
           {item.title}
         </p>
-        <div className="flex items-center gap-2 font-mono text-[9px] text-text-muted">
+        <div className="flex items-center gap-2 font-mono text-[12px] text-text-muted">
           {item.publishedAt && <span>{formatDate(item.publishedAt)}</span>}
           {item.viewCount != null && (
             <>
@@ -170,13 +170,13 @@ function VideoChannelSection({
     <SectionCard title={`${label} (${videos.length} videos)`}>
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded border border-red-800/50 bg-red-950/30 px-2.5 py-1 font-mono text-[9px] text-red-400">
+          <span className="inline-flex items-center gap-1.5 rounded border border-red-800/50 bg-red-950/30 px-2.5 py-1 font-mono text-[12px] text-red-400">
             <span>▶</span>
             <a href={channelUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
               {handle}
             </a>
           </span>
-          <span className="font-mono text-[9px] text-text-muted">{personName}&apos;s channel</span>
+          <span className="font-mono text-[12px] text-text-muted">{personName}&apos;s channel</span>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -190,17 +190,17 @@ function VideoChannelSection({
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               disabled={page === 0}
-              className="rounded border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted hover:text-text-primary hover:border-accent-violet/40 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="rounded border border-border px-3 py-1.5 font-mono text-[12px] text-text-muted hover:text-text-primary hover:border-accent-violet/40 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
               ← Previous
             </button>
-            <span className="font-mono text-[9px] text-text-muted">
+            <span className="font-mono text-[12px] text-text-muted">
               {page + 1} / {totalPages}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={page === totalPages - 1}
-              className="rounded border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted hover:text-text-primary hover:border-accent-violet/40 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="rounded border border-border px-3 py-1.5 font-mono text-[12px] text-text-muted hover:text-text-primary hover:border-accent-violet/40 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
               Next →
             </button>
@@ -254,7 +254,7 @@ export function PersonMediaSection({ personName, videos, wiki }: Props) {
       {/* Section header */}
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-border" />
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           alexandra mayers — external content
         </p>
         <div className="h-px flex-1 bg-border" />
@@ -263,7 +263,7 @@ export function PersonMediaSection({ personName, videos, wiki }: Props) {
       {/* ip2wiki card */}
       {wiki && (
         <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted mb-2">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted mb-2">
             {"/// wiki_profile"}
           </p>
           <WikiCard item={wiki} />

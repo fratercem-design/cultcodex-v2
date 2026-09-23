@@ -60,7 +60,7 @@ export function ShareArchetypeCard({ slug, color, name }: ShareArchetypeCardProp
       <div className="flex gap-2">
         <button
           onClick={handleCopyLink}
-          className="flex-1 rounded-lg border py-2.5 font-mono text-[10px] uppercase tracking-[0.3em] transition-all"
+          className="flex-1 rounded-lg border py-2.5 font-mono text-[12px] uppercase tracking-[0.12em] transition-all"
           style={{
             borderColor: copied ? color : `${color}40`,
             color: copied ? color : `${color}90`,
@@ -74,7 +74,7 @@ export function ShareArchetypeCard({ slug, color, name }: ShareArchetypeCardProp
           download={`cultcodex-${slug}.png`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 rounded-lg border py-2.5 text-center font-mono text-[10px] uppercase tracking-[0.3em] transition-all"
+          className="flex-1 rounded-lg border py-2.5 text-center font-mono text-[12px] uppercase tracking-[0.12em] transition-all"
           style={{
             borderColor: `${color}40`,
             color: `${color}90`,

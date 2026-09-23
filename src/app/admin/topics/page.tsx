@@ -80,10 +80,10 @@ export default async function AdminTopicsPage({ searchParams }: PageProps) {
         <table className="w-full">
           <thead>
             <tr className="border-b border-border bg-elevated">
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">Title</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">Description</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">Episodes</th>
-              <th className="px-3 py-2 text-right font-mono text-[10px] uppercase tracking-wider text-text-muted">Actions</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">Title</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">Description</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">Episodes</th>
+              <th className="px-3 py-2 text-right font-mono text-[12px] uppercase tracking-wider text-text-muted">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -101,7 +101,7 @@ export default async function AdminTopicsPage({ searchParams }: PageProps) {
                 <td className="px-3 py-2 text-right">
                   <Link
                     href={`/admin/topics/${topic.id}/edit`}
-                    className="font-mono text-[10px] text-accent-gold-text hover:underline"
+                    className="font-mono text-[12px] text-accent-gold-text hover:underline"
                   >
                     Edit
                   </Link>

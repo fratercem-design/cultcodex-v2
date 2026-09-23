@@ -114,7 +114,7 @@ export function QuizClient() {
 
           {/* Label + name */}
           <div className="space-y-1">
-            <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-text-muted">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
               {"/// you_are"}
             </p>
             <h2
@@ -129,7 +129,7 @@ export function QuizClient() {
 
         {/* Description */}
         <div className="mt-6 rounded-xl border border-border bg-surface p-6 space-y-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// your_nature"}
           </p>
           <p className="text-sm text-text-muted leading-relaxed">{result.description}</p>
@@ -137,7 +137,7 @@ export function QuizClient() {
 
         {/* Shadow */}
         <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/5 p-5 space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-red-400/60">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-red-400/60">
             {"/// the_shadow"}
           </p>
           <p className="text-sm text-text-muted/80 leading-relaxed italic">{result.shadow}</p>
@@ -145,7 +145,7 @@ export function QuizClient() {
 
         {/* Gifts */}
         <div className="mt-6 rounded-xl border border-border bg-surface p-6 space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// your_gifts"}
           </p>
           <ul className="space-y-2">
@@ -165,7 +165,7 @@ export function QuizClient() {
 
         {/* Related symbols */}
         <div className="mt-6 space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// related_symbols"}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -240,7 +240,7 @@ export function QuizClient() {
 
       {/* Progress */}
       <div className="mb-8 space-y-2">
-        <div className="flex items-center justify-between font-mono text-[10px] text-text-muted">
+        <div className="flex items-center justify-between font-mono text-[12px] text-text-muted">
           <span>{"/// question_"}{String(currentQ + 1).padStart(2, "0")}</span>
           <span>{currentQ + 1} / {QUESTIONS.length}</span>
         </div>
@@ -277,7 +277,7 @@ export function QuizClient() {
               animation: `optionIn 0.3s ease ${i * 60}ms both`,
             }}
           >
-            <span className="text-accent-gold-text/80 mr-3 text-[10px] uppercase tracking-widest">
+            <span className="text-accent-gold-text/80 mr-3 text-[12px] uppercase tracking-widest">
               {["A", "B", "C", "D"][i]}
             </span>
             {option.text}

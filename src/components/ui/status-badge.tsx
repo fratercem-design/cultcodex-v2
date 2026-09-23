@@ -8,8 +8,8 @@ interface StatusBadgeProps {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  green: "border-accent-green/30 text-accent-green bg-accent-green-dim",
-  purple: "border-accent-purple/30 text-accent-purple bg-accent-purple-dim",
+  green: "border-accent-green/30 text-accent-gold-text bg-accent-green-dim",
+  purple: "border-accent-purple/30 text-accent-violet-text bg-accent-purple-dim",
   gold: "border-accent-gold/30 text-accent-gold-text bg-accent-gold/10",
   cyan: "border-accent-cyan/30 text-accent-cyan bg-accent-cyan/10",
   crimson: "border-accent-crimson/30 text-accent-crimson-text bg-accent-crimson/10",
@@ -20,7 +20,7 @@ export function StatusBadge({ label, variant = "muted" }: StatusBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider",
+        "inline-flex items-center rounded-full border px-2 py-0.5 font-mono text-[12px] uppercase tracking-wider",
         variantStyles[variant]
       )}
     >

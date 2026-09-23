@@ -19,7 +19,7 @@ export function TopicCard({ topic }: TopicCardProps) {
       href={`/topics/${topic.slug}`}
       className="group block rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-purple/30 hover:bg-elevated"
     >
-      <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-purple transition-colors">
+      <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-violet-text transition-colors">
         {topic.title}
       </h3>
       {topic.description && (
@@ -27,7 +27,7 @@ export function TopicCard({ topic }: TopicCardProps) {
           {topic.description}
         </p>
       )}
-      <div className="mt-3 flex items-center gap-3 font-mono text-[10px] text-text-muted">
+      <div className="mt-3 flex items-center gap-3 font-mono text-[12px] text-text-muted">
         {topic.episodeCount > 0 && (
           <span>{topic.episodeCount} episode{topic.episodeCount !== 1 ? "s" : ""}</span>
         )}

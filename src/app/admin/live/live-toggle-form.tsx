@@ -49,7 +49,7 @@ export function LiveToggleForm({ channel, isLive, currentVideoId, currentTitle }
       {!isLive && (
         <div className="space-y-4 mb-6">
           <div>
-            <label className="block font-mono text-[10px] text-text-muted uppercase mb-1">
+            <label className="block font-mono text-[12px] text-text-muted uppercase mb-1">
               YouTube Video ID
             </label>
             <input
@@ -60,7 +60,7 @@ export function LiveToggleForm({ channel, isLive, currentVideoId, currentTitle }
             />
           </div>
           <div>
-            <label className="block font-mono text-[10px] text-text-muted uppercase mb-1">
+            <label className="block font-mono text-[12px] text-text-muted uppercase mb-1">
               Stream Title
             </label>
             <input

@@ -50,7 +50,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
     return (
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">
             {"/// initiate_only"}
           </p>
           <p className="font-display text-xl font-bold text-text-primary">
@@ -88,7 +88,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
         }}
       >
         <div className="mx-auto max-w-5xl space-y-3">
-          <nav className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-text-muted/50">
+          <nav className="flex items-center gap-2 font-mono text-[12px] uppercase tracking-widest text-text-muted">
             <Link
               href="/psychenomicon"
               className="hover:text-text-muted transition-colors"
@@ -119,7 +119,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
               {detail.name}
             </h1>
           </div>
-          <p className="font-mono text-[10px] text-text-muted/60 uppercase tracking-widest">
+          <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
             archetype atlas
           </p>
         </div>
@@ -136,7 +136,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
             >
               {detail.entities.length}
             </p>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
+            <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
               entities tagged
             </p>
           </div>
@@ -147,7 +147,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
             >
               {totalAppearances}
             </p>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
+            <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
               episode appearances
             </p>
           </div>
@@ -158,7 +158,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
             >
               {Object.keys(detail.eraDistribution).length}
             </p>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
+            <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
               eras spanned
             </p>
           </div>
@@ -168,7 +168,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
         {totalAppearances > 0 && (
           <section className="space-y-4">
             <div className="space-y-1">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
                 {"/// era_distribution"}
               </p>
               <h2 className="font-display text-lg font-bold text-text-primary">
@@ -188,14 +188,14 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
                   >
                     <div className="flex items-center justify-between gap-3 mb-1.5">
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <span className={`font-mono text-[10px] ${accentClass}`}>
+                        <span className={`font-mono text-[12px] ${accentClass}`}>
                           {era.sigil}
                         </span>
-                        <span className="font-mono text-[11px] text-text-primary group-hover:text-accent-violet-text transition-colors truncate">
+                        <span className="font-mono text-[12px] text-text-primary group-hover:text-accent-violet-text transition-colors truncate">
                           {era.label}
                         </span>
                       </div>
-                      <span className="font-mono text-[10px] text-text-muted tabular-nums shrink-0">
+                      <span className="font-mono text-[12px] text-text-muted tabular-nums shrink-0">
                         {count} appearance{count !== 1 ? "s" : ""}
                       </span>
                     </div>
@@ -220,13 +220,13 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
         {detail.coArchetypes.length > 0 && (
           <section className="space-y-4">
             <div className="space-y-1">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
                 {"/// often_paired_with"}
               </p>
               <h2 className="font-display text-lg font-bold text-text-primary">
                 Compound currents
               </h2>
-              <p className="font-mono text-[10px] text-text-muted/50">
+              <p className="font-mono text-[12px] text-text-muted">
                 Other archetypes that show up alongside {detail.name} on the same entity.
               </p>
             </div>
@@ -237,7 +237,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
                   <Link
                     key={co.name}
                     href={`/psychenomicon/archetypes/${co.slug}`}
-                    className="inline-flex items-center gap-2 rounded-full border px-3 py-1 font-mono text-[11px] transition-colors hover:bg-current/5"
+                    className="inline-flex items-center gap-2 rounded-full border px-3 py-1 font-mono text-[12px] transition-colors hover:bg-current/5"
                     style={{ borderColor: `${coHex}55`, color: coHex }}
                   >
                     {co.name}
@@ -252,7 +252,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
         {/* ── Entities ───────────────────────────────────────────── */}
         <section className="space-y-4">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
               {"/// entities_carrying_this_archetype"}
             </p>
             <h2 className="font-display text-lg font-bold text-text-primary">
@@ -281,7 +281,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
                         />
                       ) : (
                         <div
-                          className="h-7 w-7 rounded-full flex-shrink-0 border border-border flex items-center justify-center font-mono text-[9px]"
+                          className="h-7 w-7 rounded-full flex-shrink-0 border border-border flex items-center justify-center font-mono text-[12px]"
                           style={{
                             backgroundColor: `${hex}20`,
                             color: hex,
@@ -295,20 +295,20 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
                           {entity.name}
                         </p>
                         {entity.primaryArchetype && (
-                          <p className="font-mono text-[9px] text-accent-violet-text/70 mt-0.5">
+                          <p className="font-mono text-[12px] text-accent-violet-text/70 mt-0.5">
                             {entity.primaryArchetype}
                           </p>
                         )}
                       </div>
                     </div>
                     <span
-                      className={`flex-shrink-0 font-mono text-[8px] uppercase px-1.5 py-0.5 rounded border ${statusStyle}`}
+                      className={`flex-shrink-0 font-mono text-[12px] uppercase px-1.5 py-0.5 rounded border ${statusStyle}`}
                     >
                       {entity.status}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between text-[9px] font-mono text-text-muted">
+                  <div className="flex items-center justify-between text-[12px] font-mono text-text-muted">
                     <span>
                       {entity.chapterCount} chapter
                       {entity.chapterCount !== 1 ? "s" : ""}
@@ -320,7 +320,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
                       {entity.behaviorPatterns.slice(0, 2).map((p) => (
                         <span
                           key={p}
-                          className="rounded border border-border px-1.5 py-0.5 font-mono text-[8px] text-text-muted"
+                          className="rounded border border-border px-1.5 py-0.5 font-mono text-[12px] text-text-muted"
                         >
                           {p}
                         </span>
@@ -329,7 +329,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
                   )}
 
                   {entity.personSlug && (
-                    <p className="font-mono text-[8px] text-accent-gold-text/80 group-hover:text-accent-gold-text/80 transition-colors">
+                    <p className="font-mono text-[12px] text-accent-gold-text/80 group-hover:text-accent-gold-text/80 transition-colors">
                       ◈ archive profile →
                     </p>
                   )}
@@ -343,13 +343,13 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
         <div className="pt-6 border-t border-border flex flex-wrap items-center justify-between gap-3">
           <Link
             href="/psychenomicon/archetypes"
-            className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
+            className="font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             ← All archetypes
           </Link>
           <Link
             href="/psychenomicon"
-            className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
+            className="font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             Return to Psychenomicon →
           </Link>

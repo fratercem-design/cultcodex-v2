@@ -156,7 +156,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
 
             {descPsycheverse && (
               <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-5 py-4">
-                <p className="font-mono text-[11px] uppercase tracking-widest text-accent-gold-text/80 mb-2">
+                <p className="font-mono text-[12px] uppercase tracking-widest text-accent-gold-text/80 mb-2">
                   In the Psycheverse
                 </p>
                 <p className="text-sm text-text-primary leading-relaxed">
@@ -169,7 +169,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
               {sortedEpisodes.length > 0 ? (
                 <div className="grid gap-3">
                   {topic._count.episodes > sortedEpisodes.length && (
-                    <p className="font-mono text-[11px] text-text-muted">
+                    <p className="font-mono text-[12px] text-text-muted">
                       Showing the {sortedEpisodes.length} most recent of {topic._count.episodes}.{" "}
                       <Link href={`/episodes?topic=${topic.slug}`} className="underline hover:text-accent-gold-text">
                         Browse all episodes →

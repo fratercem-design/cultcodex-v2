@@ -107,11 +107,11 @@ export default async function AdminAnalyticsPage() {
         <div className="flex gap-4 mt-3 justify-end">
           <div className="flex items-center gap-1">
             <div className="h-2 w-2 rounded-full bg-accent-gold/80" />
-            <span className="font-mono text-[9px] text-text-muted">Reactions</span>
+            <span className="font-mono text-[12px] text-text-muted">Reactions</span>
           </div>
           <div className="flex items-center gap-1">
             <div className="h-2 w-2 rounded-full bg-accent-cyan/80" />
-            <span className="font-mono text-[9px] text-text-muted">Comments</span>
+            <span className="font-mono text-[12px] text-text-muted">Comments</span>
           </div>
         </div>
       </SectionCard>
@@ -126,13 +126,13 @@ export default async function AdminAnalyticsPage() {
                 href={`/episodes/${ep.slug}`}
                 className="flex items-center gap-3 group"
               >
-                <span className="shrink-0 font-mono text-[10px] text-text-muted w-4 text-right">
+                <span className="shrink-0 font-mono text-[12px] text-text-muted w-4 text-right">
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     {ep.episodeNumber != null && (
-                      <span className="font-mono text-[9px] text-accent-gold-text font-bold">
+                      <span className="font-mono text-[12px] text-accent-gold-text font-bold">
                         EP.{String(ep.episodeNumber).padStart(3, "0")}
                       </span>
                     )}
@@ -147,7 +147,7 @@ export default async function AdminAnalyticsPage() {
                     />
                   </div>
                 </div>
-                <span className="shrink-0 font-mono text-[10px] text-accent-gold-text font-bold">
+                <span className="shrink-0 font-mono text-[12px] text-accent-gold-text font-bold">
                   {ep.count}
                 </span>
               </Link>
@@ -168,13 +168,13 @@ export default async function AdminAnalyticsPage() {
                 href={`/episodes/${ep.slug}`}
                 className="flex items-center gap-3 group"
               >
-                <span className="shrink-0 font-mono text-[10px] text-text-muted w-4 text-right">
+                <span className="shrink-0 font-mono text-[12px] text-text-muted w-4 text-right">
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     {ep.episodeNumber != null && (
-                      <span className="font-mono text-[9px] text-accent-gold-text font-bold">
+                      <span className="font-mono text-[12px] text-accent-gold-text font-bold">
                         EP.{String(ep.episodeNumber).padStart(3, "0")}
                       </span>
                     )}
@@ -189,7 +189,7 @@ export default async function AdminAnalyticsPage() {
                     />
                   </div>
                 </div>
-                <span className="shrink-0 font-mono text-[10px] text-accent-cyan font-bold">
+                <span className="shrink-0 font-mono text-[12px] text-accent-cyan font-bold">
                   {ep.count}
                 </span>
               </Link>
@@ -212,7 +212,7 @@ export default async function AdminAnalyticsPage() {
               href={`/user/${user.id}`}
               className="flex items-center gap-3 group py-1"
             >
-              <span className="shrink-0 font-mono text-[10px] text-text-muted w-4 text-right">
+              <span className="shrink-0 font-mono text-[12px] text-text-muted w-4 text-right">
                 {i + 1}
               </span>
               {user.avatarUrl ? (
@@ -225,7 +225,7 @@ export default async function AdminAnalyticsPage() {
                 />
               ) : (
                 <div className="h-6 w-6 rounded-full bg-accent-purple/30 flex items-center justify-center">
-                  <span className="text-[9px] text-accent-purple font-bold">
+                  <span className="text-[12px] text-accent-violet-text font-bold">
                     {user.displayName[0]?.toUpperCase()}
                   </span>
                 </div>
@@ -233,10 +233,10 @@ export default async function AdminAnalyticsPage() {
               <span className="flex-1 font-mono text-xs text-text-primary group-hover:text-accent-gold-text transition-colors truncate">
                 {user.displayName}
               </span>
-              <span className="shrink-0 font-mono text-[9px] text-accent-gold-text">
+              <span className="shrink-0 font-mono text-[12px] text-accent-gold-text">
                 {user.commentCount} 💬
               </span>
-              <span className="shrink-0 font-mono text-[9px] text-accent-cyan">
+              <span className="shrink-0 font-mono text-[12px] text-accent-cyan">
                 {user.reactionCount} 🔥
               </span>
             </Link>

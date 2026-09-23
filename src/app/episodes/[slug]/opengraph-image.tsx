@@ -1,3 +1,4 @@
+import { trustedSummary } from "@/lib/format/speculative-summary";
 import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/db";
 import { ogFonts } from "@/lib/og-fonts";
@@ -67,10 +68,11 @@ export default async function OGImage({
       ? episode.title.slice(0, titleMaxLen - 3) + "..."
       : episode.title;
 
-  const shortDesc = episode.summaryShort
-    ? episode.summaryShort.length > 100
-      ? episode.summaryShort.slice(0, 97) + "..."
-      : episode.summaryShort
+  const safeShort = trustedSummary(episode.summaryShort);
+  const shortDesc = safeShort
+    ? safeShort.length > 100
+      ? safeShort.slice(0, 97) + "..."
+      : safeShort
     : null;
 
   return new ImageResponse(

@@ -47,7 +47,7 @@ export function SubscriptionCTA({ variant = "card" }: SubscriptionCTAProps) {
 
   return (
     <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-transparent p-6 text-center space-y-3">
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
+      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
         {"/// observer_mode"}
       </p>
       <h3 className="font-display text-xl font-bold text-accent-gold-text">
@@ -72,8 +72,8 @@ export function SubscriptionCTA({ variant = "card" }: SubscriptionCTAProps) {
           Compare tiers
         </Link>
       </div>
-      {error && <p className="font-mono text-[10px] text-red-400">{error}</p>}
-      <p className="font-mono text-[10px] text-text-muted/50">
+      {error && <p className="font-mono text-[12px] text-red-400">{error}</p>}
+      <p className="font-mono text-[12px] text-text-muted">
         Cancel anytime · Instant access
       </p>
     </div>

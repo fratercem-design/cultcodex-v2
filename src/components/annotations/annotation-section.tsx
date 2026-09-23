@@ -48,15 +48,15 @@ export async function AnnotationSection({ targetType, targetId, returnPath, labe
   return (
     <section className="space-y-4">
       <div className="flex items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60">
+        <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/60">
           {"/// community_annotations"}
         </span>
         {annotations.length > 0 && (
-          <span className="font-mono text-[10px] text-text-muted/60">{annotations.length}</span>
+          <span className="font-mono text-[12px] text-text-muted">{annotations.length}</span>
         )}
       </div>
 
-      {label && <p className="font-mono text-[11px] text-text-muted/60">{label}</p>}
+      {label && <p className="font-mono text-[12px] text-text-muted">{label}</p>}
 
       {/* List */}
       {annotations.length > 0 ? (
@@ -69,13 +69,13 @@ export async function AnnotationSection({ targetType, targetId, returnPath, labe
                   className="flex flex-col items-center gap-0.5 rounded-lg border border-border px-2 py-1.5 hover:border-accent-cyan/40 hover:bg-accent-cyan/5 transition-all group"
                   title="Upvote"
                 >
-                  <span className="text-accent-cyan/60 group-hover:text-accent-cyan text-[10px]">▲</span>
+                  <span className="text-accent-cyan/60 group-hover:text-accent-cyan text-[12px]">▲</span>
                   <span className="font-mono text-xs font-bold text-text-primary">{a.votes}</span>
                 </button>
               </form>
               <div className="min-w-0 flex-1 space-y-1.5">
                 <p className="text-sm text-text-primary leading-relaxed">{a.body}</p>
-                <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">
+                <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
                   {a.user.displayName}
                   {a.user.memberTitle && <span className="text-accent-gold-text/80"> · {a.user.memberTitle}</span>}
                   {" · "}
@@ -86,7 +86,7 @@ export async function AnnotationSection({ targetType, targetId, returnPath, labe
           ))}
         </div>
       ) : (
-        <p className="font-mono text-xs text-text-muted/50 italic">
+        <p className="font-mono text-xs text-text-muted italic">
           No annotations yet. {canAnnotate ? "Be the first to add one." : "Initiate+ members can add the first."}
         </p>
       )}
@@ -98,12 +98,12 @@ export async function AnnotationSection({ targetType, targetId, returnPath, labe
         </div>
       ) : (
         <div className="rounded-xl border border-border bg-surface px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
-          <p className="font-mono text-[11px] text-text-muted">
+          <p className="font-mono text-[12px] text-text-muted">
             {user ? "Annotating is an Initiate+ feature." : "Sign in as Initiate+ to annotate."}
           </p>
           <Link
             href={user ? "/premium" : "/auth/signin"}
-            className="font-mono text-[10px] uppercase tracking-widest rounded border border-accent-gold/30 text-accent-gold-text px-3 py-1.5 hover:bg-accent-gold/5 transition-colors"
+            className="font-mono text-[12px] uppercase tracking-widest rounded border border-accent-gold/30 text-accent-gold-text px-3 py-1.5 hover:bg-accent-gold/5 transition-colors"
           >
             {user ? "Become Initiate+ →" : "Sign in →"}
           </Link>

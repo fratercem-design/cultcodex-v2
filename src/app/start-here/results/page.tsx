@@ -1,3 +1,4 @@
+import { trustedSummary } from "@/lib/format/speculative-summary";
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
@@ -90,13 +91,13 @@ export default async function ResultsPage({ searchParams }: Props) {
     episodes: (
       <section key="episodes" className="space-y-4">
         <div className="space-y-1">
-          <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${accent.text}/60`}>
+          <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${accent.text}/60`}>
             {"/// transmissions"}
           </p>
           <h2 className={`font-display text-lg font-bold ${accent.text}`}>
             Episodes to start with
           </h2>
-          <p className="font-mono text-[11px] text-text-muted">
+          <p className="font-mono text-[12px] text-text-muted">
             {depth === "fresh"
               ? "Early transmissions — foundational material for this territory."
               : depth === "familiar"
@@ -137,14 +138,14 @@ export default async function ResultsPage({ searchParams }: Props) {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     {ep.episodeNumber && (
-                      <span className={`font-mono text-[10px] font-bold ${accent.text}`}>
+                      <span className={`font-mono text-[12px] font-bold ${accent.text}`}>
                         EP.{String(ep.episodeNumber).padStart(3, "0")}
                       </span>
                     )}
                     {ep.airDate && (
                       <time
                         dateTime={ep.airDate.toISOString()}
-                        className="font-mono text-[10px] text-text-muted"
+                        className="font-mono text-[12px] text-text-muted"
                       >
                         {formatDate(ep.airDate)}
                       </time>
@@ -153,9 +154,9 @@ export default async function ResultsPage({ searchParams }: Props) {
                   <h3 className={`font-sans text-sm font-medium text-text-primary group-hover:${accent.text} transition-colors`}>
                     {ep.title}
                   </h3>
-                  {ep.summaryShort && (
+                  {trustedSummary(ep.summaryShort) && (
                     <p className="mt-1 text-xs text-text-muted line-clamp-2">
-                      {ep.summaryShort}
+                      {trustedSummary(ep.summaryShort)}
                     </p>
                   )}
                 </div>
@@ -167,7 +168,7 @@ export default async function ResultsPage({ searchParams }: Props) {
         <div className="pt-1">
           <Link
             href={`/episodes`}
-            className={`font-mono text-[10px] uppercase tracking-widest ${accent.text} hover:opacity-80 transition-opacity inline-flex items-center gap-1.5`}
+            className={`font-mono text-[12px] uppercase tracking-widest ${accent.text} hover:opacity-80 transition-opacity inline-flex items-center gap-1.5`}
           >
             Full archive → <span aria-hidden>({fmtEpisodeCount(counts?.episodes ?? 0)} episodes)</span>
           </Link>
@@ -178,13 +179,13 @@ export default async function ResultsPage({ searchParams }: Props) {
     people: (
       <section key="people" className="space-y-4">
         <div className="space-y-1">
-          <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${accent.text}/60`}>
+          <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${accent.text}/60`}>
             {"/// voices"}
           </p>
           <h2 className={`font-display text-lg font-bold ${accent.text}`}>
             People in this territory
           </h2>
-          <p className="font-mono text-[11px] text-text-muted">
+          <p className="font-mono text-[12px] text-text-muted">
             Figures the archive has profiled and linked to this area.
           </p>
         </div>
@@ -220,7 +221,7 @@ export default async function ResultsPage({ searchParams }: Props) {
                     {person.displayName}
                   </p>
                   {person.shortBio && (
-                    <p className="mt-1 font-mono text-[10px] text-text-muted line-clamp-3 leading-relaxed">
+                    <p className="mt-1 font-mono text-[12px] text-text-muted line-clamp-3 leading-relaxed">
                       {person.shortBio}
                     </p>
                   )}
@@ -233,7 +234,7 @@ export default async function ResultsPage({ searchParams }: Props) {
         <div className="pt-1">
           <Link
             href="/people"
-            className={`font-mono text-[10px] uppercase tracking-widest ${accent.text} hover:opacity-80 transition-opacity`}
+            className={`font-mono text-[12px] uppercase tracking-widest ${accent.text} hover:opacity-80 transition-opacity`}
           >
             All voices in the archive →
           </Link>
@@ -244,13 +245,13 @@ export default async function ResultsPage({ searchParams }: Props) {
     oracle: (
       <section key="oracle" className="space-y-4">
         <div className="space-y-1">
-          <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${accent.text}/60`}>
+          <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${accent.text}/60`}>
             {"/// oracle prompts"}
           </p>
           <h2 className={`font-display text-lg font-bold ${accent.text}`}>
             Ask the Oracle
           </h2>
-          <p className="font-mono text-[11px] text-text-muted">
+          <p className="font-mono text-[12px] text-text-muted">
             The Oracle synthesizes across all {fmtEpisodeCount(counts?.episodes ?? 0)} transmissions. These
             questions are calibrated for what you told the archive.
           </p>
@@ -268,7 +269,7 @@ export default async function ResultsPage({ searchParams }: Props) {
                 <p className={`font-display text-sm font-bold ${accent.text} leading-snug`}>
                   &ldquo;{prompt}&rdquo;
                 </p>
-                <p className="mt-1.5 font-mono text-[10px] text-text-muted">
+                <p className="mt-1.5 font-mono text-[12px] text-text-muted">
                   Ask the Oracle → requires Initiate+
                 </p>
               </div>
@@ -279,13 +280,13 @@ export default async function ResultsPage({ searchParams }: Props) {
         <div className="pt-1 flex flex-wrap gap-3">
           <Link
             href="/oracle"
-            className={`font-mono text-[10px] uppercase tracking-widest ${accent.text} hover:opacity-80 transition-opacity`}
+            className={`font-mono text-[12px] uppercase tracking-widest ${accent.text} hover:opacity-80 transition-opacity`}
           >
             Open the Oracle →
           </Link>
           <Link
             href="/premium"
-            className="font-mono text-[10px] uppercase tracking-widest text-accent-gold-text hover:opacity-80 transition-opacity"
+            className="font-mono text-[12px] uppercase tracking-widest text-accent-gold-text hover:opacity-80 transition-opacity"
           >
             Get Initiate+ →
           </Link>
@@ -299,7 +300,7 @@ export default async function ResultsPage({ searchParams }: Props) {
       {/* Header */}
       <section className="space-y-4">
         <div className="space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             {"/// your_path"}
           </p>
           <h1 className="font-display text-3xl font-bold text-text-primary">
@@ -309,18 +310,18 @@ export default async function ResultsPage({ searchParams }: Props) {
 
         <div className={`rounded-xl border ${accent.border} ${accent.bg} p-5 flex flex-wrap gap-4`}>
           <div className="space-y-0.5">
-            <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted">Territory</p>
+            <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">Territory</p>
             <p className={`font-display text-sm font-bold ${accent.text}`}>{interestLabel}</p>
           </div>
           <div className="w-px bg-border self-stretch hidden sm:block" />
           <div className="space-y-0.5">
-            <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted">Your position</p>
+            <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">Your position</p>
             <p className="font-display text-sm font-bold text-text-primary">{depthLabel}</p>
           </div>
           <div className="ml-auto self-center">
             <Link
               href="/start-here/quiz"
-              className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-text-primary transition-colors"
+              className="font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-text-primary transition-colors"
             >
               Retake quiz →
             </Link>
@@ -339,25 +340,25 @@ export default async function ResultsPage({ searchParams }: Props) {
 
       {/* Escape hatches */}
       <section className="space-y-4">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           {"/// not what you were looking for?"}
         </p>
         <div className="flex flex-wrap gap-3">
           <Link
             href="/start-here/quiz"
-            className="font-mono text-[10px] uppercase tracking-widest px-4 py-2 rounded border border-border text-text-muted hover:border-border-strong hover:text-text-primary transition-colors"
+            className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-border text-text-muted hover:border-border-strong hover:text-text-primary transition-colors"
           >
             Retake the quiz →
           </Link>
           <Link
             href="/search"
-            className={`font-mono text-[10px] uppercase tracking-widest px-4 py-2 rounded border ${accent.border} ${accent.text} hover:opacity-80 transition-opacity`}
+            className={`font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border ${accent.border} ${accent.text} hover:opacity-80 transition-opacity`}
           >
             Search the archive →
           </Link>
           <Link
             href="/episodes"
-            className="font-mono text-[10px] uppercase tracking-widest px-4 py-2 rounded border border-border text-text-muted hover:border-border-strong hover:text-text-primary transition-colors"
+            className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-border text-text-muted hover:border-border-strong hover:text-text-primary transition-colors"
           >
             Full archive →
           </Link>

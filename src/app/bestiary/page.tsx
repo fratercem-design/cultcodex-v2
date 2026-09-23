@@ -38,7 +38,7 @@ export default async function BestiaryPage() {
     <main className="min-h-screen bg-void">
       <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-4xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
             {"/// field_guide · handle_with_ritual_gloves"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -50,7 +50,7 @@ export default async function BestiaryPage() {
             Approach each entry with the respect owed to a thing that may be
             listening.
           </p>
-          <p className="font-mono text-[10px] text-text-muted/60">
+          <p className="font-mono text-[12px] text-text-muted">
             {beasts.length} entit{beasts.length === 1 ? "y" : "ies"} catalogued
           </p>
         </div>
@@ -73,7 +73,7 @@ export default async function BestiaryPage() {
                   <span className="text-2xl text-accent-violet-text/70 group-hover:text-accent-violet-text transition-colors" aria-hidden>
                     {glyphFor(b.title)}
                   </span>
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted/40">
+                  <span className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
                     {b.category}
                   </span>
                 </div>
@@ -81,7 +81,7 @@ export default async function BestiaryPage() {
                   {b.title}
                 </h2>
                 {b.summary && (
-                  <p className="mt-1 text-[11px] text-text-muted leading-relaxed line-clamp-3">
+                  <p className="mt-1 text-[12px] text-text-muted leading-relaxed line-clamp-3">
                     {b.summary}
                   </p>
                 )}
@@ -91,7 +91,7 @@ export default async function BestiaryPage() {
         )}
 
         <div className="pt-8 text-center">
-          <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors">
+          <Link href="/fun" className="font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors">
             ← The Fun Wing
           </Link>
         </div>

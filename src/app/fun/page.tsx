@@ -86,7 +86,7 @@ export default async function FunPage() {
       {/* Hero */}
       <section className="border-b border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// recreation_level · unserious_by_decree"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -103,7 +103,7 @@ export default async function FunPage() {
       <div className="mx-auto max-w-4xl px-4 py-10 space-y-12">
         {/* Attractions */}
         <section className="space-y-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             {"/// attractions"}
           </p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -116,7 +116,7 @@ export default async function FunPage() {
                 <p className="font-display text-sm font-bold text-text-primary group-hover:text-accent-gold-text transition-colors">
                   {a.label}
                 </p>
-                <p className="text-[11px] text-text-muted leading-relaxed">{a.blurb}</p>
+                <p className="text-[12px] text-text-muted leading-relaxed">{a.blurb}</p>
               </Link>
             ))}
           </div>
@@ -124,7 +124,7 @@ export default async function FunPage() {
 
         {/* Humorous lore */}
         <section className="space-y-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             {"/// humorous_canon"}
           </p>
           {humorous.length === 0 ? (
@@ -146,7 +146,7 @@ export default async function FunPage() {
                     {entry.title}
                   </p>
                   {entry.summary && (
-                    <p className="text-[11px] text-text-muted leading-relaxed line-clamp-2">
+                    <p className="text-[12px] text-text-muted leading-relaxed line-clamp-2">
                       {entry.summary}
                     </p>
                   )}
@@ -158,7 +158,7 @@ export default async function FunPage() {
 
         {/* Hidden-doors tease */}
         <section className="text-center pt-4 border-t border-border">
-          <p className="font-mono text-[10px] text-text-muted/50 leading-relaxed">
+          <p className="font-mono text-[12px] text-text-muted leading-relaxed">
             Not everything in the archive is on the map.
             <br />
             Some doors only open for those who look at the small things.

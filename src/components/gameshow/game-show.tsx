@@ -205,7 +205,7 @@ export function GameShow() {
         </div>
 
         <div>
-          <p className="mb-3 text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/60">{"/// choose_your_round"}</p>
+          <p className="mb-3 text-center font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// choose_your_round"}</p>
           <div className="grid gap-3 sm:grid-cols-2">
             {bank.rounds.map((r) => {
               const count = bank.questions.filter((x) => x.round === r.key).length;
@@ -232,9 +232,9 @@ export function GameShow() {
                     <span className="flex items-center gap-2">
                       <span className="font-display text-lg font-bold text-text-primary group-hover:text-accent-violet-text transition-colors">{meta?.name ?? r.label}</span>
                     </span>
-                    {meta && <span className="mt-0.5 block font-mono text-[8px] uppercase tracking-[0.3em] text-accent-gold-text/80">{meta.tag}</span>}
+                    {meta && <span className="mt-0.5 block font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">{meta.tag}</span>}
                     <span className="mt-1.5 block text-xs text-text-muted leading-relaxed">{meta?.desc}</span>
-                    <span className="mt-2 block font-mono text-[10px] uppercase tracking-widest text-text-muted/50">{count} questions</span>
+                    <span className="mt-2 block font-mono text-[12px] uppercase tracking-widest text-text-muted">{count} questions</span>
                   </span>
                 </button>
               );
@@ -252,7 +252,7 @@ export function GameShow() {
 
         <AchievementShelf unlocked={progress.unlocked} />
 
-        <p className="text-center font-mono text-[10px] text-text-muted/60 leading-relaxed">
+        <p className="text-center font-mono text-[12px] text-text-muted leading-relaxed">
           Screen-share in OBS / StreamYard. Chat calls a letter; you tap it.
           <br className="hidden sm:block" />
           <span className="text-accent-violet-text">A–D / 1–4</span> select · <span className="text-accent-violet-text">Space</span> reveal &amp; advance · <span className="text-accent-violet-text">← →</span> navigate.
@@ -267,8 +267,8 @@ export function GameShow() {
     <div className="mx-auto max-w-4xl px-4 py-8">
       <div className="mb-4"><ProgressHud progress={progress} rank={rank} compact /></div>
       <div className="mb-6 flex items-center justify-between gap-3 border-b border-border pb-3">
-        <button onClick={() => { setRoundKey(null); goto(0); }} className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent-violet-text transition-colors">← Rounds</button>
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/70">
+        <button onClick={() => { setRoundKey(null); goto(0); }} className="font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-accent-violet-text transition-colors">← Rounds</button>
+        <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
           {roundKey === "__daily" ? "⚡ Daily Challenge" : ROUND_META[roundKey]?.name ?? bank.rounds.find((r) => r.key === roundKey)?.label ?? "The Whole Deck"} · {idx + 1}/{pool.length}
         </span>
         <div className="flex items-center gap-2">
@@ -295,7 +295,7 @@ function DailyChallenge({ done, streak, onPlay }: { done: boolean; streak: numbe
       <div className="gs-drift pointer-events-none absolute inset-0 opacity-20" aria-hidden />
       <div className="relative flex flex-wrap items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// daily_challenge"}{streak > 0 && <span className="ml-2 text-accent-gold-text">🔥 {streak}-day streak</span>}
           </p>
           <h3 className="mt-1 font-display text-xl font-bold text-text-primary">Today&rsquo;s Impossible Question</h3>
@@ -318,9 +318,9 @@ function ProgressHud({ progress, rank, compact }: { progress: ProgressState; ran
     <div className={`rounded-lg border border-accent-violet/20 bg-surface/60 ${compact ? "px-4 py-2" : "px-5 py-3.5"}`}>
       <div className="flex items-center justify-between gap-3">
         <span className="font-display text-sm font-bold text-accent-violet-text">
-          {rank.name}{progress.activeTitle && <span className="ml-1.5 font-mono text-[10px] font-normal text-accent-gold-text">{progress.activeTitle}</span>}
+          {rank.name}{progress.activeTitle && <span className="ml-1.5 font-mono text-[12px] font-normal text-accent-gold-text">{progress.activeTitle}</span>}
         </span>
-        <span className="font-mono text-[10px] text-text-muted">
+        <span className="font-mono text-[12px] text-text-muted">
           {progress.xp} XP{rank.next ? ` · ${rank.toNext} to ${rank.next}` : " · max rank"}
           {progress.streak > 1 && <span className="ml-2 text-accent-gold-text">🔥 {progress.streak}</span>}
         </span>
@@ -336,12 +336,12 @@ function AchievementShelf({ unlocked }: { unlocked: string[] }) {
   const set = new Set(unlocked);
   return (
     <div className="rounded-lg border border-border bg-surface/40 p-4">
-      <p className="mb-3 font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/60">{`/// achievements · ${set.size}/${ACHIEVEMENTS.length}`}</p>
+      <p className="mb-3 font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{`/// achievements · ${set.size}/${ACHIEVEMENTS.length}`}</p>
       <div className="flex flex-wrap gap-2">
         {ACHIEVEMENTS.map((a) => {
           const got = set.has(a.id);
           return (
-            <span key={a.id} title={a.hint} className={`rounded border px-2.5 py-1 font-mono text-[10px] transition-all ${got ? "border-accent-gold/40 bg-accent-gold/10 text-accent-gold-text" : "border-border bg-void text-text-muted/40"}`}>
+            <span key={a.id} title={a.hint} className={`rounded border px-2.5 py-1 font-mono text-[12px] transition-all ${got ? "border-accent-gold/40 bg-accent-gold/10 text-accent-gold-text" : "border-border bg-void text-text-muted"}`}>
               {got ? a.label : "🔒 ???"}
             </span>
           );
@@ -358,7 +358,7 @@ function Toasts({ toasts }: { toasts: Toast[] }) {
       {toasts.map((t) => (
         <div key={t.id} className="animate-[fadein_0.3s] rounded-lg border border-accent-gold/40 bg-void/95 px-4 py-2.5 shadow-[0_0_24px_-6px_rgba(200,57,46,0.6)]">
           <p className="font-display text-sm font-bold text-accent-gold-text">{t.text}</p>
-          {t.sub && <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted">{t.sub}</p>}
+          {t.sub && <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">{t.sub}</p>}
         </div>
       ))}
     </div>
@@ -414,7 +414,7 @@ function QuestionCard({ q, revealed, selected, onChoose, onReveal, onNext, onArc
       {q.type === "two-truths-lie" && (
         <div className="space-y-2.5">
           {q.statements.map((s, i) => <OptionRow key={i} letter={LETTERS[i]} text={s.text} onClick={revealed ? undefined : () => onChoose(i)} state={mcState(i, q.answerIndex)} />)}
-          {revealed && <p className="font-mono text-[11px] uppercase tracking-widest text-red-400">↑ {LETTERS[q.answerIndex]} is the lie</p>}
+          {revealed && <p className="font-mono text-[12px] uppercase tracking-widest text-red-400">↑ {LETTERS[q.answerIndex]} is the lie</p>}
         </div>
       )}
 
@@ -422,10 +422,10 @@ function QuestionCard({ q, revealed, selected, onChoose, onReveal, onNext, onArc
         <div className="grid gap-4 sm:grid-cols-3">
           {([["SUSPECT", q.suspects, q.solution.suspect], ["LOCATION", q.locations, q.solution.location], ["ARTIFACT", q.artifacts, q.solution.artifact]] as const).map(([label, opts, sol]) => (
             <div key={label} className="space-y-2">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">{label}</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">{label}</p>
               {opts.map((o, i) => (
                 <div key={i} className={`rounded border px-3 py-2 text-sm transition-all duration-300 ${revealed && o === sol ? "border-emerald-400/70 bg-emerald-400/10 text-text-primary shadow-[0_0_16px_-4px_rgba(52,211,153,0.5)]" : "border-border bg-surface text-text-muted"}`}>
-                  <span className="font-mono text-[10px] text-accent-violet-text/70 mr-2">{LETTERS[i]}</span>{o}
+                  <span className="font-mono text-[12px] text-accent-violet-text/70 mr-2">{LETTERS[i]}</span>{o}
                   {revealed && o === sol && <span className="ml-1 text-emerald-400">✓</span>}
                 </div>
               ))}
@@ -436,10 +436,10 @@ function QuestionCard({ q, revealed, selected, onChoose, onReveal, onNext, onArc
 
       {revealed ? (
         <div className={`rounded-lg border p-4 space-y-2 animate-[fadein_0.3s] ${wasWrong ? "border-red-500/30 bg-red-500/5" : "border-emerald-400/25 bg-emerald-400/5"}`}>
-          <p className={`font-mono text-[9px] uppercase tracking-[0.3em] ${wasWrong ? "text-red-400" : "text-emerald-400"}`}>{wasWrong ? "/// the_codex_disagrees" : "/// the_codex_rules"}</p>
+          <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${wasWrong ? "text-red-400" : "text-emerald-400"}`}>{wasWrong ? "/// the_codex_disagrees" : "/// the_codex_rules"}</p>
           <p className="text-sm text-text-muted leading-relaxed">{q.explain}</p>
           {"sourceHref" in q && q.sourceHref && (
-            <Link href={q.sourceHref} onClick={onArchive} className="inline-flex items-center gap-1.5 rounded border border-accent-violet/40 bg-accent-violet/10 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-widest text-accent-violet-text hover:bg-accent-violet/20 transition-colors">
+            <Link href={q.sourceHref} onClick={onArchive} className="inline-flex items-center gap-1.5 rounded border border-accent-violet/40 bg-accent-violet/10 px-3 py-1.5 font-mono text-[12px] font-bold uppercase tracking-widest text-accent-violet-text hover:bg-accent-violet/20 transition-colors">
               🗝 Open the archive →
             </Link>
           )}

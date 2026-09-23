@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
+import { getFreePreviewChapterNumbers } from "@/lib/psychenomicon";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,23 @@ export async function GET() {
   const canRead = user ? await isSubscribed(user.id).catch(() => false) : false;
 
   if (!canRead) {
-    return NextResponse.json({ canRead: false, isAuthenticated: !!user });
+    // The locked landing used to be a lock and nothing else (2026-09 audit,
+    // PS-01). Send the free-preview chapters so visitors can read before
+    // they're asked to pay — the same set the chapter route already opens.
+    const freeNumbers = await getFreePreviewChapterNumbers().catch(() => [] as number[]);
+    const [chapterCount, freeChapters] = await Promise.all([
+      prisma.psychenomiconChapter.count().catch(() => 0),
+      freeNumbers.length
+        ? prisma.psychenomiconChapter
+            .findMany({
+              where: { chapterNumber: { in: freeNumbers } },
+              orderBy: { chapterNumber: "asc" },
+              select: { slug: true, chapterNumber: true, title: true },
+            })
+            .catch(() => [])
+        : Promise.resolve([]),
+    ]);
+    return NextResponse.json({ canRead: false, isAuthenticated: !!user, chapterCount, freeChapters });
   }
 
   const [chapterCount, entityCount, latest, majors, entities, activeThreads] = await Promise.all([

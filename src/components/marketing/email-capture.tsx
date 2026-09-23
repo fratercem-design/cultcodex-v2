@@ -60,7 +60,7 @@ export function EmailCapture({
   if (compact) {
     return (
       <div className={`flex flex-col items-center gap-2 ${className}`}>
-        <p className="font-mono text-[10px] text-text-muted/60 uppercase tracking-widest">
+        <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
           Weekly signal drop — free
         </p>
         <form onSubmit={handleSubmit} className="flex w-full max-w-sm flex-col gap-2 sm:flex-row">
@@ -83,7 +83,7 @@ export function EmailCapture({
           </button>
         </form>
         {message && (
-          <p className={`font-mono text-[11px] ${status === "success" ? "text-accent-gold-text" : "text-red-400"}`}>
+          <p className={`font-mono text-[12px] ${status === "success" ? "text-accent-gold-text" : "text-red-400"}`}>
             {message}
           </p>
         )}
@@ -95,7 +95,7 @@ export function EmailCapture({
     <div
       className={`rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface px-6 py-8 text-center space-y-4 ${className}`}
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
         {eyebrow}
       </p>
       <p className="font-display text-xl font-bold text-text-primary">{heading}</p>
@@ -110,7 +110,7 @@ export function EmailCapture({
           placeholder="your@email.com"
           required
           disabled={status === "loading" || status === "success"}
-          className="flex-1 rounded-lg border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
+          className="flex-1 rounded-lg border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
         />
         <button
           type="submit"
