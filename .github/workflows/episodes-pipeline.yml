@@ -88,6 +88,9 @@ jobs:
           VERCEL_URL: https://cultcodex.me
           YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
         run: |
+          # Without pipefail, tee's exit code masks the script's, so a FATAL
+          # (e.g. a rejected ENRICH_SECRET) still showed as a green run.
+          set -o pipefail
           npx tsx scripts/import-episodes-ytdlp.ts \
             --content-type "${{ github.event.inputs.content_type || 'original' }}" \
             --delay "${{ github.event.inputs.delay_ms || '1500' }}" \
