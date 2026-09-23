@@ -66,7 +66,17 @@ jobs:
               echo "::warning title=Bad cookies::YOUTUBE_COOKIES is not Netscape format - discarding. Public videos will still fetch; age-restricted and members-only ones will fail."
               rm -f /tmp/yt-cookies.txt
             else
-              echo "Cookies written."
+              # Names only, never values: shows whether the jar actually carries
+              # a signed-in YouTube session (a logged-out export still passes
+              # the header check but gets "Sign in to confirm you're not a bot").
+              echo "Cookies written: $(grep -cv '^#[^H]' /tmp/yt-cookies.txt) entries."
+              for n in LOGIN_INFO SID __Secure-1PSID __Secure-3PSID SAPISID; do
+                if awk -F'\t' -v n="$n" '$6 == n { f = 1 } END { exit !f }' /tmp/yt-cookies.txt; then
+                  echo "  $n: present"
+                else
+                  echo "  $n: MISSING"
+                fi
+              done
             fi
           else
             echo "No YOUTUBE_COOKIES secret — transcript fetch will likely fail."
