@@ -194,6 +194,14 @@ async function main() {
     process.exit(1);
   }
 
+  // A rejected secret comes back as JSON ({ error: "Unauthorized" }), not a
+  // throw, and used to fall through to "Nothing to do — all caught up".
+  if (typeof status?.total !== "number") {
+    console.error(`  FATAL: unexpected status response — ${JSON.stringify(status).slice(0, 200)}`);
+    console.error("  Check ENRICH_SECRET matches the value set on the server.");
+    process.exit(1);
+  }
+
   console.log(`  Total episodes:    ${status.total}`);
   console.log(`  Have transcripts:  ${status.withTranscripts}`);
   console.log(`  Missing:           ${status.withoutTranscripts}`);
