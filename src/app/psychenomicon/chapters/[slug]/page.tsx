@@ -8,7 +8,7 @@ import { TimelineStrip } from "@/components/psychenomicon/timeline-strip";
 import { ScrollReveal } from "@/components/psychenomicon/scroll-reveal";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { buildMetadata, SITE_URL } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, SITE_URL } from "@/lib/seo";
 
 export const revalidate = 300;
 
@@ -132,7 +132,7 @@ export default async function ChapterPage({ params }: PageProps) {
       <main id="main-content" className="min-h-screen bg-void px-4 py-16">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(paywallLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(paywallLd) }}
         />
         <div className="mx-auto max-w-2xl space-y-6">
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">

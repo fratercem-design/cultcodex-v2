@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +26,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const callerKey = clientKey(req);
+  const localRl = rateLimit(`gameshow-score:${callerKey}`, { limit: 10, windowMs: 60_000 });
+  if (!localRl.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: { "Retry-After": String(localRl.retryAfterSec) } });
+  }
+
   let body: { handle?: string; score?: number; correct?: number; total?: number; round?: string };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "bad json" }, { status: 400 }); }
   const correct = Math.max(0, Math.min(1000, Math.floor(Number(body.correct) || 0)));
