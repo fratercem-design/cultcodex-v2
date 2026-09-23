@@ -62,9 +62,20 @@ def normalize(s: str) -> str:
     return s
 
 
+def _impersonate_args() -> list:
+    """Rumble answers datacenter IPs (e.g. GitHub runners) with 403 unless the
+    TLS fingerprint looks like a browser. --impersonate needs curl_cffi; without
+    it yt-dlp aborts, so only pass it when available (local runs may lack it)."""
+    try:
+        import curl_cffi  # noqa: F401
+        return ["--impersonate", "chrome"]
+    except ImportError:
+        return []
+
+
 def list_rumble_channel(channel_url: str) -> list:
     """Return [{title, url}] for every video on the Rumble channel."""
-    cmd = ["yt-dlp", "--flat-playlist", "--ignore-errors", "--dump-json", channel_url]
+    cmd = ["yt-dlp", *_impersonate_args(), "--flat-playlist", "--ignore-errors", "--dump-json", channel_url]
     log(f"Listing Rumble channel: {channel_url}")
     proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
     videos = []
@@ -169,7 +180,7 @@ def main() -> int:
             continue
 
         cmd = [
-            "yt-dlp", "-x", "--audio-format", "mp3", "--audio-quality", "5",
+            "yt-dlp", *_impersonate_args(), "-x", "--audio-format", "mp3", "--audio-quality", "5",
             "-o", os.path.join(AUDIO_DIR, f"{ytid}.%(ext)s"), vid["url"],
         ]
         try:
