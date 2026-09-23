@@ -122,7 +122,7 @@ export function GenerateChapterButton({ episodes }: Props) {
           <button
             key={m}
             onClick={() => setMode(m)}
-            className={`flex-1 rounded px-3 py-1.5 font-mono text-[10px] transition-colors ${
+            className={`flex-1 rounded px-3 py-1.5 font-mono text-[12px] transition-colors ${
               mode === m
                 ? "bg-accent-violet/20 text-accent-violet-text border border-accent-violet/30"
                 : "text-text-muted hover:text-text-primary"
@@ -165,7 +165,7 @@ export function GenerateChapterButton({ episodes }: Props) {
           </button>
 
           {singleResult && (
-            <div className={`rounded border px-3 py-2 font-mono text-[10px] ${
+            <div className={`rounded border px-3 py-2 font-mono text-[12px] ${
               singleResult.ok
                 ? "border-accent-violet/30 bg-accent-violet/5 text-accent-violet-text"
                 : "border-red-500/30 bg-red-500/5 text-red-400"
@@ -180,7 +180,7 @@ export function GenerateChapterButton({ episodes }: Props) {
           <div className="max-h-64 overflow-y-auto space-y-1 rounded border border-border bg-void p-2">
             <button
               onClick={toggleAll}
-              className="w-full text-left px-2 py-1 font-mono text-[9px] text-text-muted hover:text-accent-violet-text transition-colors"
+              className="w-full text-left px-2 py-1 font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
             >
               {selected.size === episodes.length ? "Deselect all" : `Select all (${episodes.length})`}
             </button>
@@ -201,9 +201,9 @@ export function GenerateChapterButton({ episodes }: Props) {
                   disabled={batchLoading}
                   className="accent-violet-500"
                 />
-                <span className="font-mono text-[10px] text-text-muted truncate">
+                <span className="font-mono text-[12px] text-text-muted truncate">
                   {epLabel(ep)}
-                  <span className="text-text-muted/60 ml-1">
+                  <span className="text-text-muted ml-1">
                     {ep._count.segments > 0 ? `${ep._count.segments}s` : "raw"}
                   </span>
                 </span>
@@ -234,7 +234,7 @@ export function GenerateChapterButton({ episodes }: Props) {
                 return (
                   <div
                     key={i}
-                    className={`rounded border px-3 py-2 font-mono text-[9px] flex items-start gap-2 ${
+                    className={`rounded border px-3 py-2 font-mono text-[12px] flex items-start gap-2 ${
                       r.status === "ok"
                         ? "border-accent-violet/30 bg-accent-violet/5 text-accent-violet-text"
                         : r.status === "skipped"
@@ -262,7 +262,7 @@ export function GenerateChapterButton({ episodes }: Props) {
         </div>
       )}
 
-      <p className="font-mono text-[9px] text-text-muted leading-relaxed">
+      <p className="font-mono text-[12px] text-text-muted leading-relaxed">
         Each chapter uses Claude to write three text layers (canon / interpretation / mythic), entity profiles, narrative threads, and archetype timeline events. Single: 30–60s. Batch processes sequentially to maintain chapter continuity.
       </p>
     </div>

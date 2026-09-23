@@ -28,7 +28,7 @@ export default async function DeepSearchPage({ searchParams }: DeepSearchPagePro
       <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-12 space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em]" style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em]" style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}>
             {"// deep_search"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-text-primary">

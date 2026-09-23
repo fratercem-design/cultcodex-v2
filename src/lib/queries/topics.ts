@@ -51,15 +51,29 @@ export function buildTopicCountInclude() {
   } satisfies Prisma.TopicInclude;
 }
 
+export type TopicSort = "episodes" | "az" | "za";
+
+/**
+ * Sorting happens in the database. It used to happen in the page, AFTER an
+ * alphabetical page of 50 had been fetched — so "Most Connected" only
+ * re-ordered the A-block ("AI", "AI-generated content"…) while "tarot
+ * readings" (300+ episodes) sat on page 30 (2026-09 audit, TO-01).
+ */
 export async function getTopics(options?: {
   take?: number;
   skip?: number;
+  sort?: TopicSort;
 }) {
-  const { take = 50, skip = 0 } = options ?? {};
+  const { take = 50, skip = 0, sort = "az" } = options ?? {};
+
+  const orderBy: Prisma.TopicOrderByWithRelationInput[] =
+    sort === "episodes"
+      ? [{ episodes: { _count: "desc" } }, { title: "asc" }]
+      : [{ title: sort === "za" ? "desc" : "asc" }];
 
   return prisma.topic.findMany({
     include: buildTopicCountInclude(),
-    orderBy: { title: "asc" },
+    orderBy,
     take,
     skip,
   });

@@ -51,8 +51,8 @@
   flex-wrap: wrap;
   justify-content: center;
   font-family: var(--font-mono, monospace);
-  font-size: 10px;
-  letter-spacing: 0.28em;
+  font-size: 12px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--thr-dim);
   opacity: 0;
@@ -121,7 +121,7 @@
 }
 
 .threshold__glyph {
-  font-family: var(--threshold-font-sigil), var(--font-serif), serif;
+  font-family: var(--threshold-font-display), var(--font-serif), serif;
   font-size: clamp(2.75rem, 9vw, 4.5rem);
   line-height: 1;
   color: var(--thr-gold);
@@ -132,8 +132,8 @@
 /* ── title ── */
 .threshold__kicker {
   font-family: var(--font-mono, monospace);
-  font-size: 11px;
-  letter-spacing: 0.42em;
+  font-size: 12px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--thr-dim);
   opacity: 0;
@@ -158,6 +158,19 @@
   text-shadow: 0 0 48px rgba(243, 238, 222, 0.14);
 }
 
+/* ── plain one-liner: what this is, before any ritual vocabulary ── */
+.threshold__lede {
+  max-width: 34rem;
+  margin: clamp(0.5rem, 1.5vh, 0.9rem) auto 0;
+  padding: 0 1rem;
+  font-family: var(--font-display), "Space Grotesk", sans-serif;
+  font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+  line-height: 1.5;
+  color: var(--thr-bone);
+  opacity: 0;
+  animation: thr-rise 1s ease 0.9s forwards;
+}
+
 /* ── meta row ── */
 .threshold__meta {
   display: flex;
@@ -177,20 +190,20 @@
 
 .threshold__meta dt {
   font-family: var(--font-mono, monospace);
-  font-size: 8px;
-  letter-spacing: 0.28em;
+  font-size: 12px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--thr-dim);
-  opacity: 0.7;
 }
 
 .threshold__meta dd {
   margin: 0;
   font-family: var(--font-mono, monospace);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: var(--thr-gold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-brand-ink, #F08074);
 }
 
 .threshold__meta-div {
@@ -207,6 +220,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  min-height: 44px;
   padding: 0.5rem 1rem;
   background: none;
   border: 0;
@@ -218,8 +232,8 @@
 
 .threshold__enter-label {
   font-family: var(--font-mono, monospace);
-  font-size: 10px;
-  letter-spacing: 0.3em;
+  font-size: 12px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   transition: color 0.24s ease;
 }
@@ -325,6 +339,7 @@
   .threshold__sigil,
   .threshold__kicker,
   .threshold__title em,
+  .threshold__lede,
   .threshold__meta,
   .threshold__enter {
     opacity: 1;

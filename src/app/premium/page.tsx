@@ -38,7 +38,7 @@ export default function PremiumPage() {
     <main id="main-content" className="mx-auto max-w-5xl px-4 py-16 space-y-14">
       {/* ── Threshold header ── */}
       <div className="text-center space-y-4">
-        <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-gold-text/80">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
           ✦ the threshold of initiation ✦
         </p>
         <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -67,21 +67,30 @@ export default function PremiumPage() {
             >
               {tier.badge && (
                 <span
-                  className={`absolute -top-3 left-1/2 -translate-x-1/2 rounded-full border ${accentBorder} bg-void px-3 py-1 font-mono text-[9px] uppercase tracking-widest ${accentText}`}
+                  className={`absolute -top-3 left-1/2 -translate-x-1/2 rounded-full border ${accentBorder} bg-void px-3 py-1 font-mono text-[12px] uppercase tracking-widest ${accentText}`}
                 >
                   {tier.badge}
                 </span>
               )}
 
               <div className="space-y-2 text-center">
-                <p className={`font-mono text-[10px] uppercase tracking-[0.4em] ${accentText}/70`}>
+                <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${accentText}/70`}>
                   {tier.role}
                 </p>
                 <h2 className="font-display text-2xl font-bold text-text-primary">{tier.name}</h2>
+                {/* Price where the eye lands, not only inside the button at the
+                    bottom of the card (2026-09 audit, PM-01). */}
+                <p className="font-mono text-ink tabular-nums">
+                  <span className="text-3xl font-bold">${tier.priceMonthly}</span>
+                  <span className="text-[15px] text-ink-2">/mo</span>
+                  <span className="block text-[13px] text-ink-3">
+                    or ${tier.priceAnnual}/yr (save ${tier.priceMonthly * 12 - tier.priceAnnual})
+                  </span>
+                </p>
                 <p className="font-serif text-sm italic text-text-muted">{tier.tagline}</p>
               </div>
 
-              <p className={`text-center font-mono text-[11px] leading-relaxed ${accentText}/80`}>
+              <p className={`text-center font-mono text-[12px] leading-relaxed ${accentText}/80`}>
                 &ldquo;{tier.psychologyHook}&rdquo;
               </p>
 
@@ -89,7 +98,7 @@ export default function PremiumPage() {
                 {tier.features.map((f) => (
                   <div key={f} className="flex items-start gap-2">
                     <span className={`mt-0.5 shrink-0 ${accentText}/50`}>◈</span>
-                    <p className="font-mono text-[11px] leading-snug text-text-muted">{f}</p>
+                    <p className="font-mono text-[12px] leading-snug text-text-muted">{f}</p>
                   </div>
                 ))}
               </div>
@@ -107,11 +116,11 @@ export default function PremiumPage() {
         })}
       </div>
 
-      <p className="text-center font-serif text-xs italic text-text-muted/50">
+      <p className="text-center font-serif text-xs italic text-text-muted">
         Cancel any time. Instant access. No contracts.
       </p>
 
-      <p className="text-center font-mono text-[10px] text-text-muted/40">
+      <p className="text-center font-mono text-[12px] text-text-muted">
         Not ready yet?{" "}
         <Link href="/start-here" className="text-accent-gold-text/80 hover:text-accent-gold-text transition-colors">
           Start here

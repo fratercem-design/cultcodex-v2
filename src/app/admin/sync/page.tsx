@@ -77,7 +77,7 @@ export default async function SyncPage() {
         ].map((s) => (
           <div key={s.label} className="rounded-lg border border-border bg-surface p-4 text-center">
             <p className={`font-display text-3xl font-bold ${s.color}`}>{s.value.toLocaleString("en-US")}</p>
-            <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted mt-1">{s.label}</p>
+            <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted mt-1">{s.label}</p>
           </div>
         ))}
       </div>

@@ -38,7 +38,7 @@ export function SplitSummaryCard({
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
       {/* Card header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           Summary
         </p>
         {isHumanReviewed && (
@@ -49,7 +49,7 @@ export function SplitSummaryCard({
       {/* Facts zone */}
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-center gap-2 mb-2">
-          <span className="font-mono text-[9px] uppercase tracking-[0.35em] text-accent-gold-text">
+          <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">
             ◈ What Happened
           </span>
         </div>
@@ -63,7 +63,7 @@ export function SplitSummaryCard({
         <>
           <div className="mx-4 flex items-center gap-2 py-1">
             <div className="h-px flex-1 border-t border-dashed border-border/60" />
-            <span className="font-mono text-[8px] uppercase tracking-[0.3em] text-text-muted/50 select-none">
+            <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted select-none">
               interpretation
             </span>
             <div className="h-px flex-1 border-t border-dashed border-border/60" />
@@ -71,10 +71,10 @@ export function SplitSummaryCard({
 
           <div className="px-4 pt-1 pb-4">
             <div className="flex items-center gap-2 mb-2">
-              <span className="font-mono text-[9px] uppercase tracking-[0.35em] text-accent-violet-text">
+              <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">
                 ⬡ Interpretive Layer
               </span>
-              <span className="font-mono text-[8px] text-text-muted/60">
+              <span className="font-mono text-[12px] text-text-muted">
                 · AI interpretation
               </span>
             </div>

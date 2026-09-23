@@ -1,130 +1,95 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 
 type Stat = { value: number; suffix?: string; label: string };
 
-function AnimatedNumber({ value, suffix = "" }: Stat) {
-  const [display, setDisplay] = useState(value);
-  const ref = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) {
-      const frame = requestAnimationFrame(() => setDisplay(value));
-      return () => cancelAnimationFrame(frame);
-    }
-
-    let frame = 0;
-    let started = false;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting || started) return;
-      started = true;
-      setDisplay(0);
-      const start = performance.now();
-      const duration = 1100;
-      const tick = (now: number) => {
-        const progress = Math.min(1, (now - start) / duration);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        setDisplay(Math.round(value * eased));
-        if (progress < 1) frame = requestAnimationFrame(tick);
-      };
-      frame = requestAnimationFrame(tick);
-      observer.disconnect();
-    }, { threshold: 0.25 });
-
-    observer.observe(node);
-    return () => {
-      observer.disconnect();
-      cancelAnimationFrame(frame);
-    };
-  }, [value]);
-
+/**
+ * One consistent line of archive scale, with the date it's true as of.
+ *
+ * This used to count up from 0 on scroll. Anyone reading (or screenshotting)
+ * mid-animation saw numbers that disagreed with the sidebar — the 2026-09
+ * audit logged "2,690 transmissions" against a sidebar of 3,073 for exactly
+ * this reason. An archive's counts should be read, not performed, so the
+ * numbers now render final on the server.
+ */
+export function ArchiveStatsLine({ stats, asOf }: { stats: Stat[]; asOf: string }) {
   return (
-    <span ref={ref} className="text-accent-gold-text font-bold tabular-nums">
-      {display.toLocaleString("en-US")}{suffix}
-    </span>
-  );
-}
-
-export function AnimatedArchiveStats({ stats }: { stats: Stat[] }) {
-  return (
-    <section aria-label="Archive scale" className="border-b border-border/40 bg-void/80 px-4 py-4 backdrop-blur-sm">
-      <div className="mx-auto grid max-w-5xl grid-cols-2 gap-4 sm:grid-cols-4">
+    <section
+      aria-label="Archive scale"
+      className="border-y border-line px-4 py-4"
+    >
+      <div className="mx-auto flex max-w-5xl flex-wrap items-baseline justify-center gap-x-6 gap-y-2 font-mono text-[15px] tabular-nums">
         {stats.map((stat) => (
-          <div key={stat.label} className="text-center">
-            <p className="font-mono text-lg sm:text-xl">
-              <AnimatedNumber {...stat} />
-            </p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-text-muted">
-              {stat.label}
-            </p>
-          </div>
+          <p key={stat.label} className="text-ink-2">
+            <span className="font-bold text-ink">
+              {stat.value.toLocaleString("en-US")}
+              {stat.suffix ?? ""}
+            </span>{" "}
+            {stat.label}
+          </p>
         ))}
+        <p className="text-[13px] text-ink-3">
+          as of {asOf} ·{" "}
+          <Link href="/about/methodology" className="underline underline-offset-4 hover:text-ink">
+            how we count
+          </Link>
+        </p>
       </div>
     </section>
   );
 }
 
+// The three verbs are the site's navigation grammar: Search finds a moment,
+// People/Map traces a pattern, the Oracle answers a question with citations.
 const reasons = [
   {
-    index: "01",
-    title: "Find the moment.",
-    body: "Search years of unscripted conversations by person, subject, conflict, symbol, or exact phrase — then jump back to the source.",
+    verb: "Find",
+    title: "a moment",
+    body: "Search every word by person, subject, symbol or exact phrase — then jump to the timestamp.",
     href: "/search",
     action: "Search the archive",
-    accent: "border-accent-cyan/25 hover:border-accent-cyan/60",
   },
   {
-    index: "02",
-    title: "See what repeats.",
-    body: "Follow recurring guests, shifting alliances, tarot archetypes, and behavioral patterns across thousands of transmissions.",
-    href: "/graph",
-    action: "Explore connections",
-    accent: "border-accent-violet/30 hover:border-accent-violet/70",
+    verb: "Trace",
+    title: "a pattern",
+    body: "Follow recurring guests, shifting alliances and the themes the show keeps returning to.",
+    href: "/people",
+    action: "Browse people & connections",
   },
   {
-    index: "03",
-    title: "Ask the whole archive.",
-    body: "The Oracle searches transcripts, lore, profiles, and decoded patterns, then answers with citations to real episodes and timestamps.",
+    verb: "Ask",
+    title: "the archive",
+    body: "The Oracle answers from transcripts, lore and profiles — and cites the episodes and timestamps it used.",
     href: "/oracle",
     action: "Ask 3 questions free",
-    accent: "border-accent-gold/30 hover:border-accent-gold/70",
   },
 ] as const;
 
 export function WhyCultCodex() {
   return (
-    <section aria-labelledby="why-cultcodex" className="space-y-5">
+    <section aria-labelledby="why-cultcodex" className="space-y-6">
       <div className="max-w-2xl space-y-2">
-        <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-accent-cyan/80">
-          {"/// why_enter"}
+        <p className="font-mono text-[12px] uppercase tracking-[0.08em] text-ink-3">
+          {"///"} Three ways in
         </p>
-        <h2 id="why-cultcodex" className="font-display text-2xl font-bold text-text-primary sm:text-3xl">
+        <h2 id="why-cultcodex" className="font-display text-2xl font-bold text-ink sm:text-3xl">
           Watch the show. Then see what the show reveals.
         </h2>
-        <p className="font-mono text-xs leading-relaxed text-text-muted">
-          CultCodex turns years of live conversation into an explorable map of people, ideas, conflict, humor, and transformation.
-        </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      {/* Hairline columns, not boxes: the verbs are the structure. */}
+      <div className="grid border-y border-line md:grid-cols-3 md:divide-x md:divide-line">
         {reasons.map((reason) => (
           <Link
-            key={reason.index}
+            key={reason.verb}
             href={reason.href}
-            className={`group relative overflow-hidden rounded-xl border bg-surface p-5 transition-[border-color,transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/30 ${reason.accent}`}
+            className="group block border-b border-line py-5 last:border-b-0 md:border-b-0 md:px-6 md:first:pl-0 md:last:pr-0"
           >
-            <span aria-hidden="true" className="absolute right-4 top-3 font-mono text-4xl font-bold text-text-muted/10">
-              {reason.index}
-            </span>
-            <h3 className="relative font-display text-lg font-bold text-text-primary">{reason.title}</h3>
-            <p className="relative mt-3 font-mono text-[11px] leading-relaxed text-text-muted">{reason.body}</p>
-            <p className="relative mt-5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-accent-gold-text">
+            <h3 className="font-display text-lg text-ink">
+              <span className="font-mono font-bold uppercase tracking-[0.08em] text-brand-ink">{reason.verb}</span>{" "}
+              {reason.title}
+            </h3>
+            <p className="mt-2 font-display text-[15px] leading-relaxed text-ink-2">{reason.body}</p>
+            <p className="mt-4 font-display text-[15px] font-semibold text-ink underline decoration-line-strong underline-offset-4 group-hover:decoration-ink">
               {reason.action} <span aria-hidden="true">→</span>
             </p>
           </Link>

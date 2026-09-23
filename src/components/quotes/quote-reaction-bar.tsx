@@ -121,13 +121,13 @@ export function QuoteReactionBar({
                toggle state these buttons already track visually. */
             aria-label={isAuthenticated ? `${label} reaction` : `Sign in to react — ${label}`}
             aria-pressed={isActive}
-            className={`group inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[10px] transition-all ${
+            className={`group inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[12px] transition-all ${
               isActive
                 ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold-text"
                 : "border-border bg-surface/60 text-text-muted hover:border-accent-gold/30 hover:text-text-primary"
             } ${pending === type ? "opacity-50" : ""}`}
           >
-            <span aria-hidden="true" className="text-[11px] leading-none">{emoji}</span>
+            <span aria-hidden="true" className="text-[12px] leading-none">{emoji}</span>
             {showCount && <span className="tabular-nums">{count}</span>}
           </button>
         );

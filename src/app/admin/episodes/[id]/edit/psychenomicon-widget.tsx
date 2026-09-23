@@ -44,7 +44,7 @@ export function PsychenomiconWidget({ episodeId, hasTranscript, chapter }: Props
 
   return (
     <div className="rounded-lg border border-accent-violet/20 bg-accent-violet/5 p-5 space-y-3">
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text">ψ Psychenomicon</p>
+      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">ψ Psychenomicon</p>
 
       {chapter ? (
         <div className="space-y-2">
@@ -77,7 +77,7 @@ export function PsychenomiconWidget({ episodeId, hasTranscript, chapter }: Props
             ) : "Generate Chapter →"}
           </button>
           {result && (
-            <div className={`rounded border px-3 py-2 font-mono text-[10px] ${
+            <div className={`rounded border px-3 py-2 font-mono text-[12px] ${
               result.ok
                 ? "border-accent-violet/30 bg-accent-violet/5 text-accent-violet-text"
                 : "border-red-500/30 bg-red-500/5 text-red-400"

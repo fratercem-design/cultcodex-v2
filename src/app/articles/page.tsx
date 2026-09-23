@@ -24,7 +24,7 @@ export default async function ArticlesPage() {
       {/* Hero */}
       <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
             {"/// field_reports"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -34,7 +34,7 @@ export default async function ArticlesPage() {
             Long-form writing drawn from the show — essays, deep dives, and
             field reports from inside the Cult of Psyche.
           </p>
-          <p className="font-mono text-[10px] text-text-muted/60">
+          <p className="font-mono text-[12px] text-text-muted">
             {total} article{total === 1 ? "" : "s"} in the record
           </p>
         </div>
@@ -43,7 +43,7 @@ export default async function ArticlesPage() {
       <div className="mx-auto max-w-3xl px-4 py-10 space-y-4">
         {entries.length === 0 ? (
           <div className="rounded border border-border bg-surface px-6 py-16 text-center space-y-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/70">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
               {"/// presses_warming_up"}
             </p>
             <p className="text-sm text-text-muted max-w-sm mx-auto leading-relaxed">
@@ -70,7 +70,7 @@ export default async function ArticlesPage() {
                     {entry.summary}
                   </p>
                 )}
-                <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/40 pt-1">
+                <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted pt-1">
                   Read the full report →
                 </p>
               </div>

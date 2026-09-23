@@ -79,8 +79,8 @@ export default async function AdminDigestPage({ searchParams }: PageProps) {
   const inputCls =
     "w-full rounded border border-border bg-void px-3 py-2 font-mono text-xs text-text-primary focus:border-accent-gold/60 focus:outline-none";
   const textareaCls =
-    "w-full rounded border border-border bg-void px-3 py-2 font-mono text-[10px] text-text-primary focus:border-accent-gold/60 focus:outline-none resize-none";
-  const labelCls = "font-mono text-[10px] uppercase tracking-widest text-text-muted";
+    "w-full rounded border border-border bg-void px-3 py-2 font-mono text-[12px] text-text-primary focus:border-accent-gold/60 focus:outline-none resize-none";
+  const labelCls = "font-mono text-[12px] uppercase tracking-widest text-text-muted";
 
   return (
     <div className="space-y-8 max-w-4xl">
@@ -112,7 +112,7 @@ export default async function AdminDigestPage({ searchParams }: PageProps) {
         </form>
 
         {search && (
-          <div className="space-y-4 text-[10px] font-mono">
+          <div className="space-y-4 text-[12px] font-mono">
             {/* Episodes */}
             {refEpisodes.length > 0 && (
               <div className="space-y-1">
@@ -123,7 +123,7 @@ export default async function AdminDigestPage({ searchParams }: PageProps) {
                       {ep.episodeNumber ? `EP.${String(ep.episodeNumber).padStart(3, "0")}` : "—"}
                     </span>
                     <span className="flex-1 text-text-primary truncate">{ep.title}</span>
-                    <code className="shrink-0 text-text-muted/60 select-all">{ep.slug}</code>
+                    <code className="shrink-0 text-text-muted select-all">{ep.slug}</code>
                   </div>
                 ))}
               </div>
@@ -140,10 +140,10 @@ export default async function AdminDigestPage({ searchParams }: PageProps) {
                         &ldquo;{q.text.slice(0, 80)}{q.text.length > 80 ? "…" : ""}&rdquo;
                       </p>
                       {q.speaker && (
-                        <p className="text-text-muted/60 mt-0.5">— {q.speaker.displayName}</p>
+                        <p className="text-text-muted mt-0.5">— {q.speaker.displayName}</p>
                       )}
                     </div>
-                    <code className="shrink-0 text-text-muted/60 select-all text-[9px]">{q.id}</code>
+                    <code className="shrink-0 text-text-muted select-all text-[12px]">{q.id}</code>
                   </div>
                 ))}
               </div>
@@ -156,20 +156,20 @@ export default async function AdminDigestPage({ searchParams }: PageProps) {
                 {refPeople.map((p) => (
                   <div key={p.id} className="flex items-center gap-3 rounded border border-border bg-void px-3 py-2">
                     <span className="flex-1 text-text-primary">{p.displayName}</span>
-                    <code className="shrink-0 text-text-muted/60 select-all">{p.slug}</code>
+                    <code className="shrink-0 text-text-muted select-all">{p.slug}</code>
                   </div>
                 ))}
               </div>
             )}
 
             {!refEpisodes.length && !refQuotes.length && !refPeople.length && (
-              <p className="text-text-muted/60">No results for &ldquo;{search}&rdquo;</p>
+              <p className="text-text-muted">No results for &ldquo;{search}&rdquo;</p>
             )}
           </div>
         )}
 
         {!search && (
-          <p className="font-mono text-[10px] text-text-muted/50">
+          <p className="font-mono text-[12px] text-text-muted">
             Search to find IDs/slugs. Episodes and people accept slugs (e.g. <code>episode-1234</code>, <code>john-doe</code>) or raw IDs. Quotes require the full ID.
           </p>
         )}
@@ -235,26 +235,26 @@ export default async function AdminDigestPage({ searchParams }: PageProps) {
               <div key={d.id} className="flex items-start gap-4 rounded-lg border border-border bg-surface p-4">
                 <div className="flex-1 min-w-0 space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className={`font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded ${d.published ? "bg-green-900/40 text-green-400" : "bg-border text-text-muted"}`}>
+                    <span className={`font-mono text-[12px] uppercase tracking-widest px-2 py-0.5 rounded ${d.published ? "bg-green-900/40 text-green-400" : "bg-border text-text-muted"}`}>
                       {d.published ? "live" : "draft"}
                     </span>
-                    <span className="font-mono text-[10px] text-text-muted">
+                    <span className="font-mono text-[12px] text-text-muted">
                       Week of {formatDate(d.weekOf)}
                     </span>
                   </div>
                   <p className="font-display text-sm font-bold text-text-primary">{d.title}</p>
-                  <p className="font-mono text-[10px] text-text-muted">
+                  <p className="font-mono text-[12px] text-text-muted">
                     {d.quoteIds.length} quotes · {d.episodeIds.length} episodes · {d.personIds.length} people
                   </p>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
                   <form action={togglePublished.bind(null, d.id, !d.published)}>
-                    <button className="font-mono text-[10px] text-text-muted hover:text-accent-gold-text transition-colors">
+                    <button className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors">
                       {d.published ? "Unpublish" : "Publish"}
                     </button>
                   </form>
                   <form action={deleteWeeklyDigest.bind(null, d.id)}>
-                    <button className="font-mono text-[10px] text-accent-crimson-text hover:text-accent-crimson-text/80 transition-colors">
+                    <button className="font-mono text-[12px] text-accent-crimson-text hover:text-accent-crimson-text/80 transition-colors">
                       Delete
                     </button>
                   </form>

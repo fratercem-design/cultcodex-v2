@@ -50,7 +50,7 @@ export function UserProfileTabs({ tabs, children }: UserProfileTabsProps) {
           >
             {tab.label}
             {tab.count != null && tab.count > 0 && (
-              <span className="ml-1.5 text-[10px] opacity-60">({tab.count})</span>
+              <span className="ml-1.5 text-[12px] opacity-60">({tab.count})</span>
             )}
           </button>
         ))}

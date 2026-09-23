@@ -45,7 +45,7 @@ export function ArchiveNotice({ entityType, entityName, className }: ArchiveNoti
           />
         </svg>
         <div className="min-w-0 flex-1">
-          <p className="font-mono text-[11px] font-bold text-amber-400 uppercase tracking-wider">
+          <p className="font-mono text-[12px] font-bold text-amber-400 uppercase tracking-wider">
             {notice.heading}
           </p>
           <p className="mt-1 text-xs text-text-muted leading-relaxed">
@@ -54,13 +54,13 @@ export function ArchiveNotice({ entityType, entityName, className }: ArchiveNoti
           <div className="mt-2 flex items-center gap-3">
             <Link
               href="/corrections"
-              className="font-mono text-[10px] text-accent-gold-text hover:underline"
+              className="font-mono text-[12px] text-accent-gold-text hover:underline"
             >
               Report an error
             </Link>
             <Link
               href="/content-policy"
-              className="font-mono text-[10px] text-text-muted hover:text-accent-gold-text hover:underline"
+              className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text hover:underline"
             >
               Content policy
             </Link>

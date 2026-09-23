@@ -242,6 +242,15 @@ export const FRONT_DOOR_BLOCKED_TERMS: string[] = [
   "retard",
   "kys",
   "kill yourself",
+  // Drug jokes. The 2026-09-23 daily signal auto-featured "…an eightball of
+  // cocaine. I'm just kidding." as the site's headline quote. Substrings are
+  // chosen so they can't match innocent words ("meth" would hit "method",
+  // "heroin" would hit "heroine").
+  "cocaine",
+  "eightball",
+  "eight ball",
+  "fentanyl",
+  "overdos",
 ];
 
 /**

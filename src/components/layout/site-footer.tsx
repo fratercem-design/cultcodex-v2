@@ -83,7 +83,7 @@ export function SiteFooter() {
             <span className="font-display text-lg font-black uppercase tracking-tight text-accent-gold-text">
               CULT CODEX
             </span>
-            <p className="mt-2 max-w-xs font-mono text-[11px] leading-relaxed text-text-muted">
+            <p className="mt-2 max-w-xs font-mono text-[12px] leading-relaxed text-text-muted">
               The searchable archive of the Cult of Psyche — episodes, transcripts, lore,
               and the Oracle.
             </p>
@@ -91,7 +91,7 @@ export function SiteFooter() {
 
           {COLUMNS.map((col) => (
             <nav key={col.heading} aria-label={col.heading}>
-              <p className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+              <p className="mb-3 font-mono text-[12px] font-semibold uppercase tracking-wider text-text-muted">
                 {col.heading}
               </p>
               <ul className="space-y-2">
@@ -111,13 +111,13 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 flex flex-col gap-4 border-t border-accent-gold/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-mono text-[10px] uppercase tracking-wider text-text-muted">
+          <p className="font-mono text-[12px] uppercase tracking-wider text-text-muted">
             © {year} Cult of Psyche · CultCodex{" "}
             {/* Easter egg: the door to the basement. Deliberately near-invisible. */}
             <Link
               href="/basement"
               aria-label="ψ"
-              className="ml-1 select-none text-text-muted/20 transition-colors duration-500 hover:text-accent-violet-text"
+              className="ml-1 select-none text-text-muted transition-colors duration-500 hover:text-accent-violet-text"
             >
               ψ
             </Link>
@@ -129,7 +129,7 @@ export function SiteFooter() {
                 href={ch.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-6 items-center font-mono text-[10px] uppercase tracking-wider text-text-muted transition-colors hover:text-accent-gold-text"
+                className="inline-flex min-h-6 items-center font-mono text-[12px] uppercase tracking-wider text-text-muted transition-colors hover:text-accent-gold-text"
               >
                 {ch.label}
               </a>

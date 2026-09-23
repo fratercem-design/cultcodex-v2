@@ -54,22 +54,22 @@ export default async function AdminAnnotationsPage() {
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 text-center">
                   <span className="font-mono text-xl font-bold text-accent-cyan">{a.votes}</span>
-                  <p className="font-mono text-[9px] text-text-muted">votes</p>
+                  <p className="font-mono text-[12px] text-text-muted">votes</p>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className={`font-mono text-[10px] uppercase tracking-wide ${STATUS_COLOR[a.status] ?? "text-text-muted"}`}>
+                    <span className={`font-mono text-[12px] uppercase tracking-wide ${STATUS_COLOR[a.status] ?? "text-text-muted"}`}>
                       {a.status}
                     </span>
-                    <span className="text-text-muted/30">·</span>
-                    <span className="font-mono text-[10px] text-accent-cyan/60">
+                    <span className="text-text-muted">·</span>
+                    <span className="font-mono text-[12px] text-accent-cyan/60">
                       {a.targetType}/{a.targetId}
                     </span>
-                    <span className="text-text-muted/30">·</span>
-                    <span className="font-mono text-[10px] text-text-muted/70">
+                    <span className="text-text-muted">·</span>
+                    <span className="font-mono text-[12px] text-text-muted">
                       {a.user.displayName} · {a.user.email}
                     </span>
-                    <span className="font-mono text-[10px] text-text-muted/60">
+                    <span className="font-mono text-[12px] text-text-muted">
                       {new Date(a.createdAt).toLocaleDateString("en-US", { timeZone: "UTC" })}
                     </span>
                   </div>

@@ -139,13 +139,13 @@ export default async function StartHerePage() {
       {/* ── 0. What is this? ── */}
       <section className="max-w-3xl mx-auto space-y-8 text-center">
         <div className="space-y-2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             ✦ &nbsp; CultCodex &nbsp; ✦
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary leading-tight">
             Start Here
           </h1>
-          <p className="font-mono text-xs text-text-muted/70 tracking-wide">
+          <p className="font-mono text-xs text-text-muted tracking-wide">
             What Cult of Psyche is · What this archive captures · Where to begin
           </p>
         </div>
@@ -181,7 +181,7 @@ export default async function StartHerePage() {
           ].map((s) => (
             <div key={s.label} className="rounded-lg border border-border bg-surface p-3 text-center">
               <p className="font-mono text-lg font-bold text-accent-gold-text">{s.n}</p>
-              <p className="mt-0.5 font-mono text-[10px] text-text-muted">{s.label}</p>
+              <p className="mt-0.5 font-mono text-[12px] text-text-muted">{s.label}</p>
             </div>
           ))}
         </div>
@@ -192,7 +192,7 @@ export default async function StartHerePage() {
       {/* ── 1. Six doorways (primary entry) ── */}
       <section className="space-y-6">
         <div className="text-center space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             {"/// enter_the_archive"}
           </p>
           <p className="font-display text-lg text-text-primary">Start with what&apos;s pulling on you.</p>
@@ -217,7 +217,7 @@ export default async function StartHerePage() {
                   <p className={`font-mono text-xs italic ${a.question}`}>&ldquo;{d.question}&rdquo;</p>
                 </div>
                 <p className="text-xs text-text-muted leading-relaxed flex-1">{d.description}</p>
-                <span className={`font-mono text-[10px] uppercase tracking-widest ${a.question} inline-flex items-center gap-2 group-hover:gap-3 transition-all`}>
+                <span className={`font-mono text-[12px] uppercase tracking-widest ${a.question} inline-flex items-center gap-2 group-hover:gap-3 transition-all`}>
                   Enter this doorway <span aria-hidden>→</span>
                 </span>
               </Link>
@@ -228,19 +228,19 @@ export default async function StartHerePage() {
         <div className="flex flex-wrap gap-3 justify-center pt-2">
           <Link
             href="/episodes"
-            className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet-text hover:bg-accent-violet-dim transition-colors"
+            className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet-text hover:bg-accent-violet-dim transition-colors"
           >
             Full archive →
           </Link>
           <Link
             href="/topics"
-            className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-cyan/30 text-accent-cyan hover:bg-accent-cyan-dim transition-colors"
+            className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-accent-cyan/30 text-accent-cyan hover:bg-accent-cyan-dim transition-colors"
           >
             Browse all signals →
           </Link>
           <Link
             href="/search"
-            className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold-dim transition-colors"
+            className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold-dim transition-colors"
           >
             Search directly →
           </Link>
@@ -252,7 +252,7 @@ export default async function StartHerePage() {
       {/* ── 2. Three things worth understanding ── */}
       <section className="space-y-6 max-w-4xl mx-auto">
         <div className="text-center space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             {"/// before_you_go_further"}
           </p>
           <p className="font-display text-lg text-text-primary">Three things worth knowing.</p>
@@ -284,7 +284,7 @@ export default async function StartHerePage() {
                 {c.num}
               </p>
               <h3 className="font-display text-sm font-bold text-text-primary leading-snug">{c.title}</h3>
-              <p className="font-mono text-[11px] text-text-muted leading-relaxed">{c.body}</p>
+              <p className="font-mono text-[12px] text-text-muted leading-relaxed">{c.body}</p>
             </div>
           ))}
         </div>
@@ -296,20 +296,20 @@ export default async function StartHerePage() {
       <section className="max-w-2xl mx-auto">
         <div className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface overflow-hidden">
           <div className="p-7 space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
               {"/// not sure where to start?"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
               Let the archive find you.
             </h2>
-            <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+            <p className="font-mono text-[12px] text-text-muted leading-relaxed">
               Three questions. The archive calibrates around your answers and
               gives you five episodes, three people, and two Oracle prompts
               tailored to where you are right now.
             </p>
           </div>
           <div className="border-t border-accent-violet/20 bg-accent-violet/5 px-7 py-4 flex items-center justify-between gap-3">
-            <p className="font-mono text-[10px] text-text-muted">Takes 30 seconds.</p>
+            <p className="font-mono text-[12px] text-text-muted">Takes 30 seconds.</p>
             <Link
               href="/start-here/quiz"
               className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25"
@@ -326,19 +326,19 @@ export default async function StartHerePage() {
       <section className="max-w-3xl mx-auto">
         <div className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface overflow-hidden">
           <div className="p-7 space-y-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
               {"/// not_sure_where_to_start"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
               Ask the Oracle anything.
             </h2>
-            <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+            <p className="font-mono text-[12px] text-text-muted leading-relaxed">
               The Oracle is an AI trained on the full archive — every transcript, every lore entry,
               every behavioral profile. Ask it about a person, a pattern, a specific episode,
               a recurring dynamic, or a concept the archive keeps returning to.
               It synthesizes rather than searches.
             </p>
-            <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+            <p className="font-mono text-[12px] text-text-muted leading-relaxed">
               Try: <span className="text-accent-violet-text italic">&ldquo;What patterns repeat across every major conflict?&rdquo;</span>{" "}
               or <span className="text-accent-violet-text italic">&ldquo;Who keeps showing up and why?&rdquo;</span>{" "}
               or just the name of someone you&apos;ve seen.
@@ -364,17 +364,17 @@ export default async function StartHerePage() {
 
       {/* ── 5. What opens as Initiate+ ── */}
       <section className="max-w-3xl mx-auto space-y-5">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted text-center">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted text-center">
           {"/// the_intelligence_layer"}
         </p>
         <div className="rounded-2xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface overflow-hidden">
           <div className="p-7 space-y-4">
-            <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+            <p className="font-mono text-[12px] text-text-muted leading-relaxed">
               <span className="text-text-primary font-bold">Observer</span> opens the public index and
               every transcript. <span className="text-accent-gold-text font-bold">Initiate+</span> opens the
               intelligence layer.
             </p>
-            <p className="font-mono text-[11px] text-text-muted leading-relaxed">
+            <p className="font-mono text-[12px] text-text-muted leading-relaxed">
               <span className="text-accent-gold-text font-bold">Initiate+</span> is where the archive
               becomes a tool you can actually use:
             </p>
@@ -385,7 +385,7 @@ export default async function StartHerePage() {
                 "The Psychenomicon — full access to the living myth-engine",
                 `${INITIATE_ORACLE_MONTHLY_LIMIT} Oracle questions every month, cited to the archive`,
               ].map((item) => (
-                <li key={item} className="flex items-start gap-2 font-mono text-[11px] text-text-muted">
+                <li key={item} className="flex items-start gap-2 font-mono text-[12px] text-text-muted">
                   <span className="text-accent-gold-text mt-0.5 shrink-0">✦</span>
                   {item}
                 </li>
@@ -411,7 +411,7 @@ export default async function StartHerePage() {
 
       {/* ── 6. Full map ── */}
       <section className="space-y-6">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted text-center">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted text-center">
           {"/// full_map — every surface in the codex"}
         </p>
 
@@ -453,7 +453,7 @@ export default async function StartHerePage() {
           const c = colorMapFull[group.color];
           return (
             <div key={group.label} className="space-y-2">
-              <h3 className={`font-mono text-[11px] uppercase tracking-[0.25em] ${c.title}`}>{group.label}</h3>
+              <h3 className={`font-mono text-[12px] uppercase tracking-[0.12em] ${c.title}`}>{group.label}</h3>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {group.items.map((item) => (
                   <Link

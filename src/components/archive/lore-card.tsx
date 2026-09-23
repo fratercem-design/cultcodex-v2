@@ -46,7 +46,7 @@ export function LoreCard({ lore }: LoreCardProps) {
         />
       </div>
       {lore.category && (
-        <p className="mt-1 font-mono text-[10px] text-text-muted uppercase">
+        <p className="mt-1 font-mono text-[12px] text-text-muted uppercase">
           {lore.category}
         </p>
       )}
@@ -57,7 +57,7 @@ export function LoreCard({ lore }: LoreCardProps) {
       )}
       {(lore.episodeCount != null && lore.episodeCount > 0) ||
        (lore.personCount != null && lore.personCount > 0) ? (
-        <div className="mt-2 flex gap-3 font-mono text-[10px] text-text-muted">
+        <div className="mt-2 flex gap-3 font-mono text-[12px] text-text-muted">
           {lore.episodeCount != null && lore.episodeCount > 0 && (
             <span>{lore.episodeCount} episode{lore.episodeCount !== 1 ? "s" : ""}</span>
           )}

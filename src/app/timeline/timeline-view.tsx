@@ -116,7 +116,7 @@ export async function TimelineView({ requestedYear }: { requestedYear?: number }
         <div className="mb-6 flex justify-center">
           <Link
             href="/timeline/explore"
-            className="inline-flex items-center gap-2 rounded-full border border-accent-cyan/30 bg-accent-cyan/5 px-5 py-2 font-mono text-[11px] uppercase tracking-widest text-accent-cyan transition-colors hover:bg-accent-cyan/10"
+            className="inline-flex items-center gap-2 rounded-full border border-accent-cyan/30 bg-accent-cyan/5 px-5 py-2 font-mono text-[12px] uppercase tracking-widest text-accent-cyan transition-colors hover:bg-accent-cyan/10"
           >
             ◆ Try the interactive Timeline Explorer →
           </Link>
@@ -179,7 +179,7 @@ export async function TimelineView({ requestedYear }: { requestedYear?: number }
 
                       <h3 className="mb-2 font-display text-sm font-semibold text-accent-cyan">
                         {MONTH_NAMES[month]}
-                        <span className="ml-2 font-mono text-[10px] font-normal text-text-muted">
+                        <span className="ml-2 font-mono text-[12px] font-normal text-text-muted">
                           ({monthTotal})
                         </span>
                       </h3>
@@ -191,7 +191,7 @@ export async function TimelineView({ requestedYear }: { requestedYear?: number }
                         return (
                           <div key={day} className="mb-2">
                             {showDayHeader && (
-                              <div className="mb-1 ml-1 font-mono text-[10px] text-text-muted">
+                              <div className="mb-1 ml-1 font-mono text-[12px] text-text-muted">
                                 {MONTH_NAMES[month].slice(0, 3)} {day}
                               </div>
                             )}
@@ -208,11 +208,11 @@ export async function TimelineView({ requestedYear }: { requestedYear?: number }
                                     className="group flex items-baseline gap-2 rounded border border-transparent px-2 py-1 transition-colors hover:border-border hover:bg-surface"
                                   >
                                     {epNum && (
-                                      <span className="flex-shrink-0 font-mono text-[10px] font-bold text-accent-gold-text">
+                                      <span className="flex-shrink-0 font-mono text-[12px] font-bold text-accent-gold-text">
                                         {epNum}
                                       </span>
                                     )}
-                                    <span className="flex-shrink-0 font-mono text-[10px] text-text-muted">
+                                    <span className="flex-shrink-0 font-mono text-[12px] text-text-muted">
                                       {formatDate(ep.airDate)}
                                     </span>
                                     <span className="text-sm text-text-primary group-hover:text-accent-gold-text transition-colors truncate">
@@ -221,17 +221,17 @@ export async function TimelineView({ requestedYear }: { requestedYear?: number }
                                     {/* Indicators */}
                                     <span className="ml-auto flex flex-shrink-0 items-center gap-1.5">
                                       {ep._count.segments > 0 && (
-                                        <span className="font-mono text-[9px] text-accent-cyan/60" title="Has transcript">
+                                        <span className="font-mono text-[12px] text-accent-cyan/60" title="Has transcript">
                                           TXT
                                         </span>
                                       )}
                                       {ep._count.quotes > 0 && (
-                                        <span className="font-mono text-[9px] text-accent-gold-text/80" title={`${ep._count.quotes} quotes`}>
+                                        <span className="font-mono text-[12px] text-accent-gold-text/80" title={`${ep._count.quotes} quotes`}>
                                           Q{ep._count.quotes}
                                         </span>
                                       )}
                                       {ep._count.guests > 0 && (
-                                        <span className="font-mono text-[9px] text-accent-violet-text/70" title={`${ep._count.guests} guests`}>
+                                        <span className="font-mono text-[12px] text-accent-violet-text/70" title={`${ep._count.guests} guests`}>
                                           G{ep._count.guests}
                                         </span>
                                       )}

@@ -42,7 +42,7 @@ export function TranscriptNotify({ episodeSlug }: TranscriptNotifyProps) {
 
   return (
     <div className="mt-3 space-y-2">
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
+      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
         {"/// notify_when_ready"}
       </p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-2 sm:flex-row">
@@ -53,7 +53,7 @@ export function TranscriptNotify({ episodeSlug }: TranscriptNotifyProps) {
           placeholder="your@email.com"
           required
           disabled={status === "loading" || status === "success"}
-          className="flex-1 rounded-lg border border-border bg-void px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted/50 focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
+          className="flex-1 rounded-lg border border-border bg-void px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
         />
         <button
           type="submit"
@@ -64,7 +64,7 @@ export function TranscriptNotify({ episodeSlug }: TranscriptNotifyProps) {
         </button>
       </form>
       {message && (
-        <p className={`font-mono text-[11px] ${status === "success" ? "text-accent-gold-text" : "text-red-400"}`}>
+        <p className={`font-mono text-[12px] ${status === "success" ? "text-accent-gold-text" : "text-red-400"}`}>
           {message}
         </p>
       )}

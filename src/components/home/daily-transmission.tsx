@@ -49,14 +49,14 @@ export function DailyTransmission({
       {/* ── Header ───────────────────────────────────────────────── */}
       <div className="relative flex flex-wrap items-baseline justify-between gap-3">
         <div className="space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             ✦ today&rsquo;s signal
           </p>
-          <p className="font-mono text-[10px] text-text-muted/50 tabular-nums">
+          <p className="font-mono text-[12px] text-text-muted tabular-nums">
             {formatDateHuman(date)} · transmission #{date.replace(/-/g, "")}
           </p>
         </div>
-        <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted/60">
+        <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
           rotates daily
         </p>
       </div>
@@ -64,7 +64,7 @@ export function DailyTransmission({
       {/* ── Quote of the day ─────────────────────────────────────── */}
       {quote && quote.episode && (
         <div className="relative space-y-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// quote_of_the_day"}
           </p>
           <blockquote className="font-display text-xl sm:text-2xl leading-snug text-text-primary border-l-2 border-accent-gold/40 pl-5 italic">
@@ -87,25 +87,25 @@ export function DailyTransmission({
                   />
                 ) : (
                   <span
-                    className="h-6.5 w-6.5 rounded-full bg-accent-gold/10 border border-accent-gold/30 flex items-center justify-center font-mono text-[10px] text-accent-gold-text"
+                    className="h-6.5 w-6.5 rounded-full bg-accent-gold/10 border border-accent-gold/30 flex items-center justify-center font-mono text-[12px] text-accent-gold-text"
                     style={{ height: 26, width: 26 }}
                   >
                     {quote.speaker.displayName[0]}
                   </span>
                 )}
-                <span className="font-mono text-[11px] text-text-muted group-hover:text-accent-gold-text transition-colors">
+                <span className="font-mono text-[12px] text-text-muted group-hover:text-accent-gold-text transition-colors">
                   {quote.speaker.displayName}
                 </span>
               </Link>
             )}
-            <span className="font-mono text-[10px] text-text-muted/60">·</span>
+            <span className="font-mono text-[12px] text-text-muted">·</span>
             <Link
               href={
                 quote.timestampSeconds != null
                   ? `/episodes/${quote.episode.slug}?t=${quote.timestampSeconds}#quote-${quote.id}`
                   : `/episodes/${quote.episode.slug}#quote-${quote.id}`
               }
-              className="font-mono text-[10px] text-text-muted/70 hover:text-accent-gold-text transition-colors"
+              className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors"
             >
               {quote.episode.episodeNumber != null
                 ? `EP.${String(quote.episode.episodeNumber).padStart(3, "0")} · `
@@ -133,7 +133,7 @@ export function DailyTransmission({
 
         {/* Weekly pulse */}
         <div className="rounded-xl border border-border bg-void/40 backdrop-blur-sm p-5 space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// week_in_review"}
           </p>
           <div className="grid grid-cols-2 gap-3">
@@ -162,7 +162,7 @@ export function DailyTransmission({
               href="/psychenomicon/threads"
             />
           </div>
-          <p className="font-mono text-[9px] text-text-muted/60 uppercase tracking-widest pt-1">
+          <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest pt-1">
             past 7 days
           </p>
         </div>
@@ -173,7 +173,7 @@ export function DailyTransmission({
             href={`/episodes/${spotlightEpisode.slug}`}
             className="group rounded-xl border border-border bg-void/40 backdrop-blur-sm overflow-hidden hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-colors flex flex-col"
           >
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80 px-5 pt-5">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80 px-5 pt-5">
               {"/// transmission_from_the_vault"}
             </p>
             <div className="px-5 py-4 flex items-start gap-4 flex-1">
@@ -190,12 +190,12 @@ export function DailyTransmission({
               <div className="min-w-0 flex-1 space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   {spotlightEpisode.episodeNumber != null && (
-                    <span className="font-mono text-[10px] text-accent-gold-text font-bold">
+                    <span className="font-mono text-[12px] text-accent-gold-text font-bold">
                       EP.{String(spotlightEpisode.episodeNumber).padStart(3, "0")}
                     </span>
                   )}
                   {spotlightEpisode.airDate && (
-                    <span className="font-mono text-[10px] text-text-muted">
+                    <span className="font-mono text-[12px] text-text-muted">
                       {formatDate(spotlightEpisode.airDate)}
                     </span>
                   )}
@@ -208,7 +208,7 @@ export function DailyTransmission({
           </Link>
         ) : (
           <div className="rounded-xl border border-dashed border-border bg-void/40 p-5 flex items-center justify-center text-center">
-            <p className="font-mono text-[10px] text-text-muted/60">
+            <p className="font-mono text-[12px] text-text-muted">
               vault offline
             </p>
           </div>
@@ -231,7 +231,7 @@ function PulseStat({ value, label, accent, href }: PulseStatProps) {
       <span className={`font-display text-2xl font-bold tabular-nums ${accent}`}>
         {value.toLocaleString("en-US")}
       </span>
-      <span className="block font-mono text-[10px] uppercase tracking-widest text-text-muted/60">
+      <span className="block font-mono text-[12px] uppercase tracking-widest text-text-muted">
         {label}
       </span>
     </>

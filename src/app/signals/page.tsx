@@ -33,7 +33,7 @@ async function getProposals() {
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  open: { label: "Open", color: "text-text-muted/70" },
+  open: { label: "Open", color: "text-text-muted" },
   under_review: { label: "Under Review", color: "text-accent-gold-text" },
   investigating: { label: "Investigating", color: "text-accent-cyan" },
   published: { label: "Published", color: "text-green-400" },
@@ -78,7 +78,7 @@ export default async function SignalsPage() {
       <section className="relative overflow-hidden border-b border-accent-gold/10 bg-gradient-to-b from-[#0d0020] via-[#07001a] to-void">
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top,rgba(180,100,255,0.3)_0%,transparent_70%)]" />
         <div className="relative mx-auto max-w-4xl px-6 py-14">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80 mb-3">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80 mb-3">
             ✦ &nbsp; Oracle Feature &nbsp; ✦
           </p>
           <h1
@@ -103,7 +103,7 @@ export default async function SignalsPage() {
           </h2>
           <form action={submitSignalProposal} className="rounded-xl border border-accent-gold/20 bg-surface p-6 space-y-4">
             <div>
-              <label className="block font-mono text-[10px] text-text-muted uppercase mb-1.5 tracking-wider">
+              <label className="block font-mono text-[12px] text-text-muted uppercase mb-1.5 tracking-wider">
                 Your Question or Investigation Request *
               </label>
               <textarea
@@ -112,11 +112,11 @@ export default async function SignalsPage() {
                 rows={3}
                 maxLength={1000}
                 placeholder="What pattern do you want traced? Which figure needs deeper analysis? What connection hasn't been made yet?"
-                className="w-full rounded border border-border bg-elevated px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus:border-accent-gold focus:outline-none resize-none"
+                className="w-full rounded border border-border bg-elevated px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold focus:outline-none resize-none"
               />
             </div>
             <div>
-              <label className="block font-mono text-[10px] text-text-muted uppercase mb-1.5 tracking-wider">
+              <label className="block font-mono text-[12px] text-text-muted uppercase mb-1.5 tracking-wider">
                 Additional Context (optional)
               </label>
               <textarea
@@ -124,7 +124,7 @@ export default async function SignalsPage() {
                 rows={2}
                 maxLength={2000}
                 placeholder="Episode numbers, timestamps, related figures, why this matters..."
-                className="w-full rounded border border-border bg-elevated px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus:border-accent-gold focus:outline-none resize-none"
+                className="w-full rounded border border-border bg-elevated px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold focus:outline-none resize-none"
               />
             </div>
             <div className="flex justify-end">
@@ -176,18 +176,18 @@ export default async function SignalsPage() {
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-2 flex-wrap">
-                          <span className={`font-mono text-[10px] uppercase tracking-wide ${statusInfo.color}`}>
+                          <span className={`font-mono text-[12px] uppercase tracking-wide ${statusInfo.color}`}>
                             {statusInfo.label}
                           </span>
-                          <span className="text-text-muted/30">·</span>
-                          <span className="font-mono text-[10px] text-text-muted/50">
+                          <span className="text-text-muted">·</span>
+                          <span className="font-mono text-[12px] text-text-muted">
                             {proposal.user.displayName}
                             {proposal.user.memberTitle && (
                               <span className="text-accent-gold-text/80"> · {proposal.user.memberTitle}</span>
                             )}
                           </span>
-                          <span className="text-text-muted/30">·</span>
-                          <span className="font-mono text-[10px] text-text-muted/60">
+                          <span className="text-text-muted">·</span>
+                          <span className="font-mono text-[12px] text-text-muted">
                             {new Date(proposal.createdAt).toLocaleDateString("en-US", { timeZone: "UTC",
                               month: "short",
                               day: "numeric",
@@ -195,8 +195,8 @@ export default async function SignalsPage() {
                           </span>
                           {i < 3 && (
                             <>
-                              <span className="text-text-muted/30">·</span>
-                              <span className="font-mono text-[10px] text-accent-gold-text">
+                              <span className="text-text-muted">·</span>
+                              <span className="font-mono text-[12px] text-accent-gold-text">
                                 #{i + 1} Ranked
                               </span>
                             </>
@@ -208,7 +208,7 @@ export default async function SignalsPage() {
                         </p>
 
                         {proposal.context && (
-                          <p className="mt-2 font-mono text-xs text-text-muted/70 leading-relaxed">
+                          <p className="mt-2 font-mono text-xs text-text-muted leading-relaxed">
                             {proposal.context}
                           </p>
                         )}

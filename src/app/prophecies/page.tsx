@@ -33,7 +33,7 @@ export default async function PropheciesPage() {
     <main className="min-h-screen bg-void">
       <section className="border-b border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// future_tense · accuracy_not_guaranteed"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -44,7 +44,7 @@ export default async function PropheciesPage() {
             fulfilled, some pending, some argued over to this day. The Codex
             files them all and makes no promises about timelines.
           </p>
-          <p className="font-mono text-[10px] text-text-muted/60">
+          <p className="font-mono text-[12px] text-text-muted">
             {prophecies.length} prophec{prophecies.length === 1 ? "y" : "ies"} on the ledger
           </p>
         </div>
@@ -66,7 +66,7 @@ export default async function PropheciesPage() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 space-y-1.5">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
+                    <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
                       OMEN №{String(i + 1).padStart(3, "0")}
                     </p>
                     <h2 className="font-display text-lg font-bold text-text-primary group-hover:text-accent-gold-text transition-colors">
@@ -77,7 +77,7 @@ export default async function PropheciesPage() {
                     )}
                   </div>
                   <span
-                    className={`flex-shrink-0 rounded border px-2 py-0.5 font-mono text-[9px] uppercase ${badge.cls}`}
+                    className={`flex-shrink-0 rounded border px-2 py-0.5 font-mono text-[12px] uppercase ${badge.cls}`}
                   >
                     {badge.label}
                   </span>
@@ -88,7 +88,7 @@ export default async function PropheciesPage() {
         )}
 
         <div className="pt-6 text-center">
-          <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors">
+          <Link href="/fun" className="font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors">
             ← The Fun Wing
           </Link>
         </div>

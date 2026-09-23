@@ -67,7 +67,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
         role="status"
         aria-live="polite"
       >
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
           {"// "}the gate is open
         </p>
         <h2 className="mt-3 font-serif text-2xl font-black text-accent-gold">
@@ -130,7 +130,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
       onSubmit={handleSubmit}
       className={`rounded-lg border border-accent-gold/25 bg-surface p-6 sm:p-8 ${className}`}
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
         {"// "}first gate
       </p>
       <h2 className="mt-3 font-serif text-2xl font-black text-text-primary">
@@ -145,7 +145,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
 
       <div className="mt-6 space-y-3">
         <label className="block">
-          <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.25em] text-text-muted">
+          <span className="mb-1.5 block font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             What should we call you
           </span>
           <input
@@ -156,12 +156,12 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
             maxLength={80}
             required
             disabled={busy}
-            className="w-full rounded border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
+            className="w-full rounded border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
           />
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.25em] text-text-muted">
+          <span className="mb-1.5 block font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             Where to send it
           </span>
           <input
@@ -171,7 +171,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
             placeholder="your@email.com"
             required
             disabled={busy}
-            className="w-full rounded border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted/50 focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
+            className="w-full rounded border border-border bg-void px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold/50 focus:outline-none focus:ring-1 focus:ring-accent-gold/30 disabled:opacity-50"
           />
         </label>
       </div>
@@ -190,7 +190,7 @@ export function InitiateSignup({ source = "page:initiate", className = "" }: Ini
         </p>
       )}
 
-      <p className="mt-5 border-t border-border pt-4 font-mono text-[11px] leading-relaxed text-text-muted/80">
+      <p className="mt-5 border-t border-border pt-4 font-mono text-[12px] leading-relaxed text-text-muted/80">
         Submitting creates a Codex account keyed to your email. No password is set and you are not
         signed in — you claim it later with Google, or never, and it simply sits unused. We do not
         sell the list, and one click in any email removes you from it permanently. See the{" "}

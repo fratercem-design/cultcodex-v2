@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { getAmbient, subscribeAppearance } from "@/lib/appearance";
+// Ambient layer — Ritual Research Instrument rules (2026-09 audit):
+//   * Atmosphere lives at the edges, never on top of text. The falling glyph
+//     "rain" and the glitch bursts painted over nav labels, headings and
+//     footer links (screen-blended above content), so both are gone.
+//   * The layer runs on the homepage threshold only, and fades out once the
+//     visitor scrolls past it. Reading routes are effect-free.
+//   * Still off under prefers-reduced-motion and the Appearance toggle.
 
-// ─── Glyph pool: runic + katakana + occult + binary ───────────────────────────
-const GLYPHS = [
-  "ᚠ","ᚢ","ᚦ","ᚨ","ᚱ","ᚲ","ᚷ","ᚹ","ᚺ","ᚾ","ᛁ","ᛃ","ᛇ","ᛈ","ᛉ","ᛊ","ᛏ","ᛒ","ᛗ","ᛚ","ᛜ","ᛞ","ᛟ",
-  "ア","イ","ウ","エ","オ","カ","キ","ク","ケ","コ","サ","シ","ス","セ","ソ","タ","チ","ツ","テ","ト",
-  "⊕","⊗","⊙","☿","♄","♃","♂","♀","☉","☽","△","▽","◇","◉","⬡","✦","✧","⌘","⍟","⎔",
-  "0","1",
-];
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { getAmbient, subscribeAppearance } from "@/lib/appearance";
 
 const PALETTE = [
   (a: number) => `rgba(98, 228, 200,${a})`,   // cyan
@@ -27,57 +28,7 @@ const MONOLITHS = [
   { xf: 0.88, hf: 0.56, w: 17 },
 ];
 
-const rg = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)]!;
 const rp = () => PALETTE[Math.floor(Math.random() * PALETTE.length)]!;
-
-// ─── Glyph Column ─────────────────────────────────────────────────────────────
-class GlyphCol {
-  x: number; y: number; speed: number; len: number;
-  color: (a: number) => string; chars: string[];
-  mutT: number; ch: number;
-
-  constructor(x: number, h: number, ch: number) {
-    this.x = x; this.ch = ch; this.y = 0; this.speed = 0; this.len = 0;
-    this.color = rp(); this.chars = []; this.mutT = 0;
-    this.reset(h, true);
-  }
-
-  reset(h: number, init = false) {
-    this.y = init ? -Math.random() * h : -this.ch * 2;
-    this.speed = 25 + Math.random() * 55;
-    this.len = Math.floor(8 + Math.random() * 18);
-    this.color = rp();
-    this.chars = Array.from({ length: this.len + 1 }, rg);
-    this.mutT = 0;
-  }
-
-  tick(dt: number, h: number) {
-    this.y += this.speed * dt;
-    this.mutT += dt;
-    if (this.mutT > 0.15) {
-      this.chars[Math.floor(Math.random() * this.chars.length)] = rg();
-      this.mutT = 0;
-    }
-    if (this.y - this.len * this.ch > h) this.reset(h);
-  }
-
-  draw(ctx: CanvasRenderingContext2D) {
-    const { ch, chars, len, color, x, y } = this;
-    const cH = ctx.canvas.height;
-    for (let i = 0; i <= len; i++) {
-      const gy = y - i * ch;
-      if (gy < -ch || gy > cH + ch) continue;
-      if (i === 0) {
-        ctx.fillStyle = "rgba(230,240,255,0.9)";
-      } else {
-        const a = Math.pow(1 - i / len, 1.6) * 0.65;
-        if (a < 0.01) continue;
-        ctx.fillStyle = color(a);
-      }
-      ctx.fillText(chars[i] ?? "0", x, gy);
-    }
-  }
-}
 
 // ─── Particle ─────────────────────────────────────────────────────────────────
 class Particle {
@@ -239,22 +190,11 @@ function drawMonoliths(ctx: CanvasRenderingContext2D, w: number, h: number) {
   ctx.restore();
 }
 
-function applyGlitch(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const n = 2 + Math.floor(Math.random() * 4);
-  for (let i = 0; i < n; i++) {
-    const sy = Math.floor(Math.random() * h);
-    const sh = Math.ceil(1 + Math.random() * 12);
-    const ox = (Math.random() - 0.5) * 40;
-    try {
-      const img = ctx.getImageData(0, sy, w, sh);
-      ctx.putImageData(img, ox, sy);
-    } catch { /* cross-origin guard */ }
-  }
-}
-
 // ─── Component ────────────────────────────────────────────────────────────────
 export function AmbientVisualSystem() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const onThreshold = usePathname() === "/";
   // User toggle: when ambient visuals are off, the animation loop never starts.
   const [enabled, setEnabled] = useState<boolean>(() => getAmbient() === "on");
 
@@ -262,7 +202,7 @@ export function AmbientVisualSystem() {
 
   useEffect(() => {
     // User disabled ambient visuals → don't run.
-    if (!enabled) return;
+    if (!enabled || !onThreshold) return;
     // Respect reduced-motion preference
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -272,14 +212,8 @@ export function AmbientVisualSystem() {
     if (!ctx) return;
 
     const mobile = window.innerWidth < 768;
-    const CH = mobile ? 17 : 14; // cell height (px)
-    const CW = mobile ? 20 : 15; // cell width  (px)
-    const COL_DIV = mobile ? 3 : 1; // column density divisor
-
-    let cols: GlyphCol[] = [];
     let particles: Particle[] = [];
     let t = 0, lastT = performance.now();
-    let glitchT = 0, nextGlitch = 12 + Math.random() * 12;
     let mx = -999, my = -999;
     let rafId = 0;
     let w = 0, h = 0;
@@ -287,10 +221,6 @@ export function AmbientVisualSystem() {
     function init() {
       w = canvas!.width = window.innerWidth;
       h = canvas!.height = window.innerHeight;
-      const numCols = Math.floor(w / CW / COL_DIV);
-      cols = Array.from({ length: numCols }, (_, i) =>
-        new GlyphCol(i * CW * COL_DIV + CW / 2, h, CH)
-      );
       particles = Array.from(
         { length: mobile ? 20 : 45 },
         () => new Particle(w, h)
@@ -311,21 +241,8 @@ export function AmbientVisualSystem() {
       drawGrid(ctx!, t, w, h);
       drawGeometry(ctx!, t, w, h);
 
-      // Glyph rain
-      ctx!.font = `${CH - 2}px "JetBrains Mono", monospace`;
-      ctx!.textAlign = "center";
-      for (const col of cols) { col.tick(dt, h); col.draw(ctx!); }
-
       // Particles
       for (const p of particles) { p.tick(dt, w, h, mx, my); p.draw(ctx!); }
-
-      // Occasional glitch burst (every 12–24 s)
-      glitchT += dt;
-      if (glitchT > nextGlitch) {
-        applyGlitch(ctx!, w, h);
-        glitchT = 0;
-        nextGlitch = 12 + Math.random() * 12;
-      }
 
       rafId = requestAnimationFrame(frame);
     }
@@ -333,7 +250,7 @@ export function AmbientVisualSystem() {
     function onMouse(e: MouseEvent) { mx = e.clientX; my = e.clientY; }
     function onResize() { init(); }
     function onVis() {
-      if (document.hidden) {
+      if (document.hidden || paused) {
         cancelAnimationFrame(rafId);
       } else {
         lastT = performance.now();
@@ -341,8 +258,20 @@ export function AmbientVisualSystem() {
       }
     }
 
+    // The app scrolls #terminal-scroll, not the window. Past the threshold
+    // (~90% of a viewport) the layer fades out and the RAF loop stops.
+    const scroller = document.getElementById("terminal-scroll");
+    let paused = false;
+    function onScroll() {
+      const past = (scroller?.scrollTop ?? 0) > window.innerHeight * 0.9;
+      if (wrapRef.current) wrapRef.current.style.opacity = past ? "0" : "1";
+      if (past && !paused) { paused = true; cancelAnimationFrame(rafId); }
+      else if (!past && paused) { paused = false; lastT = performance.now(); rafId = requestAnimationFrame(frame); }
+    }
+
     init();
     rafId = requestAnimationFrame(frame);
+    scroller?.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     window.addEventListener("mousemove", onMouse);
     document.addEventListener("visibilitychange", onVis);
@@ -352,14 +281,18 @@ export function AmbientVisualSystem() {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("mousemove", onMouse);
       document.removeEventListener("visibilitychange", onVis);
+      scroller?.removeEventListener("scroll", onScroll);
     };
-  }, [enabled]);
+  }, [enabled, onThreshold]);
+
+  if (!onThreshold) return null;
 
   return (
     // mix-blend-mode: screen makes the near-black canvas background transparent
     // while glyph/particle pixels show as additive color overlays on the UI.
     // pointer-events: none keeps all clicks/scroll passing through to content.
     <div
+      ref={wrapRef}
       aria-hidden="true"
       className="ambient-canvas"
       style={{
@@ -369,6 +302,7 @@ export function AmbientVisualSystem() {
         pointerEvents: "none",
         overflow: "hidden",
         mixBlendMode: "screen",
+        transition: "opacity 400ms cubic-bezier(.2,.7,.2,1)",
       }}
     >
       <canvas ref={canvasRef} style={{ display: "block" }} />

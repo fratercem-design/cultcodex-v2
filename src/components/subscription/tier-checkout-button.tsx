@@ -87,7 +87,7 @@ export function TierCheckoutButton({
         <button
           type="button"
           onClick={() => setInterval("month")}
-          className={`flex-1 rounded-md border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest transition-colors ${
+          className={`flex-1 rounded-md border px-3 py-1.5 font-mono text-[12px] uppercase tracking-widest transition-colors ${
             interval === "month" ? activeToggle : "border-transparent text-text-muted hover:text-text-primary"
           }`}
         >
@@ -96,7 +96,7 @@ export function TierCheckoutButton({
         <button
           type="button"
           onClick={() => setInterval("year")}
-          className={`flex-1 rounded-md border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest transition-colors ${
+          className={`flex-1 rounded-md border px-3 py-1.5 font-mono text-[12px] uppercase tracking-widest transition-colors ${
             interval === "year" ? activeToggle : "border-transparent text-text-muted hover:text-text-primary"
           }`}
         >
@@ -115,7 +115,7 @@ export function TierCheckoutButton({
           : `${requireSignIn ? "Sign in to become" : verb} ${role} — ${displayPrice}`}
       </button>
       {error && (
-        <p className="font-mono text-[10px] text-red-400 text-center">
+        <p className="font-mono text-[12px] text-red-400 text-center">
           {error}
         </p>
       )}

@@ -24,11 +24,11 @@ export function AiNotice({ variant = "inline", tier, className = "" }: AiNoticeP
         role="note"
         aria-label="AI-generated content notice"
       >
-        <span className="shrink-0 text-[10px] text-accent-violet-text mt-0.5">◈</span>
-        <p className="text-[11px] text-text-muted leading-snug">
+        <span className="shrink-0 text-[12px] text-accent-violet-text mt-0.5">◈</span>
+        <p className="text-[12px] text-text-muted leading-snug">
           {tierCfg && (
             <span
-              className={`mr-1.5 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider ${tierCfg.bg} ${tierCfg.border} ${tierCfg.color}`}
+              className={`mr-1.5 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 font-mono text-[12px] uppercase tracking-wider ${tierCfg.bg} ${tierCfg.border} ${tierCfg.color}`}
               title={tierCfg.tooltip}
             >
               <span className="text-[7px] leading-none">{tierCfg.glyph}</span>
@@ -58,13 +58,13 @@ export function AiNotice({ variant = "inline", tier, className = "" }: AiNoticeP
 
   return (
     <p
-      className={`text-[10px] text-text-muted font-mono leading-relaxed ${className}`}
+      className={`text-[12px] text-text-muted font-mono leading-relaxed ${className}`}
       role="note"
     >
       <span className="text-accent-violet-text/70">◈</span>
       {tierCfg && tier !== "none" && (
         <span
-          className={`mx-1 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[8px] uppercase tracking-wider ${tierCfg.bg} ${tierCfg.border} ${tierCfg.color}`}
+          className={`mx-1 inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[12px] uppercase tracking-wider ${tierCfg.bg} ${tierCfg.border} ${tierCfg.color}`}
           title={tierCfg.tooltip}
         >
           <span className="text-[7px] leading-none">{tierCfg.glyph}</span>

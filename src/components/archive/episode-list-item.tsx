@@ -1,3 +1,4 @@
+import { trustedSummary } from "@/lib/format/speculative-summary";
 import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/lib/format/date";
@@ -56,7 +57,7 @@ export function EpisodeListItem({
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 mb-0.5">
           {epNum && (
-            <span className="font-mono text-[10px] text-accent-gold-text font-bold">
+            <span className="font-mono text-[12px] text-accent-gold-text font-bold">
               {epNum}
             </span>
           )}
@@ -64,7 +65,7 @@ export function EpisodeListItem({
             <span className="text-text-muted" aria-hidden="true">·</span>
           )}
           {airDate && (
-            <time dateTime={airDate.toISOString()} className="font-mono text-[10px] text-text-muted">
+            <time dateTime={airDate.toISOString()} className="font-mono text-[12px] text-text-muted">
               {formatDate(airDate)}
             </time>
           )}
@@ -75,9 +76,9 @@ export function EpisodeListItem({
         <Heading className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-2">
           {title}
         </Heading>
-        {summaryShort && (
+        {trustedSummary(summaryShort) && (
           <p className="mt-1 text-xs text-text-muted line-clamp-2">
-            {summaryShort}
+            {trustedSummary(summaryShort)}
           </p>
         )}
       </div>

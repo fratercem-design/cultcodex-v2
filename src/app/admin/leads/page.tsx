@@ -66,7 +66,7 @@ type Lead = NonNullable<Awaited<ReturnType<typeof getLeads>>>[number];
 function Stat({ label, value, accent }: { label: string; value: number | string; accent: string }) {
   return (
     <div className="rounded border border-border bg-surface p-4">
-      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted">{label}</p>
+      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{label}</p>
       <p className={`mt-1 font-display text-2xl font-bold ${accent}`}>{value}</p>
     </div>
   );
@@ -79,18 +79,18 @@ function LeadRow({ lead }: { lead: Lead }) {
         {lead.email ?? <span className="text-text-muted">— no address —</span>}
         {lead.name && <span className="block text-text-muted">{lead.name}</span>}
       </td>
-      <td className="py-2 pr-4 font-mono text-[11px] text-text-muted">{lead.source ?? "—"}</td>
-      <td className="py-2 pr-4 font-mono text-[11px] text-text-muted">
+      <td className="py-2 pr-4 font-mono text-[12px] text-text-muted">{lead.source ?? "—"}</td>
+      <td className="py-2 pr-4 font-mono text-[12px] text-text-muted">
         {lead.createdAt.toISOString().slice(0, 10)}
       </td>
-      <td className="py-2 pr-4 font-mono text-[11px]">
+      <td className="py-2 pr-4 font-mono text-[12px]">
         {lead.account ? (
           <span className="text-accent-cyan">yes</span>
         ) : (
           <span className="text-red-400">missing</span>
         )}
       </td>
-      <td className="py-2 pr-4 font-mono text-[11px]">
+      <td className="py-2 pr-4 font-mono text-[12px]">
         {lead.claimed ? (
           <span className="text-accent-gold-text">
             {lead.account?.provider}
@@ -100,7 +100,7 @@ function LeadRow({ lead }: { lead: Lead }) {
           <span className="text-text-muted">unclaimed</span>
         )}
       </td>
-      <td className="py-2 font-mono text-[11px] text-text-muted">
+      <td className="py-2 font-mono text-[12px] text-text-muted">
         {lead.account?.onboardingCompleted ? (
           <span className="text-accent-gold-text">complete</span>
         ) : (
@@ -156,7 +156,7 @@ export default async function AdminLeadsPage() {
       </div>
 
       {withAccount < total && (
-        <p className="mb-6 rounded border border-red-400/40 bg-red-400/5 p-3 font-mono text-[11px] text-red-400">
+        <p className="mb-6 rounded border border-red-400/40 bg-red-400/5 p-3 font-mono text-[12px] text-red-400">
           {total - withAccount} lead(s) have no Codex account. These predate auto-registration, or
           provisioning failed at capture time. They can still be emailed; they just have nothing to
           claim yet.
@@ -172,7 +172,7 @@ export default async function AdminLeadsPage() {
           .map(([src, n]) => (
             <span
               key={src}
-              className="rounded border border-border bg-surface px-3 py-1 font-mono text-[11px] text-text-muted"
+              className="rounded border border-border bg-surface px-3 py-1 font-mono text-[12px] text-text-muted"
             >
               {src} <span className="text-accent-gold-text">{n}</span>
             </span>
@@ -182,7 +182,7 @@ export default async function AdminLeadsPage() {
       <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-accent-cyan">
         Unclaimed — the people to email ({unclaimed.length})
       </h2>
-      <p className="mb-3 font-mono text-[11px] text-text-muted">
+      <p className="mb-3 font-mono text-[12px] text-text-muted">
         Accounts sitting ready. The conversion action is a message telling them it exists — never a
         second sign-up form, and never a nudge that implies they owe us anything.
       </p>
@@ -193,7 +193,7 @@ export default async function AdminLeadsPage() {
               {["Lead", "Source", "Captured", "Account", "Claimed", "Onboarding"].map((h) => (
                 <th
                   key={h}
-                  className="pb-2 pr-4 font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted"
+                  className="pb-2 pr-4 font-mono text-[12px] uppercase tracking-[0.16em] text-text-muted"
                 >
                   {h}
                 </th>
@@ -223,7 +223,7 @@ export default async function AdminLeadsPage() {
               {["Lead", "Source", "Captured", "Account", "Claimed", "Onboarding"].map((h) => (
                 <th
                   key={h}
-                  className="pb-2 pr-4 font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted"
+                  className="pb-2 pr-4 font-mono text-[12px] uppercase tracking-[0.16em] text-text-muted"
                 >
                   {h}
                 </th>

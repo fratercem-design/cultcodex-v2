@@ -75,7 +75,7 @@ export default async function DrawPage() {
     <main className="min-h-screen bg-void">
       <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-2xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
             {"/// three_cards · drawn_at_random"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -95,18 +95,18 @@ export default async function DrawPage() {
           href="/draw/today"
           className="group flex items-center justify-between gap-3 rounded border border-accent-gold/30 bg-accent-gold/5 px-4 py-2.5 hover:bg-accent-gold/10 transition-colors"
         >
-          <p className="font-mono text-[10px] text-text-muted">
-            <span className="uppercase tracking-[0.3em] text-accent-gold-text mr-2">{"/// today's_draw"}</span>
+          <p className="font-mono text-[12px] text-text-muted">
+            <span className="uppercase tracking-[0.12em] text-accent-gold-text mr-2">{"/// today's_draw"}</span>
             Want the card everyone else is seeing?
           </p>
-          <span className="font-mono text-[10px] font-bold text-accent-gold-text group-hover:underline">
+          <span className="font-mono text-[12px] font-bold text-accent-gold-text group-hover:underline">
             See today&rsquo;s →
           </span>
         </Link>
 
         {/* Card I — Lore */}
         <article className="rounded-lg border border-accent-violet/20 bg-surface p-5 space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
             I · The Lore {lore?.category ? `· ${lore.category}` : ""}
           </p>
           {lore ? (
@@ -117,7 +117,7 @@ export default async function DrawPage() {
               {lore.summary && (
                 <p className="text-sm text-text-muted leading-relaxed">{lore.summary}</p>
               )}
-              <span className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-violet-text/70 group-hover:text-accent-violet-text transition-colors pt-1">
+              <span className="inline-block font-mono text-[12px] uppercase tracking-widest text-accent-violet-text/70 group-hover:text-accent-violet-text transition-colors pt-1">
                 Follow this thread →
               </span>
             </Link>
@@ -128,7 +128,7 @@ export default async function DrawPage() {
 
         {/* Card II — Quote */}
         <article className="rounded-lg border border-accent-cyan/20 bg-surface p-5 space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-cyan/60">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/60">
             II · The Word {quote?.speaker?.displayName ? `· ${quote.speaker.displayName}` : ""}
           </p>
           {quote ? (
@@ -142,7 +142,7 @@ export default async function DrawPage() {
               {quote.episode?.slug && (
                 <Link
                   href={`/episodes/${quote.episode.slug}`}
-                  className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-cyan/50 hover:text-accent-cyan transition-colors pt-1"
+                  className="inline-block font-mono text-[12px] uppercase tracking-widest text-accent-cyan/50 hover:text-accent-cyan transition-colors pt-1"
                 >
                   From: {quote.episode.title} →
                 </Link>
@@ -155,7 +155,7 @@ export default async function DrawPage() {
 
         {/* Card III — Prophecy */}
         <article className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-5 space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             III · The Prophecy
           </p>
           {prophecy ? (
@@ -166,7 +166,7 @@ export default async function DrawPage() {
               {prophecy.summary && (
                 <p className="text-sm text-text-muted leading-relaxed">{prophecy.summary}</p>
               )}
-              <span className="inline-block font-mono text-[9px] uppercase tracking-widest text-accent-gold-text/80 group-hover:text-accent-gold-text transition-colors pt-1">
+              <span className="inline-block font-mono text-[12px] uppercase tracking-widest text-accent-gold-text/80 group-hover:text-accent-gold-text transition-colors pt-1">
                 Read the whole omen →
               </span>
             </Link>
@@ -186,7 +186,7 @@ export default async function DrawPage() {
           </Link>
           <Link
             href="/fun"
-            className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
+            className="font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             ← The Fun Wing
           </Link>

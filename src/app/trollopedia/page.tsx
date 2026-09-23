@@ -41,7 +41,7 @@ export default async function TrollopediaPage() {
         <img src="/images/trollopedia/hero.webp" alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-30" />
         <div className="absolute inset-0 bg-gradient-to-b from-void/75 via-void/70 to-void" />
         <div className="relative mx-auto max-w-3xl text-center space-y-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-cyan/60">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/60">
             {"/// field_guide · do_not_feed"}
           </p>
           <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">
@@ -52,7 +52,7 @@ export default async function TrollopediaPage() {
             the trolls. Raiders, sock puppets, bridge-dwellers, and the whole
             catalogued bloodline. Observe from a safe distance.
           </p>
-          <p className="font-mono text-[10px] text-text-muted/60">
+          <p className="font-mono text-[12px] text-text-muted">
             {entries.length} entr{entries.length === 1 ? "y" : "ies"} on file
           </p>
         </div>
@@ -74,7 +74,7 @@ export default async function TrollopediaPage() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 space-y-1.5">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-cyan/50">
+                    <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/50">
                       SPECIMEN №{String(i + 1).padStart(3, "0")}
                     </p>
                     <h2 className="font-display text-lg font-bold text-text-primary group-hover:text-accent-cyan transition-colors">
@@ -84,7 +84,7 @@ export default async function TrollopediaPage() {
                       <p className="text-xs text-text-muted leading-relaxed line-clamp-3">{e.summary}</p>
                     )}
                   </div>
-                  <span className={`flex-shrink-0 rounded border px-2 py-0.5 font-mono text-[9px] uppercase ${badge.cls}`}>
+                  <span className={`flex-shrink-0 rounded border px-2 py-0.5 font-mono text-[12px] uppercase ${badge.cls}`}>
                     {badge.label}
                   </span>
                 </div>
@@ -94,7 +94,7 @@ export default async function TrollopediaPage() {
         )}
 
         <div className="pt-6 text-center">
-          <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors">
+          <Link href="/fun" className="font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors">
             ← The Fun Wing
           </Link>
         </div>

@@ -53,8 +53,8 @@ export default async function TimelineExplorePage() {
               <p className="font-display text-sm font-bold text-text-primary">
                 {era.sigil} {era.label}
               </p>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted/50">{era.subtitle}</p>
-              <p className="mt-1 font-mono text-[11px] text-text-muted leading-relaxed">{era.description}</p>
+              <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">{era.subtitle}</p>
+              <p className="mt-1 font-mono text-[12px] text-text-muted leading-relaxed">{era.description}</p>
             </div>
           ))}
         </section>

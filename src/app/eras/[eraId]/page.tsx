@@ -123,7 +123,7 @@ export default async function EraDetailPage({
     <main id="main-content" className="mx-auto max-w-6xl px-4 py-10 space-y-12">
 
       {/* ── Breadcrumb ──────────────────────────────────────────────── */}
-      <nav className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-text-muted/50">
+      <nav className="flex items-center gap-2 font-mono text-[12px] uppercase tracking-widest text-text-muted">
         <Link href="/eras" className="hover:text-text-muted transition-colors">
           Eras
         </Link>
@@ -142,17 +142,17 @@ export default async function EraDetailPage({
           </div>
           <div className="flex-1 min-w-0 space-y-2">
             <div className="flex items-baseline gap-3 flex-wrap">
-              <span className="font-mono text-[9px] text-text-muted/50 uppercase tracking-[0.4em]">
+              <span className="font-mono text-[12px] text-text-muted uppercase tracking-[0.12em]">
                 Era {String(eraIndex + 1).padStart(2, "0")}
               </span>
-              <span className="font-mono text-[9px] text-text-muted/60">
+              <span className="font-mono text-[12px] text-text-muted">
                 {rangeLabel}
               </span>
             </div>
             <h1 className={`font-display text-3xl font-bold ${accentClass}`}>
               {era.label}
             </h1>
-            <p className="font-mono text-[11px] text-text-muted/60 uppercase tracking-widest">
+            <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
               {era.subtitle}
             </p>
             <p className="text-sm text-text-muted leading-relaxed max-w-2xl">
@@ -177,7 +177,7 @@ export default async function EraDetailPage({
               <p className={`font-display text-2xl font-bold tabular-nums ${accentClass}`}>
                 {s.n.toLocaleString("en-US")}
               </p>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
+              <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
                 {s.label}
               </p>
             </div>
@@ -189,7 +189,7 @@ export default async function EraDetailPage({
       {stats && stats.archetypeDistribution.length > 0 && (
         <section className="space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
               {"/// archetype_distribution"}
             </p>
             <h2 className="font-display text-lg font-bold text-text-primary">
@@ -208,12 +208,12 @@ export default async function EraDetailPage({
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span
-                      className="font-mono text-[11px] font-medium"
+                      className="font-mono text-[12px] font-medium"
                       style={{ color: hex }}
                     >
                       {archetype}
                     </span>
-                    <span className="font-mono text-[10px] text-text-muted tabular-nums">
+                    <span className="font-mono text-[12px] text-text-muted tabular-nums">
                       {count} {count === 1 ? "person" : "people"}
                     </span>
                   </div>
@@ -234,7 +234,7 @@ export default async function EraDetailPage({
       {stats && stats.topGuests.length > 0 && (
         <section className="space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
               {"/// most_active_voices"}
             </p>
             <h2 className="font-display text-lg font-bold text-text-primary">
@@ -250,7 +250,7 @@ export default async function EraDetailPage({
                   href={`/people/${guest.slug}`}
                   className="group flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3 hover:border-border/60 hover:bg-surface/80 transition-colors"
                 >
-                  <span className="font-mono text-[10px] text-text-muted/60 tabular-nums w-5 shrink-0">
+                  <span className="font-mono text-[12px] text-text-muted tabular-nums w-5 shrink-0">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   {guest.avatarUrl ? (
@@ -263,7 +263,7 @@ export default async function EraDetailPage({
                     />
                   ) : (
                     <div
-                      className="h-7 w-7 rounded-full shrink-0 flex items-center justify-center font-mono text-[9px]"
+                      className="h-7 w-7 rounded-full shrink-0 flex items-center justify-center font-mono text-[12px]"
                       style={{ backgroundColor: `${hex}20`, color: hex }}
                     >
                       {guest.name[0]}
@@ -274,16 +274,16 @@ export default async function EraDetailPage({
                       {guest.name}
                     </p>
                     {guest.archetype ? (
-                      <p className="font-mono text-[9px]" style={{ color: hex }}>
+                      <p className="font-mono text-[12px]" style={{ color: hex }}>
                         {guest.archetype}
                       </p>
                     ) : (
-                      <p className="font-mono text-[9px] text-text-muted/60">
+                      <p className="font-mono text-[12px] text-text-muted">
                         {guest.appearances} ep{guest.appearances !== 1 ? "s" : ""}
                       </p>
                     )}
                   </div>
-                  <span className="font-mono text-[10px] text-text-muted/50 tabular-nums shrink-0">
+                  <span className="font-mono text-[12px] text-text-muted tabular-nums shrink-0">
                     ×{guest.appearances}
                   </span>
                 </Link>
@@ -297,7 +297,7 @@ export default async function EraDetailPage({
       <section className="space-y-5">
         <div className="flex items-baseline justify-between gap-4 flex-wrap">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
               {"/// network_map"}
             </p>
             <h2 className="font-display text-lg font-bold text-text-primary">
@@ -306,7 +306,7 @@ export default async function EraDetailPage({
           </div>
           <Link
             href={`/graph?era=${era.id}`}
-            className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-text-primary transition-colors inline-flex items-center gap-1"
+            className="font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-text-primary transition-colors inline-flex items-center gap-1"
           >
             Full graph view →
           </Link>
@@ -316,7 +316,7 @@ export default async function EraDetailPage({
           <RelationshipGraph nodes={graphData.nodes} edges={graphData.edges} />
         ) : (
           <div className="rounded-xl border border-dashed border-border bg-surface/50 p-10 text-center">
-            <p className="font-mono text-sm text-text-muted/50">
+            <p className="font-mono text-sm text-text-muted">
               Not enough co-appearances in this era to render a network.
             </p>
           </div>
@@ -327,13 +327,13 @@ export default async function EraDetailPage({
       <div className="flex flex-wrap gap-3 pt-2">
         <Link
           href={`/episodes?era=${era.id}`}
-          className={`inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 font-mono text-[11px] uppercase tracking-widest transition-colors ${accentClass} border-current/30 hover:bg-current/5`}
+          className={`inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 font-mono text-[12px] uppercase tracking-widest transition-colors ${accentClass} border-current/30 hover:bg-current/5`}
         >
           Browse all episodes in this era <span aria-hidden>→</span>
         </Link>
         <Link
           href={`/search/deep?era=${era.id}`}
-          className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 font-mono text-[11px] uppercase tracking-widest text-text-muted hover:text-text-primary hover:border-border/60 transition-colors"
+          className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-text-primary hover:border-border/60 transition-colors"
         >
           Deep search in this era <span aria-hidden>→</span>
         </Link>
@@ -344,11 +344,11 @@ export default async function EraDetailPage({
         {prevEra ? (
           <Link
             href={`/eras/${prevEra.id}`}
-            className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-text-primary transition-colors"
+            className="flex items-center gap-2 font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-text-primary transition-colors"
           >
             <span aria-hidden>←</span>
             <span>
-              <span className="block text-text-muted/50 text-[9px]">Previous era</span>
+              <span className="block text-text-muted text-[12px]">Previous era</span>
               {prevEra.sigil} {prevEra.label}
             </span>
           </Link>
@@ -358,10 +358,10 @@ export default async function EraDetailPage({
         {nextEra ? (
           <Link
             href={`/eras/${nextEra.id}`}
-            className="flex items-center gap-2 text-right font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-text-primary transition-colors"
+            className="flex items-center gap-2 text-right font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-text-primary transition-colors"
           >
             <span>
-              <span className="block text-text-muted/50 text-[9px]">Next era</span>
+              <span className="block text-text-muted text-[12px]">Next era</span>
               {nextEra.sigil} {nextEra.label}
             </span>
             <span aria-hidden>→</span>

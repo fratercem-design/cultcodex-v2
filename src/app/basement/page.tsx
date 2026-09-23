@@ -43,13 +43,13 @@ export default function BasementPage() {
     <main className="min-h-screen bg-void flex items-center justify-center px-4 py-20">
       <div className="w-full max-w-xl space-y-8">
         <header className="space-y-2 text-center">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-red-400/50">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-red-400/50">
             {"/// sub-level_access · unlogged"}
           </p>
           <h1 className="font-display text-2xl font-bold text-text-primary">
             The Basement
           </h1>
-          <p className="font-mono text-[10px] text-text-muted/70 leading-relaxed">
+          <p className="font-mono text-[12px] text-text-muted leading-relaxed">
             Files the Codex declined to index. The stairs you took to get here
             are not on the floor plan. Mind the dust — some of it minds back.
           </p>
@@ -63,12 +63,12 @@ export default function BasementPage() {
                 href={f.href}
                 className="group flex items-baseline gap-3 rounded border border-border bg-surface px-4 py-3 hover:border-red-400/30 hover:bg-red-500/5 transition-all"
               >
-                <span className="font-mono text-[9px] text-red-400/50 flex-shrink-0">{f.id}</span>
+                <span className="font-mono text-[12px] text-red-400/50 flex-shrink-0">{f.id}</span>
                 <span className="min-w-0">
                   <span className="block font-mono text-xs text-text-primary group-hover:text-red-300 transition-colors">
                     {f.label}
                   </span>
-                  <span className="block text-[10px] text-text-muted/70 leading-relaxed">{f.note}</span>
+                  <span className="block text-[12px] text-text-muted leading-relaxed">{f.note}</span>
                 </span>
               </Link>
             ) : (
@@ -77,10 +77,10 @@ export default function BasementPage() {
                 className="flex items-baseline gap-3 rounded border border-border/50 bg-surface/50 px-4 py-3 opacity-60 cursor-not-allowed select-none"
                 title="ACCESS DENIED"
               >
-                <span className="font-mono text-[9px] text-red-400/40 flex-shrink-0">{f.id}</span>
+                <span className="font-mono text-[12px] text-red-400/40 flex-shrink-0">{f.id}</span>
                 <span className="min-w-0">
                   <span className="block font-mono text-xs text-text-muted">{f.label}</span>
-                  <span className="block text-[10px] text-text-muted/50 leading-relaxed">{f.note}</span>
+                  <span className="block text-[12px] text-text-muted leading-relaxed">{f.note}</span>
                 </span>
               </div>
             )
@@ -88,12 +88,12 @@ export default function BasementPage() {
         </div>
 
         <footer className="text-center space-y-3">
-          <p className="font-mono text-[9px] text-text-muted/40 leading-relaxed">
+          <p className="font-mono text-[12px] text-text-muted leading-relaxed">
             You were never here. The footer glyph will remember you anyway.
           </p>
           <Link
             href="/"
-            className="inline-block font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
+            className="inline-block font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             ← Back upstairs, quietly
           </Link>

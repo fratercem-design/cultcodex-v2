@@ -39,7 +39,7 @@ export function MergePersonForm({ sourceId, sourceName }: Props) {
   return (
     <div className="flex items-end gap-3">
       <div className="flex-1">
-        <label className="block font-mono text-[10px] text-text-muted uppercase mb-1">
+        <label className="block font-mono text-[12px] text-text-muted uppercase mb-1">
           Target person slug
         </label>
         <input

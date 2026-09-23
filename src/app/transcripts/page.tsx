@@ -91,13 +91,13 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
                     className="group block rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-cyan/40 hover:bg-elevated"
                   >
                     <div className="mb-1 flex items-center gap-2">
-                      <span className="font-mono text-[11px] text-accent-gold-text">
+                      <span className="font-mono text-[12px] text-accent-gold-text">
                         {hit.episodeNumber != null ? `EP ${hit.episodeNumber}` : "Episode"}
                       </span>
                       <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
                         {hit.episodeTitle}
                       </span>
-                      <span className="ml-auto font-mono text-[10px] text-accent-cyan">
+                      <span className="ml-auto font-mono text-[12px] text-accent-cyan">
                         {formatSeconds(hit.startSeconds)}
                       </span>
                     </div>
@@ -193,7 +193,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
                         )}
                       </div>
                     </div>
-                    <span className="hidden sm:block font-mono text-[10px] text-text-muted whitespace-nowrap">
+                    <span className="hidden sm:block font-mono text-[12px] text-text-muted whitespace-nowrap">
                       {formatDate(ep.airDate)}
                     </span>
                   </div>
@@ -239,7 +239,7 @@ function StatCard({ icon, label, value }: { icon: string; label: string; value: 
       <p className="mt-1 font-mono text-lg font-bold text-accent-cyan">
         {typeof value === "number" ? value.toLocaleString("en-US") : value}
       </p>
-      <p className="font-mono text-[10px] text-text-muted uppercase tracking-wider">{label}</p>
+      <p className="font-mono text-[12px] text-text-muted uppercase tracking-wider">{label}</p>
     </div>
   );
 }

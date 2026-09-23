@@ -18,7 +18,6 @@ class IOStub {
 vi.stubGlobal("IntersectionObserver", IOStub);
 
 const props = {
-  txId: "TX-20260912",
   dateLabel: "2026.09.12",
   episodeCount: 3028,
   transcribedPct: 56,
@@ -54,6 +53,19 @@ describe("ThresholdHero", () => {
     await waitFor(() =>
       expect(localStorage.getItem("ccx.threshold.seen")).toBe("1")
     );
+  });
+
+  it("does not hijack the space bar", () => {
+    render(<ThresholdHero {...props} />);
+    const ev = new KeyboardEvent("keydown", { key: " ", cancelable: true });
+    window.dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(false);
+  });
+
+  it("says what the site is in plain words", () => {
+    render(<ThresholdHero {...props} />);
+    expect(screen.getByText(/every episode of cult of psyche/i)).toBeTruthy();
+    expect(screen.queryByText(/uplink/i)).toBeNull();
   });
 
   it("survives storage being unavailable", async () => {

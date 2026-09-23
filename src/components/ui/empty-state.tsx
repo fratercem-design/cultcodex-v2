@@ -11,7 +11,7 @@ export function EmptyState({ message, suggestion }: EmptyStateProps) {
       <VoidSigil size={80} animate={false} className="opacity-40 mb-4" />
       <p className="font-mono text-sm text-text-muted">{message}</p>
       {suggestion && (
-        <p className="mt-2 font-mono text-xs text-text-muted/60">{suggestion}</p>
+        <p className="mt-2 font-mono text-xs text-text-muted">{suggestion}</p>
       )}
     </div>
   );

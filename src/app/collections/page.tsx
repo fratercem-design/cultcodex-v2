@@ -162,7 +162,7 @@ export default async function CollectionsPage() {
         {/* Themed Signal Packs — the Guided-Path destinations */}
         <section className="space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan">
               {"/// signal_packs"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
@@ -187,7 +187,7 @@ export default async function CollectionsPage() {
                     <CollectionIcon iconKey={col.iconKey} size={36} />
                   </div>
                   <div className="space-y-1">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+                    <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
                       {col.eyebrow}
                     </p>
                     <h3 className={`font-display text-lg font-bold ${a.title}`}>
@@ -201,7 +201,7 @@ export default async function CollectionsPage() {
                     {col.description[0]}
                   </p>
                   <span
-                    className={`font-mono text-[10px] uppercase tracking-widest ${a.eyebrow} inline-flex items-center gap-2 group-hover:gap-3 transition-all`}
+                    className={`font-mono text-[12px] uppercase tracking-widest ${a.eyebrow} inline-flex items-center gap-2 group-hover:gap-3 transition-all`}
                   >
                     Enter pack <span aria-hidden>→</span>
                   </span>
@@ -216,7 +216,7 @@ export default async function CollectionsPage() {
         {/* Series-based collections */}
         <section className="space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">
               {"/// series_packs"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
@@ -252,11 +252,11 @@ export default async function CollectionsPage() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted transition-colors hover:border-accent-cyan/30 hover:text-accent-cyan hover:bg-elevated"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-[12px] text-text-muted transition-colors hover:border-accent-cyan/30 hover:text-accent-cyan hover:bg-elevated"
                     >
                       {link.label}
                       {epCount != null && (
-                        <span className="rounded-full bg-elevated px-1.5 py-0.5 text-[9px] text-text-muted">
+                        <span className="rounded-full bg-elevated px-1.5 py-0.5 text-[12px] text-text-muted">
                           {epCount}
                         </span>
                       )}

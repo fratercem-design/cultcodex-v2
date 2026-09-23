@@ -43,7 +43,7 @@ export function ManageSubscription({
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="font-mono text-xs text-accent-gold-text font-bold">ADMIN</span>
-            <span className="font-mono text-[10px] text-text-muted">
+            <span className="font-mono text-[12px] text-text-muted">
               Full transcript access (admin bypass)
             </span>
           </div>
@@ -51,14 +51,14 @@ export function ManageSubscription({
             <button
               onClick={openPortal}
               disabled={loading}
-              className="rounded border border-border px-3 py-1.5 font-mono text-[11px] text-text-muted transition-colors hover:text-text-primary hover:border-accent-gold/30 disabled:opacity-50"
+              className="rounded border border-border px-3 py-1.5 font-mono text-[12px] text-text-muted transition-colors hover:text-text-primary hover:border-accent-gold/30 disabled:opacity-50"
             >
               {loading ? "..." : "Test billing portal"}
             </button>
           )}
         </div>
         {error && (
-          <p className="mt-2 font-mono text-[10px] text-red-400">{error}</p>
+          <p className="mt-2 font-mono text-[12px] text-red-400">{error}</p>
         )}
       </div>
     );
@@ -72,20 +72,20 @@ export function ManageSubscription({
             <span className="font-mono text-xs text-accent-gold-text font-bold">
               MEMBER
             </span>
-            <p className="mt-1 font-mono text-[10px] text-text-muted">
+            <p className="mt-1 font-mono text-[12px] text-text-muted">
               Renews {formatRelativeDate(new Date(periodEnd))}
             </p>
           </div>
           <button
             onClick={openPortal}
             disabled={loading}
-            className="rounded border border-border px-3 py-1.5 font-mono text-[11px] text-text-muted transition-colors hover:text-text-primary hover:border-accent-gold/30 disabled:opacity-50"
+            className="rounded border border-border px-3 py-1.5 font-mono text-[12px] text-text-muted transition-colors hover:text-text-primary hover:border-accent-gold/30 disabled:opacity-50"
           >
             {loading ? "..." : "Manage"}
           </button>
         </div>
         {error && (
-          <p className="mt-2 font-mono text-[10px] text-red-400">{error}</p>
+          <p className="mt-2 font-mono text-[12px] text-red-400">{error}</p>
         )}
       </div>
     );

@@ -91,7 +91,7 @@ export default async function StatsPage() {
               <div className="font-mono text-3xl font-bold text-accent-gold">
                 {card.value.toLocaleString("en-US")}
               </div>
-              <div className="font-mono text-[10px] text-text-muted uppercase tracking-wider mt-1">
+              <div className="font-mono text-[12px] text-text-muted uppercase tracking-wider mt-1">
                 {card.label}
               </div>
             </div>
@@ -107,7 +107,7 @@ export default async function StatsPage() {
                 href={`/people/${person.slug}`}
                 className="flex items-center gap-3 group"
               >
-                <span className="shrink-0 font-mono text-[10px] text-text-muted w-5 text-right">
+                <span className="shrink-0 font-mono text-[12px] text-text-muted w-5 text-right">
                   {i + 1}.
                 </span>
                 <span className="shrink-0 font-mono text-xs text-text-primary w-40 truncate group-hover:text-accent-gold-text transition-colors">
@@ -119,7 +119,7 @@ export default async function StatsPage() {
                     style={{ width: `${(person.count / maxQuotes) * 100}%` }}
                   />
                 </div>
-                <span className="shrink-0 font-mono text-[10px] text-accent-gold-text font-bold w-8 text-right">
+                <span className="shrink-0 font-mono text-[12px] text-accent-gold-text font-bold w-8 text-right">
                   {person.count}
                 </span>
               </Link>
@@ -154,7 +154,7 @@ export default async function StatsPage() {
                   style={{ fontSize: `${fontSize}px` }}
                 >
                   {topic.title}
-                  <span className="ml-1 opacity-40 text-[9px]">
+                  <span className="ml-1 opacity-40 text-[12px]">
                     {topic.count}
                   </span>
                 </Link>
@@ -184,7 +184,7 @@ export default async function StatsPage() {
                       <div className="font-mono text-2xl font-bold text-text-primary">
                         {canonTotal}
                       </div>
-                      <div className="font-mono text-[9px] text-text-muted uppercase">
+                      <div className="font-mono text-[12px] text-text-muted uppercase">
                         Total
                       </div>
                     </div>
@@ -206,7 +206,7 @@ export default async function StatsPage() {
                         <span className="font-mono text-xs text-text-primary">
                           {CANON_LABELS[entry.status] ?? entry.status}
                         </span>
-                        <span className="ml-1 font-mono text-[9px] text-text-muted">
+                        <span className="ml-1 font-mono text-[12px] text-text-muted">
                           {entry.count} ({entry.percentage}%)
                         </span>
                       </div>
@@ -225,7 +225,7 @@ export default async function StatsPage() {
         {/* Broadcast Calendar Heatmap */}
         <SectionCard title="BROADCAST CALENDAR">
           <div className="pt-2">
-            <p className="font-mono text-[10px] text-text-muted mb-4">
+            <p className="font-mono text-[12px] text-text-muted mb-4">
               Streams per day since October 2024 — darker = more transmissions
             </p>
             <BroadcastCalendar data={calendarData} />
@@ -235,7 +235,7 @@ export default async function StatsPage() {
         {/* Guest Frequency Radial */}
         <SectionCard title="GUEST FREQUENCY">
           <div className="pt-2">
-            <p className="font-mono text-[10px] text-text-muted mb-4">
+            <p className="font-mono text-[12px] text-text-muted mb-4">
               Top 20 recurring guests by total appearances
             </p>
             <GuestRadialChart data={topGuests} />
@@ -245,7 +245,7 @@ export default async function StatsPage() {
         {/* Topic Pulse */}
         <SectionCard title="TOPIC PULSE">
           <div className="pt-2">
-            <p className="font-mono text-[10px] text-text-muted mb-4">
+            <p className="font-mono text-[12px] text-text-muted mb-4">
               Top topics by episode count, month by month
             </p>
             <TopicPulseChart months={topicTrend.months} topics={topicTrend.topics} />

@@ -74,7 +74,7 @@ function PostCard({
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t border-border/50">
-          <div className="flex items-center gap-3 font-mono text-[10px] text-text-muted">
+          <div className="flex items-center gap-3 font-mono text-[12px] text-text-muted">
             {post.publishedAt && (
               <span>{formatDate(post.publishedAt)}</span>
             )}
@@ -95,7 +95,7 @@ function PostCard({
             href={postUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-[10px] text-accent-cyan hover:underline"
+            className="font-mono text-[12px] text-accent-cyan hover:underline"
           >
             View ↗
           </a>

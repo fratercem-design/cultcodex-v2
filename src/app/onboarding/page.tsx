@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 function ProcedureLink() {
   return (
     <div className="mx-auto mt-8 max-w-lg rounded border border-border bg-surface/60 p-4 text-center">
-      <p className="font-mono text-[11px] leading-relaxed text-text-muted">
+      <p className="font-mono text-[12px] leading-relaxed text-text-muted">
         Every step of initiation — and every red line we hold ourselves to — is written down and
         public.
       </p>

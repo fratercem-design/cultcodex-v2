@@ -41,12 +41,12 @@ export function PaywallGate({
               key={seg.id}
               className="flex gap-3 rounded px-2 py-1.5 border-l-2 border-transparent"
             >
-              <span className="shrink-0 font-mono text-[10px] text-accent-gold-text/80 w-14 text-right pt-0.5">
+              <span className="shrink-0 font-mono text-[12px] text-accent-gold-text/80 w-14 text-right pt-0.5">
                 {formatSeconds(seg.startSeconds)}
               </span>
               <div className="min-w-0 flex-1">
                 {seg.speakerLabel && (
-                  <span className="font-mono text-[10px] font-bold uppercase text-accent-gold-text">
+                  <span className="font-mono text-[12px] font-bold uppercase text-accent-gold-text">
                     {seg.speakerLabel}
                   </span>
                 )}
@@ -70,7 +70,7 @@ export function PaywallGate({
           <SubscriptionCTA />
         ) : (
           <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-transparent p-6 text-center space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
               {"/// observer_mode"}
             </p>
             <h3 className="font-display text-xl font-bold text-accent-gold-text">
@@ -110,7 +110,7 @@ export function PaywallGate({
           </div>
         )}
 
-        <p className="mt-3 text-center font-mono text-[10px] text-text-muted/50">
+        <p className="mt-3 text-center font-mono text-[12px] text-text-muted">
           Showing {previewSegments.length} of {totalCount} segments
         </p>
       </div>

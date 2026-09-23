@@ -306,17 +306,17 @@ export default function MythicMapPage() {
                   <h3 className={`font-display text-sm font-bold ${a.color}`}>
                     {a.name}
                   </h3>
-                  <span className="shrink-0 font-mono text-[10px] text-text-muted">
+                  <span className="shrink-0 font-mono text-[12px] text-text-muted">
                     {a.symbol}
                   </span>
                 </div>
                 <p className="text-xs text-text-primary leading-relaxed">
                   {a.meaning}
                 </p>
-                <p className="text-[11px] text-text-muted leading-relaxed italic">
+                <p className="text-[12px] text-text-muted leading-relaxed italic">
                   {a.conflict}
                 </p>
-                <p className="font-mono text-[10px] text-text-muted">
+                <p className="font-mono text-[12px] text-text-muted">
                   <span className="text-accent-gold-text/80">see:</span>{" "}
                   {a.examples}
                 </p>
@@ -368,7 +368,7 @@ export default function MythicMapPage() {
                   <p className="font-display text-xs font-bold text-accent-gold-text">
                     PSYCHE
                   </p>
-                  <p className="font-mono text-[8px] text-text-muted mt-0.5">
+                  <p className="font-mono text-[12px] text-text-muted mt-0.5">
                     ritual host node
                   </p>
                   <p className="font-mono text-[7px] text-accent-gold-text/80 mt-0.5">
@@ -427,7 +427,7 @@ export default function MythicMapPage() {
                   className={`rounded-lg border ${ax.borderColor} bg-surface/50 p-4 space-y-2`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-[10px] text-text-muted">
+                    <span className="font-mono text-[12px] text-text-muted">
                       AXIS {ax.axis}
                     </span>
                     <h3
@@ -436,10 +436,10 @@ export default function MythicMapPage() {
                       {ax.title}
                     </h3>
                   </div>
-                  <p className="font-mono text-[10px] text-text-muted leading-relaxed">
+                  <p className="font-mono text-[12px] text-text-muted leading-relaxed">
                     {ax.path}
                   </p>
-                  <p className="font-mono text-[9px] text-accent-gold-text/80 italic">
+                  <p className="font-mono text-[12px] text-accent-gold-text/80 italic">
                     {ax.verb}
                   </p>
                 </div>
@@ -571,19 +571,19 @@ export default function MythicMapPage() {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-border bg-elevated">
-                  <th className="px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+                  <th className="px-3 py-2 font-mono text-[12px] font-semibold uppercase tracking-wider text-text-muted">
                     Archetype
                   </th>
-                  <th className="px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+                  <th className="px-3 py-2 font-mono text-[12px] font-semibold uppercase tracking-wider text-text-muted">
                     Symbol
                   </th>
-                  <th className="px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted hidden sm:table-cell">
+                  <th className="px-3 py-2 font-mono text-[12px] font-semibold uppercase tracking-wider text-text-muted hidden sm:table-cell">
                     Meaning
                   </th>
-                  <th className="px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted hidden lg:table-cell">
+                  <th className="px-3 py-2 font-mono text-[12px] font-semibold uppercase tracking-wider text-text-muted hidden lg:table-cell">
                     Example Episodes
                   </th>
-                  <th className="px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted hidden md:table-cell">
+                  <th className="px-3 py-2 font-mono text-[12px] font-semibold uppercase tracking-wider text-text-muted hidden md:table-cell">
                     Conflict Function
                   </th>
                 </tr>
@@ -599,13 +599,13 @@ export default function MythicMapPage() {
                     <td className="px-3 py-2.5 font-display text-xs font-medium text-text-primary">
                       {row.archetype}
                     </td>
-                    <td className="px-3 py-2.5 font-mono text-[10px] text-text-muted">
+                    <td className="px-3 py-2.5 font-mono text-[12px] text-text-muted">
                       {row.symbol}
                     </td>
                     <td className="px-3 py-2.5 text-xs text-text-muted hidden sm:table-cell">
                       {row.meaning}
                     </td>
-                    <td className="px-3 py-2.5 font-mono text-[10px] text-accent-gold-text/80 hidden lg:table-cell">
+                    <td className="px-3 py-2.5 font-mono text-[12px] text-accent-gold-text/80 hidden lg:table-cell">
                       {row.episodes}
                     </td>
                     <td className="px-3 py-2.5 text-xs text-text-muted italic hidden md:table-cell">

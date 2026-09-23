@@ -177,17 +177,17 @@ export function LayerViewer({
     <div className="space-y-6">
       {/* Layer toggle */}
       <div className="flex flex-wrap gap-2 items-center">
-        <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted mr-1">Layer:</span>
+        <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted mr-1">Layer:</span>
         {layers.map((l) => (
           <button
             key={l.id}
             onClick={() => switchLayer(l.id)}
-            className={`inline-flex items-center gap-1.5 rounded border px-3 py-1 font-mono text-[10px] uppercase tracking-wider transition-all ${
+            className={`inline-flex items-center gap-1.5 rounded border px-3 py-1 font-mono text-[12px] uppercase tracking-wider transition-all ${
               activeLayer === l.id ? l.activeCls : `border-border ${l.color} hover:border-current/40`
             }`}
           >
             {l.label}
-            {l.badge && <span className="opacity-50 text-[8px]">{l.badge}</span>}
+            {l.badge && <span className="opacity-50 text-[12px]">{l.badge}</span>}
           </button>
         ))}
       </div>
@@ -201,7 +201,7 @@ export function LayerViewer({
           {activeLayer === "all" && (
             <div className="flex items-center gap-2 mb-4">
               <div className="h-px flex-1 bg-accent-violet/20" />
-              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text">{"/// myth — the symbolic layer"}</span>
+              <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">{"/// myth — the symbolic layer"}</span>
               <div className="h-px flex-1 bg-accent-violet/20" />
             </div>
           )}
@@ -220,7 +220,7 @@ export function LayerViewer({
           {activeLayer === "all" && (
             <div className="flex items-center gap-2 mb-3 mt-6">
               <div className="h-px flex-1 bg-accent-cyan/20" />
-              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-cyan">{"/// record — what happened"}</span>
+              <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan">{"/// record — what happened"}</span>
               <div className="h-px flex-1 bg-accent-cyan/20" />
             </div>
           )}
@@ -239,7 +239,7 @@ export function LayerViewer({
           {activeLayer === "all" && (
             <div className="flex items-center gap-2 mb-3 mt-6">
               <div className="h-px flex-1 bg-accent-gold/20" />
-              <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text">{"/// analysis — beneath the surface"}</span>
+              <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">{"/// analysis — beneath the surface"}</span>
               <div className="h-px flex-1 bg-accent-gold/20" />
             </div>
           )}

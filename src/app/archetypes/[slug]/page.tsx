@@ -61,7 +61,7 @@ export default async function ArchetypePage({ params }: Props) {
         {/* Back */}
         <Link
           href="/archetypes"
-          className="mb-10 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.35em] text-text-muted/50 transition-colors hover:text-text-muted"
+          className="mb-10 inline-flex items-center gap-1.5 font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted transition-colors hover:text-text-muted"
         >
           ← All archetypes
         </Link>
@@ -76,7 +76,7 @@ export default async function ArchetypePage({ params }: Props) {
           </div>
 
           <p
-            className="mb-3 font-mono text-[10px] uppercase tracking-[0.4em]"
+            className="mb-3 font-mono text-[12px] uppercase tracking-[0.12em]"
             style={{ color: archetype.color, opacity: 0.7 }}
           >
             Archetype
@@ -109,7 +109,7 @@ export default async function ArchetypePage({ params }: Props) {
 
         {/* Shareable card */}
         <div className="mb-12 space-y-3">
-          <p className="text-center font-mono text-[9px] uppercase tracking-[0.35em] text-text-muted/60">
+          <p className="text-center font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             {"/// share_your_archetype"}
           </p>
           <ShareArchetypeCard
@@ -124,7 +124,7 @@ export default async function ArchetypePage({ params }: Props) {
           {prev ? (
             <Link
               href={`/archetypes/${prev.slug}`}
-              className="group flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-text-muted/50 transition-colors hover:text-text-muted"
+              className="group flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted transition-colors hover:text-text-muted"
             >
               <span className="text-base" style={{ color: prev.color }}>
                 {prev.glyph}
@@ -137,7 +137,7 @@ export default async function ArchetypePage({ params }: Props) {
           {next ? (
             <Link
               href={`/archetypes/${next.slug}`}
-              className="group flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-text-muted/50 transition-colors hover:text-text-muted"
+              className="group flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted transition-colors hover:text-text-muted"
             >
               <span>{next.name} →</span>
               <span className="text-base" style={{ color: next.color }}>

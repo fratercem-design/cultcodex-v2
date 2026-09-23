@@ -17,7 +17,7 @@ export async function SavedSearchesBlock({ userId, limit = 4 }: Props) {
     <section className="space-y-5">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <div className="space-y-1">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">
             {"/// saved_searches"}
           </p>
           <h2 className="font-display text-xl font-bold text-accent-violet-text">
@@ -36,7 +36,7 @@ export async function SavedSearchesBlock({ userId, limit = 4 }: Props) {
           </p>
           <Link
             href="/search/deep"
-            className="inline-flex items-center gap-2 rounded border border-border px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-text-primary transition-colors hover:border-text-muted/50 hover:bg-surface"
+            className="inline-flex items-center gap-2 rounded border border-border px-4 py-2 font-mono text-[12px] uppercase tracking-widest text-text-primary transition-colors hover:border-text-muted/50 hover:bg-surface"
           >
             Open Deep Search <span aria-hidden>→</span>
           </Link>
@@ -53,20 +53,20 @@ export async function SavedSearchesBlock({ userId, limit = 4 }: Props) {
                 <div className="min-w-0 flex-1 space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     {s.pinned && (
-                      <span className="text-[10px] text-accent-violet-text" aria-label="Pinned">★</span>
+                      <span className="text-[12px] text-accent-violet-text" aria-label="Pinned">★</span>
                     )}
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                    <span className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
                       {s.kind}
                     </span>
                     {eraLabel && (
-                      <span className="font-mono text-[10px] text-text-muted">
+                      <span className="font-mono text-[12px] text-text-muted">
                         · {eraLabel}
                       </span>
                     )}
                   </div>
                   <p className="font-sans text-sm text-text-primary line-clamp-2">{s.label}</p>
                   {s.kind === "deep" && s.concepts.length > 0 && (
-                    <p className="font-mono text-[10px] text-text-muted line-clamp-1">
+                    <p className="font-mono text-[12px] text-text-muted line-clamp-1">
                       {s.concepts.join(" × ")}
                     </p>
                   )}

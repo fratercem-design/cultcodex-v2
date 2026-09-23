@@ -32,34 +32,33 @@ export function CookieConsent({ gaId }: { gaId: string }) {
       {consent === "accepted" && <GoogleAnalytics gaId={gaId} />}
 
       {consent === "pending" && (
+        /* Compact and even-handed (2026-09 audit, G-02/MO-01): one line, two
+           equal-weight buttons, and it sits ABOVE the mobile bottom nav rather
+           than stacking a third fixed layer over the content. */
         <div
-          className="fixed bottom-0 left-0 right-0 z-50 border-t border-accent-gold/30 bg-void/95 backdrop-blur-sm"
+          className="cookie-consent fixed left-0 right-0 z-[85] border-t border-line bg-void/95 backdrop-blur-sm"
           role="dialog"
           aria-label="Cookie consent"
         >
-          <div className="mx-auto max-w-5xl flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between px-4 py-4">
-            <div className="space-y-1">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
-                {"/// signal_intercept"}
-              </p>
-              <p className="font-mono text-xs text-text-muted leading-relaxed max-w-xl">
-                This archive uses Google Analytics to understand which transmissions resonate.{" "}
-                <span className="text-text-primary">No data is sold.</span>{" "}
-                Accept to help improve the signal, or decline to opt out entirely.
-              </p>
-            </div>
-            <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-2">
+            <p className="font-display text-[13px] leading-snug text-ink-2">
+              Google Analytics helps us see which episodes people use.{" "}
+              <span className="text-ink">No data is sold.</span>
+            </p>
+            <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={decline}
-                className="font-mono text-[11px] uppercase tracking-widest text-text-muted hover:text-text-primary transition-colors px-3 py-1.5"
+                className="min-h-11 rounded-sm border border-line-strong px-4 text-[13px] font-semibold text-ink transition-colors hover:border-ink"
               >
                 Decline
               </button>
               <button
+                type="button"
                 onClick={accept}
-                className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/50 text-accent-gold-text hover:bg-accent-gold/10 transition-colors"
+                className="min-h-11 rounded-sm border border-line-strong px-4 text-[13px] font-semibold text-ink transition-colors hover:border-ink"
               >
-                Accept ✦
+                Accept
               </button>
             </div>
           </div>

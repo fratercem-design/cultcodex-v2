@@ -35,15 +35,9 @@ export function TerminalTopBar() {
 
       {/* Right cluster */}
       <div className="flex items-center gap-3">
-        <span
-          className="hidden md:inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest"
-          style={{ color: "var(--neon-4)", textShadow: "var(--glow-amber)" }}
-        >
-          <span className="term-pulse" aria-hidden="true">
-            ●
-          </span>
-          <span>UPLINK: STABLE</span>
-        </span>
+        {/* "UPLINK: STABLE" was fake telemetry competing with real state
+            (live show, transcription). Removed in the 2026-09 redesign; live
+            status lives in the sidebar LIVE group and the LiveBanner. */}
         <SearchTrigger />
         <UserMenuLoader />
       </div>

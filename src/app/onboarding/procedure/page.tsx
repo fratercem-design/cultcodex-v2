@@ -239,27 +239,27 @@ function StageRow({ stage }: { stage: Stage }) {
   return (
     <div className="border-b border-border py-4 last:border-b-0 sm:grid sm:grid-cols-[9rem_1fr] sm:gap-6">
       <div className="mb-2 sm:mb-0">
-        <p className="font-mono text-[10px] tracking-[0.2em] text-accent-gold-text">{stage.id}</p>
+        <p className="font-mono text-[12px] tracking-[0.12em] text-accent-gold-text">{stage.id}</p>
         <p className="font-serif text-base font-bold text-text-primary">{stage.name}</p>
-        <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted/70">
+        <p className="mt-0.5 font-mono text-[12px] uppercase tracking-[0.14em] text-text-muted">
           Owner &middot; {stage.owner}
         </p>
       </div>
       <dl className="space-y-1.5 font-mono text-xs leading-relaxed">
         <div className="sm:grid sm:grid-cols-[5.5rem_1fr] sm:gap-3">
-          <dt className="text-[9px] uppercase tracking-[0.16em] text-text-muted/70 sm:pt-0.5">Trigger</dt>
+          <dt className="text-[12px] uppercase tracking-[0.16em] text-text-muted sm:pt-0.5">Trigger</dt>
           <dd className="text-text-muted">{stage.trigger}</dd>
         </div>
         <div className="sm:grid sm:grid-cols-[5.5rem_1fr] sm:gap-3">
-          <dt className="text-[9px] uppercase tracking-[0.16em] text-text-muted/70 sm:pt-0.5">Action</dt>
+          <dt className="text-[12px] uppercase tracking-[0.16em] text-text-muted sm:pt-0.5">Action</dt>
           <dd className="text-text-muted">{stage.action}</dd>
         </div>
         <div className="sm:grid sm:grid-cols-[5.5rem_1fr] sm:gap-3">
-          <dt className="text-[9px] uppercase tracking-[0.16em] text-text-muted/70 sm:pt-0.5">Hand-off</dt>
+          <dt className="text-[12px] uppercase tracking-[0.16em] text-text-muted sm:pt-0.5">Hand-off</dt>
           <dd className="text-text-muted">{stage.handoff}</dd>
         </div>
         <div className="sm:grid sm:grid-cols-[5.5rem_1fr] sm:gap-3">
-          <dt className="text-[9px] uppercase tracking-[0.16em] text-text-muted/70 sm:pt-0.5">Done when</dt>
+          <dt className="text-[12px] uppercase tracking-[0.16em] text-text-muted sm:pt-0.5">Done when</dt>
           <dd className="text-accent-cyan">{stage.done}</dd>
         </div>
       </dl>
@@ -292,7 +292,7 @@ export default function OnboardingProcedurePage() {
             can hold us to it. Everything below is voluntary at every stage, for everyone,
             permanently.
           </p>
-          <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted/70">
+          <p className="mt-3 font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             Owner &middot; Cult Master &nbsp;&bull;&nbsp; Automation &middot; Nyx &nbsp;&bull;&nbsp;
             Reviewed quarterly
           </p>
@@ -312,7 +312,7 @@ export default function OnboardingProcedurePage() {
                 <li key={p.value} className="py-3 sm:grid sm:grid-cols-[10rem_1fr] sm:gap-5">
                   <div className="mb-1 sm:mb-0">
                     <p className="font-serif text-base text-accent-gold-text">{p.value}</p>
-                    <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-text-muted/70">
+                    <p className="font-mono text-[12px] uppercase tracking-[0.16em] text-text-muted">
                       {p.counter}
                     </p>
                   </div>
@@ -393,7 +393,7 @@ export default function OnboardingProcedurePage() {
             <ol className="divide-y divide-border">
               {LADDER.map((r, i) => (
                 <li key={r.act} className="flex gap-4 py-3">
-                  <span className="shrink-0 border border-border px-2 py-1 font-mono text-[10px] text-accent-gold-text">
+                  <span className="shrink-0 border border-border px-2 py-1 font-mono text-[12px] text-accent-gold-text">
                     R{i + 1}
                   </span>
                   <span className="font-mono text-xs leading-relaxed">
@@ -441,7 +441,7 @@ export default function OnboardingProcedurePage() {
           </Link>
         </div>
 
-        <p className="pb-6 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-text-muted/60">
+        <p className="pb-6 text-center font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           No followers. Only fellow travelers.
         </p>
       </div>

@@ -20,7 +20,7 @@ interface ColorLegendProps {
 
 export function ColorLegend({ className = "" }: ColorLegendProps) {
   return (
-    <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] font-mono uppercase tracking-widest ${className}`}>
+    <div className={`flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] font-mono uppercase tracking-widest ${className}`}>
       {LEGEND_ITEMS.map((item) => (
         <span key={item.label} className="flex items-center gap-1.5">
           <span className={`w-2 h-2 rounded-full ${item.dot} shrink-0`} />

@@ -167,11 +167,11 @@ export default async function CultLivePage() {
 
       {/* Header */}
       <div className="space-y-1">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// cult_live"}</p>
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">{"/// cult_live"}</p>
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-white">Cult Live</h1>
           {liveCount > 0 && (
-            <span className="flex items-center gap-1.5 rounded-full bg-red-600/90 px-3 py-1 font-mono text-[10px] font-bold text-white animate-pulse">
+            <span className="flex items-center gap-1.5 rounded-full bg-red-600/90 px-3 py-1 font-mono text-[12px] font-bold text-white animate-pulse">
               <span className="h-1.5 w-1.5 rounded-full bg-white" />
               {liveCount} LIVE
             </span>
@@ -204,7 +204,7 @@ export default async function CultLivePage() {
       {/* Channel legend */}
       <div className="flex flex-wrap gap-3">
         {CHANNELS.map((ch, i) => (
-          <span key={ch.handle} className="rounded border border-border bg-surface px-3 py-1 font-mono text-[10px] text-text-muted">
+          <span key={ch.handle} className="rounded border border-border bg-surface px-3 py-1 font-mono text-[12px] text-text-muted">
             <span className={CHANNEL_COLORS[i] ?? "text-text-muted"}>{ch.label}</span>
             {" · "}{channelVideos[i].length} videos
           </span>
@@ -239,26 +239,26 @@ export default async function CultLivePage() {
                   <div className="absolute inset-0 bg-gradient-to-br from-accent-gold/10 to-void" />
                 )}
                 {v.isLive && (
-                  <span className="absolute top-2 left-2 flex items-center gap-1 rounded bg-red-600 px-2 py-0.5 font-mono text-[9px] font-bold text-white uppercase tracking-wider">
+                  <span className="absolute top-2 left-2 flex items-center gap-1 rounded bg-red-600 px-2 py-0.5 font-mono text-[12px] font-bold text-white uppercase tracking-wider">
                     <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
                     LIVE
                   </span>
                 )}
                 {dur && !v.isLive && (
-                  <span className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[9px] text-white">
+                  <span className="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[12px] text-white">
                     {dur}
                   </span>
                 )}
               </div>
               {/* Info */}
               <div className="p-3 space-y-1 flex-1">
-                <p className="font-mono text-[10px] font-bold uppercase tracking-wider">
+                <p className="font-mono text-[12px] font-bold uppercase tracking-wider">
                   <span className={channelColor}>{v.channelTitle}</span>
                 </p>
                 <p className="text-xs font-medium text-text-primary leading-snug line-clamp-2 group-hover:text-accent-gold-text transition-colors">
                   {v.title}
                 </p>
-                <div className="flex items-center gap-2 font-mono text-[9px] text-text-muted">
+                <div className="flex items-center gap-2 font-mono text-[12px] text-text-muted">
                   {views && <span>{views}</span>}
                   {!v.isLive && v.publishedAt && (
                     <span>{timeAgo(v.publishedAt)}</span>

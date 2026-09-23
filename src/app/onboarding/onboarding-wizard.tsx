@@ -1,5 +1,6 @@
 "use client";
 
+import { trustedSummary } from "@/lib/format/speculative-summary";
 import { useState, useTransition, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -483,9 +484,9 @@ export function OnboardingWizard({ displayName }: WizardProps) {
               <div style={{ fontSize: 14, color: C.bone, marginBottom: 6, fontWeight: 500 }}>
                 {result.firstEpisode.title}
               </div>
-              {result.firstEpisode.summaryShort && (
+              {trustedSummary(result.firstEpisode.summaryShort) && (
                 <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.6 }}>
-                  {result.firstEpisode.summaryShort.slice(0, 120)}…
+                  {trustedSummary(result.firstEpisode.summaryShort)?.slice(0, 120)}…
                 </div>
               )}
             </div>

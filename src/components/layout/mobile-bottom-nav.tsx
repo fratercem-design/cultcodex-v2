@@ -9,14 +9,16 @@ interface CompassItem {
   glyph: string;
 }
 
-// The dossier's primary-4 nav hierarchy (Ch. IV) + search — the touch-zone
-// replacement for the sidebar, which simply vanishes below 900px with no
-// substitute (Ch. V: "put navigation there as a sigil compass").
+// The touch-zone replacement for the sidebar, which vanishes below 900px.
+// Mirrors the desktop MAIN group (src/lib/nav.ts) so the two devices share
+// one map: Home · Episodes · People · Oracle, plus Search. "Cards" used to
+// sit here while existing nowhere in desktop nav (2026-09 audit, MO-04); it
+// stays reachable from the radial dial and /explore.
 const COMPASS_ITEMS: CompassItem[] = [
-  { href: "/", label: "Overview", glyph: "▢" },
-  { href: "/episodes", label: "Archive", glyph: "▦" },
+  { href: "/", label: "Home", glyph: "▢" },
+  { href: "/episodes", label: "Episodes", glyph: "▦" },
+  { href: "/people", label: "People", glyph: "◐" },
   { href: "/oracle", label: "Oracle", glyph: "◉" },
-  { href: "/cards", label: "Cards", glyph: "⧬" },
 ];
 
 function isActive(href: string, pathname: string | null): boolean {

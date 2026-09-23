@@ -37,7 +37,7 @@ export default function GameShowPage() {
 
         <div className="relative mx-auto max-w-3xl text-center space-y-5">
           <GameShowHero size={84} className="mx-auto text-accent-violet-text" title="Panelverse Game Show sigil" />
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">{"/// the_ultimate_cult_trivia_experience"}</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">{"/// the_ultimate_cult_trivia_experience"}</p>
           <h1 className="font-display text-4xl sm:text-5xl font-bold text-text-primary leading-tight">
             The Panelverse Game Show
           </h1>
@@ -62,7 +62,7 @@ export default function GameShowPage() {
             {STATS.map((s) => (
               <div key={s.l} className="rounded-lg border border-border bg-surface/50 py-3">
                 <div className="font-display text-xl sm:text-2xl font-bold text-accent-cyan">{s.n}</div>
-                <div className="font-mono text-[8px] sm:text-[9px] uppercase tracking-widest text-text-muted">{s.l}</div>
+                <div className="font-mono text-[12px] sm:text-[12px] uppercase tracking-widest text-text-muted">{s.l}</div>
               </div>
             ))}
           </div>
@@ -72,7 +72,7 @@ export default function GameShowPage() {
       <GameShowLoader />
 
       <div className="mx-auto max-w-3xl px-4 pb-12 text-center">
-        <Link href="/fun" className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors">← The Fun Wing</Link>
+        <Link href="/fun" className="font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors">← The Fun Wing</Link>
       </div>
     </main>
   );

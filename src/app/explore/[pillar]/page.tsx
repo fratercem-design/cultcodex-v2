@@ -114,7 +114,7 @@ export default async function PillarPage({ params }: PageProps) {
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-12 space-y-14">
 
         {/* Breadcrumb */}
-        <nav aria-label="Breadcrumb" className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+        <nav aria-label="Breadcrumb" className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           <Link href="/" className="hover:text-accent-gold-text transition-colors">Home</Link>
           <span className="mx-2">/</span>
           <Link href="/explore" className="hover:text-accent-gold-text transition-colors">Explore</Link>
@@ -135,7 +135,7 @@ export default async function PillarPage({ params }: PageProps) {
 
         {/* What you'll find */}
         <section className="rounded-xl border border-border bg-surface p-6 space-y-3">
-          <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${a.eyebrow}`}>
+          <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${a.eyebrow}`}>
             {"/// what_you'll_find"}
           </p>
           <ul className="space-y-2">
@@ -150,10 +150,10 @@ export default async function PillarPage({ params }: PageProps) {
         {/* Signals */}
         {topics.length > 0 && (
           <section className="space-y-3">
-            <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${a.eyebrow}`}>
+            <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${a.eyebrow}`}>
               {"/// signals_tracked"}
             </p>
-            <p className="font-mono text-[11px] text-text-muted">
+            <p className="font-mono text-[12px] text-text-muted">
               {topics.length} topic{topics.length === 1 ? "" : "s"} the archive cross-references for {p.title.toLowerCase()}.
             </p>
             <SignalGrid
@@ -166,7 +166,7 @@ export default async function PillarPage({ params }: PageProps) {
 
         {/* Episodes */}
         <section className="space-y-3">
-          <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${a.eyebrow}`}>
+          <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${a.eyebrow}`}>
             {"/// transmissions"}
           </p>
           {relatedEpisodes.length === 0 ? (
@@ -176,7 +176,7 @@ export default async function PillarPage({ params }: PageProps) {
             </p>
           ) : (
             <>
-              <p className="font-mono text-[11px] text-text-muted">
+              <p className="font-mono text-[12px] text-text-muted">
                 {relatedEpisodes.length} episode{relatedEpisodes.length === 1 ? "" : "s"} exploring {p.title.toLowerCase()}.
               </p>
               <div className="space-y-3">
@@ -192,7 +192,7 @@ export default async function PillarPage({ params }: PageProps) {
 
         {/* FAQ */}
         <section className="space-y-4">
-          <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${a.eyebrow}`}>
+          <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${a.eyebrow}`}>
             {"/// frequently_asked"}
           </p>
           <div className="space-y-3">
@@ -213,7 +213,7 @@ export default async function PillarPage({ params }: PageProps) {
           <>
             <MysticalDivider />
             <section className="space-y-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted text-center">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted text-center">
                 {"/// keep_exploring"}
               </p>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -238,7 +238,7 @@ export default async function PillarPage({ params }: PageProps) {
         {/* CTA */}
         <section className="rounded-2xl border border-accent-violet/30 bg-gradient-to-b from-accent-violet/5 to-surface p-6 text-center space-y-3">
           <h2 className="font-display text-lg font-bold text-text-primary">Ask the Oracle about {p.title.toLowerCase()}.</h2>
-          <p className="font-mono text-[11px] text-text-muted max-w-md mx-auto">
+          <p className="font-mono text-[12px] text-text-muted max-w-md mx-auto">
             The AI Oracle answers any question from inside the full archive — with citations.
           </p>
           <Link href="/oracle" className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-xs font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25">

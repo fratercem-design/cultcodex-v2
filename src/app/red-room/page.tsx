@@ -1,3 +1,4 @@
+import { trustedSummary } from "@/lib/format/speculative-summary";
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
@@ -64,7 +65,7 @@ export default async function RedRoomPage() {
         />
         <div className="relative mx-auto max-w-4xl px-6 py-14">
           <p
-            className="font-mono text-[10px] uppercase tracking-[0.4em] mb-3"
+            className="font-mono text-[12px] uppercase tracking-[0.12em] mb-3"
             style={{ color: "rgba(220,40,40,0.6)" }}
           >
             ✦ &nbsp; Oracle Access &nbsp; ✦
@@ -83,7 +84,7 @@ export default async function RedRoomPage() {
             the transmissions reveal when you stop being careful about it.
           </p>
           <div
-            className="mt-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-mono text-[10px] uppercase tracking-widest"
+            className="mt-6 inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-mono text-[12px] uppercase tracking-widest"
             style={{
               border: "1px solid rgba(200,0,0,0.3)",
               backgroundColor: "rgba(200,0,0,0.08)",
@@ -157,7 +158,7 @@ export default async function RedRoomPage() {
                     <div className="flex items-center gap-2 mb-1">
                       {ep.episodeNumber && (
                         <span
-                          className="font-mono text-[10px]"
+                          className="font-mono text-[12px]"
                           style={{ color: "rgba(180,60,60,0.7)" }}
                         >
                           #{ep.episodeNumber}
@@ -165,7 +166,7 @@ export default async function RedRoomPage() {
                       )}
                       {ep.airDate && (
                         <span
-                          className="font-mono text-[10px]"
+                          className="font-mono text-[12px]"
                           style={{ color: "rgba(160,80,80,0.5)" }}
                         >
                           {new Date(ep.airDate).toLocaleDateString("en-US", { timeZone: "UTC",
@@ -182,12 +183,12 @@ export default async function RedRoomPage() {
                     >
                       {ep.title}
                     </h3>
-                    {ep.summaryShort && (
+                    {trustedSummary(ep.summaryShort) && (
                       <p
                         className="mt-1.5 font-mono text-xs leading-relaxed line-clamp-2"
                         style={{ color: "rgba(180,120,120,0.65)" }}
                       >
-                        {ep.summaryShort}
+                        {trustedSummary(ep.summaryShort)}
                       </p>
                     )}
                   </div>
@@ -257,7 +258,7 @@ function RedRoomGate({
         </p>
         {samples.length > 0 && (
           <div className="mb-6 text-left">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/70 mb-2">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted mb-2">
               A taste — transmissions inside:
             </p>
             <ul className="space-y-1.5">

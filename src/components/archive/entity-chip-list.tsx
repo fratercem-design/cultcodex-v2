@@ -58,7 +58,7 @@ export function EntityChipList({ title, entities }: EntityChipListProps) {
             <Link
               key={`${entity.type}-${entity.slug}`}
               href={`${typeToPath[entity.type]}/${entity.slug}`}
-              className={`inline-flex items-center gap-1.5 rounded border bg-surface px-2 py-0.5 font-mono text-[11px] transition-colors ${colors.border} ${colors.text} ${colors.bg}`}
+              className={`inline-flex items-center gap-1.5 rounded border bg-surface px-2 py-0.5 font-mono text-[12px] transition-colors ${colors.border} ${colors.text} ${colors.bg}`}
             >
               <span className={`w-1.5 h-1.5 rounded-full ${colors.dot} shrink-0`} />
               {entity.label}

@@ -95,7 +95,7 @@ export default function MeowPage() {
         <p className="font-serif text-sm italic leading-relaxed text-accent-gold-text/80">
           {quote}
         </p>
-        <p className="mt-2 font-mono text-[10px] tracking-wider text-text-muted/50">
+        <p className="mt-2 font-mono text-[12px] tracking-wider text-text-muted">
           &mdash; Psyche, probably
         </p>
       </div>
@@ -103,7 +103,7 @@ export default function MeowPage() {
       {/* Back link */}
       <Link
         href="/"
-        className="mt-16 font-mono text-[10px] tracking-widest text-text-muted/60 transition-colors hover:text-accent-cyan/60"
+        className="mt-16 font-mono text-[12px] tracking-widest text-text-muted transition-colors hover:text-accent-cyan/60"
       >
         &larr; back to the void
       </Link>

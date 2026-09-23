@@ -15,7 +15,7 @@ interface RankBadgeProps {
 
 export function RankBadge({ rank, size = "md", showTitle = true }: RankBadgeProps) {
   const c = COLOR[rank.color];
-  const pad = size === "lg" ? "px-4 py-2 text-sm" : size === "sm" ? "px-2 py-0.5 text-[10px]" : "px-3 py-1 text-xs";
+  const pad = size === "lg" ? "px-4 py-2 text-sm" : size === "sm" ? "px-2 py-0.5 text-[12px]" : "px-3 py-1 text-xs";
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full border ${c.border} ${c.bg} ${c.text} ${pad} font-mono font-bold uppercase tracking-widest`}

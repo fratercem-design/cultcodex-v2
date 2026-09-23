@@ -56,7 +56,7 @@ export default function WelcomeInitiatePage() {
 
       {/* ── Hero ── */}
       <section className="text-center space-y-5">
-        <p className="font-mono text-[11px] uppercase tracking-[0.5em] text-accent-gold-text/80">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
           ✦ &nbsp; transmission confirmed &nbsp; ✦
         </p>
         <h1
@@ -89,7 +89,7 @@ export default function WelcomeInitiatePage() {
 
       {/* ── What just opened ── */}
       <section className="space-y-6">
-        <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+        <p className="text-center font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
           {"/// what just opened"}
         </p>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -100,7 +100,7 @@ export default function WelcomeInitiatePage() {
             >
               <span className="text-2xl">{b.icon}</span>
               <h3 className="font-display text-sm font-bold text-accent-gold-text">{b.title}</h3>
-              <p className="font-mono text-[11px] text-text-muted leading-relaxed">{b.body}</p>
+              <p className="font-mono text-[12px] text-text-muted leading-relaxed">{b.body}</p>
             </div>
           ))}
         </div>
@@ -110,7 +110,7 @@ export default function WelcomeInitiatePage() {
 
       {/* ── Where to go first ── */}
       <section className="max-w-2xl mx-auto space-y-5">
-        <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/60">
+        <p className="text-center font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           {"/// where to go first"}
         </p>
         <div className="space-y-2">
@@ -126,7 +126,7 @@ export default function WelcomeInitiatePage() {
               <span className="font-mono text-sm text-text-muted group-hover:text-accent-gold-text transition-colors">
                 {s.label}
               </span>
-              <span className="ml-auto font-mono text-[11px] text-accent-gold-text opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+              <span className="ml-auto font-mono text-[12px] text-accent-gold-text opacity-0 group-hover:opacity-100 transition-opacity">→</span>
             </Link>
           ))}
         </div>
@@ -134,7 +134,7 @@ export default function WelcomeInitiatePage() {
 
       {/* ── Upgrade tease ── */}
       <section className="rounded-2xl border border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-surface p-8 text-center space-y-4 max-w-2xl mx-auto">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
           {"/// when you&apos;re ready to go deeper"}
         </p>
         <h3 className="font-display text-xl font-bold text-accent-violet-text">Oracle Tier</h3>

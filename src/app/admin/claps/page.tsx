@@ -50,7 +50,7 @@ export default async function AdminClapsPage() {
         className="mb-10 grid gap-3 rounded-xl border border-accent-gold/30 bg-surface p-5 sm:grid-cols-[1fr_100px_1fr_auto]"
       >
         <label className="space-y-1">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-text-muted">Nickname</span>
+          <span className="font-mono text-[12px] uppercase tracking-wider text-text-muted">Nickname</span>
           <input
             name="nickname"
             required
@@ -60,7 +60,7 @@ export default async function AdminClapsPage() {
           />
         </label>
         <label className="space-y-1">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-text-muted">± Tokens</span>
+          <span className="font-mono text-[12px] uppercase tracking-wider text-text-muted">± Tokens</span>
           <input
             name="amount"
             type="number"
@@ -70,7 +70,7 @@ export default async function AdminClapsPage() {
           />
         </label>
         <label className="space-y-1">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-text-muted">Note</span>
+          <span className="font-mono text-[12px] uppercase tracking-wider text-text-muted">Note</span>
           <input
             name="note"
             placeholder='e.g. "cashapp $20 07-22"'
@@ -78,7 +78,7 @@ export default async function AdminClapsPage() {
           />
         </label>
         <div className="flex items-end gap-3">
-          <label className="flex items-center gap-1.5 pb-2 font-mono text-[10px] text-text-muted">
+          <label className="flex items-center gap-1.5 pb-2 font-mono text-[12px] text-text-muted">
             <input type="checkbox" name="spotlight" defaultChecked /> 24h clap
           </label>
           <button
@@ -97,9 +97,9 @@ export default async function AdminClapsPage() {
             <div className="flex flex-wrap items-center gap-3">
               <span className="font-display text-lg font-bold text-text-primary">{h.nickname}</span>
               <span className="font-mono text-sm text-accent-cyan">👏 × {h.tokens}</span>
-              {h.hidden && <span className="font-mono text-[10px] uppercase text-red-400/70">hidden</span>}
+              {h.hidden && <span className="font-mono text-[12px] uppercase text-red-400/70">hidden</span>}
               {h.claps.some((c) => c.spotlightUntil && c.spotlightUntil > now) && (
-                <span className="font-mono text-[10px] uppercase text-accent-gold-text">clapping now</span>
+                <span className="font-mono text-[12px] uppercase text-accent-gold-text">clapping now</span>
               )}
               <div className="ml-auto flex items-center gap-2">
                 <form action={renameClapHolder} className="flex items-center gap-1.5">
@@ -110,13 +110,13 @@ export default async function AdminClapsPage() {
                     maxLength={32}
                     className="w-36 rounded border border-border bg-elevated px-2 py-1 font-mono text-xs text-text-primary focus:border-accent-gold focus:outline-none"
                   />
-                  <button type="submit" className="font-mono text-[10px] text-text-muted hover:text-accent-gold-text">
+                  <button type="submit" className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text">
                     rename
                   </button>
                 </form>
                 <form action={toggleClapHolderHidden}>
                   <input type="hidden" name="id" value={h.id} />
-                  <button type="submit" className="font-mono text-[10px] text-text-muted hover:text-red-400">
+                  <button type="submit" className="font-mono text-[12px] text-text-muted hover:text-red-400">
                     {h.hidden ? "unhide" : "hide"}
                   </button>
                 </form>
@@ -125,7 +125,7 @@ export default async function AdminClapsPage() {
             {h.claps.length > 0 && (
               <ul className="mt-2 space-y-0.5">
                 {h.claps.map((c) => (
-                  <li key={c.id} className="font-mono text-[10px] text-text-muted/70">
+                  <li key={c.id} className="font-mono text-[12px] text-text-muted">
                     {c.createdAt.toISOString().slice(0, 10)} · {c.source} · {c.quantity > 0 ? "+" : ""}
                     {c.quantity}
                     {c.amountCents != null ? ` · $${(c.amountCents / 100).toFixed(0)}` : ""}

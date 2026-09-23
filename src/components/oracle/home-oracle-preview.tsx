@@ -70,7 +70,7 @@ export function HomeOraclePreview() {
             placeholder="Ask anything about the archive…"
             disabled={state === "loading"}
             maxLength={300}
-            className="flex-1 rounded-lg border border-accent-violet/30 bg-void/60 px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted/60 focus:border-accent-violet/60 focus:outline-none disabled:opacity-50 transition-colors"
+            className="flex-1 rounded-lg border border-accent-violet/30 bg-void/60 px-3 py-2.5 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-violet/60 focus:outline-none disabled:opacity-50 transition-colors"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
@@ -93,7 +93,7 @@ export function HomeOraclePreview() {
       )}
 
       {state === "loading" && (
-        <p className="text-center font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70 animate-pulse py-2">
+        <p className="text-center font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70 animate-pulse py-2">
           {"/// searching_the_archive"}
         </p>
       )}
@@ -102,7 +102,7 @@ export function HomeOraclePreview() {
       {state === "answered" && (
         <div className="space-y-3">
           <div className="rounded-xl border border-accent-violet/20 bg-surface/80 p-5 space-y-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-cyan/70">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/70">
               The Oracle Responds · Re: &ldquo;{question}&rdquo;
             </p>
             <blockquote className="font-serif text-sm leading-relaxed text-text-primary">
@@ -122,7 +122,7 @@ export function HomeOraclePreview() {
             {citations.length > 0 && (
               <div className="flex flex-wrap gap-1.5 pt-1 blur-[4px] select-none pointer-events-none" aria-hidden="true">
                 {citations.slice(0, 4).map((c, i) => (
-                  <span key={i} className="rounded border border-accent-cyan/20 bg-accent-cyan/5 px-2 py-0.5 font-mono text-[9px] text-accent-cyan/70 uppercase tracking-wider">
+                  <span key={i} className="rounded border border-accent-cyan/20 bg-accent-cyan/5 px-2 py-0.5 font-mono text-[12px] text-accent-cyan/70 uppercase tracking-wider">
                     {c.label}
                   </span>
                 ))}
@@ -131,7 +131,7 @@ export function HomeOraclePreview() {
           </div>
           {/* Paywall CTA */}
           <div className="rounded-xl border border-accent-gold/25 bg-gradient-to-b from-accent-gold/5 to-surface px-5 py-4 text-center space-y-2">
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
               {"/// unlock full answer + citations"}
             </p>
             <p className="font-serif text-sm text-text-muted italic">
@@ -150,7 +150,7 @@ export function HomeOraclePreview() {
       {/* Gated — needs subscription */}
       {state === "gated" && (
         <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-5 text-center space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// initiate_required"}</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">{"/// initiate_required"}</p>
           <p className="font-display text-sm font-bold text-text-primary">The Oracle speaks only to Initiates.</p>
           <p className="font-mono text-xs text-text-muted">Unlock the full Oracle with unlimited questions and archive citations.</p>
           <Link
@@ -165,7 +165,7 @@ export function HomeOraclePreview() {
       {/* Monthly preview used */}
       {state === "limit" && (
         <div className="rounded-xl border border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-surface p-5 text-center space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/70">{"/// preview_exhausted"}</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">{"/// preview_exhausted"}</p>
           <p className="font-display text-sm font-bold text-text-primary">Your free preview is complete.</p>
           <p className="font-mono text-xs text-text-muted">Initiate+ unlocks {INITIATE_ORACLE_MONTHLY_LIMIT} cited Oracle questions each month.</p>
           <Link
@@ -183,7 +183,7 @@ export function HomeOraclePreview() {
           <p className="font-mono text-xs text-red-400">{errorMsg || "The Oracle is unavailable."}</p>
           <button
             onClick={() => { setState("idle"); setErrorMsg(""); }}
-            className="mt-1.5 font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
+            className="mt-1.5 font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             Try again →
           </button>

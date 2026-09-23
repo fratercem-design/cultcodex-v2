@@ -40,13 +40,13 @@ export function TranscriptBadge({ segmentCount, className }: TranscriptBadgeProp
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider",
+        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[12px] uppercase tracking-wider",
         config.style,
         className,
       )}
       title={`${segmentCount} transcript segments`}
     >
-      <span className="text-[8px] leading-none tracking-tighter" aria-hidden="true">{config.indicator}</span>
+      <span className="text-[12px] leading-none tracking-tighter" aria-hidden="true">{config.indicator}</span>
       {config.label}
     </span>
   );

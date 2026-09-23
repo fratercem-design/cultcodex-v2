@@ -75,7 +75,7 @@ export function TimelineExplorer({ items }: { items: TimelineItem[] }) {
       <div className="flex flex-wrap items-center justify-center gap-2">
         <button
           onClick={() => setEraFilter(null)}
-          className={`rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest transition-colors ${
+          className={`rounded-full border px-3 py-1.5 font-mono text-[12px] uppercase tracking-widest transition-colors ${
             eraFilter === null ? "border-accent-gold/60 bg-accent-gold/10 text-accent-gold-text" : "border-border text-text-muted hover:text-text-primary"
           }`}
         >
@@ -88,7 +88,7 @@ export function TimelineExplorer({ items }: { items: TimelineItem[] }) {
             <button
               key={era.id}
               onClick={() => { setEraFilter(era.id); setSelected(null); }}
-              className="rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest transition-colors"
+              className="rounded-full border px-3 py-1.5 font-mono text-[12px] uppercase tracking-widest transition-colors"
               style={{
                 borderColor: active ? `${hex}99` : "var(--term-line)",
                 backgroundColor: active ? `${hex}1a` : "transparent",
@@ -129,7 +129,7 @@ export function TimelineExplorer({ items }: { items: TimelineItem[] }) {
             );
           })}
         </div>
-        <p className="mt-2 text-center font-mono text-[9px] uppercase tracking-widest text-text-muted/60">
+        <p className="mt-2 text-center font-mono text-[12px] uppercase tracking-widest text-text-muted">
           {visibleMonths.length} months · click a bar to inspect
         </p>
       </div>
@@ -139,7 +139,7 @@ export function TimelineExplorer({ items }: { items: TimelineItem[] }) {
         <div className="space-y-3">
           <div className="flex items-baseline justify-between">
             <h2 className="font-display text-lg font-bold text-text-primary">{labelForKey(activeKey)}</h2>
-            <span className="font-mono text-[10px] uppercase tracking-widest text-text-muted/50">
+            <span className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
               {selectedItems.length} transmission{selectedItems.length === 1 ? "" : "s"}
             </span>
           </div>
@@ -151,14 +151,14 @@ export function TimelineExplorer({ items }: { items: TimelineItem[] }) {
                 className="group flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-2.5 transition-all hover:border-accent-gold/30 hover:bg-elevated"
               >
                 {ep.episodeNumber != null && (
-                  <span className="shrink-0 font-mono text-[10px] font-bold text-accent-gold-text/80">
+                  <span className="shrink-0 font-mono text-[12px] font-bold text-accent-gold-text/80">
                     EP.{String(ep.episodeNumber).padStart(3, "0")}
                   </span>
                 )}
                 <span className="min-w-0 flex-1 truncate text-sm text-text-primary group-hover:text-accent-gold-text transition-colors">
                   {ep.title}
                 </span>
-                <span className="shrink-0 font-mono text-[10px] text-text-muted/50">
+                <span className="shrink-0 font-mono text-[12px] text-text-muted">
                   {new Date(ep.date).toLocaleDateString("en-US", { timeZone: "UTC", month: "short", day: "numeric" })}
                 </span>
               </Link>

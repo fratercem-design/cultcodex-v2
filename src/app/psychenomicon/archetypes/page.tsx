@@ -25,7 +25,7 @@ export default async function ArchetypesIndexPage() {
     return (
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">
             {"/// initiate_only"}
           </p>
           <p className="font-display text-xl font-bold text-text-primary">
@@ -49,7 +49,7 @@ export default async function ArchetypesIndexPage() {
     <main className="min-h-screen bg-void">
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-5xl space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
             ψ PSYCHENOMICON · ARCHETYPES ψ
           </p>
           <h1 className="font-display text-2xl font-bold text-text-primary">
@@ -60,7 +60,7 @@ export default async function ArchetypesIndexPage() {
             being a person in this world — and the same archetype shows up
             across guests, eras, and chapters in slightly different forms.
           </p>
-          <p className="font-mono text-[10px] text-text-muted/60">
+          <p className="font-mono text-[12px] text-text-muted">
             {archetypes.length} archetype{archetypes.length !== 1 ? "s" : ""}
             {" · "}
             {totalEntities} entity tag
@@ -73,7 +73,7 @@ export default async function ArchetypesIndexPage() {
         {archetypes.length === 0 ? (
           <div className="py-20 text-center space-y-3">
             <p className="font-mono text-4xl text-accent-violet-text/55">ψ</p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text/70">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
               {"/// no_archetypes_recorded"}
             </p>
             <p className="text-sm text-text-muted max-w-sm mx-auto">
@@ -99,7 +99,7 @@ export default async function ArchetypesIndexPage() {
                       >
                         {archetype.name}
                       </p>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                      <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
                         {archetype.entityCount}{" "}
                         {archetype.entityCount === 1 ? "entity" : "entities"}
                       </p>
@@ -126,7 +126,7 @@ export default async function ArchetypesIndexPage() {
                         ) : (
                           <div
                             key={ent.slug}
-                            className="h-5.5 w-5.5 rounded-full border border-border flex items-center justify-center font-mono text-[8px]"
+                            className="h-5.5 w-5.5 rounded-full border border-border flex items-center justify-center font-mono text-[12px]"
                             style={{
                               height: 22,
                               width: 22,
@@ -139,14 +139,14 @@ export default async function ArchetypesIndexPage() {
                         )
                       )}
                       {archetype.entityCount > 4 && (
-                        <span className="font-mono text-[9px] text-text-muted/60 ml-1">
+                        <span className="font-mono text-[12px] text-text-muted ml-1">
                           +{archetype.entityCount - 4}
                         </span>
                       )}
                     </div>
                   )}
 
-                  <p className="font-mono text-[10px] text-accent-violet-text/70 group-hover:text-accent-violet-text transition-colors">
+                  <p className="font-mono text-[12px] text-accent-violet-text/70 group-hover:text-accent-violet-text transition-colors">
                     Open atlas →
                   </p>
                 </Link>
@@ -158,13 +158,13 @@ export default async function ArchetypesIndexPage() {
         <div className="pt-6 border-t border-border flex flex-wrap items-center justify-between gap-3">
           <Link
             href="/psychenomicon"
-            className="font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
+            className="font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             ← Return to Psychenomicon
           </Link>
           <Link
             href="/psychenomicon/entities"
-            className="font-mono text-[10px] text-accent-violet-text/70 hover:text-accent-violet-text transition-colors"
+            className="font-mono text-[12px] text-accent-violet-text/70 hover:text-accent-violet-text transition-colors"
           >
             All entities →
           </Link>

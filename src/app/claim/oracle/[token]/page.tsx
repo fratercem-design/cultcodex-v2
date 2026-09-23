@@ -29,11 +29,11 @@ export default async function ClaimOraclePage({ params }: PageProps) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#080810" }}>
         <div className="text-center space-y-5 max-w-md">
-          <div className="font-mono text-[8px] uppercase tracking-[0.7em] text-accent-gold-text/80">
+          <div className="font-mono text-[12px] uppercase tracking-[0.7em] text-accent-gold-text/80">
             Oracle Archive
           </div>
           <div className="text-accent-gold/20 text-2xl">◈</div>
-          <p className="font-mono text-xs text-white/30 uppercase tracking-[0.3em]">
+          <p className="font-mono text-xs text-white/30 uppercase tracking-[0.12em]">
             This seal has already been broken.
           </p>
           <p className="font-serif text-sm text-white/20 italic">
@@ -41,7 +41,7 @@ export default async function ClaimOraclePage({ params }: PageProps) {
           </p>
           <Link
             href="/"
-            className="inline-block font-mono text-[10px] text-accent-gold-text/80 hover:text-accent-gold-text/80 transition-colors uppercase tracking-[0.4em] mt-4"
+            className="inline-block font-mono text-[12px] text-accent-gold-text/80 hover:text-accent-gold-text/80 transition-colors uppercase tracking-[0.12em] mt-4"
           >
             Enter the archive →
           </Link>
@@ -79,7 +79,7 @@ export default async function ClaimOraclePage({ params }: PageProps) {
         {/* Top cipher label */}
         <div className="absolute top-10 left-0 right-0 flex justify-center px-6">
           <div
-            className="px-6 py-2 font-mono text-[8px] uppercase tracking-[0.7em] text-accent-gold-text/80"
+            className="px-6 py-2 font-mono text-[12px] uppercase tracking-[0.7em] text-accent-gold-text/80"
             style={{
               border: "1px solid rgba(200,169,107,0.12)",
               borderRadius: 1,
@@ -93,7 +93,7 @@ export default async function ClaimOraclePage({ params }: PageProps) {
 
         {/* Bottom hero text */}
         <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center text-center px-6 pb-14">
-          <div className="font-mono text-[9px] uppercase tracking-[0.6em] text-accent-gold-text/80 mb-5">
+          <div className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80 mb-5">
             ✦ &nbsp; Founding Oracle &nbsp; ✦
           </div>
           <h1
@@ -107,7 +107,7 @@ export default async function ClaimOraclePage({ params }: PageProps) {
           </h1>
           <div className="flex items-center gap-5 text-accent-gold-text/80">
             <span className="h-px w-14 bg-accent-gold/15 block" />
-            <span className="font-mono text-[8px] uppercase tracking-[0.55em]">
+            <span className="font-mono text-[12px] uppercase tracking-[0.55em]">
               January VII &nbsp;·&nbsp; Child of Saturn &nbsp;·&nbsp; Capricorn
             </span>
             <span className="h-px w-14 bg-accent-gold/15 block" />
@@ -122,7 +122,7 @@ export default async function ClaimOraclePage({ params }: PageProps) {
           {/* Decree text */}
           <div className="space-y-8">
             <div>
-              <div className="font-mono text-[8px] uppercase tracking-[0.65em] text-accent-gold-text/80 mb-3">
+              <div className="font-mono text-[12px] uppercase tracking-[0.65em] text-accent-gold-text/80 mb-3">
                 Archive Decree — Sealed Under Saturn
               </div>
               <div className="h-px bg-accent-gold/10" />
@@ -168,7 +168,7 @@ export default async function ClaimOraclePage({ params }: PageProps) {
               <p className="text-white/75">
                 eternal. &nbsp; unconditional. &nbsp; without cost. &nbsp; without end.
               </p>
-              <p className="font-mono text-[10px] not-italic uppercase tracking-[0.45em] text-accent-gold-text/80 mt-2">
+              <p className="font-mono text-[12px] not-italic uppercase tracking-[0.12em] text-accent-gold-text/80 mt-2">
                 This is not a gift. &nbsp; This is a recognition.
               </p>
             </div>
@@ -192,7 +192,7 @@ export default async function ClaimOraclePage({ params }: PageProps) {
                 className="w-full object-cover"
               />
             </div>
-            <div className="text-center font-mono text-[8px] uppercase tracking-[0.55em] text-accent-gold-text/80">
+            <div className="text-center font-mono text-[12px] uppercase tracking-[0.55em] text-accent-gold-text/80">
               ◈ &nbsp; the oracle watches &nbsp; ◈
             </div>
           </div>
@@ -216,14 +216,14 @@ export default async function ClaimOraclePage({ params }: PageProps) {
               </div>
               <div className="flex items-center gap-3 justify-center">
                 <span className="h-px flex-1 max-w-16 bg-accent-gold/12 block" />
-                <span className="text-accent-gold-text/20 text-[10px]">✦</span>
+                <span className="text-accent-gold-text/20 text-[12px]">✦</span>
                 <span className="h-px flex-1 max-w-16 bg-accent-gold/12 block" />
               </div>
             </div>
             <p className="font-serif text-sm text-white/55 leading-[2] whitespace-pre-line italic text-center mb-8">
               {invite.personalNote}
             </p>
-            <div className="text-right font-mono text-[10px] text-accent-gold-text/80">
+            <div className="text-right font-mono text-[12px] text-accent-gold-text/80">
               — Psyche, January 7
             </div>
           </div>
@@ -233,11 +233,11 @@ export default async function ClaimOraclePage({ params }: PageProps) {
       {/* ── Seal divider ──────────────────────────────────────── */}
       <div className="text-center py-4 pb-16">
         <div className="inline-flex items-center gap-6 text-accent-gold-text/80">
-          <span className="text-[10px]">◈</span>
+          <span className="text-[12px]">◈</span>
           <span className="font-mono text-[7px] uppercase tracking-[0.7em]">
             sealed with love · sealed in fire · sealed forever
           </span>
-          <span className="text-[10px]">◈</span>
+          <span className="text-[12px]">◈</span>
         </div>
       </div>
 
@@ -246,7 +246,7 @@ export default async function ClaimOraclePage({ params }: PageProps) {
         <div className="mb-12 space-y-7">
           <div className="flex items-center gap-4">
             <span className="h-px flex-1 bg-accent-gold/8 block" />
-            <span className="font-mono text-[8px] uppercase tracking-[0.65em] text-accent-gold-text/80 shrink-0">
+            <span className="font-mono text-[12px] uppercase tracking-[0.65em] text-accent-gold-text/80 shrink-0">
               The Ritual of Naming
             </span>
             <span className="h-px flex-1 bg-accent-gold/8 block" />
@@ -265,7 +265,7 @@ export default async function ClaimOraclePage({ params }: PageProps) {
             <p>
               Choose yours from the dark.
             </p>
-            <p className="font-mono text-[9px] not-italic uppercase tracking-[0.4em] text-accent-gold-text/80">
+            <p className="font-mono text-[12px] not-italic uppercase tracking-[0.12em] text-accent-gold-text/80">
               It will be sealed permanently into the archive.
             </p>
           </div>
@@ -273,12 +273,12 @@ export default async function ClaimOraclePage({ params }: PageProps) {
 
         {!user ? (
           <div className="space-y-7">
-            <p className="font-mono text-[9px] text-white/20 uppercase tracking-[0.35em]">
+            <p className="font-mono text-[12px] text-white/20 uppercase tracking-[0.12em]">
               Sign in to claim your place and choose your name.
             </p>
             <Link
               href={`/api/auth/signin?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-              className="block w-full py-5 font-mono text-xs uppercase tracking-[0.5em] transition-all text-center text-accent-gold-text/80 hover:text-accent-gold-text"
+              className="block w-full py-5 font-mono text-xs uppercase tracking-[0.12em] transition-all text-center text-accent-gold-text/80 hover:text-accent-gold-text"
               style={{
                 border: "1px solid rgba(200,169,107,0.3)",
                 background: "rgba(200,169,107,0.05)",
@@ -287,13 +287,13 @@ export default async function ClaimOraclePage({ params }: PageProps) {
             >
               Enter to Claim
             </Link>
-            <p className="font-mono text-[9px] text-white/15">
+            <p className="font-mono text-[12px] text-white/15">
               This transmission is addressed to you alone. It will wait.
             </p>
           </div>
         ) : (
           <div className="space-y-5">
-            <p className="font-mono text-[9px] text-white/25 uppercase tracking-[0.3em]">
+            <p className="font-mono text-[12px] text-white/25 uppercase tracking-[0.12em]">
               The archive awaits your name, {user.displayName}.
             </p>
             <ClaimForm token={token} recipientName={invite.recipientName} />
@@ -302,7 +302,7 @@ export default async function ClaimOraclePage({ params }: PageProps) {
       </div>
 
       {/* Footer */}
-      <div className="text-center pb-12 font-mono text-[7px] uppercase tracking-[0.6em] text-white/10">
+      <div className="text-center pb-12 font-mono text-[7px] uppercase tracking-[0.12em] text-white/10">
         CultCodex &nbsp;·&nbsp; The Living Archive &nbsp;·&nbsp; cultcodex.me
       </div>
     </div>

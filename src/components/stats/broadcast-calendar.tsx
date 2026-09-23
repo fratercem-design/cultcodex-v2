@@ -68,7 +68,7 @@ export function BroadcastCalendar({ data }: Props) {
           return (
             <div key={i} className="w-3 shrink-0">
               {label && (
-                <span className="font-mono text-[8px] text-text-muted">{label.label}</span>
+                <span className="font-mono text-[12px] text-text-muted">{label.label}</span>
               )}
             </div>
           );
@@ -81,7 +81,7 @@ export function BroadcastCalendar({ data }: Props) {
           {DAY_LABELS.map((d, i) => (
             <div key={d} className="h-3 flex items-center justify-end">
               {i % 2 === 1 && (
-                <span className="font-mono text-[7px] text-text-muted/50">{d}</span>
+                <span className="font-mono text-[7px] text-text-muted">{d}</span>
               )}
             </div>
           ))}
@@ -113,7 +113,7 @@ export function BroadcastCalendar({ data }: Props) {
       {/* Tooltip */}
       {tooltip && (
         <div
-          className="fixed z-50 pointer-events-none bg-surface border border-border rounded px-2 py-1 font-mono text-[10px] text-text-primary shadow-lg"
+          className="fixed z-50 pointer-events-none bg-surface border border-border rounded px-2 py-1 font-mono text-[12px] text-text-primary shadow-lg"
           style={{ left: tooltip.x, top: tooltip.y - 36 }}
         >
           {tooltip.count === 0 ? "No streams" : `${tooltip.count} stream${tooltip.count > 1 ? "s" : ""}`}
@@ -123,11 +123,11 @@ export function BroadcastCalendar({ data }: Props) {
 
       {/* Legend */}
       <div className="flex items-center gap-1.5 mt-3 justify-end">
-        <span className="font-mono text-[9px] text-text-muted">less</span>
+        <span className="font-mono text-[12px] text-text-muted">less</span>
         {[0, 0.25, 0.5, 0.75, 1].map((v) => (
           <div key={v} className={`w-3 h-3 rounded-[2px] ${getColor(v * maxCount, maxCount)}`} />
         ))}
-        <span className="font-mono text-[9px] text-text-muted">more</span>
+        <span className="font-mono text-[12px] text-text-muted">more</span>
       </div>
     </div>
   );

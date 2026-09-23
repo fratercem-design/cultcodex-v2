@@ -42,7 +42,7 @@ export function AdminSidebar({ userName, userAvatar }: AdminSidebarProps) {
         <h1 className="font-display text-sm font-bold text-accent-gold-text">
           CULT CODEX
         </h1>
-        <p className="font-mono text-[10px] text-text-muted">Admin Panel</p>
+        <p className="font-mono text-[12px] text-text-muted">Admin Panel</p>
       </div>
 
       {/* Nav */}
@@ -73,7 +73,7 @@ export function AdminSidebar({ userName, userAvatar }: AdminSidebarProps) {
               className="h-6 w-6 rounded-full"
             />
           ) : (
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-purple/20 font-mono text-[10px] text-accent-purple">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-purple/20 font-mono text-[12px] text-accent-violet-text">
               {userName?.[0]?.toUpperCase() ?? "?"}
             </div>
           )}
@@ -83,7 +83,7 @@ export function AdminSidebar({ userName, userAvatar }: AdminSidebarProps) {
         </div>
         <Link
           href="/"
-          className="flex items-center gap-1.5 font-mono text-[10px] text-text-muted hover:text-accent-gold-text transition-colors"
+          className="flex items-center gap-1.5 font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors"
         >
           ← Back to Site
         </Link>

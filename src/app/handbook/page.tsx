@@ -49,7 +49,7 @@ export default async function HandbookPage() {
 
   return (
     <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
-      <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
+      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
         {"/// the_codex_of_gatekeepers"}
       </p>
       <h1 className="mt-3 font-display text-4xl font-black tracking-tight text-text-primary">
@@ -80,7 +80,7 @@ export default async function HandbookPage() {
         </p>
       </div>
 
-      <p className="mt-6 font-mono text-[11px] text-text-muted">
+      <p className="mt-6 font-mono text-[12px] text-text-muted">
         New to the circle?{" "}
         <a href="/onboarding.html" className="text-accent-violet-text hover:underline">
           Start with the welcome deck
@@ -107,13 +107,13 @@ export default async function HandbookPage() {
           </p>
         )}
         {!edition && PRICE_USD > 0 && (
-          <p className="mt-3 text-center font-mono text-[10px] text-text-muted">
+          <p className="mt-3 text-center font-mono text-[12px] text-text-muted">
             (Edition is being compiled.)
           </p>
         )}
       </div>
 
-      <p className="mt-6 font-mono text-[11px] text-text-muted">
+      <p className="mt-6 font-mono text-[12px] text-text-muted">
         The Handbook is the outer codex. Its counterpart, the inner one, is the{" "}
         <Link href="/psychenomicon" className="text-accent-violet-text hover:underline">
           Psychenomicon

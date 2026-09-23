@@ -135,7 +135,7 @@ export default async function ChapterPage({ params }: PageProps) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(paywallLd) }}
         />
         <div className="mx-auto max-w-2xl space-y-6">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">
             {"/// psychenomicon"} · {chapterLabel}
           </p>
           <h1 className="font-display text-3xl font-bold text-text-primary">
@@ -164,7 +164,7 @@ export default async function ChapterPage({ params }: PageProps) {
               {gateRow.emergingSignals.slice(0, 12).map((signal) => (
                 <span
                   key={signal}
-                  className="rounded border border-border px-2 py-1 font-mono text-[10px] text-text-secondary"
+                  className="rounded border border-border px-2 py-1 font-mono text-[12px] text-text-secondary"
                 >
                   {signal}
                 </span>
@@ -195,7 +195,7 @@ export default async function ChapterPage({ params }: PageProps) {
             ← All chapters
           </Link>
           <p className="pt-2">
-            <Link href="/psychenomicon/chapters" className="font-mono text-[11px] text-accent-gold-text/80 hover:underline">
+            <Link href="/psychenomicon/chapters" className="font-mono text-[12px] text-accent-gold-text/80 hover:underline">
               ← All chapters
             </Link>
           </p>
@@ -278,15 +278,15 @@ export default async function ChapterPage({ params }: PageProps) {
       {isFreePreview && !subscribed && (
         <div className="border-b border-accent-gold/30 bg-accent-gold/5 px-4 py-2.5">
           <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
-            <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text">
+            <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">
               {"/// free_preview"}
             </span>
-            <span className="font-mono text-[10px] text-text-muted">
+            <span className="font-mono text-[12px] text-text-muted">
               This chapter is unsealed for all. The rest of the record awaits initiates.
             </span>
             <Link
               href="/premium#access"
-              className="font-mono text-[10px] font-bold text-accent-gold-text hover:underline"
+              className="font-mono text-[12px] font-bold text-accent-gold-text hover:underline"
             >
               Become Initiate+ →
             </Link>
@@ -296,7 +296,7 @@ export default async function ChapterPage({ params }: PageProps) {
       {/* Chapter header */}
       <header className={`border-b py-10 px-4 ${chapter.isMajorEvent ? "border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-void" : "border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void"}`}>
         <div className="mx-auto max-w-3xl text-center space-y-3">
-          <p className={`font-mono text-[9px] uppercase tracking-[0.5em] ${chapter.isMajorEvent ? "text-accent-gold-text/80" : "text-accent-violet-text/70"}`}>
+          <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${chapter.isMajorEvent ? "text-accent-gold-text/80" : "text-accent-violet-text/70"}`}>
             ψ PSYCHENOMICON · CH.{String(chapter.chapterNumber).padStart(3, "0")} ψ
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
@@ -305,7 +305,7 @@ export default async function ChapterPage({ params }: PageProps) {
               {chapter.title}
             </h1>
             {(chapter as { status?: string }).status && (
-              <span className={`inline-flex items-center rounded border px-2 py-0.5 font-mono text-[9px] uppercase ${
+              <span className={`inline-flex items-center rounded border px-2 py-0.5 font-mono text-[12px] uppercase ${
                 (chapter as { status?: string }).status === "contested"
                   ? "border-red-500/40 text-red-400 bg-red-500/10"
                   : (chapter as { status?: string }).status === "evolving"
@@ -338,7 +338,7 @@ export default async function ChapterPage({ params }: PageProps) {
                 <Link
                   key={a.name}
                   href={`/psychenomicon/entities/${a.name.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-accent-violet/10 px-2.5 py-1 font-mono text-[9px] text-accent-violet-text hover:bg-accent-violet/20 transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-accent-violet/10 px-2.5 py-1 font-mono text-[12px] text-accent-violet-text hover:bg-accent-violet/20 transition-colors"
                 >
                   <span className="text-text-muted">{a.name}</span>
                   <span>·</span>
@@ -362,7 +362,7 @@ export default async function ChapterPage({ params }: PageProps) {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-void pointer-events-none" />
           <div className="absolute bottom-3 right-4">
-            <span className="font-mono text-[9px] uppercase tracking-widest text-white/30">
+            <span className="font-mono text-[12px] uppercase tracking-widest text-white/30">
               AI-generated · Psychenomicon Art
             </span>
           </div>
@@ -397,10 +397,10 @@ export default async function ChapterPage({ params }: PageProps) {
           {chapter.emergingSignals.length > 0 && (
             <ScrollReveal delay={300}>
               <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-5 space-y-3">
-                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text">{"/// emerging_signals"}</p>
+                <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">{"/// emerging_signals"}</p>
                 {chapter.emergingSignals.map((signal, i) => (
                   <div key={i} className="flex items-start gap-2.5">
-                    <span className="text-accent-gold-text font-mono text-[10px] mt-0.5 flex-shrink-0">▸</span>
+                    <span className="text-accent-gold-text font-mono text-[12px] mt-0.5 flex-shrink-0">▸</span>
                     <p className="text-xs text-text-muted leading-relaxed">{signal}</p>
                   </div>
                 ))}
@@ -412,7 +412,7 @@ export default async function ChapterPage({ params }: PageProps) {
           {(artUrls.scene_01 || artUrls.scene_02 || artUrls.scene_03) && (
             <ScrollReveal delay={400}>
               <div className="space-y-3">
-                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">
+                <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
                   {"/// visual_record"}
                 </p>
                 <div className="grid gap-3 sm:grid-cols-3">
@@ -431,7 +431,7 @@ export default async function ChapterPage({ params }: PageProps) {
                           style={{ aspectRatio: "2/3" }}
                         />
                         <div className="absolute bottom-2 left-2">
-                          <span className="font-mono text-[9px] text-white/40 bg-void/60 px-1.5 py-0.5 rounded">
+                          <span className="font-mono text-[12px] text-white/40 bg-void/60 px-1.5 py-0.5 rounded">
                             {label}
                           </span>
                         </div>
@@ -439,7 +439,7 @@ export default async function ChapterPage({ params }: PageProps) {
                     ) : null
                   )}
                 </div>
-                <p className="font-mono text-[9px] text-text-muted/60 text-right">
+                <p className="font-mono text-[12px] text-text-muted text-right">
                   AI-generated imagery · Psychenomicon Art Pipeline
                 </p>
               </div>
@@ -453,8 +453,8 @@ export default async function ChapterPage({ params }: PageProps) {
                 href={`/psychenomicon/chapters/${prevChapter.slug}`}
                 className="group flex flex-col gap-1 max-w-[45%]"
               >
-                <span className="font-mono text-[9px] text-text-muted group-hover:text-accent-violet-text transition-colors">← Previous</span>
-                <span className="font-mono text-[10px] text-text-muted/60">CH.{String(prevChapter.chapterNumber).padStart(3, "0")}</span>
+                <span className="font-mono text-[12px] text-text-muted group-hover:text-accent-violet-text transition-colors">← Previous</span>
+                <span className="font-mono text-[12px] text-text-muted">CH.{String(prevChapter.chapterNumber).padStart(3, "0")}</span>
                 <span className="text-xs text-text-primary group-hover:text-accent-violet-text transition-colors line-clamp-2">{prevChapter.title}</span>
               </Link>
             ) : <div />}
@@ -464,8 +464,8 @@ export default async function ChapterPage({ params }: PageProps) {
                 href={`/psychenomicon/chapters/${nextChapter.slug}`}
                 className="group flex flex-col gap-1 max-w-[45%] text-right"
               >
-                <span className="font-mono text-[9px] text-text-muted group-hover:text-accent-violet-text transition-colors">Next →</span>
-                <span className="font-mono text-[10px] text-text-muted/60">CH.{String(nextChapter.chapterNumber).padStart(3, "0")}</span>
+                <span className="font-mono text-[12px] text-text-muted group-hover:text-accent-violet-text transition-colors">Next →</span>
+                <span className="font-mono text-[12px] text-text-muted">CH.{String(nextChapter.chapterNumber).padStart(3, "0")}</span>
                 <span className="text-xs text-text-primary group-hover:text-accent-violet-text transition-colors line-clamp-2">{nextChapter.title}</span>
               </Link>
             ) : <div />}
@@ -477,7 +477,7 @@ export default async function ChapterPage({ params }: PageProps) {
           {/* Entities in this chapter */}
           {chapter.entityAppearances.length > 0 && (
             <div className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// entities_present"}</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// entities_present"}</p>
               {chapter.entityAppearances.map((ea) => (
                 <Link
                   key={ea.entity.slug}
@@ -489,10 +489,10 @@ export default async function ChapterPage({ params }: PageProps) {
                       {ea.entity.name}
                     </p>
                     {ea.archetypeAt && (
-                      <p className="font-mono text-[9px] text-accent-violet-text/80 mt-0.5">{ea.archetypeAt}</p>
+                      <p className="font-mono text-[12px] text-accent-violet-text/80 mt-0.5">{ea.archetypeAt}</p>
                     )}
                     {ea.significance && (
-                      <p className="text-[10px] text-text-muted leading-relaxed mt-1 line-clamp-2">{ea.significance}</p>
+                      <p className="text-[12px] text-text-muted leading-relaxed mt-1 line-clamp-2">{ea.significance}</p>
                     )}
                   </div>
                 </Link>
@@ -503,7 +503,7 @@ export default async function ChapterPage({ params }: PageProps) {
           {/* Active threads */}
           {chapter.threadChapters.length > 0 && (
             <div className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// thread_connections"}</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// thread_connections"}</p>
               {chapter.threadChapters.map((tc) => (
                 <Link
                   key={tc.thread.slug}
@@ -511,7 +511,7 @@ export default async function ChapterPage({ params }: PageProps) {
                   className="group flex items-center gap-2.5 rounded border border-border bg-surface px-3 py-2.5 hover:border-accent-gold/30 transition-all"
                 >
                   <div className={`h-1.5 w-1.5 rounded-full flex-shrink-0 ${tc.thread.status === "emerging" ? "bg-accent-gold animate-pulse" : "bg-accent-violet"}`} />
-                  <p className="font-mono text-[10px] text-text-primary group-hover:text-accent-gold-text transition-colors truncate">
+                  <p className="font-mono text-[12px] text-text-primary group-hover:text-accent-gold-text transition-colors truncate">
                     {tc.thread.title}
                   </p>
                 </Link>
@@ -522,7 +522,7 @@ export default async function ChapterPage({ params }: PageProps) {
           {/* Back to index */}
           <Link
             href="/psychenomicon"
-            className="block font-mono text-[10px] text-text-muted hover:text-accent-violet-text transition-colors"
+            className="block font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             ← Return to Psychenomicon
           </Link>

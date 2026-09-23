@@ -31,14 +31,14 @@ export function ConfidenceBadge({
     <span
       title={cfg.tooltip}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider cursor-help",
+        "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[12px] uppercase tracking-wider cursor-help",
         cfg.bg,
         cfg.border,
         cfg.color,
         className
       )}
     >
-      <span className="text-[8px] leading-none tracking-tighter" aria-hidden="true">
+      <span className="text-[12px] leading-none tracking-tighter" aria-hidden="true">
         {cfg.glyph}
       </span>
       {short ? cfg.shortLabel : cfg.label}

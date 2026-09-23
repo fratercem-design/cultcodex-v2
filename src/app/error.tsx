@@ -27,7 +27,7 @@ export default function GlobalError({
         A disturbance in the psychic field has disrupted this transmission.
       </p>
       {error.digest && (
-        <p className="mt-1 font-mono text-[10px] text-text-muted">
+        <p className="mt-1 font-mono text-[12px] text-text-muted">
           Error ID: {error.digest}
         </p>
       )}

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { reconcileAppearanceCount } from "@/lib/format/reconcile-counts";
 import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -45,7 +46,7 @@ import { isIndexablePerson } from "@/lib/people/noise-slugs";
 // Handles two formats:
 //   1. Flat prose — render as paragraphs (legacy)
 //   2. Sectioned markdown with ## headers — unified codex-entry card
-function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
+function LoreSummaryCard({ loreSummary, appearanceCount }: { loreSummary: string; appearanceCount: number }) {
   const hasSections = /^##\s+\S/m.test(loreSummary);
 
   if (!hasSections) {
@@ -88,7 +89,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
             {bullets.map((b, j) => (
               <li key={j} className="flex gap-2 text-sm text-text-primary leading-relaxed">
                 <span className="text-accent-gold-text/80 flex-shrink-0 mt-0.5">·</span>
-                <span>{editorialFrame(b)}</span>
+                <span>{editorialFrame(reconcileAppearanceCount(b, appearanceCount))}</span>
               </li>
             ))}
           </ul>
@@ -96,7 +97,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
       }
       return (
         <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
-          {editorialFrame(trimmed)}
+          {editorialFrame(reconcileAppearanceCount(trimmed, appearanceCount))}
         </p>
       );
     });
@@ -106,8 +107,8 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
       {/* Codex entry header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text">{"/// codex_entry"}</p>
-        <p className="font-mono text-[9px] text-text-muted/50 tracking-widest">AI · ARCHIVAL</p>
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">{"/// codex_entry"}</p>
+        <p className="font-mono text-[12px] text-text-muted tracking-widest">AI · ARCHIVAL</p>
       </div>
 
       {/* Sections */}
@@ -121,7 +122,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
                 <span className={`font-mono text-xs ${isControversy ? "text-red-400" : "text-accent-gold-text"}`}>
                   {sigil}
                 </span>
-                <h4 className={`font-mono text-[10px] uppercase tracking-[0.3em] font-semibold ${isControversy ? "text-red-400/80" : "text-text-muted"}`}>
+                <h4 className={`font-mono text-[12px] uppercase tracking-[0.12em] font-semibold ${isControversy ? "text-red-400/80" : "text-text-muted"}`}>
                   {heading}
                 </h4>
               </div>
@@ -416,16 +417,16 @@ export default async function PersonDetailPage({ params }: PageProps) {
           <div className="lg:col-span-2 space-y-6">
             {/* Codex profile — AI-generated character entry */}
             {person.loreSummary ? (
-              <LoreSummaryCard loreSummary={person.loreSummary} />
+              <LoreSummaryCard loreSummary={person.loreSummary} appearanceCount={totalAppearances} />
             ) : person._count.guestAppearances >= 2 && (
               <div className="rounded-lg border border-border bg-surface overflow-hidden">
                 <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">{"/// codex_entry"}</p>
-                  <p className="font-mono text-[9px] text-text-muted/60 tracking-widest">PENDING</p>
+                  <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// codex_entry"}</p>
+                  <p className="font-mono text-[12px] text-text-muted tracking-widest">PENDING</p>
                 </div>
                 <div className="px-4 py-5 flex items-center gap-3">
-                  <span className="font-mono text-sm text-text-muted/30">◈</span>
-                  <p className="font-mono text-[10px] text-text-muted/50 uppercase tracking-widest">
+                  <span className="font-mono text-sm text-text-muted">◈</span>
+                  <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
                     Awaiting archival — profile not yet generated
                   </p>
                 </div>
@@ -450,7 +451,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
               {uniqueEpisodes.length > 0 ? (
                 <div className="space-y-6">
                   {totalAppearances > uniqueEpisodes.length && (
-                    <p className="font-mono text-[11px] text-text-muted">
+                    <p className="font-mono text-[12px] text-text-muted">
                       Showing the {uniqueEpisodes.length} most recent of {totalAppearances}.{" "}
                       <Link href={`/episodes?person=${person.slug}`} className="underline hover:text-accent-gold-text">
                         Browse all appearances →
@@ -463,14 +464,14 @@ export default async function PersonDetailPage({ params }: PageProps) {
                         href={`/eras/${group.eraId}`}
                         className={`group mb-3 flex items-center gap-2 ${ERA_TEXT_COLOR[group.eraColor] ?? "text-text-muted"}`}
                       >
-                        <span className="font-mono text-[11px]">{group.eraSigil}</span>
-                        <span className="font-mono text-[10px] uppercase tracking-widest opacity-70 group-hover:opacity-100 transition-opacity">
+                        <span className="font-mono text-[12px]">{group.eraSigil}</span>
+                        <span className="font-mono text-[12px] uppercase tracking-widest opacity-70 group-hover:opacity-100 transition-opacity">
                           {group.eraLabel}
                         </span>
-                        <span className="font-mono text-[9px] text-text-muted/50">
+                        <span className="font-mono text-[12px] text-text-muted">
                           {group.episodes.length} ep{group.episodes.length !== 1 ? "s" : ""}
                         </span>
-                        <span className="ml-auto font-mono text-[9px] text-text-muted/60 group-hover:text-text-muted transition-colors">
+                        <span className="ml-auto font-mono text-[12px] text-text-muted group-hover:text-text-muted transition-colors">
                           era →
                         </span>
                       </Link>
@@ -491,7 +492,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                   ))}
                   {unclassified.length > 0 && (
                     <div>
-                      <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-text-muted/60">
+                      <p className="mb-3 font-mono text-[12px] uppercase tracking-widest text-text-muted">
                         Unclassified
                       </p>
                       <div className="grid gap-3">
@@ -520,7 +521,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
               <SectionCard headingLevel={2} title={`Quotes (${person._count.quotes})`} accent="red">
                 <div className="space-y-4">
                   {person._count.quotes > person.quotes.length && (
-                    <p className="font-mono text-[11px] text-text-muted">
+                    <p className="font-mono text-[12px] text-text-muted">
                       Showing {person.quotes.length} of {person._count.quotes}.{" "}
                       <Link href={`/quotes?speaker=${person.slug}`} className="underline hover:text-accent-crimson">
                         Browse all quotes →
@@ -560,10 +561,10 @@ export default async function PersonDetailPage({ params }: PageProps) {
             {eraPresence.length > 0 && (
               <div className="rounded-lg border border-border bg-surface overflow-hidden">
                 <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/70">
+                  <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
                     Era Presence
                   </p>
-                  <p className="font-mono text-[9px] text-text-muted/60">
+                  <p className="font-mono text-[12px] text-text-muted">
                     {eraPresence.length} era{eraPresence.length !== 1 ? "s" : ""}
                   </p>
                 </div>
@@ -579,10 +580,10 @@ export default async function PersonDetailPage({ params }: PageProps) {
                         className="group block"
                       >
                         <div className="flex items-center justify-between mb-1">
-                          <span className={`font-mono text-[10px] ${textColor} group-hover:opacity-80 transition-opacity`}>
+                          <span className={`font-mono text-[12px] ${textColor} group-hover:opacity-80 transition-opacity`}>
                             {era.sigil} {era.label}
                           </span>
-                          <span className="font-mono text-[9px] text-text-muted/50 tabular-nums">
+                          <span className="font-mono text-[12px] text-text-muted tabular-nums">
                             {count}
                           </span>
                         </div>
@@ -598,7 +599,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </div>
                 {eraPresence.length === ERAS.length && (
                   <div className="border-t border-border/60 px-4 py-2">
-                    <p className="font-mono text-[9px] text-accent-gold-text/80 uppercase tracking-widest">
+                    <p className="font-mono text-[12px] text-accent-gold-text/80 uppercase tracking-widest">
                       ◈ Spans all eras
                     </p>
                   </div>
@@ -642,10 +643,10 @@ export default async function PersonDetailPage({ params }: PageProps) {
                           {coGuest.displayName[0]?.toUpperCase() ?? "?"}
                         </div>
                       )}
-                      <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-gold-text transition-colors line-clamp-1">
+                      <span className="font-mono text-[12px] text-text-muted group-hover:text-accent-gold-text transition-colors line-clamp-1">
                         {coGuest.displayName}
                       </span>
-                      <span className="font-mono text-[9px] text-text-muted">
+                      <span className="font-mono text-[12px] text-text-muted">
                         {coGuest.sharedEpisodes} shared
                       </span>
                     </Link>
@@ -653,7 +654,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </div>
                 <Link
                   href={`/graph/path?from=${person.slug}`}
-                  className="mt-4 block w-full rounded border border-accent-violet/30 bg-accent-violet/5 px-3 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-accent-violet-text hover:bg-accent-violet/10 transition-colors"
+                  className="mt-4 block w-full rounded border border-accent-violet/30 bg-accent-violet/5 px-3 py-2 text-center font-mono text-[12px] uppercase tracking-widest text-accent-violet-text hover:bg-accent-violet/10 transition-colors"
                 >
                   Find a path to anyone →
                 </Link>
@@ -716,11 +717,11 @@ export default async function PersonDetailPage({ params }: PageProps) {
                             {link.label}
                           </span>
                           {isYt(link.url) && (
-                            <span className="ml-1 rounded-sm bg-red-600 px-1 py-0.5 text-[9px] font-bold uppercase text-white tracking-wide">
+                            <span className="ml-1 rounded-sm bg-red-600 px-1 py-0.5 text-[12px] font-bold uppercase text-white tracking-wide">
                               YouTube
                             </span>
                           )}
-                          <span className="ml-auto font-mono text-[10px] text-text-muted">↗</span>
+                          <span className="ml-auto font-mono text-[12px] text-text-muted">↗</span>
                         </a>
                       </li>
                     ))}

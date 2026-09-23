@@ -46,20 +46,20 @@ export default async function AdminSignalsPage() {
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 text-center">
                   <span className="font-mono text-xl font-bold text-accent-gold-text">{p.votes}</span>
-                  <p className="font-mono text-[9px] text-text-muted">votes</p>
+                  <p className="font-mono text-[12px] text-text-muted">votes</p>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="font-mono text-[10px] text-text-muted/70">
+                    <span className="font-mono text-[12px] text-text-muted">
                       {p.user.displayName} · {p.user.email}
                     </span>
-                    <span className="font-mono text-[10px] text-text-muted/60">
+                    <span className="font-mono text-[12px] text-text-muted">
                       {new Date(p.createdAt).toLocaleDateString("en-US", { timeZone: "UTC" })}
                     </span>
                   </div>
                   <p className="font-mono text-sm text-text-primary mb-2">{p.question}</p>
                   {p.context && (
-                    <p className="font-mono text-xs text-text-muted/60 mb-3">{p.context}</p>
+                    <p className="font-mono text-xs text-text-muted mb-3">{p.context}</p>
                   )}
                   <form
                     action={async (formData: FormData) => {

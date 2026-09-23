@@ -73,7 +73,7 @@ export default function AppearPage() {
 
         {/* How it works */}
         <section className="space-y-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// how_to_get_on"}
           </p>
           <div className="space-y-4">
@@ -94,24 +94,24 @@ export default function AppearPage() {
         {/* Fit */}
         <section className="grid gap-4 sm:grid-cols-2">
           <div className="rounded-xl border border-accent-cyan/25 bg-accent-cyan/5 p-5 space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/70">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/70">
               {"/// great_guests"}
             </p>
             <ul className="space-y-2">
               {GREAT.map((g) => (
-                <li key={g} className="flex items-start gap-2 font-mono text-[11px] text-text-muted leading-relaxed">
+                <li key={g} className="flex items-start gap-2 font-mono text-[12px] text-text-muted leading-relaxed">
                   <span className="text-accent-cyan mt-0.5 shrink-0">✦</span>{g}
                 </li>
               ))}
             </ul>
           </div>
           <div className="rounded-xl border border-red-400/25 bg-red-950/10 p-5 space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-red-400/70">
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-red-400/70">
               {"/// gets_you_gonged"}
             </p>
             <ul className="space-y-2">
               {AVOID.map((a) => (
-                <li key={a} className="flex items-start gap-2 font-mono text-[11px] text-text-muted leading-relaxed">
+                <li key={a} className="flex items-start gap-2 font-mono text-[12px] text-text-muted leading-relaxed">
                   <span className="text-red-400 mt-0.5 shrink-0">✕</span>{a}
                 </li>
               ))}
@@ -124,7 +124,7 @@ export default function AppearPage() {
         {/* CTA */}
         <section className="rounded-2xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-7 text-center space-y-4">
           <h2 className="font-display text-xl font-bold text-text-primary">Ready to step into the frame?</h2>
-          <p className="font-mono text-[11px] text-text-muted max-w-md mx-auto leading-relaxed">
+          <p className="font-mono text-[12px] text-text-muted max-w-md mx-auto leading-relaxed">
             Catch the next live stream, or become a member to get panel access and priority into the
             conversation.
           </p>

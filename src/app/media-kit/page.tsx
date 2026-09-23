@@ -67,16 +67,16 @@ export default async function MediaKitPage() {
 
         {/* What it is */}
         <section className="space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// what_it_is"}
           </p>
           <div className="rounded-xl border border-border bg-surface p-6 space-y-4">
             <div className="space-y-1.5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">One-liner</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">One-liner</p>
               <p className="text-sm text-text-primary leading-relaxed">{BOILERPLATE_SHORT}</p>
             </div>
             <div className="space-y-1.5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">Full description</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">Full description</p>
               <p className="text-sm text-text-muted leading-relaxed">{BOILERPLATE_LONG}</p>
             </div>
           </div>
@@ -84,18 +84,18 @@ export default async function MediaKitPage() {
 
         {/* Facts */}
         <section className="space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-cyan/60">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/60">
             {"/// the_archive_at_a_glance"}
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {FACTS.map((f) => (
               <div key={f.label} className="rounded-lg border border-border bg-surface p-4 text-center">
                 <p className="font-mono text-xl font-bold text-accent-gold-text">{f.value}</p>
-                <p className="mt-1 font-mono text-[10px] text-text-muted">{f.label}</p>
+                <p className="mt-1 font-mono text-[12px] text-text-muted">{f.label}</p>
               </div>
             ))}
           </div>
-          <p className="font-mono text-[9px] text-text-muted/60 text-center">
+          <p className="font-mono text-[12px] text-text-muted text-center">
             Figures update live from the archive database.
           </p>
         </section>
@@ -104,13 +104,13 @@ export default async function MediaKitPage() {
 
         {/* Brand */}
         <section className="space-y-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-violet-text/70">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
             {"/// brand_language"}
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-xl border border-border bg-surface p-5 space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">Names &amp; spelling</p>
-              <ul className="space-y-1.5 font-mono text-[11px] text-text-muted">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">Names &amp; spelling</p>
+              <ul className="space-y-1.5 font-mono text-[12px] text-text-muted">
                 <li><span className="text-text-primary">Cult of Psyche</span> — the show</li>
                 <li><span className="text-text-primary">CultCodex</span> — one word, the archive (cultcodex.me)</li>
                 <li><span className="text-text-primary">Psycheverse</span> — the whole universe of the show</li>
@@ -118,8 +118,8 @@ export default async function MediaKitPage() {
               </ul>
             </div>
             <div className="rounded-xl border border-border bg-surface p-5 space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">Signature terms</p>
-              <ul className="space-y-1.5 font-mono text-[11px] text-text-muted">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">Signature terms</p>
+              <ul className="space-y-1.5 font-mono text-[12px] text-text-muted">
                 {BRAND_WORDS.map((w) => <li key={w}>{w}</li>)}
               </ul>
             </div>
@@ -129,15 +129,15 @@ export default async function MediaKitPage() {
           <div className="rounded-xl border border-border bg-surface p-6 flex flex-col sm:flex-row items-center gap-6">
             <div className="flex flex-col items-center gap-2 text-accent-gold-text">
               <CodexSigil size={72} glow />
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/50">The Codex sigil</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">The Codex sigil</p>
             </div>
             <div className="flex-1 space-y-2 w-full">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">Palette</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">Palette</p>
               <div className="flex flex-wrap gap-2">
                 {PALETTE.map((c) => (
                   <div key={c.name} className="flex items-center gap-2 rounded border border-border px-2 py-1">
                     <span className="h-4 w-4 rounded-sm" style={{ backgroundColor: c.hex }} />
-                    <span className="font-mono text-[10px] text-text-muted">{c.name} {c.hex}</span>
+                    <span className="font-mono text-[12px] text-text-muted">{c.name} {c.hex}</span>
                   </div>
                 ))}
               </div>
@@ -150,7 +150,7 @@ export default async function MediaKitPage() {
         {/* Contact */}
         <section className="rounded-2xl border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-7 text-center space-y-4">
           <h2 className="font-display text-xl font-bold text-text-primary">Press &amp; collaboration</h2>
-          <p className="font-mono text-[11px] text-text-muted max-w-md mx-auto leading-relaxed">
+          <p className="font-mono text-[12px] text-text-muted max-w-md mx-auto leading-relaxed">
             For interviews, features, or collaboration inquiries, reach out through the show&apos;s
             channels or the about page. Watch a live stream to see the format firsthand.
           </p>

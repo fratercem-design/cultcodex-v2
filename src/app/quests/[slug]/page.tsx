@@ -53,7 +53,7 @@ export default async function QuestRewardPage({ params }: Props) {
       />
 
       <main id="main-content" className="mx-auto max-w-2xl px-4 py-12 space-y-10">
-        <nav aria-label="Breadcrumb" className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+        <nav aria-label="Breadcrumb" className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           <Link href="/quests" className="hover:text-accent-gold-text transition-colors">The Trials</Link>
           <span className="mx-2">/</span>
           <span style={{ color: hex }}>{quest.title}</span>
@@ -65,7 +65,7 @@ export default async function QuestRewardPage({ params }: Props) {
               <span style={{ color: hex, textShadow: `0 0 24px ${hex}66` }}>
                 <CodexSigil size={56} glow />
               </span>
-              <p className="font-mono text-[9px] uppercase tracking-[0.4em]" style={{ color: hex }}>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em]" style={{ color: hex }}>
                 {"/// fragment_unlocked"}
               </p>
               <h2 className="font-display text-2xl font-bold text-white">{quest.reward.title}</h2>
@@ -78,22 +78,22 @@ export default async function QuestRewardPage({ params }: Props) {
             </div>
             <MysticalDivider />
             <div className="text-center">
-              <Link href="/quests" className="font-mono text-[11px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors">
+              <Link href="/quests" className="font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors">
                 ← Back to the Trials
               </Link>
             </div>
           </article>
         ) : (
           <section className="rounded-2xl border border-border bg-surface p-8 text-center space-y-5">
-            <div className="text-5xl text-text-muted/20" aria-hidden="true">🔒</div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">{"/// sealed"}</p>
+            <div className="text-5xl text-text-muted" aria-hidden="true">🔒</div>
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// sealed"}</p>
             <p className="font-display text-lg font-bold text-text-primary">This fragment is hidden.</p>
-            <p className="font-mono text-[11px] text-text-muted max-w-sm mx-auto leading-relaxed">
+            <p className="font-mono text-[12px] text-text-muted max-w-sm mx-auto leading-relaxed">
               {quest.description}
             </p>
             {progress ? (
               <div className="space-y-1.5 max-w-xs mx-auto">
-                <div className="flex items-center justify-between font-mono text-[10px] text-text-muted/60">
+                <div className="flex items-center justify-between font-mono text-[12px] text-text-muted">
                   <span>{progress.current} / {progress.target} {quest.metricLabel}</span>
                   <span>{progress.pct}%</span>
                 </div>
@@ -102,7 +102,7 @@ export default async function QuestRewardPage({ params }: Props) {
                 </div>
               </div>
             ) : (
-              <p className="font-mono text-[11px] text-text-muted/60">Sign in to track this trial.</p>
+              <p className="font-mono text-[12px] text-text-muted">Sign in to track this trial.</p>
             )}
             <Link
               href={user ? quest.hintHref : "/auth/signin"}

@@ -1,3 +1,4 @@
+import { trustedSummary } from "@/lib/format/speculative-summary";
 import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/db";
@@ -32,7 +33,7 @@ export default async function ThisWeekPage() {
   if (!digest) {
     return (
       <main id="main-content" className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-text-muted/50">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           {"/// this_week"}
         </p>
         <h1 className="font-display text-3xl font-bold text-text-primary">
@@ -108,7 +109,7 @@ export default async function ThisWeekPage() {
     <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-14">
       {/* Header */}
       <section className="space-y-3 text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent-gold-text/80">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
           ✦ &nbsp; Week of {formatDate(digest.weekOf)} &nbsp; ✦
         </p>
         <h1 className="font-display text-3xl font-bold text-text-primary">
@@ -126,7 +127,7 @@ export default async function ThisWeekPage() {
       {/* Quotes */}
       {orderedQuotes.length > 0 && (
         <section className="space-y-5">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold-text/80">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
             {"/// moments_from_the_archive"}
           </p>
 
@@ -153,7 +154,7 @@ export default async function ThisWeekPage() {
                       </Link>
                     )}
                     {q.episode && (
-                      <p className="font-mono text-[10px] text-text-muted">
+                      <p className="font-mono text-[12px] text-text-muted">
                         <Link
                           href={`/episodes/${q.episode.slug}`}
                           className="hover:text-accent-cyan transition-colors"
@@ -179,7 +180,7 @@ export default async function ThisWeekPage() {
       {/* Episodes */}
       {orderedEpisodes.length > 0 && (
         <section className="space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/60">
             {"/// transmissions_this_week"}
           </p>
           <div className="space-y-3">
@@ -204,12 +205,12 @@ export default async function ThisWeekPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     {ep.episodeNumber && (
-                      <span className="font-mono text-[10px] font-bold text-accent-cyan">
+                      <span className="font-mono text-[12px] font-bold text-accent-cyan">
                         EP.{String(ep.episodeNumber).padStart(3, "0")}
                       </span>
                     )}
                     {ep.airDate && (
-                      <time dateTime={ep.airDate.toISOString()} className="font-mono text-[10px] text-text-muted">
+                      <time dateTime={ep.airDate.toISOString()} className="font-mono text-[12px] text-text-muted">
                         {formatDate(ep.airDate)}
                       </time>
                     )}
@@ -217,8 +218,8 @@ export default async function ThisWeekPage() {
                   <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-cyan transition-colors">
                     {ep.title}
                   </h3>
-                  {ep.summaryShort && (
-                    <p className="mt-1 text-xs text-text-muted line-clamp-2">{ep.summaryShort}</p>
+                  {trustedSummary(ep.summaryShort) && (
+                    <p className="mt-1 text-xs text-text-muted line-clamp-2">{trustedSummary(ep.summaryShort)}</p>
                   )}
                 </div>
               </Link>
@@ -230,7 +231,7 @@ export default async function ThisWeekPage() {
       {/* People */}
       {orderedPeople.length > 0 && (
         <section className="space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet-text/70">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
             {"/// voices_in_focus"}
           </p>
           <div className="grid gap-3 sm:grid-cols-3">
@@ -254,7 +255,7 @@ export default async function ThisWeekPage() {
                     {person.displayName}
                   </p>
                   {person.shortBio && (
-                    <p className="mt-1 font-mono text-[10px] text-text-muted line-clamp-3 leading-relaxed">
+                    <p className="mt-1 font-mono text-[12px] text-text-muted line-clamp-3 leading-relaxed">
                       {person.shortBio}
                     </p>
                   )}
@@ -277,7 +278,7 @@ export default async function ThisWeekPage() {
             href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`This week in the Cult of Psyche archive:\n`)}&url=${encodeURIComponent(`${process.env.NEXT_PUBLIC_SITE_URL ?? "https://cultcodex.me"}/this-week`)}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded border border-border px-4 py-2 font-mono text-[11px] text-text-muted hover:border-border-strong hover:text-text-primary transition-colors"
+            className="inline-flex items-center gap-2 rounded border border-border px-4 py-2 font-mono text-[12px] text-text-muted hover:border-border-strong hover:text-text-primary transition-colors"
           >
             <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.631zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -286,7 +287,7 @@ export default async function ThisWeekPage() {
           </a>
           <Link
             href="/episodes"
-            className="inline-flex items-center gap-2 rounded border border-accent-gold/30 px-4 py-2 font-mono text-[11px] text-accent-gold-text hover:bg-accent-gold/5 transition-colors"
+            className="inline-flex items-center gap-2 rounded border border-accent-gold/30 px-4 py-2 font-mono text-[12px] text-accent-gold-text hover:bg-accent-gold/5 transition-colors"
           >
             Full archive →
           </Link>

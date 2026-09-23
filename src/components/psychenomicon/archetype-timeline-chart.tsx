@@ -37,12 +37,12 @@ function CustomTooltip({ active, payload, label }: { active?: boolean; payload?:
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded border border-accent-violet/30 bg-void/95 backdrop-blur-sm px-3 py-2 shadow-xl">
-      <p className="font-mono text-[9px] text-text-muted mb-1">CH.{String(label).padStart(3, "0")}</p>
+      <p className="font-mono text-[12px] text-text-muted mb-1">CH.{String(label).padStart(3, "0")}</p>
       {payload.map((p) => (
         <div key={p.name} className="flex items-center gap-2">
           <div className="h-1.5 w-1.5 rounded-full" style={{ background: p.color }} />
-          <span className="font-mono text-[10px] text-text-primary">{p.name}</span>
-          <span className="font-mono text-[10px] text-text-muted ml-auto pl-3">{Math.round(p.value * 100)}%</span>
+          <span className="font-mono text-[12px] text-text-primary">{p.name}</span>
+          <span className="font-mono text-[12px] text-text-muted ml-auto pl-3">{Math.round(p.value * 100)}%</span>
         </div>
       ))}
     </div>
@@ -76,7 +76,7 @@ export function ArchetypeTimelineChart({ events, entityName }: Props) {
 
   return (
     <div className="space-y-3">
-      <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">{"/// archetype_evolution — "}{entityName}</p>
+      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// archetype_evolution — "}{entityName}</p>
       <div className="rounded-lg border border-border bg-surface p-4">
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={data} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>

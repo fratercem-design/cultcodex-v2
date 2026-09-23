@@ -27,6 +27,7 @@ type ChronicleEntity = { slug: string; name: string; primaryArchetype?: string |
 type ChronicleThread = { slug: string; title: string; description?: string | null; status?: string };
 type ChronicleData = {
   canRead: boolean;
+  freeChapters?: { slug: string; chapterNumber: number; title: string }[];
   isAdmin?: boolean;
   chapterCount: number;
   entityCount: number;
@@ -48,14 +49,42 @@ export default function PsychenomiconChronicle() {
   if (!data) return null;
   if (!data.canRead) return (
     <main className="min-h-screen bg-void">
-      <div className="mx-auto max-w-2xl px-4 py-24 text-center space-y-6">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">{"/// access_restricted"}</p>
-        <h2 className="font-display text-2xl font-bold text-accent-violet">The Psychenomicon</h2>
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet-text">{"/// access_restricted"}</p>
-        <h2 className="font-display text-2xl font-bold text-accent-violet-text">The Psychenomicon</h2>
-        <p className="text-sm text-text-muted leading-relaxed max-w-sm mx-auto">It is a system, not a recap.</p>
+      <div className="mx-auto max-w-2xl space-y-8 px-4 py-24">
+        <div className="space-y-3 text-center">
+          <p className="font-mono text-[12px] uppercase tracking-[0.08em] text-oracle">{"///"} The Psychenomicon · AI myth engine</p>
+          <h1 className="font-display text-3xl font-bold text-ink">The Psychenomicon</h1>
+          <p className="mx-auto max-w-[60ch] font-display text-[17px] leading-relaxed text-ink-2">
+            A living book written from the archive: every episode becomes an illustrated chapter that
+            tracks the people, conflicts and patterns running through the show.
+            {data.chapterCount > 0 && <> {data.chapterCount.toLocaleString("en-US")} chapters so far.</>}
+          </p>
+        </div>
+
+        {data.freeChapters && data.freeChapters.length > 0 && (
+          <section aria-labelledby="free-chapters" className="border-y border-line py-6">
+            <h2 id="free-chapters" className="font-mono text-[12px] uppercase tracking-[0.08em] text-ink-3">
+              Read free
+            </h2>
+            <ul className="mt-3 divide-y divide-line">
+              {data.freeChapters.map((c) => (
+                <li key={c.slug}>
+                  <Link href={`/psychenomicon/chapters/${c.slug}`} className="flex min-h-11 items-baseline gap-3 py-3 text-ink hover:underline hover:underline-offset-4">
+                    <span className="font-mono text-[13px] text-ink-3">Ch. {c.chapterNumber}</span>
+                    <span className="text-[17px]">{c.title}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
         <div className="flex flex-wrap justify-center gap-3">
-          <Link href="/premium#access" className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 hover:bg-accent-violet/20 px-5 py-2.5 font-mono text-xs font-bold text-accent-violet-text transition-colors">Become Initiate+ — $10/mo →</Link>
+          <Link href="/premium#access" className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-member px-5 text-[15px] font-semibold text-member transition-colors hover:bg-member/10">
+            Read every chapter — Initiate+, $10/mo →
+          </Link>
+          <Link href="/psychenomicon/book" className="inline-flex min-h-11 items-center rounded-sm border border-line-strong px-5 text-[15px] text-ink transition-colors hover:border-ink">
+            Or keep Volume I as a PDF — $5
+          </Link>
         </div>
       </div>
     </main>
@@ -82,7 +111,7 @@ export default function PsychenomiconChronicle() {
         <div className="absolute inset-0 bg-gradient-to-b from-void/80 via-void/70 to-void" />
         <div className="relative mx-auto max-w-7xl flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="space-y-2">
-            <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-accent-violet-text/70">⏈ THE PSYCHENOMICON ⏈</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">⏈ THE PSYCHENOMICON ⏈</p>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary">A Living Record of Evolving Patterns</h1>
             {chapterCount > 0 && (
               <p className="text-xs text-text-muted">
@@ -102,7 +131,7 @@ export default function PsychenomiconChronicle() {
         {/* Latest chapters */}
         {latest && latest.length > 0 && (
           <section className="space-y-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">Latest transmissions</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">Latest transmissions</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
               {latest.map((c) => (
                 <Link
@@ -112,7 +141,7 @@ export default function PsychenomiconChronicle() {
                 >
                   <ChapterCover art={c.artImageUrls} size={36} />
                   <span className="min-w-0 flex-1">
-                    <span className={`block font-mono text-[9px] ${c.isMajorEvent ? "text-accent-gold-text" : "text-text-muted"}`}>CH.{String(c.chapterNumber).padStart(3, "0")}{c.isMajorEvent && " ✦"}</span>
+                    <span className={`block font-mono text-[12px] ${c.isMajorEvent ? "text-accent-gold-text" : "text-text-muted"}`}>CH.{String(c.chapterNumber).padStart(3, "0")}{c.isMajorEvent && " ✦"}</span>
                     <span className="block truncate font-mono text-xs text-text-primary group-hover:text-accent-violet-text transition-colors">{c.title ?? c.episode?.title ?? "Untitled"}</span>
                   </span>
                 </Link>
@@ -124,10 +153,10 @@ export default function PsychenomiconChronicle() {
         {/* Major events timeline */}
         {arcGroups.length > 0 && (
           <section className="space-y-4">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold-text/80">Major events</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">Major events</p>
             {arcGroups.map((g) => (
               <div key={g.key} className="space-y-1.5">
-                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/70">{g.label}</p>
+                <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{g.label}</p>
                 <div className="space-y-1.5">
                   {g.rows.map((c) => (
                     <Link
@@ -137,7 +166,7 @@ export default function PsychenomiconChronicle() {
                     >
                       <span className={`h-1.5 w-1.5 rounded-full flex-shrink-0 ${STATUS_DOT[c.status ?? "stable"] ?? STATUS_DOT.stable}`} />
                       <ChapterCover art={c.artImageUrls} size={32} />
-                      <span className="font-mono text-[10px] w-16 flex-shrink-0 text-accent-gold-text">CH.{String(c.chapterNumber).padStart(3, "0")} ✦</span>
+                      <span className="font-mono text-[12px] w-16 flex-shrink-0 text-accent-gold-text">CH.{String(c.chapterNumber).padStart(3, "0")} ✦</span>
                       <span className="flex-1 min-w-0 truncate font-mono text-xs text-accent-gold-text group-hover:text-accent-violet-text transition-colors">{c.title ?? c.episode?.title ?? "Untitled"}</span>
                     </Link>
                   ))}
@@ -151,12 +180,12 @@ export default function PsychenomiconChronicle() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {entities && entities.length > 0 && (
             <section className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">Entities tracked</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">Entities tracked</p>
               <div className="flex flex-wrap gap-2">
                 {entities.map((e) => (
                   <Link key={e.slug} href={`/psychenomicon/entities/${e.slug}`} className="group rounded border border-border bg-surface hover:border-accent-violet/30 hover:bg-accent-violet/5 px-3 py-1.5 transition-all">
                     <span className="font-mono text-xs text-text-primary group-hover:text-accent-violet-text transition-colors">{e.name}</span>
-                    {e.primaryArchetype && <span className="ml-1.5 font-mono text-[9px] text-text-muted/60">{e.primaryArchetype}</span>}
+                    {e.primaryArchetype && <span className="ml-1.5 font-mono text-[12px] text-text-muted">{e.primaryArchetype}</span>}
                   </Link>
                 ))}
               </div>
@@ -165,12 +194,12 @@ export default function PsychenomiconChronicle() {
 
           {activeThreads && activeThreads.length > 0 && (
             <section className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet-text/70">Active threads</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">Active threads</p>
               <div className="space-y-1.5">
                 {activeThreads.map((t) => (
                   <Link key={t.slug} href={`/psychenomicon/threads/${t.slug}`} className="group block rounded border border-border bg-surface hover:border-accent-violet/30 hover:bg-accent-violet/5 px-4 py-2.5 transition-all">
                     <span className="font-mono text-xs text-text-primary group-hover:text-accent-violet-text transition-colors">{t.title}</span>
-                    {t.description && <span className="block mt-0.5 truncate text-[11px] text-text-muted/70">{t.description}</span>}
+                    {t.description && <span className="block mt-0.5 truncate text-[12px] text-text-muted">{t.description}</span>}
                   </Link>
                 ))}
               </div>

@@ -69,7 +69,7 @@ export default async function ArchetypesPage() {
 
                 {/* Arrow */}
                 <div
-                  className="mt-4 font-mono text-[10px] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                  className="mt-4 font-mono text-[12px] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
                   style={{ color: archetype.color }}
                 >
                   Explore ↗
@@ -79,7 +79,7 @@ export default async function ArchetypesPage() {
           ))}
         </div>
 
-        <p className="mt-16 text-center font-mono text-[9px] uppercase tracking-[0.35em] text-text-muted/30">
+        <p className="mt-16 text-center font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           {"/// eight_patterns · one_archive · who_are_you"}
         </p>
       </div>

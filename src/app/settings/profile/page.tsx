@@ -91,7 +91,7 @@ export default async function ProfilePage() {
                 Unlock Premium — $10/month
               </Link>
             </div>
-            <p className="mt-3 font-mono text-[10px] text-text-muted/60">
+            <p className="mt-3 font-mono text-[12px] text-text-muted">
               Cancel anytime. Instant access.
             </p>
           </div>

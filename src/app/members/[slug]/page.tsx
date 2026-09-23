@@ -159,14 +159,14 @@ export default async function MemberProfilePage({ params }: Props) {
         <div className="absolute top-4 right-4">
           {isAdmin ? (
             <span
-              className="rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-widest"
+              className="rounded-full border px-3 py-1 font-mono text-[12px] uppercase tracking-widest"
               style={{ borderColor: bannerTheme.accent + "80", color: bannerTheme.accent, background: "rgba(0,0,0,0.4)" }}
             >
               Admin
             </span>
           ) : isOracle ? (
             <span
-              className="rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-widest"
+              className="rounded-full border px-3 py-1 font-mono text-[12px] uppercase tracking-widest"
               style={{ borderColor: bannerTheme.accent + "80", color: bannerTheme.accent, background: "rgba(0,0,0,0.4)" }}
             >
               ✦ Oracle
@@ -179,7 +179,7 @@ export default async function MemberProfilePage({ params }: Props) {
           <div className="absolute top-4 left-4">
             <Link
               href="/settings/profile"
-              className="flex items-center gap-1.5 rounded-lg border border-white/20 bg-black/40 px-3 py-1.5 font-mono text-[10px] text-white/70 transition-colors hover:border-white/40 hover:text-white backdrop-blur-sm"
+              className="flex items-center gap-1.5 rounded-lg border border-white/20 bg-black/40 px-3 py-1.5 font-mono text-[12px] text-white/70 transition-colors hover:border-white/40 hover:text-white backdrop-blur-sm"
             >
               ✎ Edit page
             </Link>
@@ -226,7 +226,7 @@ export default async function MemberProfilePage({ params }: Props) {
           )}
           <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
             <span
-              className="rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest"
+              className="rounded-full border px-2.5 py-0.5 font-mono text-[12px] uppercase tracking-widest"
               style={{
                 borderColor: bannerTheme.accent + "50",
                 color: bannerTheme.accent,
@@ -235,7 +235,7 @@ export default async function MemberProfilePage({ params }: Props) {
             >
               {isAdmin ? "Admin" : isOracle ? "✦ Oracle Tier" : "Initiate+"}
             </span>
-            <span className="font-mono text-[10px] text-text-muted">
+            <span className="font-mono text-[12px] text-text-muted">
               Member since {joinMonth} {joinYear}
             </span>
           </div>
@@ -248,7 +248,7 @@ export default async function MemberProfilePage({ params }: Props) {
                 className="flex items-center gap-2"
               >
                 <RankBadge rank={memberRank.progress.current} size="sm" />
-                <span className="font-mono text-[11px] font-bold" style={{ color: bannerTheme.accent }}>
+                <span className="font-mono text-[12px] font-bold" style={{ color: bannerTheme.accent }}>
                   {memberRank.score.toLocaleString("en-US")}
                   <span className="ml-1 font-normal text-text-muted">codex score</span>
                 </span>
@@ -265,7 +265,7 @@ export default async function MemberProfilePage({ params }: Props) {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[11px] transition-all hover:opacity-100"
+                  className="flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[12px] transition-all hover:opacity-100"
                   style={{
                     borderColor: bannerTheme.accent + "40",
                     color: bannerTheme.accent,
@@ -273,7 +273,7 @@ export default async function MemberProfilePage({ params }: Props) {
                     opacity: 0.85,
                   }}
                 >
-                  <span className="text-[10px]">{getLinkIcon(link.url)}</span>
+                  <span className="text-[12px]">{getLinkIcon(link.url)}</span>
                   {link.label}
                 </a>
               ))}
@@ -289,7 +289,7 @@ export default async function MemberProfilePage({ params }: Props) {
               style={{ borderColor: bannerTheme.accent + "20", background: "rgba(0,0,0,0.2)" }}
             >
               <p
-                className="font-mono text-[10px] uppercase tracking-[0.3em] mb-3"
+                className="font-mono text-[12px] uppercase tracking-[0.12em] mb-3"
                 style={{ color: bannerTheme.accent + "80" }}
               >
                 {"/// about"}
@@ -318,7 +318,7 @@ export default async function MemberProfilePage({ params }: Props) {
                 >
                   {s.n}
                 </p>
-                <p className="mt-1 font-mono text-[10px] text-text-muted">{s.label}</p>
+                <p className="mt-1 font-mono text-[12px] text-text-muted">{s.label}</p>
               </div>
             ))}
           </section>
@@ -328,16 +328,16 @@ export default async function MemberProfilePage({ params }: Props) {
             <section>
               <div className="mb-4 flex items-center gap-3">
                 <p
-                  className="font-mono text-[10px] uppercase tracking-[0.3em]"
+                  className="font-mono text-[12px] uppercase tracking-[0.12em]"
                   style={{ color: bannerTheme.accent + "80" }}
                 >
                   {"/// card archive"}
                 </p>
                 {collectionStats && collectionStats.ownedCount > 0 && (
-                  <span className="font-mono text-[10px] text-text-muted">
+                  <span className="font-mono text-[12px] text-text-muted">
                     {collectionStats.ownedCount.toLocaleString("en-US")} card
                     {collectionStats.ownedCount === 1 ? "" : "s"}
-                    <span className="text-text-muted/50">
+                    <span className="text-text-muted">
                       {" · "}
                       {collectionStats.completionPct}% of the archive
                     </span>
@@ -354,7 +354,7 @@ export default async function MemberProfilePage({ params }: Props) {
                 ))}
               </div>
               {isOwner && (
-                <p className="mt-4 text-center font-mono text-[10px] text-text-muted">
+                <p className="mt-4 text-center font-mono text-[12px] text-text-muted">
                   <Link href="/cards" className="hover:text-text-primary transition-colors" style={{ color: bannerTheme.accent }}>
                     Open your full collection →
                   </Link>
@@ -368,11 +368,11 @@ export default async function MemberProfilePage({ params }: Props) {
             className="flex justify-center gap-6 pt-4 border-t"
             style={{ borderColor: bannerTheme.accent + "15" }}
           >
-            <Link href="/members" className="font-mono text-[11px] text-text-muted hover:text-text-primary transition-colors">
+            <Link href="/members" className="font-mono text-[12px] text-text-muted hover:text-text-primary transition-colors">
               ← Member Roll
             </Link>
             {!isOracle && (
-              <Link href="/premium" className="font-mono text-[11px] text-text-muted hover:text-accent-gold-text transition-colors">
+              <Link href="/premium" className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors">
                 Get Oracle Access →
               </Link>
             )}

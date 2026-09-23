@@ -68,6 +68,30 @@
   --color-accent-purple: #4A2D6E;
   --color-accent-purple-dim: rgba(74, 45, 110, 0.18);
 
+  /* ── Role tokens — "Ritual Research Instrument" design system ──────────
+     Colors are named for what they MEAN, not their hue. New UI should use
+     these; the hue-named accents above stay as legacy aliases (accent-gold
+     and accent-green are both Ember red, which is exactly why new code
+     should not reach for them). Every text role clears 4.5:1 on void,
+     surface and elevated; line-strong and focus clear 3:1.
+       brand     one primary action per view, wordmark, active-nav marker
+       evidence  something verifiable: timestamps, sources, transcript hits
+       oracle    AI-generated / AI-interpreted content and the Oracle
+       member    Initiate+ / paid / locked (always with the word + lock)  */
+  --color-ink: #EBE3D2;          /* 14:1 — headings, body */
+  --color-ink-2: #B9AF9E;        /* 8.3:1 — descriptions, inactive nav */
+  --color-ink-3: #948A7A;        /* 5.3:1 — the readable floor for metadata */
+  --color-line: #2A2730;         /* hairline dividers (decorative) */
+  --color-line-strong: #6E6878;  /* control borders, 3.4:1 */
+  --color-brand: #B3291F;        /* fill; pair with on-brand text (5.9:1) */
+  --color-on-brand: #FBF3E6;
+  --color-brand-ink: #F08074;    /* Ember as text, 6.9:1 */
+  --color-evidence: #5FD8BF;
+  --color-oracle: #B9A2E6;
+  --color-member: #E9B44C;
+  --color-error: #FF9A6B;        /* coral, never confused with brand red */
+  --color-focus: #F5C451;        /* 11:1 focus ring */
+
   /* shadcn/ui mappings */
   --color-background: var(--bg-void);
   --color-foreground: var(--text-primary);
@@ -119,6 +143,23 @@
 /* ─── CSS Custom Properties ────────────────────────── */
 
 :root {
+  /* Role tokens as real custom properties. `@theme inline` above inlines its
+     values into utilities and emits no variables, so plain CSS (focus ring,
+     threshold, nav colors) reads these. Keep the two blocks in sync. */
+  --color-ink: #EBE3D2;
+  --color-ink-2: #B9AF9E;
+  --color-ink-3: #948A7A;
+  --color-line: #2A2730;
+  --color-line-strong: #6E6878;
+  --color-brand: #B3291F;
+  --color-on-brand: #FBF3E6;
+  --color-brand-ink: #F08074;
+  --color-evidence: #5FD8BF;
+  --color-oracle: #B9A2E6;
+  --color-member: #E9B44C;
+  --color-error: #FF9A6B;
+  --color-focus: #F5C451;
+
   /* Sacred Terminal palette — bg-surface/elevated/border aligned to terminal */
   --bg-void: #07060A;
   --bg-surface: #0C0B11;
@@ -287,20 +328,26 @@ h1, h2, h3 {
   }
 }
 
-/* Accessible focus rings */
+/* Accessible focus rings.
+   One ring, everywhere. The 2026-09 audit found controls whose focus
+   resolved to a 0px outline or to `outline-ring/50` (Ember at ~15% alpha) —
+   effectively invisible. `!important` is deliberate: this is an
+   accessibility floor that per-component `outline-none` utilities must not
+   be able to remove. */
 @layer utilities {
   .focus-ring {
-    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-green;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus;
   }
 }
 
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid var(--color-accent-green);
-  outline-offset: 2px;
+:focus-visible {
+  /* Longhands with a literal value: the shorthand-with-var() form lost to
+     the base-layer `outline-ring/50` on some buttons in Chromium. #F5C451 is
+     --color-focus. */
+  outline-style: solid !important;
+  outline-width: 2px !important;
+  outline-color: #F5C451 !important;
+  outline-offset: 2px !important;
 }
 
 /* Oracle animations */
@@ -1052,4 +1099,11 @@ html.high-contrast body::before {
 }
 @media (prefers-reduced-motion: reduce) {
   .animate-\[cardin_0\.35s_ease-out\] { animation: none !important; }
+}
+
+/* Cookie consent: flush to the bottom on desktop, above the bottom nav on
+   phones so the two fixed layers never stack over each other. */
+.cookie-consent { bottom: 0; }
+@media (max-width: 900px) {
+  .cookie-consent { bottom: var(--mobile-nav-height); }
 }

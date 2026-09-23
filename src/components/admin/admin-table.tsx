@@ -112,13 +112,13 @@ export function AdminTable<T extends { id: string }>({
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted"
+                  className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted"
                 >
                   {col.label}
                 </th>
               ))}
               {actions && actions.length > 0 && (
-                <th className="px-3 py-2 text-right font-mono text-[10px] uppercase tracking-wider text-text-muted">
+                <th className="px-3 py-2 text-right font-mono text-[12px] uppercase tracking-wider text-text-muted">
                   Actions
                 </th>
               )}
@@ -160,7 +160,7 @@ export function AdminTable<T extends { id: string }>({
                             <Link
                               key={action.label}
                               href={action.href(row)}
-                              className="font-mono text-[10px] text-accent-gold-text hover:underline"
+                              className="font-mono text-[12px] text-accent-gold-text hover:underline"
                             >
                               {action.label}
                             </Link>
@@ -168,7 +168,7 @@ export function AdminTable<T extends { id: string }>({
                             <button
                               key={action.label}
                               onClick={() => action.onClick?.(row)}
-                              className={`font-mono text-[10px] hover:underline ${
+                              className={`font-mono text-[12px] hover:underline ${
                                 action.variant === "danger"
                                   ? "text-red-400"
                                   : "text-accent-gold-text"

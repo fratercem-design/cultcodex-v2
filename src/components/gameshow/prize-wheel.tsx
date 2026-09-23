@@ -40,8 +40,8 @@ export function PrizeWheel({ progress, onUpdate, onPrize }: {
       <div className="absolute inset-0 bg-gradient-to-b from-void/85 via-void/80 to-void/90" />
       <div className="relative space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold-text/80">{"/// the_prize_wheel"}</p>
-        <span className="font-mono text-[10px] text-text-muted">🎡 {progress.spins} spin{progress.spins === 1 ? "" : "s"} · earn one every 5 correct</span>
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">{"/// the_prize_wheel"}</p>
+        <span className="font-mono text-[12px] text-text-muted">🎡 {progress.spins} spin{progress.spins === 1 ? "" : "s"} · earn one every 5 correct</span>
       </div>
 
       <div className="flex flex-col items-center gap-3">
@@ -82,11 +82,11 @@ export function PrizeWheel({ progress, onUpdate, onPrize }: {
       {/* Vault of titles */}
       {progress.titles.length > 0 && (
         <div className="border-t border-border pt-3 space-y-2">
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/60">{`/// wear_a_title · ${progress.titles.length} won`}</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{`/// wear_a_title · ${progress.titles.length} won`}</p>
           <div className="flex flex-wrap gap-2">
-            <button onClick={() => onUpdate(setActiveTitle(""))} className={`rounded border px-2.5 py-1 font-mono text-[10px] transition-all ${progress.activeTitle === "" ? "border-accent-violet/50 bg-accent-violet/10 text-accent-violet-text" : "border-border text-text-muted hover:text-accent-violet-text"}`}>none</button>
+            <button onClick={() => onUpdate(setActiveTitle(""))} className={`rounded border px-2.5 py-1 font-mono text-[12px] transition-all ${progress.activeTitle === "" ? "border-accent-violet/50 bg-accent-violet/10 text-accent-violet-text" : "border-border text-text-muted hover:text-accent-violet-text"}`}>none</button>
             {progress.titles.map((t) => (
-              <button key={t} onClick={() => onUpdate(setActiveTitle(t))} className={`rounded border px-2.5 py-1 font-mono text-[10px] transition-all ${progress.activeTitle === t ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold-text" : "border-border text-text-muted hover:text-accent-gold-text"}`}>{t}</button>
+              <button key={t} onClick={() => onUpdate(setActiveTitle(t))} className={`rounded border px-2.5 py-1 font-mono text-[12px] transition-all ${progress.activeTitle === t ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold-text" : "border-border text-text-muted hover:text-accent-gold-text"}`}>{t}</button>
             ))}
           </div>
         </div>

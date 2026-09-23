@@ -87,7 +87,7 @@ export default async function WelcomeOraclePage() {
         />
         {/* name glow at bottom */}
         <div className="absolute bottom-12 left-0 right-0 text-center px-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.6em] text-[#C8392E]/60 mb-3">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-[#C8392E]/60 mb-3">
             ✦ &nbsp; the archive has been waiting &nbsp; ✦
           </p>
           <h1
@@ -107,7 +107,7 @@ export default async function WelcomeOraclePage() {
       <section className="mx-auto max-w-5xl px-6 py-16 lg:grid lg:grid-cols-[1fr_340px] lg:gap-12 lg:items-start">
         {/* decree text */}
         <div className="space-y-6">
-          <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-[#C8392E]/50">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-[#C8392E]/50">
             {"/// the decree"}
           </p>
           <blockquote className="space-y-4 border-l border-[#C8392E]/30 pl-6">
@@ -139,7 +139,7 @@ export default async function WelcomeOraclePage() {
               >
                 <span className="text-xl">{b.icon}</span>
                 <h3 className="font-mono text-xs font-bold text-[#C8392E]/80">{b.title}</h3>
-                <p className="font-mono text-[10px] text-text-muted leading-relaxed">{b.body}</p>
+                <p className="font-mono text-[12px] text-text-muted leading-relaxed">{b.body}</p>
               </div>
             ))}
           </div>
@@ -163,7 +163,7 @@ export default async function WelcomeOraclePage() {
               }}
             />
             <div className="absolute bottom-5 left-0 right-0 text-center">
-              <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-[#C8392E]/70">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-[#C8392E]/70">
                 Oracle Tier &nbsp;·&nbsp; Founding
               </p>
             </div>
@@ -183,10 +183,10 @@ export default async function WelcomeOraclePage() {
           <div className="flex items-center gap-3 pb-2 border-b border-[#C8392E]/15">
             <span className="font-mono text-[#C8392E] text-lg">✉</span>
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-[#C8392E]/70">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-[#C8392E]/70">
                 Personal Transmission
               </p>
-              <p className="font-mono text-[9px] text-text-muted/50 tracking-widest mt-0.5">
+              <p className="font-mono text-[12px] text-text-muted tracking-widest mt-0.5">
                 Eyes Only
               </p>
             </div>
@@ -212,7 +212,7 @@ export default async function WelcomeOraclePage() {
 
       {/* ── Choose your name from the dark ── */}
       <section className="mx-auto max-w-2xl px-6 pb-20 text-center space-y-6">
-        <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-text-muted/60">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           {"/// name yourself"}
         </p>
         <h2

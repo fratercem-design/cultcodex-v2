@@ -58,7 +58,7 @@ export default async function NotificationsPage() {
           </div>
         </SectionCard>
 
-        <p className="font-mono text-[10px] text-text-muted text-center">
+        <p className="font-mono text-[12px] text-text-muted text-center">
           Changes are saved automatically
         </p>
       </div>

@@ -150,7 +150,7 @@ export default function GuidedPathPage() {
         {/* Breadcrumb */}
         <nav
           aria-label="Breadcrumb"
-          className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted"
+          className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted"
         >
           <Link href="/start-here" className="hover:text-accent-gold-text transition-colors">
             Enter the Codex
@@ -161,7 +161,7 @@ export default function GuidedPathPage() {
 
         {/* Mythic framing */}
         <section className="text-center max-w-2xl mx-auto space-y-3">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-accent-cyan">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan">
             {"/// path_i · guided_entry"}
           </p>
           <p className="font-display text-lg text-text-primary leading-relaxed">
@@ -204,14 +204,14 @@ export default function GuidedPathPage() {
                   {tile.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border border-border bg-elevated text-text-muted"
+                      className="font-mono text-[12px] uppercase tracking-wider px-2 py-0.5 rounded border border-border bg-elevated text-text-muted"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
                 <span
-                  className={`font-mono text-[10px] uppercase tracking-widest ${a.question} inline-flex items-center gap-2 group-hover:gap-3 transition-all mt-1`}
+                  className={`font-mono text-[12px] uppercase tracking-widest ${a.question} inline-flex items-center gap-2 group-hover:gap-3 transition-all mt-1`}
                 >
                   Enter this doorway <span aria-hidden>→</span>
                 </span>
@@ -224,7 +224,7 @@ export default function GuidedPathPage() {
 
         {/* Escape hatches */}
         <section className="text-center space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
             {"/// none of these? try another path"}
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
