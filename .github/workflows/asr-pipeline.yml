@@ -7,6 +7,13 @@ on:
         description: 'Episodes per step (download + transcribe)'
         type: number
         default: 20
+      source:
+        description: 'Where to download audio from (rumble = title-matched mirror on PanelverseVods, no cookies needed)'
+        type: choice
+        options:
+          - youtube
+          - rumble
+        default: youtube
       backend:
         description: 'Transcription backend'
         type: choice
@@ -59,6 +66,7 @@ jobs:
           esac
 
       - name: Write YouTube cookies
+        if: ${{ inputs.source != 'rumble' }}
         run: |
           if [ -n "$YOUTUBE_COOKIES" ]; then
             printf '%s' "$YOUTUBE_COOKIES" > scripts/cookies.txt
@@ -74,7 +82,12 @@ jobs:
           YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
 
       - name: Download audio
-        run: python scripts/asr-download-audio.py --batch ${{ inputs.batch }}
+        run: |
+          if [ "${{ inputs.source }}" = "rumble" ]; then
+            python scripts/asr-download-rumble.py --batch ${{ inputs.batch }}
+          else
+            python scripts/asr-download-audio.py --batch ${{ inputs.batch }}
+          fi
 
       - name: Transcribe audio
         run: python scripts/asr-transcribe.py --batch ${{ inputs.batch }} --backend ${{ inputs.backend }}
