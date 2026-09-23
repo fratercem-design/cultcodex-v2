@@ -242,9 +242,14 @@ async function main() {
       }
     } catch (err) {
       failed++;
-      const msg = err instanceof Error ? err.message : String(err);
+      // execFileSync's message starts with the full command line, so the
+      // 80-char console slice never reached yt-dlp's reason. Prefer the
+      // ERROR line from stderr (bot check, no captions, private video, ...).
+      const stderr = String((err as { stderr?: unknown })?.stderr ?? "");
+      const ytError = stderr.split("\n").reverse().find((l) => l.includes("ERROR"))?.trim();
+      const msg = ytError || (err instanceof Error ? err.message : String(err));
       failures.push(`${epLabel} ${video.videoId}: ${msg.slice(0, 100)}`);
-      console.log(`  ${progress} ${epLabel} ✗ ${msg.slice(0, 80)} — ${video.title.slice(0, 30)}`);
+      console.log(`  ${progress} ${epLabel} ✗ ${msg.slice(0, 160)} — ${video.title.slice(0, 30)}`);
     }
 
     if (i < toProcess.length - 1) await sleep(delayMs);
