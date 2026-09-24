@@ -39,6 +39,7 @@
   },
   "enabledPlugins": {
     "claude-mem@thedotmack": true,
+    "claude-mem-cowork@thedotmack": true,
     "i-have-adhd@i-have-adhd": true,
     "humanizer@humanizer": true,
     "caveman@caveman": true
