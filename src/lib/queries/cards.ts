@@ -1,16 +1,9 @@
 import { prisma } from "@/lib/db";
 import type { Rarity, CardType } from "@/generated/prisma/client";
 import { Prisma } from "@/generated/prisma/client";
-import { rollRarity, rollFoil, cardPoints, RARITY_BONUS_CREDITS } from "@/lib/cards/rarity";
-
-// ─── Vault (all cards) ───────────────────────────────────────────────────────
-
-export async function getAllCards() {
-  return prisma.card.findMany({
-    where: { isActive: true },
-    orderBy: [{ cardType: "asc" }, { title: "asc" }],
-  });
-}
+import { rollRarity, rollRarityAtLeast, rollFoil, cardPoints, RARITY_BONUS_CREDITS } from "@/lib/cards/rarity";
+import { ensureCodexCatalog } from "@/lib/cards/codex/codex";
+import { currentSeason } from "@/lib/cards/codex/catalog";
 
 // ─── Collection ─────────────────────────────────────────────────────────────
 
@@ -52,6 +45,7 @@ export async function getUserCollectionStats(userId: string, { includeWallet = t
     dailyStreak: wallet?.dailyStreak ?? 0,
     longestStreak: wallet?.longestStreak ?? 0,
     collectionPower: power,
+    initiationClaimed: !!wallet?.initiationClaimedAt,
   };
 }
 
@@ -61,58 +55,6 @@ export async function getUserCollectionStats(userId: string, { includeWallet = t
 // pays a one-time bonus, sized to the set (bigger set = bigger payout).
 
 const SET_BONUS_PER_CARD = 20;
-
-export interface CollectionSet {
-  cardType: CardType;
-  total: number;
-  owned: number;
-  completionPct: number;
-  isComplete: boolean;
-  bonusAmount: number;
-  claimed: boolean;
-}
-
-export async function getCollectionSets(userId: string): Promise<CollectionSet[]> {
-  const [totals, ownedRows, claims] = await Promise.all([
-    prisma.card.groupBy({
-      by: ["cardType"],
-      where: { isActive: true },
-      _count: { _all: true },
-    }),
-    prisma.ownedCard.findMany({
-      where: { userId },
-      select: { card: { select: { cardType: true } } },
-      distinct: ["cardId"],
-    }),
-    prisma.creditTransaction.findMany({
-      where: { userId, reason: "set_complete" },
-      select: { referenceId: true },
-    }),
-  ]);
-
-  const ownedCounts = new Map<CardType, number>();
-  for (const row of ownedRows) {
-    const t = row.card.cardType;
-    ownedCounts.set(t, (ownedCounts.get(t) ?? 0) + 1);
-  }
-  const claimedTypes = new Set(claims.map((c) => c.referenceId));
-
-  return totals
-    .map(({ cardType, _count }) => {
-      const total = _count._all;
-      const owned = Math.min(ownedCounts.get(cardType) ?? 0, total);
-      return {
-        cardType,
-        total,
-        owned,
-        completionPct: total > 0 ? Math.round((owned / total) * 100) : 0,
-        isComplete: total > 0 && owned >= total,
-        bonusAmount: total * SET_BONUS_PER_CARD,
-        claimed: claimedTypes.has(cardType),
-      };
-    })
-    .sort((a, b) => b.completionPct - a.completionPct);
-}
 
 /**
  * Grants the one-time set-completion bonus. Re-verifies completion and
@@ -162,9 +104,11 @@ export async function claimSetBonus(
 
 // ─── Packs ──────────────────────────────────────────────────────────────────
 
+/** The store sells the current Codex season only; legacy packs stay in the DB. */
 export async function getActivePacks() {
+  await ensureCodexCatalog();
   return prisma.cardPack.findMany({
-    where: { isAvailable: true },
+    where: { isAvailable: true, season: currentSeason().number },
     orderBy: { sortOrder: "asc" },
     include: { _count: { select: { packCards: true } } },
   });
@@ -195,8 +139,11 @@ export async function openPack(userId: string, packSlug: string) {
     byRarity.get(r)!.push(pc.card);
   }
 
-  // All active cards as fallback pool
-  const allCards = await prisma.card.findMany({ where: { isActive: true } });
+  // Fallback pool: the pack's own season, and only cards that drop from packs —
+  // Trial, secret and Initiation cards must never be pulled.
+  const allCards = await prisma.card.findMany({
+    where: { isActive: true, season: pack.season, obtainMethod: "pack" },
+  });
   const allByRarity = new Map<Rarity, typeof allCards>();
   for (const c of allCards) {
     const r = c.rarity as Rarity;
@@ -206,17 +153,21 @@ export async function openPack(userId: string, packSlug: string) {
 
   const drawn: { cardId: string; isFoil: boolean; rarity: Rarity }[] = [];
 
+  const weights = {
+    weightStatic:       pack.weightStatic,
+    weightSignal:       pack.weightSignal,
+    weightTransmission: pack.weightTransmission,
+    weightAnomaly:      pack.weightAnomaly,
+    weightOracle:       pack.weightOracle,
+    weightLegendary:    pack.weightLegendary,
+    weightMythic:       pack.weightMythic,
+    weightForbidden:    pack.weightForbidden,
+  };
   for (let i = 0; i < pack.cardCount; i++) {
-    const rarity = rollRarity({
-      weightStatic:       pack.weightStatic,
-      weightSignal:       pack.weightSignal,
-      weightTransmission: pack.weightTransmission,
-      weightAnomaly:      pack.weightAnomaly,
-      weightOracle:       pack.weightOracle,
-      weightLegendary:    pack.weightLegendary,
-      weightMythic:       pack.weightMythic,
-      weightForbidden:    pack.weightForbidden,
-    });
+    const guaranteed = pack.guaranteeRarity && i === pack.cardCount - 1;
+    const rarity = guaranteed
+      ? rollRarityAtLeast(weights, pack.guaranteeRarity as Rarity)
+      : rollRarity(weights);
     // Try pack-specific pool, fall back to global pool, then lower rarity
     const packPool = byRarity.get(rarity) ?? [];
     const globalPool = allByRarity.get(rarity) ?? [];
@@ -541,14 +492,15 @@ export async function deleteDeck(deckId: string, userId: string) {
 // ─── Onboarding starter card ─────────────────────────────────────────────────
 
 export async function grantStarterCard(userId: string, cardType: string) {
-  // Prefer a card of the requested type; fall back to any STATIC card
+  // Prefer a card of the requested type; fall back to any STATIC card.
+  // Pack cards only — Trial, secret and Initiation cards must be earned.
   const target =
     (await prisma.card.findFirst({
-      where: { isActive: true, cardType: cardType as CardType },
+      where: { isActive: true, obtainMethod: "pack", cardType: cardType as CardType },
       orderBy: [{ rarity: "asc" }, { createdAt: "asc" }],
     })) ??
     (await prisma.card.findFirst({
-      where: { isActive: true },
+      where: { isActive: true, obtainMethod: "pack" },
       orderBy: [{ rarity: "asc" }, { createdAt: "asc" }],
     }));
 

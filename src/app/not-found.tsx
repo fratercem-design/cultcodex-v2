@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { VoidSigil } from "@/components/graphics/void-sigil";
 import { OrnamentalBreak } from "@/components/graphics/mystical-divider";
+import { SecretSigil } from "@/components/cards/codex/secret-sigil";
 
 const lostTransmissions = [
   "The Oracle saw this coming... but said nothing.",
@@ -120,6 +121,9 @@ export default function NotFound() {
       <p className="mt-12 font-mono text-[12px] text-text-muted tracking-widest">
         Psst... have you tried /oracle?
       </p>
+
+      {/* Codex secret: "Where the map runs out, something was left behind." */}
+      <SecretSigil code="lost-page-404" glyph="⌖" label="⌖" className="mt-6 text-accent-gold-text" />
     </main>
   );
 }

@@ -30,6 +30,11 @@ const AppearanceControls = dynamic(
   { ssr: false }
 );
 
+const UnlockWatcher = dynamic(
+  () => import("@/components/cards/codex/unlock-watcher").then((m) => m.UnlockWatcher),
+  { ssr: false }
+);
+
 export function ClientOverlays() {
   return (
     <>
@@ -37,6 +42,7 @@ export function ClientOverlays() {
       <KonamiEasterEgg />
       <CommandPalette />
       <AppearanceControls />
+      <UnlockWatcher />
     </>
   );
 }
