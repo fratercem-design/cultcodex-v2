@@ -10,6 +10,7 @@ Oracle Tier ($25/mo).
 |---|---|
 | [`personas.md`](./personas.md) | Character bibles, Higgsfield image/scene/voice prompts, bios |
 | [`scripts.md`](./scripts.md) | First 18 scripts (6 per persona), ready to generate |
+| [`workbook/`](./workbook/) | **The 30-Day Initiation**: a 44-page printable workbook hosted by Madame Sulphur |
 
 ## The three characters
 
@@ -87,8 +88,5 @@ Rewrite the last line of the scripts before killing the character.
 
 ## What comes next (not in this pass)
 
-- A **"30-Day Initiation" workbook** for the winning archetype, which is the video's digital product
-  adapted for us. Sell it through the existing Stripe setup, or give it away
-  free to anyone who signs up for Initiate+.
 - Wire `utm_campaign` into the `Subscriber` / checkout records so the admin
   dashboard can show conversions by persona instead of reading analytics by hand.
