@@ -9,12 +9,15 @@ import {
   paginationArgs,
   buildPaginationMeta,
 } from "@/lib/pagination";
+import { requireAdminPage } from "@/lib/auth";
 
 interface PageProps {
   searchParams: Promise<{ page?: string; q?: string }>;
 }
 
 export default async function AdminTopicsPage({ searchParams }: PageProps) {
+  await requireAdminPage();
+
   const params = await searchParams;
   const search = params.q;
 

@@ -49,7 +49,7 @@ export async function GET() {
           </div>
           {data && (
             <div style={{ color: "#555", fontSize: 18, letterSpacing: "0.1em" }}>
-              TX-{data.date.replace(/-/g, "")}
+              {`TX-${data.date.replace(/-/g, "")}`}
             </div>
           )}
         </div>
@@ -66,7 +66,8 @@ export async function GET() {
                 textAlign: "center",
               }}
             >
-              &ldquo;{displayQuote}&rdquo;
+              {/* One text node: Satori rejects a non-flex <div> with several children. */}
+              {`\u201C${displayQuote}\u201D`}
             </div>
           ) : (
             <div style={{ color: "#f5f0e8", fontSize: 52, textAlign: "center" }}>
@@ -83,8 +84,9 @@ export async function GET() {
               )}
               {episode && (
                 <div style={{ color: "#888", fontSize: 22, textAlign: "center" }}>
-                  {episode.episodeNumber != null ? `EP.${String(episode.episodeNumber).padStart(3, "0")} · ` : ""}
-                  {episode.title.length > 70 ? episode.title.slice(0, 67) + "…" : episode.title}
+                  {`${episode.episodeNumber != null ? `EP.${String(episode.episodeNumber).padStart(3, "0")} · ` : ""}${
+                    episode.title.length > 70 ? episode.title.slice(0, 67) + "…" : episode.title
+                  }`}
                 </div>
               )}
             </div>

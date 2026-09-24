@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import type { Metadata } from "next";
+import { requireAdmin, requireAdminPage } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,8 @@ async function getProposals() {
 const STATUSES = ["open", "under_review", "investigating", "published", "declined"] as const;
 
 export default async function AdminSignalsPage() {
+  await requireAdminPage();
+
   const proposals = await getProposals();
 
   return (
@@ -64,6 +67,9 @@ export default async function AdminSignalsPage() {
                   <form
                     action={async (formData: FormData) => {
                       "use server";
+                      // Server actions are public endpoints: check here too,
+                      // not only in the page render.
+                      await requireAdmin();
                       const status = formData.get("status") as string;
                       await prisma.signalProposal.update({
                         where: { id: p.id },

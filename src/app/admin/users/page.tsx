@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { grantOracleAccess, setMemberTitle } from "@/app/admin/actions";
 import type { Metadata } from "next";
+import { requireAdminPage } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +37,8 @@ async function getUsers() {
 type User = NonNullable<Awaited<ReturnType<typeof getUsers>>>[number];
 
 export default async function AdminUsersPage() {
+  await requireAdminPage();
+
   const users = await getUsers();
 
   const oracleUsers = users?.filter((u) => u.role === "admin" || u.subscriptionTier === "system" || u.isLifetimeMember) ?? [];

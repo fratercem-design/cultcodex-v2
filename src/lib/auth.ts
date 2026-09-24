@@ -1,4 +1,5 @@
 import NextAuth from "next-auth";
+import { redirect } from "next/navigation";
 import Google from "next-auth/providers/google";
 import { prisma } from "@/lib/db";
 import type { CodexUserRole } from "@/generated/prisma/client";
@@ -168,6 +169,20 @@ export async function requireAuth(): Promise<CodexSessionUser> {
 export async function requireAdmin(): Promise<CodexSessionUser> {
   const user = await requireAuth();
   if (user.role !== "admin") throw new Error("Admin access required");
+  return user;
+}
+
+/**
+ * Gate for admin *pages*. Call it first in every admin page.tsx.
+ *
+ * The admin layout's redirect is not enough on its own: the App Router
+ * renders a layout and its page in parallel, so a page that fetches data
+ * still streams it in the body of the layout's 307 response. Redirecting
+ * here stops the page before any of its queries run.
+ */
+export async function requireAdminPage(): Promise<CodexSessionUser> {
+  const user = await getCurrentUser();
+  if (!user || user.role !== "admin") redirect("/auth/signin");
   return user;
 }
 
