@@ -13,3 +13,4 @@ docs/archive
 scripts/scrape/data
 scripts/**/*.log
 scripts/**/*.jsonl
+grok-bot
