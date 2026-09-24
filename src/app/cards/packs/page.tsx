@@ -2,8 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PackOpener } from "@/components/cards/pack-opener";
 import { CreditBundlesStrip } from "@/components/cards/credit-bundles-strip";
+import { PackArt } from "@/components/cards/codex/pack-art";
+import { PackRitual } from "@/components/cards/codex/pack-ritual";
+import { PALETTES } from "@/components/cards/codex/codex-art";
+import { requestTrialCheck } from "@/components/cards/codex/unlock-events";
+import { currentSeason } from "@/lib/cards/codex/catalog";
+import type { Palette } from "@/lib/cards/codex/types";
 
 interface Pack {
   id: string;
@@ -22,6 +27,7 @@ interface Pack {
   weightLegendary: number;
   weightMythic: number;
   weightForbidden: number;
+  guaranteeRarity?: string | null;
   _count: { packCards: number };
 }
 
@@ -30,22 +36,14 @@ interface WalletData {
   lastDailyClaimAt: string | null;
   dailyStreak?: number;
   longestStreak?: number;
+  initiationClaimed?: boolean;
 }
 
-const ACCENT_VAR: Record<string, string> = {
-  // legacy keys
-  neon:     "var(--neon)",
-  amber:    "var(--neon-4)",
-  magenta:  "var(--neon-3)",
-  crimson:  "var(--neon-5)",
-  cyan:     "var(--neon-2)",
-  // artTheme keys from seed
-  terminal: "var(--neon)",
-  occult:   "var(--neon-3)",
-  chaos:    "var(--neon-5)",
-  sacred:   "var(--neon-4)",
-  myth:     "var(--neon-2)",
-};
+function themeOf(pack: Pack): Palette {
+  return pack.artTheme && pack.artTheme in PALETTES ? (pack.artTheme as Palette) : "gold";
+}
+
+const SEASON = currentSeason();
 
 export default function PackStorePage() {
   const [packs, setPacks] = useState<Pack[]>([]);
@@ -138,7 +136,7 @@ export default function PackStorePage() {
           textShadow: "var(--glow-neon)",
           marginBottom: 8,
         }}>
-          {"// SIGNAL_PACKS"}
+          {`// SEASON ${SEASON.numeral} · ${SEASON.name.toUpperCase()}`}
         </p>
         <h1 style={{
           fontFamily: "var(--font-mono), monospace",
@@ -156,7 +154,7 @@ export default function PackStorePage() {
           marginTop: 6,
           letterSpacing: "0.04em",
         }}>
-          Spend signal credits to open packs and build your Codex collection.
+          Spend Signal Credits on Season {SEASON.numeral} packs. Trial and secret cards never drop from packs, so check the Codex for those.
         </p>
       </div>
 
@@ -266,9 +264,28 @@ export default function PackStorePage() {
           display: "flex",
           alignItems: "center",
         }}>
-          ← MY COLLECTION
+          ← THE CODEX
         </Link>
       </div>
+
+      {/* Free Initiation Pack — shown until it's opened (guests included). */}
+      {wallet && !wallet.initiationClaimed && (
+        <Link href="/cards" style={{
+          display: "block",
+          marginBottom: 24,
+          padding: "14px 18px",
+          border: "1px solid #f6c453",
+          borderRadius: 10,
+          background: "linear-gradient(120deg, #221806, #0c0903)",
+          fontFamily: "var(--font-mono), monospace",
+          fontSize: 12,
+          color: "#fff7e2",
+          textDecoration: "none",
+        }}>
+          <span style={{ color: "#f6c453", letterSpacing: "0.16em", fontSize: 10 }}>FREE ✶ </span>
+          Your Initiation Pack is waiting in the Codex: 5 cards, a Season-exclusive Legendary foil, and 100 credits. Open it first →
+        </Link>
+      )}
 
       {/* Buy credits — the paid route in; earning stays free below */}
       <CreditBundlesStrip />
@@ -352,7 +369,7 @@ export default function PackStorePage() {
       ) : (
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 400px), 1fr))",
           gap: 16,
         }}>
           {packs.map((pack) => (
@@ -366,15 +383,19 @@ export default function PackStorePage() {
         </div>
       )}
 
-      {/* Pack opener overlay */}
+      {/* Pack opening overlay */}
       {activePack && (
-        <PackOpener
-          packSlug={activePack.slug}
-          packTitle={activePack.name}
-          packAccentColor={ACCENT_VAR[activePack.artTheme ?? "terminal"] ?? "var(--neon)"}
-          onClose={() => {
+        <PackRitual
+          title={activePack.name}
+          theme={themeOf(activePack)}
+          count={activePack.cardCount}
+          endpoint="/api/cards/open-pack"
+          body={{ packSlug: activePack.slug }}
+          onClose={(opened) => {
             setActivePack(null);
-            // Refresh wallet after the pack animation closes.
+            if (!opened) return;
+            requestTrialCheck();
+            // Refresh wallet after the pack closes.
             fetch("/api/cards/stats").then((r) => r.json()).then(setWallet).catch(() => {});
           }}
         />
@@ -383,152 +404,64 @@ export default function PackStorePage() {
   );
 }
 
-function PackCard({ pack, canAfford, onOpen }: { pack: Pack; canAfford: boolean; onOpen: () => void }) {
-  const accent = ACCENT_VAR[pack.artTheme ?? "terminal"] ?? "var(--neon)";
+const RARITY_ROWS: { key: keyof Pack; label: string; color: string }[] = [
+  { key: "weightForbidden",    label: "FORBIDDEN",    color: "#ff2e2e" },
+  { key: "weightMythic",       label: "MYTHIC",       color: "#b27bff" },
+  { key: "weightLegendary",    label: "LEGENDARY",    color: "#f6c453" },
+  { key: "weightOracle",       label: "ORACLE",       color: "#34d6ff" },
+  { key: "weightAnomaly",      label: "ANOMALY",      color: "#ff4d8d" },
+  { key: "weightTransmission", label: "TRANSMISSION", color: "#3ee895" },
+  { key: "weightSignal",       label: "SIGNAL",       color: "#ffab36" },
+  { key: "weightStatic",       label: "STATIC",       color: "#c7d0c8" },
+];
 
-  const rarityPreview = [
-    pack.weightForbidden > 0 && { label: "FORBIDDEN",   pct: pack.weightForbidden,    color: "#FF1744" },
-    pack.weightMythic > 0    && { label: "MYTHIC",       pct: pack.weightMythic,       color: "#E040FB" },
-    pack.weightLegendary > 0 && { label: "LEGENDARY",   pct: pack.weightLegendary,    color: "#FFD700" },
-    pack.weightOracle > 0    && { label: "ORACLE",       pct: pack.weightOracle,       color: "var(--neon-5)" },
-    pack.weightAnomaly > 0   && { label: "ANOMALY",      pct: pack.weightAnomaly,      color: "var(--neon-3)" },
-    pack.weightTransmission > 0 && { label: "RARE",      pct: pack.weightTransmission, color: "var(--neon-4)" },
-    pack.weightSignal > 0    && { label: "SIGNAL",       pct: pack.weightSignal,       color: "var(--neon)"   },
-    pack.weightStatic > 0    && { label: "STATIC",       pct: pack.weightStatic,       color: "var(--term-fg-dim)" },
-  ].filter(Boolean) as { label: string; pct: number; color: string }[];
+function PackCard({ pack, canAfford, onOpen }: { pack: Pack; canAfford: boolean; onOpen: () => void }) {
+  const theme = themeOf(pack);
+  const accent = PALETTES[theme].g;
 
   return (
     <div style={{
       border: `1px solid ${accent}`,
-      borderRadius: 8,
+      borderRadius: 12,
       overflow: "hidden",
-      backgroundColor: "var(--term-bg-1)",
-      display: "flex",
-      flexDirection: "column",
-      boxShadow: canAfford ? `0 0 0 rgba(0,0,0,0)` : undefined,
-      opacity: canAfford ? 1 : 0.6,
+      background: `radial-gradient(ellipse at 50% 0%, ${PALETTES[theme].bg1}, #0a0908 70%)`,
+      display: "grid",
+      gridTemplateColumns: "140px 1fr",
+      gap: 18,
+      padding: 18,
+      alignItems: "center",
     }}>
-      {/* Pack header */}
-      <div style={{
-        padding: "14px 16px 12px",
-        borderBottom: `1px solid var(--term-line)`,
-        background: `linear-gradient(135deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 100%)`,
-        position: "relative",
-        overflow: "hidden",
-      }}>
-        {/* BG glyph */}
-        <div style={{
-          position: "absolute",
-          right: 12,
-          top: "50%",
-          transform: "translateY(-50%)",
-          fontSize: 56,
-          color: accent,
-          opacity: 0.06,
-          lineHeight: 1,
-          pointerEvents: "none",
-          userSelect: "none",
-        }}>◉</div>
+      <PackArt name={pack.name} theme={theme} seasonNumeral={SEASON.numeral} count={pack.cardCount} />
 
-        <div style={{
-          fontFamily: "var(--font-mono), monospace",
-          fontSize: 13,
-          fontWeight: 700,
-          color: accent,
-          textShadow: `0 0 8px ${accent}`,
-          letterSpacing: "0.04em",
-          marginBottom: 4,
-        }}>
+      <div style={{ fontFamily: "var(--font-mono), monospace", display: "flex", flexDirection: "column", gap: 10, minWidth: 0 }}>
+        <div style={{ fontFamily: "var(--font-display), sans-serif", fontSize: 20, fontWeight: 700, color: "#fff7e2" }}>
           {pack.name}
         </div>
-        {pack.artTheme && (
-          <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: "var(--term-fg-dim)", letterSpacing: "0.08em" }}>
-            {"// "}{pack.artTheme.toUpperCase()}{" SERIES"}
-          </div>
-        )}
-      </div>
-
-      <div style={{ padding: "12px 16px", flex: 1 }}>
         {pack.description && (
-          <p style={{
-            fontFamily: "var(--font-mono), monospace",
-            fontSize: 10,
-            color: "var(--term-fg-dim)",
-            lineHeight: 1.6,
-            margin: "0 0 12px",
-          }}>
-            {pack.description}
-          </p>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.65)", lineHeight: 1.6, margin: 0 }}>{pack.description}</p>
         )}
 
-        {/* Rarity breakdown */}
-        <div style={{ marginBottom: 12 }}>
-          <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 8, color: "var(--term-fg-faint)", marginBottom: 6, letterSpacing: "0.1em" }}>
-            RARITY DISTRIBUTION
-          </div>
-          <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-            {rarityPreview.map(({ label, pct, color }) => (
-              <span key={label} style={{
-                fontFamily: "var(--font-mono), monospace",
-                fontSize: 8,
-                color,
-                border: `1px solid ${color}`,
-                borderRadius: 2,
-                padding: "1px 5px",
-                opacity: 0.8,
-              }}>
-                {label} {pct}%
-              </span>
+        <details>
+          <summary style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", letterSpacing: "0.12em", cursor: "pointer" }}>ODDS PER CARD</summary>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: "2px 12px", marginTop: 6, fontSize: 10 }}>
+            {RARITY_ROWS.filter((r) => Number(pack[r.key]) > 0).map((r) => (
+              <div key={r.label} style={{ display: "contents" }}>
+                <span style={{ color: r.color }}>{r.label}</span>
+                <span style={{ color: "rgba(255,255,255,0.6)", textAlign: "right" }}>{Number(pack[r.key])}%</span>
+              </div>
             ))}
           </div>
-        </div>
+        </details>
 
-        <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: "var(--term-fg-faint)", letterSpacing: "0.06em" }}>
-          {pack.cardCount} cards per pack
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 4 }}>
+          <div>
+            <span style={{ fontFamily: "var(--font-crt, var(--font-mono)), monospace", fontSize: 24, color: "#ffe39a" }}>{pack.cost}</span>
+            <span style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", marginLeft: 4 }}>credits</span>
+          </div>
+          <button type="button" className="cx-btn cx-btn-primary" onClick={onOpen} disabled={!canAfford}>
+            {canAfford ? "Open" : "Need credits"}
+          </button>
         </div>
-      </div>
-
-      {/* Footer: cost + CTA */}
-      <div style={{
-        padding: "10px 16px",
-        borderTop: "1px solid var(--term-line)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 8,
-      }}>
-        <div>
-          <span style={{
-            fontFamily: "var(--font-crt, var(--font-mono)), monospace",
-            fontSize: 20,
-            color: "var(--neon-4)",
-            textShadow: "var(--glow-amber)",
-          }}>
-            {pack.cost}
-          </span>
-          <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: "var(--term-fg-faint)", marginLeft: 4 }}>
-            credits
-          </span>
-        </div>
-        <button
-          onClick={onOpen}
-          disabled={!canAfford}
-          style={{
-            fontFamily: "var(--font-mono), monospace",
-            fontSize: 10,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: canAfford ? accent : "var(--term-fg-faint)",
-            background: "transparent",
-            border: `1px solid ${canAfford ? accent : "var(--term-line)"}`,
-            borderRadius: 4,
-            padding: "6px 14px",
-            cursor: canAfford ? "pointer" : "not-allowed",
-            textShadow: canAfford ? `0 0 6px ${accent}` : "none",
-          }}
-        >
-          {canAfford ? "OPEN ▸" : "NEED CREDITS"}
-        </button>
       </div>
     </div>
   );

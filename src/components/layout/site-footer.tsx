@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SecretSigil } from "@/components/cards/codex/secret-sigil";
 
 /**
  * Global content footer. Lives at the bottom of `terminal-main`, above the
@@ -121,6 +122,8 @@ export function SiteFooter() {
             >
               ψ
             </Link>
+            {/* Codex secret: "Every page ends somewhere. Look at the very bottom." */}
+            <SecretSigil code="footnote-ghost" glyph="☾" label="☾" className="ml-2 select-none" />
           </p>
           <nav aria-label="Channels" className="flex flex-wrap gap-x-4 gap-y-2">
             {CHANNELS.map((ch) => (

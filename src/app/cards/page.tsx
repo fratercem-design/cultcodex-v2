@@ -2,96 +2,111 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import { getCurrentUser } from "@/lib/auth";
-import { getAllCards, getUserCollection, getUserCollectionStats, getCollectionSets } from "@/lib/queries/cards";
-import { CARD_SPECIALS, arcanaGroupOf } from "@/components/cards/vault/constants";
-import { ALL_TAROT_CARDS } from "@/lib/cards/tarot-data";
-import type { VaultCard } from "@/components/cards/vault/constants";
-import { VaultApp } from "@/components/cards/vault/vault-app";
-import type { OwnedInfo } from "@/components/cards/vault/card";
-import "./vault/vault.css";
+import { prisma } from "@/lib/db";
+import { clueFor, codexStats, currentSeason, seasonDaysLeft } from "@/lib/cards/codex/catalog";
+import { TRIAL_BY_ID } from "@/lib/cards/codex/trials";
+import { checkTrials, type GrantedCard, type TrialProgress } from "@/lib/cards/codex/codex";
+import { CodexApp, type CodexEntry } from "./codex-app";
+import type { CodexCardData } from "@/components/cards/codex/codex-card";
 
 export const metadata: Metadata = {
-  title: "Signal Archive — CultCodex",
-  description: "Browse all CultCodex trading cards: Mahavidyas, Entities, Ciphers, Relics, and more. Track your collection, open packs, and build your signal array.",
+  title: "The Codex — CultCodex Cards",
+  description:
+    "Collect the CultCodex card set. Fifty Season I cards: pull them from packs, earn them through Trials, or find the three hidden around the site. Every account gets a free Initiation Pack.",
   alternates: { canonical: "/cards" },
 };
 
-export default async function CardsPage() {
-  const [user, dbCards] = await Promise.all([
-    getCurrentUser(),
-    getAllCards().catch(() => []),
-  ]);
+type Owned = { quantity: number; isFoil: boolean; isNew: boolean };
 
-  // Archive cards keep their original numbering (DB order, 1–204); the tarot
-  // follows in deck order (majors, then suits) so it reads as one deck.
-  const tarotIndex = new Map(ALL_TAROT_CARDS.map((t, i) => [t.slug, i]));
-  const isTarot = (c: (typeof dbCards)[number]) => c.sourceType === "tarot";
-  const ordered = [
-    ...dbCards.filter((c) => !isTarot(c)),
-    ...dbCards.filter(isTarot).sort((a, b) => (tarotIndex.get(a.slug) ?? 999) - (tarotIndex.get(b.slug) ?? 999)),
-  ];
+export default async function CodexPage() {
+  const season = currentSeason();
+  const user = await getCurrentUser();
 
-  const cards: VaultCard[] = ordered.map((card, i) => ({
-    id:          card.id,
-    slug:        card.slug,
-    num:         String(i + 1).padStart(2, "0"),
-    deck:        isTarot(card) ? "arcana" : "archive",
-    arcanaGroup: isTarot(card) ? arcanaGroupOf(card.slug) : undefined,
-    cardType:    card.cardType,
-    rarity:      card.rarity,
-    title:       card.title,
-    subtitle:    card.subtitle ?? null,
-    flavourText: card.flavourText ?? null,
-    statA:       card.statA,
-    statB:       card.statB,
-    statC:       card.statC,
-    abilities:   card.abilities,
-    maxSupply:   card.maxSupply ?? null,
-    personality: card.personality ?? null,
-    special:     CARD_SPECIALS[card.slug],
-  }));
+  let justUnsealed: GrantedCard[] = [];
+  let progress: TrialProgress[] = [];
+  const owned = new Map<string, Owned>();
+  let legacy: { card: CodexCardData; owned: Owned }[] = [];
+  let initiationClaimed = false;
+  let balance = 0;
 
-  if (!user) {
-    return <VaultApp cards={cards} />;
-  }
+  if (user) {
+    // Retroactive: anything earned since the last visit is granted before we
+    // read the collection, so it shows up owned (and announced) right away.
+    ({ granted: justUnsealed, progress } = await checkTrials(user.id).catch(() => ({ granted: [], progress: [] })));
+    const [rows, wallet] = await Promise.all([
+      prisma.ownedCard.findMany({ where: { userId: user.id }, include: { card: true } }).catch(() => []),
+      prisma.userWallet.findUnique({ where: { userId: user.id }, select: { balance: true, initiationClaimedAt: true } }).catch(() => null),
+    ]);
+    initiationClaimed = !!wallet?.initiationClaimedAt;
+    balance = wallet?.balance ?? 0;
 
-  const [collection, stats, sets] = await Promise.all([
-    getUserCollection(user.id).catch(() => []),
-    getUserCollectionStats(user.id).catch(() => null),
-    getCollectionSets(user.id).catch(() => []),
-  ]);
-
-  // Build slug → ownership map (merge foil + non-foil copies)
-  const ownership: Record<string, OwnedInfo> = {};
-  for (const oc of collection) {
-    const slug = oc.card.slug;
-    const existing = ownership[slug];
-    if (existing) {
-      existing.quantity += oc.quantity;
-      existing.isFoil = existing.isFoil || oc.isFoil;
-      existing.isNew = existing.isNew || oc.isNew;
-    } else {
-      ownership[slug] = { quantity: oc.quantity, isFoil: oc.isFoil, isNew: oc.isNew };
+    const legacyBySlug = new Map<string, { card: CodexCardData; owned: Owned }>();
+    for (const row of rows) {
+      const target = row.card.season === 0 ? legacyBySlug.get(row.card.slug)?.owned : owned.get(row.card.slug);
+      const merged: Owned = {
+        quantity: (target?.quantity ?? 0) + row.quantity,
+        isFoil: (target?.isFoil ?? false) || row.isFoil,
+        isNew: (target?.isNew ?? false) || row.isNew,
+      };
+      const c = row.card;
+      if (c.season === 0) {
+        legacyBySlug.set(c.slug, {
+          card: {
+            slug: c.slug, title: c.title, subtitle: c.subtitle, cardType: c.cardType, rarity: c.rarity,
+            flavourText: c.flavourText, abilities: c.abilities, statA: c.statA, statB: c.statB, statC: c.statC,
+            artUrl: c.artUrl, season: 0, maxSupply: c.maxSupply,
+          },
+          owned: merged,
+        });
+      }
+      else owned.set(row.card.slug, merged);
     }
+    legacy = [...legacyBySlug.values()];
+
+    // Seen now — clear NEW flags after this render has captured them.
+    prisma.ownedCard.updateMany({ where: { userId: user.id, isNew: true }, data: { isNew: false } }).catch(() => {});
   }
+
+  const progressById = new Map(progress.map((p) => [p.trialId, p]));
+  const entries: CodexEntry[] = season.cards.map((def, i) => {
+    const [statA, statB, statC] = codexStats(def);
+    const trial = def.questId ? TRIAL_BY_ID.get(def.questId) : undefined;
+    return {
+      card: {
+        slug: def.slug,
+        title: def.title,
+        subtitle: def.subtitle,
+        cardType: def.cardType,
+        rarity: def.rarity,
+        flavourText: def.flavour,
+        abilities: def.abilities,
+        statA, statB, statC,
+        season: season.number,
+        collectorNo: i + 1,
+        maxSupply: def.maxSupply ?? null,
+        obtainMethod: def.obtain,
+      },
+      obtain: def.obtain,
+      clue: clueFor(def),
+      href: trial?.href ?? (def.obtain === "pack" ? "/cards/packs" : undefined),
+      progress: trial ? progressById.get(trial.id) ?? null : null,
+      unit: trial?.unit,
+      owned: owned.get(def.slug) ?? null,
+    };
+  });
 
   return (
-    <VaultApp
-      cards={cards}
-      ownership={ownership}
-      sets={sets}
-      stats={stats ? {
-        ownedCount:       stats.ownedCount,
-        totalCards:       stats.totalCards,
-        completionPct:    stats.completionPct,
-        signalCredits:    stats.signalCredits,
-        collectionPower:  stats.collectionPower,
-        dailyStreak:      stats.dailyStreak,
-        longestStreak:    stats.longestStreak,
-        lastDailyClaimAt: stats.lastDailyClaimAt
-          ? new Date(stats.lastDailyClaimAt as Date).toISOString()
-          : null,
-      } : undefined}
+    <CodexApp
+      season={{
+        number: season.number, numeral: season.numeral, name: season.name, tagline: season.tagline, palette: season.palette,
+        daysLeft: seasonDaysLeft(season),
+      }}
+      entries={entries}
+      legacy={legacy}
+      signedIn={!!user}
+      initiationClaimed={initiationClaimed}
+      balance={balance}
+      justUnsealed={justUnsealed.map((g) => ({ id: g.id, slug: g.slug, title: g.title, rarity: g.rarity }))}
     />
   );
 }

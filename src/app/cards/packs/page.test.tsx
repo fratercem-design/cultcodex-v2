@@ -6,7 +6,7 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 // database answers the first request with an error and the second one fine),
 // it must say something else — the audit's "empty store" was this bug.
 
-vi.mock("@/components/cards/pack-opener", () => ({ PackOpener: () => null }));
+vi.mock("@/components/cards/codex/pack-ritual", () => ({ PackRitual: () => null }));
 
 // The store renders <CreditBundlesStrip /> under the wallet, and that component
 // calls useRouter(). RTL mounts the tree with no App Router context, so the hook
