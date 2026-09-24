@@ -171,7 +171,13 @@ export async function run(apply: boolean) {
   });
   const byRumble = new Map(episodes.filter((e) => e.rumbleVideoId).map((e) => [e.rumbleVideoId!, e]));
   const slugs = new Set(episodes.map((e) => e.slug));
-  const maxEp = await prisma.episode.findFirst({ orderBy: { episodeNumber: "desc" }, select: { episodeNumber: true } });
+  // Postgres sorts NULLs first on DESC, so unnumbered episodes must be excluded
+  // or the "highest" number comes back null and numbering restarts at 1.
+  const maxEp = await prisma.episode.findFirst({
+    where: { episodeNumber: { not: null } },
+    orderBy: { episodeNumber: "desc" },
+    select: { episodeNumber: true },
+  });
   let nextNumber = (maxEp?.episodeNumber ?? 0) + 1;
 
   const tally = { transcripts: 0, created: 0, linked: 0, skippedHasTranscript: 0, empty: 0, segments: 0 };
@@ -225,20 +231,24 @@ export async function run(apply: boolean) {
       tally.transcripts++;
       tally.segments += segments.length;
       if (!apply) continue;
-      const created = await prisma.episode.create({
-        data: {
-          title, slug, episodeNumber: nextNumber++, airDate, rumbleVideoId: rumbleId,
-          duration: formatDuration(row.durationSeconds), status: "draft", contentType: "livestream",
-          transcriptRaw: rawText.slice(0, 200000),
-          searchText: [slug, title, rawText].join(" ").toLowerCase().slice(0, 10000),
-        },
-        select: { id: true },
-      });
+      // Episode + segments in one transaction: a failure leaves nothing behind.
+      await prisma.$transaction(async (tx) => {
+        const created = await tx.episode.create({
+          data: {
+            title, slug, episodeNumber: nextNumber, airDate, rumbleVideoId: rumbleId,
+            duration: formatDuration(row.durationSeconds), status: "draft", contentType: "livestream",
+            transcriptRaw: rawText.slice(0, 200000),
+            searchText: [slug, title, rawText].join(" ").toLowerCase().slice(0, 10000),
+          },
+          select: { id: true },
+        });
+        await tx.transcriptSegment.createMany({
+          data: segments.map((s) => ({ episodeId: created.id, ...s, searchText: s.text.toLowerCase() })),
+          skipDuplicates: true,
+        });
+      }, { timeout: 60_000 });
+      nextNumber++;
       slugs.add(slug);
-      await prisma.transcriptSegment.createMany({
-        data: segments.map((s) => ({ episodeId: created.id, ...s, searchText: s.text.toLowerCase() })),
-        skipDuplicates: true,
-      });
       continue;
     }
 
@@ -247,18 +257,21 @@ export async function run(apply: boolean) {
     tally.segments += segments.length;
     if (how !== "rumble id") tally.linked++;
     if (!apply) continue;
-    await prisma.transcriptSegment.createMany({
-      data: segments.map((s) => ({ episodeId: ep.id, ...s, searchText: s.text.toLowerCase() })),
-      skipDuplicates: true,
-    });
-    await prisma.episode.update({
-      where: { id: ep.id },
-      data: {
-        transcriptRaw: rawText.slice(0, 200000),
-        searchText: [ep.slug, rawText].join(" ").toLowerCase().slice(0, 10000),
-        ...(ep.rumbleVideoId ? {} : { rumbleVideoId: rumbleId }),
-      },
-    });
+    const matched = ep;
+    await prisma.$transaction(async (tx) => {
+      await tx.transcriptSegment.createMany({
+        data: segments.map((s) => ({ episodeId: matched.id, ...s, searchText: s.text.toLowerCase() })),
+        skipDuplicates: true,
+      });
+      await tx.episode.update({
+        where: { id: matched.id },
+        data: {
+          transcriptRaw: rawText.slice(0, 200000),
+          searchText: [matched.slug, rawText].join(" ").toLowerCase().slice(0, 10000),
+          ...(matched.rumbleVideoId ? {} : { rumbleVideoId: rumbleId }),
+        },
+      });
+    }, { timeout: 60_000 });
   }
 
   console.log(
