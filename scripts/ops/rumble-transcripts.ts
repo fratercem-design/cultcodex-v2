@@ -172,6 +172,9 @@ export async function run(apply: boolean) {
   });
   const byRumble = new Map(episodes.filter((e) => e.rumbleVideoId).map((e) => [e.rumbleVideoId!, e]));
   const slugs = new Set(episodes.map((e) => e.slug));
+  // An episode is one stream: once a Rumble video has matched it, a second
+  // same-titled video (Rumble splits streams into several VODs) gets its own.
+  const claimed = new Set<string>();
   // Postgres sorts NULLs first on DESC, so unnumbered episodes must be excluded
   // or the "highest" number comes back null and numbering restarts at 1.
   const maxEp = await prisma.episode.findFirst({
@@ -200,13 +203,20 @@ export async function run(apply: boolean) {
     let ep = rumbleId ? byRumble.get(rumbleId) : undefined;
     let how = "rumble id";
     if (!ep) {
-      ep = episodes.find(
-        (e) =>
-          normalize(e.title) === normalize(title) &&
-          (!airDate || !e.airDate || Math.abs(e.airDate.getTime() - airDate.getTime()) <= MATCH_WINDOW_MS),
-      );
+      const gap = (e: (typeof episodes)[number]) =>
+        airDate && e.airDate ? Math.abs(e.airDate.getTime() - airDate.getTime()) : 0;
+      ep = episodes
+        .filter(
+          (e) =>
+            !claimed.has(e.id) &&
+            (!e.rumbleVideoId || e.rumbleVideoId === rumbleId) &&
+            normalize(e.title) === normalize(title) &&
+            gap(e) <= MATCH_WINDOW_MS,
+        )
+        .sort((a, b) => gap(a) - gap(b))[0];
       how = "title + date";
     }
+    if (ep) claimed.add(ep.id);
 
     if (ep && ep._count.segments > 0) {
       console.log(`  = ${label}: episode "${ep.slug}" already has ${ep._count.segments} segments — skipped`);
@@ -217,8 +227,11 @@ export async function run(apply: boolean) {
     const rawText = segments.map((s) => s.text).join(" ");
 
     if (!ep) {
-      let slug = slugify(title) || `rumble-${rumbleId}`;
-      if (slugs.has(slug)) slug = `${slug}-${airDate?.toISOString().slice(0, 10) ?? rumbleId}`;
+      const base = slugify(title) || `rumble-${rumbleId}`;
+      let slug = base;
+      if (slugs.has(slug)) slug = `${base}-${airDate?.toISOString().slice(0, 10) ?? rumbleId}`;
+      if (slugs.has(slug)) slug = `${base}-${rumbleId}`;
+      slugs.add(slug);
       console.log(`  + ${label}: new draft episode "${slug}" with ${segments.length} segments`);
       // Same-titled episodes outside the date window: usually the same stream
       // with a drifted date, sometimes a different show that reused the title.
@@ -249,7 +262,6 @@ export async function run(apply: boolean) {
         });
       }, { timeout: 60_000 });
       nextNumber++;
-      slugs.add(slug);
       continue;
     }
 
