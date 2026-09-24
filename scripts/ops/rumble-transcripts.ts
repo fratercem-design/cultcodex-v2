@@ -3,8 +3,8 @@
  * scripts/ingest/data/rumble-transcripts/ into TranscriptSegment rows.
  *
  * Each row of index.csv names an .srt file and its Rumble page. The episode is
- * found by rumbleVideoId (the `v7…` code in the Rumble URL), then by title +
- * air date; if none exists it is created the same way import-from-rumble.ts
+ * found by rumbleVideoId (the `v7…` code in the Rumble URL), then by title
+ * within two days of the air date; if none exists it is created the same way import-from-rumble.ts
  * creates Rumble VODs (draft, livestream), so it can be reviewed and enriched
  * before it goes public.
  *
@@ -152,7 +152,10 @@ function normalize(title: string): string {
   return title.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim();
 }
 
-const DAY_MS = 86_400_000;
+// Rumble titles carry the US stream date; episodes created from YouTube carry
+// the upload date, a day later in UTC. Two days covers that drift without
+// merging different streams that reused a title (e.g. four "I'm Back"s).
+const MATCH_WINDOW_MS = 2 * 86_400_000;
 
 export async function run(apply: boolean) {
   const prisma = getPrisma();
@@ -184,15 +187,15 @@ export async function run(apply: boolean) {
       continue;
     }
 
-    // 1. by Rumble id; 2. by title within a day of the air date (titles like
-    //    "Come Hang" repeat, so the date must agree too).
+    // 1. by Rumble id; 2. by title within two days of the air date (titles
+    //    repeat across streams, so the date must agree too).
     let ep = rumbleId ? byRumble.get(rumbleId) : undefined;
     let how = "rumble id";
     if (!ep) {
       ep = episodes.find(
         (e) =>
           normalize(e.title) === normalize(title) &&
-          (!airDate || !e.airDate || Math.abs(e.airDate.getTime() - airDate.getTime()) <= DAY_MS),
+          (!airDate || !e.airDate || Math.abs(e.airDate.getTime() - airDate.getTime()) <= MATCH_WINDOW_MS),
       );
       how = "title + date";
     }
