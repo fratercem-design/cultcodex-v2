@@ -95,7 +95,8 @@ export function parseRumbleTitle(raw: string): { title: string; airDate: Date | 
   const after = raw.includes("VOD:") ? raw.slice(raw.indexOf("VOD:") + 4) : raw;
   // Rumble wraps the name in quotes, sometimes only partly ("X" (Partial)) or
   // with a stray apostrophe ('X"), so drop every double quote and trim edge ones.
-  const title = after.replace(/"/g, "").trim().replace(/^'+|'+$/g, "").replace(/\s+/g, " ").trim();
+  // NFKC turns Rumble's full-width stand-ins (？ ：) back into ? and :.
+  const title = after.normalize("NFKC").replace(/"/g, "").trim().replace(/^'+|'+$/g, "").replace(/\s+/g, " ").trim();
   return { title: title || raw.trim(), airDate };
 }
 

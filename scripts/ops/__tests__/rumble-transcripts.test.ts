@@ -19,6 +19,8 @@ describe("parseRumbleTitle", () => {
     expect(parseRumbleTitle(`09/05/26 Psyche Awakens VOD: "Saturday Night Special" (Partial)`).title).toBe("Saturday Night Special (Partial)");
     expect(parseRumbleTitle(`08/29/26 Psyche Awakens VOD: 'Testing New Microphone!!!"`).title).toBe("Testing New Microphone!!!");
     expect(parseRumbleTitle(`08/26/26 Psyche Awakens VOD: "I'm Back"`).title).toBe("I'm Back");
+    expect(parseRumbleTitle(`07/26/26 Psyche Awakens VOD: "Eat Me？ Drink Me？ COME HANG OUT"`).title).toBe("Eat Me? Drink Me? COME HANG OUT");
+    expect(parseRumbleTitle(`07/20/26 Psyche Awakens VOD: "Breaking News： Brandon"`).title).toBe("Breaking News: Brandon");
   });
 });
 
