@@ -3,6 +3,7 @@ import { anthropic as client, bedrockModelId } from "@/lib/anthropic";
 import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
 import { consumeLlmBudget } from "@/lib/llm-budget";
 import { groqChat, groqConfigured } from "@/lib/free-llm";
+import { getCurrentUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
@@ -84,7 +85,41 @@ ${spreadDesc}
 Interpret this reading.`;
 }
 
+const MAX_FIELD = 300;
+
+function isShortString(v: unknown, max = MAX_FIELD): v is string {
+  return typeof v === "string" && v.length <= max;
+}
+
+/**
+ * The card text goes straight into the prompt, so bound every field. Real
+ * cards are well under these limits; this only rejects hand-built payloads.
+ */
+function validShape(body: InterpretRequest): boolean {
+  if (!isShortString(body.spreadName, 60) || !body.spreadName) return false;
+  if (!Array.isArray(body.positions) || !Array.isArray(body.cards)) return false;
+  if (body.cards.length === 0 || body.cards.length > 5 || body.positions.length > 5) return false;
+  if (!body.positions.every((p) => isShortString(p, 40))) return false;
+  return body.cards.every((c) =>
+    c && typeof c === "object" &&
+    isShortString(c.title, 120) &&
+    (c.subtitle == null || isShortString(c.subtitle)) &&
+    (c.flavourText == null || isShortString(c.flavourText, 600)) &&
+    isShortString(c.cardType, 40) &&
+    isShortString(c.rarity, 40) &&
+    Array.isArray(c.abilities) && c.abilities.length <= 8 &&
+    c.abilities.every((a) => isShortString(a, 200))
+  );
+}
+
 export async function POST(req: NextRequest) {
+  // Signed-in only: anonymous callers could otherwise spend the shared
+  // TAROT_DAILY_CAP for everyone by rotating IPs.
+  const user = await getCurrentUser();
+  if (!user) {
+    return NextResponse.json({ error: "Sign in to receive an interpretation" }, { status: 401 });
+  }
+
   let body: InterpretRequest;
   try {
     body = await req.json() as InterpretRequest;
@@ -92,14 +127,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
-  if (!body.spreadName || !Array.isArray(body.positions) || !Array.isArray(body.cards)) {
+  if (!body || typeof body !== "object" || !validShape(body)) {
     return NextResponse.json({ error: "Invalid request shape" }, { status: 400 });
   }
-  if (body.cards.length === 0 || body.cards.length > 5) {
-    return NextResponse.json({ error: "Invalid card count" }, { status: 400 });
-  }
 
-  const callerKey = clientKey(req);
+  const callerKey = clientKey(req, user.id);
   const localRl = rateLimit(`tarot-interpret:${callerKey}`, { limit: 10, windowMs: 60_000 });
   if (!localRl.ok) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: { "Retry-After": String(localRl.retryAfterSec) } });

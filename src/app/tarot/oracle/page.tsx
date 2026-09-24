@@ -59,6 +59,7 @@ export default function OraclePage() {
   const [drawn, setDrawn] = useState(false);
   const [interpretation, setInterpretation] = useState<InterpretResponse | null>(null);
   const [interpretLoading, setInterpretLoading] = useState(false);
+  const [needsSignIn, setNeedsSignIn] = useState(false);
 
   async function pullReading() {
     if (loading) return;
@@ -66,6 +67,7 @@ export default function OraclePage() {
     setDrawn(false);
     setCards([]);
     setInterpretation(null);
+    setNeedsSignIn(false);
     try {
       const res = await fetch(`/api/tarot/reading?count=${spread.count}`);
       const data = (await res.json()) as DrawnCard[];
@@ -101,6 +103,8 @@ export default function OraclePage() {
       if (res.ok) {
         const data = (await res.json()) as InterpretResponse;
         setInterpretation(data);
+      } else if (res.status === 401) {
+        setNeedsSignIn(true);
       }
     } catch {
       // interpretation is optional — fail silently
@@ -245,6 +249,14 @@ export default function OraclePage() {
             cards={cards}
             positions={spread.positions}
           />
+        )}
+        {drawn && needsSignIn && (
+          <p style={{ marginTop: 32, fontSize: 12, color: "var(--term-fg-faint)", letterSpacing: "0.08em" }}>
+            <Link href="/auth/signin?callbackUrl=/tarot/oracle" style={{ color: "var(--neon-3)" }}>
+              Sign in
+            </Link>
+            {" to have the Oracle interpret your spread."}
+          </p>
         )}
 
       </div>
