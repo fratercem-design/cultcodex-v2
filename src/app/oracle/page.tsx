@@ -19,7 +19,7 @@ export async function generateMetadata() {
   return {
     alternates: { canonical: "/oracle" },
     title: "Ask the Oracle — AI Search — CULT CODEX",
-    description: `Ask the archive anything. The Oracle synthesizes ${fmtEpisodeCount(counts?.episodes ?? 0)} transmissions into precise answers — behavioral patterns, guest dynamics, recurring moments — all cited back to the source. Initiate+ feature.`,
+    description: `Ask the archive anything. The Oracle answers from ${fmtEpisodeCount(counts?.episodes ?? 0)} episodes and cites each answer back to its source. Included with Initiate+.`,
   };
 }
 

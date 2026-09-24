@@ -254,7 +254,7 @@ export function DeepSearchConsole() {
       {gated && (
         <div className="rounded-xl border border-violet-900/50 bg-violet-950/30 p-6 text-center space-y-3">
           <p className="text-violet-200 font-medium">Deep Search is a subscriber feature.</p>
-          <p className="text-sm text-text-muted">Subscribe to unlock multi-concept intersection search across the full transcript archive.</p>
+          <p className="text-sm text-text-muted">Subscribe to search the full transcript archive for several concepts at once.</p>
           <Link
             href="/premium"
             className="inline-block rounded-lg bg-violet-700 px-5 py-2 text-sm font-semibold text-white hover:bg-violet-600 transition-colors"

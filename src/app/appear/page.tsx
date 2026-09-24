@@ -22,7 +22,7 @@ const STEPS = [
   {
     n: "II",
     title: "Become a member",
-    body: "Channel membership and Initiate+ grant panel access and visibility in chat. It signals you're invested, not just passing through — and it's how most regulars first got on.",
+    body: "Channel membership and Initiate+ grant panel access and visibility in chat. Most regulars first got on this way.",
   },
   {
     n: "III",

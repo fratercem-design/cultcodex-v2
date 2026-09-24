@@ -329,7 +329,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
                 The surrounding transcript is sealed.
               </p>
               <p className="font-mono text-[12px] text-text-muted">
-                Initiate+ unlocks every line before and after this quote.
+                Initiate+ shows every line before and after this quote.
               </p>
               <Link
                 href="/premium#access"

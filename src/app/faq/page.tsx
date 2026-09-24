@@ -91,10 +91,10 @@ const FAQS: { q: string; plain: string; body: ReactNode }[] = [
   {
     q: "What do I get with a subscription?",
     plain:
-      "Free visitors can browse and search the archive. Paid tiers unlock deeper Oracle access and members-only features. Current tiers and pricing are on the premium page.",
+      "Free visitors can browse and search the archive. Paid tiers add more Oracle questions and members-only features. Current tiers and pricing are on the premium page.",
     body: (
       <p>
-        Browsing and searching the archive is free. Paid tiers unlock deeper Oracle access and
+        Browsing and searching the archive is free. Paid tiers add more Oracle questions and
         members-only features. The current tiers and pricing live on the{" "}
         <Link href="/premium" className="text-accent-gold-text hover:underline">premium page</Link>.
       </p>

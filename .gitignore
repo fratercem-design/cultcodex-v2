@@ -82,6 +82,7 @@ scripts/enrich/run-log.txt
 .claude/*
 !.claude/settings.json
 !.claude/hooks/
+!.claude/skills/
 .claude/settings.local.json
 
 # Brainstorming visual companion (superpowers skill)

@@ -9,7 +9,7 @@ export default async function Image() {
   return await createOgImage({
     eyebrow: "Join the cult",
     title: "There's no membership card. Only a door.",
-    subtitle: "Watch live, join the open panels, support the show, unlock the intelligence layer.",
+    subtitle: "Watch live, join the open panels, support the show, and ask the Oracle.",
     accent: "gold",
   });
 }

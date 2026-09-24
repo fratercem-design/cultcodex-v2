@@ -185,7 +185,7 @@ export default async function ReportsPage() {
                 pattern analysis — open with Initiate+.
               </p>
               <Link href="/premium" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25">
-                Unlock the reports — $10/mo →
+                Read the full reports — $10/mo →
               </Link>
             </div>
           )}

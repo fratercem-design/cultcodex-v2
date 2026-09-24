@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buildMetadata } from "@/lib/seo";
-import { TIERS, getTier, type TierSlug } from "@/lib/subscription-tiers";
+import { INITIATE_ORACLE_MONTHLY_LIMIT, TIERS, getTier, type TierSlug } from "@/lib/subscription-tiers";
 import { PremiumStatusProvider } from "@/components/subscription/premium-status-provider";
 import { PremiumManagePanel } from "@/components/subscription/premium-manage-panel";
 import { PremiumTierAction } from "@/components/subscription/premium-tier-action";
@@ -13,7 +13,7 @@ const oracleTier = getTier("system");
 
 export const metadata: Metadata = buildMetadata({
   title: "Join the Archive — Choose Your Role",
-  description: `Initiate+ ($${initiateTier.priceMonthly}/mo) unlocks the intelligence layer. Oracle ($${oracleTier.priceMonthly}/mo) puts you inside it.`,
+  description: `Initiate+ ($${initiateTier.priceMonthly}/mo): ${INITIATE_ORACLE_MONTHLY_LIMIT} cited Oracle questions a month, transcripts, and the Psychenomicon. Oracle ($${oracleTier.priceMonthly}/mo): unlimited Oracle questions, the Red Room, and your own archive page.`,
   path: "/premium",
 });
 

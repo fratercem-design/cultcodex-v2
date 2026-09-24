@@ -88,7 +88,7 @@ export default async function ProfilePage() {
                 href="/premium"
                 className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 hover:shadow-lg hover:shadow-accent-gold/20"
               >
-                Unlock Premium — $10/month
+                Upgrade to Initiate+ — $10/month
               </Link>
             </div>
             <p className="mt-3 font-mono text-[12px] text-text-muted">

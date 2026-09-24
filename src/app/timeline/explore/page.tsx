@@ -12,9 +12,9 @@ export const revalidate = 600;
 export const maxDuration = 30;
 
 export const metadata: Metadata = buildMetadata({
-  title: "Timeline Explorer — Navigate the Archive by Era",
+  title: "Timeline Explorer: The Archive by Era",
   description:
-    "An interactive map of every Cult of Psyche transmission across time. Filter by era, scan the activity histogram, and dive into any month of the archive.",
+    "An interactive map of every Cult of Psyche transmission across time. Filter by era, scan the activity histogram, and open any month of the archive.",
   path: "/timeline/explore",
 });
 
@@ -40,7 +40,7 @@ export default async function TimelineExplorePage() {
     <>
       <PageHero
         title="TIMELINE EXPLORER"
-        subtitle="Navigate the archive across time and era."
+        subtitle="Browse the archive by date and era."
         backgroundImage="/hero-bg.jpg"
         label="timeline"
       />
