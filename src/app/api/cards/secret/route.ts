@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { claimSecret } from "@/lib/cards/codex/codex";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +9,9 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  if (!rateLimit(`cards-secret:${user.id}`, { limit: 10, windowMs: 60_000 }).ok) {
+    return NextResponse.json({ card: null }, { status: 429 });
+  }
   const body = await req.json().catch(() => ({}));
   const code = typeof body.code === "string" ? body.code.slice(0, 64) : "";
   try {
