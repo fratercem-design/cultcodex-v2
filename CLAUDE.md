@@ -85,3 +85,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Working guidelines
+
+Adapted from [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills). They lean toward caution over speed; use judgment on trivial tasks.
+
+1. **Think before coding.** State assumptions. If a request has more than one reading, lay them out instead of picking one silently. If something is unclear, stop and ask. Say so when a simpler approach exists, and push back when warranted.
+2. **Simplicity first.** Write the minimum code that solves the problem. No unrequested features, single-use abstractions, speculative configurability, or error handling for impossible cases. If 200 lines could be 50, rewrite it.
+3. **Surgical changes.** Touch only what the task needs. Don't reformat, refactor, or "improve" adjacent code or comments. Match existing style. Mention unrelated dead code rather than deleting it; do remove imports/functions your own change made unused. Every changed line should trace back to the request.
+4. **Goal-driven execution.** Turn tasks into checkable goals ("fix the bug" → write a failing test, then make it pass). For multi-step work, state a short plan with a verify step for each item, and loop until verified.
