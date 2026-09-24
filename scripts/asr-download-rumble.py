@@ -22,6 +22,11 @@ Usage:
   python scripts/asr-download-rumble.py --batch 25
   python scripts/asr-download-rumble.py --channel https://rumble.com/user/PanelverseVODs/videos
   python scripts/asr-download-rumble.py --threshold 0.55   # looser title matching
+
+  # Rumble auto-captions many uploads. Grab those WebVTT tracks instead of
+  # audio - they go straight to `npm run asr:import`, no Whisper needed:
+  python scripts/asr-download-rumble.py --captions --dry-run   # report only
+  python scripts/asr-download-rumble.py --captions             # save transcripts
 """
 import argparse
 import difflib
@@ -41,6 +46,8 @@ except Exception:
 HERE = os.path.dirname(os.path.abspath(__file__))
 PENDING = os.path.join(HERE, "asr-pending.json")
 AUDIO_DIR = os.path.join(HERE, "scrape", "data", "audio")
+TRANSCRIPT_DIR = os.path.join(HERE, "scrape", "data", "transcripts")
+CAPTION_TMP = os.path.join(HERE, "scrape", "data", "rumble-vtt")
 MATCHES_OUT = os.path.join(HERE, "asr-rumble-matches.json")
 LOG_FILE = os.path.join(HERE, "asr-rumble.log")
 DEFAULT_CHANNEL = "https://rumble.com/user/PanelverseVODs/videos"
@@ -86,14 +93,30 @@ def ytdlp_cmd() -> list:
         return base
 
 
+def title_from_url(url: str) -> str:
+    """Recover a title from a Rumble video URL slug.
+
+    Rumble's channel listing often comes back without titles (yt-dlp prints
+    "NA"), but regular video URLs carry the title as a slug:
+    https://rumble.com/v6abc12-psyche-awakens-tarot-live-stream.html
+    -> "psyche awakens tarot live stream". normalize() lowercases and strips
+    punctuation anyway, so the slug is directly comparable to episode titles.
+    """
+    m = re.search(r"/v[0-9a-z]+-([^/?#]+?)(?:\.html)?(?:[?#]|$)", url)
+    return m.group(1).replace("-", " ") if m else ""
+
+
 def list_rumble_channel(channel_url: str) -> list:
     """Return [{title, url}] for every video on the Rumble channel."""
     # --sleep-requests: the listing pages through the channel, and Rumble
-    # answers 429 when those page fetches come back to back.
-    cmd = [*ytdlp_cmd(), "--flat-playlist", "--ignore-errors", "--sleep-requests", "1",
+    # answers 429 when those page fetches come back to back. The extractor
+    # retries back off exponentially (5s up to 2 min) when it still does.
+    cmd = [*ytdlp_cmd(), "--flat-playlist", "--ignore-errors",
+           "--sleep-requests", "3",
+           "--extractor-retries", "6", "--retry-sleep", "extractor:exp=5:120",
            "--dump-json", channel_url]
     log(f"Listing Rumble channel: {channel_url}")
-    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=1800)
     videos = []
     for raw in proc.stdout.splitlines():
         raw = raw.strip()
@@ -104,17 +127,101 @@ def list_rumble_channel(channel_url: str) -> list:
         except json.JSONDecodeError:
             continue
         url = obj.get("url") or obj.get("webpage_url") or obj.get("id")
+        if not url:
+            continue
+        if url.startswith("/"):
+            url = "https://rumble.com" + url
+        # Shorts are clips, not full episodes, and their URLs carry no title.
+        if "/shorts/" in url:
+            continue
         title = obj.get("title") or ""
-        if url and title:
-            if url.startswith("/"):
-                url = "https://rumble.com" + url
+        if not title or title == "NA":
+            title = title_from_url(url)
+        if title:
             videos.append({"title": title, "url": url})
-    if not videos:
-        err = (proc.stderr or "").strip().splitlines()
-        if err:
-            log("  yt-dlp said: " + err[-1][:300])
+    err = (proc.stderr or "").strip().splitlines()
+    if err and (not videos or any("429" in line for line in err)):
+        log("  yt-dlp said: " + err[-1][:300])
     log(f"  Found {len(videos)} videos on the channel.")
     return videos
+
+
+def vtt_ms(ts: str) -> int:
+    """'01:02:03.456' or '02:03.456' -> milliseconds."""
+    parts = ts.strip().split()[0].replace(",", ".").split(":")
+    secs = 0.0
+    for p in parts:
+        secs = secs * 60 + float(p)
+    return int(round(secs * 1000))
+
+
+def parse_vtt(vtt: str) -> list:
+    """WebVTT -> [{offset, duration, text}] in ms, the asr-transcribe.py format."""
+    segs, seen = [], set()
+    for block in re.split(r"\r?\n\s*\r?\n", vtt):
+        lines = [l.strip() for l in block.strip().splitlines()]
+        timing = next((l for l in lines if "-->" in l), None)
+        if not timing:
+            continue
+        start_s, end_s = [t.strip() for t in timing.split("-->", 1)]
+        text = " ".join(l for l in lines[lines.index(timing) + 1:] if l)
+        text = re.sub(r"<[^>]+>", "", text)
+        text = (text.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">")
+                    .replace("&#39;", "'").replace("&apos;", "'").replace("&quot;", '"')
+                    .replace("&nbsp;", " ")).strip()
+        if not text:
+            continue
+        start, end = vtt_ms(start_s), vtt_ms(end_s)
+        if (start, text) in seen:
+            continue
+        seen.add((start, text))
+        segs.append({"offset": start, "duration": max(end - start, 0), "text": text})
+    return segs
+
+
+def fetch_captions(url: str, ytid: str, save: bool):
+    """Check a Rumble video for a caption track.
+
+    Returns (languages, segment_count, error). Rumble exposes its captions as
+    WebVTT files in the player's "cc" block, which yt-dlp reports as regular
+    subtitles. With save=True the track (English preferred) is parsed and
+    written to transcripts/<ytId>.json for asr-import-segments.ts.
+    """
+    r = subprocess.run([*ytdlp_cmd(), "--skip-download", "--dump-json", url],
+                       capture_output=True, text=True, timeout=180)
+    if r.returncode != 0:
+        err = (r.stderr or "unknown").strip().splitlines()
+        return [], 0, (err[-1][:200] if err else "unknown")
+    try:
+        info = json.loads(r.stdout.strip().splitlines()[-1])
+    except (json.JSONDecodeError, IndexError):
+        return [], 0, "unreadable yt-dlp output"
+    langs = sorted((info.get("subtitles") or {}).keys())
+    if not langs or not save:
+        return langs, 0, None
+
+    lang = next((l for l in langs if l.lower().startswith("en")), langs[0])
+    os.makedirs(CAPTION_TMP, exist_ok=True)
+    for f in os.listdir(CAPTION_TMP):
+        if f.startswith(ytid + "."):
+            os.remove(os.path.join(CAPTION_TMP, f))
+    r = subprocess.run([*ytdlp_cmd(), "--skip-download", "--write-subs",
+                        "--sub-langs", lang, "--sub-format", "vtt/best",
+                        "-o", os.path.join(CAPTION_TMP, f"{ytid}.%(ext)s"), url],
+                       capture_output=True, text=True, timeout=300)
+    produced = [f for f in os.listdir(CAPTION_TMP)
+                if f.startswith(ytid + ".") and f.endswith(".vtt")]
+    if not produced:
+        err = (r.stderr or "").strip().splitlines()
+        return langs, 0, "caption download failed" + (": " + err[-1][:160] if err else "")
+    with open(os.path.join(CAPTION_TMP, produced[0]), "r", encoding="utf-8", errors="replace") as f:
+        segs = parse_vtt(f.read())
+    if not segs:
+        return langs, 0, "caption track was empty"
+    os.makedirs(TRANSCRIPT_DIR, exist_ok=True)
+    with open(os.path.join(TRANSCRIPT_DIR, f"{ytid}.json"), "w", encoding="utf-8") as f:
+        json.dump(segs, f, ensure_ascii=False)
+    return langs, len(segs), None
 
 
 def best_match(ep_title: str, videos: list, norm_index: list, threshold: float):
@@ -143,6 +250,9 @@ def main() -> int:
                     help="Min title-similarity 0-1 to accept a match (default 0.6)")
     ap.add_argument("--list", action="store_true", help="Just print the channel's videos and exit")
     ap.add_argument("--dry-run", action="store_true", help="Show matches, download nothing")
+    ap.add_argument("--captions", action="store_true",
+                    help="Check matched videos for Rumble's WebVTT captions and save those "
+                         "as transcripts instead of downloading audio (with --dry-run: report only)")
     args = ap.parse_args()
 
     videos = list_rumble_channel(args.channel)
@@ -165,6 +275,7 @@ def main() -> int:
     norm_index = [normalize(v["title"]) for v in videos]
 
     matched, downloaded, skipped, no_match, failed = 0, 0, 0, 0, 0
+    with_captions, captions_saved = 0, 0
     match_report = []
 
     for ep in pending:
@@ -172,7 +283,9 @@ def main() -> int:
         title = ep.get("title", "")
         mp3_path = os.path.join(AUDIO_DIR, f"{ytid}.mp3")
 
-        if os.path.exists(mp3_path) and os.path.getsize(mp3_path) > 1000:
+        tx_path = os.path.join(TRANSCRIPT_DIR, f"{ytid}.json")
+        have = tx_path if args.captions else mp3_path
+        if os.path.exists(have) and os.path.getsize(have) > 1000:
             skipped += 1
             continue
 
@@ -189,6 +302,31 @@ def main() -> int:
             "score": round(score, 3), "rumbleTitle": vid["title"], "rumbleUrl": vid["url"],
         })
         log(f"  MATCH {score:.2f}  EP.{ep.get('ep')}  {title[:45]}  ->  {vid['title'][:45]}")
+
+        if args.captions:
+            if downloaded + failed >= args.batch:
+                continue
+            try:
+                langs, nsegs, err = fetch_captions(vid["url"], ytid, save=not args.dry_run)
+            except subprocess.TimeoutExpired:
+                langs, nsegs, err = [], 0, "timeout"
+            match_report[-1]["captions"] = langs
+            if err:
+                log(f"    captions: ERROR {err}")
+                failed += 1
+            elif not langs:
+                log("    captions: none")
+                downloaded += 1
+            else:
+                with_captions += 1
+                downloaded += 1
+                if nsegs:
+                    captions_saved += 1
+                    log(f"    captions: {', '.join(langs)} -> saved {nsegs} segments")
+                else:
+                    log(f"    captions: {', '.join(langs)}")
+            time.sleep(3)
+            continue
 
         if args.dry_run:
             continue
@@ -223,7 +361,13 @@ def main() -> int:
     log(f"Title matched:      {matched}")
     log(f"No match:           {no_match}")
     log(f"Already had audio:  {skipped}")
-    if not args.dry_run:
+    if args.captions:
+        log(f"Checked:            {downloaded}")
+        log(f"Have captions:      {with_captions}")
+        log(f"Check errors:       {failed}")
+        if not args.dry_run:
+            log(f"Transcripts saved:  {captions_saved}  (next: npm run asr:import)")
+    elif not args.dry_run:
         log(f"Downloaded:         {downloaded}")
         log(f"Failed:             {failed}")
     log(f"Match report:       {MATCHES_OUT}")
