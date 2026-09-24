@@ -86,14 +86,30 @@ def ytdlp_cmd() -> list:
         return base
 
 
+def title_from_url(url: str) -> str:
+    """Recover a title from a Rumble video URL slug.
+
+    Rumble's channel listing often comes back without titles (yt-dlp prints
+    "NA"), but regular video URLs carry the title as a slug:
+    https://rumble.com/v6abc12-psyche-awakens-tarot-live-stream.html
+    -> "psyche awakens tarot live stream". normalize() lowercases and strips
+    punctuation anyway, so the slug is directly comparable to episode titles.
+    """
+    m = re.search(r"/v[0-9a-z]+-([^/?#]+?)(?:\.html)?(?:[?#]|$)", url)
+    return m.group(1).replace("-", " ") if m else ""
+
+
 def list_rumble_channel(channel_url: str) -> list:
     """Return [{title, url}] for every video on the Rumble channel."""
     # --sleep-requests: the listing pages through the channel, and Rumble
-    # answers 429 when those page fetches come back to back.
-    cmd = [*ytdlp_cmd(), "--flat-playlist", "--ignore-errors", "--sleep-requests", "1",
+    # answers 429 when those page fetches come back to back. The extractor
+    # retries back off exponentially (5s up to 2 min) when it still does.
+    cmd = [*ytdlp_cmd(), "--flat-playlist", "--ignore-errors",
+           "--sleep-requests", "3",
+           "--extractor-retries", "6", "--retry-sleep", "extractor:exp=5:120",
            "--dump-json", channel_url]
     log(f"Listing Rumble channel: {channel_url}")
-    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+    proc = subprocess.run(cmd, capture_output=True, text=True, timeout=1800)
     videos = []
     for raw in proc.stdout.splitlines():
         raw = raw.strip()
@@ -104,15 +120,21 @@ def list_rumble_channel(channel_url: str) -> list:
         except json.JSONDecodeError:
             continue
         url = obj.get("url") or obj.get("webpage_url") or obj.get("id")
+        if not url:
+            continue
+        if url.startswith("/"):
+            url = "https://rumble.com" + url
+        # Shorts are clips, not full episodes, and their URLs carry no title.
+        if "/shorts/" in url:
+            continue
         title = obj.get("title") or ""
-        if url and title:
-            if url.startswith("/"):
-                url = "https://rumble.com" + url
+        if not title or title == "NA":
+            title = title_from_url(url)
+        if title:
             videos.append({"title": title, "url": url})
-    if not videos:
-        err = (proc.stderr or "").strip().splitlines()
-        if err:
-            log("  yt-dlp said: " + err[-1][:300])
+    err = (proc.stderr or "").strip().splitlines()
+    if err and (not videos or any("429" in line for line in err)):
+        log("  yt-dlp said: " + err[-1][:300])
     log(f"  Found {len(videos)} videos on the channel.")
     return videos
 
