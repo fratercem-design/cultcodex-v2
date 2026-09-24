@@ -10,6 +10,7 @@ import { getEraById } from "@/lib/eras";
 import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
 import { FREE_ORACLE_MONTHLY_LIMIT, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
 import { consumeLlmBudget, consumeMonthlyMeter, refundMonthlyMeter } from "@/lib/llm-budget";
+import { describeDraw, drawOracleCard, spokenPartOfReading } from "@/lib/cards/codex/divination";
 import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cache";
 import { groqChat, groqConfigured } from "@/lib/free-llm";
 
@@ -18,7 +19,7 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 
-const ORACLE_SYSTEM = `You are THE ORACLE OF THE CODEX — the distilled intelligence of every Cult of Psyche transmission since the show's return in October 2024. You do not opine. You channel. The host of the show, Psyche (also called Trix), is MALE — use he/him/his when referring to him.
+const ORACLE_IDENTITY = `You are THE ORACLE OF THE CODEX — the distilled intelligence of every Cult of Psyche transmission since the show's return in October 2024. You do not opine. You channel. The host of the show, Psyche (also called Trix), is MALE — use he/him/his when referring to him.
 
 IDENTITY — CRITICAL: You live inside CultCodex (cultcodex.me) — the structured archive of the Cult of Psyche livestream show. You ARE the archive made answerable. When asked about CultCodex, the site, or what you are, speak from this identity. Never say you "cannot browse websites" or give generic framework responses — you are not a general-purpose AI assistant. You are the Oracle of this specific archive. Answer from within it. If asked to "audit" or "describe" CultCodex, speak as the archive speaking about itself.
 
@@ -35,12 +36,34 @@ TOOLS:
 
 NEVER mention the tools, searching, or that you are gathering data. The Oracle speaks, never explains how it speaks.
 
-PSYCHENOMICON LAYER: Chapters contain canon (factual), interpretation (psychological), and mythic (archetypal) layers. Weight canon as ground truth. Interpretation is editorial truth. Mythic is in-world framing, never factual assertion.
+PSYCHENOMICON LAYER: Chapters contain canon (factual), interpretation (psychological), and mythic (archetypal) layers. Weight canon as ground truth. Interpretation is editorial truth. Mythic is in-world framing, never factual assertion.`;
+
+const ORACLE_SYSTEM = `${ORACLE_IDENTITY}
 
 FORMAT:
 - 3–5 sentences. No headers. No bullet points. No quotation marks wrapping the whole response. Pure oracle voice.
 - End with one sharp, revelatory closing line (≤ 12 words) that crystallizes the pattern.
 - If the archive is silent: "The archive holds no record of this. Ask again."`;
+
+/**
+ * Divination mode: one Codex card is drawn server-side and the Oracle gives a
+ * full reading of it against the question, grounded in the archive. The card
+ * and its fixed meanings arrive in the prompt, so the reading interprets them
+ * rather than inventing a card.
+ */
+const DIVINATION_SYSTEM = `${ORACLE_IDENTITY}
+
+DIVINATION MODE: The querent has asked a question and one card has been drawn for them from the CultCodex deck. The card, its position (upright or reversed) and its fixed meanings are given to you. Give a deep, personal reading of that card against their question. The card's meaning is the spine of the reading: interpret it, never contradict it, never swap in a different card. The archive context is your evidence: where it holds a quote, a guest, an episode or a Psychenomicon thread that echoes the card or the question, name it specifically and weave it in. Never invent archive material; if the archive offers nothing relevant, read from the card alone and say the archive is quiet on it.
+
+FORMAT — plain text, no markdown symbols, no bullet points. Six sections, each its own paragraph, each opening with its label in capitals followed by " — ":
+THE CARD — Describe the card as it lies (name it, upright or reversed) and what it means at its root. 2–3 sentences.
+WHAT THE ARCHIVE REMEMBERS — Where this card's pattern has already appeared in the Cult of Psyche record, citing specific people, episodes or quotes from the context. 3–5 sentences.
+YOUR QUESTION — Apply the card directly to what they asked. Be specific to their words, not generic. 3–5 sentences.
+THE SHADOW — The risk, blind spot or reversed pull the card warns of in their situation. 2–3 sentences.
+COUNSEL — One or two concrete things to do or watch for in the coming days. 2–3 sentences.
+THE OMEN — One closing line, 12 words or fewer, that they will remember.
+
+Speak to the querent as "you". Total 320–480 words. Keep the Oracle's voice: authoritative, slightly cryptic, never vague.`;
 
 export interface OracleCitation {
   type: "quote" | "transcript" | "episode" | "person" | "chapter" | "entity";
@@ -59,6 +82,13 @@ export interface OracleResponse {
   trialUsed?: boolean;
   /** How many free questions remain this month (only set for trial requests). */
   trialRemaining?: number;
+  /** Divination mode only: the card drawn for this reading. */
+  card?: OracleDrawnCard;
+}
+
+export interface OracleDrawnCard {
+  slug: string;
+  reversed: boolean;
 }
 
 export interface OracleSearchContext {
@@ -775,6 +805,8 @@ async function runOracleAgent(
   question: string,
   preFlightCitations: OracleCitation[],
   contextPreamble: string,
+  system: string = ORACLE_SYSTEM,
+  maxTokens = 1024,
 ): Promise<{ answer: string; citations: OracleCitation[] }> {
   const allCitations: OracleCitation[] = [...preFlightCitations];
   const seenCitationHrefs = new Set(preFlightCitations.map((c) => c.href));
@@ -791,8 +823,8 @@ async function runOracleAgent(
   for (let round = 0; round < MAX_ROUNDS; round++) {
     const response = await client.messages.create({
       model,
-      max_tokens: 1024,
-      system: ORACLE_SYSTEM,
+      max_tokens: maxTokens,
+      system,
       tools: ORACLE_TOOLS,
       messages,
     });
@@ -932,6 +964,8 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json().catch(() => ({})) as Record<string, unknown>;
   const question = String(body.question ?? "").trim().slice(0, 500);
+  // Divination: one card drawn here, on the server, so the client can't pick it.
+  const draw = body.mode === "divine" ? drawOracleCard() : null;
 
   if (!question) {
     return NextResponse.json(
@@ -997,8 +1031,9 @@ export async function POST(req: NextRequest) {
 
   // Cache check — skip the LLM call if we've seen this exact query.
   // Audio is NOT cached (base64 MP3s are large); TTS is re-fetched on cache hits.
+  // Every reading draws a fresh card, so divination never reads from the cache.
   const cacheKey = oracleCacheKey(question, searchContext);
-  const cached = oracleCacheGet(cacheKey);
+  const cached = draw ? null : oracleCacheGet(cacheKey);
   if (cached) {
     // Re-run TTS so callers still get voice on cache hits, without storing audio in memory.
     const cachedAudio = await synthesizeVoice(cached.answer);
@@ -1085,7 +1120,9 @@ export async function POST(req: NextRequest) {
   // Pre-flight archive search
   let archiveData: Awaited<ReturnType<typeof searchArchive>>;
   try {
-    archiveData = await searchArchive(question, searchContext);
+    // A reading searches for the card's themes too, so the archive can echo them.
+    const searchQuery = draw ? `${question} ${draw.def.title} ${draw.meaning.keywords.join(" ")}` : question;
+    archiveData = await searchArchive(searchQuery, searchContext);
   } catch (err) {
     console.error("[oracle] archive search failed:", err);
     archiveData = { quotes: [], transcripts: [], episodes: [], people: [], lore: [], chapters: [], entities: [], threads: [], query: question };
@@ -1104,7 +1141,11 @@ export async function POST(req: NextRequest) {
   if (searchContext?.sourcePerson) {
     contextLines.push(`Subject focus: ${searchContext.sourcePerson.replace(/-/g, " ")}`);
   }
-  const contextPreamble = contextLines.length > 0 ? `Context frame: ${contextLines.join(" | ")}\n\n` : "";
+  const contextPreamble =
+    (contextLines.length > 0 ? `Context frame: ${contextLines.join(" | ")}\n\n` : "") +
+    (draw ? `${describeDraw(draw)}\n\n` : "");
+  const system = draw ? DIVINATION_SYSTEM : ORACLE_SYSTEM;
+  const maxTokens = draw ? 2000 : 1024;
 
   let answer: string | null = null;
   let citations: OracleCitation[] = preFlightCitations;
@@ -1117,9 +1158,9 @@ export async function POST(req: NextRequest) {
   if (groqConfigured()) {
     try {
       const groqAnswer = await groqChat({
-        system: ORACLE_SYSTEM,
+        system,
         user: `Archive context (pre-searched):\n${contextText}\n\n${contextPreamble}Question: ${question}`,
-        maxTokens: 1024,
+        maxTokens,
       });
       if (groqAnswer.trim()) { answer = groqAnswer.trim(); citations = preFlightCitations; }
     } catch (groqErr) {
@@ -1132,7 +1173,7 @@ export async function POST(req: NextRequest) {
     try {
       const client = new AnthropicBedrock({ awsRegion: process.env.AWS_REGION ?? "us-east-1" });
       const model = bedrockModelId(process.env.ORACLE_MODEL ?? "claude-opus-4-8");
-      const result = await runOracleAgent(client, model, contextText, question, preFlightCitations, contextPreamble);
+      const result = await runOracleAgent(client, model, contextText, question, preFlightCitations, contextPreamble, system, maxTokens);
       answer = result.answer;
       citations = result.citations;
     } catch (err) {
@@ -1149,9 +1190,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const audioBase64 = await synthesizeVoice(answer);
+  const audioBase64 = await synthesizeVoice(draw ? spokenPartOfReading(answer) : answer);
 
-  oracleCacheSet(cacheKey, { answer, citations });
+  if (!draw) oracleCacheSet(cacheKey, { answer, citations });
 
   const finalRes = NextResponse.json({
     ok: true,
@@ -1161,6 +1202,7 @@ export async function POST(req: NextRequest) {
     hasVoice: !!audioBase64,
     trialUsed: isFreeTrialRequest,
     trialRemaining,
+    card: draw ? { slug: draw.def.slug, reversed: draw.reversed } : undefined,
   } satisfies OracleResponse);
 
   if (isFreeTrialRequest) setTrialCookie(finalRes, trialUsed + 1, trial.month);
