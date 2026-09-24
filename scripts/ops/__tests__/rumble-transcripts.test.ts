@@ -79,5 +79,5 @@ describe("the committed transcript set", () => {
       if (end > r.durationSeconds * 0.6) spanning++;
     }
     expect(spanning / rows.length).toBeGreaterThan(0.95);
-  });
+  }, 60_000); // ~90 MB of captions
 });
