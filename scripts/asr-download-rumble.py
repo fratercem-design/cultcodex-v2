@@ -4,7 +4,7 @@ Download audio for caption-less episodes from RUMBLE instead of YouTube.
 
 Why: YouTube blocks unauthenticated audio downloads from many IPs and needs
 browser cookies. Rumble does not — so if the same episodes are mirrored on a
-Rumble channel (e.g. PanelverseVods), we can pull audio there with no cookies.
+Rumble channel (e.g. PanelverseVODs), we can pull audio there with no cookies.
 
 How it works:
   1. Reads scripts/asr-pending.json  (produced by `npm run asr:export`)
@@ -20,7 +20,7 @@ Usage:
 
   # Then actually download:
   python scripts/asr-download-rumble.py --batch 25
-  python scripts/asr-download-rumble.py --channel https://rumble.com/c/PanelverseVods
+  python scripts/asr-download-rumble.py --channel https://rumble.com/user/PanelverseVODs/videos
   python scripts/asr-download-rumble.py --threshold 0.55   # looser title matching
 """
 import argparse
@@ -43,7 +43,7 @@ PENDING = os.path.join(HERE, "asr-pending.json")
 AUDIO_DIR = os.path.join(HERE, "scrape", "data", "audio")
 MATCHES_OUT = os.path.join(HERE, "asr-rumble-matches.json")
 LOG_FILE = os.path.join(HERE, "asr-rumble.log")
-DEFAULT_CHANNEL = "https://rumble.com/c/PanelverseVods"
+DEFAULT_CHANNEL = "https://rumble.com/user/PanelverseVODs/videos"
 
 
 def log(msg: str) -> None:
@@ -88,7 +88,10 @@ def ytdlp_cmd() -> list:
 
 def list_rumble_channel(channel_url: str) -> list:
     """Return [{title, url}] for every video on the Rumble channel."""
-    cmd = [*ytdlp_cmd(), "--flat-playlist", "--ignore-errors", "--dump-json", channel_url]
+    # --sleep-requests: the listing pages through the channel, and Rumble
+    # answers 429 when those page fetches come back to back.
+    cmd = [*ytdlp_cmd(), "--flat-playlist", "--ignore-errors", "--sleep-requests", "1",
+           "--dump-json", channel_url]
     log(f"Listing Rumble channel: {channel_url}")
     proc = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
     videos = []
