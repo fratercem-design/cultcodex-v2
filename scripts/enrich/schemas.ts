@@ -18,13 +18,16 @@ export const EnrichedQuoteSchema = z.object({
 export const EnrichedLoreSchema = z.object({
   title: z.string().min(1),
   summary: z.string(),
-  canonStatus: z.enum([
-    "canonical",
-    "speculative",
-    "community_myth",
-    "disputed",
-    "humorous",
-  ]),
+  // Models sometimes vary the label ("Community Myth", "community-myth") or
+  // invent one ("theoretical"). Normalise the spelling, and file anything still
+  // unknown as "speculative" rather than failing the whole episode (1 of 16 in
+  // run 35937449031 was lost to this).
+  canonStatus: z.preprocess(
+    (v) => (typeof v === "string" ? v.trim().toLowerCase().replace(/[\s-]+/g, "_") : v),
+    z
+      .enum(["canonical", "speculative", "community_myth", "disputed", "humorous"])
+      .catch("speculative"),
+  ),
   category: z.string(),
 });
 
