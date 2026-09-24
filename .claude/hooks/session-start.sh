@@ -15,6 +15,8 @@ fi
 # script's location so the hook is also runnable directly for validation.
 cd "${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
-# Prefer `npm install` over `npm ci` so the cached container state is reused
-# across sessions. Idempotent and non-interactive.
-npm install
+# Use `npm ci` rather than `npm install`: install rewrites package-lock.json
+# when the container's npm differs from the one that wrote it (e.g. dropping
+# `libc` fields), leaving a dirty tree every session. ci never touches the
+# lockfile. --prefer-offline reuses the npm cache to offset the clean install.
+npm ci --prefer-offline --no-audit --no-fund
