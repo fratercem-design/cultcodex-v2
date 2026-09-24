@@ -40,6 +40,11 @@ describe("parsers", () => {
     ]);
   });
 
+  it("leaves no markup behind, even from nested or broken tags", () => {
+    const srt = "1\n00:00:01,000 --> 00:00:02,000\n<scr<script>ipt>alert(1)</script> hi <b\n";
+    expect(parseSrt(srt)[0].text).not.toMatch(/[<>]/);
+  });
+
   it("formats durations the way episodes store them", () => {
     expect(formatDuration(18093)).toBe("5:01:33");
     expect(formatDuration(1301)).toBe("21:41");

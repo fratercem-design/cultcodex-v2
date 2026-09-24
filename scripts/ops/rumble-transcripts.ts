@@ -116,7 +116,10 @@ export function parseSrt(srt: string): Segment[] {
     const text = lines
       .slice(timeIdx + 1)
       .join(" ")
-      .replace(/<[^>]+>/g, "")
+      // Drop formatting tags (<i>, <font …>), then any stray angle bracket, so a
+      // malformed or nested tag can't leave markup behind in stored text.
+      .replace(/<[^>]*>/g, "")
+      .replace(/[<>]/g, "")
       .replace(/\[.*?\]/g, "")
       .replace(/\s+/g, " ")
       .trim();
