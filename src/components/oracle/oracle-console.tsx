@@ -6,6 +6,7 @@ import type { OracleCitation, OracleResponse } from "@/app/api/oracle/ask/route"
 import { LilithOracle } from "@/components/oracle/lilith-oracle";
 import { INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
 import { DivinationReading } from "@/components/oracle/divination-reading";
+import { ShadowOracle } from "@/components/oracle/shadow-oracle";
 
 type ConsoleState = "idle" | "loading" | "answered" | "error";
 type OracleMode = "ask" | "divine";
@@ -88,6 +89,19 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
   const [typewriterActive, setTypewriterActive] = useState(false);
   const [mode, setMode] = useState<OracleMode>("ask");
   const [card, setCard] = useState<OracleResponse["card"] | null>(null);
+
+  // The Shadow Oracle's "Draw a card" link lands on #divine: switch modes.
+  useEffect(() => {
+    const onHash = () => {
+      if (window.location.hash === "#divine") {
+        setMode("divine");
+        textareaRef.current?.focus({ preventScroll: true });
+      }
+    };
+    onHash(); // deep links arrive with the hash already set
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const answerRef = useRef<HTMLDivElement | null>(null);
@@ -546,6 +560,9 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
               {card ? (
                 <DivinationReading slug={card.slug} reversed={card.reversed} text={displayedAnswer} done={displayedAnswer.length >= answer.length} />
               ) : (
+                <>
+                {/* The archive came up empty: the Shadow Oracle's sign says it for her. */}
+                {answer.startsWith("The archive holds no record") && <ShadowOracle variant="silent" />}
                 <blockquote className="font-serif text-base sm:text-lg leading-relaxed text-text-primary text-center px-2 min-h-[3rem]">
                   {displayedAnswer}
                   {/* Blinking cursor during typewriter */}
@@ -553,6 +570,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
                     <span className="inline-block w-0.5 h-[1.1em] bg-accent-violet/70 ml-0.5 align-middle animate-pulse" />
                   )}
                 </blockquote>
+                </>
               )}
 
               {/* Question echo */}
