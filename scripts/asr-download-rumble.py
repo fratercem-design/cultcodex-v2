@@ -106,8 +106,75 @@ def title_from_url(url: str) -> str:
     return m.group(1).replace("-", " ") if m else ""
 
 
+VIDEO_HREF = re.compile(r'href="(/v[0-9a-z]+-[^"?#]+\.html)[^"]*"')
+
+
+def list_rumble_pages(channel_url: str):
+    """Page through the channel's /videos listing directly.
+
+    yt-dlp's Rumble channel extractor strips everything after /user/<name>,
+    so it pages the channel *home* (?page=2, 3, ...) - which shows one Short
+    and never 404s. It never reaches the video list and just loops until
+    Rumble answers 429. Fetch <channel>/videos?page=N ourselves instead,
+    with a Chrome fingerprint (plain clients get 403), and stop at the first
+    404 or the first page that adds no new videos.
+
+    Returns [{title, url}], or None when curl_cffi is missing.
+    """
+    try:
+        from curl_cffi import requests as creq
+    except ImportError:
+        return None
+    m = re.match(r"(https?://(?:www\.)?rumble\.com/(?:c|user)/[^/?#&]+)", channel_url)
+    if not m:
+        return None
+    base = m.group(1) + "/videos"
+    seen, videos = set(), []
+    session = creq.Session(impersonate="chrome")
+    for page in range(1, 500):
+        url = f"{base}?page={page}"
+        resp = None
+        for attempt in range(6):
+            try:
+                resp = session.get(url, timeout=60)
+            except Exception as e:  # network hiccup: back off and retry
+                log(f"  page {page}: {e} - retrying")
+                resp = None
+            if resp is not None and resp.status_code != 429 and resp.status_code < 500:
+                break
+            wait = min(5 * 2 ** attempt, 120)
+            code = resp.status_code if resp is not None else "error"
+            log(f"  page {page}: HTTP {code}, waiting {wait}s")
+            time.sleep(wait)
+        if resp is None or resp.status_code == 404:
+            break
+        if resp.status_code != 200:
+            log(f"  page {page}: HTTP {resp.status_code} - stopping")
+            break
+        new = 0
+        for href in VIDEO_HREF.findall(resp.text):
+            full = "https://rumble.com" + href
+            if full in seen:
+                continue
+            seen.add(full)
+            videos.append({"title": title_from_url(full), "url": full})
+            new += 1
+        log(f"  page {page}: {new} new videos ({len(videos)} total)")
+        if new == 0:
+            break
+        time.sleep(3)
+    return videos
+
+
 def list_rumble_channel(channel_url: str) -> list:
     """Return [{title, url}] for every video on the Rumble channel."""
+    log(f"Listing Rumble channel: {channel_url}")
+    videos = list_rumble_pages(channel_url)
+    if videos is not None:
+        log(f"  Found {len(videos)} videos on the channel.")
+        return videos
+
+    # Fallback without curl_cffi. Subject to the yt-dlp paging bug above.
     # --sleep-requests: the listing pages through the channel, and Rumble
     # answers 429 when those page fetches come back to back. The extractor
     # retries back off exponentially (5s up to 2 min) when it still does.
@@ -115,7 +182,6 @@ def list_rumble_channel(channel_url: str) -> list:
            "--sleep-requests", "3",
            "--extractor-retries", "6", "--retry-sleep", "extractor:exp=5:120",
            "--dump-json", channel_url]
-    log(f"Listing Rumble channel: {channel_url}")
     proc = subprocess.run(cmd, capture_output=True, text=True, timeout=1800)
     videos = []
     for raw in proc.stdout.splitlines():
