@@ -26,17 +26,39 @@ export type GrantPurchasedCreditsResult =
  * is the first line of defence; this is the second, and the one that holds
  * when the dedup row is released so a failed delivery can be retried.
  *
+ * The `findFirst` alone can race: two concurrent deliveries can both miss it.
+ * A partial unique index on `referenceId WHERE reason = 'purchase'` (see
+ * migration 20260924000000_unique_credit_purchase) makes the loser's insert
+ * fail with P2002, which rolls back its wallet increment and is reported here
+ * as already granted.
+ *
  * `credits` comes from checkout metadata that this server wrote; the webhook
  * cross-checks it against the bundle table before calling this.
  */
 export async function grantPurchasedCredits(
   input: GrantPurchasedCreditsInput
 ): Promise<GrantPurchasedCreditsResult> {
-  const { userId, bundle, credits, stripeSessionId, amountCents } = input;
+  const { credits } = input;
   if (!Number.isInteger(credits) || credits <= 0) {
     throw new Error(`grantPurchasedCredits: invalid credits ${credits}`);
   }
 
+  try {
+    return await grantInTransaction(input);
+  } catch (err) {
+    if (isUniqueViolation(err)) return { granted: false, reason: "already_granted" };
+    throw err;
+  }
+}
+
+function isUniqueViolation(err: unknown): boolean {
+  return typeof err === "object" && err !== null && (err as { code?: unknown }).code === "P2002";
+}
+
+async function grantInTransaction(
+  input: GrantPurchasedCreditsInput
+): Promise<GrantPurchasedCreditsResult> {
+  const { userId, bundle, credits, stripeSessionId, amountCents } = input;
   return prisma.$transaction(async (tx) => {
     const existing = await tx.creditTransaction.findFirst({
       where: { reason: CREDIT_PURCHASE_REASON, referenceId: stripeSessionId },
