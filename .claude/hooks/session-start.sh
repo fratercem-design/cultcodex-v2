@@ -16,5 +16,7 @@ fi
 cd "${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
 # Prefer `npm install` over `npm ci` so the cached container state is reused
-# across sessions. Idempotent and non-interactive.
-npm install
+# across sessions. Idempotent and non-interactive. `--no-save` keeps it from
+# rewriting package-lock.json: the container's npm 10 drops the `libc` fields
+# that npm 11 (Dependabot/CI) writes, which left the tree dirty every session.
+npm install --no-save
