@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import type { MessageParam, Tool, ToolResultBlockParam } from "@anthropic-ai/sdk/resources/messages";
@@ -868,6 +869,51 @@ function setTrialCookie(res: NextResponse, used: number, month: string): void {
   });
 }
 
+/**
+ * Server-side backing for the trial cookie. The cookie alone is clearable, so
+ * the trial is also metered per caller (user id when signed in, hashed IP
+ * otherwise) in the monthly LlmBudget table. The cookie stays as a fast path
+ * and for the UI's remaining-count display.
+ */
+function trialMeterBucket(callerKey: string): string {
+  const id = callerKey.startsWith("ip:")
+    ? `ip:${createHash("sha256").update(callerKey).digest("hex").slice(0, 32)}`
+    : callerKey;
+  return `oracle-trial-${id}`;
+}
+
+// ─── Voice (ElevenLabs) ──────────────────────────────────────────────────────
+
+/**
+ * Text-to-speech for an answer, or null for a text-only reply. Every call is
+ * charged to its own daily budget (ORACLE_TTS_DAILY_CAP) because cache hits
+ * skip the LLM budget but still pay ElevenLabs; without this, repeating a
+ * cached question spent TTS with no global ceiling.
+ */
+async function synthesizeVoice(text: string): Promise<string | null> {
+  const elKey = process.env.ELEVENLABS_API_KEY;
+  if (!elKey) return null;
+  const budget = await consumeLlmBudget("oracle_tts", Number(process.env.ORACLE_TTS_DAILY_CAP ?? "500"));
+  if (!budget.ok) return null;
+  const elVoice = process.env.ELEVENLABS_VOICE_ID ?? "21m00Tcm4TlvDq8ikWAM";
+  try {
+    const elRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${elVoice}`, {
+      method: "POST",
+      headers: { "xi-api-key": elKey, "Content-Type": "application/json", Accept: "audio/mpeg" },
+      body: JSON.stringify({
+        text,
+        model_id: "eleven_multilingual_v2",
+        voice_settings: { stability: 0.60, similarity_boost: 0.80, style: 0.15, use_speaker_boost: true },
+      }),
+    });
+    if (!elRes.ok) return null;
+    return Buffer.from(await elRes.arrayBuffer()).toString("base64");
+  } catch {
+    // Voice unavailable — text-only fallback
+    return null;
+  }
+}
+
 // ─── POST handler ─────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
@@ -927,46 +973,35 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Cache check — skip the expensive LLM + ElevenLabs call if we've seen this exact query.
+  // Free trial, server side. Charged before the cache check because a cache
+  // hit still costs TTS; refunded below if no answer is produced.
+  let trialUsed = trial.used;
+  let trialBucket: string | null = null;
+  if (isFreeTrialRequest) {
+    trialBucket = trialMeterBucket(callerKey);
+    const meter = await consumeMonthlyMeter(trialBucket, TRIAL_LIMIT);
+    if (!meter.ok) {
+      await refundMonthlyMeter(trialBucket);
+      return NextResponse.json(
+        { ok: false, error: "initiate_required" } satisfies OracleResponse,
+        { status: 403 }
+      );
+    }
+    if (meter.persisted) trialUsed = Math.max(trialUsed, meter.used - 1);
+    else trialBucket = null;
+  }
+  const trialRemaining = isFreeTrialRequest ? Math.max(0, TRIAL_LIMIT - trialUsed - 1) : undefined;
+  const refundTrial = async () => {
+    if (trialBucket) await refundMonthlyMeter(trialBucket);
+  };
+
+  // Cache check — skip the LLM call if we've seen this exact query.
   // Audio is NOT cached (base64 MP3s are large); TTS is re-fetched on cache hits.
   const cacheKey = oracleCacheKey(question, searchContext);
   const cached = oracleCacheGet(cacheKey);
   if (cached) {
     // Re-run TTS so callers still get voice on cache hits, without storing audio in memory.
-    let cachedAudio: string | null = null;
-    const elKey = process.env.ELEVENLABS_API_KEY;
-    const elVoice = process.env.ELEVENLABS_VOICE_ID ?? "21m00Tcm4TlvDq8ikWAM";
-    if (elKey) {
-      try {
-        const elRes = await fetch(
-          `https://api.elevenlabs.io/v1/text-to-speech/${elVoice}`,
-          {
-            method: "POST",
-            headers: {
-              "xi-api-key": elKey,
-              "Content-Type": "application/json",
-              Accept: "audio/mpeg",
-            },
-            body: JSON.stringify({
-              text: cached.answer,
-              model_id: "eleven_multilingual_v2",
-              voice_settings: {
-                stability: 0.60,
-                similarity_boost: 0.80,
-                style: 0.15,
-                use_speaker_boost: true,
-              },
-            }),
-          }
-        );
-        if (elRes.ok) {
-          const buf = await elRes.arrayBuffer();
-          cachedAudio = Buffer.from(buf).toString("base64");
-        }
-      } catch {
-        // Voice unavailable — text-only fallback
-      }
-    }
+    const cachedAudio = await synthesizeVoice(cached.answer);
 
     const res = NextResponse.json({
       ok: true,
@@ -975,9 +1010,9 @@ export async function POST(req: NextRequest) {
       audioBase64: cachedAudio,
       hasVoice: !!cachedAudio,
       trialUsed: isFreeTrialRequest,
-      trialRemaining: isFreeTrialRequest ? Math.max(0, TRIAL_LIMIT - trial.used - 1) : undefined,
+      trialRemaining,
     } satisfies OracleResponse);
-    if (isFreeTrialRequest) setTrialCookie(res, trial.used + 1, trial.month);
+    if (isFreeTrialRequest) setTrialCookie(res, trialUsed + 1, trial.month);
     return res;
   }
 
@@ -990,14 +1025,16 @@ export async function POST(req: NextRequest) {
     process.env.ORACLE_USE_BEDROCK === "true" &&
     Boolean(process.env.AWS_REGION || process.env.AWS_ACCESS_KEY_ID);
   if (!groqConfigured() && !bedrockConfigured) {
+    await refundTrial();
     return NextResponse.json(
       { ok: false, error: "Oracle not configured." } satisfies OracleResponse,
       { status: 500 }
     );
   }
 
-  // Global daily ceiling on the expensive LLM path. The free trial is
-  // cookie-gated (clearable), so cap total calls/day across everyone. Tune via
+  // Global daily ceiling on the expensive LLM path. The per-caller trial meter
+  // is keyed on IP for anonymous callers (rotatable), so cap total calls/day
+  // across everyone. Tune via
   // ORACLE_DAILY_CAP; AI_KILLSWITCH=1 disables instantly.
   //
   // Charged here, past the cache check, so a cache hit never spends global
@@ -1006,6 +1043,7 @@ export async function POST(req: NextRequest) {
   // duplicate requests cannot burn the day's budget.
   const budget = await consumeLlmBudget("oracle", Number(process.env.ORACLE_DAILY_CAP ?? "500"));
   if (!budget.ok) {
+    await refundTrial();
     return NextResponse.json(
       { ok: false, error: "The Oracle is resting. Try again later." } satisfies OracleResponse,
       { status: 503, headers: { "Retry-After": "3600" } }
@@ -1104,35 +1142,14 @@ export async function POST(req: NextRequest) {
 
   if (answer == null) {
     if (monthlyMeterBucket) await refundMonthlyMeter(monthlyMeterBucket);
+    await refundTrial();
     return NextResponse.json(
       { ok: false, error: "The Oracle is resting. Try again in a moment." } satisfies OracleResponse,
       { status: 503, headers: { "Retry-After": "30" } }
     );
   }
 
-  let audioBase64: string | null = null;
-  const elKey = process.env.ELEVENLABS_API_KEY;
-  const elVoice = process.env.ELEVENLABS_VOICE_ID ?? "21m00Tcm4TlvDq8ikWAM";
-
-  if (elKey) {
-    try {
-      const elRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${elVoice}`, {
-        method: "POST",
-        headers: { "xi-api-key": elKey, "Content-Type": "application/json", Accept: "audio/mpeg" },
-        body: JSON.stringify({
-          text: answer,
-          model_id: "eleven_multilingual_v2",
-          voice_settings: { stability: 0.60, similarity_boost: 0.80, style: 0.15, use_speaker_boost: true },
-        }),
-      });
-      if (elRes.ok) {
-        const buf = await elRes.arrayBuffer();
-        audioBase64 = Buffer.from(buf).toString("base64");
-      }
-    } catch {
-      // Voice unavailable — text-only fallback
-    }
-  }
+  const audioBase64 = await synthesizeVoice(answer);
 
   oracleCacheSet(cacheKey, { answer, citations });
 
@@ -1143,9 +1160,9 @@ export async function POST(req: NextRequest) {
     audioBase64,
     hasVoice: !!audioBase64,
     trialUsed: isFreeTrialRequest,
-    trialRemaining: isFreeTrialRequest ? Math.max(0, TRIAL_LIMIT - trial.used - 1) : undefined,
+    trialRemaining,
   } satisfies OracleResponse);
 
-  if (isFreeTrialRequest) setTrialCookie(finalRes, trial.used + 1, trial.month);
+  if (isFreeTrialRequest) setTrialCookie(finalRes, trialUsed + 1, trial.month);
   return finalRes;
 }

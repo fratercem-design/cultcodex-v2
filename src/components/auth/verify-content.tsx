@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 
 type Status = "verifying" | "success" | "error";
 
@@ -17,12 +18,8 @@ export function VerifyContent() {
     const token = searchParams.get("token");
     const email = searchParams.get("email");
     // Validate callbackUrl to prevent open-redirect attacks. Only allow
-    // same-origin relative paths (must start with "/" but not "//").
-    const rawCallback = searchParams.get("callbackUrl");
-    const callbackUrl =
-      rawCallback && rawCallback.startsWith("/") && !rawCallback.startsWith("//")
-        ? rawCallback
-        : "/";
+    // same-origin paths (see safeRedirectPath for the `/\host` trap).
+    const callbackUrl = safeRedirectPath(searchParams.get("callbackUrl"));
 
     if (!token || !email) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- React 18 batches synchronous setState; no cascade

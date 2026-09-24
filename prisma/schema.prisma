@@ -596,6 +596,7 @@ model CodexUser {
   salonPosts              SalonPost[]
   decks                   Deck[]
   signalProposals         SignalProposal[]
+  signalProposalVotes     SignalProposalVote[]
   annotations             Annotation[]
 }
 
@@ -1298,6 +1299,11 @@ model CreditTransaction {
 
   wallet UserWallet? @relation(fields: [walletId], references: [id], onDelete: Cascade)
 
+  // Also: partial unique index "CreditTransaction_purchase_referenceId_key" on
+  // (referenceId) WHERE reason = 'purchase' — one grant per Stripe session.
+  // Raw SQL in migration 20260924000000_unique_credit_purchase; Prisma can't
+  // express it, and a plain @@unique([reason, referenceId]) would break
+  // "set_complete" rows, which reuse referenceId (the card type) across users.
   @@index([userId])
   @@index([userId, reason, createdAt])
 }
@@ -1518,13 +1524,28 @@ model SignalProposal {
   question  String   @db.Text
   context   String?  @db.Text
   status    String   @default("open")   // open | under_review | investigating | published | declined
-  votes     Int      @default(1)
+  votes     Int      @default(1) // the author's implicit vote + one per SignalProposalVote
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  voters SignalProposalVote[]
 
   @@index([userId])
   @@index([status])
   @@index([createdAt])
+}
+
+// One row per (proposal, voter): the primary key is what stops repeat votes.
+model SignalProposalVote {
+  proposalId String
+  userId     String
+  createdAt  DateTime @default(now())
+
+  proposal SignalProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  user     CodexUser      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([proposalId, userId])
+  @@index([userId])
 }
 
 // ─── Stripe Webhook Event Deduplication ───────────────

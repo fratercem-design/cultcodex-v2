@@ -228,3 +228,71 @@ describe("POST /api/oracle/ask — gate order", () => {
     expect(mocks.consumeMonthlyMeter).not.toHaveBeenCalled();
   });
 });
+
+describe("POST /api/oracle/ask — free trial and voice", () => {
+  beforeEach(() => {
+    // Anonymous visitor: the free trial path.
+    mocks.getCurrentUser.mockResolvedValue(null);
+    mocks.rateLimit.mockReturnValue(ALLOW);
+    mocks.sharedRateLimit.mockResolvedValue(ALLOW);
+    mocks.consumeLlmBudget.mockResolvedValue({ ok: true, used: 1, cap: 500 });
+    mocks.consumeMonthlyMeter.mockResolvedValue({ ok: true, used: 1, cap: 3, persisted: true });
+    mocks.refundMonthlyMeter.mockResolvedValue(undefined);
+    mocks.groqConfigured.mockReturnValue(true);
+    mocks.groqChat.mockResolvedValue("An answer.");
+    mocks.oracleCacheGet.mockReturnValue(null);
+    delete process.env.ORACLE_USE_BEDROCK;
+    delete process.env.ELEVENLABS_API_KEY;
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  it("meters the trial server-side, so clearing the cookie doesn't reset it", async () => {
+    mocks.consumeMonthlyMeter.mockResolvedValue({ ok: false, used: 4, cap: 3, persisted: true });
+
+    // No oracle_trial cookie: a fresh browser as far as the cookie knows.
+    const res = await POST(request({ question: "what is the codex" }));
+
+    expect(res.status).toBe(403);
+    expect(mocks.consumeMonthlyMeter.mock.calls[0][0]).toMatch(/^oracle-trial-ip:[0-9a-f]{32}$/);
+    expect(mocks.groqChat).not.toHaveBeenCalled();
+  });
+
+  it("charges the trial on cache hits too, since they still cost voice", async () => {
+    mocks.oracleCacheGet.mockReturnValue({ answer: "cached", citations: [] });
+
+    const res = await POST(request({ question: "what is the codex" }));
+
+    expect(res.status).toBe(200);
+    expect(mocks.consumeMonthlyMeter).toHaveBeenCalledTimes(1);
+  });
+
+  it("refunds the trial when no answer is produced", async () => {
+    mocks.groqChat.mockRejectedValue(new Error("provider unavailable"));
+
+    const res = await POST(request({ question: "what is the codex" }));
+
+    expect(res.status).toBe(503);
+    expect(mocks.refundMonthlyMeter).toHaveBeenCalledWith(mocks.consumeMonthlyMeter.mock.calls[0][0]);
+  });
+
+  it("charges the TTS budget on a cache hit and skips voice when it's spent", async () => {
+    process.env.ELEVENLABS_API_KEY = "el-test";
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    mocks.oracleCacheGet.mockReturnValue({ answer: "cached", citations: [] });
+    mocks.consumeLlmBudget.mockResolvedValue({ ok: false, reason: "daily_cap", used: 501, cap: 500 });
+
+    const res = await POST(request({ question: "what is the codex" }));
+    const json = (await res.json()) as { answer?: string; hasVoice?: boolean };
+
+    expect(res.status).toBe(200);
+    expect(json.answer).toBe("cached");
+    expect(json.hasVoice).toBe(false);
+    expect(mocks.consumeLlmBudget).toHaveBeenCalledWith("oracle_tts", 500);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+});

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/page-hero";
 import { GoogleSignInButton } from "@/components/auth/google-signin-button";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +20,7 @@ interface PageProps {
 
 export default async function SignInPage({ searchParams }: PageProps) {
   const { callbackUrl } = await searchParams;
-  const redirectTo = callbackUrl ?? "/";
+  const redirectTo = safeRedirectPath(callbackUrl);
 
   return (
     <>

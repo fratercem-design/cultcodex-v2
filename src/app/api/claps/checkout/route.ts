@@ -7,8 +7,10 @@
  * Guest-friendly: no login required — the nickname rides in session
  * metadata and the webhook grants tokens to that nickname on payment.
  *
- * Pricing: $20 per token; coupon "panel" drops it to $10. Uses inline
- * price_data (no pre-created Stripe Price needed).
+ * Pricing: $20 per token; the coupon in CLAPS_COUPON_CODE (if set) drops it
+ * to $10. The code lives in the environment, not this public repo, so it can
+ * be rotated without a deploy. Uses inline price_data (no pre-created Stripe
+ * Price needed).
  */
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
@@ -19,7 +21,6 @@ export const dynamic = "force-dynamic";
 
 const PRICE_CENTS = 2000;
 const COUPON_PRICE_CENTS = 1000;
-const COUPON_CODE = "panel";
 const MAX_QUANTITY = 20;
 
 export async function POST(req: Request) {
@@ -53,7 +54,8 @@ export async function POST(req: Request) {
       );
     }
 
-    const couponApplied = coupon === COUPON_CODE;
+    const couponCode = process.env.CLAPS_COUPON_CODE?.trim().toLowerCase();
+    const couponApplied = !!couponCode && coupon === couponCode;
     const unitCents = couponApplied ? COUPON_PRICE_CENTS : PRICE_CENTS;
     const baseUrl = process.env.NEXTAUTH_URL || "https://cultcodex.me";
 
@@ -75,7 +77,7 @@ export async function POST(req: Request) {
       metadata: {
         clapNickname: nickname,
         clapQuantity: String(quantity),
-        clapCoupon: couponApplied ? COUPON_CODE : "",
+        clapCoupon: couponApplied ? coupon : "",
       },
       success_url: `${baseUrl}/claps?purchased=1&nick=${encodeURIComponent(nickname)}`,
       cancel_url: `${baseUrl}/claps?canceled=1`,
