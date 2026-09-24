@@ -16,6 +16,8 @@ on:
           - _diagnose-migrations.ts
           - ops/test-gemini.mjs
           - ops/test-providers.mjs
+          - ops/placeholder-episodes.ts
+          - ops/placeholder-episodes-apply.ts
 
 permissions:
   contents: read
