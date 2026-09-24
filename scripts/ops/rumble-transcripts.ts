@@ -105,6 +105,23 @@ function toSeconds(ts: string): number {
   return Number(h) * 3600 + Number(m) * 60 + Number(sec) + Number(ms ?? 0) / 1000;
 }
 
+/**
+ * Drops formatting tags (<i>, <font …>) by skipping everything between angle
+ * brackets, nesting included, so no markup — broken or not — survives into
+ * stored text. A character scan rather than a regex: a single regex pass can
+ * leave a tag behind when tags are nested.
+ */
+export function stripTags(text: string): string {
+  let out = "";
+  let depth = 0;
+  for (const ch of text) {
+    if (ch === "<") depth++;
+    else if (ch === ">") depth = Math.max(0, depth - 1);
+    else if (depth === 0) out += ch;
+  }
+  return out;
+}
+
 /** SRT → segments. Rounds like the YouTube sync does; drops empty and [tag]-only cues. */
 export function parseSrt(srt: string): Segment[] {
   const out: Segment[] = [];
@@ -113,13 +130,7 @@ export function parseSrt(srt: string): Segment[] {
     const timeIdx = lines.findIndex((l) => l.includes("-->"));
     if (timeIdx < 0) continue;
     const [start, end] = lines[timeIdx].split("-->").map((t) => t.trim().split(" ")[0]);
-    const text = lines
-      .slice(timeIdx + 1)
-      .join(" ")
-      // Drop formatting tags (<i>, <font …>), then any stray angle bracket, so a
-      // malformed or nested tag can't leave markup behind in stored text.
-      .replace(/<[^>]*>/g, "")
-      .replace(/[<>]/g, "")
+    const text = stripTags(lines.slice(timeIdx + 1).join(" "))
       .replace(/\[.*?\]/g, "")
       .replace(/\s+/g, " ")
       .trim();
