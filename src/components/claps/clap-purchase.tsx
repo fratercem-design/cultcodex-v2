@@ -13,9 +13,10 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const couponApplied = coupon.trim().toLowerCase() === "panel";
-  const unit = couponApplied ? 10 : 20;
-  const total = unit * quantity;
+  // The coupon is checked server-side (CLAPS_COUPON_CODE); Stripe shows the
+  // discounted price at checkout. The client never learns the code.
+  const hasCoupon = coupon.trim().length > 0;
+  const total = 20 * quantity;
 
   async function buyWithStripe() {
     setError(null);
@@ -84,7 +85,7 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
               onChange={(e) => setCoupon(e.target.value)}
               placeholder="optional"
               className={`w-full rounded border px-3 py-2 font-mono text-sm text-text-primary placeholder:text-text-muted focus:outline-none ${
-                couponApplied
+                hasCoupon
                   ? "border-accent-cyan/60 bg-accent-cyan/5 text-accent-cyan"
                   : "border-border bg-elevated focus:border-accent-gold"
               }`}
@@ -93,8 +94,10 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
         </div>
       </div>
 
-      {couponApplied && (
-        <p className="font-mono text-[12px] text-accent-cyan">✓ Coupon applied — $10 per token</p>
+      {hasCoupon && (
+        <p className="font-mono text-[12px] text-accent-cyan">
+          A valid coupon takes it to $10 per token — you&apos;ll see the price at card checkout.
+        </p>
       )}
       {error && <p className="font-mono text-[12px] text-red-400">{error}</p>}
 
@@ -104,7 +107,7 @@ export function ClapPurchase({ cashtag }: { cashtag: string }) {
           disabled={busy}
           className="rounded-lg border border-accent-gold/60 bg-accent-gold/15 px-6 py-2.5 font-display text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
         >
-          {busy ? "Opening checkout…" : `👏 Clap with card — $${total}`}
+          {busy ? "Opening checkout…" : hasCoupon ? "👏 Clap with card" : `👏 Clap with card — $${total}`}
         </button>
         {cashtag && (
           <a
