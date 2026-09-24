@@ -12,7 +12,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdminOrEnrichSecret } from "@/lib/admin-guard";
-import { enrichComplete } from "@/lib/enrichment-llm";
+import { enrichComplete, hasEnrichmentProvider, NO_ENRICHMENT_PROVIDER_ERROR } from "@/lib/enrichment-llm";
 import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
@@ -58,8 +58,10 @@ export async function POST(req: NextRequest) {
   const denied = await requireAdminOrEnrichSecret(req);
   if (denied) return denied;
 
-  if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
-    return NextResponse.json({ error: "Bedrock credentials not configured" }, { status: 500 });
+  // enrichComplete() walks a provider ladder (Anthropic → OpenRouter → Groq →
+  // Mistral → Bedrock); requiring AWS keys here blocked it on Fly, which has none.
+  if (!hasEnrichmentProvider()) {
+    return NextResponse.json({ error: NO_ENRICHMENT_PROVIDER_ERROR }, { status: 500 });
   }
 
   const body = await req.json().catch(() => ({})) as { batch?: number; minAppearances?: number };

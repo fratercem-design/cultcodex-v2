@@ -166,6 +166,25 @@ function ladder(): Tier[] {
   ];
 }
 
+/**
+ * True when at least one tier of the ladder has credentials. Routes gate on
+ * this rather than on Bedrock alone: an AWS-only check rejected requests a
+ * working Anthropic / OpenRouter / Groq / Mistral key could have served.
+ */
+export function hasEnrichmentProvider(): boolean {
+  return Boolean(
+    (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) ||
+      process.env.ANTHROPIC_API_KEY ||
+      process.env.ANTHROPIC_AUTH_TOKEN ||
+      process.env.OPENROUTER_API_KEY ||
+      process.env.GROQ_API_KEY ||
+      process.env.MISTRAL_API_KEY,
+  );
+}
+
+export const NO_ENRICHMENT_PROVIDER_ERROR =
+  "No enrichment provider configured. Set one of ANTHROPIC_API_KEY, OPENROUTER_API_KEY, GROQ_API_KEY, MISTRAL_API_KEY, or AWS credentials for Bedrock.";
+
 export async function enrichComplete(args: EnrichArgs): Promise<string> {
   const tiers = ladder();
   let lastErr: unknown;
