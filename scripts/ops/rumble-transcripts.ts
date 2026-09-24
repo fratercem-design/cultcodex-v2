@@ -198,6 +198,14 @@ export async function run(apply: boolean) {
       let slug = slugify(title) || `rumble-${rumbleId}`;
       if (slugs.has(slug)) slug = `${slug}-${airDate?.toISOString().slice(0, 10) ?? rumbleId}`;
       console.log(`  + ${label}: new draft episode "${slug}" with ${segments.length} segments`);
+      // Same-titled episodes outside the date window: usually the same stream
+      // with a drifted date, sometimes a different show that reused the title.
+      for (const twin of episodes.filter((e) => normalize(e.title) === normalize(title))) {
+        console.log(
+          `      same title: "${twin.slug}" aired ${twin.airDate?.toISOString().slice(0, 10) ?? "unknown"}, ` +
+            `${twin.status}, ${twin._count.segments} segments${twin.rumbleVideoId ? `, rumble ${twin.rumbleVideoId}` : ""}`,
+        );
+      }
       tally.created++;
       tally.transcripts++;
       tally.segments += segments.length;
