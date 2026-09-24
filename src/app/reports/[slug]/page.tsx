@@ -35,7 +35,7 @@ function LockedCard({ label }: { label: string }) {
       <p className="text-3xl text-text-muted" aria-hidden="true">🔒</p>
       <p className="font-mono text-[12px] text-text-muted">{label}</p>
       <Link href="/premium" className="inline-block font-mono text-[12px] uppercase tracking-widest text-accent-gold-text hover:underline">
-        Unlock with Initiate+ →
+        Read with Initiate+ →
       </Link>
     </div>
   );
@@ -116,7 +116,7 @@ export default async function GuestReportPage({ params }: Props) {
               opens with Initiate+.
             </p>
             <Link href="/premium" className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25">
-              Unlock the report — $10/mo →
+              Read the full report — $10/mo →
             </Link>
           </section>
         )}

@@ -13,7 +13,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Collections — CULT CODEX",
-  description: "Curated collections of the best Cult of Psyche episodes, organized by theme.",
+  description: "Cult of Psyche episodes grouped by theme.",
   alternates: { canonical: "/collections" },
 };
 
@@ -147,7 +147,7 @@ export default async function CollectionsPage() {
     <>
       <PageHero
         title="COLLECTIONS"
-        subtitle={`Curated paths through ${totalCollectionEpisodes} episodes`}
+        subtitle={`${totalCollectionEpisodes} episodes, grouped into paths`}
         backgroundImage="/hero-bg.jpg"
       
       label="signal_packs"
@@ -223,7 +223,7 @@ export default async function CollectionsPage() {
               By Series
             </h2>
             <p className="text-sm text-text-muted max-w-2xl">
-              Curated routes into the show&rsquo;s ongoing series — tarot, mythology,
+              Ways into the show&rsquo;s ongoing series: tarot, mythology,
               panels, scary tales.
             </p>
           </div>

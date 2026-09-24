@@ -63,7 +63,7 @@ function RedactedBlock({ tier }: RedactedBlockProps) {
         className={`font-mono text-[12px] uppercase tracking-[0.12em] ${textCls} hover:underline whitespace-nowrap`}
         onClick={(e) => e.stopPropagation()}
       >
-        {label} to unlock →
+        Read with {label} →
       </Link>
     </span>
   );

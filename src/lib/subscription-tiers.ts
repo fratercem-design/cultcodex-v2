@@ -54,7 +54,7 @@ export const TIERS: Tier[] = [
       "Find the exact moment a dynamic changed",
       "Trace behavioral signatures across years of appearances",
       "Build your own intelligence file alongside the archive",
-      "Entry points curated by people who've already gone deep",
+      "Starting points picked by people who have watched the most",
       "Your Initiate role — visible to other members",
       "First access as new transmissions enter the archive",
       "2× daily Signal Credits — collect the trading-card archive twice as fast",

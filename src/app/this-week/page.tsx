@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: digest ? `${digest.title} — CULT CODEX` : "This Week in the Archive — CULT CODEX",
     description:
       digest?.blurb ??
-      "Five moments from the Cult of Psyche archive — curated weekly.",
+      "Five moments from the Cult of Psyche archive, picked each week.",
     alternates: { canonical: "/this-week" },
   };
 }

@@ -319,7 +319,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
             The Oracle speaks only to Initiates.
           </p>
           <p className="font-mono text-xs text-text-muted">
-            Initiate+ unlocks the Oracle, Decode Mode, and the Psychenomicon.
+            Initiate+ includes the Oracle, Decode Mode, and the Psychenomicon.
           </p>
           <Link
             href="/premium"

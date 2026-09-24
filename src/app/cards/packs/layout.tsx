@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Open Card Packs — CultCodex",
     description:
-      "Spend Signal Credits to unlock rare cards from the Cult of Psyche archive.",
+      "Spend Signal Credits on card packs from the Cult of Psyche archive.",
   },
   twitter: {
     card: "summary_large_image",
