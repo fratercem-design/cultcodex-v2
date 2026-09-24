@@ -17,6 +17,8 @@ on:
           - _psychenomicon-slop-audit.ts
           - ops/test-gemini.mjs
           - ops/test-providers.mjs
+          - ops/placeholder-episodes.ts
+          - ops/placeholder-episodes-apply.ts
 
 permissions:
   contents: read
@@ -58,6 +60,7 @@ jobs:
           # dispatches, but re-check here for API dispatches.
           case "$SCRIPT" in
             validate-data.ts|_db-stats.ts|_drift-check.ts|_diagnose-migrations.ts|_psychenomicon-slop-audit.ts|ops/test-gemini.mjs|ops/test-providers.mjs) ;;
+            validate-data.ts|_db-stats.ts|_drift-check.ts|_diagnose-migrations.ts|ops/test-gemini.mjs|ops/test-providers.mjs|ops/placeholder-episodes.ts|ops/placeholder-episodes-apply.ts) ;;
             *) echo "::error::scripts/$SCRIPT is not on the allowlist"; exit 1 ;;
           esac
           echo "── Running scripts/$SCRIPT ──"
