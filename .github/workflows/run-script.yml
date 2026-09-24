@@ -4,8 +4,18 @@ on:
   workflow_dispatch:
     inputs:
       script:
-        description: 'Script path relative to scripts/ (e.g. _merge-alexandria.ts)'
+        # Allowlist. This job holds the production DATABASE_URL, so it runs only
+        # scripts that have been reviewed into this list; add one via a PR.
+        description: 'Script under scripts/ to run'
         required: true
+        type: choice
+        options:
+          - validate-data.ts
+          - _db-stats.ts
+          - _drift-check.ts
+          - _diagnose-migrations.ts
+          - ops/test-gemini.mjs
+          - ops/test-providers.mjs
 
 permissions:
   contents: read
@@ -21,9 +31,9 @@ jobs:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: '22'
           cache: 'npm'
@@ -39,9 +49,17 @@ jobs:
           # Keep the Gemini key scoped to the dedicated smoke test rather than
           # exposing it to every script this generic workflow can execute.
           GEMINI_API_KEY: ${{ github.event.inputs.script == 'ops/test-gemini.mjs' && secrets.GEMINI_API_KEY || '' }}
+          # Passed through env, never interpolated into the shell source.
+          SCRIPT: ${{ github.event.inputs.script }}
         run: |
           set -o pipefail
-          echo "── Running scripts/${{ github.event.inputs.script }} ──"
-          npx tsx "scripts/${{ github.event.inputs.script }}" | tee /tmp/script-output.txt
+          # Belt and braces: the choice input is enforced by GitHub for UI
+          # dispatches, but re-check here for API dispatches.
+          case "$SCRIPT" in
+            validate-data.ts|_db-stats.ts|_drift-check.ts|_diagnose-migrations.ts|ops/test-gemini.mjs|ops/test-providers.mjs) ;;
+            *) echo "::error::scripts/$SCRIPT is not on the allowlist"; exit 1 ;;
+          esac
+          echo "── Running scripts/$SCRIPT ──"
+          npx tsx "scripts/$SCRIPT" | tee /tmp/script-output.txt
           SUMMARY=$(tail -5 /tmp/script-output.txt | tr '\n' ' ')
           echo "::notice title=Script output::$SUMMARY"
