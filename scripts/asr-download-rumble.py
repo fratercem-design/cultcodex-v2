@@ -29,6 +29,7 @@ Usage:
   python scripts/asr-download-rumble.py --captions             # save transcripts
 """
 import argparse
+import datetime
 import difflib
 import json
 import os
@@ -106,18 +107,48 @@ def title_from_url(url: str) -> str:
     return m.group(1).replace("-", " ") if m else ""
 
 
-VIDEO_HREF = re.compile(r'href="(/v[0-9a-z]+-[^"?#]+\.html)[^"]*"')
+# Any Rumble video link: a relative href, an absolute URL, or one escaped
+# inside inline JSON ("\/v7f5pxc-...html"). The channel page carries its own
+# uploads in one of the latter forms, not as plain href="/v..." attributes.
+# Shorts (/shorts/v...) never match. Unrelated sidebar recommendations do,
+# but they cannot match an episode's date or title, so they are harmless.
+VIDEO_LINK = re.compile(r'(?:https?:\\?/\\?/(?:www\.)?rumble\.com)?\\?/(v[0-9a-z]{4,}-[0-9a-z-]+?)\.html')
+DEFAULT_SEARCH = ["psyche awakens vod"]
 
 
-def list_rumble_pages(channel_url: str):
-    """Page through the channel's /videos listing directly.
+def fetch_page(session, url, params, label):
+    """GET with backoff on 429/5xx. Returns the response, or None on 404/give-up."""
+    resp = None
+    for attempt in range(6):
+        try:
+            resp = session.get(url, params=params, timeout=60)
+        except Exception as e:  # network hiccup: back off and retry
+            log(f"  {label}: {e} - retrying")
+            resp = None
+        if resp is not None and resp.status_code != 429 and resp.status_code < 500:
+            break
+        wait = min(5 * 2 ** attempt, 120)
+        code = resp.status_code if resp is not None else "error"
+        log(f"  {label}: HTTP {code}, waiting {wait}s")
+        time.sleep(wait)
+    if resp is None or resp.status_code == 404:
+        return None
+    if resp.status_code != 200:
+        log(f"  {label}: HTTP {resp.status_code} - stopping")
+        return None
+    return resp
+
+
+def list_rumble_pages(channel_url: str, searches: list):
+    """Collect video links from the channel's /videos pages and Rumble search.
 
     yt-dlp's Rumble channel extractor strips everything after /user/<name>,
     so it pages the channel *home* (?page=2, 3, ...) - which shows one Short
-    and never 404s. It never reaches the video list and just loops until
-    Rumble answers 429. Fetch <channel>/videos?page=N ourselves instead,
-    with a Chrome fingerprint (plain clients get 403), and stop at the first
-    404 or the first page that adds no new videos.
+    and never 404s. Fetch <channel>/videos?page=N ourselves instead, with a
+    Chrome fingerprint (plain clients get 403). The channel page does not
+    list every upload, so also page through Rumble's video search for each
+    query (the VODs are titled "MMDDYY Psyche Awakens VOD: ..."). Each source
+    stops at a 404 or the first page that adds no new videos.
 
     Returns [{title, url}], or None when curl_cffi is missing.
     """
@@ -125,51 +156,39 @@ def list_rumble_pages(channel_url: str):
         from curl_cffi import requests as creq
     except ImportError:
         return None
+    sources = []
     m = re.match(r"(https?://(?:www\.)?rumble\.com/(?:c|user)/[^/?#&]+)", channel_url)
-    if not m:
-        return None
-    base = m.group(1) + "/videos"
+    if m:
+        sources.append(("channel", m.group(1) + "/videos", {}))
+    for q in searches:
+        sources.append((f"search '{q}'", "https://rumble.com/search/video", {"q": q}))
+
     seen, videos = set(), []
     session = creq.Session(impersonate="chrome")
-    for page in range(1, 500):
-        url = f"{base}?page={page}"
-        resp = None
-        for attempt in range(6):
-            try:
-                resp = session.get(url, timeout=60)
-            except Exception as e:  # network hiccup: back off and retry
-                log(f"  page {page}: {e} - retrying")
-                resp = None
-            if resp is not None and resp.status_code != 429 and resp.status_code < 500:
+    for label, base, params in sources:
+        for page in range(1, 200):
+            resp = fetch_page(session, base, {**params, "page": page}, f"{label} page {page}")
+            if resp is None:
                 break
-            wait = min(5 * 2 ** attempt, 120)
-            code = resp.status_code if resp is not None else "error"
-            log(f"  page {page}: HTTP {code}, waiting {wait}s")
-            time.sleep(wait)
-        if resp is None or resp.status_code == 404:
-            break
-        if resp.status_code != 200:
-            log(f"  page {page}: HTTP {resp.status_code} - stopping")
-            break
-        new = 0
-        for href in VIDEO_HREF.findall(resp.text):
-            full = "https://rumble.com" + href
-            if full in seen:
-                continue
-            seen.add(full)
-            videos.append({"title": title_from_url(full), "url": full})
-            new += 1
-        log(f"  page {page}: {new} new videos ({len(videos)} total)")
-        if new == 0:
-            break
-        time.sleep(3)
+            new = 0
+            for slug in VIDEO_LINK.findall(resp.text):
+                full = f"https://rumble.com/{slug}.html"
+                if full in seen:
+                    continue
+                seen.add(full)
+                videos.append({"title": title_from_url(full), "url": full})
+                new += 1
+            log(f"  {label} page {page}: {new} new videos ({len(videos)} total)")
+            if new == 0:
+                break
+            time.sleep(3)
     return videos
 
 
-def list_rumble_channel(channel_url: str) -> list:
+def list_rumble_channel(channel_url: str, searches: list = ()) -> list:
     """Return [{title, url}] for every video on the Rumble channel."""
     log(f"Listing Rumble channel: {channel_url}")
-    videos = list_rumble_pages(channel_url)
+    videos = list_rumble_pages(channel_url, list(searches))
     if videos is not None:
         log(f"  Found {len(videos)} videos on the channel.")
         return videos
@@ -290,17 +309,51 @@ def fetch_captions(url: str, ytid: str, save: bool):
     return langs, len(segs), None
 
 
-def best_match(ep_title: str, videos: list, norm_index: list, threshold: float):
-    """Return (video, score) for the closest Rumble title, or (None, score)."""
+def slug_date(title: str):
+    """'090526 psyche awakens vod ...' -> date(2026, 9, 5), else None.
+
+    The VOD uploader prefixes every title with the stream's MMDDYY date,
+    which is a far better key than the free-text title that follows it.
+    """
+    m = re.match(r"\s*(\d{2})(\d{2})(\d{2})\b", title or "")
+    if not m:
+        return None
+    try:
+        return datetime.date(2000 + int(m.group(3)), int(m.group(1)), int(m.group(2)))
+    except ValueError:
+        return None
+
+
+def best_match(ep_title: str, videos: list, norm_index: list, threshold: float,
+               air_date: str = None, date_index: list = None):
+    """Return (video, score) for the closest Rumble video, or (None, score).
+
+    When the episode has an airDate, a VOD dated that day scores 0.95 and one
+    dated a day either side 0.85 (airDate is UTC; a late-night US stream can
+    land on the next UTC day). Title similarity breaks ties between VODs on
+    the same date. Without a date hit it falls back to title similarity.
+    """
     target = normalize(ep_title)
-    if not target:
-        return None, 0.0
+    air = None
+    if air_date:
+        try:
+            air = datetime.date.fromisoformat(air_date[:10])
+        except ValueError:
+            air = None
     best, best_score = None, 0.0
-    for vid, ntitle in zip(videos, norm_index):
-        score = difflib.SequenceMatcher(None, target, ntitle).ratio()
+    for i, (vid, ntitle) in enumerate(zip(videos, norm_index)):
+        sim = difflib.SequenceMatcher(None, target, ntitle).ratio() if target else 0.0
+        score = sim
         # Boost when one title contains the other (mirrors often add prefixes)
         if target and ntitle and (target in ntitle or ntitle in target):
             score = max(score, 0.9)
+        vdate = date_index[i] if date_index else None
+        if air and vdate:
+            gap = abs((vdate - air).days)
+            if gap == 0:
+                score = max(score, 0.95 + sim * 0.04)
+            elif gap == 1:
+                score = max(score, 0.85 + sim * 0.04)
         if score > best_score:
             best, best_score = vid, score
     if best_score >= threshold:
@@ -311,6 +364,9 @@ def best_match(ep_title: str, videos: list, norm_index: list, threshold: float):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--channel", default=DEFAULT_CHANNEL)
+    ap.add_argument("--search", action="append",
+                    help="Rumble search query to page through for more videos "
+                         f"(repeatable; default {DEFAULT_SEARCH!r}; pass --search '' to skip)")
     ap.add_argument("--batch", type=int, default=999)
     ap.add_argument("--threshold", type=float, default=0.6,
                     help="Min title-similarity 0-1 to accept a match (default 0.6)")
@@ -321,7 +377,8 @@ def main() -> int:
                          "as transcripts instead of downloading audio (with --dry-run: report only)")
     args = ap.parse_args()
 
-    videos = list_rumble_channel(args.channel)
+    searches = [q for q in (args.search if args.search is not None else DEFAULT_SEARCH) if q]
+    videos = list_rumble_channel(args.channel, searches)
     if not videos:
         log("No videos found. Check the --channel URL (try /c/Name or /user/Name).")
         return 1
@@ -339,6 +396,7 @@ def main() -> int:
 
     os.makedirs(AUDIO_DIR, exist_ok=True)
     norm_index = [normalize(v["title"]) for v in videos]
+    date_index = [slug_date(v["title"]) for v in videos]
 
     matched, downloaded, skipped, no_match, failed = 0, 0, 0, 0, 0
     with_captions, captions_saved = 0, 0
@@ -355,19 +413,21 @@ def main() -> int:
             skipped += 1
             continue
 
-        vid, score = best_match(title, videos, norm_index, args.threshold)
+        vid, score = best_match(title, videos, norm_index, args.threshold,
+                                ep.get("airDate"), date_index)
         if not vid:
             no_match += 1
-            log(f"  NO MATCH (best {score:.2f})  EP.{ep.get('ep')}  {title[:55]}")
-            match_report.append({"ytId": ytid, "title": title, "matched": False, "score": round(score, 3)})
+            log(f"  NO MATCH (best {score:.2f})  EP.{ep.get('ep')} ({ep.get('airDate')})  {title[:55]}")
+            match_report.append({"ytId": ytid, "title": title, "airDate": ep.get("airDate"),
+                                 "matched": False, "score": round(score, 3)})
             continue
 
         matched += 1
         match_report.append({
-            "ytId": ytid, "title": title, "matched": True,
+            "ytId": ytid, "title": title, "airDate": ep.get("airDate"), "matched": True,
             "score": round(score, 3), "rumbleTitle": vid["title"], "rumbleUrl": vid["url"],
         })
-        log(f"  MATCH {score:.2f}  EP.{ep.get('ep')}  {title[:45]}  ->  {vid['title'][:45]}")
+        log(f"  MATCH {score:.2f}  EP.{ep.get('ep')} ({ep.get('airDate')})  {title[:40]}  ->  {vid['title'][:50]}")
 
         if args.captions:
             if downloaded + failed >= args.batch:
