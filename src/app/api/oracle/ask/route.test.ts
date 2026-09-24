@@ -296,3 +296,50 @@ describe("POST /api/oracle/ask — free trial and voice", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 });
+
+describe("POST /api/oracle/ask — divination mode", () => {
+  beforeEach(() => {
+    mocks.getCurrentUser.mockResolvedValue({ id: "user_1", role: "member" });
+    mocks.isSubscribed.mockResolvedValue(true);
+    mocks.hasSystemTier.mockResolvedValue(true);
+    mocks.rateLimit.mockReturnValue(ALLOW);
+    mocks.sharedRateLimit.mockResolvedValue(ALLOW);
+    mocks.consumeLlmBudget.mockResolvedValue({ ok: true, used: 1, cap: 500 });
+    mocks.groqConfigured.mockReturnValue(true);
+    mocks.groqChat.mockResolvedValue("THE CARD — A card lies before you.\n\nTHE OMEN — Listen.");
+    mocks.oracleCacheGet.mockReturnValue({ answer: "a cached short answer", citations: [] });
+    delete process.env.ELEVENLABS_API_KEY;
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("draws a card, skips the cache and reads it with the divination prompt", async () => {
+    const res = await POST(request({ question: "Should I take the new job?", mode: "divine" }));
+    const json = (await res.json()) as { ok: boolean; answer?: string; card?: { slug: string; reversed: boolean } };
+
+    expect(res.status).toBe(200);
+    expect(json.card?.slug).toMatch(/^s1-/);
+    expect(typeof json.card?.reversed).toBe("boolean");
+    expect(json.answer).toContain("THE OMEN");
+    expect(mocks.oracleCacheGet).not.toHaveBeenCalled();
+
+    const call = mocks.groqChat.mock.calls[0][0] as { system: string; user: string; maxTokens: number };
+    expect(call.system).toContain("DIVINATION MODE");
+    expect(call.user).toContain("THE CARD DRAWN:");
+    expect(call.user).toContain("Should I take the new job?");
+    expect(call.maxTokens).toBeGreaterThan(1024);
+  });
+
+  it("leaves ordinary questions on the short-answer prompt with no card", async () => {
+    mocks.oracleCacheGet.mockReturnValue(null);
+    const res = await POST(request({ question: "Who is Psyche?" }));
+    const json = (await res.json()) as { card?: unknown };
+
+    expect(res.status).toBe(200);
+    expect(json.card).toBeUndefined();
+    const call = mocks.groqChat.mock.calls[0][0] as { system: string };
+    expect(call.system).not.toContain("DIVINATION MODE");
+  });
+});

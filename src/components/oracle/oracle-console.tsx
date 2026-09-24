@@ -5,8 +5,10 @@ import Link from "next/link";
 import type { OracleCitation, OracleResponse } from "@/app/api/oracle/ask/route";
 import { LilithOracle } from "@/components/oracle/lilith-oracle";
 import { INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
+import { DivinationReading } from "@/components/oracle/divination-reading";
 
 type ConsoleState = "idle" | "loading" | "answered" | "error";
+type OracleMode = "ask" | "divine";
 
 function formatTime(seconds: number): string {
   if (!isFinite(seconds) || seconds < 0) return "0:00";
@@ -84,6 +86,8 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [typewriterActive, setTypewriterActive] = useState(false);
+  const [mode, setMode] = useState<OracleMode>("ask");
+  const [card, setCard] = useState<OracleResponse["card"] | null>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const answerRef = useRef<HTMLDivElement | null>(null);
@@ -91,7 +95,8 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const displayedAnswer = useTypewriter(answer, typewriterActive, 16);
+  // Readings run several hundred words; type them faster than short answers.
+  const displayedAnswer = useTypewriter(answer, typewriterActive, card ? 5 : 16);
 
   // A prompt-suggestion chip fills the input — bump prefillNonce to
   // re-apply the same text (a plain string change wouldn't re-trigger).
@@ -141,6 +146,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
 
     setState("loading");
     setAnswer("");
+    setCard(null);
     setCitations([]);
     setAudioBase64(null);
     setHasVoice(false);
@@ -160,7 +166,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
       const res = await fetch("/api/oracle/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: question.trim() }),
+        body: JSON.stringify({ question: question.trim(), mode }),
       });
 
       const data = (await res.json()) as OracleResponse;
@@ -177,6 +183,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
       }
 
       setAnswer(data.answer ?? "");
+      setCard(data.card ?? null);
       setCitations(data.citations ?? []);
       setAudioBase64(data.audioBase64 ?? null);
       setHasVoice(data.hasVoice ?? false);
@@ -207,6 +214,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
     }
     setState("idle");
     setAnswer("");
+    setCard(null);
     setCitations([]);
     setAudioBase64(null);
     setIsPlaying(false);
@@ -224,6 +232,33 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
 
       {/* ── Question form ── */}
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-3">
+        <div role="radiogroup" aria-label="Oracle mode" className="flex justify-center gap-2">
+          {([
+            { id: "ask", label: "◈ Ask the archive" },
+            { id: "divine", label: "✶ Draw a card" },
+          ] as const).map((m) => (
+            <button
+              key={m.id}
+              type="button"
+              role="radio"
+              aria-checked={mode === m.id}
+              onClick={() => setMode(m.id)}
+              disabled={state === "loading"}
+              className={`rounded-full border px-4 py-1.5 font-mono text-[12px] uppercase tracking-wider transition-all ${
+                mode === m.id
+                  ? "border-accent-violet/70 bg-accent-violet/15 text-accent-violet-text"
+                  : "border-accent-violet/20 text-text-muted hover:border-accent-violet/40"
+              }`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+        {mode === "divine" && (
+          <p className="text-center font-mono text-[12px] text-text-muted">
+            Ask what you need to know. One card is drawn from the CultCodex deck and read against your question and the archive.
+          </p>
+        )}
         <div className="relative group">
           {/* Focus glow border */}
           <div
@@ -240,7 +275,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             aria-label="Ask the Oracle a question"
-            placeholder="Ask the Oracle anything about the archive…"
+            placeholder={mode === "divine" ? "What do you need to know? The card will answer…" : "Ask the Oracle anything about the archive…"}
             disabled={state === "loading"}
             rows={3}
             maxLength={500}
@@ -275,12 +310,12 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
           {state === "loading" ? (
             <>
               <LoadingOrb />
-              <span>Searching the archive…</span>
+              <span>{mode === "divine" ? "Drawing your card…" : "Searching the archive…"}</span>
             </>
           ) : (
             <>
               <span className="text-accent-violet-text/70 text-base">◈</span>
-              <span>Consult the Oracle</span>
+              <span>{mode === "divine" ? "Draw & read" : "Consult the Oracle"}</span>
               <span className="text-accent-violet-text/50 text-base">◈</span>
             </>
           )}
@@ -304,7 +339,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
             </div>
           </div>
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70 animate-pulse">
-            searching_the_archive
+            {mode === "divine" ? "shuffling_the_deck" : "searching_the_archive"}
           </p>
         </div>
       )}
@@ -508,13 +543,17 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
               </div>
 
               {/* Answer text — typewriter reveal */}
-              <blockquote className="font-serif text-base sm:text-lg leading-relaxed text-text-primary text-center px-2 min-h-[3rem]">
-                {displayedAnswer}
-                {/* Blinking cursor during typewriter */}
-                {displayedAnswer.length < answer.length && (
-                  <span className="inline-block w-0.5 h-[1.1em] bg-accent-violet/70 ml-0.5 align-middle animate-pulse" />
-                )}
-              </blockquote>
+              {card ? (
+                <DivinationReading slug={card.slug} reversed={card.reversed} text={displayedAnswer} done={displayedAnswer.length >= answer.length} />
+              ) : (
+                <blockquote className="font-serif text-base sm:text-lg leading-relaxed text-text-primary text-center px-2 min-h-[3rem]">
+                  {displayedAnswer}
+                  {/* Blinking cursor during typewriter */}
+                  {displayedAnswer.length < answer.length && (
+                    <span className="inline-block w-0.5 h-[1.1em] bg-accent-violet/70 ml-0.5 align-middle animate-pulse" />
+                  )}
+                </blockquote>
+              )}
 
               {/* Question echo */}
               <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest text-center pt-1 border-t border-accent-violet/10">
