@@ -29,10 +29,27 @@ export async function voteOnProposal(proposalId: string) {
   const oracle = await hasSystemTier(user.id);
   if (!oracle) throw new Error("Oracle access required");
 
-  await prisma.signalProposal.update({
+  const proposal = await prisma.signalProposal.findUnique({
     where: { id: proposalId },
-    data: { votes: { increment: 1 } },
+    select: { userId: true },
   });
+  if (!proposal) throw new Error("Proposal not found");
+  // The author's vote is already counted (votes defaults to 1).
+  if (proposal.userId === user.id) return;
+
+  try {
+    await prisma.$transaction([
+      prisma.signalProposalVote.create({ data: { proposalId, userId: user.id } }),
+      prisma.signalProposal.update({
+        where: { id: proposalId },
+        data: { votes: { increment: 1 } },
+      }),
+    ]);
+  } catch (err) {
+    // Primary key on (proposalId, userId): this member already voted.
+    if ((err as { code?: unknown })?.code === "P2002") return;
+    throw err;
+  }
 
   revalidatePath("/signals");
 }
