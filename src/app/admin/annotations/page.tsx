@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { moderateAnnotation } from "@/app/annotations/actions";
 import type { Metadata } from "next";
+import { requireAdminPage } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +34,8 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 export default async function AdminAnnotationsPage() {
+  await requireAdminPage();
+
   const annotations = await getAnnotations();
   const pending = annotations.filter((a) => a.status === "pending");
 

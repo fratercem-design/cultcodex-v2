@@ -71,7 +71,7 @@ export default async function OGImage() {
               </div>
               {data && (
                 <div style={{ color: "#555", fontSize: 18 }}>
-                  #{data.date.replace(/-/g, "")}
+                  {`#${data.date.replace(/-/g, "")}`}
                 </div>
               )}
             </div>
@@ -85,7 +85,8 @@ export default async function OGImage() {
                   lineHeight: 1.35,
                 }}
               >
-                &ldquo;{displayQuote}&rdquo;
+                {/* One text node: Satori rejects a non-flex <div> with several children. */}
+                {`\u201C${displayQuote}\u201D`}
               </div>
             ) : (
               <div style={{ color: "#f5f0e8", fontSize: 44 }}>
@@ -99,8 +100,9 @@ export default async function OGImage() {
                 {quote?.speaker && episode && <div style={{ color: "#555" }}>·</div>}
                 {episode && (
                   <div>
-                    {episode.episodeNumber != null ? `EP.${String(episode.episodeNumber).padStart(3, "0")} · ` : ""}
-                    {episode.title.length > 60 ? episode.title.slice(0, 57) + "…" : episode.title}
+                    {`${episode.episodeNumber != null ? `EP.${String(episode.episodeNumber).padStart(3, "0")} · ` : ""}${
+                      episode.title.length > 60 ? episode.title.slice(0, 57) + "…" : episode.title
+                    }`}
                   </div>
                 )}
               </div>

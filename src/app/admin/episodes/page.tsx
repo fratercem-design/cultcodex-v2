@@ -14,12 +14,15 @@ import {
 } from "@/lib/pagination";
 import { EpisodeBulkActions } from "./bulk-actions";
 import { EnrichQueueToggle } from "./enrich-queue-toggle";
+import { requireAdminPage } from "@/lib/auth";
 
 interface PageProps {
   searchParams: Promise<{ page?: string; status?: string; q?: string; filter?: string }>;
 }
 
 export default async function AdminEpisodesPage({ searchParams }: PageProps) {
+  await requireAdminPage();
+
   const params = await searchParams;
   const statusFilter = params.status;
   const search = params.q;

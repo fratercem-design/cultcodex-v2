@@ -5,12 +5,15 @@ import { prisma } from "@/lib/db";
 import { AdminFormField } from "@/components/admin/admin-form-field";
 import { updateTopic } from "@/app/admin/actions";
 import Link from "next/link";
+import { requireAdminPage } from "@/lib/auth";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditTopicPage({ params }: PageProps) {
+  await requireAdminPage();
+
   const { id } = await params;
 
   const topic = await prisma.topic.findUnique({ where: { id } });

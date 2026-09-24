@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { requireAdmin } from "@/lib/auth";
+import { requireAdminPage } from "@/lib/auth";
 import { SyncPanel } from "./sync-panel";
 import type { Metadata } from "next";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function SyncPage() {
-  await requireAdmin();
+  await requireAdminPage();
 
   const [
     totalEpisodes,

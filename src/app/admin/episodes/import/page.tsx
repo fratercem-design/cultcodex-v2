@@ -1,12 +1,12 @@
 export const dynamic = "force-dynamic";
 
-import { requireAdmin } from "@/lib/auth";
+import { requireAdminPage } from "@/lib/auth";
 import { ImportForm } from "./import-form";
 
 export const metadata = { title: "Import Episodes — CultCodex Admin" };
 
 export default async function ImportEpisodesPage() {
-  await requireAdmin();
+  await requireAdminPage();
 
   return (
     <div className="max-w-4xl">
