@@ -83,7 +83,7 @@ export default function PrivacyPage() {
               <li>To verify your subscription tier and gate subscriber-only features</li>
               <li>To send transactional emails (e.g. subscription receipts via Stripe)</li>
               <li>To process correction requests and improvement feedback</li>
-              <li>To measure aggregate site performance (Vercel Analytics)</li>
+              <li>To measure aggregate site usage (Google Analytics, only after you accept analytics cookies)</li>
             </ul>
             <p className="mt-3">
               We do not sell your personal data. We do not use your data for advertising profiling.
@@ -106,7 +106,7 @@ export default function PrivacyPage() {
             <p>
               We use a session cookie to maintain your login state (via NextAuth.js). This cookie is
               strictly necessary for the site to function and does not track you across other websites.
-              Vercel Analytics operates without cookies.
+              Google Analytics cookies are set only after you accept them in the cookie banner.
             </p>
           </div>
         </SectionCard>
@@ -117,7 +117,8 @@ export default function PrivacyPage() {
               <li><span className="text-text-primary font-medium">Google OAuth</span> — sign-in authentication</li>
               <li><span className="text-text-primary font-medium">Stripe</span> — payment processing</li>
               <li><span className="text-text-primary font-medium">Google Analytics</span> — consent-based site usage measurement</li>
-              <li><span className="text-text-primary font-medium">Vercel</span> — application hosting</li>
+              <li><span className="text-text-primary font-medium">Fly.io</span> — application hosting</li>
+              <li><span className="text-text-primary font-medium">Cloudflare</span> — DNS, CDN and TLS</li>
               <li><span className="text-text-primary font-medium">Xata</span> — database hosting (PostgreSQL)</li>
               <li><span className="text-text-primary font-medium">Resend</span> — transactional and newsletter email</li>
               <li><span className="text-text-primary font-medium">Anthropic Claude</span> — AI enrichment of archive data (content only, not user data)</li>

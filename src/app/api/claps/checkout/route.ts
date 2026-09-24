@@ -12,6 +12,7 @@
  */
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
+import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,6 +23,16 @@ const COUPON_CODE = "panel";
 const MAX_QUANTITY = 20;
 
 export async function POST(req: Request) {
+  const callerKey = clientKey(req);
+  const localRl = rateLimit(`claps-checkout:${callerKey}`, { limit: 5, windowMs: 60_000 });
+  if (!localRl.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: { "Retry-After": String(localRl.retryAfterSec) } });
+  }
+  const sharedRl = await sharedRateLimit("claps-checkout", callerKey, { limit: 5, windowMs: 60_000 });
+  if (!sharedRl.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: { "Retry-After": String(sharedRl.retryAfterSec) } });
+  }
+
   try {
     const body = await req.json().catch(() => null);
     const nickname = typeof body?.nickname === "string" ? body.nickname.trim() : "";

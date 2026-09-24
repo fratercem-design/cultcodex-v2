@@ -1,6 +1,6 @@
 // scripts/enrich/__tests__/schemas.test.ts
 import { describe, it, expect } from "vitest";
-import { EnrichmentResultSchema, ImportFileSchema } from "../schemas";
+import { EnrichedLoreSchema, EnrichmentResultSchema, ImportFileSchema } from "../schemas";
 
 describe("EnrichmentResultSchema", () => {
   it("parses a valid enrichment result", () => {
@@ -58,7 +58,9 @@ describe("EnrichmentResultSchema", () => {
     expect(result.quotes[0].timestampSeconds).toBeNull();
   });
 
-  it("rejects invalid canonStatus", () => {
+  it("keeps the episode when a lore canonStatus is invalid", () => {
+    // An unknown label used to fail the whole episode; it now files the lore
+    // entry as "speculative" so the rest of the enrichment is kept.
     const input = {
       summaryShort: "x",
       summaryLong: "x",
@@ -68,7 +70,7 @@ describe("EnrichmentResultSchema", () => {
       lore: [{ title: "x", summary: "x", canonStatus: "invalid", category: "x" }],
       topics: [],
     };
-    expect(() => EnrichmentResultSchema.parse(input)).toThrow();
+    expect(EnrichmentResultSchema.parse(input).lore[0].canonStatus).toBe("speculative");
   });
 
   it("rejects invalid personType", () => {
@@ -101,5 +103,20 @@ describe("ImportFileSchema", () => {
     };
     const result = ImportFileSchema.parse(input);
     expect(result.slug).toBe("the-veil-lifts");
+  });
+});
+
+describe("EnrichedLoreSchema canonStatus", () => {
+  const lore = (canonStatus: unknown) => ({ title: "T", summary: "S", canonStatus, category: "c" });
+
+  it("normalises spelling variants", () => {
+    expect(EnrichedLoreSchema.parse(lore("Community Myth")).canonStatus).toBe("community_myth");
+    expect(EnrichedLoreSchema.parse(lore("community-myth")).canonStatus).toBe("community_myth");
+    expect(EnrichedLoreSchema.parse(lore(" Canonical ")).canonStatus).toBe("canonical");
+  });
+
+  it("files unknown labels as speculative instead of failing", () => {
+    expect(EnrichedLoreSchema.parse(lore("theoretical")).canonStatus).toBe("speculative");
+    expect(EnrichedLoreSchema.parse(lore(undefined)).canonStatus).toBe("speculative");
   });
 });

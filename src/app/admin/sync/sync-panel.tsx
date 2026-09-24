@@ -443,7 +443,7 @@ export function SyncPanel({
               lore, and topics. Only processes episodes with transcripts that haven&apos;t been enriched yet.
             </p>
             <p className="font-mono text-[12px] text-text-muted">
-              {unenrichedEpisodes.toLocaleString("en-US")} episodes need enrichment. Requires <code>ENRICH_SECRET</code> + AWS Bedrock credentials.
+              {unenrichedEpisodes.toLocaleString("en-US")} episodes need enrichment. Requires <code>ENRICH_SECRET</code> + an enrichment provider key (Anthropic, OpenRouter, Groq, Mistral or Bedrock).
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -545,7 +545,7 @@ export function SyncPanel({
               for each person who has appearances but no profile yet. Feeds directly into Oracle answers.
             </p>
             <p className="font-mono text-[12px] text-text-muted">
-              {unenrichedPeople.toLocaleString("en-US")} people need profiles. Requires <code>ENRICH_SECRET</code> + AWS Bedrock credentials.
+              {unenrichedPeople.toLocaleString("en-US")} people need profiles. Requires <code>ENRICH_SECRET</code> + an enrichment provider key (Anthropic, OpenRouter, Groq, Mistral or Bedrock).
             </p>
           </div>
           <div className="flex items-center gap-3">

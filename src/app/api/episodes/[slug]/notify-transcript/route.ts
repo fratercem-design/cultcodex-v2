@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
 
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
+
+  const callerKey = clientKey(req);
+  const localRl = rateLimit(`notify-transcript:${callerKey}`, { limit: 5, windowMs: 60_000 });
+  if (!localRl.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: { "Retry-After": String(localRl.retryAfterSec) } });
+  }
+  const sharedRl = await sharedRateLimit("notify-transcript", callerKey, { limit: 5, windowMs: 60_000 });
+  if (!sharedRl.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429, headers: { "Retry-After": String(sharedRl.retryAfterSec) } });
+  }
 
   let email: string;
   try {

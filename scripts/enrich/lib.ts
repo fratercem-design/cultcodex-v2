@@ -161,19 +161,74 @@ function isCreditOrRateError(err: unknown): boolean {
   );
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function callChatAPI(client: OpenAI, model: string, input: UserMessageInput, jsonMode: boolean): Promise<string> {
-  const response = await client.chat.completions.create({
-    model,
-    max_tokens: 8192,
-    ...(jsonMode ? { response_format: { type: "json_object" as const } } : {}),
-    messages: [
-      { role: "system", content: SYSTEM_PROMPT },
-      { role: "user", content: buildUserMessage(input) },
-    ],
-  });
-  const text = response.choices[0]?.message?.content;
-  if (!text) throw new Error(`No text response from ${model}`);
-  return text.trim();
+  // Free OpenRouter models sometimes answer 200 with an error body and no
+  // `choices` (upstream rate limit / provider hiccup). Reading choices[0] off
+  // that threw "Cannot read properties of undefined (reading '0')" within a
+  // second - 6 of 16 episodes in run 35937449031. Surface the real error and
+  // retry with backoff before giving up.
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) await sleep(15_000 * attempt);
+    try {
+      const response = await client.chat.completions.create({
+        model,
+        max_tokens: 8192,
+        ...(jsonMode ? { response_format: { type: "json_object" as const } } : {}),
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: buildUserMessage(input) },
+        ],
+      });
+      const text = response.choices?.[0]?.message?.content;
+      if (text) return text.trim();
+      const apiError = (response as unknown as { error?: { message?: string; code?: unknown } }).error;
+      lastErr = new Error(
+        apiError
+          ? `${model} returned an error: ${apiError.message ?? JSON.stringify(apiError)}`
+          : `No text response from ${model}`,
+      );
+    } catch (err) {
+      lastErr = err;
+      // Only rate limits / 5xx are worth retrying; anything else fails fast.
+      const msg = err instanceof Error ? err.message : String(err);
+      if (!/429|rate|5\d\d|timeout|ECONNRESET/i.test(msg)) throw err;
+    }
+  }
+  throw lastErr instanceof Error ? lastErr : new Error(String(lastErr));
+}
+
+/**
+ * Escape raw control characters that appear inside JSON string literals.
+ * Models occasionally emit a literal tab or newline inside a string, which
+ * JSON.parse rejects ("Bad control character in string literal"). Whitespace
+ * between tokens is left alone, so valid JSON passes through unchanged.
+ */
+export function escapeControlCharsInStrings(json: string): string {
+  let out = "";
+  let inString = false;
+  let escaped = false;
+  for (const ch of json) {
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+      } else if (ch === "\\") {
+        escaped = true;
+      } else if (ch === '"') {
+        inString = false;
+      } else if (ch < " ") {
+        const map: Record<string, string> = { "\n": "\\n", "\r": "\\r", "\t": "\\t" };
+        out += map[ch] ?? `\\u${ch.charCodeAt(0).toString(16).padStart(4, "0")}`;
+        continue;
+      }
+    } else if (ch === '"') {
+      inString = true;
+    }
+    out += ch;
+  }
+  return out;
 }
 
 function resolveEnrichModel(): string {
@@ -244,6 +299,6 @@ export async function enrichEpisode(
     jsonText = jsonText.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
   }
 
-  const parsed = JSON.parse(jsonText);
+  const parsed = JSON.parse(escapeControlCharsInStrings(jsonText));
   return EnrichmentResultSchema.parse(parsed);
 }
