@@ -1,0 +1,66 @@
+/* Easter-egg effects. Pointer-events off everywhere: nothing here blocks the page. */
+.ee-moths, .ee-static, .ee-glitch, .ee-shake { position: fixed; inset: 0; z-index: 180; pointer-events: none; overflow: hidden; }
+
+.ee-moth { position: absolute; left: -60px; width: 34px; height: 24px; opacity: 0.85; filter: drop-shadow(0 0 6px rgba(255, 236, 190, 0.6)); animation: ee-flutter 6s ease-in-out forwards, ee-flap 0.18s ease-in-out infinite alternate; }
+@keyframes ee-flutter {
+  0%   { transform: translate(0, 0) rotate(8deg); opacity: 0; }
+  10%  { opacity: 0.9; }
+  30%  { transform: translate(30vw, -8vh) rotate(-6deg); }
+  55%  { transform: translate(55vw, 6vh) rotate(10deg); }
+  80%  { transform: translate(85vw, -4vh) rotate(-4deg); opacity: 0.9; }
+  100% { transform: translate(110vw, 4vh) rotate(6deg); opacity: 0; }
+}
+@keyframes ee-flap { to { scale: 0.55 1; } }
+
+.ee-static {
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: ee-noise 0.12s steps(3) infinite, ee-fade 1.4s ease-out forwards;
+}
+@keyframes ee-noise { 33% { background-position: 40px -30px; } 66% { background-position: -50px 20px; } }
+@keyframes ee-fade { 0% { opacity: 0.7; } 100% { opacity: 0; } }
+
+.ee-glitch { animation: ee-glitch 1.2s steps(2) forwards; background: linear-gradient(transparent 48%, rgba(255, 0, 80, 0.25) 48% 50%, transparent 50% 62%, rgba(0, 229, 255, 0.2) 62% 63%, transparent 63%); }
+@keyframes ee-glitch { 0% { transform: translateX(-6px); } 25% { transform: translateX(8px) skewX(-2deg); } 50% { transform: translateY(-40vh); } 75% { transform: translateY(20vh) translateX(-4px); } 100% { opacity: 0; } }
+
+.ee-shake { animation: ee-flash 0.9s ease-out forwards; background: radial-gradient(circle, rgba(255, 215, 0, 0.35), transparent 70%); }
+@keyframes ee-flash { 0% { opacity: 1; } 100% { opacity: 0; } }
+html:has(.ee-shake) body { animation: ee-shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+@keyframes ee-shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+
+.ee-whisper {
+  position: fixed;
+  left: 50%;
+  bottom: 96px;
+  z-index: 185;
+  max-width: min(520px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  padding: 10px 16px;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  font-style: italic;
+  text-align: center;
+  color: rgba(240, 232, 214, 0.92);
+  background: rgba(8, 7, 6, 0.82);
+  border: 1px solid rgba(240, 232, 214, 0.15);
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  animation: ee-whisper-in 0.8s ease-out;
+}
+@keyframes ee-whisper-in { from { opacity: 0; transform: translate(-50%, 8px); filter: blur(4px); } }
+
+.ee-moon { position: fixed; top: 64px; right: 18px; z-index: 60; font-size: 18px; color: #f6efd8; text-shadow: 0 0 14px rgba(246, 239, 216, 0.9), 0 0 40px rgba(246, 239, 216, 0.4); animation: ee-moon 6s ease-in-out infinite; pointer-events: auto; cursor: help; }
+@keyframes ee-moon { 50% { opacity: 0.55; } }
+
+/* Omens tint the whole site, very slightly. */
+html[data-omen~="3:33"] body { box-shadow: inset 0 0 200px rgba(180, 0, 20, 0.35); }
+html[data-omen~="friday-13"] body { animation: ee-flicker 11s infinite; }
+@keyframes ee-flicker { 0%, 96%, 100% { opacity: 1; } 97% { opacity: 0.86; } 98% { opacity: 1; } 99% { opacity: 0.9; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ee-moths, .ee-static, .ee-glitch, .ee-shake, .ee-moon { display: none; }
+  html:has(.ee-shake) body, html[data-omen~="friday-13"] body { animation: none; }
+}
