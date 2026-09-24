@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, Cinzel, Cormorant_Garamond } from "next/font/google";
+import localFont from "next/font/local";
 import "./dossier.css";
 
 export const metadata: Metadata = {
@@ -8,27 +8,32 @@ export const metadata: Metadata = {
     "A complete visual, experiential, and strategic audit of CultCodex — eleven chapters, one transmission.",
 };
 
-const bodoniModa = Bodoni_Moda({
-  subsets: ["latin"],
-  style: ["italic", "normal"],
-  weight: ["400", "500"],
+// Self-hosted rather than next/font/google: fetching Google Fonts at build time
+// made CI fail intermittently. The files are Google's latin-subset variable
+// woff2s, limited to the weights and styles this page renders. Provenance and
+// licenses (SIL OFL 1.1) are in ./fonts.
+const bodoniModa = localFont({
+  src: [{ path: "./fonts/BodoniModa-Italic-latin.woff2", weight: "400 500", style: "italic" }],
   variable: "--dossier-font-display",
   display: "swap",
+  adjustFontFallback: "Times New Roman",
 });
 
-const cinzel = Cinzel({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+const cinzel = localFont({
+  src: [{ path: "./fonts/Cinzel-latin.woff2", weight: "400 500", style: "normal" }],
   variable: "--dossier-font-sigil",
   display: "swap",
+  adjustFontFallback: "Times New Roman",
 });
 
-const cormorantGaramond = Cormorant_Garamond({
-  subsets: ["latin"],
-  style: ["italic", "normal"],
-  weight: ["300", "400", "500"],
+const cormorantGaramond = localFont({
+  src: [
+    { path: "./fonts/CormorantGaramond-Italic-latin.woff2", weight: "400", style: "italic" },
+    { path: "./fonts/CormorantGaramond-latin.woff2", weight: "400 500", style: "normal" },
+  ],
   variable: "--dossier-font-body",
   display: "swap",
+  adjustFontFallback: "Times New Roman",
 });
 
 export default function DossierPage() {
