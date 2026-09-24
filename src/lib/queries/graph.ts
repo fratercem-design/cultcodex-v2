@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { NOISE_PERSON_SLUGS } from "@/lib/people/noise-slugs";
 
 export interface GraphNode {
   id: string;
@@ -39,7 +40,7 @@ export async function fetchRelationshipGraph(
       : {}),
   };
 
-  const [guestRows, episodeCount, entities] = await Promise.all([
+  const [guestRowsRaw, episodeCount, entities, noisePeople] = await Promise.all([
     // Guest appearances filtered by era when provided
     prisma.episodeGuest.findMany({
       where: { episode: episodeWhere },
@@ -51,7 +52,16 @@ export async function fetchRelationshipGraph(
       where: { personSlug: { not: null }, primaryArchetype: { not: null } },
       select: { personSlug: true, primaryArchetype: true },
     }),
+    // Catch-all/label person records — real quotes, not real distinct people;
+    // excluded from the graph the same way they're excluded from /people.
+    prisma.person.findMany({
+      where: { slug: { in: [...NOISE_PERSON_SLUGS] } },
+      select: { id: true },
+    }),
   ]);
+
+  const noiseIds = new Set(noisePeople.map((p) => p.id));
+  const guestRows = guestRowsRaw.filter((g) => !noiseIds.has(g.personId));
 
   // ── compute appearance counts per person ──────────────────────
   const appearanceCount = new Map<string, number>();

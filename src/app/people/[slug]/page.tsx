@@ -1,11 +1,13 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
+import { reconcileAppearanceCount } from "@/lib/format/reconcile-counts";
+import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getPersonBySlug, getCoAppearances } from "@/lib/queries/people";
+import { getPersonBySlug, getCoAppearances, getPersonEpisodeDates } from "@/lib/queries/people";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
+import { AiNotice } from "@/components/ui/ai-notice";
 import { ERAS, getEraForEpisode } from "@/lib/eras";
 import { archetypeToSlug, splitArchetypes } from "@/lib/queries/archetypes";
 import { EntityHero } from "@/components/ui/entity-hero";
@@ -23,7 +25,6 @@ import { formatDate } from "@/lib/format/date";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { editorialFrame } from "@/lib/format/editorial-frame";
 import { getExternalLinks } from "@/lib/format/external-links";
-import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { ArchiveNotice } from "@/components/notices/archive-notice";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import { ColorLegend } from "@/components/ui/color-legend";
@@ -32,23 +33,31 @@ import { ArchetypeTimeline } from "@/components/people/archetype-timeline";
 import { ArchetypeCard } from "@/components/people/archetype-card";
 import { PersonMediaSection, type PersonMediaItem } from "@/components/people/person-media-section";
 import { PersonCrossRef } from "@/components/people/person-cross-ref";
+import { RelationshipDossier } from "@/components/people/relationship-dossier";
+import { getRelationshipDossier } from "@/lib/queries/relationships";
+import {
+  PERSON_TYPE_LABEL as PERSON_TYPE_LABELS,
+  PERSON_TYPE_BADGE as PERSON_TYPE_VARIANTS,
+} from "@/lib/people/person-type";
 import type { Metadata } from "next";
+import { isIndexablePerson } from "@/lib/people/noise-slugs";
 
 // ── Lore Summary renderer ─────────────────────────────────────────────────────
 // Handles two formats:
 //   1. Flat prose — render as paragraphs (legacy)
 //   2. Sectioned markdown with ## headers — unified codex-entry card
-function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
+function LoreSummaryCard({ loreSummary, appearanceCount }: { loreSummary: string; appearanceCount: number }) {
   const hasSections = /^##\s+\S/m.test(loreSummary);
 
   if (!hasSections) {
     return (
-      <SectionCard title="Codex Entry">
+      <SectionCard headingLevel={2} title="Codex Entry">
         {loreSummary.split(/\n{2,}/).map((para, i) => (
           <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
             {editorialFrame(para.trim())}
           </p>
         ))}
+        <AiNotice className="mt-3" />
       </SectionCard>
     );
   }
@@ -79,8 +88,8 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
           <ul key={i} className="space-y-1 mb-3 last:mb-0">
             {bullets.map((b, j) => (
               <li key={j} className="flex gap-2 text-sm text-text-primary leading-relaxed">
-                <span className="text-accent-gold/60 flex-shrink-0 mt-0.5">·</span>
-                <span>{editorialFrame(b)}</span>
+                <span className="text-accent-gold-text/80 flex-shrink-0 mt-0.5">·</span>
+                <span>{editorialFrame(reconcileAppearanceCount(b, appearanceCount))}</span>
               </li>
             ))}
           </ul>
@@ -88,7 +97,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
       }
       return (
         <p key={i} className="text-sm text-text-primary leading-relaxed mb-3 last:mb-0">
-          {editorialFrame(trimmed)}
+          {editorialFrame(reconcileAppearanceCount(trimmed, appearanceCount))}
         </p>
       );
     });
@@ -98,8 +107,8 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
     <div className="rounded-lg border border-border bg-surface overflow-hidden">
       {/* Codex entry header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-        <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-gold">/// codex_entry</p>
-        <p className="font-mono text-[9px] text-text-muted/50 tracking-widest">AI · ARCHIVAL</p>
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">{"/// codex_entry"}</p>
+        <p className="font-mono text-[12px] text-text-muted tracking-widest">AI · ARCHIVAL</p>
       </div>
 
       {/* Sections */}
@@ -110,10 +119,10 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
           return (
             <div key={heading} className={`px-4 py-4 ${isControversy ? "bg-red-950/10" : ""}`}>
               <div className="flex items-center gap-2 mb-3">
-                <span className={`font-mono text-xs ${isControversy ? "text-red-400" : "text-accent-gold"}`}>
+                <span className={`font-mono text-xs ${isControversy ? "text-red-400" : "text-accent-gold-text"}`}>
                   {sigil}
                 </span>
-                <h4 className={`font-mono text-[10px] uppercase tracking-[0.3em] font-semibold ${isControversy ? "text-red-400/80" : "text-text-muted"}`}>
+                <h4 className={`font-mono text-[12px] uppercase tracking-[0.12em] font-semibold ${isControversy ? "text-red-400/80" : "text-text-muted"}`}>
                   {heading}
                 </h4>
               </div>
@@ -122,6 +131,11 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
           );
         })}
       </div>
+
+      {/* AI-generated notice */}
+      <div className="border-t border-border/60 px-4 py-2.5">
+        <AiNotice />
+      </div>
     </div>
   );
 }
@@ -129,16 +143,7 @@ function LoreSummaryCard({ loreSummary }: { loreSummary: string }) {
 export const revalidate = 600;
 
 export async function generateStaticParams() {
-  try {
-    const people = await prisma.person.findMany({
-      select: { slug: true },
-      take: 300,
-      orderBy: { updatedAt: "desc" },
-    });
-    return people.map((p) => ({ slug: p.slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 interface PageProps {
@@ -157,39 +162,46 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
 
-  // Noindex for "mentioned" people — they were only name-dropped, never appeared as guests.
-  // This reduces SEO risk for people who didn't actively participate.
-  const shouldNoIndex = person.personType === "mentioned";
+  const appearanceCount = person._count.guestAppearances;
+  const shouldNoIndex = !isIndexablePerson({
+    slug: person.slug,
+    displayName: person.displayName,
+    personType: person.personType,
+    appearanceCount,
+  });
+  const typeLabel =
+    person.personType === "host" ? "host" :
+    person.personType === "recurring" ? "recurring figure" : "guest";
+  const countPhrase = appearanceCount > 0
+    ? `${appearanceCount} appearance${appearanceCount !== 1 ? "s" : ""} in the Cult of Psyche archive`
+    : "Featured in the Cult of Psyche archive";
+  const bioSnippet = person.shortBio
+    ? ` · ${person.shortBio.slice(0, 120)}${person.shortBio.length > 120 ? "…" : ""}`
+    : "";
+  const description = `${countPhrase} · ${typeLabel}${bioSnippet}`;
 
   return {
     ...buildMetadata({
       title: person.displayName,
-      description: person.shortBio || person.searchText || null,
+      description,
       path: `/people/${person.slug}`,
+      image: person.avatarUrl ?? null,
     }),
     ...(shouldNoIndex ? { robots: { index: false, follow: true } } : {}),
   };
 }
-
-const PERSON_TYPE_LABELS: Record<string, string> = {
-  host: "Host",
-  recurring: "Recurring",
-  guest: "Guest",
-  mentioned: "Mentioned",
-};
-
-const PERSON_TYPE_VARIANTS: Record<string, "green" | "purple" | "gold" | "muted"> = {
-  host: "gold",
-  recurring: "purple",
-  guest: "green",
-  mentioned: "muted",
-};
 
 export default async function PersonDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const person = await getPersonBySlug(slug);
 
   if (!person) notFound();
+
+  // Guests and unknowns without a proper profile → compiled "the rest" entry
+  const isProfiled = Boolean(person.loreSummary) || Boolean(person.shortBio);
+  if (!isProfiled && (person.personType === "guest" || person.personType === "mentioned")) {
+    redirect("/people/the-rest");
+  }
 
   const allEpisodes = [
     ...person.guestAppearances.map((g) => g.episode),
@@ -201,12 +213,19 @@ export default async function PersonDetailPage({ params }: PageProps) {
     new Map(allEpisodes.map((e) => [e.id, e])).values()
   ).sort((a, b) => (b.airDate?.getTime() ?? 0) - (a.airDate?.getTime() ?? 0));
 
-  const coAppearances = person.guestAppearances.length >= 2
+  const coAppearances = person._count.guestAppearances >= 2
     ? await getCoAppearances(person.id, 6).catch(() => [])
     : [];
 
+  const relationshipDossier = await getRelationshipDossier(person.id);
+
+  // Every appearance/mention air date (dates only) so era presence and the
+  // appearance total reflect the whole archive, not the capped page above.
+  const allAppearanceDates = await getPersonEpisodeDates(person.id);
+  const totalAppearances = allAppearanceDates.length;
+
   // Archetype evolution — query guest appearance episodes with decodeData (not null)
-  const archetypeEpisodes = person.guestAppearances.length > 0
+  const archetypeEpisodes = person._count.guestAppearances > 0
     ? await prisma.episode.findMany({
         where: {
           guests: { some: { personId: person.id } },
@@ -291,7 +310,8 @@ export default async function PersonDetailPage({ params }: PageProps) {
   const personMediaWiki = personMediaSerialized.find((m) => m.source === "wiki") ?? null;
   const hasPersonMedia = personMediaRaw.length > 0;
 
-  // Era presence — bucket uniqueEpisodes by era (client-side, no extra DB query)
+  // Era presence — bucket every appearance date by era (dates fetched separately
+  // so the chart covers the full archive, not just the rendered page).
   const ERA_BAR_COLOR: Record<string, string> = {
     gold:    "bg-accent-gold",
     violet:  "bg-accent-violet",
@@ -300,17 +320,16 @@ export default async function PersonDetailPage({ params }: PageProps) {
     muted:   "bg-text-muted",
   };
   const ERA_TEXT_COLOR: Record<string, string> = {
-    gold:    "text-accent-gold",
-    violet:  "text-accent-violet",
+    gold:    "text-accent-gold-text",
+    violet:  "text-accent-violet-text",
     cyan:    "text-accent-cyan",
-    crimson: "text-accent-crimson",
+    crimson: "text-accent-crimson-text",
     muted:   "text-text-muted",
   };
   const eraPresence = ERAS.map((era) => {
-    const count = uniqueEpisodes.filter((ep) => {
-      if (!ep.airDate) return false;
-      return getEraForEpisode(ep.airDate)?.id === era.id;
-    }).length;
+    const count = allAppearanceDates.filter(
+      (d) => d !== null && getEraForEpisode(d)?.id === era.id
+    ).length;
     return { era, count };
   }).filter((e) => e.count > 0);
   const maxEraCount = Math.max(...eraPresence.map((e) => e.count), 1);
@@ -347,17 +366,17 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
   const glanceItems = [
     { icon: "🎭", label: typeLabel },
-    ...(uniqueEpisodes.length > 0
-      ? [{ icon: "🎬", label: `${uniqueEpisodes.length} appearance${uniqueEpisodes.length !== 1 ? "s" : ""}` }]
+    ...(totalAppearances > 0
+      ? [{ icon: "🎬", label: `${totalAppearances} appearance${totalAppearances !== 1 ? "s" : ""}` }]
       : []),
-    ...(person.quotes.length > 0
-      ? [{ icon: "💬", label: `${person.quotes.length} quote${person.quotes.length !== 1 ? "s" : ""}` }]
+    ...(person._count.quotes > 0
+      ? [{ icon: "💬", label: `${person._count.quotes} quote${person._count.quotes !== 1 ? "s" : ""}` }]
       : []),
     ...(person.firstAppearanceEpisode?.airDate
       ? [{ icon: "📅", label: `First seen ${formatDate(person.firstAppearanceEpisode.airDate)}` }]
       : []),
-    ...(person.topics.length > 0
-      ? [{ icon: "🏷️", label: `${person.topics.length} topic${person.topics.length !== 1 ? "s" : ""}` }]
+    ...(person._count.topics > 0
+      ? [{ icon: "🏷️", label: `${person._count.topics} topic${person._count.topics !== 1 ? "s" : ""}` }]
       : []),
   ];
 
@@ -398,16 +417,16 @@ export default async function PersonDetailPage({ params }: PageProps) {
           <div className="lg:col-span-2 space-y-6">
             {/* Codex profile — AI-generated character entry */}
             {person.loreSummary ? (
-              <LoreSummaryCard loreSummary={person.loreSummary} />
-            ) : person.guestAppearances.length >= 2 && (
+              <LoreSummaryCard loreSummary={person.loreSummary} appearanceCount={totalAppearances} />
+            ) : person._count.guestAppearances >= 2 && (
               <div className="rounded-lg border border-border bg-surface overflow-hidden">
                 <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">/// codex_entry</p>
-                  <p className="font-mono text-[9px] text-text-muted/40 tracking-widest">PENDING</p>
+                  <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// codex_entry"}</p>
+                  <p className="font-mono text-[12px] text-text-muted tracking-widest">PENDING</p>
                 </div>
                 <div className="px-4 py-5 flex items-center gap-3">
-                  <span className="font-mono text-sm text-text-muted/30">◈</span>
-                  <p className="font-mono text-[10px] text-text-muted/50 uppercase tracking-widest">
+                  <span className="font-mono text-sm text-text-muted">◈</span>
+                  <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
                     Awaiting archival — profile not yet generated
                   </p>
                 </div>
@@ -416,7 +435,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
             {/* Archetype Evolution */}
             {archetypeEntries.length > 0 && (
-              <SectionCard title="Archetype Evolution">
+              <SectionCard headingLevel={2} title="Archetype Evolution">
                 <ArchetypeTimeline
                   entries={archetypeEntries}
                   personName={person.displayName}
@@ -428,29 +447,37 @@ export default async function PersonDetailPage({ params }: PageProps) {
             <ColorLegend />
 
             {/* Appearances */}
-            <SectionCard title={`Appearances (${uniqueEpisodes.length})`} accent="gold">
+            <SectionCard headingLevel={2} title={`Appearances (${totalAppearances})`} accent="gold">
               {uniqueEpisodes.length > 0 ? (
                 <div className="space-y-6">
+                  {totalAppearances > uniqueEpisodes.length && (
+                    <p className="font-mono text-[12px] text-text-muted">
+                      Showing the {uniqueEpisodes.length} most recent of {totalAppearances}.{" "}
+                      <Link href={`/episodes?person=${person.slug}`} className="underline hover:text-accent-gold-text">
+                        Browse all appearances →
+                      </Link>
+                    </p>
+                  )}
                   {episodesByEra.map((group) => (
                     <div key={group.eraId}>
                       <Link
                         href={`/eras/${group.eraId}`}
                         className={`group mb-3 flex items-center gap-2 ${ERA_TEXT_COLOR[group.eraColor] ?? "text-text-muted"}`}
                       >
-                        <span className="font-mono text-[11px]">{group.eraSigil}</span>
-                        <span className="font-mono text-[10px] uppercase tracking-widest opacity-70 group-hover:opacity-100 transition-opacity">
+                        <span className="font-mono text-[12px]">{group.eraSigil}</span>
+                        <span className="font-mono text-[12px] uppercase tracking-widest opacity-70 group-hover:opacity-100 transition-opacity">
                           {group.eraLabel}
                         </span>
-                        <span className="font-mono text-[9px] text-text-muted/50">
+                        <span className="font-mono text-[12px] text-text-muted">
                           {group.episodes.length} ep{group.episodes.length !== 1 ? "s" : ""}
                         </span>
-                        <span className="ml-auto font-mono text-[9px] text-text-muted/40 group-hover:text-text-muted transition-colors">
+                        <span className="ml-auto font-mono text-[12px] text-text-muted group-hover:text-text-muted transition-colors">
                           era →
                         </span>
                       </Link>
                       <div className="grid gap-3">
                         {group.episodes.map((ep) => (
-                          <EpisodeListItem
+                          <EpisodeListItem headingLevel={3}
                             key={ep.id}
                             slug={ep.slug}
                             title={ep.title}
@@ -465,12 +492,12 @@ export default async function PersonDetailPage({ params }: PageProps) {
                   ))}
                   {unclassified.length > 0 && (
                     <div>
-                      <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-text-muted/40">
+                      <p className="mb-3 font-mono text-[12px] uppercase tracking-widest text-text-muted">
                         Unclassified
                       </p>
                       <div className="grid gap-3">
                         {unclassified.map((ep) => (
-                          <EpisodeListItem
+                          <EpisodeListItem headingLevel={3}
                             key={ep.id}
                             slug={ep.slug}
                             title={ep.title}
@@ -491,8 +518,16 @@ export default async function PersonDetailPage({ params }: PageProps) {
 
             {/* Quotes */}
             {person.quotes.length > 0 && (
-              <SectionCard title={`Quotes (${person.quotes.length})`} accent="red">
+              <SectionCard headingLevel={2} title={`Quotes (${person._count.quotes})`} accent="red">
                 <div className="space-y-4">
+                  {person._count.quotes > person.quotes.length && (
+                    <p className="font-mono text-[12px] text-text-muted">
+                      Showing {person.quotes.length} of {person._count.quotes}.{" "}
+                      <Link href={`/quotes?speaker=${person.slug}`} className="underline hover:text-accent-crimson">
+                        Browse all quotes →
+                      </Link>
+                    </p>
+                  )}
                   {person.quotes.map((q) => (
                     <QuoteHighlightCard
                       key={q.id}
@@ -514,11 +549,11 @@ export default async function PersonDetailPage({ params }: PageProps) {
           <div className="space-y-6">
             <EntityStatsPanel
               stats={[
-                { icon: "🎤", label: "Appearances", value: person.guestAppearances.length },
-                { icon: "📢", label: "Mentions", value: person.mentions.length },
-                { icon: "💬", label: "Quotes", value: person.quotes.length },
-                { icon: "🏷️", label: "Topics", value: person.topics.length },
-                { icon: "🔗", label: "Lore Links", value: person.loreConnections.length },
+                { icon: "🎤", label: "Appearances", value: person._count.guestAppearances },
+                { icon: "📢", label: "Mentions", value: person._count.mentions },
+                { icon: "💬", label: "Quotes", value: person._count.quotes },
+                { icon: "🏷️", label: "Topics", value: person._count.topics },
+                { icon: "🔗", label: "Lore Links", value: person._count.loreConnections },
               ]}
             />
 
@@ -526,10 +561,10 @@ export default async function PersonDetailPage({ params }: PageProps) {
             {eraPresence.length > 0 && (
               <div className="rounded-lg border border-border bg-surface overflow-hidden">
                 <div className="flex items-center justify-between border-b border-border px-4 py-2.5 bg-elevated">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted/70">
+                  <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
                     Era Presence
                   </p>
-                  <p className="font-mono text-[9px] text-text-muted/40">
+                  <p className="font-mono text-[12px] text-text-muted">
                     {eraPresence.length} era{eraPresence.length !== 1 ? "s" : ""}
                   </p>
                 </div>
@@ -545,10 +580,10 @@ export default async function PersonDetailPage({ params }: PageProps) {
                         className="group block"
                       >
                         <div className="flex items-center justify-between mb-1">
-                          <span className={`font-mono text-[10px] ${textColor} group-hover:opacity-80 transition-opacity`}>
+                          <span className={`font-mono text-[12px] ${textColor} group-hover:opacity-80 transition-opacity`}>
                             {era.sigil} {era.label}
                           </span>
-                          <span className="font-mono text-[9px] text-text-muted/50 tabular-nums">
+                          <span className="font-mono text-[12px] text-text-muted tabular-nums">
                             {count}
                           </span>
                         </div>
@@ -564,7 +599,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </div>
                 {eraPresence.length === ERAS.length && (
                   <div className="border-t border-border/60 px-4 py-2">
-                    <p className="font-mono text-[9px] text-accent-gold/60 uppercase tracking-widest">
+                    <p className="font-mono text-[12px] text-accent-gold-text/80 uppercase tracking-widest">
                       ◈ Spans all eras
                     </p>
                   </div>
@@ -584,8 +619,10 @@ export default async function PersonDetailPage({ params }: PageProps) {
               />
             )}
 
+            <RelationshipDossier entries={relationshipDossier} personName={person.displayName} />
+
             {coAppearances.length > 0 && (
-              <SectionCard title="Frequently Appears With" accent="gold">
+              <SectionCard headingLevel={2} title="Frequently Appears With" accent="gold">
                 <div className="grid grid-cols-3 gap-3">
                   {coAppearances.map((coGuest) => (
                     <Link
@@ -602,14 +639,14 @@ export default async function PersonDetailPage({ params }: PageProps) {
                           className="h-10 w-10 rounded-full object-cover border border-border group-hover:border-accent-gold/50 transition-colors"
                         />
                       ) : (
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-gold/15 font-mono text-sm font-bold text-accent-gold border border-border group-hover:border-accent-gold/50 transition-colors">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-gold/15 font-mono text-sm font-bold text-accent-gold-text border border-border group-hover:border-accent-gold/50 transition-colors">
                           {coGuest.displayName[0]?.toUpperCase() ?? "?"}
                         </div>
                       )}
-                      <span className="font-mono text-[10px] text-text-muted group-hover:text-accent-gold transition-colors line-clamp-1">
+                      <span className="font-mono text-[12px] text-text-muted group-hover:text-accent-gold-text transition-colors line-clamp-1">
                         {coGuest.displayName}
                       </span>
-                      <span className="font-mono text-[9px] text-text-muted">
+                      <span className="font-mono text-[12px] text-text-muted">
                         {coGuest.sharedEpisodes} shared
                       </span>
                     </Link>
@@ -617,7 +654,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
                 </div>
                 <Link
                   href={`/graph/path?from=${person.slug}`}
-                  className="mt-4 block w-full rounded border border-accent-violet/30 bg-accent-violet/5 px-3 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-accent-violet hover:bg-accent-violet/10 transition-colors"
+                  className="mt-4 block w-full rounded border border-accent-violet/30 bg-accent-violet/5 px-3 py-2 text-center font-mono text-[12px] uppercase tracking-widest text-accent-violet-text hover:bg-accent-violet/10 transition-colors"
                 >
                   Find a path to anyone →
                 </Link>
@@ -630,7 +667,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
               type="person"
             />
 
-            <SectionCard title="Dossier">
+            <SectionCard headingLevel={2} title="Dossier">
               <MetaRow
                 label="Type"
                 value={<StatusBadge label={typeLabel} variant={typeVariant} />}
@@ -646,15 +683,22 @@ export default async function PersonDetailPage({ params }: PageProps) {
               )}
             </SectionCard>
 
-            {/* External Links */}
+            {/* External Links — hardcoded list merged with DB-backed YouTube channel */}
             {(() => {
-              const links = getExternalLinks(person.slug);
-              if (links.length === 0) return null;
+              const staticLinks = getExternalLinks(person.slug);
+              // Merge DB youtubeChannelUrl in — deduplicated against the static list
+              const ytDbUrl = person.youtubeChannelUrl;
+              const allLinks = ytDbUrl && !staticLinks.some((l) => l.url === ytDbUrl)
+                ? [{ label: "YouTube Channel", url: ytDbUrl, icon: "▶" as const }, ...staticLinks]
+                : staticLinks;
+
+              if (allLinks.length === 0) return null;
+
               const isYt = (url: string) => url.includes("youtube.com") || url.includes("youtu.be");
               return (
-                <SectionCard title="External Links">
+                <SectionCard headingLevel={2} title="External Links">
                   <ul className="space-y-2">
-                    {links.map((link) => (
+                    {allLinks.map((link) => (
                       <li key={link.url}>
                         <a
                           href={link.url}
@@ -673,11 +717,11 @@ export default async function PersonDetailPage({ params }: PageProps) {
                             {link.label}
                           </span>
                           {isYt(link.url) && (
-                            <span className="ml-1 rounded-sm bg-red-600 px-1 py-0.5 text-[9px] font-bold uppercase text-white tracking-wide">
+                            <span className="ml-1 rounded-sm bg-red-600 px-1 py-0.5 text-[12px] font-bold uppercase text-white tracking-wide">
                               YouTube
                             </span>
                           )}
-                          <span className="ml-auto font-mono text-[10px] text-text-muted">↗</span>
+                          <span className="ml-auto font-mono text-[12px] text-text-muted">↗</span>
                         </a>
                       </li>
                     ))}
@@ -737,18 +781,41 @@ export default async function PersonDetailPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             "@context": "https://schema.org",
             "@type": "Person",
             name: person.displayName,
             ...(person.shortBio ? { description: person.shortBio } : {}),
             ...(person.avatarUrl ? { image: person.avatarUrl } : {}),
             url: `https://cultcodex.me/people/${person.slug}`,
+            ...(person.youtubeChannelUrl ? { sameAs: person.youtubeChannelUrl } : {}),
             ...(person.firstAppearanceEpisode?.airDate
               ? { firstAppearance: person.firstAppearanceEpisode.airDate.toISOString().slice(0, 10) }
               : {}),
-            numberOfAppearances: uniqueEpisodes.length,
+            numberOfAppearances: totalAppearances,
+            // Topics this person discusses — knowledge-graph edges
+            ...(person.topics.length > 0
+              ? {
+                  knowsAbout: person.topics.slice(0, 8).map((t) => ({
+                    "@type": "DefinedTerm",
+                    name: t.topic.title,
+                    url: `https://cultcodex.me/topics/${t.topic.slug}`,
+                  })),
+                }
+              : {}),
           }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbListJsonLd([
+              { name: "CultCodex", url: "https://cultcodex.me" },
+              { name: "Voices", url: "https://cultcodex.me/people" },
+              { name: person.displayName, url: `https://cultcodex.me/people/${person.slug}` },
+            ])
+          ),
         }}
       />
     </>

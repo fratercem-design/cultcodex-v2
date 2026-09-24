@@ -7,51 +7,100 @@
 /* ═══════════════════════════════════════════════════════
    SACRED TERMINAL — CultCodex Design System
    ═══════════════════════════════════════════════════════
-   Fonts:  Space Grotesk (display) + Inter (body) + IBM Plex Mono (system/meta)
-   Palette: Obsidian / Parchment / Gold / Violet / Cyan / Crimson
-   Rule: 80% obsidian+parchment, gold = prestige, violet = mystical,
-         cyan = system only, crimson = warnings only
+   Palette: Void / Ink / Bone / Ember / Sulphur / Phosphor / Bruise
+            (Visual Audit Dossier Ch. III — /dossier)
+   Allocation: ~70% void/ink, ~20% bone, ~7% ember, ~2% sulphur, ~1% phosphor.
+   Rule: ember = prestige/CTA, bruise = mystical (Oracle), phosphor = system-
+         state pips only (uplink/live/transcribed), crimson = warnings only
+         (kept distinct from ember so danger and brand-CTA don't collide).
+   Note: the neon/terminal tokens further down are a deliberately separate
+   CRT/terminal system for the cards/vault UI — the dossier calls for CRT
+   effects to stay on system surfaces and occult ornament on content surfaces,
+   so that palette is intentionally NOT unified with the one below.
    ═══════════════════════════════════════════════════════ */
 
 /* ─── Design Tokens (Tailwind v4 @theme) ───────────── */
 
 @theme inline {
-  /* Backgrounds — aligned to terminal palette */
-  --color-void: #0A0A0F;
-  --color-surface: #0a0e15;   /* was #12131A — now matches --term-panel */
-  --color-elevated: #0b0f18;  /* was #1A1C24 — now matches --term-bg-2  */
+  /* Backgrounds — dossier Void / Ink */
+  --color-void: #07060A;
+  --color-surface: #0C0B11;
+  --color-elevated: #141219;
 
-  /* Text */
-  --color-text-primary: #F3EEDF;
-  --color-text-muted: #B6AE9B;
+  /* Text — dossier Bone, with the dossier's own "parchment dim" for muted text */
+  --color-text-primary: #EBE3D2;
+  --color-text-muted: #9A907D;
 
-  /* Borders — aligned to terminal palette */
-  --color-border: #182135;    /* was #2A2D36 — now matches --term-line  */
+  /* Borders — dossier rule: "1px bone at 12% opacity", pre-composited to a
+     solid swatch (Tailwind's utility generator wants a solid color here) */
+  --color-border: #222122;
 
-  /* Accents — use with discipline */
-  --color-accent-gold: #C8A96B;
-  --color-accent-gold-dim: rgba(200, 169, 107, 0.15);
-  --color-accent-violet: #6E4BAE;
-  --color-accent-violet-dim: rgba(110, 75, 174, 0.13);
-  --color-accent-cyan: #5DB7D8;
-  --color-accent-cyan-dim: rgba(93, 183, 216, 0.15);
-  --color-accent-crimson: #A94A4A;
+  /* Accents — use with discipline. Names kept stable (accent-gold etc.) so
+     the existing Tailwind utility call sites repaint automatically; only the
+     underlying values move to the dossier palette. */
+  --color-accent-gold: #C8392E;               /* was gold #C8A96B — now Ember */
+  --color-accent-gold-dim: rgba(200, 57, 46, 0.15);
+  --color-accent-gold-text: #E8776B;          /* readable tint of Ember for text
+                                                 (5:1 on --term-bg-1) */
+  --color-accent-live-text: #FF8A85;          /* readable tint of the live red */
+  --color-accent-violet: #4A2D6E;             /* was violet #9B6ED0 — now Bruise */
+  --color-accent-violet-dim: rgba(74, 45, 110, 0.18);
+  --color-accent-violet-text: #B79EE0;        /* Bruise is too dark to read on the
+                                                 void — use this tint for violet
+                                                 text/labels (8:1 on --term-bg-1) */
+  --color-accent-cyan: #62E4C8;               /* was cyan #5DB7D8 — now Phosphor */
+  --color-accent-cyan-dim: rgba(98, 228, 200, 0.15);
+  --color-accent-crimson: #A94A4A;            /* unchanged — danger/error, kept
+                                                  distinct from the ember CTA */
+  --color-accent-crimson-text: #D08585;       /* #A94A4A is only 3.64:1 on the
+                                                  terminal ground — fine for
+                                                  borders and large display
+                                                  type, short of WCAG AA for
+                                                  body copy. This tint is 7.1:1
+                                                  and keeps the same hue. */
+  --color-accent-sulphur: #D6A017;            /* new — dossier's rare/2% accent,
+                                                  available for future use */
+  --color-accent-sulphur-dim: rgba(214, 160, 23, 0.15);
 
   /* Legacy aliases for existing components */
-  --color-accent-green: #C8A96B;
-  --color-accent-green-dim: rgba(200, 169, 107, 0.15);
-  --color-accent-purple: #6E4BAE;
-  --color-accent-purple-dim: rgba(110, 75, 174, 0.13);
+  --color-accent-green: #C8392E;
+  --color-accent-green-dim: rgba(200, 57, 46, 0.15);
+  --color-accent-purple: #4A2D6E;
+  --color-accent-purple-dim: rgba(74, 45, 110, 0.18);
+
+  /* ── Role tokens — "Ritual Research Instrument" design system ──────────
+     Colors are named for what they MEAN, not their hue. New UI should use
+     these; the hue-named accents above stay as legacy aliases (accent-gold
+     and accent-green are both Ember red, which is exactly why new code
+     should not reach for them). Every text role clears 4.5:1 on void,
+     surface and elevated; line-strong and focus clear 3:1.
+       brand     one primary action per view, wordmark, active-nav marker
+       evidence  something verifiable: timestamps, sources, transcript hits
+       oracle    AI-generated / AI-interpreted content and the Oracle
+       member    Initiate+ / paid / locked (always with the word + lock)  */
+  --color-ink: #EBE3D2;          /* 14:1 — headings, body */
+  --color-ink-2: #B9AF9E;        /* 8.3:1 — descriptions, inactive nav */
+  --color-ink-3: #948A7A;        /* 5.3:1 — the readable floor for metadata */
+  --color-line: #2A2730;         /* hairline dividers (decorative) */
+  --color-line-strong: #6E6878;  /* control borders, 3.4:1 */
+  --color-brand: #B3291F;        /* fill; pair with on-brand text (5.9:1) */
+  --color-on-brand: #FBF3E6;
+  --color-brand-ink: #F08074;    /* Ember as text, 6.9:1 */
+  --color-evidence: #5FD8BF;
+  --color-oracle: #B9A2E6;
+  --color-member: #E9B44C;
+  --color-error: #FF9A6B;        /* coral, never confused with brand red */
+  --color-focus: #F5C451;        /* 11:1 focus ring */
 
   /* shadcn/ui mappings */
   --color-background: var(--bg-void);
   --color-foreground: var(--text-primary);
 
-  /* Typography — 4-font system */
-  --font-sans: var(--font-body), "Inter", system-ui, sans-serif;
-  --font-mono: var(--font-mono), "IBM Plex Mono", monospace;
+  /* Typography — only JetBrains Mono + Space Grotesk ship globally. */
+  --font-sans: system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
   --font-display: var(--font-display), "Space Grotesk", sans-serif;
-  --font-serif: var(--font-serif), "Playfair Display", Georgia, serif;
+  --font-serif: Georgia, serif;
 
   /* shadcn/ui token passthrough */
   --color-sidebar-ring: var(--sidebar-ring);
@@ -94,59 +143,81 @@
 /* ─── CSS Custom Properties ────────────────────────── */
 
 :root {
+  /* Role tokens as real custom properties. `@theme inline` above inlines its
+     values into utilities and emits no variables, so plain CSS (focus ring,
+     threshold, nav colors) reads these. Keep the two blocks in sync. */
+  --color-ink: #EBE3D2;
+  --color-ink-2: #B9AF9E;
+  --color-ink-3: #948A7A;
+  --color-line: #2A2730;
+  --color-line-strong: #6E6878;
+  --color-brand: #B3291F;
+  --color-on-brand: #FBF3E6;
+  --color-brand-ink: #F08074;
+  --color-evidence: #5FD8BF;
+  --color-oracle: #B9A2E6;
+  --color-member: #E9B44C;
+  --color-error: #FF9A6B;
+  --color-focus: #F5C451;
+
   /* Sacred Terminal palette — bg-surface/elevated/border aligned to terminal */
-  --bg-void: #0A0A0F;
-  --bg-surface: #0a0e15;
-  --bg-elevated: #0b0f18;
-  --border: #182135;
-  --text-primary: #F3EEDF;
-  --text-muted: #B6AE9B;
-  --accent-gold: #C8A96B;
-  --accent-gold-dim: rgba(200, 169, 107, 0.15);
-  --accent-violet: #6E4BAE;
-  --accent-violet-dim: rgba(110, 75, 174, 0.13);
-  --accent-cyan: #5DB7D8;
-  --accent-cyan-dim: rgba(93, 183, 216, 0.15);
+  --bg-void: #07060A;
+  --bg-surface: #0C0B11;
+  --bg-elevated: #141219;
+  --border: #222122;
+  --text-primary: #EBE3D2;
+  --text-muted: #9A907D;
+  --accent-gold: #C8392E;
+  --accent-gold-dim: rgba(200, 57, 46, 0.15);
+  --accent-gold-text: #E8776B;
+  --accent-live-text: #FF8A85;
+  --accent-violet: #4A2D6E;
+  --accent-violet-dim: rgba(74, 45, 110, 0.18);
+  --accent-violet-text: #B79EE0;
+
+  --accent-cyan: #62E4C8;
+  --accent-cyan-dim: rgba(98, 228, 200, 0.15);
   --accent-crimson: #A94A4A;
+  --accent-crimson-text: #D08585;
 
   /* Legacy aliases */
-  --accent-green: #C8A96B;
-  --accent-green-dim: rgba(200, 169, 107, 0.15);
-  --accent-purple: #6E4BAE;
-  --accent-purple-dim: rgba(110, 75, 174, 0.13);
+  --accent-green: #C8392E;
+  --accent-green-dim: rgba(200, 57, 46, 0.15);
+  --accent-purple: #4A2D6E;
+  --accent-purple-dim: rgba(74, 45, 110, 0.18);
 
   /* shadcn/ui base (light fallback, overridden by .dark) */
-  --background: #0A0A0F;
-  --foreground: #F3EEDF;
-  --card: #0a0e15;
-  --card-foreground: #F3EEDF;
-  --popover: #0b0f18;
-  --popover-foreground: #F3EEDF;
-  --primary: #C8A96B;
-  --primary-foreground: #0A0A0F;
-  --secondary: #0b0f18;
-  --secondary-foreground: #F3EEDF;
-  --muted: #0b0f18;
-  --muted-foreground: #B6AE9B;
-  --accent: #6E4BAE;
-  --accent-foreground: #F3EEDF;
+  --background: #07060A;
+  --foreground: #EBE3D2;
+  --card: #0C0B11;
+  --card-foreground: #EBE3D2;
+  --popover: #141219;
+  --popover-foreground: #EBE3D2;
+  --primary: #C8392E;
+  --primary-foreground: #07060A;
+  --secondary: #141219;
+  --secondary-foreground: #EBE3D2;
+  --muted: #141219;
+  --muted-foreground: #9A907D;
+  --accent: #4A2D6E;
+  --accent-foreground: #EBE3D2;
   --destructive: #A94A4A;
-  --input: #182135;
-  --ring: rgba(200, 169, 107, 0.3);
-  --chart-1: #C8A96B;
-  --chart-2: #6E4BAE;
-  --chart-3: #5DB7D8;
+  --input: #222122;
+  --ring: rgba(200, 57, 46, 0.3);
+  --chart-1: #C8392E;
+  --chart-2: #4A2D6E;
+  --chart-3: #62E4C8;
   --chart-4: #A94A4A;
-  --chart-5: #B6AE9B;
+  --chart-5: #9A907D;
   --radius: 0.625rem;
-  --sidebar: #07090f;
-  --sidebar-foreground: #F3EEDF;
-  --sidebar-primary: #C8A96B;
-  --sidebar-primary-foreground: #0A0A0F;
-  --sidebar-accent: #0b0f18;
-  --sidebar-accent-foreground: #F3EEDF;
-  --sidebar-border: #182135;
-  --sidebar-ring: rgba(200, 169, 107, 0.3);
+  --sidebar: #050408;
+  --sidebar-foreground: #EBE3D2;
+  --sidebar-primary: #C8392E;
+  --sidebar-primary-foreground: #07060A;
+  --sidebar-accent: #141219;
+  --sidebar-accent-foreground: #EBE3D2;
+  --sidebar-border: #222122;
+  --sidebar-ring: rgba(200, 57, 46, 0.3);
 }
 
 /* ─── Base Styles ──────────────────────────────────── */
@@ -174,29 +245,29 @@ h1, h2, h3 {
 /* ─── Utility Classes ──────────────────────────────── */
 
 @utility glow-gold {
-  box-shadow: 0 0 8px rgba(200, 169, 107, 0.3), 0 0 24px rgba(200, 169, 107, 0.1);
+  box-shadow: 0 0 8px rgba(200, 57, 46, 0.3), 0 0 24px rgba(200, 57, 46, 0.1);
 }
 
 @utility glow-violet {
-  box-shadow: 0 0 8px rgba(110, 75, 174, 0.3), 0 0 24px rgba(110, 75, 174, 0.1);
+  box-shadow: 0 0 8px rgba(74, 45, 110, 0.3), 0 0 24px rgba(74, 45, 110, 0.1);
 }
 
 @utility glow-cyan {
-  box-shadow: 0 0 8px rgba(93, 183, 216, 0.3), 0 0 24px rgba(93, 183, 216, 0.1);
+  box-shadow: 0 0 8px rgba(98, 228, 200, 0.3), 0 0 24px rgba(98, 228, 200, 0.1);
 }
 
 /* Legacy aliases for existing components */
 @utility glow-green {
-  box-shadow: 0 0 8px rgba(200, 169, 107, 0.3), 0 0 24px rgba(200, 169, 107, 0.1);
+  box-shadow: 0 0 8px rgba(200, 57, 46, 0.3), 0 0 24px rgba(200, 57, 46, 0.1);
 }
 
 @utility glow-purple {
-  box-shadow: 0 0 8px rgba(110, 75, 174, 0.3), 0 0 24px rgba(110, 75, 174, 0.1);
+  box-shadow: 0 0 8px rgba(74, 45, 110, 0.3), 0 0 24px rgba(74, 45, 110, 0.1);
 }
 
 @utility border-glow-green {
   border-color: var(--accent-gold);
-  box-shadow: 0 0 4px rgba(200, 169, 107, 0.2);
+  box-shadow: 0 0 4px rgba(200, 57, 46, 0.2);
 }
 
 @utility bg-scanline {
@@ -204,45 +275,45 @@ h1, h2, h3 {
     0deg,
     transparent,
     transparent 2px,
-    rgba(200, 169, 107, 0.02) 2px,
-    rgba(200, 169, 107, 0.02) 4px
+    rgba(200, 57, 46, 0.02) 2px,
+    rgba(200, 57, 46, 0.02) 4px
   );
 }
 
 /* ─── Dark mode (always active — .dark on <html>) ── */
 
 .dark {
-  --background: #0A0A0F;
-  --foreground: #F3EEDF;
-  --card: #0a0e15;
-  --card-foreground: #F3EEDF;
-  --popover: #0b0f18;
-  --popover-foreground: #F3EEDF;
-  --primary: #C8A96B;
-  --primary-foreground: #0A0A0F;
-  --secondary: #0b0f18;
-  --secondary-foreground: #F3EEDF;
-  --muted: #0b0f18;
-  --muted-foreground: #B6AE9B;
-  --accent: #6E4BAE;
-  --accent-foreground: #F3EEDF;
+  --background: #07060A;
+  --foreground: #EBE3D2;
+  --card: #0C0B11;
+  --card-foreground: #EBE3D2;
+  --popover: #141219;
+  --popover-foreground: #EBE3D2;
+  --primary: #C8392E;
+  --primary-foreground: #07060A;
+  --secondary: #141219;
+  --secondary-foreground: #EBE3D2;
+  --muted: #141219;
+  --muted-foreground: #9A907D;
+  --accent: #4A2D6E;
+  --accent-foreground: #EBE3D2;
   --destructive: #A94A4A;
-  --border: #182135;
-  --input: #182135;
-  --ring: rgba(200, 169, 107, 0.3);
-  --chart-1: #C8A96B;
-  --chart-2: #6E4BAE;
-  --chart-3: #5DB7D8;
+  --border: #222122;
+  --input: #222122;
+  --ring: rgba(200, 57, 46, 0.3);
+  --chart-1: #C8392E;
+  --chart-2: #4A2D6E;
+  --chart-3: #62E4C8;
   --chart-4: #A94A4A;
-  --chart-5: #B6AE9B;
-  --sidebar: #07090f;
-  --sidebar-foreground: #F3EEDF;
-  --sidebar-primary: #C8A96B;
-  --sidebar-primary-foreground: #0A0A0F;
-  --sidebar-accent: #0b0f18;
-  --sidebar-accent-foreground: #F3EEDF;
-  --sidebar-border: #182135;
-  --sidebar-ring: rgba(200, 169, 107, 0.3);
+  --chart-5: #9A907D;
+  --sidebar: #050408;
+  --sidebar-foreground: #EBE3D2;
+  --sidebar-primary: #C8392E;
+  --sidebar-primary-foreground: #07060A;
+  --sidebar-accent: #141219;
+  --sidebar-accent-foreground: #EBE3D2;
+  --sidebar-border: #222122;
+  --sidebar-ring: rgba(200, 57, 46, 0.3);
 }
 
 @layer base {
@@ -257,20 +328,26 @@ h1, h2, h3 {
   }
 }
 
-/* Accessible focus rings */
+/* Accessible focus rings.
+   One ring, everywhere. The 2026-09 audit found controls whose focus
+   resolved to a 0px outline or to `outline-ring/50` (Ember at ~15% alpha) —
+   effectively invisible. `!important` is deliberate: this is an
+   accessibility floor that per-component `outline-none` utilities must not
+   be able to remove. */
 @layer utilities {
   .focus-ring {
-    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-green;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus;
   }
 }
 
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-  outline: 2px solid var(--color-accent-green);
-  outline-offset: 2px;
+:focus-visible {
+  /* Longhands with a literal value: the shorthand-with-var() form lost to
+     the base-layer `outline-ring/50` on some buttons in Chromium. #F5C451 is
+     --color-focus. */
+  outline-style: solid !important;
+  outline-width: 2px !important;
+  outline-color: #F5C451 !important;
+  outline-offset: 2px !important;
 }
 
 /* Oracle animations */
@@ -302,6 +379,123 @@ textarea:focus-visible {
 .animate-ring-pulse {
   animation: ringPulse 3s ease-in-out infinite;
 }
+
+@keyframes oracle-flash {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px #4A2D6E,
+      0 0 0 6px #62E4C8,
+      0 0 30px rgba(74, 45, 110,0.8),
+      0 0 60px rgba(98, 228, 200,0.4);
+    opacity: 1;
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(74, 45, 110,0.3),
+      0 0 0 6px rgba(98, 228, 200, 0.15),
+      0 0 10px rgba(74, 45, 110,0.2),
+      0 0 20px rgba(98, 228, 200,0.1);
+    opacity: 0.7;
+  }
+}
+@keyframes oracle-ring-flash {
+  0%, 100% { opacity: 0.9; transform: scale(1); }
+  50% { opacity: 0.08; transform: scale(1.1); }
+}
+.animate-oracle-flash {
+  animation: oracle-flash 0.75s ease-in-out infinite;
+}
+.animate-oracle-ring {
+  animation: oracle-ring-flash 0.75s ease-in-out infinite;
+}
+
+/* ─── CRT / VHS MYSTIQUE LAYER ──────────────────────────────────────
+   A fixed, full-viewport overlay that sits above all content (pointer
+   events disabled). Three stacked effects: horizontal scanlines, a
+   drifting film-grain noise, and a vignette. Kept very subtle so the
+   UI stays readable. Disabled entirely under prefers-reduced-motion. */
+
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Scanlines — thin repeating dark lines + a slow vertical roll */
+.crt-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.12) 3px,
+    rgba(0, 0, 0, 0.12) 4px
+  );
+  opacity: 0.5;
+  animation: crt-roll 8s linear infinite;
+}
+
+/* Vignette + faint cyan/violet edge bloom */
+.crt-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.45) 100%),
+    radial-gradient(ellipse at 50% 0%, rgba(98, 228, 200, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(74, 45, 110, 0.04) 0%, transparent 50%);
+}
+
+/* Film grain — separate element so it can animate independently */
+.crt-grain {
+  position: absolute;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  animation: crt-grain 0.6s steps(4) infinite;
+}
+
+@keyframes crt-roll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+@keyframes crt-grain {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-3%, 2%); }
+  50% { transform: translate(2%, -3%); }
+  75% { transform: translate(-2%, -2%); }
+  100% { transform: translate(3%, 2%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-overlay { display: none; }
+  .term-blink,
+  .term-pulse,
+  .term-flicker {
+    animation: none;
+  }
+
+  /* Sitewide backstop (Dossier Ch. VII vow #5 — "reduced motion is sacred,
+     no exceptions"). Several effects (pack-shake, foil shimmer, the Oracle's
+     loading-state flash, card reveals) are applied as raw inline `animation`
+     styles rather than through a shared class, so a per-class rule can't
+     reach them — this catches every animation/transition site-wide,
+     including inline ones, since only `!important` beats an un-important
+     inline style. State changes still happen; they just stop animating. */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 .animation-delay-150 {
   animation-delay: 150ms;
 }
@@ -330,15 +524,15 @@ textarea:focus-visible {
   --term-line-2: #243151;
   --term-line-hot: #2c3a5e;
   --term-fg: #d4f5e8;
-  --term-fg-dim: #7a948c;
-  --term-fg-faint: #3d524a;
-  --term-fg-mute: #2a3833;
+  --term-fg-dim: #9cbcb3;    /* was #7a948c — lifted to ~10:1 contrast */
+  --term-fg-faint: #6b9589;  /* was #3d524a — lifted to ~6.5:1 contrast */
+  --term-fg-mute: #527a6e;   /* was #2a3833 — lifted to ~4.7:1 contrast */
   --glow-neon: 0 0 6px rgba(0, 255, 156, 0.6), 0 0 18px rgba(0, 255, 156, 0.25);
   --glow-cyan: 0 0 6px rgba(0, 229, 255, 0.6), 0 0 18px rgba(0, 229, 255, 0.25);
   --glow-magenta: 0 0 6px rgba(255, 43, 214, 0.55), 0 0 22px rgba(255, 43, 214, 0.22);
   --glow-amber: 0 0 6px rgba(255, 184, 0, 0.6), 0 0 18px rgba(255, 184, 0, 0.22);
-  --font-crt: var(--font-crt), "VT323", "IBM Plex Mono", monospace;
-  --font-display-term: "Major Mono Display", "VT323", monospace;
+  --font-crt: var(--font-mono), ui-monospace, monospace;
+  --font-display-term: var(--font-mono), ui-monospace, monospace;
 }
 
 /* CRT scanlines overlay */
@@ -406,6 +600,8 @@ body {
 }
 .terminal-sidebar {
   grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   min-height: 0;
 }
@@ -417,6 +613,154 @@ body {
 }
 .terminal-statusbar {
   grid-area: statusbar;
+  overflow: hidden;
+}
+.statusbar-right {
+  display: flex;
+}
+
+/* ─── Mobile bottom nav (the sigil compass) ────────── */
+/* Base (hidden) rules must precede the max-width override below — same
+   specificity, so source order decides, and the override has to win. */
+:root {
+  --mobile-nav-height: 58px;
+}
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--mobile-nav-height);
+  z-index: 80;
+  align-items: stretch;
+  justify-content: space-around;
+  background: color-mix(in srgb, var(--term-bg-1) 94%, transparent);
+  border-top: 1px solid var(--term-line);
+  backdrop-filter: blur(8px);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.mobile-bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 44px;
+  min-height: 44px;
+  background: none;
+  border: none;
+  font-family: var(--font-mono), "IBM Plex Mono", monospace;
+  text-decoration: none;
+  cursor: pointer;
+}
+.mobile-bottom-nav__glyph {
+  font-size: 18px;
+  line-height: 1;
+}
+.mobile-bottom-nav__label {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ─── Radial dial nav (long-press the sigil) ───────── */
+.radial-dial-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  background: color-mix(in srgb, var(--term-bg) 78%, transparent);
+  backdrop-filter: blur(3px);
+  touch-action: none;
+}
+.radial-dial {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+}
+.radial-dial__sector {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border-radius: 50%;
+  border: 1px solid var(--term-line);
+  background: color-mix(in srgb, var(--term-panel) 92%, transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--term-fg-dim);
+  transition: transform 120ms ease, border-color 120ms ease, color 120ms ease, background 120ms ease;
+  pointer-events: none;
+}
+.radial-dial__sector--active {
+  border-color: var(--neon);
+  color: var(--neon);
+  background: color-mix(in srgb, var(--neon) 14%, var(--term-panel));
+  box-shadow: var(--glow-neon);
+}
+.radial-dial__glyph {
+  font-size: 16px;
+  line-height: 1;
+}
+.radial-dial__label {
+  font-family: var(--font-mono, monospace);
+  font-size: 7px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.radial-dial__center {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--term-fg-faint);
+  white-space: nowrap;
+}
+
+.radial-dial-list {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 200px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid var(--term-line);
+  background: var(--term-panel);
+}
+.radial-dial-list__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  min-height: 44px;
+  border-radius: 4px;
+  border: none;
+  background: none;
+  color: var(--term-fg-dim);
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.radial-dial-list__item:hover,
+.radial-dial-list__item:focus-visible {
+  background: color-mix(in srgb, var(--neon) 10%, transparent);
+  color: var(--neon);
 }
 
 @media (max-width: 900px) {
@@ -429,7 +773,23 @@ body {
     grid-template-rows: 36px 1fr 24px;
   }
   .terminal-sidebar {
+    display: none !important;
+  }
+  .statusbar-right {
     display: none;
+  }
+
+  /* The sidebar vanishes above with no substitute — the bottom compass
+     (Dossier Ch. V: "the bottom of the screen is sacred") is the real
+     replacement, so reserve room for it and lift the appearance FAB clear. */
+  .terminal-main {
+    padding-bottom: var(--mobile-nav-height);
+  }
+  .mobile-bottom-nav {
+    display: flex;
+  }
+  .appearance-controls {
+    bottom: calc(1rem + var(--mobile-nav-height));
   }
 }
 
@@ -521,4 +881,229 @@ body {
     transparent 80%
   ) !important;
   text-shadow: var(--glow-neon);
+}
+
+/* /people/the-rest directory links — CSS hover replaces JS handlers so the
+   page can stay a Server Component (event handlers can't cross the RSC boundary). */
+.rest-person-link {
+  border: 1px solid var(--term-line);
+  transition: border-color 0.15s;
+}
+.rest-person-link:hover {
+  border-color: var(--neon-3);
+}
+
+/* ═══════════════════════════════════════════════════════
+   APPEARANCE TOGGLES — user-controlled (see @/lib/appearance)
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Ambient visuals OFF: kill the matrix rain, CRT scanlines, grain, vignette ── */
+html.ambient-off .ambient-canvas,
+html.ambient-off .crt-overlay {
+  display: none !important;
+}
+html.ambient-off body::before,
+html.ambient-off body::after {
+  display: none !important;
+}
+
+/* ── High contrast: lift muted text toward white, flatten background to black,
+   strengthen borders. Overrides the root tokens that body + var()-driven
+   components consume, so it cascades site-wide. ── */
+html.high-contrast {
+  --text-primary: #ffffff;
+  --text-muted: #e9e3d3;
+  --color-text-primary: #ffffff;
+  --color-text-muted: #e9e3d3;
+  --foreground: #ffffff;
+  --muted-foreground: #e9e3d3;
+  --term-fg: #ffffff;
+  --term-fg-dim: #eaf3ef;
+  --term-fg-faint: #d6e4de;
+  --term-fg-mute: #bcd0c8;
+  --bg-void: #000000;
+  --term-bg: #000000;
+  --term-bg-1: #04060a;
+  --term-bg-2: #0a0e15;
+  --border: #44557e;
+  --term-line: #44557e;
+  --term-line-2: #50628e;
+}
+/* In high contrast, tone ambient noise down so text dominates (unless the user
+   already turned ambient off, which hides it entirely via the rules above). */
+html.high-contrast .ambient-canvas {
+  opacity: 0.4;
+}
+html.high-contrast body::before {
+  opacity: 0.3;
+}
+
+/* ── Floating control (bottom-left) ── */
+.appearance-controls {
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-family: var(--font-mono), "IBM Plex Mono", monospace;
+}
+
+.appearance-fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--term-panel) 88%, transparent);
+  border: 1px solid var(--term-line);
+  color: var(--accent-gold);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.appearance-fab:hover {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 8px rgba(200, 57, 46, 0.25);
+}
+.appearance-fab:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.appearance-panel {
+  width: 16rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--term-panel) 96%, transparent);
+  border: 1px solid var(--term-line);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.appearance-panel__title {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  color: var(--term-fg-mute);
+  padding: 0 0.25rem 0.35rem;
+}
+
+.appearance-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-primary);
+  transition: background-color 0.15s;
+}
+.appearance-switch:hover {
+  background: color-mix(in srgb, var(--accent-gold) 8%, transparent);
+}
+.appearance-switch:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: -2px;
+}
+.appearance-switch__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.appearance-switch__label {
+  font-size: 0.8rem;
+  color: var(--text-primary);
+}
+.appearance-switch__hint {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+.appearance-switch__track {
+  position: relative;
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  background: var(--term-bg-2);
+  border: 1px solid var(--term-line);
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.appearance-switch[aria-checked="true"] .appearance-switch__track {
+  background: var(--accent-gold-dim);
+  border-color: var(--accent-gold);
+}
+.appearance-switch__thumb {
+  position: absolute;
+  top: 50%;
+  left: 0.15rem;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 999px;
+  background: var(--term-fg-mute);
+  transform: translateY(-50%);
+  transition: transform 0.15s, background-color 0.15s;
+}
+.appearance-switch[aria-checked="true"] .appearance-switch__thumb {
+  transform: translate(1rem, -50%);
+  background: var(--accent-gold);
+}
+
+/* Panelverse Game Show — answer feedback animations */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Panelverse Game Show — ambient drifting sigils + scanlines on the hero */
+.gs-drift {
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(98,228,200,0.5), transparent),
+    radial-gradient(1px 1px at 70% 60%, rgba(74,45,110,0.6), transparent),
+    radial-gradient(1.5px 1.5px at 40% 80%, rgba(200,57,46,0.35), transparent),
+    radial-gradient(1px 1px at 85% 20%, rgba(235,227,210,0.3), transparent),
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.12) 3px, rgba(0,0,0,0.12) 4px);
+  background-size: 600px 600px, 600px 600px, 600px 600px, 600px 600px, 100% 4px;
+  animation: gs-drift 40s linear infinite;
+}
+@keyframes gs-drift {
+  from { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+  to   { background-position: 0 600px, 0 -600px, 0 600px, 0 -600px, 0 0; }
+}
+@media (prefers-reduced-motion: reduce) { .gs-drift { animation: none; } }
+
+/* Panelverse Game Show — card entrance + emblem pulse */
+@keyframes cardin {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes gs-pulse {
+  0%, 100% { filter: drop-shadow(0 0 2px currentColor); }
+  50%      { filter: drop-shadow(0 0 8px currentColor); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-\[cardin_0\.35s_ease-out\] { animation: none !important; }
+}
+
+/* Cookie consent: flush to the bottom on desktop, above the bottom nav on
+   phones so the two fixed layers never stack over each other. */
+.cookie-consent { bottom: 0; }
+@media (max-width: 900px) {
+  .cookie-consent { bottom: var(--mobile-nav-height); }
 }

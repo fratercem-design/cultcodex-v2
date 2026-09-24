@@ -1,14 +1,19 @@
+export const dynamic = "force-dynamic";
+
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { AdminFormField } from "@/components/admin/admin-form-field";
 import { updateLoreEntry } from "@/app/admin/actions";
 import Link from "next/link";
+import { requireAdminPage } from "@/lib/auth";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditLoreEntryPage({ params }: PageProps) {
+  await requireAdminPage();
+
   const { id } = await params;
 
   const entry = await prisma.loreEntry.findUnique({ where: { id } });
@@ -28,7 +33,7 @@ export default async function EditLoreEntryPage({ params }: PageProps) {
         </h1>
         <Link
           href="/admin/lore"
-          className="font-mono text-xs text-text-muted hover:text-accent-gold transition-colors"
+          className="font-mono text-xs text-text-muted hover:text-accent-gold-text transition-colors"
         >
           &larr; Back to Lore
         </Link>

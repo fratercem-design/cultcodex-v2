@@ -22,6 +22,7 @@ function AnimatedCounter({ value }: { value: number }) {
     hasAnimated.current = true;
 
     // Reset to 0 and animate up (only on client mount)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDisplay(0);
     const duration = 1200;
     const start = performance.now();
@@ -37,7 +38,7 @@ function AnimatedCounter({ value }: { value: number }) {
     requestAnimationFrame(tick);
   }, [value]);
 
-  return <span>{display.toLocaleString()}</span>;
+  return <span>{display.toLocaleString("en-US")}</span>;
 }
 
 export function ArchiveStatsBar({ stats }: ArchiveStatsBarProps) {
@@ -52,7 +53,7 @@ export function ArchiveStatsBar({ stats }: ArchiveStatsBarProps) {
           <p className="mt-1 font-mono text-2xl font-bold text-accent-gold">
             <AnimatedCounter value={stat.value} />
           </p>
-          <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-text-muted">
+          <p className="mt-0.5 font-mono text-[12px] uppercase tracking-wider text-text-muted">
             {stat.label}
           </p>
         </div>

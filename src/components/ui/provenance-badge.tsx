@@ -14,7 +14,7 @@ const CONFIG: Record<ProvenanceLevel, { label: string; title: string; style: str
   transcript: {
     label: "TRANSCRIPT-BACKED",
     title: "Summary was generated from a full transcript of this episode",
-    style: "border-accent-gold/30 text-accent-gold bg-accent-gold-dim",
+    style: "border-accent-gold/30 text-accent-gold-text bg-accent-gold-dim",
   },
   inferred: {
     label: "INFERRED",
@@ -42,7 +42,7 @@ export function ProvenanceBadge({ hasTranscript, hasSummary, className }: Proven
     <span
       title={config.title}
       className={cn(
-        "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider cursor-help",
+        "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[12px] uppercase tracking-wider cursor-help",
         config.style,
         className,
       )}

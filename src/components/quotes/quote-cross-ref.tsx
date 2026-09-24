@@ -29,10 +29,10 @@ export async function QuoteCrossRef({ quoteText, excludeEpisodeId }: QuoteCrossR
 
   return (
     <section className="space-y-3">
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
-        /// resonant_moments
+      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
+        {"/// resonant_moments"}
       </p>
-      <p className="font-mono text-[11px] text-text-muted">
+      <p className="font-mono text-[12px] text-text-muted">
         Where this idea echoes elsewhere in the archive
       </p>
       <div className="grid gap-2 sm:grid-cols-2">
@@ -43,12 +43,12 @@ export async function QuoteCrossRef({ quoteText, excludeEpisodeId }: QuoteCrossR
             className="group rounded-lg border border-border bg-surface p-4 hover:border-accent-violet/30 hover:bg-accent-violet/5 transition-colors space-y-2"
           >
             <div className="flex items-baseline justify-between gap-2">
-              <span className="line-clamp-1 font-mono text-[10px] text-accent-violet/80 group-hover:text-accent-violet transition-colors">
+              <span className="line-clamp-1 font-mono text-[12px] text-accent-violet-text/80 group-hover:text-accent-violet-text transition-colors">
                 {r.episodeNumber != null
                   ? `EP.${String(r.episodeNumber).padStart(3, "0")}`
                   : r.episodeTitle}
               </span>
-              <span className="shrink-0 font-mono text-[9px] text-text-muted/60">
+              <span className="shrink-0 font-mono text-[12px] text-text-muted">
                 {formatTime(r.startSeconds)}
               </span>
             </div>
@@ -56,7 +56,7 @@ export async function QuoteCrossRef({ quoteText, excludeEpisodeId }: QuoteCrossR
               &ldquo;{r.text}&rdquo;
             </p>
             {r.episodeNumber != null && (
-              <p className="font-mono text-[9px] text-text-muted line-clamp-1">
+              <p className="font-mono text-[12px] text-text-muted line-clamp-1">
                 {r.episodeTitle}
               </p>
             )}
@@ -65,7 +65,7 @@ export async function QuoteCrossRef({ quoteText, excludeEpisodeId }: QuoteCrossR
       </div>
       <Link
         href={`/search/deep?concept=${encodeURIComponent(quoteText.slice(0, 100))}`}
-        className="font-mono text-[10px] text-accent-violet/50 hover:text-accent-violet transition-colors"
+        className="font-mono text-[12px] text-accent-violet-text/70 hover:text-accent-violet-text transition-colors"
       >
         Search deeper in the archive →
       </Link>

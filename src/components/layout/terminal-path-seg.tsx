@@ -1,47 +1,53 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 /**
- * Derive a short, human-friendly path label from the current pathname
- * for the terminal-style topbar (e.g. "/episodes/abc" -> "episodes").
+ * Interactive terminal-style breadcrumb for the topbar.
  *
- * Rules:
- *   - "/" or empty -> "overview"
- *   - "/segment/..."" -> first segment lowercased
- *   - Falls back to "overview" for anything unexpected
+ * Renders the current path as clickable cumulative segments, e.g.
+ *   ~/codex/episodes/some-episode
+ * where "episodes" links to /episodes and the leaf is the current page.
+ * Falls back to "overview" at the root.
  */
-function deriveLabel(pathname: string | null): string {
-  if (!pathname || pathname === "/" || pathname === "") {
-    return "overview";
-  }
-  const first = pathname.split("/").filter(Boolean)[0];
-  if (!first) {
-    return "overview";
-  }
-  return first.toLowerCase();
-}
-
 export function TerminalPathSeg() {
   const pathname = usePathname();
-  const label = deriveLabel(pathname);
+  const segments = (pathname ?? "/").split("/").filter(Boolean);
+
+  const crumbs = segments.length === 0 ? [{ label: "overview", href: "/" }] : segments.map((seg, i) => ({
+    label: decodeURIComponent(seg).toLowerCase().replace(/-/g, " ").slice(0, 28),
+    href: "/" + segments.slice(0, i + 1).join("/"),
+  }));
 
   return (
-    <span
-      className="font-mono text-[11px] tracking-wide"
-      style={{ color: "var(--term-fg-dim)" }}
-    >
-      <span style={{ color: "var(--term-fg-faint)" }}>~/codex/</span>
-      <span style={{ color: "var(--term-fg)" }}>{label}</span>
+    <span className="font-mono text-[12px] tracking-wide" style={{ color: "var(--term-fg-dim)" }}>
+      <Link href="/" style={{ color: "var(--term-fg-faint)" }} className="hover:opacity-80 transition-opacity">
+        ~/codex/
+      </Link>
+      {crumbs.map((c, i) => {
+        const isLeaf = i === crumbs.length - 1;
+        return (
+          <span key={c.href}>
+            {isLeaf ? (
+              <span style={{ color: "var(--term-fg)" }}>{c.label}</span>
+            ) : (
+              <Link
+                href={c.href}
+                style={{ color: "var(--term-fg-dim)" }}
+                className="hover:opacity-80 transition-opacity"
+              >
+                {c.label}
+              </Link>
+            )}
+            {!isLeaf && <span style={{ color: "var(--term-fg-faint)" }}>/</span>}
+          </span>
+        );
+      })}
       <span
         className="term-blink"
         aria-hidden="true"
-        style={{
-          display: "inline-block",
-          width: "0.5ch",
-          marginLeft: "1px",
-          color: "var(--neon)",
-        }}
+        style={{ display: "inline-block", width: "0.5ch", marginLeft: "1px", color: "var(--neon)" }}
       >
         _
       </span>

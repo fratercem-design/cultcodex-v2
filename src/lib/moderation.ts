@@ -1,13 +1,20 @@
-import Anthropic from "@anthropic-ai/sdk";
-
-const anthropic = new Anthropic();
+import { anthropic, bedrockModelId } from "@/lib/anthropic";
+import { consumeLlmBudget } from "@/lib/llm-budget";
 
 export async function moderateComment(
   content: string,
 ): Promise<{ flagged: boolean; reason?: string }> {
+  // Each call is an LLM request; cap total/day so comment-spam can't run up the
+  // bill. Over budget → skip AI moderation (comment still subject to auth +
+  // rate limits). Tune via MODERATION_DAILY_CAP.
+  const budget = await consumeLlmBudget("moderation", Number(process.env.MODERATION_DAILY_CAP ?? "500"));
+  if (!budget.ok) return { flagged: false };
+
   try {
     const response = await anthropic.messages.create({
-      model: "claude-haiku-4-20250414",
+      // Own knob (was silently coupled to ORACLE_MODEL — retuning the oracle
+      // changed the moderation model). Binary spam checks only need haiku-class.
+      model: bedrockModelId(process.env.MODERATION_MODEL ?? "us.anthropic.claude-haiku-4-5-20251001-v1:0"),
       max_tokens: 50,
       messages: [
         {

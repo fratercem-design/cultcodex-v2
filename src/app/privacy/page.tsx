@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/privacy" },
   title: "Privacy Policy — CULT CODEX",
   description: "How CultCodex collects, uses, and protects your personal information.",
 };
@@ -21,15 +22,15 @@ export default function PrivacyPage() {
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
 
-        <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-4 py-3 font-mono text-[11px] text-text-muted">
-          Last updated: May 2025. This policy applies to cultcodex.me.
+        <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-4 py-3 font-mono text-[12px] text-text-muted">
+          Last updated: September 2026. This policy applies to cultcodex.me.
         </div>
 
         <SectionCard title="Who We Are">
           <div className="space-y-3 text-sm text-text-primary leading-relaxed">
             <p>
               CultCodex is an independent fan archive of the Cult of Psyche livestream community.
-              We operate the website at <span className="font-mono text-accent-gold">cultcodex.me</span>.
+              We operate the website at <span className="font-mono text-accent-gold-text">cultcodex.me</span>.
             </p>
           </div>
         </SectionCard>
@@ -49,15 +50,20 @@ export default function PrivacyPage() {
               <p className="text-text-muted">
                 Subscription payments are processed by Stripe. We never see or store your card number,
                 CVV, or full payment details. Stripe returns a customer ID and subscription status,
-                which we store to gate subscriber features. Stripe's privacy policy governs payment data.
+                which we store to gate subscriber features. Stripe&apos;s privacy policy governs payment data.
               </p>
             </div>
             <div>
               <h3 className="font-mono text-xs uppercase tracking-wider text-accent-cyan mb-2">Usage Data</h3>
               <p className="text-text-muted">
-                We use Vercel Analytics (privacy-preserving, no cookies, no cross-site tracking)
-                to measure aggregate page views and performance metrics. No personally identifiable
-                information is collected in this process.
+                If you accept analytics in the consent banner, we load Google Analytics to measure
+                page views and site usage. We do not intentionally send your account name or email
+                address to Google, but Google may process technical data such as your IP address,
+                browser, device, and pages visited. If you decline, Google Analytics is not loaded.
+                You can also opt out via the{" "}
+                <a href="https://tools.google.com/dlpage/gaoptout" className="text-accent-gold-text hover:underline" target="_blank" rel="noopener noreferrer">
+                  Google Analytics opt-out add-on
+                </a>.
               </p>
             </div>
             <div>
@@ -77,7 +83,7 @@ export default function PrivacyPage() {
               <li>To verify your subscription tier and gate subscriber-only features</li>
               <li>To send transactional emails (e.g. subscription receipts via Stripe)</li>
               <li>To process correction requests and improvement feedback</li>
-              <li>To measure aggregate site performance (Vercel Analytics)</li>
+              <li>To measure aggregate site usage (Google Analytics, only after you accept analytics cookies)</li>
             </ul>
             <p className="mt-3">
               We do not sell your personal data. We do not use your data for advertising profiling.
@@ -90,7 +96,7 @@ export default function PrivacyPage() {
             <p>
               Account data is retained as long as your account exists. You may request deletion of
               your account and associated personal data by emailing us at the address below.
-              Stripe subscription records are governed by Stripe's retention policies.
+              Stripe subscription records are governed by Stripe&apos;s retention policies.
             </p>
           </div>
         </SectionCard>
@@ -100,7 +106,7 @@ export default function PrivacyPage() {
             <p>
               We use a session cookie to maintain your login state (via NextAuth.js). This cookie is
               strictly necessary for the site to function and does not track you across other websites.
-              Vercel Analytics operates without cookies.
+              Google Analytics cookies are set only after you accept them in the cookie banner.
             </p>
           </div>
         </SectionCard>
@@ -110,9 +116,14 @@ export default function PrivacyPage() {
             <ul className="space-y-2 list-disc list-inside">
               <li><span className="text-text-primary font-medium">Google OAuth</span> — sign-in authentication</li>
               <li><span className="text-text-primary font-medium">Stripe</span> — payment processing</li>
-              <li><span className="text-text-primary font-medium">Vercel</span> — hosting and analytics</li>
+              <li><span className="text-text-primary font-medium">Google Analytics</span> — consent-based site usage measurement</li>
+              <li><span className="text-text-primary font-medium">Fly.io</span> — application hosting</li>
+              <li><span className="text-text-primary font-medium">Cloudflare</span> — DNS, CDN and TLS</li>
+              <li><span className="text-text-primary font-medium">Xata</span> — database hosting (PostgreSQL)</li>
+              <li><span className="text-text-primary font-medium">Resend</span> — transactional and newsletter email</li>
               <li><span className="text-text-primary font-medium">Anthropic Claude</span> — AI enrichment of archive data (content only, not user data)</li>
-              <li><span className="text-text-primary font-medium">OpenAI Whisper</span> — transcript generation (audio content only, not user data)</li>
+              <li><span className="text-text-primary font-medium">ElevenLabs</span> — voice synthesis for Oracle audio (query text only, not user data)</li>
+              <li><span className="text-text-primary font-medium">YouTube (Google)</span> — video playback. Embedded players load only after you press play, and use YouTube&apos;s privacy-enhanced <span className="font-mono">youtube-nocookie.com</span> mode.</li>
             </ul>
           </div>
         </SectionCard>
@@ -139,24 +150,27 @@ export default function PrivacyPage() {
           <div className="space-y-3 text-sm text-text-muted leading-relaxed">
             <p>
               For privacy-related requests or questions, use our{" "}
-              <Link href="/corrections" className="text-accent-gold hover:underline">
+              <Link href="/corrections" className="text-accent-gold-text hover:underline">
                 corrections page
               </Link>{" "}
-              or reach out through the community channels linked in the archive.
+              or email{" "}
+              <a href="mailto:psychetarotchannel@gmail.com" className="font-mono text-accent-gold-text hover:underline">
+                psychetarotchannel@gmail.com
+              </a>.
             </p>
           </div>
         </SectionCard>
 
         <div className="flex items-center justify-center gap-4 text-xs">
-          <Link href="/terms" className="font-mono text-accent-gold hover:underline">
-            Terms of Service
-          </Link>
-          <span className="text-text-muted">|</span>
-          <Link href="/content-policy" className="font-mono text-accent-gold hover:underline">
+          <Link href="/content-policy" className="font-mono text-accent-gold-text hover:underline">
             Content Policy
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/corrections" className="font-mono text-accent-gold hover:underline">
+          <Link href="/about/methodology" className="font-mono text-accent-gold-text hover:underline">
+            Methodology
+          </Link>
+          <span className="text-text-muted">|</span>
+          <Link href="/corrections" className="font-mono text-accent-gold-text hover:underline">
             Corrections
           </Link>
         </div>

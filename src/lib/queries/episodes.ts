@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db";
 import { cleanTitle } from "@/lib/format/text";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { getEraById } from "@/lib/eras";
-import type { Prisma, ContentStatus, ContentType } from "@/generated/prisma/client";
+import type { Prisma, ContentStatus, PersonType } from "@/generated/prisma/client";
 
 // Type for episode with all relations loaded
 export type EpisodeWithRelations = Prisma.EpisodeGetPayload<{
@@ -32,6 +32,11 @@ export interface EpisodeCardData {
   status: ContentStatus;
   hasVideo: boolean;
   segmentCount: number;
+  /** True when the episode has an AI-generated long summary */
+  hasSummary: boolean;
+  /** True when an admin has manually verified the AI summary */
+  isHumanReviewed: boolean;
+  humanReviewedAt: Date | null;
   guestNames: string[];
   topicNames: string[];
 }
@@ -48,6 +53,12 @@ export function formatEpisodeForCard(episode: EpisodeWithRelations): EpisodeCard
     status: episode.status,
     hasVideo: !!(episode.youtubeVideoId || episode.rumbleVideoId),
     segmentCount: episode.segments.length,
+    hasSummary: !!(
+      (episode.summaryFacts && episode.summaryFacts.length > 0) ||
+      (episode.summaryLong && episode.summaryLong.length > 0)
+    ),
+    isHumanReviewed: episode.isHumanReviewed,
+    humanReviewedAt: episode.humanReviewedAt,
     guestNames: episode.guests
       .filter((g) => g.person.personType !== "host")
       .map((g) => g.person.displayName),
@@ -67,6 +78,146 @@ function buildEraWhere(eraId?: string): Prisma.EpisodeWhereInput {
   };
 }
 
+/** Guest info needed by card/hero surfaces (GuestGrid). */
+export interface EpisodeCardGuest {
+  displayName: string;
+  slug: string;
+  avatarUrl: string | null;
+  personType: PersonType;
+}
+
+export type EpisodeCardWithGuests = EpisodeCardData & { guests: EpisodeCardGuest[] };
+
+// List views only need card fields — NOT the full relations. buildEpisodeInclude()
+// loads every transcript segment (~1.7k rows/episode), plus quotes, lore and
+// mentions per row, so a 20-episode list pulled ~30k+ rows (profiled: 2s+ vs the
+// ~90ms DB round-trip baseline). This select fetches counts and names instead.
+const EPISODE_CARD_LIST_SELECT = {
+  id: true,
+  title: true,
+  slug: true,
+  episodeNumber: true,
+  airDate: true,
+  summaryShort: true,
+  thumbnailUrl: true,
+  status: true,
+  youtubeVideoId: true,
+  rumbleVideoId: true,
+  summaryFacts: true,
+  summaryLong: true, // only length-tested for hasSummary; still far cheaper than segments
+  isHumanReviewed: true,
+  humanReviewedAt: true,
+  guests: {
+    select: {
+      person: { select: { displayName: true, slug: true, avatarUrl: true, personType: true } },
+    },
+  },
+  topics: { select: { topic: { select: { title: true } } } },
+  _count: { select: { segments: true } },
+} satisfies Prisma.EpisodeSelect;
+
+/**
+ * Lean episode list for card surfaces (/episodes, homepage). Same filtering and
+ * ordering semantics as getEpisodes, but selects only what cards render.
+ * Use getEpisodes/getEpisodeBySlug when the full relations are actually needed.
+ */
+/** Episodes where the person appeared as a guest or was mentioned. Mirrors the
+ *  union the person page shows, so /episodes?person=<slug> is the full,
+ *  paginated view behind that page's capped appearance list. */
+/** Episodes linked to a topic — the paginated view behind a topic page's
+ *  capped episode list. */
+function buildTopicWhere(topicSlug?: string): Prisma.EpisodeWhereInput {
+  if (!topicSlug) return {};
+  return { topics: { some: { topic: { slug: topicSlug } } } };
+}
+
+function buildPersonWhere(personSlug?: string): Prisma.EpisodeWhereInput {
+  if (!personSlug) return {};
+  return {
+    OR: [
+      { guests: { some: { person: { slug: personSlug } } } },
+      { mentionedPeople: { some: { person: { slug: personSlug } } } },
+    ],
+  };
+}
+
+export async function getEpisodeCards(options?: {
+  status?: ContentStatus;
+  take?: number;
+  skip?: number;
+  orderBy?: "airDate" | "episodeNumber" | "title";
+  order?: "asc" | "desc";
+  eraId?: string;
+  /** Restrict to episodes this person appeared in or was mentioned in. */
+  personSlug?: string;
+  /** Restrict to episodes linked to this topic. */
+  topicSlug?: string;
+  /** Only episodes with at least one transcript segment. */
+  hasTranscript?: boolean;
+}): Promise<EpisodeCardWithGuests[]> {
+  const {
+    status,
+    take = 20,
+    skip = 0,
+    orderBy = "episodeNumber",
+    order = "desc",
+    eraId,
+    personSlug,
+    topicSlug,
+    hasTranscript,
+  } = options ?? {};
+
+  const orderByClause =
+    orderBy === "airDate"
+      ? [{ airDate: { sort: order, nulls: "last" as const } }, { episodeNumber: order }]
+      : { [orderBy]: order };
+
+  const where: Prisma.EpisodeWhereInput = {
+    ...(status ? { status } : {}),
+    ...(hasTranscript ? { segments: { some: {} } } : {}),
+    ...buildEraWhere(eraId),
+    ...buildPersonWhere(personSlug),
+    ...buildTopicWhere(topicSlug),
+  };
+
+  const rows = await prisma.episode.findMany({
+    where: Object.keys(where).length > 0 ? where : undefined,
+    select: EPISODE_CARD_LIST_SELECT,
+    orderBy: orderByClause,
+    take,
+    skip,
+  });
+
+  return rows.map((episode) => ({
+    id: episode.id,
+    title: cleanTitle(episode.title),
+    slug: episode.slug,
+    episodeNumber: episode.episodeNumber,
+    airDate: episode.airDate,
+    summaryShort: episode.summaryShort,
+    thumbnailUrl: fixThumbnailUrl(episode.thumbnailUrl),
+    status: episode.status,
+    hasVideo: !!(episode.youtubeVideoId || episode.rumbleVideoId),
+    segmentCount: episode._count.segments,
+    hasSummary: !!(
+      (episode.summaryFacts && episode.summaryFacts.length > 0) ||
+      (episode.summaryLong && episode.summaryLong.length > 0)
+    ),
+    isHumanReviewed: episode.isHumanReviewed,
+    humanReviewedAt: episode.humanReviewedAt,
+    guestNames: episode.guests
+      .filter((g) => g.person.personType !== "host")
+      .map((g) => g.person.displayName),
+    topicNames: episode.topics.map((t) => t.topic.title),
+    guests: episode.guests.map((g) => ({
+      displayName: g.person.displayName,
+      slug: g.person.slug,
+      avatarUrl: g.person.avatarUrl,
+      personType: g.person.personType,
+    })),
+  }));
+}
+
 export async function getEpisodes(options?: {
   status?: ContentStatus;
   take?: number;
@@ -74,6 +225,10 @@ export async function getEpisodes(options?: {
   orderBy?: "airDate" | "episodeNumber" | "title";
   order?: "asc" | "desc";
   eraId?: string;
+  /** Restrict to episodes this person appeared in or was mentioned in. */
+  personSlug?: string;
+  /** Restrict to episodes linked to this topic. */
+  topicSlug?: string;
 }) {
   const {
     status,
@@ -82,6 +237,8 @@ export async function getEpisodes(options?: {
     orderBy = "episodeNumber",
     order = "desc",
     eraId,
+    personSlug,
+    topicSlug,
   } = options ?? {};
 
   // When sorting by airDate, use episodeNumber as tiebreaker so null-airDate
@@ -94,6 +251,8 @@ export async function getEpisodes(options?: {
   const where: Prisma.EpisodeWhereInput = {
     ...(status ? { status } : {}),
     ...buildEraWhere(eraId),
+    ...buildPersonWhere(personSlug),
+    ...buildTopicWhere(topicSlug),
   };
 
   return prisma.episode.findMany({
@@ -112,10 +271,17 @@ export async function getEpisodeBySlug(slug: string) {
   });
 }
 
-export async function getEpisodeCount(status?: ContentStatus, eraId?: string) {
+export async function getEpisodeCount(
+  status?: ContentStatus,
+  eraId?: string,
+  personSlug?: string,
+  topicSlug?: string
+) {
   const where: Prisma.EpisodeWhereInput = {
     ...(status ? { status } : {}),
     ...buildEraWhere(eraId),
+    ...buildPersonWhere(personSlug),
+    ...buildTopicWhere(topicSlug),
   };
   return prisma.episode.count({
     where: Object.keys(where).length > 0 ? where : undefined,

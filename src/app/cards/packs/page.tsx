@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PackOpener } from "@/components/cards/pack-opener";
+import { CreditBundlesStrip } from "@/components/cards/credit-bundles-strip";
 
 interface Pack {
   id: string;
@@ -27,6 +28,8 @@ interface Pack {
 interface WalletData {
   signalCredits: number;
   lastDailyClaimAt: string | null;
+  dailyStreak?: number;
+  longestStreak?: number;
 }
 
 const ACCENT_VAR: Record<string, string> = {
@@ -41,6 +44,7 @@ const ACCENT_VAR: Record<string, string> = {
   occult:   "var(--neon-3)",
   chaos:    "var(--neon-5)",
   sacred:   "var(--neon-4)",
+  myth:     "var(--neon-2)",
 };
 
 export default function PackStorePage() {
@@ -50,15 +54,39 @@ export default function PackStorePage() {
   const [claimState, setClaimState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [claimMsg, setClaimMsg] = useState<string | null>(null);
 
+  // Three states, not two. "No packs available" must only ever mean the API
+  // returned an empty list — previously it also showed during the initial fetch
+  // and after a failed one (the catch swallowed the error), so a visitor whose
+  // first request hit a cold database saw an empty store that actually has
+  // eight packs. One automatic retry covers that cold-start case.
+  const [storeState, setStoreState] = useState<"loading" | "ready" | "error">("loading");
+  const [loadAttempt, setLoadAttempt] = useState(0);
+
   useEffect(() => {
-    Promise.all([
-      fetch("/api/cards/packs").then((r) => r.json()),
-      fetch("/api/cards/stats").then((r) => r.json()),
-    ]).then(([packsData, statsData]) => {
-      setPacks(Array.isArray(packsData) ? packsData : []);
+    let cancelled = false;
+    setStoreState("loading");
+
+    const load = async (): Promise<void> => {
+      const [packsRes, statsRes] = await Promise.all([
+        fetch("/api/cards/packs"),
+        fetch("/api/cards/stats"),
+      ]);
+      if (!packsRes.ok) throw new Error(`packs ${packsRes.status}`);
+      const packsData: unknown = await packsRes.json();
+      // Wallet is decorative here; a failed stats call must not blank the store.
+      const statsData: WalletData | null = statsRes.ok ? await statsRes.json() : null;
+      if (cancelled) return;
+      setPacks(Array.isArray(packsData) ? (packsData as Pack[]) : []);
       setWallet(statsData);
-    }).catch(() => {});
-  }, []);
+      setStoreState("ready");
+    };
+
+    load()
+      .catch(() => load()) // one retry — a cold DB typically answers the second time
+      .catch(() => { if (!cancelled) setStoreState("error"); });
+
+    return () => { cancelled = true; };
+  }, [loadAttempt]);
 
   async function claimDaily() {
     if (claimState === "loading") return;
@@ -67,8 +95,18 @@ export default function PackStorePage() {
     const json = await res.json();
     if (res.ok) {
       setClaimState("done");
-      setClaimMsg(`+${json.granted} signal credits`);
-      setWallet((w) => w ? { ...w, signalCredits: w.signalCredits + json.granted } : w);
+      setClaimMsg(
+        json.streakBonus > 0
+          ? `+${json.granted} credits · 🔥 ${json.streak}-day streak`
+          : `+${json.granted} signal credits`
+      );
+      const nowIso = new Date().toISOString();
+      setWallet((w) => ({
+        signalCredits: (w?.signalCredits ?? 0) + json.granted,
+        lastDailyClaimAt: nowIso,
+        dailyStreak: json.streak,
+        longestStreak: json.longestStreak,
+      }));
     } else {
       setClaimState("error");
       setClaimMsg(json.error ?? "Already claimed today");
@@ -83,6 +121,7 @@ export default function PackStorePage() {
   function dailyAvailable() {
     if (!wallet?.lastDailyClaimAt) return true;
     const last = new Date(wallet.lastDailyClaimAt);
+    // eslint-disable-next-line react-hooks/purity
     return Date.now() - last.getTime() >= 24 * 3_600_000;
   }
 
@@ -99,7 +138,7 @@ export default function PackStorePage() {
           textShadow: "var(--glow-neon)",
           marginBottom: 8,
         }}>
-          // SIGNAL_PACKS
+          {"// SIGNAL_PACKS"}
         </p>
         <h1 style={{
           fontFamily: "var(--font-mono), monospace",
@@ -149,9 +188,40 @@ export default function PackStorePage() {
             textShadow: "var(--glow-amber)",
             lineHeight: 1,
           }}>
-            {wallet?.signalCredits.toLocaleString() ?? "--"}
+            {wallet?.signalCredits.toLocaleString("en-US") ?? "--"}
           </span>
         </div>
+
+        {(wallet?.dailyStreak ?? 0) > 0 && (
+          <div style={{
+            border: "1px solid var(--term-line)",
+            borderRadius: 6,
+            padding: "12px 20px",
+            backgroundColor: "var(--term-bg-1)",
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+            minWidth: 110,
+          }}>
+            <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: "var(--term-fg-faint)", letterSpacing: "0.12em" }}>
+              STREAK
+            </span>
+            <span style={{
+              fontFamily: "var(--font-crt, var(--font-mono)), monospace",
+              fontSize: 28,
+              color: dailyAvailable() ? "var(--neon-4)" : "var(--neon-3)",
+              textShadow: dailyAvailable() ? "var(--glow-amber)" : "0 0 8px var(--neon-3)",
+              lineHeight: 1,
+            }}>
+              🔥{wallet?.dailyStreak}
+            </span>
+            {dailyAvailable() && (
+              <span style={{ fontFamily: "var(--font-mono), monospace", fontSize: 8, color: "var(--term-fg-faint)" }}>
+                claim to keep it
+              </span>
+            )}
+          </div>
+        )}
 
         <button
           onClick={claimDaily}
@@ -200,6 +270,9 @@ export default function PackStorePage() {
         </Link>
       </div>
 
+      {/* Buy credits — the paid route in; earning stays free below */}
+      <CreditBundlesStrip />
+
       {/* How to earn credits */}
       <details style={{ marginBottom: 28 }}>
         <summary style={{
@@ -210,7 +283,7 @@ export default function PackStorePage() {
           cursor: "pointer",
           userSelect: "none",
         }}>
-          // HOW TO EARN SIGNAL CREDITS
+          {"// HOW TO EARN SIGNAL CREDITS"}
         </summary>
         <div style={{
           marginTop: 10,
@@ -237,17 +310,44 @@ export default function PackStorePage() {
       </details>
 
       {/* Pack grid */}
-      {packs.length === 0 ? (
-        <div style={{
-          fontFamily: "var(--font-mono), monospace",
-          fontSize: 11,
-          color: "var(--term-fg-faint)",
-          textAlign: "center",
-          padding: 48,
-          border: "1px solid var(--term-line)",
-          borderRadius: 6,
-        }}>
-          // No packs available. Check back later.
+      {storeState !== "ready" || packs.length === 0 ? (
+        <div
+          role={storeState === "error" ? "alert" : "status"}
+          aria-live="polite"
+          style={{
+            fontFamily: "var(--font-mono), monospace",
+            fontSize: 11,
+            color: "var(--term-fg-faint)",
+            textAlign: "center",
+            padding: 48,
+            border: "1px solid var(--term-line)",
+            borderRadius: 6,
+          }}
+        >
+          {storeState === "loading" ? (
+            "// Opening the vault…"
+          ) : storeState === "error" ? (
+            <>
+              {"// The vault didn't answer. "}
+              <button
+                type="button"
+                onClick={() => setLoadAttempt((n) => n + 1)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  font: "inherit",
+                  color: "var(--neon)",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+              >
+                Retry
+              </button>
+            </>
+          ) : (
+            "// No packs available. Check back later."
+          )}
         </div>
       ) : (
         <div style={{
@@ -274,7 +374,7 @@ export default function PackStorePage() {
           packAccentColor={ACCENT_VAR[activePack.artTheme ?? "terminal"] ?? "var(--neon)"}
           onClose={() => {
             setActivePack(null);
-            // Refresh wallet
+            // Refresh wallet after the pack animation closes.
             fetch("/api/cards/stats").then((r) => r.json()).then(setWallet).catch(() => {});
           }}
         />
@@ -343,7 +443,7 @@ function PackCard({ pack, canAfford, onOpen }: { pack: Pack; canAfford: boolean;
         </div>
         {pack.artTheme && (
           <div style={{ fontFamily: "var(--font-mono), monospace", fontSize: 9, color: "var(--term-fg-dim)", letterSpacing: "0.08em" }}>
-            // {pack.artTheme.toUpperCase()} SERIES
+            {"// "}{pack.artTheme.toUpperCase()}{" SERIES"}
           </div>
         )}
       </div>

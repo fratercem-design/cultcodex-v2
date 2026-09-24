@@ -18,16 +18,14 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { enrichSecretMatches } from "@/lib/admin-guard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
-const ENRICH_SECRET = process.env.ENRICH_SECRET ?? "";
-
 function checkAuth(req: NextRequest): boolean {
-  const secret = req.headers.get("x-enrich-secret") ?? "";
-  return ENRICH_SECRET.length > 0 && secret === ENRICH_SECRET;
+  return enrichSecretMatches(req);
 }
 
 export async function POST(req: NextRequest) {

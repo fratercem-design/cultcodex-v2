@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useSessionLite } from "@/lib/session-lite";
 
 export interface QuoteReactionInitial {
   fire: number;
@@ -14,7 +15,12 @@ export interface QuoteReactionInitial {
 interface Props {
   quoteId: string;
   initial: QuoteReactionInitial;
-  isAuthenticated: boolean;
+  /**
+   * Omit on statically rendered pages. When undefined the bar resolves the
+   * session itself (via the shared session-lite fetch) rather than forcing the
+   * server to read a cookie and make the whole route dynamic.
+   */
+  isAuthenticated?: boolean;
   /** Compact (default) hides labels and only shows non-zero counts. */
   variant?: "compact" | "full";
 }
@@ -32,11 +38,16 @@ type ReactionKey = (typeof REACTIONS)[number]["type"];
 export function QuoteReactionBar({
   quoteId,
   initial,
-  isAuthenticated,
+  isAuthenticated: isAuthenticatedProp,
   variant = "compact",
 }: Props) {
   const [counts, setCounts] = useState<QuoteReactionInitial>(initial);
   const [pending, setPending] = useState<string | null>(null);
+
+  // Only pay for the session lookup when the server did not already tell us.
+  const { user } = useSessionLite();
+  const isAuthenticated =
+    isAuthenticatedProp !== undefined ? isAuthenticatedProp : Boolean(user);
 
   const handle = useCallback(
     async (type: ReactionKey) => {
@@ -104,13 +115,19 @@ export function QuoteReactionBar({
             onClick={() => handle(type)}
             disabled={pending !== null}
             title={isAuthenticated ? label : `Sign in to react · ${label}`}
-            className={`group inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[10px] transition-all ${
+            /* `title` is not a reliable accessible name (it is skipped by
+               several screen readers and never surfaces on touch), and the
+               emoji alone carries no meaning. aria-pressed exposes the
+               toggle state these buttons already track visually. */
+            aria-label={isAuthenticated ? `${label} reaction` : `Sign in to react — ${label}`}
+            aria-pressed={isActive}
+            className={`group inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[12px] transition-all ${
               isActive
-                ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold"
+                ? "border-accent-gold/50 bg-accent-gold/10 text-accent-gold-text"
                 : "border-border bg-surface/60 text-text-muted hover:border-accent-gold/30 hover:text-text-primary"
             } ${pending === type ? "opacity-50" : ""}`}
           >
-            <span className="text-[11px] leading-none">{emoji}</span>
+            <span aria-hidden="true" className="text-[12px] leading-none">{emoji}</span>
             {showCount && <span className="tabular-nums">{count}</span>}
           </button>
         );

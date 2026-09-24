@@ -145,7 +145,7 @@
 - Tests directory and test files
 
 ## Architecture Notes
-- Uses Prisma ORM with Neon Postgres
+- Uses Prisma ORM with Xata Postgres
 - Next.js App Router with server components
 - No existing test infrastructure found
 - Revalidation: 300s for dynamic pages, 3600s for stats

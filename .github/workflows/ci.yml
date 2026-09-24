@@ -1,0 +1,194 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+# Cancel in-progress CI runs for the same ref when a new push arrives.
+# Keeps queue short on rapid push sequences without wasting runner minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Job 0: Manifest sanity ───────────────────────────────────────────────────
+  # Runs first and needs no install, because the failures it catches are exactly
+  # the ones that stop `npm ci` from running at all — when that happens every
+  # other job dies in ~30s having tested nothing, and the real error is buried
+  # in npm's usage text. Fast feedback with a precise message instead.
+  manifest:
+    name: Manifest Sync
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22'
+
+      - name: Check package.json / package-lock.json agree
+        run: node scripts/check-manifest-sync.mjs
+
+  # ── Job 1: Lint + Type check ─────────────────────────────────────────────────
+  lint-typecheck:
+    name: Lint & Types
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://localhost/placeholder
+
+      - name: Type check
+        run: npx tsc --noEmit
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+
+      - name: Lint
+        run: npm run lint
+
+  # ── Job 2: Unit tests ────────────────────────────────────────────────────────
+  test:
+    name: Unit + PostgreSQL Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cultcodex_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d cultcodex_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://localhost/placeholder
+
+      - name: Run tests
+        run: npm run test
+        env:
+          DATABASE_URL: postgresql://localhost/placeholder
+          TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/cultcodex_test
+
+  # ── Job 3: Build ─────────────────────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://localhost/placeholder
+
+      - name: Build
+        run: npm run build
+        env:
+          # Placeholders only — real secrets must NOT be stored here.
+          # The build only needs env vars to avoid "missing key" crashes;
+          # no DB connection is opened, no API calls are made.
+          DATABASE_URL: postgresql://localhost/placeholder
+          NEXTAUTH_SECRET: ci-placeholder-not-real
+          NEXTAUTH_URL: https://cultcodex.me
+          GOOGLE_CLIENT_ID: ci-placeholder
+          GOOGLE_CLIENT_SECRET: ci-placeholder
+          ANTHROPIC_API_KEY: ci-placeholder
+          STRIPE_SECRET_KEY: sk_test_placeholder
+          STRIPE_WEBHOOK_SECRET: whsec_placeholder
+          ENRICH_SECRET: ci-placeholder
+          NODE_OPTIONS: --max-old-space-size=4096
+
+  # ── Job 4: Security audit ────────────────────────────────────────────────────
+  # Gate production dependencies at high severity, and the complete dependency
+  # tree at critical. The current high advisories are confined to Prisma CLI
+  # transitive packages (including an unused MySQL driver), so they should not
+  # hide a future high-severity issue in code that actually ships at runtime.
+  audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Audit dependencies
+        run: |
+          npm audit --omit=dev --audit-level=high
+          npm audit --audit-level=critical
+
+  # Private repositories require GitHub Advanced Security for the hosted
+  # dependency-review action. Keep a PR-specific lockfile gate that works on
+  # the current plan; enable GHAS before switching back to that action.
+  dependency-review:
+    name: Lockfile Security Review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - name: Install exactly the reviewed lockfile
+        run: npm ci
+      - name: Review production and complete dependency trees
+        run: |
+          npm audit --omit=dev --audit-level=high
+          npm audit --audit-level=critical

@@ -1,11 +1,17 @@
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
-import { getArchiveStats } from "@/lib/queries/stats";
+import { getCounts } from "@/lib/queries/stats";
 import {
   getMostQuotedPeople,
   getTopTopicsByEpisodes,
   getCanonBreakdown,
+  getBroadcastCalendar,
+  getTopGuestsByAppearances,
+  getTopicMonthlyTrend,
 } from "@/lib/queries/analytics";
+import { BroadcastCalendar } from "@/components/stats/broadcast-calendar";
+import { GuestRadialChart } from "@/components/stats/guest-radial-chart";
+import { TopicPulseChart } from "@/components/stats/topic-pulse-chart";
 import Link from "next/link";
 
 export const revalidate = 3600;
@@ -13,10 +19,11 @@ export const revalidate = 3600;
 export const metadata = {
   title: "Archive Stats — CultCodex",
   description: "The Cult of Psyche archive by the numbers",
+  alternates: { canonical: "/stats" },
 };
 
 const CANON_COLORS: Record<string, string> = {
-  canonical: "#C8A96B",
+  canonical: "#C8392E",
   speculative: "#00d9ff",
   community_myth: "#a855f7",
 };
@@ -28,11 +35,14 @@ const CANON_LABELS: Record<string, string> = {
 };
 
 export default async function StatsPage() {
-  const [stats, quotedPeople, topTopics, canonBreakdown] = await Promise.all([
-    getArchiveStats(),
-    getMostQuotedPeople(10),
-    getTopTopicsByEpisodes(15),
-    getCanonBreakdown(),
+  const [stats, quotedPeople, topTopics, canonBreakdown, calendarData, topGuests, topicTrend] = await Promise.all([
+    getCounts().catch(() => ({ episodes: 0, segments: 0, people: 0, topics: 0, lore: 0, quotes: 0, totalHours: 0, transcribedEpisodes: 0, transcribedPct: 0 })),
+    getMostQuotedPeople(10).catch(() => []),
+    getTopTopicsByEpisodes(15).catch(() => []),
+    getCanonBreakdown().catch(() => []),
+    getBroadcastCalendar().catch(() => ({}) as Record<string, number>),
+    getTopGuestsByAppearances(20).catch(() => []),
+    getTopicMonthlyTrend(6).catch(() => ({ months: [], topics: [] })),
   ]);
 
   const maxQuotes = Math.max(...quotedPeople.map((p) => p.count), 1);
@@ -41,7 +51,7 @@ export default async function StatsPage() {
 
   // Build conic gradient for canon donut
   const canonTotal = canonBreakdown.reduce((sum, c) => sum + c.count, 0);
-  let gradientParts: string[] = [];
+  const gradientParts: string[] = [];
   let currentDeg = 0;
   for (const entry of canonBreakdown) {
     const sliceDeg = canonTotal > 0 ? (entry.count / canonTotal) * 360 : 0;
@@ -54,13 +64,10 @@ export default async function StatsPage() {
   const statCards = [
     { label: "Episodes", value: stats.episodes },
     { label: "People", value: stats.people },
-    { label: "Lore Entries", value: stats.loreEntries },
+    { label: "Lore Entries", value: stats.lore },
     { label: "Quotes", value: stats.quotes },
     { label: "Transcript Segments", value: stats.segments },
     { label: "Hours of Content", value: stats.totalHours },
-    // Only show community stats when there's activity
-    ...(stats.comments > 0 ? [{ label: "Comments", value: stats.comments }] : []),
-    ...(stats.reactions > 0 ? [{ label: "Reactions", value: stats.reactions }] : []),
   ];
 
   return (
@@ -82,9 +89,9 @@ export default async function StatsPage() {
               className="rounded-lg border border-border bg-surface p-4 text-center"
             >
               <div className="font-mono text-3xl font-bold text-accent-gold">
-                {card.value.toLocaleString()}
+                {card.value.toLocaleString("en-US")}
               </div>
-              <div className="font-mono text-[10px] text-text-muted uppercase tracking-wider mt-1">
+              <div className="font-mono text-[12px] text-text-muted uppercase tracking-wider mt-1">
                 {card.label}
               </div>
             </div>
@@ -100,10 +107,10 @@ export default async function StatsPage() {
                 href={`/people/${person.slug}`}
                 className="flex items-center gap-3 group"
               >
-                <span className="shrink-0 font-mono text-[10px] text-text-muted w-5 text-right">
+                <span className="shrink-0 font-mono text-[12px] text-text-muted w-5 text-right">
                   {i + 1}.
                 </span>
-                <span className="shrink-0 font-mono text-xs text-text-primary w-40 truncate group-hover:text-accent-gold transition-colors">
+                <span className="shrink-0 font-mono text-xs text-text-primary w-40 truncate group-hover:text-accent-gold-text transition-colors">
                   {person.displayName}
                 </span>
                 <div className="flex-1 h-2 rounded-full bg-elevated overflow-hidden">
@@ -112,7 +119,7 @@ export default async function StatsPage() {
                     style={{ width: `${(person.count / maxQuotes) * 100}%` }}
                   />
                 </div>
-                <span className="shrink-0 font-mono text-[10px] text-accent-gold font-bold w-8 text-right">
+                <span className="shrink-0 font-mono text-[12px] text-accent-gold-text font-bold w-8 text-right">
                   {person.count}
                 </span>
               </Link>
@@ -136,8 +143,8 @@ export default async function StatsPage() {
 
               // Color tiers
               let colorClass = "text-accent-cyan";
-              if (i < 5) colorClass = "text-accent-gold";
-              else if (i < 10) colorClass = "text-accent-gold";
+              if (i < 5) colorClass = "text-accent-gold-text";
+              else if (i < 10) colorClass = "text-accent-gold-text";
 
               return (
                 <Link
@@ -147,7 +154,7 @@ export default async function StatsPage() {
                   style={{ fontSize: `${fontSize}px` }}
                 >
                   {topic.title}
-                  <span className="ml-1 opacity-40 text-[9px]">
+                  <span className="ml-1 opacity-40 text-[12px]">
                     {topic.count}
                   </span>
                 </Link>
@@ -177,7 +184,7 @@ export default async function StatsPage() {
                       <div className="font-mono text-2xl font-bold text-text-primary">
                         {canonTotal}
                       </div>
-                      <div className="font-mono text-[9px] text-text-muted uppercase">
+                      <div className="font-mono text-[12px] text-text-muted uppercase">
                         Total
                       </div>
                     </div>
@@ -199,7 +206,7 @@ export default async function StatsPage() {
                         <span className="font-mono text-xs text-text-primary">
                           {CANON_LABELS[entry.status] ?? entry.status}
                         </span>
-                        <span className="ml-1 font-mono text-[9px] text-text-muted">
+                        <span className="ml-1 font-mono text-[12px] text-text-muted">
                           {entry.count} ({entry.percentage}%)
                         </span>
                       </div>
@@ -214,6 +221,37 @@ export default async function StatsPage() {
             )}
           </div>
         </SectionCard>
+
+        {/* Broadcast Calendar Heatmap */}
+        <SectionCard title="BROADCAST CALENDAR">
+          <div className="pt-2">
+            <p className="font-mono text-[12px] text-text-muted mb-4">
+              Streams per day since October 2024 — darker = more transmissions
+            </p>
+            <BroadcastCalendar data={calendarData} />
+          </div>
+        </SectionCard>
+
+        {/* Guest Frequency Radial */}
+        <SectionCard title="GUEST FREQUENCY">
+          <div className="pt-2">
+            <p className="font-mono text-[12px] text-text-muted mb-4">
+              Top 20 recurring guests by total appearances
+            </p>
+            <GuestRadialChart data={topGuests} />
+          </div>
+        </SectionCard>
+
+        {/* Topic Pulse */}
+        <SectionCard title="TOPIC PULSE">
+          <div className="pt-2">
+            <p className="font-mono text-[12px] text-text-muted mb-4">
+              Top topics by episode count, month by month
+            </p>
+            <TopicPulseChart months={topicTrend.months} topics={topicTrend.topics} />
+          </div>
+        </SectionCard>
+
       </div>
     </div>
   );

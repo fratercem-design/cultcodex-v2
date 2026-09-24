@@ -12,10 +12,10 @@ export function SacredGeometryOverlay({ className }: PatternProps) {
       <svg width="100%" height="100%" style={{ opacity: 0.04 }}>
         <defs>
           <pattern id="sacred-geo" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
-            <circle cx="60" cy="60" r="40" stroke="#C8A96B" strokeWidth="0.3" fill="none" />
-            <circle cx="60" cy="60" r="16" stroke="#C8A96B" strokeWidth="0.2" fill="none" />
-            <line x1="60" y1="20" x2="60" y2="100" stroke="#C8A96B" strokeWidth="0.15" />
-            <line x1="20" y1="60" x2="100" y2="60" stroke="#C8A96B" strokeWidth="0.15" />
+            <circle cx="60" cy="60" r="40" stroke="#C8392E" strokeWidth="0.3" fill="none" />
+            <circle cx="60" cy="60" r="16" stroke="#C8392E" strokeWidth="0.2" fill="none" />
+            <line x1="60" y1="20" x2="60" y2="100" stroke="#C8392E" strokeWidth="0.15" />
+            <line x1="20" y1="60" x2="100" y2="60" stroke="#C8392E" strokeWidth="0.15" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#sacred-geo)" />
@@ -76,7 +76,7 @@ export function RadiantBurst({ className }: PatternProps) {
               y1="100"
               x2={x2}
               y2={y2}
-              stroke="#C8A96B"
+              stroke="#C8392E"
               strokeWidth="0.5"
             />
           );
@@ -101,7 +101,7 @@ export function FloatingParticles({ className, count = 12 }: PatternProps & { co
     <div className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)} aria-hidden="true">
       <svg width="100%" height="100%" style={{ opacity: 0.1 }}>
         {particles.map((p, i) => (
-          <circle key={i} cx={`${p.cx}%`} cy={`${p.cy}%`} r={p.r} fill="#C8A96B">
+          <circle key={i} cx={`${p.cx}%`} cy={`${p.cy}%`} r={p.r} fill="#C8392E">
             <animate
               attributeName="opacity"
               values="0.2;0.8;0.2"

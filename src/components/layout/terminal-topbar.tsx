@@ -1,23 +1,19 @@
-import Link from "next/link";
-import { auth, type SessionWithCodex } from "@/lib/auth";
-import { UserMenu } from "@/components/auth/user-menu";
+import { UserMenuLoader } from "@/components/auth/user-menu-loader";
 import { SearchTrigger } from "@/components/search/search-trigger";
 import { TerminalPathSeg } from "@/components/layout/terminal-path-seg";
+import { SigilLongPress } from "@/components/layout/sigil-long-press";
 
 /**
- * Terminal-style topbar (36px). Server component.
+ * Terminal-style topbar (36px).
  *
  * Layout (left → right):
  *   [◣ CULTCODEX]   [~/codex/{page}_]                 [● UPLINK: STABLE] [Search] [User]
  *
- * Auth + nested components (UserMenu, SearchTrigger) are preserved from
- * the prior SiteHeader implementation so existing session wiring keeps
- * working.
+ * The session is loaded client-side (UserMenuLoader) rather than read
+ * from the cookie during server render — this keeps the app shell and the
+ * public content pages beneath it statically renderable / edge-cacheable.
  */
-export async function TerminalTopBar() {
-  const session = await auth().catch(() => null);
-  const sessionUser = (session as SessionWithCodex)?.codexUser ?? null;
-
+export function TerminalTopBar() {
   return (
     <header
       className="terminal-topbar flex items-center justify-between"
@@ -29,20 +25,8 @@ export async function TerminalTopBar() {
         paddingRight: 12,
       }}
     >
-      {/* Brand */}
-      <Link
-        href="/"
-        aria-label="CultCodex — Overview"
-        className="font-mono text-[12px] font-semibold flex items-center gap-2"
-        style={{
-          color: "var(--neon)",
-          textShadow: "var(--glow-neon)",
-          letterSpacing: "0.12em",
-        }}
-      >
-        <span aria-hidden="true">◣</span>
-        <span>CULTCODEX</span>
-      </Link>
+      {/* Brand — long-press opens the radial dial on touch devices */}
+      <SigilLongPress />
 
       {/* Center path */}
       <div className="hidden sm:flex flex-1 justify-center px-4 min-w-0">
@@ -51,17 +35,11 @@ export async function TerminalTopBar() {
 
       {/* Right cluster */}
       <div className="flex items-center gap-3">
-        <span
-          className="hidden md:inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest"
-          style={{ color: "var(--neon-4)", textShadow: "var(--glow-amber)" }}
-        >
-          <span className="term-pulse" aria-hidden="true">
-            ●
-          </span>
-          <span>UPLINK: STABLE</span>
-        </span>
+        {/* "UPLINK: STABLE" was fake telemetry competing with real state
+            (live show, transcription). Removed in the 2026-09 redesign; live
+            status lives in the sidebar LIVE group and the LiveBanner. */}
         <SearchTrigger />
-        <UserMenu user={sessionUser} />
+        <UserMenuLoader />
       </div>
     </header>
   );

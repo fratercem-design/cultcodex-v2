@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/db";
 import { getStripe } from "@/lib/stripe";
 import { getTierByPriceId } from "@/lib/subscription-tiers";
+import { getCreditBundle } from "@/lib/credit-bundles";
+import { grantPurchasedCredits } from "@/lib/queries/credit-purchases";
+import { sendInitiateWelcomeEmail, sendOracleWelcomeEmail } from "@/lib/notifications";
 import type Stripe from "stripe";
 
 /** Extract current_period_end from a subscription's first item */
@@ -25,6 +29,33 @@ function getInvoiceSubscriptionId(invoice: Stripe.Invoice): string | null {
   return null;
 }
 
+/**
+ * Mark an event as processed and return true if it's new (should be handled),
+ * or false if it's a duplicate (already processed — skip to avoid double side-effects).
+ *
+ * Stripe retries webhooks when it doesn't receive a 2xx within 30 seconds.
+ * DB writes are idempotent (updateMany overwrites with the same data), but
+ * sending a welcome email is not — this guard prevents the duplicate send.
+ */
+async function markEventProcessed(eventId: string, eventType: string): Promise<boolean> {
+  try {
+    await prisma.stripeWebhookEvent.create({
+      data: { id: eventId, type: eventType },
+    });
+    return true; // new event — proceed
+  } catch (err) {
+    // ONLY a unique-constraint violation (P2002) proves we've already
+    // processed this event. Any other DB error must NOT masquerade as a
+    // duplicate — swallowing it here would skip the handler, return 200,
+    // and permanently drop a paid grant (subscription / clap / book) because
+    // Stripe won't retry a 2xx. Re-throw so the caller returns 500 → retry.
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
+      return false; // genuine duplicate — skip
+    }
+    throw err;
+  }
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.text();
   const sig = request.headers.get("stripe-signature");
@@ -33,17 +64,36 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing signature" }, { status: 400 });
   }
 
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    console.error("[webhook] STRIPE_WEBHOOK_SECRET is not set — cannot verify signatures");
+    return NextResponse.json({ error: "Webhook not configured" }, { status: 500 });
+  }
+
   let event: Stripe.Event;
 
   try {
-    event = getStripe().webhooks.constructEvent(
-      body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET ?? ""
-    );
+    event = getStripe().webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+  }
+
+  // Idempotency guard — return 200 immediately for duplicate deliveries.
+  // Stripe marks a webhook as delivered on first 2xx; retries only happen
+  // when the original delivery timed out or the connection dropped.
+  let isNew: boolean;
+  try {
+    isNew = await markEventProcessed(event.id, event.type);
+  } catch (err) {
+    // Dedup bookkeeping failed for a non-duplicate reason — force a retry
+    // rather than risk dropping the event's side effects.
+    console.error("[webhook] dedup insert failed — asking Stripe to retry:", err);
+    return NextResponse.json({ error: "Temporary error" }, { status: 500 });
+  }
+  if (!isNew) {
+    console.log(`[webhook] Duplicate event ${event.id} (${event.type}) — skipping`);
+    return NextResponse.json({ received: true, duplicate: true });
   }
 
   try {
@@ -70,6 +120,104 @@ export async function POST(request: NextRequest) {
               currentPeriodEnd: getPeriodEnd(subscription),
             },
           });
+
+          // Send tier-specific welcome email (fire-and-forget — don't block the webhook).
+          // Safe to send here because markEventProcessed already deduplicated the event.
+          if (tier === "access" || tier === "system") {
+            const codexUser = await prisma.codexUser.findFirst({
+              where: { stripeCustomerId: session.customer as string },
+              select: { email: true, displayName: true },
+            });
+            if (codexUser?.email) {
+              const sendFn = tier === "system" ? sendOracleWelcomeEmail : sendInitiateWelcomeEmail;
+              sendFn({ recipientEmail: codexUser.email, recipientName: codexUser.displayName }).catch(
+                (err) => console.error("[webhook] Welcome email failed:", err)
+              );
+            }
+          }
+        }
+
+        // Clap token purchase (#cultofpsyche) → vest tokens to the nickname
+        // and open the 24-hour clap spotlight. stripeSessionId is unique on
+        // ClapToken, so a duplicate delivery cannot double-grant.
+        if (session.mode === "payment" && session.metadata?.clapNickname) {
+          const nickname = session.metadata.clapNickname;
+          const quantity = Math.max(parseInt(session.metadata.clapQuantity ?? "1", 10) || 1, 1);
+          const couponCode = session.metadata.clapCoupon || null;
+          try {
+            const holder = await prisma.clapHolder.upsert({
+              where: { nickname },
+              create: { nickname, tokens: quantity },
+              update: { tokens: { increment: quantity } },
+            });
+            await prisma.clapToken.create({
+              data: {
+                holderId: holder.id,
+                quantity,
+                source: "stripe",
+                amountCents: session.amount_total ?? null,
+                couponCode,
+                stripeSessionId: session.id,
+                spotlightUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
+              },
+            });
+          } catch (err) {
+            console.error("[webhook] clap grant failed:", err);
+          }
+        }
+
+        // One-time book purchase → grant a BookPurchase entitlement.
+        if (session.mode === "payment" && session.metadata?.bookSku && session.metadata?.codexUserId) {
+          const sku = session.metadata.bookSku;
+          const userId = session.metadata.codexUserId;
+          await prisma.bookPurchase
+            .upsert({
+              where: { userId_sku: { userId, sku } },
+              create: { userId, sku, stripeSessionId: session.id },
+              update: { stripeSessionId: session.id },
+            })
+            .catch((err) => console.error("[webhook] book entitlement failed:", err));
+        }
+
+        // Signal Credit bundle → credit the wallet. Two guards stack here:
+        // the event-level dedup above, and grantPurchasedCredits' own check on
+        // the session id. Unlike the clap/book branches this one does NOT
+        // swallow a failure: markEventProcessed has already recorded the
+        // event, so a 500 alone would make Stripe's retry look like a
+        // duplicate and the paid grant would be lost. Release the dedup row
+        // first, then 500, so the retry is genuinely re-processed — and the
+        // session-id guard means a retry after a committed grant is a no-op.
+        if (session.mode === "payment" && session.metadata?.kind === "credits") {
+          const userId = session.metadata.codexUserId;
+          const bundle = getCreditBundle(session.metadata.bundle ?? "");
+          const claimed = parseInt(session.metadata.credits ?? "", 10);
+          if (!userId || !bundle || claimed !== bundle.credits) {
+            // Metadata this server didn't write. Log loudly; don't grant, and
+            // don't retry — a retry would carry the same bad metadata.
+            console.error("[webhook] credits grant refused: bad metadata", {
+              sessionId: session.id,
+              metadata: session.metadata,
+            });
+          } else {
+            try {
+              const result = await grantPurchasedCredits({
+                userId,
+                bundle: bundle.slug,
+                credits: bundle.credits,
+                stripeSessionId: session.id,
+                amountCents: session.amount_total ?? null,
+              });
+              if (!result.granted) {
+                console.log(`[webhook] credits already granted for ${session.id} — skipping`);
+              }
+            } catch (err) {
+              console.error("[webhook] credits grant failed — releasing event for retry:", err);
+              await prisma.stripeWebhookEvent
+                .delete({ where: { id: event.id } })
+                .catch((e) => console.error("[webhook] could not release dedup row:", e));
+              return NextResponse.json({ error: "Credit grant failed" }, { status: 500 });
+            }
+          }
         }
         break;
       }
@@ -78,11 +226,17 @@ export async function POST(request: NextRequest) {
         const invoice = event.data.object as Stripe.Invoice;
         const subscriptionId = getInvoiceSubscriptionId(invoice);
         if (subscriptionId && invoice.customer) {
-          const subscription = await getStripe().subscriptions.retrieve(subscriptionId);
+          // Expand price so we can resolve tier — same as checkout.session.completed.
+          const subscription = await getStripe().subscriptions.retrieve(subscriptionId, {
+            expand: ["items.data.price"],
+          });
+          const priceId = subscription.items?.data?.[0]?.price?.id;
+          const tier = subscription.metadata?.tier || getTierByPriceId(priceId)?.slug || null;
           await prisma.codexUser.updateMany({
             where: { stripeCustomerId: invoice.customer as string },
             data: {
               subscriptionStatus: "active",
+              subscriptionTier: tier ?? undefined,
               currentPeriodEnd: getPeriodEnd(subscription),
             },
           });
@@ -109,6 +263,8 @@ export async function POST(request: NextRequest) {
             data: {
               subscriptionStatus: "canceled",
               subscriptionId: null,
+              subscriptionTier: null,
+              currentPeriodEnd: null,
             },
           });
         }

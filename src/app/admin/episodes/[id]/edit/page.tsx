@@ -1,15 +1,21 @@
+export const dynamic = "force-dynamic";
+
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { AdminFormField } from "@/components/admin/admin-form-field";
-import { updateEpisode } from "@/app/admin/actions";
+import { updateEpisode, toggleHumanReview } from "@/app/admin/actions";
 import { PsychenomiconWidget } from "./psychenomicon-widget";
+import { HumanReviewBadge } from "@/components/ui/human-review-badge";
 import Link from "next/link";
+import { requireAdminPage } from "@/lib/auth";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditEpisodePage({ params }: PageProps) {
+  await requireAdminPage();
+
   const { id } = await params;
 
   const episode = await prisma.episode.findUnique({
@@ -37,7 +43,7 @@ export default async function EditEpisodePage({ params }: PageProps) {
         </h1>
         <Link
           href="/admin/episodes"
-          className="font-mono text-xs text-text-muted hover:text-accent-gold transition-colors"
+          className="font-mono text-xs text-text-muted hover:text-accent-gold-text transition-colors"
         >
           &larr; Back to Episodes
         </Link>
@@ -106,10 +112,24 @@ export default async function EditEpisodePage({ params }: PageProps) {
         />
 
         <AdminFormField
-          label="Long Summary"
+          label="Long Summary (legacy)"
           name="summaryLong"
           type="textarea"
           defaultValue={episode.summaryLong}
+        />
+
+        <AdminFormField
+          label="Facts Summary (What Happened)"
+          name="summaryFacts"
+          type="textarea"
+          defaultValue={episode.summaryFacts}
+        />
+
+        <AdminFormField
+          label="Interpretive Layer (Themes)"
+          name="summaryThemes"
+          type="textarea"
+          defaultValue={episode.summaryThemes}
         />
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -142,6 +162,43 @@ export default async function EditEpisodePage({ params }: PageProps) {
           </Link>
         </div>
       </form>
+
+      {/* Human review toggle */}
+      <div className="mt-6 rounded-lg border border-border bg-surface p-4">
+        <div className="flex items-center justify-between">
+          <div className="space-y-0.5">
+            <p className="font-mono text-xs font-semibold text-text-primary">
+              Human Review
+            </p>
+            <p className="text-[12px] text-text-muted">
+              Mark this episode&apos;s AI summary as reviewed by a human.
+              Adds a visible &ldquo;Reviewed&rdquo; badge on the public page.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 ml-4 shrink-0">
+            {episode.isHumanReviewed && (
+              <HumanReviewBadge reviewedAt={episode.humanReviewedAt} variant="full" />
+            )}
+            <form
+              action={async () => {
+                "use server";
+                await toggleHumanReview(id);
+              }}
+            >
+              <button
+                type="submit"
+                className={`rounded border px-3 py-1.5 font-mono text-[12px] font-semibold transition-colors ${
+                  episode.isHumanReviewed
+                    ? "border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20"
+                    : "border-emerald-500/30 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
+                }`}
+              >
+                {episode.isHumanReviewed ? "Remove Review" : "Mark as Reviewed"}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
 
       <div className="mt-8">
         <PsychenomiconWidget

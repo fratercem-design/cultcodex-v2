@@ -1,6 +1,8 @@
-import { redirect } from "next/navigation";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAdminPage } from "@/lib/auth";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
+
+// Admin pages require authentication — never statically pre-render them.
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Admin — CULT CODEX",
@@ -12,11 +14,10 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getCurrentUser();
-
-  if (!user || user.role !== "admin") {
-    redirect("/auth/signin");
-  }
+  // Every admin page.tsx must also call requireAdminPage(): layouts and
+  // pages render in parallel, so this check alone does not stop a page's
+  // data from streaming out in the redirect response.
+  const user = await requireAdminPage();
 
   return (
     <div className="flex min-h-screen bg-void">

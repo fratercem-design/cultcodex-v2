@@ -62,6 +62,7 @@ export interface SearchFilters {
   hasTranscript?: boolean;  // filter episodes with/without transcripts
   dateFrom?: string;        // ISO date string
   dateTo?: string;          // ISO date string
+  page?: number;            // 1-based page for a single selected entity type
 }
 
 export interface GlobalSearchResults {
@@ -154,19 +155,22 @@ export async function globalSearch(
 async function searchEpisodes(query: string, filters?: SearchFilters): Promise<SearchResultEpisode[]> {
   const select = { id: true, title: true, slug: true, episodeNumber: true, airDate: true, summaryShort: true, status: true } as const;
   const baseFilters = episodeBaseFilters(filters);
+  const page = Math.max(1, filters?.page ?? 1);
+  const rankedPoolSize = page * SEARCH_LIMIT;
 
   // Tiered search: exact title → title contains → summary → broad searchText
   const [exactTitle, titleContains, summaryMatch, broadMatch] = await Promise.all([
     prisma.episode.findMany({
       where: { ...baseFilters, title: { equals: query, mode: "insensitive" } },
       select,
-      take: SEARCH_LIMIT,
+      orderBy: [{ airDate: "desc" }, { id: "asc" }],
+      take: rankedPoolSize,
     }),
     prisma.episode.findMany({
       where: { ...baseFilters, title: { contains: query, mode: "insensitive" } },
       select,
-      orderBy: { airDate: "desc" },
-      take: SEARCH_LIMIT,
+      orderBy: [{ airDate: "desc" }, { id: "asc" }],
+      take: rankedPoolSize,
     }),
     prisma.episode.findMany({
       where: {
@@ -177,8 +181,8 @@ async function searchEpisodes(query: string, filters?: SearchFilters): Promise<S
         ],
       },
       select,
-      orderBy: { airDate: "desc" },
-      take: SEARCH_LIMIT,
+      orderBy: [{ airDate: "desc" }, { id: "asc" }],
+      take: rankedPoolSize,
     }),
     prisma.episode.findMany({
       where: {
@@ -186,8 +190,8 @@ async function searchEpisodes(query: string, filters?: SearchFilters): Promise<S
         searchText: { contains: query, mode: "insensitive" },
       },
       select,
-      orderBy: { airDate: "desc" },
-      take: SEARCH_LIMIT,
+      orderBy: [{ airDate: "desc" }, { id: "asc" }],
+      take: rankedPoolSize,
     }),
   ]);
 
@@ -196,9 +200,9 @@ async function searchEpisodes(query: string, filters?: SearchFilters): Promise<S
   const results: SearchResultEpisode[] = [];
   for (const ep of [...exactTitle, ...titleContains, ...summaryMatch, ...broadMatch]) {
     if (!seen.has(ep.id)) { seen.add(ep.id); results.push(ep); }
-    if (results.length >= SEARCH_LIMIT) break;
+    if (results.length >= rankedPoolSize) break;
   }
-  return results;
+  return results.slice((page - 1) * SEARCH_LIMIT, page * SEARCH_LIMIT);
 }
 
 // Person type priority for search ranking (higher = shown first)

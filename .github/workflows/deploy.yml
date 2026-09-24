@@ -1,0 +1,64 @@
+name: Deploy to Fly
+
+# Builds the image on the GitHub runner and pushes it to Fly.
+#
+# `fly deploy` from a laptop builds on Fly's remote (Depot) builder, which
+# kills `next build` for running out of memory (exit 137) — the build peaks
+# around 4 GB — and uploads the 600+ MB public/ context on every deploy.
+# GitHub's ubuntu-latest runners have 16 GB and are where CI's Build job
+# already passes, so build here with --local-only instead.
+#
+# Needs repository secrets:
+#   FLY_API_TOKEN — `fly tokens create deploy -a cultcodex-v2`
+#   DATABASE_URL  — already set; passed as a BuildKit secret because the
+#                   build prerenders database-backed pages.
+#
+# Run migrations first (Run DB Migrations workflow) when a release has any.
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: fly-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Check secrets
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          [ -n "$FLY_API_TOKEN" ] || { echo "::error::FLY_API_TOKEN secret is not set (fly tokens create deploy -a cultcodex-v2)"; exit 1; }
+          [ -n "$DATABASE_URL" ] || { echo "::error::DATABASE_URL secret is not set"; exit 1; }
+
+      - name: Install flyctl
+        run: |
+          curl -fsSL https://fly.io/install.sh | sh
+          echo "$HOME/.fly/bin" >> "$GITHUB_PATH"
+
+      - name: Deploy
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          flyctl deploy -a cultcodex-v2 --local-only \
+            --build-secret "DATABASE_URL=$DATABASE_URL" \
+            --build-arg "SOURCE_COMMIT=$GITHUB_SHA"
+
+      - name: Health check
+        run: |
+          for i in $(seq 1 12); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" https://cultcodex.me/api/health || true)
+            [ "$code" = "200" ] && { echo "Healthy"; exit 0; }
+            sleep 10
+          done
+          echo "::error::https://cultcodex.me/api/health did not return 200 after deploy"
+          exit 1

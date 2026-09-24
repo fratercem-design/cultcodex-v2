@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
@@ -12,7 +13,8 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Collections — CULT CODEX",
-  description: "Curated collections of the best Cult of Psyche episodes, organized by theme.",
+  description: "Cult of Psyche episodes grouped by theme.",
+  alternates: { canonical: "/collections" },
 };
 
 interface Collection {
@@ -29,7 +31,7 @@ const COLLECTIONS: Collection[] = [
     title: "Best of Tarot",
     description: "The most powerful and insightful tarot readings across all series. Psyche at their most mystical.",
     icon: <IconTarot size={28} />,
-    color: "text-accent-gold",
+    color: "text-accent-gold-text",
     borderColor: "border-accent-gold/20",
     links: [
       { label: "Psyche Awakens Tarot", href: "/episodes?series=psyche-awakens-tarot" },
@@ -108,7 +110,7 @@ const COLLECTIONS: Collection[] = [
     title: "Notable Quotes",
     description: "The most memorable, profound, and hilarious quotes from across the archive.",
     icon: <IconQuote size={28} />,
-    color: "text-accent-gold",
+    color: "text-accent-gold-text",
     borderColor: "border-accent-gold/20",
     links: [
       { label: "Full quote archive", href: "/quotes" },
@@ -137,7 +139,7 @@ export default async function CollectionsPage() {
   const seriesCounts = await prisma.series.findMany({
     where: { slug: { in: SERIES_SLUGS } },
     select: { slug: true, _count: { select: { episodes: true } } },
-  });
+  }).catch(() => []);
   const countMap = new Map(seriesCounts.map((s) => [s.slug, s._count.episodes]));
   const totalCollectionEpisodes = seriesCounts.reduce((sum, s) => sum + s._count.episodes, 0);
 
@@ -145,7 +147,7 @@ export default async function CollectionsPage() {
     <>
       <PageHero
         title="COLLECTIONS"
-        subtitle={`Curated paths through ${totalCollectionEpisodes} episodes`}
+        subtitle={`${totalCollectionEpisodes} episodes, grouped into paths`}
         backgroundImage="/hero-bg.jpg"
       
       label="signal_packs"
@@ -160,8 +162,8 @@ export default async function CollectionsPage() {
         {/* Themed Signal Packs — the Guided-Path destinations */}
         <section className="space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan">
-              /// signal_packs
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan">
+              {"/// signal_packs"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
               Themed Signal Packs
@@ -185,7 +187,7 @@ export default async function CollectionsPage() {
                     <CollectionIcon iconKey={col.iconKey} size={36} />
                   </div>
                   <div className="space-y-1">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+                    <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
                       {col.eyebrow}
                     </p>
                     <h3 className={`font-display text-lg font-bold ${a.title}`}>
@@ -199,7 +201,7 @@ export default async function CollectionsPage() {
                     {col.description[0]}
                   </p>
                   <span
-                    className={`font-mono text-[10px] uppercase tracking-widest ${a.eyebrow} inline-flex items-center gap-2 group-hover:gap-3 transition-all`}
+                    className={`font-mono text-[12px] uppercase tracking-widest ${a.eyebrow} inline-flex items-center gap-2 group-hover:gap-3 transition-all`}
                   >
                     Enter pack <span aria-hidden>→</span>
                   </span>
@@ -214,14 +216,14 @@ export default async function CollectionsPage() {
         {/* Series-based collections */}
         <section className="space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">
-              /// series_packs
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">
+              {"/// series_packs"}
             </p>
             <h2 className="font-display text-xl font-bold text-text-primary">
               By Series
             </h2>
             <p className="text-sm text-text-muted max-w-2xl">
-              Curated routes into the show&rsquo;s ongoing series — tarot, mythology,
+              Ways into the show&rsquo;s ongoing series: tarot, mythology,
               panels, scary tales.
             </p>
           </div>
@@ -250,11 +252,11 @@ export default async function CollectionsPage() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-[10px] text-text-muted transition-colors hover:border-accent-cyan/30 hover:text-accent-cyan hover:bg-elevated"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 font-mono text-[12px] text-text-muted transition-colors hover:border-accent-cyan/30 hover:text-accent-cyan hover:bg-elevated"
                     >
                       {link.label}
                       {epCount != null && (
-                        <span className="rounded-full bg-elevated px-1.5 py-0.5 text-[9px] text-text-muted">
+                        <span className="rounded-full bg-elevated px-1.5 py-0.5 text-[12px] text-text-muted">
                           {epCount}
                         </span>
                       )}
@@ -273,7 +275,7 @@ export default async function CollectionsPage() {
         <div className="text-center">
           <Link
             href="/start-here"
-            className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/30 px-6 py-3 font-mono text-xs text-accent-gold transition-colors hover:bg-accent-gold/10"
+            className="inline-flex items-center gap-2 rounded-lg border border-accent-gold/30 px-6 py-3 font-mono text-xs text-accent-gold-text transition-colors hover:bg-accent-gold/10"
           >
             <IconTransmission size={16} />
             New here? Start Here →

@@ -8,13 +8,21 @@ interface SectionCardProps {
   className?: string;
   ornament?: boolean;
   accent?: SectionAccent;
+  /**
+   * Heading level for `title`. Defaults to 3 to preserve the level every
+   * existing caller already renders. Pass 2 where the card is a top-level
+   * section directly under the page `<h1>` — otherwise the outline skips
+   * h1 → h3, which screen-reader heading navigation reports as a gap.
+   * Styling is driven by className, so this changes semantics only.
+   */
+  headingLevel?: 2 | 3 | 4;
   children: React.ReactNode;
 }
 
 const ACCENT_TITLE: Record<SectionAccent, string> = {
-  gold:   "text-accent-gold",
+  gold:   "text-accent-gold-text",
   cyan:   "text-accent-cyan",
-  violet: "text-accent-violet",
+  violet: "text-accent-violet-text",
   red:    "text-red-400",
   muted:  "text-text-muted",
 };
@@ -32,12 +40,13 @@ const ACCENT_DOT: Record<SectionAccent, string> = {
   cyan:   "bg-accent-cyan",
   violet: "bg-accent-violet",
   red:    "bg-red-400",
-  muted:  "bg-text-muted/40",
+  muted:  "bg-text-muted/60",
 };
 
-export function SectionCard({ title, className, ornament = false, accent, children }: SectionCardProps) {
+export function SectionCard({ title, className, ornament = false, accent, headingLevel = 3, children }: SectionCardProps) {
   const titleColor = accent ? ACCENT_TITLE[accent] : "text-text-muted";
   const borderClass = accent && accent !== "muted" ? `border-l-2 ${ACCENT_BORDER[accent]}` : "";
+  const Heading = `h${headingLevel}` as "h2" | "h3" | "h4";
   return (
     <div
       className={cn(
@@ -47,13 +56,13 @@ export function SectionCard({ title, className, ornament = false, accent, childr
       )}
     >
       {title && (
-        <h3 className={cn("mb-3 flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider", titleColor)}>
+        <Heading className={cn("mb-3 flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider", titleColor)}>
           {ornament && <TitleOrnament />}
           {accent && accent !== "muted" && (
             <span aria-hidden className={cn("inline-block w-1.5 h-1.5 rounded-full", ACCENT_DOT[accent])} />
           )}
           {title}
-        </h3>
+        </Heading>
       )}
       {children}
     </div>

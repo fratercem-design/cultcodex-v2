@@ -1,3 +1,4 @@
+
 /**
  * /collections/[slug] — Themed "Signal Pack" detail page.
  *
@@ -77,7 +78,7 @@ async function findRelatedTopics(matchers: string[]) {
     include: { _count: { select: { episodes: true } } },
     orderBy: [{ episodes: { _count: "desc" } }, { title: "asc" }],
     take: 24,
-  });
+  }).catch(() => []);
 }
 
 /** Pull episodes tied to the resolved topic ids, newest airDate first. */
@@ -95,7 +96,7 @@ async function findRelatedEpisodes(topicIds: string[], excludeSlugs: string[]) {
       { episodeNumber: "desc" },
     ],
     take: 18,
-  });
+  }).catch(() => []);
   return rows.map(formatEpisodeForCard);
 }
 
@@ -105,7 +106,7 @@ async function findPinnedEpisodes(slugs: string[]) {
   const rows = await prisma.episode.findMany({
     where: { slug: { in: slugs } },
     include: buildEpisodeInclude(),
-  });
+  }).catch(() => []);
   const bySlug = new Map(rows.map((r) => [r.slug, r]));
   return slugs
     .map((s) => bySlug.get(s))
@@ -150,13 +151,13 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
         {/* Breadcrumb */}
         <nav
           aria-label="Breadcrumb"
-          className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted"
+          className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted"
         >
-          <Link href="/start-here" className="hover:text-accent-gold transition-colors">
+          <Link href="/start-here" className="hover:text-accent-gold-text transition-colors">
             Enter the Codex
           </Link>
           <span className="mx-2">/</span>
-          <Link href="/collections" className="hover:text-accent-gold transition-colors">
+          <Link href="/collections" className="hover:text-accent-gold-text transition-colors">
             Collections
           </Link>
           <span className="mx-2">/</span>
@@ -185,7 +186,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
                 className="flex gap-3 text-sm text-text-primary leading-relaxed"
               >
                 <span
-                  className={`font-mono text-[10px] ${a.eyebrow} flex-shrink-0 mt-1`}
+                  className={`font-mono text-[12px] ${a.eyebrow} flex-shrink-0 mt-1`}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -273,7 +274,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
                 &ldquo;{collection.quoteHook.text}&rdquo;
               </blockquote>
               {collection.quoteHook.attribution && (
-                <figcaption className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
+                <figcaption className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
                   — {collection.quoteHook.attribution}
                 </figcaption>
               )}
@@ -286,8 +287,8 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
           <>
             <MysticalDivider />
             <section className="space-y-6">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted text-center">
-                /// follow the signal further
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted text-center">
+                {"/// follow the signal further"}
               </p>
 
               {related.length > 0 && (
@@ -301,7 +302,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
                         className={`group rounded-lg border ${ra.border} bg-surface p-4 transition-colors ${ra.hoverBorder} ${ra.hoverBg}`}
                       >
                         <p
-                          className={`font-mono text-[10px] uppercase tracking-[0.3em] ${ra.eyebrow}`}
+                          className={`font-mono text-[12px] uppercase tracking-[0.12em] ${ra.eyebrow}`}
                         >
                           {rc.eyebrow}
                         </p>
@@ -325,7 +326,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
                     <Link
                       key={rs.href}
                       href={rs.href}
-                      className="font-mono text-[11px] uppercase tracking-widest px-4 py-2 rounded border border-border text-text-muted hover:text-accent-gold hover:border-accent-gold/40 transition-colors"
+                      className="font-mono text-[12px] uppercase tracking-widest px-4 py-2 rounded border border-border text-text-muted hover:text-accent-gold-text hover:border-accent-gold/40 transition-colors"
                     >
                       {rs.label} →
                     </Link>
@@ -340,7 +341,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
         <section className="text-center">
           <Link
             href="/collections"
-            className="font-mono text-xs uppercase tracking-widest text-text-muted hover:text-accent-gold transition-colors"
+            className="font-mono text-xs uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
           >
             ← All collections
           </Link>

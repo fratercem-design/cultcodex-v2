@@ -37,7 +37,7 @@ export function LoreCard({ lore }: LoreCardProps) {
       className={`group block rounded-lg border border-border border-l-[3px] ${canonBorder[lore.canonStatus]} bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated`}
     >
       <div className="flex items-start justify-between gap-2">
-        <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+        <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
           {lore.title}
         </h3>
         <StatusBadge
@@ -46,7 +46,7 @@ export function LoreCard({ lore }: LoreCardProps) {
         />
       </div>
       {lore.category && (
-        <p className="mt-1 font-mono text-[10px] text-text-muted uppercase">
+        <p className="mt-1 font-mono text-[12px] text-text-muted uppercase">
           {lore.category}
         </p>
       )}
@@ -57,7 +57,7 @@ export function LoreCard({ lore }: LoreCardProps) {
       )}
       {(lore.episodeCount != null && lore.episodeCount > 0) ||
        (lore.personCount != null && lore.personCount > 0) ? (
-        <div className="mt-2 flex gap-3 font-mono text-[10px] text-text-muted">
+        <div className="mt-2 flex gap-3 font-mono text-[12px] text-text-muted">
           {lore.episodeCount != null && lore.episodeCount > 0 && (
             <span>{lore.episodeCount} episode{lore.episodeCount !== 1 ? "s" : ""}</span>
           )}

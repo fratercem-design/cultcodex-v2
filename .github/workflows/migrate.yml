@@ -1,7 +1,35 @@
 name: Run DB Migrations
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      diagnose_only:
+        description: >-
+          Read-only. Inspect unresolved migrations and public tables without
+          resolving or applying anything. Disable only after reviewing the
+          diagnosis and intentionally choosing a resolution.
+        required: true
+        default: true
+        type: boolean
+      resolve_migration:
+        description: >-
+          Optional. Name of a FAILED migration to resolve before deploying,
+          e.g. 20260423000000_add_saved_topics_quotes. Leave blank to just
+          apply pending migrations. Read the "Diagnose" step output first.
+        required: false
+        default: ''
+      resolve_as:
+        description: >-
+          How to resolve it. "rolled-back" = the migration left NOTHING behind
+          and should be retried. "applied" = its changes ARE already in the
+          database and it should be marked done. Picking wrong leaves the
+          schema and the migration history disagreeing.
+        required: false
+        default: 'rolled-back'
+        type: choice
+        options:
+          - rolled-back
+          - applied
 
 jobs:
   migrate:
@@ -11,11 +39,16 @@ jobs:
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      # prisma.config.ts prefers DIRECT_URL for migrations. `prisma migrate
+      # deploy` takes a pg advisory lock, which a pooled/PgBouncer endpoint can
+      # silently drop or refuse — without this secret the CLI fell back to the
+      # pooled DATABASE_URL and migrations could hang or fail to acquire the lock.
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: 'npm'
@@ -26,8 +59,35 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
-      - name: Apply migrations
+      - name: Validate inputs
+        if: ${{ inputs.diagnose_only && inputs.resolve_migration != '' }}
         run: |
+          echo "::error::resolve_migration cannot be used while diagnose_only is enabled"
+          exit 1
+
+      # A failed migration row blocks every subsequent deploy with P3009, and
+      # the error alone does not say whether the migration's changes actually
+      # landed. The script prints both halves of that question so the resolve
+      # choice is made on evidence rather than a guess. Read-only.
+      #
+      # It lives in scripts/ rather than inline here so `Run DB Script` can run
+      # the same diagnosis on demand, and so the P3009 rule has one definition
+      # instead of two that can drift apart.
+      - name: Diagnose migration state
+        run: npx tsx scripts/_diagnose-migrations.ts
+
+      - name: Resolve failed migration
+        if: ${{ !inputs.diagnose_only && inputs.resolve_migration != '' }}
+        run: |
+          echo "Resolving ${{ github.event.inputs.resolve_migration }} as ${{ github.event.inputs.resolve_as }}"
+          npx prisma migrate resolve \
+            --${{ github.event.inputs.resolve_as }} \
+            "${{ github.event.inputs.resolve_migration }}"
+
+      - name: Apply migrations
+        if: ${{ !inputs.diagnose_only }}
+        run: |
+          set -o pipefail
           npx prisma migrate deploy 2>&1 | tee /tmp/migrate-output.txt
           SUMMARY=$(tail -5 /tmp/migrate-output.txt | tr '\n' ' ')
           echo "::notice title=Migrations::$SUMMARY"

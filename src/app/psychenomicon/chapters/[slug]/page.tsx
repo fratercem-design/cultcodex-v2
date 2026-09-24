@@ -2,13 +2,26 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
+import { isFreePreviewChapter } from "@/lib/psychenomicon";
 import { LayerViewer } from "@/components/psychenomicon/layer-viewer";
 import { TimelineStrip } from "@/components/psychenomicon/timeline-strip";
 import { ScrollReveal } from "@/components/psychenomicon/scroll-reveal";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { buildMetadata, jsonLdScript, SITE_URL } from "@/lib/seo";
 
 export const revalidate = 300;
+
+/** First couple of sentences of the canon layer, trimmed to a meta-description
+ *  length. Used for both the page description and the public teaser, so a
+ *  sealed chapter still says what it is about. */
+function chapterSynopsis(canonText: string, max = 280): string {
+  const flat = canonText.replace(/\s+/g, " ").trim();
+  if (flat.length <= max) return flat;
+  const cut = flat.slice(0, max);
+  const lastStop = Math.max(cut.lastIndexOf(". "), cut.lastIndexOf("? "), cut.lastIndexOf("! "));
+  return lastStop > max * 0.5 ? cut.slice(0, lastStop + 1) : `${cut.trimEnd()}…`;
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -16,14 +29,50 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  // Deliberately NOT `.catch(() => null)`. Now that a missing row produces a
+  // real 404, swallowing errors here would turn a transient database failure
+  // into a 404 too — and this database hibernates when idle, so a wake-up blip
+  // could hand Google a 404 for a chapter that exists and get it deindexed.
+  // Letting the error propagate yields a 500, which crawlers retry.
   const chapter = await prisma.psychenomiconChapter.findUnique({
     where: { slug },
-    select: { title: true, chapterNumber: true },
-  }).catch(() => null);
-  if (!chapter) return { title: "Chapter Not Found — CULT CODEX" };
+    select: { title: true, chapterNumber: true, canonText: true },
+  });
+  if (!chapter) notFound();
+
+  // A sealed chapter shows a crawler the same ~1,450-character "This chapter is
+  // sealed" shell as every other sealed chapter. There were 2,990 of them, all
+  // `index, follow` and all in the sitemap — near-duplicate thin content making
+  // up roughly 9% of the site's URLs, which is a sitewide quality signal rather
+  // than a per-page one. Only the free-preview chapters have anything for a
+  // crawler to read, so only those stay indexable. `follow` is kept either way
+  // so the links out of the shell still pass equity.
+  const isFree = await isFreePreviewChapter(chapter.chapterNumber).catch(() => false);
+  const label = `CH.${String(chapter.chapterNumber).padStart(3, "0")} ${chapter.title}`;
+
+  // A real synopsis beats the old boilerplate: gated chapters were all shipping
+  // an identical description, which reads as duplicate content. Derived from
+  // canonText, so it is unique per chapter even while the body stays sealed.
+  const synopsis = chapterSynopsis(chapter.canonText);
+
+  // buildMetadata is what every other content route uses, and it supplies the
+  // absolute canonical plus the OpenGraph and Twitter tags these pages were
+  // missing entirely. The title is overridden back to the existing shape so the
+  // change does not quietly rewrite 2,990 titles.
+  const base = buildMetadata({
+    title: label,
+    description:
+      synopsis ||
+      (isFree
+        ? `Chapter ${chapter.chapterNumber} of the Psychenomicon: ${chapter.title}. A living record of evolving patterns from the Cult of Psyche archive.`
+        : `Chapter ${chapter.chapterNumber} of the Psychenomicon. A living record of evolving patterns.`),
+    path: `/psychenomicon/chapters/${slug}`,
+  });
+
   return {
-    title: `CH.${String(chapter.chapterNumber).padStart(3, "0")} ${chapter.title} — Psychenomicon`,
-    description: `Chapter ${chapter.chapterNumber} of the Psychenomicon. A living record of evolving patterns.`,
+    ...base,
+    title: `${label} — Psychenomicon`,
+    robots: { index: isFree, follow: true },
   };
 }
 
@@ -31,17 +80,125 @@ export default async function ChapterPage({ params }: PageProps) {
   const { slug } = await params;
 
   const user = await getCurrentUser();
-  const canRead = user ? await isSubscribed(user.id).catch(() => false) : false;
+  const subscribed = user ? await isSubscribed(user.id).catch(() => false) : false;
+
+  // Free-preview pipeline: a configured set of chapters is readable by anyone.
+  const gateRow = await prisma.psychenomiconChapter
+    .findUnique({
+      where: { slug },
+      select: {
+        chapterNumber: true,
+        title: true,
+        canonText: true,
+        emergingSignals: true,
+        updatedAt: true,
+        episode: { select: { title: true, slug: true, episodeNumber: true, airDate: true } },
+      },
+    });
+  if (!gateRow) notFound();
+  const isFreePreview = await isFreePreviewChapter(gateRow.chapterNumber);
+  const canRead = subscribed || isFreePreview;
 
   if (!canRead) {
+    // A sealed chapter still gets a real, indexable page: an H1, a synopsis,
+    // its episode link and signal taxonomy. Previously every one of ~2,800
+    // chapter URLs served an identical contentless shell, which is a crawl
+    // liability rather than an asset (2026-08 audit). The gated body is
+    // declared to search engines via schema.org paywall markup below, which is
+    // the supported way to keep subscription content indexable.
+    const chapterLabel = `CH.${String(gateRow.chapterNumber).padStart(3, "0")}`;
+    const synopsis = chapterSynopsis(gateRow.canonText);
+    const paywallLd = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: `${chapterLabel} ${gateRow.title}`,
+      description: synopsis,
+      url: `${SITE_URL}/psychenomicon/chapters/${slug}`,
+      isAccessibleForFree: false,
+      dateModified: gateRow.updatedAt.toISOString(),
+      isPartOf: {
+        "@type": ["CreativeWork", "Product"],
+        name: "The Psychenomicon",
+        productID: "cultcodex.me:initiate-plus",
+      },
+      hasPart: {
+        "@type": "WebPageElement",
+        isAccessibleForFree: false,
+        cssSelector: ".paywalled-chapter-body",
+      },
+    };
+
     return (
-      <main className="min-h-screen bg-void flex items-center justify-center">
-        <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">/// initiate_only</p>
-          <p className="font-display text-xl font-bold text-text-primary">This chapter is sealed.</p>
-          <Link href="/premium#access" className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors">
-            Become Initiate+ →
+      <main id="main-content" className="min-h-screen bg-void px-4 py-16">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(paywallLd) }}
+        />
+        <div className="mx-auto max-w-2xl space-y-6">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">
+            {"/// psychenomicon"} · {chapterLabel}
+          </p>
+          <h1 className="font-display text-3xl font-bold text-text-primary">
+            {gateRow.title}
+          </h1>
+
+          <p className="text-sm leading-relaxed text-text-secondary">{synopsis}</p>
+
+          {gateRow.episode && (
+            <p className="font-mono text-xs text-text-muted">
+              Derived from{" "}
+              <Link
+                href={`/episodes/${gateRow.episode.slug}`}
+                className="text-text-primary underline hover:text-accent-violet-text"
+              >
+                {gateRow.episode.episodeNumber
+                  ? `EP.${gateRow.episode.episodeNumber} — `
+                  : ""}
+                {gateRow.episode.title}
+              </Link>
+            </p>
+          )}
+
+          {gateRow.emergingSignals.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {gateRow.emergingSignals.slice(0, 12).map((signal) => (
+                <span
+                  key={signal}
+                  className="rounded border border-border px-2 py-1 font-mono text-[12px] text-text-secondary"
+                >
+                  {signal}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="paywalled-chapter-body rounded border border-accent-violet/40 bg-accent-violet/5 p-6 space-y-4">
+            <p className="font-display text-lg font-bold text-text-primary">
+              The rest of this chapter is sealed.
+            </p>
+            <p className="font-mono text-xs text-text-muted">
+              The canon, interpretation, and mythic layers are open to Initiate+
+              members.
+            </p>
+            <Link
+              href="/premium#access"
+              className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/20 transition-colors"
+            >
+              Become Initiate+ →
+            </Link>
+          </div>
+
+          <Link
+            href="/psychenomicon/chapters"
+            className="inline-block font-mono text-xs text-text-muted underline hover:text-text-primary"
+          >
+            ← All chapters
           </Link>
+          <p className="pt-2">
+            <Link href="/psychenomicon/chapters" className="font-mono text-[12px] text-accent-gold-text/80 hover:underline">
+              ← All chapters
+            </Link>
+          </p>
         </div>
       </main>
     );
@@ -58,59 +215,102 @@ export default async function ChapterPage({ params }: PageProps) {
         include: { thread: { select: { title: true, slug: true, status: true } } },
       },
     },
-  }).catch(() => null);
+  });
 
+  // Same reasoning as generateMetadata: this feeds notFound(), so a swallowed
+  // error would be indistinguishable from a chapter that does not exist. The
+  // gate query above already proved the row is there, so reaching null here
+  // means a genuine race (deleted mid-request); anything else should surface
+  // as a 500 rather than a 404 a crawler will act on.
   if (!chapter) notFound();
 
-  // Adjacent chapters
-  const [prevChapter, nextChapter, allChapters] = await Promise.all([
-    prisma.psychenomiconChapter.findFirst({
-      where: { chapterNumber: { lt: chapter.chapterNumber } },
-      orderBy: { chapterNumber: "desc" },
-      select: { slug: true, chapterNumber: true, title: true },
-    }),
-    prisma.psychenomiconChapter.findFirst({
-      where: { chapterNumber: { gt: chapter.chapterNumber } },
-      orderBy: { chapterNumber: "asc" },
-      select: { slug: true, chapterNumber: true, title: true },
-    }),
-    prisma.psychenomiconChapter.findMany({
-      orderBy: { chapterNumber: "asc" },
-      select: { slug: true, chapterNumber: true, title: true, isMajorEvent: true },
-    }),
-  ]).catch(() => [null, null, []] as [null, null, never[]]);
+  // Adjacent + windowed chapters in BROADCAST order (episode air date).
+  // chapterNumber is a stable id, not the chronological rank, so neighbors
+  // are found by air date — not by adjacent numbers.
+  const curAir = chapter.episode?.airDate ?? null;
+  const WINDOW = 12;
+  type NeighborRow = { slug: string; chapterNumber: number; title: string; isMajorEvent: boolean };
+  const adjSelect = { slug: true, chapterNumber: true, title: true } as const;
+  const winSelect = { slug: true, chapterNumber: true, title: true, isMajorEvent: true } as const;
+
+  const [prevChapter, nextChapter, before, after, newestRow] = await Promise.all([
+    curAir
+      ? prisma.psychenomiconChapter.findFirst({ where: { episode: { airDate: { lt: curAir } } }, orderBy: { episode: { airDate: "desc" } }, select: adjSelect })
+      : Promise.resolve(null),
+    curAir
+      ? prisma.psychenomiconChapter.findFirst({ where: { episode: { airDate: { gt: curAir } } }, orderBy: { episode: { airDate: "asc" } }, select: adjSelect })
+      : Promise.resolve(null),
+    curAir
+      ? prisma.psychenomiconChapter.findMany({ where: { episode: { airDate: { lt: curAir } } }, orderBy: { episode: { airDate: "desc" } }, take: WINDOW, select: winSelect })
+      : Promise.resolve([] as NeighborRow[]),
+    curAir
+      ? prisma.psychenomiconChapter.findMany({ where: { episode: { airDate: { gt: curAir } } }, orderBy: { episode: { airDate: "asc" } }, take: WINDOW, select: winSelect })
+      : Promise.resolve([] as NeighborRow[]),
+    prisma.psychenomiconChapter.findFirst({ orderBy: { episode: { airDate: "desc" } }, select: { slug: true } }),
+  ]).catch(() => [null, null, [] as NeighborRow[], [] as NeighborRow[], null] as [NeighborRow | null, NeighborRow | null, NeighborRow[], NeighborRow[], { slug: string } | null]);
+
+  // Chronological window: earlier (reversed to ascending) + current + later.
+  const windowChapters: NeighborRow[] = [
+    ...[...before].reverse(),
+    { slug: chapter.slug, chapterNumber: chapter.chapterNumber, title: chapter.title, isMajorEvent: chapter.isMajorEvent },
+    ...after,
+  ];
+  const newestSlug = newestRow?.slug ?? chapter.slug;
 
   type ArchetypeEntry = { name: string; archetype: string; significance: string };
   const archetypes = (chapter.archetypesData as ArchetypeEntry[] | null) ?? [];
 
-  const timelineNodes = allChapters.map((c, i) => ({
+  // AI-generated art URLs (set by the art pipeline script)
+  type ArtImageUrls = { cover?: string; scene_01?: string; scene_02?: string; scene_03?: string };
+  const artUrls = (chapter.artImageUrls as ArtImageUrls | null) ?? {};
+
+  const timelineNodes = windowChapters.map((c) => ({
     slug: c.slug,
     chapterNumber: c.chapterNumber,
     title: c.title,
     isMajorEvent: c.isMajorEvent,
-    isNewest: i === allChapters.length - 1,
+    isNewest: c.slug === newestSlug,
   }));
 
   return (
     <main className="min-h-screen bg-void">
+      {/* Free-preview banner for non-subscribers */}
+      {isFreePreview && !subscribed && (
+        <div className="border-b border-accent-gold/30 bg-accent-gold/5 px-4 py-2.5">
+          <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
+            <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">
+              {"/// free_preview"}
+            </span>
+            <span className="font-mono text-[12px] text-text-muted">
+              This chapter is unsealed for all. The rest of the record awaits initiates.
+            </span>
+            <Link
+              href="/premium#access"
+              className="font-mono text-[12px] font-bold text-accent-gold-text hover:underline"
+            >
+              Become Initiate+ →
+            </Link>
+          </div>
+        </div>
+      )}
       {/* Chapter header */}
       <header className={`border-b py-10 px-4 ${chapter.isMajorEvent ? "border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-void" : "border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void"}`}>
         <div className="mx-auto max-w-3xl text-center space-y-3">
-          <p className={`font-mono text-[9px] uppercase tracking-[0.5em] ${chapter.isMajorEvent ? "text-accent-gold/60" : "text-accent-violet/60"}`}>
+          <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${chapter.isMajorEvent ? "text-accent-gold-text/80" : "text-accent-violet-text/70"}`}>
             ψ PSYCHENOMICON · CH.{String(chapter.chapterNumber).padStart(3, "0")} ψ
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-text-primary leading-tight">
-              {chapter.isMajorEvent && <span className="text-accent-gold mr-2">✦</span>}
+              {chapter.isMajorEvent && <span className="text-accent-gold-text mr-2">✦</span>}
               {chapter.title}
             </h1>
             {(chapter as { status?: string }).status && (
-              <span className={`inline-flex items-center rounded border px-2 py-0.5 font-mono text-[9px] uppercase ${
+              <span className={`inline-flex items-center rounded border px-2 py-0.5 font-mono text-[12px] uppercase ${
                 (chapter as { status?: string }).status === "contested"
                   ? "border-red-500/40 text-red-400 bg-red-500/10"
                   : (chapter as { status?: string }).status === "evolving"
-                  ? "border-accent-gold/40 text-accent-gold bg-accent-gold/10"
-                  : "border-accent-violet/30 text-accent-violet/70 bg-accent-violet/5"
+                  ? "border-accent-gold/40 text-accent-gold-text bg-accent-gold/10"
+                  : "border-accent-violet/30 text-accent-violet-text/70 bg-accent-violet/5"
               }`}>
                 {(chapter as { status?: string }).status}
               </span>
@@ -119,13 +319,13 @@ export default async function ChapterPage({ params }: PageProps) {
           {chapter.episode && (
             <p className="font-mono text-xs text-text-muted">
               Source:{" "}
-              <Link href={`/episodes/${chapter.episode.slug}`} className="text-text-primary hover:text-accent-violet transition-colors">
+              <Link href={`/episodes/${chapter.episode.slug}`} className="text-text-primary hover:text-accent-violet-text transition-colors">
                 {chapter.episode.episodeNumber ? `EP.${String(chapter.episode.episodeNumber).padStart(3, "0")} · ` : ""}
                 {chapter.episode.title}
               </Link>
               {chapter.episode.airDate && (
                 <span className="ml-2 opacity-60">
-                  ({new Date(chapter.episode.airDate).toLocaleDateString()})
+                  ({new Date(chapter.episode.airDate).toLocaleDateString("en-US", { timeZone: "UTC" })})
                 </span>
               )}
             </p>
@@ -138,7 +338,7 @@ export default async function ChapterPage({ params }: PageProps) {
                 <Link
                   key={a.name}
                   href={`/psychenomicon/entities/${a.name.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-accent-violet/10 px-2.5 py-1 font-mono text-[9px] text-accent-violet hover:bg-accent-violet/20 transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-accent-violet/10 px-2.5 py-1 font-mono text-[12px] text-accent-violet-text hover:bg-accent-violet/20 transition-colors"
                 >
                   <span className="text-text-muted">{a.name}</span>
                   <span>·</span>
@@ -149,6 +349,25 @@ export default async function ChapterPage({ params }: PageProps) {
           )}
         </div>
       </header>
+
+      {/* Cover art — full-bleed cinematic image generated by the art pipeline */}
+      {artUrls.cover && (
+        <div className="relative w-full overflow-hidden bg-void" style={{ maxHeight: "520px" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={artUrls.cover}
+            alt={`Cover art for ${chapter.title}`}
+            className="w-full object-cover object-top"
+            style={{ maxHeight: "520px" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-void pointer-events-none" />
+          <div className="absolute bottom-3 right-4">
+            <span className="font-mono text-[12px] uppercase tracking-widest text-white/30">
+              AI-generated · Psychenomicon Art
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Timeline strip */}
       <div className="border-b border-border">
@@ -178,13 +397,51 @@ export default async function ChapterPage({ params }: PageProps) {
           {chapter.emergingSignals.length > 0 && (
             <ScrollReveal delay={300}>
               <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-5 space-y-3">
-                <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-gold">/// emerging_signals</p>
+                <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">{"/// emerging_signals"}</p>
                 {chapter.emergingSignals.map((signal, i) => (
                   <div key={i} className="flex items-start gap-2.5">
-                    <span className="text-accent-gold font-mono text-[10px] mt-0.5 flex-shrink-0">▸</span>
+                    <span className="text-accent-gold-text font-mono text-[12px] mt-0.5 flex-shrink-0">▸</span>
                     <p className="text-xs text-text-muted leading-relaxed">{signal}</p>
                   </div>
                 ))}
+              </div>
+            </ScrollReveal>
+          )}
+
+          {/* Scene images — rendered after chapter text if art has been generated */}
+          {(artUrls.scene_01 || artUrls.scene_02 || artUrls.scene_03) && (
+            <ScrollReveal delay={400}>
+              <div className="space-y-3">
+                <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
+                  {"/// visual_record"}
+                </p>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {([
+                    { key: "scene_01" as const, label: "I" },
+                    { key: "scene_02" as const, label: "II" },
+                    { key: "scene_03" as const, label: "III" },
+                  ] as const).map(({ key, label }) =>
+                    artUrls[key] ? (
+                      <div key={key} className="relative overflow-hidden rounded border border-accent-violet/20 bg-surface group">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={artUrls[key]}
+                          alt={`Scene ${label} — ${chapter.title}`}
+                          className="w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          style={{ aspectRatio: "2/3" }}
+                        />
+                        <div className="absolute bottom-2 left-2">
+                          <span className="font-mono text-[12px] text-white/40 bg-void/60 px-1.5 py-0.5 rounded">
+                            {label}
+                          </span>
+                        </div>
+                      </div>
+                    ) : null
+                  )}
+                </div>
+                <p className="font-mono text-[12px] text-text-muted text-right">
+                  AI-generated imagery · Psychenomicon Art Pipeline
+                </p>
               </div>
             </ScrollReveal>
           )}
@@ -196,9 +453,9 @@ export default async function ChapterPage({ params }: PageProps) {
                 href={`/psychenomicon/chapters/${prevChapter.slug}`}
                 className="group flex flex-col gap-1 max-w-[45%]"
               >
-                <span className="font-mono text-[9px] text-text-muted group-hover:text-accent-violet transition-colors">← Previous</span>
-                <span className="font-mono text-[10px] text-text-muted/60">CH.{String(prevChapter.chapterNumber).padStart(3, "0")}</span>
-                <span className="text-xs text-text-primary group-hover:text-accent-violet transition-colors line-clamp-2">{prevChapter.title}</span>
+                <span className="font-mono text-[12px] text-text-muted group-hover:text-accent-violet-text transition-colors">← Previous</span>
+                <span className="font-mono text-[12px] text-text-muted">CH.{String(prevChapter.chapterNumber).padStart(3, "0")}</span>
+                <span className="text-xs text-text-primary group-hover:text-accent-violet-text transition-colors line-clamp-2">{prevChapter.title}</span>
               </Link>
             ) : <div />}
 
@@ -207,9 +464,9 @@ export default async function ChapterPage({ params }: PageProps) {
                 href={`/psychenomicon/chapters/${nextChapter.slug}`}
                 className="group flex flex-col gap-1 max-w-[45%] text-right"
               >
-                <span className="font-mono text-[9px] text-text-muted group-hover:text-accent-violet transition-colors">Next →</span>
-                <span className="font-mono text-[10px] text-text-muted/60">CH.{String(nextChapter.chapterNumber).padStart(3, "0")}</span>
-                <span className="text-xs text-text-primary group-hover:text-accent-violet transition-colors line-clamp-2">{nextChapter.title}</span>
+                <span className="font-mono text-[12px] text-text-muted group-hover:text-accent-violet-text transition-colors">Next →</span>
+                <span className="font-mono text-[12px] text-text-muted">CH.{String(nextChapter.chapterNumber).padStart(3, "0")}</span>
+                <span className="text-xs text-text-primary group-hover:text-accent-violet-text transition-colors line-clamp-2">{nextChapter.title}</span>
               </Link>
             ) : <div />}
           </div>
@@ -220,7 +477,7 @@ export default async function ChapterPage({ params }: PageProps) {
           {/* Entities in this chapter */}
           {chapter.entityAppearances.length > 0 && (
             <div className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// entities_present</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// entities_present"}</p>
               {chapter.entityAppearances.map((ea) => (
                 <Link
                   key={ea.entity.slug}
@@ -228,14 +485,14 @@ export default async function ChapterPage({ params }: PageProps) {
                   className="group flex items-start gap-3 rounded border border-border bg-surface p-3 hover:border-accent-violet/40 hover:bg-accent-violet/5 transition-all"
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="font-mono text-xs font-medium text-text-primary group-hover:text-accent-violet transition-colors">
+                    <p className="font-mono text-xs font-medium text-text-primary group-hover:text-accent-violet-text transition-colors">
                       {ea.entity.name}
                     </p>
                     {ea.archetypeAt && (
-                      <p className="font-mono text-[9px] text-accent-violet/80 mt-0.5">{ea.archetypeAt}</p>
+                      <p className="font-mono text-[12px] text-accent-violet-text/80 mt-0.5">{ea.archetypeAt}</p>
                     )}
                     {ea.significance && (
-                      <p className="text-[10px] text-text-muted leading-relaxed mt-1 line-clamp-2">{ea.significance}</p>
+                      <p className="text-[12px] text-text-muted leading-relaxed mt-1 line-clamp-2">{ea.significance}</p>
                     )}
                   </div>
                 </Link>
@@ -246,7 +503,7 @@ export default async function ChapterPage({ params }: PageProps) {
           {/* Active threads */}
           {chapter.threadChapters.length > 0 && (
             <div className="space-y-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// thread_connections</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// thread_connections"}</p>
               {chapter.threadChapters.map((tc) => (
                 <Link
                   key={tc.thread.slug}
@@ -254,7 +511,7 @@ export default async function ChapterPage({ params }: PageProps) {
                   className="group flex items-center gap-2.5 rounded border border-border bg-surface px-3 py-2.5 hover:border-accent-gold/30 transition-all"
                 >
                   <div className={`h-1.5 w-1.5 rounded-full flex-shrink-0 ${tc.thread.status === "emerging" ? "bg-accent-gold animate-pulse" : "bg-accent-violet"}`} />
-                  <p className="font-mono text-[10px] text-text-primary group-hover:text-accent-gold transition-colors truncate">
+                  <p className="font-mono text-[12px] text-text-primary group-hover:text-accent-gold-text transition-colors truncate">
                     {tc.thread.title}
                   </p>
                 </Link>
@@ -265,7 +522,7 @@ export default async function ChapterPage({ params }: PageProps) {
           {/* Back to index */}
           <Link
             href="/psychenomicon"
-            className="block font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors"
+            className="block font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             ← Return to Psychenomicon
           </Link>

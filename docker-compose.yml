@@ -1,6 +1,8 @@
 services:
   postgres:
-    image: postgres:17-alpine
+    # The 20260517000000_add_pgvector migration runs CREATE EXTENSION vector.
+    # postgres:17-alpine does not ship pgvector, so migrate deploy fails on it.
+    image: pgvector/pgvector:pg17
     container_name: cultcodex-db
     restart: unless-stopped
     ports:

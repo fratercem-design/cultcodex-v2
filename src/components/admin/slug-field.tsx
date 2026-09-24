@@ -72,7 +72,7 @@ export function SlugField({
           onChange={handleSlugChange}
           className="w-full rounded border border-border bg-elevated px-3 py-1.5 font-mono text-sm text-text-primary focus:border-accent-gold focus:outline-none"
         />
-        <p className="mt-0.5 font-mono text-[9px] text-text-muted">
+        <p className="mt-0.5 font-mono text-[12px] text-text-muted">
           Auto-generated from {titleLabel.toLowerCase()}. Edit to customize.
         </p>
       </div>

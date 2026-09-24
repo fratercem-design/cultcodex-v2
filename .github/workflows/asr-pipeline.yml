@@ -1,0 +1,105 @@
+name: ASR Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: 'Episodes per step (download + transcribe)'
+        type: number
+        default: 20
+      backend:
+        description: 'Transcription backend'
+        type: choice
+        options:
+          - elevenlabs
+          - whisper
+          - faster-whisper
+        default: elevenlabs
+      enrich:
+        description: 'Run Claude enrichment after import'
+        type: boolean
+        default: true
+
+jobs:
+  asr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Export pending episodes
+        run: npx tsx scripts/asr-export-pending.ts --include-enriched
+
+      - name: Install Python dependencies
+        run: |
+          # curl-cffi extra is required by asr-download-audio.py's
+          # `--impersonate chrome`; without it every download fails with
+          # 'Impersonate target "chrome" is not available'.
+          pip install -q "yt-dlp[default,curl-cffi]" elevenlabs python-dotenv
+          case "${{ inputs.backend }}" in
+            faster-whisper) pip install -q faster-whisper ;;
+            whisper)        pip install -q openai-whisper ;;
+          esac
+
+      - name: Write YouTube cookies
+        run: |
+          if [ -n "$YOUTUBE_COOKIES" ]; then
+            printf '%s' "$YOUTUBE_COOKIES" > scripts/cookies.txt
+            # yt-dlp rejects a non-Netscape jar outright, and it attaches --cookies to
+            # EVERY download - so one malformed file fails even public videos that need
+            # no auth at all. Discard it rather than poison the whole run.
+            if ! head -n 1 scripts/cookies.txt | grep -qE '^# (Netscape )?HTTP Cookie File'; then
+              echo "::warning title=Bad cookies::YOUTUBE_COOKIES is not Netscape format - discarding. Public videos will still download; age-restricted and members-only ones will fail."
+              rm -f scripts/cookies.txt
+            fi
+          fi
+        env:
+          YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+
+      - name: Download audio
+        run: python scripts/asr-download-audio.py --batch ${{ inputs.batch }}
+
+      - name: Transcribe audio
+        run: python scripts/asr-transcribe.py --batch ${{ inputs.batch }} --backend ${{ inputs.backend }}
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+
+      - name: Delete audio files
+        run: rm -f scripts/scrape/data/audio/*.mp3
+
+      - name: Import segments
+        id: import
+        run: |
+          output=$(npx tsx scripts/asr-import-segments.ts)
+          echo "$output"
+          last_line=$(echo "$output" | tail -n 1)
+          echo "result=$last_line" >> "$GITHUB_OUTPUT"
+
+      - name: Annotate import result
+        run: echo "::notice::${{ steps.import.outputs.result }}"
+
+      - name: Run Claude enrichment
+        if: ${{ inputs.enrich }}
+        run: |
+          npx tsx scripts/enrich/enrich-from-db.ts
+          npx tsx scripts/enrich/import-enriched.ts
+
+      - name: Rebuild search text
+        run: npx tsx scripts/_rebuild-search-text.ts

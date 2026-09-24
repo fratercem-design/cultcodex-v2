@@ -1,5 +1,6 @@
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { moderateComment } from "@/lib/moderation";
 import { eventBus } from "@/lib/sse/event-bus";
 import { NextResponse } from "next/server";
 
@@ -40,16 +41,29 @@ export async function POST(request: Request) {
     );
   }
 
+  // Same best-effort LLM moderation as episode comments / salon posts. On
+  // budget exhaustion it passes unmoderated (matching those routes); flagged
+  // messages are still stored but hidden on read by the flagged filter.
+  const moderation = await moderateComment(content);
+  const flagged = moderation.flagged;
+
   const message = await prisma.chatMessage.create({
     data: {
       userId: user.id,
       displayName: user.displayName,
       avatarUrl: user.avatarUrl,
       content,
+      flagged,
+      moderationReason: moderation.reason,
     },
   });
 
   lastMessageTime.set(user.id, now);
+
+  // Flagged messages are stored (for admin review) but never broadcast.
+  if (flagged) {
+    return NextResponse.json({ id: message.id, flagged: true }, { status: 201 });
+  }
 
   // Wrapped because PgEventBus.publish is now async and a Postgres
   // hiccup must not break the chat message — the row is already saved.

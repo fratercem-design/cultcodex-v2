@@ -1,6 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PersonSigil } from "@/components/ui/person-sigil";
+import { PERSON_TYPE_BADGE, PERSON_TYPE_LABEL } from "@/lib/people/person-type";
 import type { PersonType } from "@/generated/prisma/client";
 
 interface PersonCardProps {
@@ -15,12 +17,14 @@ interface PersonCardProps {
   };
 }
 
-const typeVariant: Record<PersonType, "green" | "purple" | "gold" | "muted"> = {
-  host: "gold",
-  recurring: "purple",
-  guest: "green",
-  mentioned: "muted",
-};
+/** Unprofiled guests/mentioned → compiled "the rest" entry instead of individual page */
+function personHref(p: PersonCardProps["person"]): string {
+  const isProfiled = Boolean(p.loreSummary) || Boolean(p.shortBio);
+  if (!isProfiled && (p.personType === "guest" || p.personType === "mentioned")) {
+    return "/people/the-rest";
+  }
+  return `/people/${p.slug}`;
+}
 
 export function PersonCard({ person }: PersonCardProps) {
   const isProfileComplete =
@@ -28,13 +32,16 @@ export function PersonCard({ person }: PersonCardProps) {
 
   return (
     <Link
-      href={`/people/${person.slug}`}
+      href={personHref(person)}
       className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated"
     >
       {person.avatarUrl ? (
-        <img
+        <Image
           src={person.avatarUrl}
           alt={person.displayName}
+          width={40}
+          height={40}
+          unoptimized
           className="h-10 w-10 flex-shrink-0 rounded-full object-cover border border-accent-gold/20"
         />
       ) : (
@@ -49,11 +56,11 @@ export function PersonCard({ person }: PersonCardProps) {
       )}
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors truncate">
+          <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors truncate">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent-gold/60 mr-1.5 align-middle" />
             {person.displayName}
           </h3>
-          <StatusBadge label={person.personType} variant={typeVariant[person.personType]} />
+          <StatusBadge label={PERSON_TYPE_LABEL[person.personType]} variant={PERSON_TYPE_BADGE[person.personType]} />
         </div>
         {person.shortBio && (
           <p className="mt-1 text-xs text-text-muted line-clamp-2">
@@ -61,12 +68,12 @@ export function PersonCard({ person }: PersonCardProps) {
           </p>
         )}
         <div className="mt-1.5 flex items-center gap-2">
-          <span className="font-mono text-[10px] text-text-muted">
+          <span className="font-mono text-[12px] text-text-muted">
             {person.appearanceCount} appearance{person.appearanceCount !== 1 ? "s" : ""}
           </span>
           {isProfileComplete && (
             <span
-              className="font-mono text-[9px] text-accent-violet border border-accent-violet/30 rounded px-1 py-px leading-none"
+              className="font-mono text-[12px] text-accent-violet-text border border-accent-violet/30 rounded px-1 py-px leading-none"
               title="Full profile — bio, lore summary, and photo all present"
             >
               PROFILE

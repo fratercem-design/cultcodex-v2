@@ -51,7 +51,7 @@ export function SignalGrid({
               {s.title}
             </span>
             <span
-              className={`font-mono text-[9px] uppercase tracking-wider ${a.eyebrow} flex-shrink-0`}
+              className={`font-mono text-[12px] uppercase tracking-wider ${a.eyebrow} flex-shrink-0`}
             >
               {s.episodeCount} ep{s.episodeCount === 1 ? "" : "s"}
             </span>

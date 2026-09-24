@@ -1,3 +1,4 @@
+
 import { Suspense } from "react";
 import Image from "next/image";
 import { PageHero } from "@/components/ui/page-hero";
@@ -8,6 +9,7 @@ import { parsePage, paginationArgs, buildPaginationMeta } from "@/lib/pagination
 export const revalidate = 300;
 
 export const metadata = {
+  alternates: { canonical: "/posts" },
   title: "Community Posts — CULT CODEX",
   description: "YouTube community posts from Cult of Psyche",
 };
@@ -19,7 +21,7 @@ interface PostsPageProps {
 }
 
 function formatDate(d: Date): string {
-  return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+  return d.toLocaleDateString("en-US", { timeZone: "UTC", year: "numeric", month: "short", day: "numeric" });
 }
 
 function PostCard({
@@ -72,20 +74,20 @@ function PostCard({
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-2 border-t border-border/50">
-          <div className="flex items-center gap-3 font-mono text-[10px] text-text-muted">
+          <div className="flex items-center gap-3 font-mono text-[12px] text-text-muted">
             {post.publishedAt && (
               <span>{formatDate(post.publishedAt)}</span>
             )}
             {post.likeCount != null && (
               <>
                 <span className="opacity-40">·</span>
-                <span>♥ {post.likeCount.toLocaleString()}</span>
+                <span>♥ {post.likeCount.toLocaleString("en-US")}</span>
               </>
             )}
             {post.commentCount != null && (
               <>
                 <span className="opacity-40">·</span>
-                <span>💬 {post.commentCount.toLocaleString()}</span>
+                <span>💬 {post.commentCount.toLocaleString("en-US")}</span>
               </>
             )}
           </div>
@@ -93,7 +95,7 @@ function PostCard({
             href={postUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-[10px] text-accent-cyan hover:underline"
+            className="font-mono text-[12px] text-accent-cyan hover:underline"
           >
             View ↗
           </a>
@@ -106,7 +108,7 @@ function PostCard({
 export default async function PostsPage({ searchParams }: PostsPageProps) {
   const { page: pageParam } = await searchParams;
 
-  const totalCount = await prisma.communityPost.count();
+  const totalCount = await prisma.communityPost.count().catch(() => 0);
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
   const page = parsePage(pageParam, totalPages);
   const { skip, take } = paginationArgs(page, PAGE_SIZE);
@@ -125,13 +127,13 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
       commentCount: true,
       publishedAt: true,
     },
-  });
+  }).catch(() => []);
 
   return (
     <div className="min-h-screen bg-void">
       <PageHero
         title="Community Posts"
-        subtitle={`${totalCount.toLocaleString()} posts from @CultofPsyche`}
+        subtitle={`${totalCount.toLocaleString("en-US")} posts from @CultofPsyche`}
         backgroundImage="/articles-bacgkground.jpg"
       />
 

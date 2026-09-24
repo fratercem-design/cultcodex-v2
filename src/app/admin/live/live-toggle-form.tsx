@@ -1,18 +1,24 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { toggleLiveStream } from "@/app/admin/actions";
+import { toggleLiveStream, togglePsychesNightmaresLive, toggleNightmareFrequenciesLive } from "@/app/admin/actions";
 import { useRouter } from "next/navigation";
 
 interface Props {
+  channel: "cultOfPsyche" | "psychesNightmares" | "nightmareFrequencies";
   isLive: boolean;
   currentVideoId?: string | null;
   currentTitle?: string | null;
 }
 
-export function LiveToggleForm({ isLive, currentVideoId, currentTitle }: Props) {
+export function LiveToggleForm({ channel, isLive, currentVideoId, currentTitle }: Props) {
+  const defaultTitle = channel === "cultOfPsyche"
+    ? "Cult of Psyche Live Stream"
+    : channel === "psychesNightmares"
+      ? "Psyche's Nightmares Live"
+      : "Nightmare Frequencies Live";
   const [videoId, setVideoId] = useState(currentVideoId ?? "");
-  const [title, setTitle] = useState(currentTitle ?? "Cult of Psyche Live Stream");
+  const [title, setTitle] = useState(currentTitle ?? defaultTitle);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -27,7 +33,13 @@ export function LiveToggleForm({ isLive, currentVideoId, currentTitle }: Props) 
     }
 
     startTransition(async () => {
-      await toggleLiveStream(formData);
+      if (channel === "cultOfPsyche") {
+        await toggleLiveStream(formData);
+      } else if (channel === "psychesNightmares") {
+        await togglePsychesNightmaresLive(formData);
+      } else {
+        await toggleNightmareFrequenciesLive(formData);
+      }
       router.refresh();
     });
   };
@@ -37,7 +49,7 @@ export function LiveToggleForm({ isLive, currentVideoId, currentTitle }: Props) 
       {!isLive && (
         <div className="space-y-4 mb-6">
           <div>
-            <label className="block font-mono text-[10px] text-text-muted uppercase mb-1">
+            <label className="block font-mono text-[12px] text-text-muted uppercase mb-1">
               YouTube Video ID
             </label>
             <input
@@ -48,7 +60,7 @@ export function LiveToggleForm({ isLive, currentVideoId, currentTitle }: Props) 
             />
           </div>
           <div>
-            <label className="block font-mono text-[10px] text-text-muted uppercase mb-1">
+            <label className="block font-mono text-[12px] text-text-muted uppercase mb-1">
               Stream Title
             </label>
             <input

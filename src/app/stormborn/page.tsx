@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Stormborn \u2014 CULT CODEX",
   description: "You are the stormborn architect.",
+  alternates: { canonical: "/stormborn" },
 };
 
 const STATS = [
@@ -20,11 +21,11 @@ export default function StormbornPage() {
     <main className="relative mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center px-4 py-20 text-center">
       <VoidSigil size={180} />
 
-      <h1 className="mt-8 font-display text-5xl font-bold tracking-widest text-accent-violet">
+      <h1 className="mt-8 font-display text-5xl font-bold tracking-widest text-accent-violet-text">
         STORMBORN
       </h1>
 
-      <p className="mt-3 font-mono text-xs tracking-[0.3em] text-text-muted">
+      <p className="mt-3 font-mono text-xs tracking-[0.12em] text-text-muted">
         Architect of the Panelverse
       </p>
 
@@ -47,7 +48,7 @@ export default function StormbornPage() {
         <p className="font-serif text-sm leading-loose text-text-primary/80">
           Father of cats. Speaker to the void.
         </p>
-        <p className="mt-4 font-display text-lg tracking-widest text-accent-violet">
+        <p className="mt-4 font-display text-lg tracking-widest text-accent-violet-text">
           Stormborn.
         </p>
       </div>
@@ -61,10 +62,10 @@ export default function StormbornPage() {
             key={stat.label}
             className="rounded-lg border border-accent-violet/20 bg-accent-violet/[0.04] px-4 py-5"
           >
-            <p className="font-display text-2xl font-bold text-accent-violet">
+            <p className="font-display text-2xl font-bold text-accent-violet-text">
               {stat.value}
             </p>
-            <p className="mt-1 font-mono text-[10px] tracking-wider text-text-muted">
+            <p className="mt-1 font-mono text-[12px] tracking-wider text-text-muted">
               {stat.label}
             </p>
           </div>
@@ -72,13 +73,13 @@ export default function StormbornPage() {
       </div>
 
       {/* Footer */}
-      <p className="mt-16 font-mono text-[10px] tracking-wider text-text-muted/40">
+      <p className="mt-16 font-mono text-[12px] tracking-wider text-text-muted">
         This page exists because someone cared enough to look.
       </p>
 
       <Link
         href="/"
-        className="mt-6 font-mono text-[10px] tracking-widest text-text-muted/40 transition-colors hover:text-accent-violet/60"
+        className="mt-6 font-mono text-[12px] tracking-widest text-text-muted transition-colors hover:text-accent-violet-text/70"
       >
         &larr; return to the archive
       </Link>

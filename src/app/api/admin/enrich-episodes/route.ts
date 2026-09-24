@@ -1,8 +1,8 @@
 /**
  * POST /api/admin/enrich-episodes
  *
- * AI enrichment relay for unenriched episodes. Runs on Vercel where DB
- * is reachable. Processes one batch per call; loop externally until done.
+ * AI enrichment relay for unenriched episodes. Runs on Railway via AWS Bedrock.
+ * Processes one batch per call; loop externally until done.
  *
  * Auth: X-Enrich-Secret header must match ENRICH_SECRET env var.
  *
@@ -15,13 +15,19 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { requireAdminOrEnrichSecret } from "@/lib/admin-guard";
+import { enrichComplete, hasEnrichmentProvider, NO_ENRICHMENT_PROVIDER_ERROR } from "@/lib/enrichment-llm";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
+
+// Sentinel written when AI returns no summaryFacts (e.g. title-only clips).
+// The re-enrichment where clause only re-queues these when enrichmentQueued=true
+// so transcript-less episodes don't loop indefinitely.
+const SUMMARY_FACTS_PLACEHOLDER = "—";
 
 // ── Zod schemas (mirror of scripts/enrich/schemas.ts) ────────────────────────
 
@@ -50,7 +56,12 @@ const LoreSchema = z.object({
 
 const EnrichmentSchema = z.object({
   summaryShort: z.string().default(""),
-  summaryLong: z.string().default(""),
+  // Legacy — kept so old-format responses don't break parsing.
+  summaryLong: z.string().optional().default(""),
+  /** Transcript-grounded recap */
+  summaryFacts: z.string().optional().default(""),
+  /** Interpretive layer */
+  summaryThemes: z.string().optional().default(""),
   cutOfPsyche: z.string().nullable().optional().default(""),
   guests: z.array(GuestSchema).default([]),
   quotes: z.array(QuoteSchema).default([]),
@@ -62,14 +73,15 @@ type EnrichmentResult = z.infer<typeof EnrichmentSchema>;
 
 // ── System prompt ─────────────────────────────────────────────────────────────
 
-const SYSTEM_PROMPT = `You are an expert analyst for the "Cult of Psyche" podcast/livestream archive. This show features tarot readings, open panel discussions, consciousness exploration, mythology deep-dives, and occult topics. The host is known as "Psyche" or "Trix."
+const SYSTEM_PROMPT = `You are an expert analyst for the "Cult of Psyche" podcast/livestream archive. This show features tarot readings, open panel discussions, consciousness exploration, mythology deep-dives, and occult topics. The host is known as "Psyche" or "Trix." Psyche is MALE — use he/him/his pronouns for Psyche at all times.
 
 Your task: analyze the provided episode transcript and extract structured data. Be accurate — only extract what is genuinely present in the transcript. Do not hallucinate guests, quotes, or lore that aren't discussed.
 
 Return a JSON object with this exact structure:
 {
   "summaryShort": "1-2 sentence summary of the episode",
-  "summaryLong": "2-3 paragraph comprehensive summary covering main topics, key moments, and themes",
+  "summaryFacts": "WHAT HAPPENED — 2-3 paragraphs, transcript-grounded. Cover who appeared, what was discussed, key events and exchanges, in the order they occurred. Embed [MM:SS] or [H:MM:SS] timestamps when referencing specific moments. Use only timestamps from the provided transcript. Aim for 3–6 timestamp references. Write like a TV recap — clear, specific, no interpretation.",
+  "summaryThemes": "INTERPRETIVE LAYER — 1-2 paragraphs. Identify recurring patterns, thematic threads, and what this episode represents in the context of the show. Explicitly frame everything as interpretation: 'appears to', 'suggests', 'continues the pattern of'. Do NOT repeat facts from summaryFacts — only add the layer of meaning. Keep it grounded; avoid mythology (that belongs to the Psychenomicon).",
   "cutOfPsyche": "A characteristic or memorable quote/moment from this episode (verbatim from transcript if possible)",
   "guests": [
     {
@@ -101,9 +113,16 @@ Return a JSON object with this exact structure:
 Guidelines:
 - For guests: include the host as personType "host". Panel participants are "guest". People discussed but not present are "mentioned".
 - For quotes: extract the 3-5 most notable, interesting, or representative quotes. Include timestamp in seconds if identifiable.
+- For summaryFacts: embed [MM:SS] or [H:MM:SS] timestamps for specific moments. Use only timestamps from the transcript. Omit timestamps if no transcript is available.
+- For summaryThemes: frame everything as interpretation — use "appears to", "suggests", "continues the pattern of". Never assert facts; those go in summaryFacts.
 - For lore: identify mythology references, recurring show concepts, tarot interpretations, or spiritual/occult ideas discussed.
 - For topics: list the main subjects discussed (e.g., "tarot", "consciousness", "astrology", "Greek mythology").
-- Return ONLY valid JSON. No markdown, no code fences, no explanation.`;
+- Return ONLY valid JSON. No markdown, no code fences, no explanation.
+
+LANGUAGE RULES — CRITICAL:
+- Use observational, on-stream descriptive language. Summaries describe what happened and was discussed on stream.
+- Never use clinical or psychiatric terminology (e.g. "paranoid," "delusional," "narcissistic," "erratic," "unstable," "psychotic," "manipulative").
+- Describe what people expressed or said — not diagnoses. E.g. "expressed suspicion about…" not "displayed paranoia about…"; "reacted with visible frustration" not "had an erratic episode."`;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -135,13 +154,26 @@ async function importEnrichment(
   episodeId: string,
   data: EnrichmentResult
 ): Promise<void> {
-  // Update episode summary fields
+  // Update episode summary fields.
+  // New enrichments write summaryFacts + summaryThemes (split format).
+  // summaryLong is only written when the model still returns it (legacy fallback).
   await prisma.episode.update({
     where: { id: episodeId },
     data: {
       summaryShort: data.summaryShort || undefined,
-      summaryLong: data.summaryLong || undefined,
+      // Always write summaryFacts so the episode is marked enriched even when
+      // the AI returns nothing (e.g. short clips with no transcript content).
+      // "—" is the sentinel; the where clause excludes it only when enrichmentQueued=false
+      // so transcript-less episodes don't loop indefinitely (see whereClause below).
+      summaryFacts: data.summaryFacts || SUMMARY_FACTS_PLACEHOLDER,
+      summaryThemes: data.summaryThemes || undefined,
+      // Legacy: only preserved if model returned it and new fields are empty
+      ...(data.summaryLong && !data.summaryFacts
+        ? { summaryLong: data.summaryLong }
+        : {}),
       cutOfPsyche: data.cutOfPsyche || undefined,
+      // Clear the manual queue flag after successful enrichment
+      enrichmentQueued: false,
     },
   });
 
@@ -236,33 +268,53 @@ async function importEnrichment(
 // ── Handler ───────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-  const secret = req.headers.get("x-enrich-secret");
-  if (!secret || secret !== process.env.ENRICH_SECRET) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const denied = await requireAdminOrEnrichSecret(req);
+  if (denied) return denied;
 
-  const apiKey = process.env.ANTHROPIC_API_KEY ?? "";
-  if (!apiKey) {
-    return NextResponse.json({ error: "No Anthropic API key configured" }, { status: 500 });
+  // Enrichment runs through a provider ladder (see src/lib/enrichment-llm.ts), so
+  // gate on "at least one provider is configured" rather than on Bedrock alone.
+  if (!hasEnrichmentProvider()) {
+    return NextResponse.json({ error: NO_ENRICHMENT_PROVIDER_ERROR }, { status: 500 });
   }
 
   const body = await req.json().catch(() => ({})) as {
     batch?: number;
     withTranscriptOnly?: boolean;
+    queuedOnly?: boolean;
   };
   const batchSize: number = Math.min(body.batch ?? 3, 10);
   const withTranscriptOnly: boolean = body.withTranscriptOnly ?? false;
+  const queuedOnly: boolean = body.queuedOnly ?? false;
 
-  // Find unenriched episodes
-  const whereClause = {
-    OR: [{ summaryLong: null }, { summaryLong: "" }],
-    ...(withTranscriptOnly ? { segments: { some: {} } } : {}),
-  };
+  // Find episodes to enrich.
+  // queuedOnly=true: process ONLY enrichmentQueued=true episodes (regardless of existing summaries — for re-enrichment)
+  // default: unenriched episodes (no summaryShort, summaryFacts, OR summaryLong)
+  // Note: summaryFacts="—" is the placeholder written when a prior enrichment produced no content;
+  // these episodes are still shown as needing enrichment in the admin UI, so include them here.
+  const whereClause = queuedOnly
+    ? {
+        enrichmentQueued: true,
+        ...(withTranscriptOnly ? { segments: { some: {} } } : {}),
+      }
+    : {
+        AND: [
+          { OR: [{ summaryShort: null }, { summaryShort: "" }] },
+          { OR: [
+            { summaryFacts: null },
+            { summaryFacts: "" },
+            // Placeholder re-queues only when manually flagged — prevents infinite
+            // loop for transcript-less episodes that will always get no AI content.
+            { AND: [{ summaryFacts: SUMMARY_FACTS_PLACEHOLDER }, { enrichmentQueued: { not: false } }] },
+          ] },
+          { OR: [{ summaryLong: null }, { summaryLong: "" }] },
+        ],
+        ...(withTranscriptOnly ? { segments: { some: {} } } : {}),
+      };
 
   const totalRemaining = await prisma.episode.count({ where: whereClause });
 
   if (totalRemaining === 0) {
-    return NextResponse.json({ processed: 0, remaining: 0, done: true, results: [] });
+    return NextResponse.json({ ok: true, processed: 0, remaining: 0, done: true, results: [] });
   }
 
   const episodes = await prisma.episode.findMany({
@@ -283,7 +335,6 @@ export async function POST(req: NextRequest) {
     take: batchSize,
   });
 
-  const client = new Anthropic({ apiKey });
   const results: { slug: string; title: string; ok: boolean; error?: string }[] = [];
 
   for (const ep of episodes) {
@@ -306,17 +357,10 @@ ${ep.summaryShort ?? ""}
 Transcript:
 ${transcript}`;
 
-      const response = await client.messages.create({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 3000,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: "user", content: userMessage }],
-      });
+      const responseText = await enrichComplete({ system: SYSTEM_PROMPT, user: userMessage, maxTokens: 4096 });
+      if (!responseText) throw new Error("No text response");
 
-      const textBlock = response.content.find((b) => b.type === "text");
-      if (!textBlock || textBlock.type !== "text") throw new Error("No text response");
-
-      let jsonText = textBlock.text.trim();
+      let jsonText = responseText.trim();
       if (jsonText.startsWith("```")) {
         jsonText = jsonText.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
       }
@@ -337,10 +381,5 @@ ${transcript}`;
   const processed = results.filter((r) => r.ok).length;
   const remaining = totalRemaining - processed;
 
-  return NextResponse.json({
-    processed,
-    remaining,
-    done: remaining <= 0,
-    results,
-  });
+  return NextResponse.json({ ok: true, processed, remaining, done: remaining <= 0, results });
 }

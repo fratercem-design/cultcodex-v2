@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs/config";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -8,9 +9,20 @@ const { version } = JSON.parse(readFileSync(join(process.cwd(), "package.json"),
 // files in parent dirs (C:\Users\John Bates\ and C:\Users\John Bates\Projects\)
 // were causing Next to infer the wrong root and then fail to resolve
 // tailwindcss from there, which cascaded into Turbopack compile errors.
-// `process.cwd()` works because `next dev` is always launched from the
+// `process.cwd()` works because `next dev`is always launched from the
 // project root; matches the launch.json cwd setup.
 const nextConfig: NextConfig = {
+  // Fly runs the app as a persistent Node service. Standalone output keeps
+  // the production artifact self-contained and avoids shipping dev tooling.
+  output: "standalone",
+  // The OG routes read these font files from disk at render time (see
+  // src/lib/og-fonts.ts). Nothing imports them, so tracing cannot infer the
+  // dependency — without this they are absent from the lambda and every OG
+  // image falls back to Satori's per-glyph font fetching again.
+  outputFileTracingIncludes: {
+    "/**": ["./src/assets/fonts/**"],
+  },
+  poweredByHeader: false,
   env: {
     NEXT_PUBLIC_APP_VERSION: version,
   },
@@ -32,43 +44,47 @@ const nextConfig: NextConfig = {
   },
   headers: async () => [
     {
+      source: "/(about|faq)",
+      headers: [
+        { key: "Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=604800, max-age=0, must-revalidate" },
+      ],
+    },
+    {
+      source: "/(people|episodes)",
+      headers: [
+        { key: "Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=604800, max-age=0, must-revalidate" },
+      ],
+    },
+    {
       source: "/:path*",
       headers: [
-        // Enforce HTTPS for 2 years; include subdomains; eligible for browser preload lists.
         { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
         { key: "X-Frame-Options", value: "SAMEORIGIN" },
         { key: "X-Content-Type-Options", value: "nosniff" },
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         { key: "X-DNS-Prefetch-Control", value: "on" },
+        { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
+        // Site assets are not an embedding API. YouTube remains a framed
+        // third-party origin and is governed separately by frame-src.
+        { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
         {
           key: "Permissions-Policy",
-          value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), vr=()",
+          value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
         },
         {
           key: "Content-Security-Policy",
           value: [
-            // Default: only same-origin resources.
             "default-src 'self'",
-            // Scripts: self + inline (required for Next.js hydration and JSON-LD) + Vercel Analytics.
-            // TODO: replace 'unsafe-inline' with per-request nonces once Next.js middleware is wired.
-            "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
-            // Styles: self + inline (Tailwind) + Google Fonts CSS.
+            // 'unsafe-eval' is dev-only: React reconstructs stack traces with eval() in development and never uses it in production builds.
+            `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV !== "production" ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://www.youtube.com https://s.ytimg.com`,
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-            // Fonts: self + Google Fonts files.
             "font-src 'self' https://fonts.gstatic.com",
-            // Images: self + inline data URIs + blob + any HTTPS (YouTube thumbnails, Google avatars, imgur).
             "img-src 'self' data: blob: https:",
-            // Frames: YouTube privacy-enhanced embeds only.
             "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
-            // Fetch/XHR: self + Vercel Analytics beacon + Speed Insights beacon.
-            "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com",
-            // No plugins (Flash, etc.).
+            "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com",
             "object-src 'none'",
-            // Prevent base-tag hijacking.
             "base-uri 'self'",
-            // Allow forms to submit to self or Stripe Checkout.
             "form-action 'self' https://checkout.stripe.com https://billing.stripe.com",
-            // Prevent this site from being embedded in foreign iframes.
             "frame-ancestors 'self'",
           ].join("; "),
         },
@@ -81,12 +97,56 @@ const nextConfig: NextConfig = {
       ],
     },
     {
-      source: "/_next/static/:path*",
+      source: "/:path*.woff",
       headers: [
         { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
       ],
     },
+    {
+      source: "/:path*.(jpg|jpeg|png|webp|avif|gif|svg|ico)",
+      headers: [
+        { key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" },
+      ],
+    },
+    {
+      source: "/sw.js",
+      headers: [
+        { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+        { key: "Service-Worker-Allowed", value: "/" },
+      ],
+    },
+  ],
+  // /premium is the canonical pricing page. These must live here rather than as
+  // a `redirect()` inside a page component: a server-component redirect returns
+  // an HTTP 200 with a client-side hop, so crawlers indexed /subscribe as a
+  // real, `index, follow` URL with no canonical — the exact duplicate-content
+  // split this consolidation exists to close. A config redirect emits a true 308.
+  redirects: async () => [
+    { source: "/pricing", destination: "/premium", permanent: true },
+    { source: "/subscribe", destination: "/premium", permanent: true },
+    { source: "/methodology", destination: "/about/methodology", permanent: true },
   ],
 };
 
-export default nextConfig;
+// Sentry wrapper. Kept at the very end so every header/redirect rule above is
+// preserved. Two deliberate choices:
+//
+//  - `tunnelRoute` proxies browser events through this origin instead of
+//    *.ingest.sentry.io. The CSP above sets `connect-src 'self'` with no Sentry
+//    host, so a direct send would be blocked outright; tunnelling keeps it
+//    inside 'self' (and survives ad blockers) without widening the policy.
+//  - Source-map upload is opt-in on SENTRY_AUTH_TOKEN. Without it the build
+//    still succeeds — it just ships unminified-stack-free events — so a missing
+//    token can never break a deploy.
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+  tunnelRoute: "/monitoring",
+  widenClientFileUpload: true,
+  sourcemaps: {
+    disable: !process.env.SENTRY_AUTH_TOKEN,
+  },
+  telemetry: false,
+});

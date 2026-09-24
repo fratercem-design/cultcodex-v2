@@ -39,7 +39,7 @@ function groupByMonth(episodes: TimelineEpisode[]) {
   const result = sorted.map(([key, eps]) => {
     const [year, month] = key.split("-");
     const d = new Date(Number(year), Number(month) - 1);
-    const label = d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    const label = d.toLocaleDateString("en-US", { timeZone: "UTC", month: "long", year: "numeric" });
     return { key, label, episodes: eps };
   });
 
@@ -67,9 +67,9 @@ export function TimelineView({ episodes }: TimelineViewProps) {
           {/* Timeline dot */}
           <div className="absolute left-[-3px] top-1 h-1.5 w-1.5 rounded-full bg-accent-gold" />
 
-          <h2 className="sticky top-0 z-10 mb-3 bg-void/90 py-1 font-display text-sm font-bold text-accent-gold backdrop-blur-sm">
+          <h2 className="sticky top-0 z-10 mb-3 bg-void/90 py-1 font-display text-sm font-bold text-accent-gold-text backdrop-blur-sm">
             {group.label}
-            <span className="ml-2 font-mono text-[10px] font-normal text-text-muted">
+            <span className="ml-2 font-mono text-[12px] font-normal text-text-muted">
               ({group.episodes.length})
             </span>
           </h2>

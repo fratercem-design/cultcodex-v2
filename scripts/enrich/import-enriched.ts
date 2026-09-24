@@ -60,7 +60,21 @@ async function importEnrichment(
     where: { id: episode.id },
     data: {
       summaryShort: data.summaryShort,
-      summaryLong: data.summaryLong,
+      summaryFacts: data.summaryFacts,
+      summaryThemes: data.summaryThemes,
+      // The prompt returns summaryFacts + summaryThemes and never summaryLong,
+      // so `data.summaryLong` was always undefined - which Prisma treats as
+      // "leave unchanged". enrich-episodes.ts selects on `summaryLong: null`,
+      // so every enriched episode stayed in the queue and was re-enriched on
+      // every run (observed: two consecutive 100-episode batches shared 96 of
+      // 97 episodes, at full API cost, for zero new coverage).
+      // `||` not `??`: the enrichment JSON carries summaryLong as an EMPTY
+      // STRING, which `??` passes straight through. enrich-episodes.ts counts
+      // "" as still-needing-enrichment, so the episode never left the queue.
+      summaryLong:
+        data.summaryLong ||
+        [data.summaryFacts, data.summaryThemes].filter(Boolean).join("\n\n") ||
+        undefined,
       cutOfPsyche: data.cutOfPsyche,
     },
   });
@@ -70,6 +84,11 @@ async function importEnrichment(
     await prisma.episodeGuest.deleteMany({
       where: { episodeId: episode.id },
     });
+
+    // The LLM can name the same person twice ("Chris Kay" / "chris kay"), which
+    // slugify collapses to one Person - the second episodeGuest.create() then
+    // violates the composite pkey and fails the whole episode's import.
+    const seenPersonIds = new Set<string>();
 
     for (const guest of data.guests) {
       const personSlug = slugify(guest.name);
@@ -86,6 +105,9 @@ async function importEnrichment(
           shortBio: guest.shortBio || undefined,
         },
       });
+
+      if (seenPersonIds.has(person.id)) continue;
+      seenPersonIds.add(person.id);
 
       await prisma.episodeGuest.create({
         data: { episodeId: episode.id, personId: person.id },

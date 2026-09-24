@@ -37,7 +37,7 @@ export function SectionBlock({
       <div className="flex-1 min-w-0 space-y-4">
         <div className="space-y-1">
           <p
-            className={`font-mono text-[10px] uppercase tracking-[0.3em] ${a.eyebrow}`}
+            className={`font-mono text-[12px] uppercase tracking-[0.12em] ${a.eyebrow}`}
           >
             {eyebrow}
           </p>

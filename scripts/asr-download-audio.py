@@ -30,6 +30,33 @@ LOG_FILE = os.path.join(HERE, "asr-download.log")
 COOKIES = os.path.join(HERE, "cookies.txt")
 
 
+def _has_impersonate() -> bool:
+    """yt-dlp's --impersonate needs curl_cffi. Absent it, yt-dlp aborts every
+    download with 'Impersonate target "chrome" is not available'."""
+    try:
+        import curl_cffi  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
+def _find_ffmpeg() -> str | None:
+    """yt-dlp needs ffmpeg to extract MP3. Honour an explicit path, then PATH,
+    then the WinGet install location (ffmpeg is commonly not on PATH here)."""
+    import glob
+    import shutil
+    if os.environ.get("FFMPEG_LOCATION"):
+        return os.environ["FFMPEG_LOCATION"]
+    if shutil.which("ffmpeg"):
+        return None  # already on PATH; let yt-dlp find it
+    pattern = os.path.join(
+        os.environ.get("LOCALAPPDATA", ""),
+        "Microsoft", "WinGet", "Packages", "Gyan.FFmpeg*", "ffmpeg-*", "bin",
+    )
+    hits = sorted(glob.glob(pattern))
+    return hits[-1] if hits else None
+
+
 def log(msg: str) -> None:
     line = f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] {msg}"
     print(line, flush=True)
@@ -66,6 +93,14 @@ def main() -> int:
     elif use_cookies_file:
         log(f"Using cookies from {COOKIES}")
 
+    impersonate = _has_impersonate()
+    if not impersonate:
+        log("curl_cffi not installed - running without --impersonate "
+            "(fine from a residential IP; datacenter IPs may be blocked)")
+    ffmpeg_location = _find_ffmpeg()
+    if ffmpeg_location:
+        log(f"Using ffmpeg from {ffmpeg_location}")
+
     downloaded = 0
     skipped = 0
     failed = 0
@@ -85,10 +120,15 @@ def main() -> int:
         log(f"[{i + 1}/{len(episodes)}] EP.{ep['ep']} ({ytid}) {ep['title'][:55]}")
 
         cmd = [
-            "yt-dlp",
+            sys.executable, "-m", "yt_dlp",
             "-x", "--audio-format", "mp3", "--audio-quality", "5",
             "-o", os.path.join(AUDIO_DIR, "%(id)s.%(ext)s"),
         ]
+        if impersonate:
+            # Mimic a real browser TLS fingerprint — avoids throttling/blocks.
+            cmd.extend(["--impersonate", "chrome"])
+        if ffmpeg_location:
+            cmd.extend(["--ffmpeg-location", ffmpeg_location])
         if use_browser_cookies:
             cmd.extend(["--cookies-from-browser", use_browser_cookies])
         elif use_cookies_file:

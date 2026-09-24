@@ -7,6 +7,7 @@ import { LiveChat } from "@/components/live/live-chat";
 import { SubscribeForm } from "@/components/live/subscribe-form";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/live" },
   title: "Live — CultCodex",
   description: "Watch Cult of Psyche live streams",
 };
@@ -26,6 +27,7 @@ export default async function LivePage() {
 
   const recentMessages = isLive
     ? await prisma.chatMessage.findMany({
+        where: { flagged: false },
         orderBy: { createdAt: "asc" },
         take: 100,
         select: {
@@ -80,7 +82,7 @@ export default async function LivePage() {
           /* No video at all */
           <div className="space-y-6">
             <div className="rounded-lg border border-border bg-surface p-8 text-center">
-              <p className="font-mono text-lg text-accent-gold">
+              <p className="font-mono text-lg text-accent-gold-text">
                 No stream scheduled yet
               </p>
               <p className="mt-2 font-mono text-xs text-text-muted">

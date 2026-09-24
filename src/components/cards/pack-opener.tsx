@@ -2,7 +2,9 @@
 
 import { useState, useCallback, type CSSProperties } from "react";
 import { TradingCard, type TradingCardData } from "./trading-card";
-import { RARITY_STYLE, RARITY_ORDER } from "@/lib/cards/rarity";
+import { RARITY_STYLE, RARITY_ORDER, cardPoints } from "@/lib/cards/rarity";
+import { getAudioPref } from "@/lib/appearance";
+import { playChime, playBell } from "@/lib/audio/ambient-engine";
 
 interface PackOpenerProps {
   packSlug: string;
@@ -19,6 +21,8 @@ export function PackOpener({ packSlug, packTitle, packAccentColor, onClose }: Pa
   const [revealed, setRevealed] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [totalBonusCredits, setTotalBonusCredits] = useState(0);
+  const [totalSignalPower, setTotalSignalPower] = useState(0);
 
   const accentVar = `var(--${packAccentColor === "neon" ? "neon" : packAccentColor === "amber" ? "neon-4" : packAccentColor === "magenta" ? "neon-3" : packAccentColor === "crimson" ? "neon-5" : "neon-2"})`;
 
@@ -41,14 +45,23 @@ export function PackOpener({ packSlug, packTitle, packAccentColor, onClose }: Pa
         (a: TradingCardData, b: TradingCardData) => RARITY_ORDER[a.rarity] - RARITY_ORDER[b.rarity]
       );
 
+      const bonusTotal = sorted.reduce((s: number, c: TradingCardData) => s + (c.bonusCredits ?? 0), 0);
+      const powerTotal = sorted.reduce((s: number, c: TradingCardData) => s + (c.signalPower ?? cardPoints(c.rarity, !!c.isFoil)), 0);
+      setTotalBonusCredits(bonusTotal);
+      setTotalSignalPower(powerTotal);
+
       setTimeout(() => {
         setCards(sorted);
         setPhase("revealing");
         setLoading(false);
+        if (getAudioPref() === "on") playChime();
         // Auto-reveal cards one by one
-        sorted.forEach((_: TradingCardData, i: number) => {
+        sorted.forEach((card: TradingCardData, i: number) => {
           setTimeout(() => {
             setRevealed((prev) => new Set([...prev, i]));
+            if (getAudioPref() === "on" && RARITY_ORDER[card.rarity] >= RARITY_ORDER.MYTHIC) {
+              playBell();
+            }
           }, 400 + i * 600);
         });
       }, 800);
@@ -161,7 +174,7 @@ export function PackOpener({ packSlug, packTitle, packAccentColor, onClose }: Pa
         marginBottom: 24,
         textShadow: `0 0 8px ${accentVar}`,
       }}>
-        // {packTitle}
+        {"// "}{packTitle}
       </div>
 
       {/* Card spread */}
@@ -200,6 +213,30 @@ export function PackOpener({ packSlug, packTitle, packAccentColor, onClose }: Pa
                   pointerEvents: "none",
                 }} />
               )}
+              {isRevealed && (
+                <div style={{
+                  position: "absolute",
+                  bottom: -22,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  fontFamily: "var(--font-mono), monospace",
+                  fontSize: 9,
+                  color: rarityStyle.color,
+                  textShadow: rarityStyle.glow !== "none" ? rarityStyle.glow : undefined,
+                  letterSpacing: "0.12em",
+                  whiteSpace: "nowrap",
+                  animation: "fadeIn 300ms ease",
+                  display: "flex",
+                  gap: 6,
+                }}>
+                  <span>⚡{card.signalPower ?? cardPoints(card.rarity, !!card.isFoil)}</span>
+                  {(card.bonusCredits ?? 0) > 0 && (
+                    <span style={{ color: "var(--neon-4)", textShadow: "0 0 6px var(--neon-4)" }}>
+                      +{card.bonusCredits}cr
+                    </span>
+                  )}
+                </div>
+              )}
               {isLast && isRevealed && isHighValue && (
                 <div style={{
                   position: "absolute",
@@ -225,12 +262,35 @@ export function PackOpener({ packSlug, packTitle, packAccentColor, onClose }: Pa
 
       {allRevealed && (
         <div style={{
-          marginTop: 32,
+          marginTop: 40,
           display: "flex",
+          flexDirection: "column",
           gap: 12,
           alignItems: "center",
           animation: "fadeIn 400ms ease",
         }}>
+          {/* Pull summary */}
+          <div style={{
+            display: "flex",
+            gap: 20,
+            fontFamily: "var(--font-mono), monospace",
+            fontSize: 10,
+            letterSpacing: "0.12em",
+            color: "var(--ink-dim)",
+          }}>
+            <span>
+              ⚡ <span style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}>
+                +{totalSignalPower.toLocaleString("en-US")} SIGNAL POWER
+              </span>
+            </span>
+            {totalBonusCredits > 0 && (
+              <span>
+                ◈ <span style={{ color: "var(--neon-4)", textShadow: "0 0 6px var(--neon-4)" }}>
+                  +{totalBonusCredits} BONUS CREDITS
+                </span>
+              </span>
+            )}
+          </div>
           <button
             onClick={onClose}
             style={{

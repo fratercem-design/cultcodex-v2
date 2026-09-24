@@ -18,6 +18,7 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/start-here/guided" },
   title: "The Guided Path — CULT CODEX",
   description:
     "Five emotional doorways into the Cult of Psyche archive. Pick what's pulling you.",
@@ -91,12 +92,12 @@ const accentMap: Record<
   { icon: string; title: string; border: string; hoverBorder: string; hoverBg: string; question: string }
 > = {
   gold: {
-    icon: "text-accent-gold",
-    title: "text-accent-gold",
+    icon: "text-accent-gold-text",
+    title: "text-accent-gold-text",
     border: "border-accent-gold/20",
     hoverBorder: "group-hover:border-accent-gold/60",
     hoverBg: "group-hover:bg-accent-gold-dim",
-    question: "text-accent-gold",
+    question: "text-accent-gold-text",
   },
   cyan: {
     icon: "text-accent-cyan",
@@ -107,24 +108,24 @@ const accentMap: Record<
     question: "text-accent-cyan",
   },
   violet: {
-    icon: "text-accent-violet",
-    title: "text-accent-violet",
+    icon: "text-accent-violet-text",
+    title: "text-accent-violet-text",
     border: "border-accent-violet/20",
     hoverBorder: "group-hover:border-accent-violet/60",
     hoverBg: "group-hover:bg-accent-violet-dim",
-    question: "text-accent-violet",
+    question: "text-accent-violet-text",
   },
   crimson: {
-    icon: "text-accent-crimson",
-    title: "text-accent-crimson",
+    icon: "text-accent-crimson-text",
+    title: "text-accent-crimson-text",
     border: "border-accent-crimson/20",
     hoverBorder: "group-hover:border-accent-crimson/60",
     hoverBg: "group-hover:bg-red-950/30",
-    question: "text-accent-crimson",
+    question: "text-accent-crimson-text",
   },
   mixed: {
-    icon: "text-accent-gold",
-    title: "text-accent-gold",
+    icon: "text-accent-gold-text",
+    title: "text-accent-gold-text",
     border: "border-accent-gold/20",
     hoverBorder: "group-hover:border-accent-gold/60",
     hoverBg: "group-hover:bg-accent-gold-dim",
@@ -149,26 +150,26 @@ export default function GuidedPathPage() {
         {/* Breadcrumb */}
         <nav
           aria-label="Breadcrumb"
-          className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted"
+          className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted"
         >
-          <Link href="/start-here" className="hover:text-accent-gold transition-colors">
+          <Link href="/start-here" className="hover:text-accent-gold-text transition-colors">
             Enter the Codex
           </Link>
           <span className="mx-2">/</span>
-          <span className="text-accent-gold">Guided Path</span>
+          <span className="text-accent-gold-text">Guided Path</span>
         </nav>
 
         {/* Mythic framing */}
         <section className="text-center max-w-2xl mx-auto space-y-3">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-accent-cyan">
-            /// path_i · guided_entry
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan">
+            {"/// path_i · guided_entry"}
           </p>
           <p className="font-display text-lg text-text-primary leading-relaxed">
             Forget categories. Forget chronology. Forget which host said what in
             year seven.
           </p>
           <p className="text-sm text-text-muted leading-relaxed">
-            Ask yourself what's pulling on you right now. Pick a doorway. The
+            Ask yourself what&apos;s pulling on you right now. Pick a doorway. The
             archive will meet you there.
           </p>
         </section>
@@ -203,14 +204,14 @@ export default function GuidedPathPage() {
                   {tile.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 rounded border border-border bg-elevated text-text-muted"
+                      className="font-mono text-[12px] uppercase tracking-wider px-2 py-0.5 rounded border border-border bg-elevated text-text-muted"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
                 <span
-                  className={`font-mono text-[10px] uppercase tracking-widest ${a.question} inline-flex items-center gap-2 group-hover:gap-3 transition-all mt-1`}
+                  className={`font-mono text-[12px] uppercase tracking-widest ${a.question} inline-flex items-center gap-2 group-hover:gap-3 transition-all mt-1`}
                 >
                   Enter this doorway <span aria-hidden>→</span>
                 </span>
@@ -223,8 +224,8 @@ export default function GuidedPathPage() {
 
         {/* Escape hatches */}
         <section className="text-center space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">
-            /// none of these? try another path
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
+            {"/// none of these? try another path"}
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
@@ -235,13 +236,13 @@ export default function GuidedPathPage() {
             </Link>
             <Link
               href="/episodes"
-              className="font-mono text-xs uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet hover:bg-accent-violet-dim hover:border-accent-violet/60 transition-colors"
+              className="font-mono text-xs uppercase tracking-widest px-4 py-2 rounded border border-accent-violet/30 text-accent-violet-text hover:bg-accent-violet-dim hover:border-accent-violet/60 transition-colors"
             >
               Full archive →
             </Link>
             <Link
               href="/search"
-              className="font-mono text-xs uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold hover:bg-accent-gold-dim hover:border-accent-gold/60 transition-colors"
+              className="font-mono text-xs uppercase tracking-widest px-4 py-2 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold-dim hover:border-accent-gold/60 transition-colors"
             >
               Search directly →
             </Link>

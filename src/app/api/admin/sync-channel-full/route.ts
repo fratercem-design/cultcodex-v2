@@ -16,12 +16,13 @@ import { google } from "googleapis";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { ContentStatus, ContentType } from "@/generated/prisma/client";
+import { cleanSummary, isJunkSummary, isTemplateJunk } from "@/lib/content-hygiene";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
 export const dynamic = "force-dynamic";
 
-const DEFAULT_CHANNELS = ["@CultofPsyche", "@PsychesNightmares"];
+const DEFAULT_CHANNELS = ["@CultofPsyche", "@PsychesNightmares", "@NightmareFrequenciesTV"];
 
 function slugify(text: string): string {
   return text
@@ -55,13 +56,18 @@ function detectContentType(seconds: number | null): ContentType {
 
 function extractSummary(description: string): string | null {
   if (!description) return null;
-  const cleaned = description
+  const candidate = description
     .replace(/https?:\/\/\S+/g, "")
     .replace(/support the stream:?\s*/gi, "")
     .replace(/streaming software/gi, "")
     .replace(/support:?\s*/gi, "")
     .trim();
-  return cleaned.length > 10 ? cleaned.slice(0, 500) : null;
+  if (candidate.length <= 10) return null;
+  // Shared content-hygiene seam — keeps StreamYard/vidIQ promo boilerplate
+  // out of the DB (same patterns as data-ops clean-episode-summaries).
+  if (isTemplateJunk(candidate)) return null;
+  const cleaned = cleanSummary(candidate);
+  return isJunkSummary(cleaned) ? null : cleaned.slice(0, 500);
 }
 
 interface PlaylistItem {

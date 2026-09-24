@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { getCommentsForEpisode, createComment } from "@/lib/queries/comments";
 import { moderateComment } from "@/lib/moderation";
 import { eventBus } from "@/lib/sse/event-bus";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 export async function GET(
   req: NextRequest,
@@ -34,6 +35,14 @@ export async function POST(
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "Sign in to comment" }, { status: 401 });
+  }
+
+  const rl = rateLimit(`comment:${clientKey(req, user.id)}`, { limit: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Slow down — too many comments." },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } },
+    );
   }
 
   const { slug } = await params;

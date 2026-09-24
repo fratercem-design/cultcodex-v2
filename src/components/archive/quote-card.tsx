@@ -26,11 +26,11 @@ export function QuoteCard({
         </p>
       </blockquote>
 
-      <div className="mt-3 flex flex-wrap items-center gap-3 font-mono text-[10px] text-text-muted">
+      <div className="mt-3 flex flex-wrap items-center gap-3 font-mono text-[12px] text-text-muted">
         {quote.speaker && (
           <Link
             href={`/people/${quote.speaker.slug}`}
-            className="flex items-center gap-1 text-accent-gold hover:text-accent-gold/80 transition-colors"
+            className="flex items-center gap-1 text-accent-gold-text hover:text-accent-gold-text/80 transition-colors"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-accent-gold shrink-0" />
             — {quote.speaker.displayName}
@@ -39,13 +39,13 @@ export function QuoteCard({
         {quote.episode && (
           <Link
             href={`/episodes/${quote.episode.slug}`}
-            className="hover:text-accent-gold transition-colors"
+            className="hover:text-accent-gold-text transition-colors"
           >
             {quote.episode.title}
           </Link>
         )}
         {quote.timestampSeconds != null && (
-          <span className="text-text-muted/60">
+          <span className="text-text-muted">
             {formatSeconds(quote.timestampSeconds)}
           </span>
         )}

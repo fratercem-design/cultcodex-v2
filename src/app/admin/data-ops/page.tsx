@@ -80,7 +80,7 @@ export default function DataOpsPage() {
 
       {/* Secret */}
       <div className="rounded border border-border bg-surface p-4 space-y-2">
-        <label className="font-mono text-[10px] uppercase tracking-widest text-text-muted">Enrich Secret</label>
+        <label className="font-mono text-[12px] uppercase tracking-widest text-text-muted">Enrich Secret</label>
         <input
           type="password"
           value={enrichSecret}
@@ -92,7 +92,7 @@ export default function DataOpsPage() {
 
       {/* Search */}
       <section className="space-y-3">
-        <h2 className="font-display text-sm font-bold text-accent-violet">/// Search by Name</h2>
+        <h2 className="font-display text-sm font-bold text-accent-violet-text">{"/// Search by Name"}</h2>
         <div className="flex gap-2">
           <input
             value={searchName}
@@ -101,7 +101,7 @@ export default function DataOpsPage() {
             placeholder='e.g. "joni"'
             className="flex-1 rounded border border-border bg-void px-3 py-2 font-mono text-xs text-text-primary focus:outline-none focus:border-accent-violet/50"
           />
-          <button onClick={doSearch} disabled={loading === "search"} className="rounded border border-accent-violet/50 bg-accent-violet/10 px-4 py-2 font-mono text-xs text-accent-violet disabled:opacity-50">
+          <button onClick={doSearch} disabled={loading === "search"} className="rounded border border-accent-violet/50 bg-accent-violet/10 px-4 py-2 font-mono text-xs text-accent-violet-text disabled:opacity-50">
             {loading === "search" ? "…" : "Search →"}
           </button>
         </div>
@@ -115,7 +115,7 @@ export default function DataOpsPage() {
 
       {/* Rename */}
       <section className="space-y-3">
-        <h2 className="font-display text-sm font-bold text-accent-cyan">/// Rename Person</h2>
+        <h2 className="font-display text-sm font-bold text-accent-cyan">{"/// Rename Person"}</h2>
         <div className="flex gap-2">
           <input
             value={renameSlug}
@@ -140,8 +140,8 @@ export default function DataOpsPage() {
       {/* Ambiguous */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-sm font-bold text-accent-gold">/// Ambiguous Names (single token, ≤12 chars)</h2>
-          <button onClick={doAmbiguous} disabled={loading === "ambiguous"} className="rounded border border-accent-gold/50 bg-accent-gold/10 px-4 py-2 font-mono text-xs text-accent-gold disabled:opacity-50">
+          <h2 className="font-display text-sm font-bold text-accent-gold-text">{"/// Ambiguous Names (single token, ≤12 chars)"}</h2>
+          <button onClick={doAmbiguous} disabled={loading === "ambiguous"} className="rounded border border-accent-gold/50 bg-accent-gold/10 px-4 py-2 font-mono text-xs text-accent-gold-text disabled:opacity-50">
             {loading === "ambiguous" ? "…" : `Find →`}
           </button>
         </div>
@@ -153,14 +153,14 @@ export default function DataOpsPage() {
       {/* Dupes */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-sm font-bold text-accent-crimson">/// Duplicate Names</h2>
-          <button onClick={doDupes} disabled={loading === "dupes"} className="rounded border border-accent-crimson/50 bg-accent-crimson/10 px-4 py-2 font-mono text-xs text-accent-crimson disabled:opacity-50">
+          <h2 className="font-display text-sm font-bold text-accent-crimson-text">{"/// Duplicate Names"}</h2>
+          <button onClick={doDupes} disabled={loading === "dupes"} className="rounded border border-accent-crimson/50 bg-accent-crimson/10 px-4 py-2 font-mono text-xs text-accent-crimson-text disabled:opacity-50">
             {loading === "dupes" ? "…" : `Find →`}
           </button>
         </div>
         {dupes.length > 0 && dupes.map((group, i) => (
           <div key={i} className="rounded border border-accent-crimson/20 bg-surface p-3 space-y-1">
-            <p className="font-mono text-[9px] uppercase tracking-widest text-accent-crimson/60">Dupe group {i + 1}</p>
+            <p className="font-mono text-[12px] uppercase tracking-widest text-accent-crimson-text/80">Dupe group {i + 1}</p>
             <PersonTable people={group} onSelect={(p) => setRenameSlug(p.slug)} />
           </div>
         ))}
@@ -192,7 +192,7 @@ function PersonTable({ people, onSelect }: { people: Person[]; onSelect: (p: Per
               <td className="px-3 py-2 text-right">
                 <button
                   onClick={() => onSelect(p)}
-                  className="text-accent-violet hover:text-accent-cyan transition-colors"
+                  className="text-accent-violet-text hover:text-accent-cyan transition-colors"
                   title="Use this slug for rename"
                 >
                   rename →

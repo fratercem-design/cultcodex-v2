@@ -50,20 +50,20 @@ function RedactedBlock({ tier }: RedactedBlockProps) {
   const label = isOracle ? "Oracle" : "Initiate+";
   const href = isOracle ? "/premium#system" : "/premium#access";
   const borderCls = isOracle ? "border-accent-violet/30" : "border-accent-gold/30";
-  const textCls = isOracle ? "text-accent-violet" : "text-accent-gold";
+  const textCls = isOracle ? "text-accent-violet-text" : "text-accent-gold-text";
   const bgCls = isOracle ? "bg-accent-violet/5" : "bg-accent-gold/5";
 
   return (
     <span className={`inline-flex items-center gap-2 rounded border ${borderCls} ${bgCls} px-3 py-1 my-0.5`}>
-      <span className="font-mono text-[10px] text-text-muted/50 select-none tracking-wider">
+      <span className="font-mono text-[12px] text-text-muted select-none tracking-wider">
         ████████████████████
       </span>
       <Link
         href={href}
-        className={`font-mono text-[9px] uppercase tracking-[0.2em] ${textCls} hover:underline whitespace-nowrap`}
+        className={`font-mono text-[12px] uppercase tracking-[0.12em] ${textCls} hover:underline whitespace-nowrap`}
         onClick={(e) => e.stopPropagation()}
       >
-        {label} to unlock →
+        Read with {label} →
       </Link>
     </span>
   );
@@ -88,13 +88,13 @@ export function RedactedText({ text, viewerTier, className }: RedactedTextProps)
         if (seg.type === "locked") {
           // Initiate+ and Oracle can see this
           if (viewerTier === "access" || viewerTier === "system") {
-            return <span key={i} className="text-accent-gold/90">{seg.content}</span>;
+            return <span key={i} className="text-accent-gold-text/90">{seg.content}</span>;
           }
           return <RedactedBlock key={i} content={seg.content} tier="locked" />;
         }
         // oracle
         if (viewerTier === "system") {
-          return <span key={i} className="text-accent-violet/90">{seg.content}</span>;
+          return <span key={i} className="text-accent-violet-text/90">{seg.content}</span>;
         }
         return <RedactedBlock key={i} content={seg.content} tier="oracle" />;
       })}

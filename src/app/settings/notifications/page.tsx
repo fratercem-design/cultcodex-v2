@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
@@ -7,6 +9,8 @@ import { NotificationToggle } from "./notification-toggle";
 
 export const metadata = {
   title: "Notification Preferences — CultCodex",
+  // Private account surface — nothing here belongs in search results.
+  robots: { index: false, follow: false },
 };
 
 export default async function NotificationsPage() {
@@ -54,7 +58,7 @@ export default async function NotificationsPage() {
           </div>
         </SectionCard>
 
-        <p className="font-mono text-[10px] text-text-muted text-center">
+        <p className="font-mono text-[12px] text-text-muted text-center">
           Changes are saved automatically
         </p>
       </div>

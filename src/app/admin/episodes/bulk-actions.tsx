@@ -20,7 +20,7 @@ export function EpisodeBulkActions({ episodeIds }: Props) {
 
   return (
     <div className="flex items-center gap-2 mb-3">
-      <span className="font-mono text-[10px] text-text-muted">
+      <span className="font-mono text-[12px] text-text-muted">
         Bulk actions (this page):
       </span>
       {(["published", "draft", "archived"] as ContentStatus[]).map((s) => (
@@ -28,7 +28,7 @@ export function EpisodeBulkActions({ episodeIds }: Props) {
           key={s}
           onClick={() => handleBulk(s)}
           disabled={isPending}
-          className="rounded border border-border px-2 py-1 font-mono text-[10px] text-text-muted hover:border-accent-gold/30 hover:text-text-primary transition-colors disabled:opacity-50"
+          className="rounded border border-border px-2 py-1 font-mono text-[12px] text-text-muted hover:border-accent-gold/30 hover:text-text-primary transition-colors disabled:opacity-50"
         >
           Set {s}
         </button>

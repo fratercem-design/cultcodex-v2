@@ -1,3 +1,6 @@
+import { trustedSummary } from "@/lib/format/speculative-summary";
+export const dynamic = "force-dynamic";
+
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
@@ -10,6 +13,7 @@ import Link from "next/link";
 
 export const metadata = {
   title: "My Favorites — CultCodex",
+  alternates: { canonical: "/favorites" },
 };
 
 export default async function FavoritesPage() {
@@ -55,7 +59,7 @@ export default async function FavoritesPage() {
             <div className="mt-4 text-center">
               <Link
                 href="/episodes"
-                className="font-mono text-sm text-accent-gold hover:underline"
+                className="font-mono text-sm text-accent-gold-text hover:underline"
               >
                 Browse Episodes
               </Link>
@@ -83,25 +87,25 @@ export default async function FavoritesPage() {
                 )}
                 <div className="flex items-center gap-2 mb-1">
                   {fav.episode.episodeNumber != null && (
-                    <span className="font-mono text-[10px] text-accent-gold font-bold">
+                    <span className="font-mono text-[12px] text-accent-gold-text font-bold">
                       EP.{String(fav.episode.episodeNumber).padStart(3, "0")}
                     </span>
                   )}
                   {fav.episode.airDate && (
-                    <span className="font-mono text-[10px] text-text-muted">
+                    <span className="font-mono text-[12px] text-text-muted">
                       {formatDate(fav.episode.airDate)}
                     </span>
                   )}
                 </div>
-                <h3 className="font-mono text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
+                <h3 className="font-mono text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-2">
                   {fav.episode.title}
                 </h3>
-                {fav.episode.summaryShort && (
+                {trustedSummary(fav.episode.summaryShort) && (
                   <p className="mt-1 text-xs text-text-muted line-clamp-2">
-                    {fav.episode.summaryShort}
+                    {trustedSummary(fav.episode.summaryShort)}
                   </p>
                 )}
-                <p className="mt-2 font-mono text-[9px] text-text-muted/50">
+                <p className="mt-2 font-mono text-[12px] text-text-muted">
                   Saved {formatDate(fav.createdAt)}
                 </p>
               </Link>

@@ -7,6 +7,7 @@ import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/mythic-map" },
   title: "The Mythic Map — CULT CODEX",
   description:
     "Archetypes, symbols, and recurring themes of the Cult of Psyche archive. A narrative map of the mythic system.",
@@ -18,7 +19,7 @@ const ARCHETYPES = [
   {
     name: "The Oracle / Priestess",
     symbol: "Tarot deck, veil, star",
-    color: "text-accent-gold",
+    color: "text-accent-gold-text",
     border: "border-accent-gold/30",
     glow: "shadow-accent-gold/10",
     meaning:
@@ -42,7 +43,7 @@ const ARCHETYPES = [
   {
     name: "The Magician / Operator",
     symbol: "Wand, circuit, altar-terminal",
-    color: "text-accent-violet",
+    color: "text-accent-violet-text",
     border: "border-accent-violet/30",
     glow: "shadow-accent-violet/10",
     meaning:
@@ -67,7 +68,7 @@ const ARCHETYPES = [
   {
     name: "The Scapegoat / Truth-Teller",
     symbol: "Stage, mask, serpent eye, phoenix",
-    color: "text-accent-crimson",
+    color: "text-accent-crimson-text",
     border: "border-accent-crimson/30",
     glow: "shadow-accent-crimson/10",
     meaning:
@@ -95,7 +96,7 @@ const ARCHETYPES = [
 const SYMBOLS = [
   {
     category: "Threshold Symbols",
-    color: "text-accent-gold",
+    color: "text-accent-gold-text",
     items: [
       "Gates & Courts \u2014 The Codex\u2019s 10 gates and 5 courts",
       "Keys & Veils \u2014 Hidden knowledge, barriers to true seeing",
@@ -115,7 +116,7 @@ const SYMBOLS = [
   },
   {
     category: "Transformation Symbols",
-    color: "text-accent-violet",
+    color: "text-accent-violet-text",
     items: [
       "Donkey & Owl \u2014 Humiliation and wisdom",
       "Shadow & Anima \u2014 Integration of the unconscious",
@@ -129,32 +130,32 @@ const THEMES = [
   {
     letter: "A",
     title: "Divination as Diagnosis",
-    color: "text-accent-gold",
-    body: "Tarot is not fortune-telling here. It diagnoses relationships, protection issues, shadow material, mythic patterns, and audience questions in real time.",
+    color: "text-accent-gold-text",
+    body: "Here, tarot diagnoses relationships, protection issues, shadow material, mythic patterns, and audience questions in real time.",
   },
   {
     letter: "B",
     title: "Myth as Psychological Technology",
     color: "text-accent-cyan",
-    body: "Myth is not distant literature\u2014it is an active interpretive device. Stories like The Golden Ass and the Quantum Scary Tales function as instruments for reading consciousness, power, and misrecognition.",
+    body: "Myth works as an active interpretive device. Stories like The Golden Ass and the Quantum Scary Tales function as instruments for reading consciousness, power, and misrecognition.",
   },
   {
     letter: "C",
     title: "Public Spirituality Under Pressure",
-    color: "text-accent-violet",
+    color: "text-accent-violet-text",
     body: "What happens when spirituality becomes public performance? Open panels, community conflict, doxxing, safety concerns, and sacred-space philosophy collide.",
   },
   {
     letter: "D",
     title: "Projection, Shadow & Misunderstood Identity",
-    color: "text-accent-crimson",
+    color: "text-accent-crimson-text",
     body: "The archive\u2019s deepest psychological theme. Lilith in Scorpio, the scapegoat logic of The Golden Ass, The Mortal Veil, and The Paradox of Being Nice all revolve around the figure who gets projected onto yet still reveals truth.",
   },
   {
     letter: "E",
     title: "Hybrid Sacred-Tech Aesthetics",
     color: "text-text-primary",
-    body: "Codex, terminal, code, digital resurrection, livestream rain. Not old-world occultism and not pure internet culture. A cyber-mystical style where interface becomes altar.",
+    body: "Codex, terminal, code, digital resurrection, livestream rain: a cyber-mystical style where interface becomes altar.",
   },
 ];
 
@@ -272,12 +273,11 @@ export default function MythicMapPage() {
         {/* ── Intro ── */}
         <section className="text-center max-w-3xl mx-auto space-y-4">
           <p className="text-sm text-text-muted leading-relaxed">
-            The Cult of Psyche archive is not just a collection of episodes. It
-            behaves like a mythic-social system with recurring engines:
+            The Cult of Psyche archive behaves like a mythic-social system with recurring engines:
             divination, myth retelling, livestream community theater,
             psychological transformation, and digital-age spiritual boundary work.
           </p>
-          <p className="font-mono text-xs text-accent-gold/70">
+          <p className="font-mono text-xs text-accent-gold-text/80">
             oracle insight &rarr; public reaction &rarr; projection &rarr; boundary
             formation &rarr; mythic transformation &rarr; codex memory
           </p>
@@ -287,7 +287,7 @@ export default function MythicMapPage() {
 
         {/* ── Core Archetypes ── */}
         <section className="space-y-6">
-          <h2 className="font-display text-lg font-bold text-accent-gold tracking-tight">
+          <h2 className="font-display text-lg font-bold text-accent-gold-text tracking-tight">
             Core Archetypes
           </h2>
           <p className="text-xs text-text-muted max-w-2xl">
@@ -306,18 +306,18 @@ export default function MythicMapPage() {
                   <h3 className={`font-display text-sm font-bold ${a.color}`}>
                     {a.name}
                   </h3>
-                  <span className="shrink-0 font-mono text-[10px] text-text-muted">
+                  <span className="shrink-0 font-mono text-[12px] text-text-muted">
                     {a.symbol}
                   </span>
                 </div>
                 <p className="text-xs text-text-primary leading-relaxed">
                   {a.meaning}
                 </p>
-                <p className="text-[11px] text-text-muted leading-relaxed italic">
+                <p className="text-[12px] text-text-muted leading-relaxed italic">
                   {a.conflict}
                 </p>
-                <p className="font-mono text-[10px] text-text-muted">
-                  <span className="text-accent-gold/60">see:</span>{" "}
+                <p className="font-mono text-[12px] text-text-muted">
+                  <span className="text-accent-gold-text/80">see:</span>{" "}
                   {a.examples}
                 </p>
               </div>
@@ -343,7 +343,7 @@ export default function MythicMapPage() {
           <div className="relative rounded-xl border border-border bg-void p-6 sm:p-10 overflow-hidden">
             {/* Faint radial lines */}
             <div className="absolute inset-0 flex items-center justify-center opacity-[0.06]" aria-hidden="true">
-              <svg width="500" height="500" viewBox="0 0 500 500" className="text-accent-gold">
+              <svg width="500" height="500" viewBox="0 0 500 500" className="text-accent-gold-text">
                 {[0, 72, 144, 216, 288].map((angle) => (
                   <line
                     key={angle}
@@ -365,13 +365,13 @@ export default function MythicMapPage() {
             <div className="relative z-10 flex flex-col items-center text-center mb-8">
               <div className="w-28 h-28 rounded-full border-2 border-accent-gold/40 bg-accent-gold/5 flex items-center justify-center">
                 <div className="text-center">
-                  <p className="font-display text-xs font-bold text-accent-gold">
+                  <p className="font-display text-xs font-bold text-accent-gold-text">
                     PSYCHE
                   </p>
-                  <p className="font-mono text-[8px] text-text-muted mt-0.5">
+                  <p className="font-mono text-[12px] text-text-muted mt-0.5">
                     ritual host node
                   </p>
-                  <p className="font-mono text-[7px] text-accent-gold/50 mt-0.5">
+                  <p className="font-mono text-[7px] text-accent-gold-text/80 mt-0.5">
                     oracle &middot; host &middot; witness
                   </p>
                 </div>
@@ -384,7 +384,7 @@ export default function MythicMapPage() {
                 {
                   axis: "1",
                   title: "Revelation",
-                  color: "text-accent-gold",
+                  color: "text-accent-gold-text",
                   borderColor: "border-accent-gold/20",
                   path: "Oracle \u2192 Tarot \u2192 Priestess \u2192 Fool\u2019s Journey",
                   verb: "reads \u2192 reveals",
@@ -392,7 +392,7 @@ export default function MythicMapPage() {
                 {
                   axis: "2",
                   title: "Transformation",
-                  color: "text-accent-violet",
+                  color: "text-accent-violet-text",
                   borderColor: "border-accent-violet/20",
                   path: "Shadow \u2192 Projection \u2192 Scapegoat \u2192 Integration",
                   verb: "provokes \u2192 transforms",
@@ -427,7 +427,7 @@ export default function MythicMapPage() {
                   className={`rounded-lg border ${ax.borderColor} bg-surface/50 p-4 space-y-2`}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-[10px] text-text-muted">
+                    <span className="font-mono text-[12px] text-text-muted">
                       AXIS {ax.axis}
                     </span>
                     <h3
@@ -436,10 +436,10 @@ export default function MythicMapPage() {
                       {ax.title}
                     </h3>
                   </div>
-                  <p className="font-mono text-[10px] text-text-muted leading-relaxed">
+                  <p className="font-mono text-[12px] text-text-muted leading-relaxed">
                     {ax.path}
                   </p>
-                  <p className="font-mono text-[9px] text-accent-gold/50 italic">
+                  <p className="font-mono text-[12px] text-accent-gold-text/80 italic">
                     {ax.verb}
                   </p>
                 </div>
@@ -452,7 +452,7 @@ export default function MythicMapPage() {
 
         {/* ── Recurring Symbols ── */}
         <section className="space-y-6">
-          <h2 className="font-display text-lg font-bold text-accent-violet tracking-tight">
+          <h2 className="font-display text-lg font-bold text-accent-violet-text tracking-tight">
             Recurring Symbols
           </h2>
           <div className="grid gap-4 sm:grid-cols-3">
@@ -466,7 +466,7 @@ export default function MythicMapPage() {
                     >
                       <span
                         className={`mt-1.5 h-1 w-1 shrink-0 rounded-full ${
-                          group.color === "text-accent-gold"
+                          group.color === "text-accent-gold-text"
                             ? "bg-accent-gold/60"
                             : group.color === "text-accent-cyan"
                               ? "bg-accent-cyan/60"
@@ -486,7 +486,7 @@ export default function MythicMapPage() {
 
         {/* ── Recurring Themes ── */}
         <section className="space-y-6">
-          <h2 className="font-display text-lg font-bold text-accent-crimson tracking-tight">
+          <h2 className="font-display text-lg font-bold text-accent-crimson-text tracking-tight">
             Recurring Themes
           </h2>
           <div className="space-y-4">
@@ -560,7 +560,7 @@ export default function MythicMapPage() {
 
         {/* ── Lore Bible Table ── */}
         <section className="space-y-6">
-          <h2 className="font-display text-lg font-bold text-accent-gold tracking-tight">
+          <h2 className="font-display text-lg font-bold text-accent-gold-text tracking-tight">
             Lore Bible
           </h2>
           <p className="text-xs text-text-muted max-w-2xl">
@@ -571,19 +571,19 @@ export default function MythicMapPage() {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-border bg-elevated">
-                  <th className="px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+                  <th className="px-3 py-2 font-mono text-[12px] font-semibold uppercase tracking-wider text-text-muted">
                     Archetype
                   </th>
-                  <th className="px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+                  <th className="px-3 py-2 font-mono text-[12px] font-semibold uppercase tracking-wider text-text-muted">
                     Symbol
                   </th>
-                  <th className="px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted hidden sm:table-cell">
+                  <th className="px-3 py-2 font-mono text-[12px] font-semibold uppercase tracking-wider text-text-muted hidden sm:table-cell">
                     Meaning
                   </th>
-                  <th className="px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted hidden lg:table-cell">
+                  <th className="px-3 py-2 font-mono text-[12px] font-semibold uppercase tracking-wider text-text-muted hidden lg:table-cell">
                     Example Episodes
                   </th>
-                  <th className="px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-text-muted hidden md:table-cell">
+                  <th className="px-3 py-2 font-mono text-[12px] font-semibold uppercase tracking-wider text-text-muted hidden md:table-cell">
                     Conflict Function
                   </th>
                 </tr>
@@ -599,13 +599,13 @@ export default function MythicMapPage() {
                     <td className="px-3 py-2.5 font-display text-xs font-medium text-text-primary">
                       {row.archetype}
                     </td>
-                    <td className="px-3 py-2.5 font-mono text-[10px] text-text-muted">
+                    <td className="px-3 py-2.5 font-mono text-[12px] text-text-muted">
                       {row.symbol}
                     </td>
                     <td className="px-3 py-2.5 text-xs text-text-muted hidden sm:table-cell">
                       {row.meaning}
                     </td>
-                    <td className="px-3 py-2.5 font-mono text-[10px] text-accent-gold/70 hidden lg:table-cell">
+                    <td className="px-3 py-2.5 font-mono text-[12px] text-accent-gold-text/80 hidden lg:table-cell">
                       {row.episodes}
                     </td>
                     <td className="px-3 py-2.5 text-xs text-text-muted italic hidden md:table-cell">
@@ -624,8 +624,8 @@ export default function MythicMapPage() {
         <section className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-6 text-center space-y-3">
           <p className="text-sm text-text-primary leading-relaxed max-w-2xl mx-auto">
             The dominant CultCodex story is a recurring drama of{" "}
-            <span className="text-accent-gold font-medium">revelation</span>,{" "}
-            <span className="text-accent-violet font-medium">projection</span>,{" "}
+            <span className="text-accent-gold-text font-medium">revelation</span>,{" "}
+            <span className="text-accent-violet-text font-medium">projection</span>,{" "}
             <span className="text-accent-cyan font-medium">transformation</span>, and{" "}
             <span className="text-text-primary font-medium">containment</span>&mdash;hosted
             through tarot, myth, cats, livestream ritual, and digital symbolism.
@@ -643,7 +643,7 @@ export default function MythicMapPage() {
             href="/start-here"
             className="group rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated"
           >
-            <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+            <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
               Start Here
             </h3>
             <p className="mt-1 text-xs text-text-muted">
@@ -665,7 +665,7 @@ export default function MythicMapPage() {
             href="/topics"
             className="group rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-violet/30 hover:bg-elevated"
           >
-            <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-violet transition-colors">
+            <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-violet-text transition-colors">
               Topics
             </h3>
             <p className="mt-1 text-xs text-text-muted">

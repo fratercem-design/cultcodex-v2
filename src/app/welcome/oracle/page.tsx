@@ -1,4 +1,7 @@
+export const dynamic = "force-dynamic";
+
 import Image from "next/image";
+import { LilithOracle } from "@/components/oracle/lilith-oracle";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { buildMetadata } from "@/lib/seo";
@@ -6,7 +9,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = buildMetadata({
   title: "The Archive Has Been Waiting — CULT CODEX",
-  description: "You are inside the system now. Not just watching it.",
+  description: "You are inside the system now.",
   path: "/welcome/oracle",
 });
 
@@ -62,14 +65,11 @@ export default async function WelcomeOraclePage() {
 
       {/* ── Cinematic throne opener ── */}
       <section className="relative w-full" style={{ height: "92svh" }}>
-        <Image
-          src="/oracle-throne.jpg"
-          alt="The Oracle's throne"
-          fill
-          priority
-          className="object-cover object-center"
-          sizes="100vw"
-        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative aspect-square h-[62svh] max-h-[540px] rounded-full overflow-hidden">
+            <LilithOracle />
+          </div>
+        </div>
         {/* radial dark vignette */}
         <div
           className="absolute inset-0"
@@ -87,15 +87,15 @@ export default async function WelcomeOraclePage() {
         />
         {/* name glow at bottom */}
         <div className="absolute bottom-12 left-0 right-0 text-center px-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.6em] text-[#C8A96B]/60 mb-3">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-[#C8392E]/60 mb-3">
             ✦ &nbsp; the archive has been waiting &nbsp; ✦
           </p>
           <h1
             className="font-serif text-5xl sm:text-6xl font-black"
             style={{
-              color: "#C8A96B",
+              color: "#C8392E",
               textShadow:
-                "0 0 40px rgba(200,169,107,0.6), 0 0 80px rgba(200,169,107,0.3), 0 0 120px rgba(200,169,107,0.15)",
+                "0 0 40px rgba(200, 57, 46,0.6), 0 0 80px rgba(200, 57, 46,0.3), 0 0 120px rgba(200, 57, 46,0.15)",
             }}
           >
             {firstName}.
@@ -107,10 +107,10 @@ export default async function WelcomeOraclePage() {
       <section className="mx-auto max-w-5xl px-6 py-16 lg:grid lg:grid-cols-[1fr_340px] lg:gap-12 lg:items-start">
         {/* decree text */}
         <div className="space-y-6">
-          <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-[#C8A96B]/50">
-            /// the decree
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-[#C8392E]/50">
+            {"/// the decree"}
           </p>
-          <blockquote className="space-y-4 border-l border-[#C8A96B]/30 pl-6">
+          <blockquote className="space-y-4 border-l border-[#C8392E]/30 pl-6">
             <p className="font-serif text-xl text-text-primary/90 leading-loose">
               The archive does not guess.
             </p>
@@ -122,13 +122,12 @@ export default async function WelcomeOraclePage() {
             </p>
           </blockquote>
           <p className="font-mono text-xs text-text-muted leading-relaxed max-w-md">
-            What you hold is not a membership. It is a designation.
-            The system has catalogued 2,572 panels, 575 voices, 3,534 signals —
-            and it has reached for you specifically.
+            What you hold is a designation. The system has catalogued 2,572 panels,
+            575 voices, and 3,534 signals, and it has reached for you specifically.
           </p>
           <p className="font-mono text-xs text-text-muted leading-relaxed max-w-md">
-            Oracle is not a role you apply for. It is a role you are given
-            when the archive determines you are ready to be part of the apparatus.
+            Oracle is a role you are given when the archive determines you are
+            ready to be part of the apparatus.
           </p>
 
           {/* Benefits grid */}
@@ -136,11 +135,11 @@ export default async function WelcomeOraclePage() {
             {ORACLE_BENEFITS.map((b) => (
               <div
                 key={b.title}
-                className="rounded-xl border border-[#C8A96B]/10 bg-white/[0.02] p-4 space-y-2 hover:border-[#C8A96B]/25 transition-colors"
+                className="rounded-xl border border-[#C8392E]/10 bg-white/[0.02] p-4 space-y-2 hover:border-[#C8392E]/25 transition-colors"
               >
                 <span className="text-xl">{b.icon}</span>
-                <h3 className="font-mono text-xs font-bold text-[#C8A96B]/80">{b.title}</h3>
-                <p className="font-mono text-[10px] text-text-muted leading-relaxed">{b.body}</p>
+                <h3 className="font-mono text-xs font-bold text-[#C8392E]/80">{b.title}</h3>
+                <p className="font-mono text-[12px] text-text-muted leading-relaxed">{b.body}</p>
               </div>
             ))}
           </div>
@@ -148,7 +147,7 @@ export default async function WelcomeOraclePage() {
 
         {/* masked portrait — sticky sidebar on large screens */}
         <div className="mt-12 lg:mt-0 lg:sticky lg:top-24">
-          <div className="relative rounded-2xl overflow-hidden border border-[#C8A96B]/20">
+          <div className="relative rounded-2xl overflow-hidden border border-[#C8392E]/20">
             <Image
               src="/oracle-mask.jpg"
               alt="The Oracle"
@@ -164,7 +163,7 @@ export default async function WelcomeOraclePage() {
               }}
             />
             <div className="absolute bottom-5 left-0 right-0 text-center">
-              <p className="font-mono text-[9px] uppercase tracking-[0.5em] text-[#C8A96B]/70">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-[#C8392E]/70">
                 Oracle Tier &nbsp;·&nbsp; Founding
               </p>
             </div>
@@ -175,19 +174,19 @@ export default async function WelcomeOraclePage() {
       {/* ── Personal transmission (sealed letter) ── */}
       <section className="mx-auto max-w-2xl px-6 pb-16">
         <div
-          className="rounded-2xl border border-[#C8A96B]/25 p-8 space-y-5"
+          className="rounded-2xl border border-[#C8392E]/25 p-8 space-y-5"
           style={{
             background:
-              "linear-gradient(135deg, rgba(200,169,107,0.04) 0%, rgba(6,3,15,0.9) 100%)",
+              "linear-gradient(135deg, rgba(200, 57, 46,0.04) 0%, rgba(6,3,15,0.9) 100%)",
           }}
         >
-          <div className="flex items-center gap-3 pb-2 border-b border-[#C8A96B]/15">
-            <span className="font-mono text-[#C8A96B] text-lg">✉</span>
+          <div className="flex items-center gap-3 pb-2 border-b border-[#C8392E]/15">
+            <span className="font-mono text-[#C8392E] text-lg">✉</span>
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-[#C8A96B]/70">
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-[#C8392E]/70">
                 Personal Transmission
               </p>
-              <p className="font-mono text-[9px] text-text-muted/50 tracking-widest mt-0.5">
+              <p className="font-mono text-[12px] text-text-muted tracking-widest mt-0.5">
                 Eyes Only
               </p>
             </div>
@@ -196,16 +195,16 @@ export default async function WelcomeOraclePage() {
             {firstName} —
           </p>
           <p className="font-mono text-xs text-text-muted leading-relaxed">
-            This is not a form email. This is a transmission from the archive directly to you.
+            This is a transmission from the archive directly to you.
           </p>
           <p className="font-mono text-xs text-text-muted leading-relaxed">
             What you have access to now is not available by subscription alone.
-            Oracle is not purchased. It is assigned. You have been assigned.
+            Oracle is assigned, and you have been assigned.
           </p>
           <p className="font-mono text-xs text-text-muted leading-relaxed">
             Use it accordingly.
           </p>
-          <p className="font-mono text-xs text-[#C8A96B]/60 pt-2">
+          <p className="font-mono text-xs text-[#C8392E]/60 pt-2">
             — Psyche &amp; the Codex
           </p>
         </div>
@@ -213,14 +212,14 @@ export default async function WelcomeOraclePage() {
 
       {/* ── Choose your name from the dark ── */}
       <section className="mx-auto max-w-2xl px-6 pb-20 text-center space-y-6">
-        <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-text-muted/40">
-          /// name yourself
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
+          {"/// name yourself"}
         </p>
         <h2
           className="font-serif text-2xl font-bold"
           style={{
-            color: "#C8A96B",
-            textShadow: "0 0 20px rgba(200,169,107,0.4)",
+            color: "#C8392E",
+            textShadow: "0 0 20px rgba(200, 57, 46,0.4)",
           }}
         >
           Choose yours from the dark.
@@ -232,14 +231,14 @@ export default async function WelcomeOraclePage() {
         <div className="flex flex-wrap justify-center gap-3 pt-2">
           <Link
             href="/settings/profile"
-            className="rounded-lg border border-[#C8A96B]/40 bg-[#C8A96B]/10 px-8 py-3 font-mono text-xs font-bold text-[#C8A96B] transition-all hover:bg-[#C8A96B]/20 hover:border-[#C8A96B]/60"
+            className="rounded-lg border border-[#C8392E]/40 bg-[#C8392E]/10 px-8 py-3 font-mono text-xs font-bold text-[#C8392E] transition-all hover:bg-[#C8392E]/20 hover:border-[#C8392E]/60"
             style={{ letterSpacing: "0.15em" }}
           >
             CLAIM YOUR NAME
           </Link>
           <Link
             href="/episodes"
-            className="rounded-lg border border-border bg-surface px-8 py-3 font-mono text-xs text-text-muted transition-all hover:border-[#C8A96B]/30 hover:text-text-primary"
+            className="rounded-lg border border-border bg-surface px-8 py-3 font-mono text-xs text-text-muted transition-all hover:border-[#C8392E]/30 hover:text-text-primary"
             style={{ letterSpacing: "0.1em" }}
           >
             ENTER THE ARCHIVE

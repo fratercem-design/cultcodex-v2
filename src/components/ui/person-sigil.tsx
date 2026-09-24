@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import { PERSON_TYPE_TINT } from "@/lib/people/person-type";
 import type { PersonType } from "@/generated/prisma/client";
 
 interface PersonSigilProps {
@@ -26,13 +27,6 @@ function fnv1a(str: string): number {
   }
   return hash >>> 0;
 }
-
-const TINT_CLASS: Record<PersonType, string> = {
-  host: "text-accent-gold",
-  recurring: "text-accent-purple",
-  guest: "text-accent-green",
-  mentioned: "text-accent-cyan",
-};
 
 // 8 compass positions for the accent mark, on a ring of radius 18.
 // Angles in degrees, 0° = top, clockwise.
@@ -161,7 +155,7 @@ export function PersonSigil({
   const drawPrimary = size >= 16;
   const stroke = Math.max(1.5, size / 60);
 
-  const tint = TINT_CLASS[personType] ?? TINT_CLASS.guest;
+  const tint = PERSON_TYPE_TINT[personType] ?? PERSON_TYPE_TINT.guest;
 
   const a11yProps = decorative
     ? ({ "aria-hidden": true } as const)

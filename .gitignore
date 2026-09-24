@@ -2,6 +2,10 @@
 
 # dependencies
 /node_modules
+# bun.lock is parked, not adopted: Vercel picks its install command from the
+# lockfile present in git, so committing this would silently switch the
+# production build npm -> bun. Remove this line only as a deliberate migration.
+bun.lock
 /.pnp
 .pnp.*
 .yarn/*
@@ -30,11 +34,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# Environment
-.env
-.env.local
-.env.production
-.env.vercel
+# Environment — ignore ALL env files, allow only the checked-in template
+.env*
+!.env.example
+
+# DB dumps (never commit — 642MB railway.dump bloated history once)
+dbmigrate/
 
 # Prisma
 prisma/migrations/**/migration_lock.toml
@@ -56,17 +61,45 @@ next-env.d.ts
 
 /src/generated/prisma
 
+# Python
+__pycache__/
+*.py[cod]
+
 # Local runtime artefacts for data-ingest / ASR pipelines
 scripts/*.log
-scripts/cookies.txt
+# Cookie jars (Netscape format, for yt-dlp/curl) hold live YouTube session
+# credentials. Globbed, not the bare path: scripts/cookies.txt alone left
+# cookies.master.txt untracked-but-committable.
+scripts/cookies*.txt
 scripts/asr-pending.json
 scripts/remaining-episodes.json
 scripts/_download-list.json
 scripts/enrich/*.log
+scripts/enrich/*.backup.jsonl
 scripts/enrich/run-log.txt
 
-# Claude Code local config
-.claude/
+# Claude Code config — track shared hook + settings, keep local overrides private
+.claude/*
+!.claude/settings.json
+!.claude/hooks/
+!.claude/skills/
+.claude/settings.local.json
 
 # Brainstorming visual companion (superpowers skill)
 .superpowers/
+__pycache__/
+
+# Psychenomicon art runner runtime artifacts
+scripts/psychenomicon-art/daemon.lock
+scripts/psychenomicon-art/daemon.log
+scripts/psychenomicon-art/run-batch.log
+scripts/psychenomicon-art/output/STOP
+
+.vercel
+.env*
+
+# cron/sync logs � committed once by mistake, ignored since
+logs/
+modify_schema.py
+prisma/*.bak
+prisma/migrations.backup/

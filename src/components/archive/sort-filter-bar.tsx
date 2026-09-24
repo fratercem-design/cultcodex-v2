@@ -55,7 +55,7 @@ export function SortFilterBar({
     <div className="flex flex-wrap items-center gap-3">
       {/* Sort controls */}
       <div className="flex items-center gap-2">
-        <span className="font-mono text-[10px] uppercase tracking-wider text-text-muted">
+        <span className="font-mono text-[12px] uppercase tracking-wider text-text-muted">
           Sort
         </span>
         <div className="flex rounded border border-border overflow-hidden">
@@ -63,9 +63,9 @@ export function SortFilterBar({
             <button
               key={opt.value}
               onClick={() => updateParams("sort", opt.value)}
-              className={`px-3 py-1 font-mono text-[11px] transition-colors ${
+              className={`px-3 py-1 font-mono text-[12px] transition-colors ${
                 currentSort === opt.value
-                  ? "bg-accent-gold/15 text-accent-gold"
+                  ? "bg-accent-gold/15 text-accent-gold-text"
                   : "text-text-muted hover:text-text-primary hover:bg-elevated"
               }`}
             >
@@ -78,15 +78,15 @@ export function SortFilterBar({
       {/* Filter controls (optional) */}
       {filterLabel && filterOptions && (
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-wider text-text-muted">
+          <span className="font-mono text-[12px] uppercase tracking-wider text-text-muted">
             {filterLabel}
           </span>
           <div className="flex rounded border border-border overflow-hidden">
             <button
               onClick={() => updateParams("filter", "all")}
-              className={`px-3 py-1 font-mono text-[11px] transition-colors ${
+              className={`px-3 py-1 font-mono text-[12px] transition-colors ${
                 !currentFilter || currentFilter === "all"
-                  ? "bg-accent-gold/15 text-accent-gold"
+                  ? "bg-accent-gold/15 text-accent-gold-text"
                   : "text-text-muted hover:text-text-primary hover:bg-elevated"
               }`}
             >
@@ -96,9 +96,9 @@ export function SortFilterBar({
               <button
                 key={opt.value}
                 onClick={() => updateParams("filter", opt.value)}
-                className={`px-3 py-1 font-mono text-[11px] transition-colors ${
+                className={`px-3 py-1 font-mono text-[12px] transition-colors ${
                   currentFilter === opt.value
-                    ? "bg-accent-gold/15 text-accent-gold"
+                    ? "bg-accent-gold/15 text-accent-gold-text"
                     : "text-text-muted hover:text-text-primary hover:bg-elevated"
                 }`}
               >

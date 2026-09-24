@@ -340,7 +340,7 @@ it("publish → NOTIFY → listener fires (real Postgres)", async () => {
 });
 ```
 
-**Fallback:** if pglite-socket setup proves too fiddly during implementation (test of round-trip works locally but flakes in vitest, or pglite-socket has incompatibility with the `pg` Client API), the implementer may fall back to running the integration test against `process.env.DATABASE_URL` (real Neon dev DB). This must be:
+**Fallback:** if pglite-socket setup proves too fiddly during implementation (test of round-trip works locally but flakes in vitest, or pglite-socket has incompatibility with the `pg` Client API), the implementer may fall back to running the integration test against `process.env.DATABASE_URL` (real Xata dev DB). This must be:
 
 - Skipped automatically if `DATABASE_URL` is unset or points to a production-looking connection string.
 - Documented in the test file with a comment explaining why the fallback was chosen.

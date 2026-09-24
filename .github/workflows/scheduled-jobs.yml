@@ -1,0 +1,78 @@
+name: Scheduled jobs
+
+on:
+  schedule:
+    - cron: "0 15 * * *"
+    - cron: "0 17 * * *"
+  workflow_dispatch:
+    inputs:
+      job:
+        description: Job to run
+        required: true
+        default: ingest-latest
+        type: choice
+        options:
+          - ingest-latest
+          - gift-sequence
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cultcodex-${{ github.event_name }}-${{ github.event.schedule || inputs.job }}
+  cancel-in-progress: false
+
+# Manual runs are staging-only and use a staging-specific secret. Scheduled
+# production runs remain inert until ENABLE_PRODUCTION_SCHEDULES is explicitly
+# set to "true" during cutover. Neither path accepts an arbitrary target URL.
+
+jobs:
+  ingest-latest:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && inputs.job == 'ingest-latest') ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 15 * * *' && vars.ENABLE_PRODUCTION_SCHEDULES == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Ingest latest uploads
+        env:
+          CRON_SECRET: ${{ github.event_name == 'workflow_dispatch' && secrets.STAGING_CRON_SECRET || secrets.CRON_SECRET }}
+          APP_BASE_URL: ${{ github.event_name == 'workflow_dispatch' && (vars.STAGING_BASE_URL || 'https://cultcodex-v2-staging.fly.dev') || vars.PRODUCTION_BASE_URL }}
+        run: |
+          test -n "$CRON_SECRET"
+          test -n "$APP_BASE_URL"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            test "$APP_BASE_URL" = "https://cultcodex-v2-staging.fly.dev"
+          else
+            test "$APP_BASE_URL" = "https://cultcodex.me"
+          fi
+          curl --fail-with-body --show-error --silent \
+            --retry 2 --retry-all-errors --max-time 300 \
+            --request POST \
+            --header "Authorization: Bearer $CRON_SECRET" \
+            "$APP_BASE_URL/api/cron/ingest-latest"
+
+  gift-sequence:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && inputs.job == 'gift-sequence') ||
+      (github.event_name == 'schedule' && github.event.schedule == '0 17 * * *' && vars.ENABLE_PRODUCTION_SCHEDULES == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Advance gift email sequence
+        env:
+          CRON_SECRET: ${{ github.event_name == 'workflow_dispatch' && secrets.STAGING_CRON_SECRET || secrets.CRON_SECRET }}
+          APP_BASE_URL: ${{ github.event_name == 'workflow_dispatch' && (vars.STAGING_BASE_URL || 'https://cultcodex-v2-staging.fly.dev') || vars.PRODUCTION_BASE_URL }}
+        run: |
+          test -n "$CRON_SECRET"
+          test -n "$APP_BASE_URL"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            test "$APP_BASE_URL" = "https://cultcodex-v2-staging.fly.dev"
+          else
+            test "$APP_BASE_URL" = "https://cultcodex.me"
+          fi
+          curl --fail-with-body --show-error --silent \
+            --retry 2 --retry-all-errors --max-time 300 \
+            --request POST \
+            --header "Authorization: Bearer $CRON_SECRET" \
+            "$APP_BASE_URL/api/cron/gift-sequence"

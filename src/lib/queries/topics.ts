@@ -1,11 +1,47 @@
 import { prisma } from "@/lib/db";
 import type { Prisma } from "@/generated/prisma/client";
 
+/** Card-shaped episode fields — the only ones a topic page renders. The old
+ *  `include: { episode: true }` pulled every column for every linked episode,
+ *  which is most of why /topics/tarot-readings shipped ~1 MB of HTML
+ *  (2026-08 audit). */
+const TOPIC_EPISODE_SELECT = {
+  id: true,
+  slug: true,
+  title: true,
+  episodeNumber: true,
+  airDate: true,
+  summaryShort: true,
+  thumbnailUrl: true,
+} satisfies Prisma.EpisodeSelect;
+
+/** Linked episodes rendered before deferring to /episodes?topic=<slug>. */
+export const TOPIC_EPISODES_TAKE = 100;
+/** Linked people/lore rendered as chips — full rows were being loaded for
+ *  every link, only four/two fields of which are ever rendered. */
+export const TOPIC_PEOPLE_TAKE = 60;
+export const TOPIC_LORE_TAKE = 60;
+
 export function buildTopicInclude() {
   return {
-    episodes: { include: { episode: true } },
-    people: { include: { person: true } },
-    lore: { include: { loreEntry: true } },
+    _count: { select: { episodes: true, people: true, lore: true } },
+    episodes: {
+      select: { episode: { select: TOPIC_EPISODE_SELECT } },
+      orderBy: { episode: { airDate: "desc" } },
+      take: TOPIC_EPISODES_TAKE,
+    },
+    people: {
+      select: {
+        person: {
+          select: { displayName: true, slug: true, avatarUrl: true, personType: true },
+        },
+      },
+      take: TOPIC_PEOPLE_TAKE,
+    },
+    lore: {
+      select: { loreEntry: { select: { title: true, slug: true } } },
+      take: TOPIC_LORE_TAKE,
+    },
   } satisfies Prisma.TopicInclude;
 }
 
@@ -15,15 +51,29 @@ export function buildTopicCountInclude() {
   } satisfies Prisma.TopicInclude;
 }
 
+export type TopicSort = "episodes" | "az" | "za";
+
+/**
+ * Sorting happens in the database. It used to happen in the page, AFTER an
+ * alphabetical page of 50 had been fetched — so "Most Connected" only
+ * re-ordered the A-block ("AI", "AI-generated content"…) while "tarot
+ * readings" (300+ episodes) sat on page 30 (2026-09 audit, TO-01).
+ */
 export async function getTopics(options?: {
   take?: number;
   skip?: number;
+  sort?: TopicSort;
 }) {
-  const { take = 50, skip = 0 } = options ?? {};
+  const { take = 50, skip = 0, sort = "az" } = options ?? {};
+
+  const orderBy: Prisma.TopicOrderByWithRelationInput[] =
+    sort === "episodes"
+      ? [{ episodes: { _count: "desc" } }, { title: "asc" }]
+      : [{ title: sort === "za" ? "desc" : "asc" }];
 
   return prisma.topic.findMany({
     include: buildTopicCountInclude(),
-    orderBy: { title: "asc" },
+    orderBy,
     take,
     skip,
   });

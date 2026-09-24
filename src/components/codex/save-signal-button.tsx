@@ -88,7 +88,7 @@ export function SaveSignalButton({
         {saved ? "\u25C6" : "\u25C7"}
       </span>
       {count > 0 && (
-        <span className={`font-mono ${isSm ? "text-[9px]" : "text-[10px]"}`}>
+        <span className={`font-mono ${isSm ? "text-[12px]" : "text-[12px]"}`}>
           {count}
         </span>
       )}

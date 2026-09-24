@@ -16,7 +16,7 @@ export function TerminalPanel({ header, className, children }: TerminalPanelProp
     >
       {header && (
         <div className="border-b border-accent-gold/20 bg-accent-gold-dim px-4 py-2">
-          <span className="font-mono text-xs font-bold text-accent-gold">
+          <span className="font-mono text-xs font-bold text-accent-gold-text">
             {header}
           </span>
         </div>

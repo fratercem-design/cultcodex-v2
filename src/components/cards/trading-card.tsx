@@ -8,7 +8,9 @@ import {
   CARD_TYPE_GLYPH,
   CARD_TYPE_LABEL,
   STAT_LABELS,
+  cardPoints,
 } from "@/lib/cards/rarity";
+import { GenerativeCardArt } from "@/lib/cards/card-art";
 import type { Rarity, CardType } from "@/generated/prisma/client";
 
 export interface TradingCardData {
@@ -28,6 +30,8 @@ export interface TradingCardData {
   isNew?: boolean;
   totalMinted?: number;
   maxSupply?: number | null;
+  bonusCredits?: number;
+  signalPower?: number;
 }
 
 interface TradingCardProps {
@@ -194,9 +198,20 @@ export function TradingCard({ card, size = "md", onClick, faceDown = false, noTi
             color: borderColor,
             letterSpacing: "0.08em",
             textShadow: glowShadow !== "none" ? glowShadow : undefined,
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
           }}>
             {RARITY_LABEL[card.rarity]}
             {isFoil && " ✦"}
+            <span style={{
+              fontSize: 8,
+              opacity: 0.7,
+              fontWeight: "bold",
+              letterSpacing: "0.04em",
+            }}>
+              ⚡{cardPoints(card.rarity, !!isFoil)}
+            </span>
           </span>
         </div>
 
@@ -217,7 +232,7 @@ export function TradingCard({ card, size = "md", onClick, faceDown = false, noTi
               sizes={`${width}px`}
             />
           ) : (
-            <PlaceholderArt cardType={card.cardType} rarity={card.rarity} color={borderColor} glyph={glyph} />
+            <GenerativeCardArt slug={card.slug} cardType={card.cardType} rarity={card.rarity} width={width} height={artHeight} />
           )}
           {/* Art gradient fade at bottom */}
           <div style={{
@@ -298,7 +313,7 @@ export function TradingCard({ card, size = "md", onClick, faceDown = false, noTi
         </div>
 
         {/* Abilities */}
-        {card.abilities.length > 0 && size !== "sm" && (
+        {(card.abilities?.length ?? 0) > 0 && size !== "sm" && (
           <div style={{
             padding: "3px 8px 4px",
             flexShrink: 0,
@@ -306,7 +321,7 @@ export function TradingCard({ card, size = "md", onClick, faceDown = false, noTi
             zIndex: 3,
             borderTop: `1px solid rgba(${hexToRgb(borderColor)},0.15)`,
           }}>
-            {card.abilities.slice(0, 2).map((ability) => (
+            {(card.abilities ?? []).slice(0, 2).map((ability) => (
               <div key={ability} style={{
                 fontFamily: "var(--font-mono), monospace",
                 fontSize: 8,
@@ -338,7 +353,7 @@ export function TradingCard({ card, size = "md", onClick, faceDown = false, noTi
               borderLeft: `2px solid rgba(${hexToRgb(borderColor)},0.3)`,
               paddingLeft: 5,
             }}>
-              "{card.flavourText}"
+              &quot;{card.flavourText}&quot;
             </div>
           </div>
         )}
@@ -370,7 +385,7 @@ export function TradingCard({ card, size = "md", onClick, faceDown = false, noTi
               color: "var(--term-fg-faint)",
               letterSpacing: "0.06em",
             }}>
-              {card.totalMinted?.toLocaleString() ?? "?"}/{card.maxSupply.toLocaleString()}
+              {card.totalMinted?.toLocaleString("en-US") ?? "?"}/{card.maxSupply.toLocaleString("en-US")}
             </span>
           )}
         </div>
@@ -415,58 +430,6 @@ function StatBar({ label, value, color, size }: { label: string; value: number; 
           transition: "width 600ms ease",
         }} />
       </div>
-    </div>
-  );
-}
-
-function PlaceholderArt({ cardType, rarity, color, glyph }: { cardType: CardType; rarity: Rarity; color: string; glyph: string }) {
-  const gradients: Record<CardType, string> = {
-    VOICE:        "radial-gradient(circle at 50% 60%, rgba(0,229,255,0.12) 0%, transparent 70%)",
-    TRANSMISSION: "radial-gradient(circle at 50% 50%, rgba(0,255,156,0.1) 0%, transparent 70%)",
-    LORE:         "radial-gradient(circle at 50% 40%, rgba(255,184,0,0.12) 0%, transparent 70%)",
-    SIGNAL:       "radial-gradient(circle at 50% 50%, rgba(179,136,255,0.1) 0%, transparent 70%)",
-    ORACLE:       "radial-gradient(circle at 50% 50%, rgba(255,56,96,0.12) 0%, transparent 70%)",
-    CIPHER:       "radial-gradient(circle at 50% 50%, rgba(255,43,214,0.1) 0%, transparent 70%)",
-    RELIC:        "radial-gradient(circle at 50% 50%, rgba(255,215,0,0.10) 0%, transparent 70%)",
-    ENTITY:       "radial-gradient(circle at 50% 50%, rgba(206,147,216,0.12) 0%, transparent 70%)",
-    PROPHECY:     "radial-gradient(circle at 50% 40%, rgba(255,128,171,0.12) 0%, transparent 70%)",
-    MEMBER:       "radial-gradient(circle at 50% 60%, rgba(128,222,234,0.10) 0%, transparent 70%)",
-    GLITCH:       "radial-gradient(circle at 50% 50%, rgba(255,109,0,0.12) 0%, transparent 70%)",
-    MAHAVIDYA:    "radial-gradient(circle at 50% 40%, rgba(255,152,0,0.15) 0%, transparent 70%)",
-    AVATAR:       "radial-gradient(circle at 50% 60%, rgba(179,157,219,0.12) 0%, transparent 70%)",
-    INCIDENT:     "radial-gradient(circle at 50% 50%, rgba(239,83,80,0.12) 0%, transparent 70%)",
-  };
-
-  return (
-    <div style={{
-      width: "100%",
-      height: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      background: gradients[cardType],
-      position: "relative",
-    }}>
-      {/* Geometric grid lines */}
-      <svg width="100%" height="100%" style={{ position: "absolute", inset: 0, opacity: 0.12 }}>
-        <defs>
-          <pattern id={`grid-${cardType}`} width="20" height="20" patternUnits="userSpaceOnUse">
-            <path d="M 20 0 L 0 0 0 20" fill="none" stroke={color} strokeWidth="0.5" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill={`url(#grid-${cardType})`} />
-      </svg>
-      <span style={{
-        fontSize: 48,
-        color,
-        textShadow: `0 0 20px ${color}`,
-        opacity: rarity === "STATIC" ? 0.4 : 0.7,
-        position: "relative",
-        zIndex: 1,
-        lineHeight: 1,
-      }}>
-        {glyph}
-      </span>
     </div>
   );
 }
@@ -522,7 +485,7 @@ function hexToRgb(cssVar: string): string {
     "var(--neon-3)":      "255,43,214",
     "var(--neon-4)":      "255,184,0",
     "var(--neon-5)":      "255,56,96",
-    "var(--term-fg-dim)": "120,140,160",
+    "var(--term-fg-dim)": "156,188,179",
   };
   return map[cssVar] ?? "120,140,160";
 }

@@ -16,10 +16,10 @@ interface Props {
 }
 
 const ACCENT_CLASS: Record<string, string> = {
-  gold:    "text-accent-gold border-accent-gold/30 hover:border-accent-gold/60 hover:bg-accent-gold/5",
-  violet:  "text-accent-violet border-accent-violet/30 hover:border-accent-violet/60 hover:bg-accent-violet/5",
+  gold:    "text-accent-gold-text border-accent-gold/30 hover:border-accent-gold/60 hover:bg-accent-gold/5",
+  violet:  "text-accent-violet-text border-accent-violet/30 hover:border-accent-violet/60 hover:bg-accent-violet/5",
   cyan:    "text-accent-cyan border-accent-cyan/30 hover:border-accent-cyan/60 hover:bg-accent-cyan/5",
-  crimson: "text-accent-crimson border-accent-crimson/30 hover:border-accent-crimson/60 hover:bg-accent-crimson/5",
+  crimson: "text-accent-crimson-text border-accent-crimson/30 hover:border-accent-crimson/60 hover:bg-accent-crimson/5",
   muted:   "text-text-muted border-border hover:border-border/60",
 };
 
@@ -31,12 +31,12 @@ export function EraNeighbors({ era, previous, next }: Props) {
   return (
     <section className="space-y-3">
       <div className="flex items-baseline justify-between gap-2">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/60">
-          /// within {era.sigil} {era.label}
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
+          {"/// within "}{era.sigil}{" "}{era.label}
         </p>
         <Link
           href={`/eras/${era.id}`}
-          className={`font-mono text-[10px] uppercase tracking-widest transition-colors ${accent.split(" ")[0]} hover:opacity-80`}
+          className={`font-mono text-[12px] uppercase tracking-widest transition-colors ${accent.split(" ")[0]} hover:opacity-80`}
         >
           Browse era →
         </Link>
@@ -50,7 +50,7 @@ export function EraNeighbors({ era, previous, next }: Props) {
           />
         ) : (
           <div className="rounded-lg border border-dashed border-border/60 bg-surface/30 p-4 flex items-center justify-center">
-            <p className="font-mono text-[10px] text-text-muted/40 uppercase tracking-widest">
+            <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
               ← era origin
             </p>
           </div>
@@ -63,7 +63,7 @@ export function EraNeighbors({ era, previous, next }: Props) {
           />
         ) : (
           <div className="rounded-lg border border-dashed border-border/60 bg-surface/30 p-4 flex items-center justify-center">
-            <p className="font-mono text-[10px] text-text-muted/40 uppercase tracking-widest">
+            <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
               era edge →
             </p>
           </div>
@@ -89,7 +89,7 @@ function EraNeighborCard({ episode, direction, accent }: EraNeighborCardProps) {
       className={`group flex items-center gap-3 rounded-lg border bg-surface px-3 py-3 transition-colors ${accent}`}
     >
       {direction === "previous" && (
-        <span className="font-mono text-[11px] opacity-50 group-hover:opacity-100 transition-opacity shrink-0">
+        <span className="font-mono text-[12px] opacity-50 group-hover:opacity-100 transition-opacity shrink-0">
           {arrow}
         </span>
       )}
@@ -104,13 +104,13 @@ function EraNeighborCard({ episode, direction, accent }: EraNeighborCardProps) {
         />
       )}
       <div className={`min-w-0 flex-1 ${direction === "next" ? "text-right" : ""}`}>
-        <p className="font-mono text-[9px] uppercase tracking-widest opacity-60">
+        <p className="font-mono text-[12px] uppercase tracking-widest opacity-60">
           {label}
         </p>
         <p className="font-sans text-xs text-text-primary leading-snug line-clamp-2 mt-0.5">
           {episode.title}
         </p>
-        <p className="font-mono text-[9px] text-text-muted/50 mt-0.5">
+        <p className="font-mono text-[12px] text-text-muted mt-0.5">
           {episode.episodeNumber != null
             ? `EP.${String(episode.episodeNumber).padStart(3, "0")} · `
             : ""}
@@ -118,7 +118,7 @@ function EraNeighborCard({ episode, direction, accent }: EraNeighborCardProps) {
         </p>
       </div>
       {direction === "next" && (
-        <span className="font-mono text-[11px] opacity-50 group-hover:opacity-100 transition-opacity shrink-0">
+        <span className="font-mono text-[12px] opacity-50 group-hover:opacity-100 transition-opacity shrink-0">
           {arrow}
         </span>
       )}

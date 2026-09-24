@@ -25,8 +25,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 const STATUS_STYLES: Record<string, { label: string; dot: string; badge: string }> = {
-  active:   { label: "active",   dot: "bg-accent-violet",         badge: "border-accent-violet/30 text-accent-violet bg-accent-violet/10" },
-  emerging: { label: "emerging", dot: "bg-accent-gold animate-pulse", badge: "border-accent-gold/30 text-accent-gold bg-accent-gold/10" },
+  active:   { label: "active",   dot: "bg-accent-violet",         badge: "border-accent-violet/30 text-accent-violet-text bg-accent-violet/10" },
+  emerging: { label: "emerging", dot: "bg-accent-gold animate-pulse", badge: "border-accent-gold/30 text-accent-gold-text bg-accent-gold/10" },
   resolved: { label: "resolved", dot: "bg-border",                badge: "border-border text-text-muted" },
 };
 
@@ -40,11 +40,11 @@ export default async function ThreadPage({ params }: PageProps) {
     return (
       <main className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
-          <p className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet">/// initiate_only</p>
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">{"/// initiate_only"}</p>
           <p className="font-display text-xl font-bold text-text-primary">This thread is sealed.</p>
           <Link
             href="/premium#access"
-            className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors"
+            className="inline-flex items-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/20 transition-colors"
           >
             Become Initiate+ →
           </Link>
@@ -87,12 +87,12 @@ export default async function ThreadPage({ params }: PageProps) {
           <div className="flex items-center gap-3">
             <Link
               href="/psychenomicon"
-              className="font-mono text-[9px] uppercase tracking-[0.4em] text-accent-violet/60 hover:text-accent-violet transition-colors"
+              className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70 hover:text-accent-violet-text transition-colors"
             >
               ← Psychenomicon
             </Link>
             <span className="text-border">/</span>
-            <span className="font-mono text-[9px] uppercase tracking-[0.4em] text-text-muted">thread</span>
+            <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">thread</span>
           </div>
 
           <div className="flex flex-wrap items-start gap-4">
@@ -109,10 +109,10 @@ export default async function ThreadPage({ params }: PageProps) {
             </div>
 
             <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-              <span className={`inline-flex items-center rounded border px-2.5 py-1 font-mono text-[9px] uppercase ${style.badge}`}>
+              <span className={`inline-flex items-center rounded border px-2.5 py-1 font-mono text-[12px] uppercase ${style.badge}`}>
                 {style.label}
               </span>
-              <span className="font-mono text-[9px] text-text-muted">
+              <span className="font-mono text-[12px] text-text-muted">
                 {chapters.length} chapter{chapters.length !== 1 ? "s" : ""}
               </span>
             </div>
@@ -131,9 +131,9 @@ export default async function ThreadPage({ params }: PageProps) {
         )}
         {thread.status === "emerging" && (
           <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-5 py-4 flex items-start gap-3">
-            <span className="text-accent-gold text-sm flex-shrink-0 mt-0.5">▸</span>
+            <span className="text-accent-gold-text text-sm flex-shrink-0 mt-0.5">▸</span>
             <p className="text-xs text-text-muted leading-relaxed">
-              This thread is <span className="text-accent-gold font-medium">emerging</span> — patterns are forming but not yet fully named. Watch for escalation.
+              This thread is <span className="text-accent-gold-text font-medium">emerging</span> — patterns are forming but not yet fully named. Watch for escalation.
             </p>
           </div>
         )}
@@ -141,7 +141,7 @@ export default async function ThreadPage({ params }: PageProps) {
         {/* Chapter timeline */}
         {chapters.length > 0 ? (
           <section className="space-y-4">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted">/// chapter_appearances</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// chapter_appearances"}</p>
             <div className="relative pl-6">
               <div className="absolute left-[9px] top-2 bottom-2 w-px bg-border" />
               <div className="space-y-4">
@@ -157,24 +157,24 @@ export default async function ThreadPage({ params }: PageProps) {
                         className="group block rounded-lg border border-border bg-surface p-4 hover:border-accent-violet/40 hover:bg-accent-violet/5 transition-all space-y-2"
                       >
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className={`font-mono text-[10px] flex-shrink-0 ${c.isMajorEvent ? "text-accent-gold" : "text-text-muted"}`}>
+                          <span className={`font-mono text-[12px] flex-shrink-0 ${c.isMajorEvent ? "text-accent-gold-text" : "text-text-muted"}`}>
                             CH.{String(c.chapterNumber).padStart(3, "0")}{c.isMajorEvent ? " ✦" : ""}
                           </span>
                           {c.episode && (
-                            <span className="font-mono text-[9px] text-text-muted truncate">
+                            <span className="font-mono text-[12px] text-text-muted truncate">
                               {c.episode.episodeNumber ? `EP.${String(c.episode.episodeNumber).padStart(3, "0")} ·` : ""} {c.episode.title}
                             </span>
                           )}
                         </div>
-                        <p className={`font-mono text-xs font-medium group-hover:text-accent-violet transition-colors ${c.isMajorEvent ? "text-accent-gold" : "text-text-primary"}`}>
+                        <p className={`font-mono text-xs font-medium group-hover:text-accent-violet-text transition-colors ${c.isMajorEvent ? "text-accent-gold-text" : "text-text-primary"}`}>
                           {c.title}
                         </p>
                         {c.emergingSignals.length > 0 && (
                           <div className="space-y-1 pt-1">
                             {c.emergingSignals.slice(0, 2).map((s, j) => (
                               <div key={j} className="flex items-start gap-2">
-                                <span className="text-accent-gold/60 font-mono text-[9px] flex-shrink-0 mt-0.5">▸</span>
-                                <p className="text-[10px] text-text-muted leading-relaxed line-clamp-1">{s}</p>
+                                <span className="text-accent-gold-text/80 font-mono text-[12px] flex-shrink-0 mt-0.5">▸</span>
+                                <p className="text-[12px] text-text-muted leading-relaxed line-clamp-1">{s}</p>
                               </div>
                             ))}
                           </div>
@@ -194,7 +194,7 @@ export default async function ThreadPage({ params }: PageProps) {
         <div className="border-t border-border pt-6 flex items-center justify-between">
           <Link
             href="/psychenomicon"
-            className="font-mono text-[10px] text-text-muted hover:text-accent-violet transition-colors"
+            className="font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors"
           >
             ← Return to Psychenomicon
           </Link>

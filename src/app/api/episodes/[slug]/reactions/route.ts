@@ -26,8 +26,14 @@ export async function GET(
   const user = await getCurrentUser();
   const counts = await getReactionCounts(episode.id, user?.id);
 
+  // Per-user field in the payload — see the note in the quote reactions route.
+  // Only the anonymous response is safe to share across viewers.
   return NextResponse.json(counts, {
-    headers: { "Cache-Control": "public, s-maxage=10, stale-while-revalidate=30" },
+    headers: {
+      "Cache-Control": user
+        ? "private, no-store"
+        : "public, s-maxage=10, stale-while-revalidate=30",
+    },
   });
 }
 

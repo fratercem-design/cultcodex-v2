@@ -40,14 +40,14 @@ export function ShareButtons({ url, title, type, quoteText }: ShareButtonsProps)
     <div className="flex items-center gap-1">
       <button
         onClick={shareToTwitter}
-        className="rounded px-2 py-1 font-mono text-[10px] text-text-muted hover:text-accent-gold hover:bg-elevated transition-colors"
+        className="rounded px-2 py-1 font-mono text-[12px] text-text-muted hover:text-accent-gold-text hover:bg-elevated transition-colors"
         title="Share on X/Twitter"
       >
         𝕏
       </button>
       <button
         onClick={copyLink}
-        className="rounded px-2 py-1 font-mono text-[10px] text-text-muted hover:text-accent-gold hover:bg-elevated transition-colors"
+        className="rounded px-2 py-1 font-mono text-[12px] text-text-muted hover:text-accent-gold-text hover:bg-elevated transition-colors"
         title="Copy link"
       >
         {copied === "link" ? "✓ Copied" : "🔗 Link"}
@@ -55,7 +55,7 @@ export function ShareButtons({ url, title, type, quoteText }: ShareButtonsProps)
       {type === "quote" && quoteText && (
         <button
           onClick={copyEmbed}
-          className="rounded px-2 py-1 font-mono text-[10px] text-text-muted hover:text-accent-gold hover:bg-elevated transition-colors"
+          className="rounded px-2 py-1 font-mono text-[12px] text-text-muted hover:text-accent-gold-text hover:bg-elevated transition-colors"
           title="Copy embed code"
         >
           {copied === "embed" ? "✓ Copied" : "⟨/⟩ Embed"}

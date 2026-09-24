@@ -1,6 +1,18 @@
 name: CultofPsyche Transcript Import
 
 on:
+  # Nothing was fetching transcripts automatically. The daily Vercel cron
+  # (/api/cron/ingest-latest, 15:00 UTC) creates Episode rows from YouTube
+  # metadata but touches no transcripts, and this workflow was dispatch-only —
+  # so every new episode sat transcript-less, and therefore un-enriched and
+  # without a real meta description, until someone triggered this by hand.
+  #
+  # Runs 90 minutes after that ingest so the new rows exist. On a schedule run
+  # github.event.inputs is null, so the `|| default` fallbacks in the run step
+  # apply: content type "original", all missing transcripts, 1500ms apart. The
+  # script fetches the missing list first and exits early when there is none.
+  schedule:
+    - cron: "30 16 * * *"
   workflow_dispatch:
     inputs:
       content_type:
@@ -28,9 +40,9 @@ jobs:
     timeout-minutes: 120
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: 'npm'
@@ -47,7 +59,25 @@ jobs:
         run: |
           if [ -n "$YOUTUBE_COOKIES" ]; then
             printf '%s' "$YOUTUBE_COOKIES" > /tmp/yt-cookies.txt
-            echo "Cookies written."
+            # yt-dlp rejects a non-Netscape jar before fetching anything, so one
+            # malformed secret failed every transcript, public videos included
+            # (same guard as asr-pipeline.yml). Discard it and fetch without.
+            if ! head -n 1 /tmp/yt-cookies.txt | grep -qE '^# (Netscape )?HTTP Cookie File'; then
+              echo "::warning title=Bad cookies::YOUTUBE_COOKIES is not Netscape format - discarding. Public videos will still fetch; age-restricted and members-only ones will fail."
+              rm -f /tmp/yt-cookies.txt
+            else
+              # Names only, never values: shows whether the jar actually carries
+              # a signed-in YouTube session (a logged-out export still passes
+              # the header check but gets "Sign in to confirm you're not a bot").
+              echo "Cookies written: $(grep -cv '^#[^H]' /tmp/yt-cookies.txt) entries."
+              for n in LOGIN_INFO SID __Secure-1PSID __Secure-3PSID SAPISID; do
+                if awk -F'\t' -v n="$n" '$6 == n { f = 1 } END { exit !f }' /tmp/yt-cookies.txt; then
+                  echo "  $n: present"
+                else
+                  echo "  $n: MISSING"
+                fi
+              done
+            fi
           else
             echo "No YOUTUBE_COOKIES secret — transcript fetch will likely fail."
           fi
@@ -58,6 +88,9 @@ jobs:
           VERCEL_URL: https://cultcodex.me
           YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
         run: |
+          # Without pipefail, tee's exit code masks the script's, so a FATAL
+          # (e.g. a rejected ENRICH_SECRET) still showed as a green run.
+          set -o pipefail
           npx tsx scripts/import-episodes-ytdlp.ts \
             --content-type "${{ github.event.inputs.content_type || 'original' }}" \
             --delay "${{ github.event.inputs.delay_ms || '1500' }}" \

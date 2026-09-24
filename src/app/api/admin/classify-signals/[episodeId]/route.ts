@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
-import Anthropic from "@anthropic-ai/sdk";
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+import { anthropic, bedrockModelId } from "@/lib/anthropic";
 
 const BATCH_SIZE = 40;
 
@@ -25,7 +23,7 @@ async function classifyBatch(
     .join("\n");
 
   const message = await anthropic.messages.create({
-    model: "claude-haiku-4-5-20251001",
+    model: bedrockModelId(process.env.ENRICHMENT_FALLBACK_MODEL ?? "us.anthropic.claude-haiku-4-5-20251001-v1:0"),
     max_tokens: 512,
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: input }],

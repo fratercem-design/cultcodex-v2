@@ -2,7 +2,8 @@
  * POST /api/search/semantic
  *
  * Multi-concept vector similarity search over transcript segments.
- * Subscription-gated — admin or active subscriber only.
+ * Public. Anonymous callers get a tighter per-IP limit; everyone shares the
+ * global daily LLM budget below.
  *
  * Body:
  *   concepts  Array<{ concept: string; threshold?: number }> (1–5 concepts)
@@ -12,24 +13,50 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
-import { isSubscribed } from "@/lib/subscription";
 import { semanticSearch } from "@/lib/queries/semantic";
 import { getEraById } from "@/lib/eras";
+import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
+import { consumeLlmBudget } from "@/lib/llm-budget";
+import { isDeepSearchEnabled } from "@/lib/deep-search";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  const user = await getCurrentUser();
-  const canAccess = user
-    ? user.role === "admin" || (await isSubscribed(user.id))
-    : false;
-
-  if (!canAccess) {
+  // Offline until the TranscriptSegment.embedding column and its vectors are
+  // restored on Xata; the column did not survive the migration. Set
+  // DEEP_SEARCH_ENABLED=1 on the Fly app to turn it back on.
+  if (!isDeepSearchEnabled()) {
     return NextResponse.json(
-      { error: "Deep search requires an active subscription." },
-      { status: 403 }
+      { error: "Deep Search is temporarily offline. Full-text transcript search at /transcripts still works." },
+      { status: 503 }
+    );
+  }
+
+  const user = await getCurrentUser();
+
+  // Each query embeds its concepts via OpenAI — throttle to bound cost.
+  const callerKey = clientKey(req, user?.id);
+  const perMinute = user ? 30 : 10;
+  const rl = rateLimit(`semantic:${callerKey}`, {
+    limit: perMinute,
+    windowMs: 60_000,
+  });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "Too many searches. Please wait a moment." },
+      { status: 429, headers: { "Retry-After": String(rl.retryAfterSec) } }
+    );
+  }
+  const sharedRl = await sharedRateLimit("semantic", callerKey, {
+    limit: perMinute,
+    windowMs: 60_000,
+  });
+  if (!sharedRl.ok) {
+    return NextResponse.json(
+      { error: "Too many searches. Please wait a moment." },
+      { status: 429, headers: { "Retry-After": String(sharedRl.retryAfterSec) } }
     );
   }
 
@@ -65,6 +92,25 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   });
 
   const parsedLimit = typeof limit === "number" ? Math.min(Math.max(Math.floor(limit), 1), 50) : 20;
+
+  // Denial-of-wallet guard: each concept is an OpenAI embedding call. A per-IP
+  // rate limit can't stop an IP-rotating attacker, so also charge the GLOBAL
+  // daily cap (one unit per concept). AI_KILLSWITCH=1 disables instantly.
+  const budget = await consumeLlmBudget(
+    "semantic",
+    Number(process.env.SEMANTIC_DAILY_CAP ?? "1000"),
+    parsedConcepts.length,
+  );
+  if (!budget.ok) {
+    const status = budget.reason === "store_error" ? 503 : 429;
+    const error =
+      budget.reason === "killswitch"
+        ? "Deep search is temporarily disabled."
+        : budget.reason === "store_error"
+          ? "Deep search is temporarily unavailable. Please try again."
+          : "Deep search is busy right now. Please try again later.";
+    return NextResponse.json({ error }, { status });
+  }
 
   let eraDateStart: Date | undefined;
   let eraDateEnd: Date | undefined;

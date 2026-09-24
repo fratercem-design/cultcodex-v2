@@ -1,8 +1,4 @@
 {
-  "crons": [
-    {
-      "path": "/api/cron/ingest-latest",
-      "schedule": "0 15 * * *"
-    }
-  ]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "next build"
 }

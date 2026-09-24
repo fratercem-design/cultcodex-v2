@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 export const revalidate = 3600;
 
 export const metadata: Metadata = buildMetadata({
-  title: "Eras of the Archive — CULT CODEX",
+  title: "Eras of the Archive",
   description:
     "The Cult of Psyche archive divided into its five defining eras — from the first raw transmissions to the ongoing signal. Browse episodes by the period that shaped them.",
   path: "/eras",
@@ -23,10 +23,10 @@ const ERA_BORDER: Record<string, string> = {
 };
 
 const ERA_TEXT: Record<string, string> = {
-  gold:    "text-accent-gold",
-  violet:  "text-accent-violet",
+  gold:    "text-accent-gold-text",
+  violet:  "text-accent-violet-text",
   cyan:    "text-accent-cyan",
-  crimson: "text-accent-crimson",
+  crimson: "text-accent-crimson-text",
   muted:   "text-text-muted",
 };
 
@@ -39,10 +39,10 @@ const ERA_BG: Record<string, string> = {
 };
 
 const ERA_SIGIL_BG: Record<string, string> = {
-  gold:    "bg-accent-gold/10    text-accent-gold",
-  violet:  "bg-accent-violet/10  text-accent-violet",
+  gold:    "bg-accent-gold/10    text-accent-gold-text",
+  violet:  "bg-accent-violet/10  text-accent-violet-text",
   cyan:    "bg-accent-cyan/10    text-accent-cyan",
-  crimson: "bg-accent-crimson/10 text-accent-crimson",
+  crimson: "bg-accent-crimson/10 text-accent-crimson-text",
   muted:   "bg-surface           text-text-muted",
 };
 
@@ -50,7 +50,7 @@ async function getEraCounts(): Promise<Map<string, number>> {
   const rows = await prisma.episode.findMany({
     where: { status: "published", airDate: { not: null } },
     select: { airDate: true },
-  });
+  }).catch(() => []);
 
   const counts = new Map<string, number>();
   for (const row of rows) {
@@ -111,10 +111,10 @@ export default async function ErasPage() {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-3 flex-wrap mb-0.5">
-                      <span className="font-mono text-[9px] text-text-muted/50 uppercase tracking-[0.4em]">
+                      <span className="font-mono text-[12px] text-text-muted uppercase tracking-[0.12em]">
                         Era {String(index + 1).padStart(2, "0")}
                       </span>
-                      <span className="font-mono text-[9px] text-text-muted/40">
+                      <span className="font-mono text-[12px] text-text-muted">
                         {rangeLabel}
                       </span>
                     </div>
@@ -122,7 +122,7 @@ export default async function ErasPage() {
                     <h2 className={`font-display text-xl font-bold leading-tight mb-0.5 ${ERA_TEXT[era.color]}`}>
                       {era.label}
                     </h2>
-                    <p className="font-mono text-[10px] text-text-muted/60 uppercase tracking-widest mb-3">
+                    <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest mb-3">
                       {era.subtitle}
                     </p>
 
@@ -131,7 +131,7 @@ export default async function ErasPage() {
                     </p>
 
                     <div className="flex items-center justify-between gap-4 flex-wrap">
-                      <span className="font-mono text-[10px] text-text-muted/50">
+                      <span className="font-mono text-[12px] text-text-muted">
                         {count > 0
                           ? `${count} episode${count !== 1 ? "s" : ""} in the archive`
                           : "Episodes being catalogued"}
@@ -140,7 +140,7 @@ export default async function ErasPage() {
                         {count > 0 && (
                           <Link
                             href={`/episodes?era=${era.id}`}
-                            className={`inline-flex items-center gap-1.5 font-mono text-[10px] ${ERA_TEXT[era.color]} hover:opacity-80 transition-opacity`}
+                            className={`inline-flex items-center gap-1.5 font-mono text-[12px] ${ERA_TEXT[era.color]} hover:opacity-80 transition-opacity`}
                           >
                             Browse episodes
                             <span aria-hidden="true">→</span>
@@ -148,7 +148,7 @@ export default async function ErasPage() {
                         )}
                         <Link
                           href={`/eras/${era.id}`}
-                          className={`inline-flex items-center gap-1.5 font-mono text-[10px] ${ERA_TEXT[era.color]} hover:opacity-80 transition-opacity`}
+                          className={`inline-flex items-center gap-1.5 font-mono text-[12px] ${ERA_TEXT[era.color]} hover:opacity-80 transition-opacity`}
                         >
                           Era overview
                           <span aria-hidden="true">↗</span>
@@ -164,12 +164,12 @@ export default async function ErasPage() {
 
         {/* Footer */}
         <div className="pt-6 border-t border-border flex items-center justify-between gap-4 flex-wrap">
-          <p className="font-mono text-[10px] text-text-muted/40">
+          <p className="font-mono text-[12px] text-text-muted">
             {totalEpisodes} episodes catalogued across {ERAS.length} eras
           </p>
           <Link
             href="/episodes"
-            className="font-mono text-[10px] text-text-muted hover:text-text-primary transition-colors"
+            className="font-mono text-[12px] text-text-muted hover:text-text-primary transition-colors"
           >
             Browse full archive →
           </Link>

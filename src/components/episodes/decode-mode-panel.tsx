@@ -44,10 +44,10 @@ interface DecodeModeLockedProps {
 function DecodeModeLocked({ isAuthenticated }: DecodeModeLockedProps) {
   return (
     <div className="rounded-lg border border-accent-violet/30 bg-accent-violet/5 p-8 text-center space-y-4">
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">
-        /// initiate_only
+      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">
+        {"/// initiate_only"}
       </p>
-      <h3 className="font-display text-lg font-bold text-accent-violet">
+      <h3 className="font-display text-lg font-bold text-accent-violet-text">
         Decode Mode — Initiates see this.
       </h3>
       <p className="text-sm text-text-muted max-w-sm mx-auto leading-relaxed">
@@ -57,14 +57,14 @@ function DecodeModeLocked({ isAuthenticated }: DecodeModeLockedProps) {
         {!isAuthenticated && (
           <Link
             href="/api/auth/signin"
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2 font-mono text-xs text-text-muted hover:text-text-primary hover:border-text-muted/40 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2 font-mono text-xs text-text-muted hover:text-text-primary hover:border-text-muted/60 transition-colors"
           >
             Sign in first
           </Link>
         )}
         <Link
           href="/premium#access"
-          className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 hover:bg-accent-violet/20 px-5 py-2 font-mono text-xs font-bold text-accent-violet transition-colors"
+          className="inline-flex items-center gap-2 rounded-lg border border-accent-violet/40 bg-accent-violet/10 hover:bg-accent-violet/20 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text transition-colors"
         >
           Become Initiate+ — $10/mo <span aria-hidden>→</span>
         </Link>
@@ -81,7 +81,7 @@ function DecodeSection({ title, children }: { title: string; children: React.Rea
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-elevated transition-colors"
       >
-        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent-violet">{title}</span>
+        <span className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">{title}</span>
         <span className="font-mono text-xs text-text-muted">{open ? "−" : "+"}</span>
       </button>
       {open && <div className="px-4 pb-4 pt-1 space-y-3">{children}</div>}
@@ -94,10 +94,10 @@ function Tag({ label, variant = "default" }: { label: string; variant?: "default
     variant === "red"
       ? "border-red-500/30 bg-red-500/10 text-red-400"
       : variant === "violet"
-      ? "border-accent-violet/30 bg-accent-violet/10 text-accent-violet"
+      ? "border-accent-violet/30 bg-accent-violet/10 text-accent-violet-text"
       : "border-border bg-elevated text-text-primary";
   return (
-    <span className={`inline-flex items-center rounded border px-2 py-0.5 font-mono text-[10px] ${cls}`}>
+    <span className={`inline-flex items-center rounded border px-2 py-0.5 font-mono text-[12px] ${cls}`}>
       {label}
     </span>
   );
@@ -117,7 +117,7 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
   if (!decodeData) {
     return (
       <div className="rounded-lg border border-border bg-surface p-8 text-center space-y-2">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">/// decode_pending</p>
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// decode_pending"}</p>
         <p className="text-sm text-text-muted">Analysis not yet generated for this episode.</p>
       </div>
     );
@@ -128,10 +128,10 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">/// decode_mode</p>
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">{"/// decode_mode"}</p>
         {generated_at && (
-          <p className="font-mono text-[9px] text-text-muted">
-            Generated {new Date(generated_at).toLocaleDateString()}
+          <p className="font-mono text-[12px] text-text-muted">
+            Generated {new Date(generated_at).toLocaleDateString("en-US", { timeZone: "UTC" })}
           </p>
         )}
       </div>
@@ -145,7 +145,7 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
                 <p className="font-mono text-xs font-semibold text-text-primary">{p.speaker}</p>
                 {p.traits.length > 0 && (
                   <div>
-                    <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted mb-1">Traits</p>
+                    <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted mb-1">Traits</p>
                     <div className="flex flex-wrap gap-1">
                       {p.traits.map((t) => <Tag key={t} label={t} variant="violet" />)}
                     </div>
@@ -153,7 +153,7 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
                 )}
                 {p.drivers.length > 0 && (
                   <div>
-                    <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted mb-1">Drivers</p>
+                    <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted mb-1">Drivers</p>
                     <ul className="space-y-1">
                       {p.drivers.map((d) => (
                         <li key={d} className="text-xs text-text-muted leading-relaxed pl-3 border-l border-accent-violet/30">
@@ -165,7 +165,7 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
                 )}
                 {p.signals.length > 0 && (
                   <div>
-                    <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted mb-1">Observable Signals</p>
+                    <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted mb-1">Observable Signals</p>
                     <ul className="space-y-1">
                       {p.signals.map((s) => (
                         <li key={s} className="text-xs text-text-muted leading-relaxed pl-3 border-l border-border">
@@ -186,12 +186,12 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
         <DecodeSection title="Power Dynamics">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted">Dominant</span>
+              <span className="font-mono text-[12px] uppercase tracking-widest text-text-muted">Dominant</span>
               <Tag label={power_dynamics.dominant} variant="violet" />
             </div>
             {power_dynamics.evidence.length > 0 && (
               <div>
-                <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted mb-1">Evidence</p>
+                <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted mb-1">Evidence</p>
                 <ul className="space-y-1.5">
                   {power_dynamics.evidence.map((e) => (
                     <li key={e} className="text-xs text-text-muted leading-relaxed pl-3 border-l border-accent-violet/30">
@@ -203,7 +203,7 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
             )}
             {power_dynamics.shifts.length > 0 && (
               <div>
-                <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted mb-1">Power Shifts</p>
+                <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted mb-1">Power Shifts</p>
                 <ul className="space-y-1.5">
                   {power_dynamics.shifts.map((s) => (
                     <li key={s} className="text-xs text-text-muted leading-relaxed pl-3 border-l border-amber-500/30">
@@ -225,9 +225,9 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
               <div key={i} className="rounded border border-red-500/20 bg-red-500/5 p-3 space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2">
                   <Tag label={m.tactic} variant="red" />
-                  <span className="font-mono text-[9px] text-text-muted">by {m.who}</span>
+                  <span className="font-mono text-[12px] text-text-muted">by {m.who}</span>
                 </div>
-                <p className="text-xs text-text-muted leading-relaxed italic">"{m.evidence}"</p>
+                <p className="text-xs text-text-muted leading-relaxed italic">&quot;{m.evidence}&quot;</p>
               </div>
             ))}
           </div>
@@ -255,7 +255,7 @@ export function DecodeModePanel({ decodeData, isUnlocked, isAuthenticated }: Dec
           <ul className="space-y-2">
             {key_patterns.map((p) => (
               <li key={p} className="flex items-start gap-2 text-xs text-text-muted leading-relaxed">
-                <span className="text-accent-violet mt-0.5 flex-shrink-0">✦</span>
+                <span className="text-accent-violet-text mt-0.5 flex-shrink-0">✦</span>
                 {p}
               </li>
             ))}

@@ -50,7 +50,7 @@ export function ClaimForm({ token, recipientName }: ClaimFormProps) {
     return (
       <div className="text-center space-y-6 animate-pulse-slow">
         <div className="text-5xl text-accent-gold">✦</div>
-        <div className="font-mono text-xs uppercase tracking-[0.4em] text-accent-gold/60">
+        <div className="font-mono text-xs uppercase tracking-[0.12em] text-accent-gold-text/80">
           Sealed
         </div>
         <h2 className="font-serif text-3xl text-white">{title}</h2>
@@ -67,7 +67,7 @@ export function ClaimForm({ token, recipientName }: ClaimFormProps) {
       <div className="space-y-3">
         <label
           htmlFor="oracle-title"
-          className="block font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold/60"
+          className="block font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80"
         >
           Your name in the archive
         </label>
@@ -80,16 +80,16 @@ export function ClaimForm({ token, recipientName }: ClaimFormProps) {
           placeholder="Speak your name…"
           disabled={status === "submitting"}
           autoFocus
-          className="w-full bg-transparent border border-accent-gold/30 rounded-lg px-4 py-3 font-serif text-xl text-white placeholder:text-text-muted/40 focus:outline-none focus:border-accent-gold/70 focus:ring-1 focus:ring-accent-gold/30 transition-all"
+          className="w-full bg-transparent border border-accent-gold/30 rounded-lg px-4 py-3 font-serif text-xl text-white placeholder:text-text-muted focus:outline-none focus:border-accent-gold/70 focus:ring-1 focus:ring-accent-gold/30 transition-all"
         />
-        <p className="text-[10px] font-mono text-text-muted">
+        <p className="text-[12px] font-mono text-text-muted">
           This will appear on your profile and in the Hall of Founding Oracles.
         </p>
       </div>
 
       {/* Suggestions */}
       <div className="space-y-2">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted/50">
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           Or choose from the whispers…
         </p>
         <div className="flex flex-wrap gap-2">
@@ -98,7 +98,7 @@ export function ClaimForm({ token, recipientName }: ClaimFormProps) {
               key={s}
               type="button"
               onClick={() => setTitle(s)}
-              className="px-3 py-1.5 rounded-full border border-accent-gold/20 text-xs font-mono text-text-muted hover:border-accent-gold/50 hover:text-accent-gold transition-all"
+              className="px-3 py-1.5 rounded-full border border-accent-gold/20 text-xs font-mono text-text-muted hover:border-accent-gold/50 hover:text-accent-gold-text transition-all"
             >
               {s}
             </button>
@@ -115,12 +115,12 @@ export function ClaimForm({ token, recipientName }: ClaimFormProps) {
       <button
         type="submit"
         disabled={!title.trim() || status === "submitting"}
-        className="w-full py-4 rounded-lg border border-accent-gold/60 bg-accent-gold/10 hover:bg-accent-gold/20 text-accent-gold font-mono text-sm uppercase tracking-[0.3em] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full py-4 rounded-lg border border-accent-gold/60 bg-accent-gold/10 hover:bg-accent-gold/20 text-accent-gold-text font-mono text-sm uppercase tracking-[0.12em] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {status === "submitting" ? "Sealing…" : "Seal My Name"}
       </button>
 
-      <p className="text-center text-[10px] font-mono text-text-muted/40">
+      <p className="text-center text-[12px] font-mono text-text-muted">
         You may change this at any time from your profile settings.
       </p>
     </form>

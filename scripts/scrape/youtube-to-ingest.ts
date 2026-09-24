@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from "fs";
 import { join } from "path";
 import { parsePublishedDate } from "./lib";
+import { cleanSummary, isJunkSummary, isTemplateJunk } from "../../src/lib/content-hygiene";
 import type { YouTubeVideo, YouTubeRaw } from "./types";
 import type { EpisodeRow } from "../ingest/schemas";
 
@@ -23,10 +24,15 @@ function extractSummary(description: string): string | undefined {
   if (!description || !hasContentBeyondUrls(description)) return undefined;
 
   const beforeUrl = description.split(/https?:\/\//)[0].trim();
-  if (beforeUrl.length > 10) return beforeUrl;
+  const candidate =
+    beforeUrl.length > 10 ? beforeUrl : description.replace(/https?:\/\/\S+/g, "").trim();
+  if (candidate.length <= 10) return undefined;
 
-  const cleaned = description.replace(/https?:\/\/\S+/g, "").trim();
-  return cleaned.length > 10 ? cleaned : undefined;
+  // Strip sponsor/boilerplate prose (StreamYard promos, vidIQ, AI preambles)
+  // so junk never enters the DB — same patterns data-ops uses to clean prod.
+  if (isTemplateJunk(candidate)) return undefined;
+  const cleaned = cleanSummary(candidate);
+  return isJunkSummary(cleaned) ? undefined : cleaned;
 }
 
 export function transformVideo(

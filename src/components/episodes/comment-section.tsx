@@ -173,13 +173,13 @@ export function CommentSection({
               className="w-full rounded-lg border border-border bg-surface px-4 py-3 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-accent-gold focus:outline-none focus:ring-1 focus:ring-accent-gold resize-none transition-colors"
             />
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[10px] text-text-muted">
+              <span className="font-mono text-[12px] text-text-muted">
                 {newComment.length}/2000
               </span>
               <button
                 onClick={() => submitComment(newComment)}
                 disabled={submitting || newComment.trim().length === 0}
-                className="rounded bg-accent-gold/10 px-4 py-1.5 font-mono text-xs text-accent-gold transition-colors hover:bg-accent-gold/20 disabled:opacity-50"
+                className="rounded bg-accent-gold/10 px-4 py-1.5 font-mono text-xs text-accent-gold-text transition-colors hover:bg-accent-gold/20 disabled:opacity-50"
               >
                 {submitting ? "Posting..." : "Post Comment"}
               </button>
@@ -188,14 +188,14 @@ export function CommentSection({
         ) : (
           <div className="rounded-lg border border-border bg-surface p-4 text-center">
             <p className="text-sm text-text-muted">
-              <a href="/auth/signin" className="text-accent-gold hover:underline">Sign in</a>{" "}
+              <a href="/auth/signin" className="text-accent-gold-text hover:underline">Sign in</a>{" "}
               to join the conversation.
             </p>
           </div>
         )}
       </div>
 
-      {error && <p className="text-xs text-accent-crimson font-mono">{error}</p>}
+      {error && <p className="text-xs text-accent-crimson-text font-mono">{error}</p>}
 
       {/* Comments list */}
       {comments.length === 0 ? (
@@ -243,13 +243,13 @@ export function CommentSection({
                     <button
                       onClick={() => submitComment(replyText, comment.id)}
                       disabled={submitting || replyText.trim().length === 0}
-                      className="rounded bg-accent-gold/10 px-3 py-1 font-mono text-[10px] text-accent-gold transition-colors hover:bg-accent-gold/20 disabled:opacity-50"
+                      className="rounded bg-accent-gold/10 px-3 py-1 font-mono text-[12px] text-accent-gold-text transition-colors hover:bg-accent-gold/20 disabled:opacity-50"
                     >
                       Reply
                     </button>
                     <button
                       onClick={() => { setReplyTo(null); setReplyText(""); }}
-                      className="rounded px-3 py-1 font-mono text-[10px] text-text-muted transition-colors hover:text-text-primary"
+                      className="rounded px-3 py-1 font-mono text-[12px] text-text-muted transition-colors hover:text-text-primary"
                     >
                       Cancel
                     </button>
@@ -286,15 +286,15 @@ function CommentCard({
           {comment.user.avatarUrl ? (
             <Image src={comment.user.avatarUrl} alt="" width={24} height={24} className="h-6 w-6 rounded-full object-cover" />
           ) : (
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-gold/20 text-[10px] text-accent-gold font-bold">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-gold/20 text-[12px] text-accent-gold-text font-bold">
               {comment.user.displayName[0]?.toUpperCase()}
             </div>
           )}
-          <span className="font-mono text-xs text-text-primary font-medium group-hover:text-accent-gold transition-colors">
+          <span className="font-mono text-xs text-text-primary font-medium group-hover:text-accent-gold-text transition-colors">
             {comment.user.displayName}
           </span>
         </Link>
-        <span className="font-mono text-[10px] text-text-muted">
+        <span className="font-mono text-[12px] text-text-muted">
           {relativeTime(comment.createdAt)}
         </span>
       </div>
@@ -303,12 +303,12 @@ function CommentCard({
       </p>
       <div className="mt-2 flex gap-3">
         {onReply && !isReply && (
-          <button onClick={onReply} className="font-mono text-[10px] text-text-muted hover:text-accent-gold transition-colors">
+          <button onClick={onReply} className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors">
             Reply
           </button>
         )}
         {isAuthenticated && comment.user.id !== currentUserId && (
-          <button onClick={onReport} className="font-mono text-[10px] text-text-muted hover:text-accent-crimson transition-colors">
+          <button onClick={onReport} className="font-mono text-[12px] text-text-muted hover:text-accent-crimson-text transition-colors">
             Report
           </button>
         )}

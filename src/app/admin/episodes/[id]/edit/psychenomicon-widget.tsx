@@ -44,7 +44,7 @@ export function PsychenomiconWidget({ episodeId, hasTranscript, chapter }: Props
 
   return (
     <div className="rounded-lg border border-accent-violet/20 bg-accent-violet/5 p-5 space-y-3">
-      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">ψ Psychenomicon</p>
+      <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">ψ Psychenomicon</p>
 
       {chapter ? (
         <div className="space-y-2">
@@ -53,7 +53,7 @@ export function PsychenomiconWidget({ episodeId, hasTranscript, chapter }: Props
             <Link
               href={`/psychenomicon/chapters/${chapter.slug}`}
               target="_blank"
-              className="font-mono text-xs text-accent-violet hover:underline"
+              className="font-mono text-xs text-accent-violet-text hover:underline"
             >
               CH.{String(chapter.chapterNumber).padStart(3, "0")} {chapter.title} →
             </Link>
@@ -67,7 +67,7 @@ export function PsychenomiconWidget({ episodeId, hasTranscript, chapter }: Props
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className="rounded border border-accent-violet/50 bg-accent-violet/10 px-4 py-2 font-mono text-xs font-bold text-accent-violet hover:bg-accent-violet/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="rounded border border-accent-violet/50 bg-accent-violet/10 px-4 py-2 font-mono text-xs font-bold text-accent-violet-text hover:bg-accent-violet/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {loading ? (
               <span className="flex items-center gap-2">
@@ -77,9 +77,9 @@ export function PsychenomiconWidget({ episodeId, hasTranscript, chapter }: Props
             ) : "Generate Chapter →"}
           </button>
           {result && (
-            <div className={`rounded border px-3 py-2 font-mono text-[10px] ${
+            <div className={`rounded border px-3 py-2 font-mono text-[12px] ${
               result.ok
-                ? "border-accent-violet/30 bg-accent-violet/5 text-accent-violet"
+                ? "border-accent-violet/30 bg-accent-violet/5 text-accent-violet-text"
                 : "border-red-500/30 bg-red-500/5 text-red-400"
             }`}>
               {result.ok ? "✓ " : "✗ "}{result.message}

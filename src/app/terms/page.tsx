@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/terms" },
   title: "Terms of Service — CULT CODEX",
   description: "Terms governing use of the CultCodex archive and subscription services.",
 };
@@ -21,7 +22,7 @@ export default function TermsPage() {
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
 
-        <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-4 py-3 font-mono text-[11px] text-text-muted">
+        <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-4 py-3 font-mono text-[12px] text-text-muted">
           Last updated: May 2025. By using cultcodex.me you agree to these terms.
         </div>
 
@@ -113,7 +114,7 @@ export default function TermsPage() {
         <SectionCard title="Disclaimers and Limitation of Liability">
           <div className="space-y-3 text-sm text-text-muted leading-relaxed">
             <p>
-              The archive is provided "as is" without warranties of any kind. AI-generated content
+              The archive is provided &quot;as is&quot; without warranties of any kind. AI-generated content
               (summaries, transcripts, lore entries) may contain errors and should not be treated as
               authoritative. We are not responsible for the accuracy of AI-assisted content.
             </p>
@@ -138,15 +139,15 @@ export default function TermsPage() {
         </SectionCard>
 
         <div className="flex items-center justify-center gap-4 text-xs">
-          <Link href="/privacy" className="font-mono text-accent-gold hover:underline">
+          <Link href="/privacy" className="font-mono text-accent-gold-text hover:underline">
             Privacy Policy
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/content-policy" className="font-mono text-accent-gold hover:underline">
+          <Link href="/content-policy" className="font-mono text-accent-gold-text hover:underline">
             Content Policy
           </Link>
           <span className="text-text-muted">|</span>
-          <Link href="/corrections" className="font-mono text-accent-gold hover:underline">
+          <Link href="/corrections" className="font-mono text-accent-gold-text hover:underline">
             Corrections
           </Link>
         </div>

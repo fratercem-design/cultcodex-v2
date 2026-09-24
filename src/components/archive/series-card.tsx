@@ -41,11 +41,11 @@ export function SeriesCard({ series }: SeriesCardProps) {
               variant={typeVariant[series.type] ?? "muted"}
             />
           )}
-          <span className="font-mono text-[10px] text-text-muted">
+          <span className="font-mono text-[12px] text-text-muted">
             {series._count.episodes} episode{series._count.episodes !== 1 ? "s" : ""}
           </span>
         </div>
-        <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+        <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
           {series.title}
         </h3>
         {series.description && (

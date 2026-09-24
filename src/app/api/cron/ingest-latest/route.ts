@@ -2,9 +2,8 @@
  * Daily cron: poll @CultofPsyche and @PsychesNightmares for new uploads
  * and insert any not-yet-seen videos as Episode rows.
  *
- * - Auth: Bearer CRON_SECRET (Vercel Cron sets Authorization header
- *   automatically when CRON_SECRET env var exists; manual callers need
- *   to send it themselves).
+ * - Auth: Bearer CRON_SECRET. GitHub Actions invokes this route on schedule
+ *   and supplies the header explicitly.
  * - Runtime: Node.js (googleapis requires Node, not Edge).
  * - Strategy: fetch only the most-recent page of each channel's uploads
  *   playlist (50 videos per channel). More than enough to catch a day's
@@ -12,9 +11,12 @@
  * - Idempotent: skips videos whose youtubeVideoId already exists in DB.
  */
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
+import { requireBearerSecret } from "@/lib/admin-guard";
 import { google } from "googleapis";
 import { prisma } from "@/lib/db";
 import { ContentStatus } from "@/generated/prisma/client";
+import { cleanSummary, isJunkSummary, isTemplateJunk } from "@/lib/content-hygiene";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -57,13 +59,20 @@ function parseIsoDurationToDisplay(iso: string): string | null {
 
 function extractSummary(description: string): string | null {
   if (!description) return null;
-  const cleaned = description
+  const candidate = description
     .replace(/https?:\/\/\S+/g, "")
     .replace(/support the stream:?\s*/gi, "")
     .replace(/streaming software/gi, "")
     .replace(/support:?\s*/gi, "")
     .trim();
-  return cleaned.length > 10 ? cleaned.slice(0, 500) : null;
+  if (candidate.length <= 10) return null;
+  // Strip sponsor/boilerplate prose (StreamYard promos, vidIQ, CTA lines) via
+  // the shared content-hygiene seam — same patterns data-ops uses to clean
+  // prod. This route previously had its own strip list, which is how episodes
+  // №1751+ leaked "Check out StreamYard and get $10 discount!" summaries.
+  if (isTemplateJunk(candidate)) return null;
+  const cleaned = cleanSummary(candidate);
+  return isJunkSummary(cleaned) ? null : cleaned.slice(0, 500);
 }
 
 interface FetchedVideo {
@@ -142,21 +151,8 @@ async function fetchRecentUploads(
 // ──────────────────────────────────────────────────────
 async function handle(req: NextRequest) {
   // Auth
-  const secret = process.env.CRON_SECRET;
-  if (!secret) {
-    return NextResponse.json(
-      { ok: false, error: "CRON_SECRET not configured" },
-      { status: 500 },
-    );
-  }
-  const auth = req.headers.get("authorization") || "";
-  const expected = `Bearer ${secret}`;
-  if (auth !== expected) {
-    return NextResponse.json(
-      { ok: false, error: "Unauthorized" },
-      { status: 401 },
-    );
-  }
+  const denied = requireBearerSecret(req, "CRON_SECRET");
+  if (denied) return denied;
 
   // YouTube client
   const apiKey = process.env.YOUTUBE_API_KEY;
@@ -258,6 +254,8 @@ async function handle(req: NextRequest) {
     0,
   );
 
+  // Bust the counts cache so sidebar/stats reflect new episodes immediately
+  if (totalNew > 0) revalidatePath("/", "layout");
   return NextResponse.json({
     ok: true,
     totalNew,

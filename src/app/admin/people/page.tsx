@@ -1,7 +1,10 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import type { PersonType } from "@/generated/prisma/client";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { PERSON_TYPE_BADGE } from "@/lib/people/person-type";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import {
   DEFAULT_PAGE_SIZE,
@@ -9,12 +12,15 @@ import {
   paginationArgs,
   buildPaginationMeta,
 } from "@/lib/pagination";
+import { requireAdminPage } from "@/lib/auth";
 
 interface PageProps {
   searchParams: Promise<{ page?: string; type?: string; q?: string }>;
 }
 
 export default async function AdminPeoplePage({ searchParams }: PageProps) {
+  await requireAdminPage();
+
   const params = await searchParams;
   const typeFilter = params.type;
   const search = params.q;
@@ -66,12 +72,6 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
-  const typeVariant: Record<string, "green" | "purple" | "muted"> = {
-    host: "green",
-    recurring: "purple",
-    guest: "muted",
-    mentioned: "muted",
-  };
 
   return (
     <main id="main-content" className="p-8">
@@ -90,13 +90,13 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
 
       {/* ── Enrichment stats ── */}
       <div className="mb-6 rounded-lg border border-border bg-elevated p-4">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-3">
-          Profile Enrichment — all {totalAll.toLocaleString()} people
+        <p className="font-mono text-[12px] uppercase tracking-widest text-text-muted mb-3">
+          Profile Enrichment — all {totalAll.toLocaleString("en-US")} people
         </p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <EnrichStat label="Lore Summary" count={withLoreSummary} total={totalAll} pct={enrichPct} color="text-accent-violet" barColor="bg-accent-violet" />
+          <EnrichStat label="Lore Summary" count={withLoreSummary} total={totalAll} pct={enrichPct} color="text-accent-violet-text" barColor="bg-accent-violet" />
           <EnrichStat label="Short Bio"    count={withShortBio}    total={totalAll} pct={bioPct}    color="text-accent-cyan"   barColor="bg-accent-cyan"   />
-          <EnrichStat label="Avatar"       count={withAvatar}      total={totalAll} pct={avatarPct} color="text-accent-gold"   barColor="bg-accent-gold"   />
+          <EnrichStat label="Avatar"       count={withAvatar}      total={totalAll} pct={avatarPct} color="text-accent-gold-text"   barColor="bg-accent-gold"   />
           <EnrichStat label="Fully Complete" count={completeCount} total={totalAll} pct={completePct} color="text-green-400" barColor="bg-green-400" highlight />
         </div>
       </div>
@@ -116,9 +116,9 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
             <Link
               key={t}
               href={`/admin/people${t !== "all" ? `?type=${t}` : ""}`}
-              className={`rounded-full border px-3 py-1 font-mono text-[10px] transition-colors ${
+              className={`rounded-full border px-3 py-1 font-mono text-[12px] transition-colors ${
                 (typeFilter ?? "all") === t || (!typeFilter && t === "all")
-                  ? "border-accent-gold text-accent-gold bg-accent-gold/10"
+                  ? "border-accent-gold text-accent-gold-text bg-accent-gold/10"
                   : "border-border text-text-muted hover:border-accent-gold/50"
               }`}
             >
@@ -132,15 +132,15 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
         <table className="w-full">
           <thead>
             <tr className="border-b border-border bg-elevated">
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">Name</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">Type</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">Appearances</th>
-              <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-wider text-text-muted">Quotes</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">Name</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">Type</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">Appearances</th>
+              <th className="px-3 py-2 text-left font-mono text-[12px] uppercase tracking-wider text-text-muted">Quotes</th>
               {/* Profile completeness dots */}
-              <th className="px-3 py-2 text-center font-mono text-[10px] uppercase tracking-wider text-text-muted" title="Bio / Lore / Avatar">
+              <th className="px-3 py-2 text-center font-mono text-[12px] uppercase tracking-wider text-text-muted" title="Bio / Lore / Avatar">
                 Profile
               </th>
-              <th className="px-3 py-2 text-right font-mono text-[10px] uppercase tracking-wider text-text-muted">Actions</th>
+              <th className="px-3 py-2 text-right font-mono text-[12px] uppercase tracking-wider text-text-muted">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -153,7 +153,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
                 <tr key={person.id} className="hover:bg-elevated/50 transition-colors">
                   <td className="px-3 py-2 text-xs text-text-primary">{person.displayName}</td>
                   <td className="px-3 py-2">
-                    <StatusBadge label={person.personType.replace("_", " ")} variant={typeVariant[person.personType] ?? "muted"} />
+                    <StatusBadge label={person.personType.replace("_", " ")} variant={PERSON_TYPE_BADGE[person.personType] ?? "muted"} />
                   </td>
                   <td className="px-3 py-2 font-mono text-xs text-text-muted">{person._count.guestAppearances}</td>
                   <td className="px-3 py-2 font-mono text-xs text-text-muted">{person._count.quotes}</td>
@@ -163,12 +163,12 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
                       <span className={`h-1.5 w-1.5 rounded-full ${hasLore  ? "bg-accent-violet" : "bg-border"}`} title="Lore summary" />
                       <span className={`h-1.5 w-1.5 rounded-full ${hasPhoto ? "bg-accent-gold"   : "bg-border"}`} title="Avatar" />
                       {isComplete && (
-                        <span className="ml-1 font-mono text-[9px] text-green-400">✓</span>
+                        <span className="ml-1 font-mono text-[12px] text-green-400">✓</span>
                       )}
                     </div>
                   </td>
                   <td className="px-3 py-2 text-right">
-                    <Link href={`/admin/people/${person.id}/edit`} className="font-mono text-[10px] text-accent-gold hover:underline">
+                    <Link href={`/admin/people/${person.id}/edit`} className="font-mono text-[12px] text-accent-gold-text hover:underline">
                       Edit
                     </Link>
                   </td>
@@ -192,17 +192,17 @@ function EnrichStat({
   return (
     <div className={`rounded border p-3 ${highlight ? "border-green-400/30 bg-green-400/5" : "border-border bg-surface"}`}>
       <div className={`font-mono text-lg font-bold leading-tight ${color}`}>
-        {count.toLocaleString()}
-        <span className="text-xs text-text-muted font-normal ml-1">/ {total.toLocaleString()}</span>
+        {count.toLocaleString("en-US")}
+        <span className="text-xs text-text-muted font-normal ml-1">/ {total.toLocaleString("en-US")}</span>
       </div>
-      <div className="font-mono text-[10px] text-text-muted mt-0.5 mb-2">{label}</div>
+      <div className="font-mono text-[12px] text-text-muted mt-0.5 mb-2">{label}</div>
       <div className="h-1 rounded-full bg-border overflow-hidden">
         <div
           className={`h-full rounded-full ${barColor} transition-all`}
           style={{ width: `${pct}%` }}
         />
       </div>
-      <div className={`mt-1 font-mono text-[10px] ${color}`}>{pct}%</div>
+      <div className={`mt-1 font-mono text-[12px] ${color}`}>{pct}%</div>
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import type { GraphNode, GraphEdge } from "@/lib/queries/graph";
+import { PERSON_TYPE_HEX } from "@/lib/people/person-type";
 
 // ── SVG canvas dimensions ─────────────────────────────────────────────────────
 const W = 1000;
@@ -24,12 +25,7 @@ const ARCHETYPE_COLORS: Record<string, string> = {
   Loyalist: "#818cf8",
 };
 
-const TYPE_COLORS: Record<string, string> = {
-  host: "#D4AF37",
-  recurring: "#a78bfa",
-  guest: "#5DB7D8",
-  mentioned: "#475569",
-};
+const TYPE_COLORS: Record<string, string> = PERSON_TYPE_HEX;
 
 function nodeColor(node: GraphNode): string {
   if (node.archetype) {
@@ -211,7 +207,7 @@ export function RelationshipGraph({ nodes, edges }: Props) {
       {/* ── Filter bar ──────────────────────────────────────────────────── */}
       <div className="flex flex-wrap items-center gap-4 rounded-lg border border-border bg-surface px-4 py-3">
         <div className="flex items-center gap-2.5">
-          <label className="font-mono text-[10px] uppercase tracking-widest text-text-muted whitespace-nowrap">
+          <label className="font-mono text-[12px] uppercase tracking-widest text-text-muted whitespace-nowrap">
             Min shared eps
           </label>
           <input
@@ -225,16 +221,16 @@ export function RelationshipGraph({ nodes, edges }: Props) {
             }}
             className="w-24 accent-accent-violet"
           />
-          <span className="font-mono text-xs font-bold text-accent-violet w-5 tabular-nums">
+          <span className="font-mono text-xs font-bold text-accent-violet-text w-5 tabular-nums">
             {minWeight}
           </span>
         </div>
 
         <button
           onClick={() => setShowAvatars((v) => !v)}
-          className={`font-mono text-[10px] uppercase tracking-widest px-2.5 py-1 rounded border transition-colors ${
+          className={`font-mono text-[12px] uppercase tracking-widest px-2.5 py-1 rounded border transition-colors ${
             showAvatars
-              ? "border-accent-violet/50 text-accent-violet bg-accent-violet/10"
+              ? "border-accent-violet/50 text-accent-violet-text bg-accent-violet/10"
               : "border-border text-text-muted hover:border-border/60"
           }`}
         >
@@ -244,13 +240,13 @@ export function RelationshipGraph({ nodes, edges }: Props) {
         {selected && (
           <button
             onClick={() => setSelected(null)}
-            className="font-mono text-[10px] uppercase tracking-widest px-2.5 py-1 rounded border border-accent-gold/30 text-accent-gold hover:bg-accent-gold/10 transition-colors"
+            className="font-mono text-[12px] uppercase tracking-widest px-2.5 py-1 rounded border border-accent-gold/30 text-accent-gold-text hover:bg-accent-gold/10 transition-colors"
           >
             Clear focus ×
           </button>
         )}
 
-        <span className="ml-auto font-mono text-[10px] text-text-muted/50 tabular-nums">
+        <span className="ml-auto font-mono text-[12px] text-text-muted tabular-nums">
           {visibleNodes.length} people · {filteredEdges.length} connections
         </span>
       </div>
@@ -263,8 +259,8 @@ export function RelationshipGraph({ nodes, edges }: Props) {
             "radial-gradient(ellipse 70% 60% at 50% 40%, rgba(110,75,174,0.07) 0%, transparent 70%)",
         }}
       >
-        <p className="absolute top-3 left-4 z-10 font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted/40 select-none">
-          /// relationship_map
+        <p className="absolute top-3 left-4 z-10 font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted select-none">
+          {"/// relationship_map"}
           {selected && selectedNode ? ` — ${selectedNode.name}` : ""}
         </p>
 
@@ -423,12 +419,12 @@ export function RelationshipGraph({ nodes, edges }: Props) {
                 {hoveredNode.name}
               </p>
               {hoveredNode.archetype && (
-                <p className="font-mono text-[9px] text-accent-violet">{hoveredNode.archetype}</p>
+                <p className="font-mono text-[12px] text-accent-violet-text">{hoveredNode.archetype}</p>
               )}
-              <p className="font-mono text-[9px] text-text-muted">
+              <p className="font-mono text-[12px] text-text-muted">
                 {hoveredNode.appearances} appearances
               </p>
-              <p className="font-mono text-[9px] text-text-muted/50 uppercase tracking-widest">
+              <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest">
                 click to focus
               </p>
             </div>
@@ -438,7 +434,7 @@ export function RelationshipGraph({ nodes, edges }: Props) {
         {/* Empty state */}
         {visibleNodes.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <p className="font-mono text-sm text-text-muted/50">
+            <p className="font-mono text-sm text-text-muted">
               No connections at this threshold. Lower the minimum.
             </p>
           </div>
@@ -449,16 +445,16 @@ export function RelationshipGraph({ nodes, edges }: Props) {
       {selectedNode && (
         <div className="rounded-lg border border-accent-violet/20 bg-surface px-5 py-4 flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-1">
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-accent-violet/60">
-              /// focused
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
+              {"/// focused"}
             </p>
             <p className="font-display text-base font-bold text-text-primary">
               {selectedNode.name}
             </p>
             {selectedNode.archetype && (
-              <p className="font-mono text-[10px] text-accent-violet">{selectedNode.archetype}</p>
+              <p className="font-mono text-[12px] text-accent-violet-text">{selectedNode.archetype}</p>
             )}
-            <p className="font-mono text-[10px] text-text-muted">
+            <p className="font-mono text-[12px] text-text-muted">
               {selectedNode.appearances} appearances ·{" "}
               {selectedNeighbors?.size ?? 0} direct connections visible
             </p>
@@ -466,7 +462,7 @@ export function RelationshipGraph({ nodes, edges }: Props) {
           <div className="flex gap-2 shrink-0">
             <Link
               href={`/people/${selectedNode.slug}`}
-              className="inline-flex items-center gap-1 rounded border border-accent-gold/30 bg-surface px-3 py-1.5 font-mono text-[10px] text-accent-gold hover:bg-accent-gold/10 transition-colors"
+              className="inline-flex items-center gap-1 rounded border border-accent-gold/30 bg-surface px-3 py-1.5 font-mono text-[12px] text-accent-gold-text hover:bg-accent-gold/10 transition-colors"
             >
               View profile →
             </Link>
@@ -482,10 +478,10 @@ export function RelationshipGraph({ nodes, edges }: Props) {
               className="block h-2.5 w-2.5 rounded-full border"
               style={{ backgroundColor: color, borderColor: color }}
             />
-            <span className="font-mono text-[9px] capitalize text-text-muted/55">{type}</span>
+            <span className="font-mono text-[12px] capitalize text-text-muted">{type}</span>
           </div>
         ))}
-        <span className="ml-auto font-mono text-[9px] text-text-muted/35">
+        <span className="ml-auto font-mono text-[12px] text-text-muted">
           size = appearances · weight = shared episodes
         </span>
       </div>

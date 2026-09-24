@@ -6,7 +6,7 @@
 
 **Architecture:** Schema-first — migrate Prisma enums + Card fields, regenerate client, then extend `rarity.ts` constants, extract geometry + personality into focused libs, overhaul `TradingCard` component with type-specific rendering, seed 30 cards, add two new pages.
 
-**Tech Stack:** Next.js 14 App Router, Prisma ORM, Neon/PostgreSQL, TypeScript, inline styles (existing pattern — no Tailwind in card components), `tsx` for seed scripts.
+**Tech Stack:** Next.js 14 App Router, Prisma ORM, Xata/PostgreSQL, TypeScript, inline styles (existing pattern — no Tailwind in card components), `tsx` for seed scripts.
 
 ---
 
@@ -132,7 +132,7 @@ cd /c/Users/johnb/cultcodex-ui
 npx prisma db execute --file prisma/migrations/20260519000000_card_system_phase1/migration.sql --schema prisma/schema.prisma
 ```
 
-Expected: no error output. If it says `IF NOT EXISTS` is unsupported, run each `ALTER TYPE` line individually via the Neon SQL console.
+Expected: no error output. If it says `IF NOT EXISTS` is unsupported, run each `ALTER TYPE` line individually via the Xata SQL console.
 
 - [ ] **Step 5: Regenerate the Prisma client**
 

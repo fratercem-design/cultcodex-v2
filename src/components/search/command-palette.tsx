@@ -26,8 +26,8 @@ const TYPE_LABELS: Record<string, string> = {
 
 const TYPE_COLORS: Record<string, string> = {
   episode: "text-accent-cyan",
-  person: "text-accent-gold",
-  lore: "text-accent-violet",
+  person: "text-accent-gold-text",
+  lore: "text-accent-violet-text",
   topic: "text-text-muted",
 };
 
@@ -76,7 +76,9 @@ export function CommandPalette() {
   useEffect(() => {
     if (debounce.current) clearTimeout(debounce.current);
     if (!query.trim() || query.length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setResults([]);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelected(0);
       return;
     }
@@ -144,7 +146,7 @@ export function CommandPalette() {
             spellCheck={false}
             autoComplete="off"
           />
-          <kbd className="hidden sm:inline-flex items-center gap-1 font-mono text-[10px] text-text-muted border border-border rounded px-1.5 py-0.5">
+          <kbd className="hidden sm:inline-flex items-center gap-1 font-mono text-[12px] text-text-muted border border-border rounded px-1.5 py-0.5">
             ESC
           </kbd>
         </div>
@@ -163,7 +165,7 @@ export function CommandPalette() {
                 >
                   <span className="text-base w-5 text-center flex-shrink-0">{TYPE_ICONS[r.type] ?? "·"}</span>
                   <span className="flex-1 text-sm text-text-primary font-sans truncate">{r.label}</span>
-                  <span className={`font-mono text-[10px] uppercase tracking-wider flex-shrink-0 ${TYPE_COLORS[r.type] ?? "text-text-muted"}`}>
+                  <span className={`font-mono text-[12px] uppercase tracking-wider flex-shrink-0 ${TYPE_COLORS[r.type] ?? "text-text-muted"}`}>
                     {TYPE_LABELS[r.type] ?? r.type}
                   </span>
                 </Link>
@@ -193,12 +195,12 @@ export function CommandPalette() {
               <span className="flex-1 text-sm text-text-muted font-mono">
                 Search all results for &ldquo;{query}&rdquo;
               </span>
-              <span className="font-mono text-[10px] text-accent-gold">→</span>
+              <span className="font-mono text-[12px] text-accent-gold-text">→</span>
             </Link>
           ) : (
             <div className="flex items-center justify-between px-4">
-              <p className="font-mono text-[10px] text-text-muted tracking-wider">// SEARCH THE ARCHIVE</p>
-              <div className="flex items-center gap-3 font-mono text-[10px] text-text-muted">
+              <p className="font-mono text-[12px] text-text-muted tracking-wider">{"// SEARCH THE ARCHIVE"}</p>
+              <div className="flex items-center gap-3 font-mono text-[12px] text-text-muted">
                 <span><kbd className="border border-border rounded px-1">↑↓</kbd> navigate</span>
                 <span><kbd className="border border-border rounded px-1">↵</kbd> open</span>
               </div>

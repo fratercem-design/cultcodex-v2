@@ -79,8 +79,8 @@ export function EntityNetworkGraph({ nodes, edges, width = 600, height = 400 }: 
 
   return (
     <div className="relative w-full overflow-hidden rounded-lg border border-border bg-surface">
-      <p className="absolute top-3 left-4 font-mono text-[9px] uppercase tracking-[0.3em] text-text-muted z-10">
-        /// entity_network
+      <p className="absolute top-3 left-4 font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted z-10">
+        {"/// entity_network"}
       </p>
       <svg
         viewBox={`0 0 ${width} ${height}`}
@@ -203,8 +203,8 @@ export function EntityNetworkGraph({ nodes, edges, width = 600, height = 400 }: 
 
       {/* Legend */}
       <div className="absolute bottom-3 right-3 flex flex-col gap-1">
-        <span className="font-mono text-[8px] text-text-muted/50">node size = chapter appearances</span>
-        <span className="font-mono text-[8px] text-text-muted/50">edge weight = shared chapters</span>
+        <span className="font-mono text-[12px] text-text-muted">node size = chapter appearances</span>
+        <span className="font-mono text-[12px] text-text-muted">edge weight = shared chapters</span>
       </div>
 
       {/* Hovered entity quick-link — shows archive profile link if person is linked */}
@@ -215,14 +215,14 @@ export function EntityNetworkGraph({ nodes, edges, width = 600, height = 400 }: 
           <div className="absolute bottom-3 left-3 flex items-center gap-2">
             <Link
               href={`/psychenomicon/entities/${node.slug}`}
-              className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-void/90 px-3 py-1.5 font-mono text-[10px] text-accent-violet hover:bg-accent-violet/10 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded border border-accent-violet/30 bg-void/90 px-3 py-1.5 font-mono text-[12px] text-accent-violet-text hover:bg-accent-violet/10 transition-colors"
             >
               {node.name} <span className="opacity-60">→</span>
             </Link>
             {node.personSlug && (
               <Link
                 href={`/people/${node.personSlug}`}
-                className="inline-flex items-center gap-1 rounded border border-accent-gold/30 bg-void/90 px-2 py-1.5 font-mono text-[9px] text-accent-gold hover:bg-accent-gold/10 transition-colors"
+                className="inline-flex items-center gap-1 rounded border border-accent-gold/30 bg-void/90 px-2 py-1.5 font-mono text-[12px] text-accent-gold-text hover:bg-accent-gold/10 transition-colors"
               >
                 archive ↗
               </Link>

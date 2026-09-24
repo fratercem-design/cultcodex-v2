@@ -24,6 +24,12 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -85,7 +91,15 @@ def words_to_segments(words):
     return segments
 
 
-def split_audio(mp3_path: str, chunk_minutes: int = 30):
+# ElevenLabs disconnects mid-upload on ~30MB chunks ("Server disconnected
+# without sending a response" - 3 of 4 episodes failed at 30 min).
+# Halved to 15. NOTE: transcribe_elevenlabs() derives its timestamp offset
+# from this same constant - they must never diverge or every segment after
+# the first chunk is misplaced.
+CHUNK_MINUTES = 15
+
+
+def split_audio(mp3_path: str, chunk_minutes: int = CHUNK_MINUTES):
     """Split files >25MB into chunks via ffmpeg so they fit ElevenLabs limits."""
     size_mb = os.path.getsize(mp3_path) / 1024 / 1024
     if size_mb < 25:
@@ -134,11 +148,21 @@ def transcribe_elevenlabs(mp3_path: str):
     all_segments = []
 
     for chunk_idx, chunk_path in enumerate(chunks):
-        chunk_offset_ms = chunk_idx * 30 * 60 * 1000
-        with open(chunk_path, "rb") as f:
-            result = client.speech_to_text.convert(
-                file=f, model_id="scribe_v1", language_code="en"
-            )
+        chunk_offset_ms = chunk_idx * CHUNK_MINUTES * 60 * 1000
+        result = None
+        for attempt in range(3):
+            try:
+                with open(chunk_path, "rb") as f:
+                    result = client.speech_to_text.convert(
+                        file=f, model_id="scribe_v1", language_code="en"
+                    )
+                break
+            except Exception as exc:
+                if attempt == 2:
+                    raise
+                log(f"    chunk {chunk_idx + 1}/{len(chunks)} attempt {attempt + 1} failed "
+                    f"({type(exc).__name__}); retrying in {5 * (attempt + 1)}s")
+                time.sleep(5 * (attempt + 1))
 
         if hasattr(result, "words") and result.words:
             segs = words_to_segments(result.words)
@@ -168,7 +192,13 @@ _WHISPER_MODEL = None
 def transcribe_whisper(mp3_path: str, model_name: str):
     global _WHISPER_MODEL
     if _WHISPER_MODEL is None:
-        import whisper  # type: ignore
+        try:
+            import whisper  # type: ignore
+        except ImportError:
+            raise SystemExit(
+                "ERROR: openai-whisper is not installed. Run `pip install openai-whisper`. "
+                "In CI it is installed only when --backend whisper is selected."
+            )
         log(f"Loading Whisper {model_name} model...")
         _WHISPER_MODEL = whisper.load_model(model_name)
     result = _WHISPER_MODEL.transcribe(mp3_path, language="en", verbose=False)
@@ -182,12 +212,38 @@ def transcribe_whisper(mp3_path: str, model_name: str):
     ]
 
 
+# ─── faster-whisper backend ────────────────────────────────────────────
+
+_FASTER_MODEL = None
+def transcribe_faster_whisper(mp3_path: str, model_name: str):
+    global _FASTER_MODEL
+    if _FASTER_MODEL is None:
+        try:
+            from faster_whisper import WhisperModel  # type: ignore
+        except ImportError:
+            raise SystemExit(
+                "ERROR: faster-whisper is not installed. Run `pip install faster-whisper`. "
+                "In CI it is installed only when --backend faster-whisper is selected."
+            )
+        log(f"Loading faster-whisper {model_name} model...")
+        _FASTER_MODEL = WhisperModel(model_name, device="cpu", compute_type="int8")
+    segments, _ = _FASTER_MODEL.transcribe(mp3_path, language="en", beam_size=5)
+    return [
+        {
+            "offset": int(seg.start * 1000),
+            "duration": int((seg.end - seg.start) * 1000),
+            "text": seg.text.strip(),
+        }
+        for seg in segments
+    ]
+
+
 # ─── Main ──────────────────────────────────────────────────────────────
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--batch", type=int, default=999)
-    parser.add_argument("--backend", choices=["elevenlabs", "whisper"], default="elevenlabs")
+    parser.add_argument("--backend", choices=["elevenlabs", "whisper", "faster-whisper"], default="elevenlabs")
     parser.add_argument("--whisper-model", default="medium")
     parser.add_argument("--overwrite", action="store_true",
                         help="Re-transcribe even if transcript already exists")
@@ -227,6 +283,8 @@ def main() -> int:
         try:
             if args.backend == "elevenlabs":
                 segments = transcribe_elevenlabs(mp3_path)
+            elif args.backend == "faster-whisper":
+                segments = transcribe_faster_whisper(mp3_path, args.whisper_model)
             else:
                 segments = transcribe_whisper(mp3_path, args.whisper_model)
 

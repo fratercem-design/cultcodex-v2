@@ -5,60 +5,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ArchiveCounts } from "@/lib/queries/stats";
 
-type AccentKey = "neon" | "neon-4";
-type CountKey = keyof Pick<ArchiveCounts, "episodes" | "topics" | "people">;
-
-interface NavItem {
-  readonly href: string;
-  readonly label: string;
-  readonly glyph: string;
-  readonly key?: string;
-  readonly countKey?: CountKey;
-  readonly accent?: AccentKey;
-}
-
-interface NavGroup {
-  readonly title: string;
-  readonly items: readonly NavItem[];
-}
-
-const NAV_GROUPS: readonly NavGroup[] = [
-  {
-    title: "MAIN",
-    items: [
-      { href: "/", label: "OVERVIEW", glyph: "▢", key: "1" },
-      { href: "/episodes", label: "ARCHIVE", glyph: "▦", key: "2", countKey: "episodes" },
-      { href: "/oracle", label: "ORACLE", glyph: "◉", key: "3" },
-      { href: "/topics", label: "SIGNALS", glyph: "◈", key: "4", countKey: "topics" },
-      { href: "/people", label: "VOICES", glyph: "◐", key: "5", countKey: "people" },
-      { href: "/graph", label: "NETWORK MAP", glyph: "✦", key: "6" },
-      { href: "/psychenomicon", label: "PSYCHENOMICON", glyph: "▲", key: "7" },
-      { href: "/collections", label: "COLLECTIONS", glyph: "▣", key: "8" },
-    ],
-  },
-  {
-    title: "COLLECT",
-    items: [
-      { href: "/cards", label: "CARD COLLECTION", glyph: "◈", key: "9" },
-      { href: "/cards/packs", label: "PACK STORE", glyph: "▣" },
-    ],
-  },
-  {
-    title: "TOOLS",
-    items: [
-      { href: "/lexicon", label: "LEXICON", glyph: "≣" },
-      { href: "/corrections", label: "CORRECTIONS", glyph: "✕" },
-      { href: "/dossier", label: "AUDIT DOSSIER", glyph: "◣" },
-    ],
-  },
-  {
-    title: "ACCESS",
-    items: [
-      { href: "/premium", label: "INITIATE+", glyph: "✦", accent: "neon-4" },
-      { href: "/start-here", label: "START HERE", glyph: "↳" },
-    ],
-  },
-];
+import { NAV_GROUPS } from "@/lib/nav";
+import type { AccentKey } from "@/lib/nav";
+import type { LiveChannels } from "@/lib/queries/live-status";
 
 function isActive(href: string, pathname: string | null): boolean {
   if (!pathname) return false;
@@ -66,8 +15,10 @@ function isActive(href: string, pathname: string | null): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function accentColor(accent: AccentKey | undefined): string {
-  return accent === "neon-4" ? "var(--neon-4)" : "var(--term-fg-dim)";
+function accentColor(accent: AccentKey | undefined, fallback: string): string {
+  if (accent === "neon-4") return "var(--neon-4)";
+  if (accent === "neon") return "var(--neon)";
+  return fallback;
 }
 
 const badgeStyle: CSSProperties = {
@@ -89,11 +40,22 @@ const keyStyle: CSSProperties = {
   textAlign: "center",
 };
 
+const liveBadgeStyle: CSSProperties = {
+  fontSize: 8,
+  fontWeight: "bold",
+  letterSpacing: "0.1em",
+  color: "var(--accent-live-text)",
+  border: "1px solid rgba(239,68,68,0.35)",
+  borderRadius: 2,
+  padding: "1px 4px",
+};
+
 interface TerminalSidebarProps {
   counts: ArchiveCounts;
+  liveChannels?: LiveChannels;
 }
 
-export function TerminalSidebar({ counts }: TerminalSidebarProps) {
+export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -137,66 +99,117 @@ export function TerminalSidebar({ counts }: TerminalSidebarProps) {
         borderRight: "1px solid var(--term-line)",
         backgroundColor: "var(--term-bg-1)",
         overflowY: "auto",
-        display: "flex",
-        flexDirection: "column",
         fontFamily: "var(--font-mono), 'JetBrains Mono', 'IBM Plex Mono', monospace",
       }}
       aria-label="Primary"
     >
       <nav style={{ flex: 1, padding: "12px 0" }}>
         {NAV_GROUPS.map((group) => (
-          <div key={group.title} style={{ marginBottom: 16 }}>
+          <div
+            key={group.title}
+            style={{
+              marginBottom: 16,
+              borderLeft: `2px solid ${group.color}`,
+              paddingLeft: 2,
+            }}
+          >
             <div
               style={{
-                fontSize: 10,
-                textTransform: "uppercase",
-                letterSpacing: "0.18em",
-                color: "var(--term-fg-faint)",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
                 padding: "0 14px",
                 marginBottom: 6,
               }}
             >
-              {"// "}
-              {group.title}
+              <span
+                aria-hidden="true"
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: 1,
+                  background: group.color,
+                  boxShadow: `0 0 6px ${group.color}`,
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 10,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.18em",
+                  color: group.textColor ?? group.color,
+                  opacity: 0.85,
+                }}
+              >
+                {group.title}
+              </span>
             </div>
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
               {group.items.map((item) => {
-                const active = isActive(item.href, pathname);
+                const active = !item.external && isActive(item.href, pathname);
+                const isLive = item.liveKey ? (liveChannels?.[item.liveKey] ?? false) : false;
+
+                const itemColor = active
+                  ? "var(--neon)"
+                  : isLive
+                  ? "var(--accent-live-text)"
+                  : accentColor(item.accent, group.textColor ?? group.color);
+
                 const itemStyle: CSSProperties = {
                   display: "flex",
                   alignItems: "center",
                   gap: 10,
                   padding: "5px 14px 5px 12px",
                   borderLeft: "2px solid transparent",
-                  color: active ? "var(--neon)" : accentColor(item.accent),
+                  color: itemColor,
                   fontSize: 12,
                   letterSpacing: "0.06em",
                   textDecoration: "none",
                   transition: "color 120ms linear, background 120ms linear, border-color 120ms linear",
                 };
+
                 const badgeText = item.countKey
-                  ? counts[item.countKey].toLocaleString()
+                  ? counts[item.countKey].toLocaleString("en-US")
                   : null;
+
+                const inner = (
+                  <>
+                    <span aria-hidden="true" style={{ width: 14, display: "inline-block" }}>
+                      {isLive ? (
+                        <span className="term-pulse" style={{ color: "var(--accent-live-text)" }}>●</span>
+                      ) : (
+                        item.glyph
+                      )}
+                    </span>
+                    <span style={{ flex: 1 }}>{item.label}</span>
+                    {isLive && <span style={liveBadgeStyle}>LIVE</span>}
+                    {!isLive && badgeText && <span style={badgeStyle}>{badgeText}</span>}
+                    {!isLive && item.key && <span aria-hidden="true" style={keyStyle}>{item.key}</span>}
+                  </>
+                );
+
                 return (
                   <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className={active ? "term-nav-active" : undefined}
-                      style={itemStyle}
-                      data-key={item.key}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      <span aria-hidden="true" style={{ width: 14, display: "inline-block" }}>
-                        {item.glyph}
-                      </span>
-                      <span style={{ flex: 1 }}>{item.label}</span>
-                      {badgeText && (
-                        <span style={badgeStyle}>{badgeText}</span>
-                      )}
-                      {item.key && (
-                        <span aria-hidden="true" style={keyStyle}>{item.key}</span>
-                      )}
-                    </Link>
+                    {item.external ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={itemStyle}
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className={active ? "term-nav-active" : undefined}
+                        style={itemStyle}
+                        data-key={item.key}
+                        aria-current={active ? "page" : undefined}
+                      >
+                        {inner}
+                      </Link>
+                    )}
                   </li>
                 );
               })}
@@ -243,7 +256,7 @@ export function TerminalSidebar({ counts }: TerminalSidebarProps) {
           />
         </div>
         <div style={{ marginTop: 6 }}>
-          {counts.transcribedEpisodes.toLocaleString()} / {counts.episodes.toLocaleString()} eps
+          {counts.transcribedEpisodes.toLocaleString("en-US")} / {counts.episodes.toLocaleString("en-US")} eps
         </div>
       </div>
     </aside>

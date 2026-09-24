@@ -42,13 +42,13 @@ function Spinner() {
 export function SyncPanel({
   withoutTranscript,
   unenrichedEpisodes,
+  enrichmentQueued,
   unenrichedPeople,
-  enrichSecret,
 }: {
   withoutTranscript: number;
   unenrichedEpisodes: number;
+  enrichmentQueued: number;
   unenrichedPeople: number;
-  enrichSecret: string;
 }) {
   const router = useRouter();
 
@@ -66,7 +66,15 @@ export function SyncPanel({
   const [transcriptLoading, setTranscriptLoading] = useState(false);
   const [transcriptResult, setTranscriptResult] = useState<{
     ok: boolean;
-    summary?: { processed: number; ok: number; no_transcript: number; errors: number; remaining: number };
+    summary?: {
+      processed: number;
+      ok: number;
+      no_transcript: number;
+      errors: number;
+      remaining: number;
+      rateLimited?: boolean;
+      timedOut?: boolean;
+    };
     results?: TranscriptResult[];
     error?: string;
   } | null>(null);
@@ -97,6 +105,19 @@ export function SyncPanel({
     error?: string;
   } | null>(null);
 
+  // ── Avatar sync ──
+  const [avatarLimit, setAvatarLimit] = useState(20);
+  const [avatarLoading, setAvatarLoading] = useState(false);
+  const [avatarResult, setAvatarResult] = useState<{
+    ok: boolean;
+    processed?: number;
+    ok_count?: number;
+    no_match?: number;
+    remaining?: number;
+    results?: { name: string; status: string; channelTitle?: string }[];
+    error?: string;
+  } | null>(null);
+
   async function handleChannelSync() {
     setSyncLoading(true);
     setSyncResult(null);
@@ -116,26 +137,46 @@ export function SyncPanel({
     }
   }
 
-  async function handleTranscriptSync(retry = false) {
+  async function handleTranscriptSync(retry = false, reset = false) {
     setTranscriptLoading(true);
     setTranscriptResult(null);
     try {
       const res = await fetch("/api/admin/sync-transcripts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ limit: transcriptLimit, retry }),
+        body: JSON.stringify({ limit: transcriptLimit, retry, reset }),
       });
-      const data = await res.json() as typeof transcriptResult;
+
+      // A gateway timeout hands us an HTML error page, not JSON. Parsing it blind
+      // throws and buries the real cause under "Network error." — read the body as
+      // text first and report the status we actually got.
+      const raw = await res.text();
+      let data: typeof transcriptResult = null;
+      try {
+        data = JSON.parse(raw) as typeof transcriptResult;
+      } catch {
+        setTranscriptResult({
+          ok: false,
+          error: `HTTP ${res.status} ${res.statusText || ""} — server returned a non-JSON response. ${
+            res.status === 502 || res.status === 504
+              ? "That's a gateway timeout: lower the batch size and try again."
+              : raw.slice(0, 200)
+          }`.trim(),
+        });
+        return;
+      }
+
       setTranscriptResult(data);
       router.refresh();
-    } catch {
-      setTranscriptResult({ ok: false, error: "Network error." });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      setTranscriptResult({ ok: false, error: `Request failed: ${msg}` });
     } finally {
       setTranscriptLoading(false);
     }
   }
 
-  async function handleEnrichEpisodes(loop = false) {
+  async function handleEnrichEpisodes(loop = false, withTranscriptOnly = true, queuedOnly = false) {
     setEnrichEpLoading(true);
     setEnrichEpResult(null);
     setEnrichEpProgress(null);
@@ -145,22 +186,29 @@ export function SyncPanel({
       while (true) {
         const res = await fetch("/api/admin/enrich-episodes", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "x-enrich-secret": enrichSecret },
-          body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly: true }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ batch: enrichEpBatch, withTranscriptOnly, queuedOnly }),
         });
         const data = await res.json() as typeof enrichEpResult & { remaining?: number; done?: boolean };
         if (!res.ok || !data?.ok) {
           setEnrichEpResult({ ok: false, error: data?.error ?? "Request failed." });
           break;
         }
-        totalDone += data.processed ?? 0;
+        const batchProcessed = data.processed ?? 0;
+        const batchResults = data.results ?? [];
+        // If nothing was processed but items remain, all failed (rate limit / API error) — stop looping
+        if (batchProcessed === 0 && batchResults.length > 0 && (data.remaining ?? 0) > 0) {
+          const firstError = batchResults.find((r) => !r.ok)?.error ?? "API error — try again later";
+          setEnrichEpResult({ ok: false, error: firstError });
+          break;
+        }
+        totalDone += batchProcessed;
         setEnrichEpProgress({ done: totalDone, remaining: data.remaining ?? 0 });
         if (!loop || data.done || data.remaining === 0) {
           setEnrichEpResult({ ...data, ok: true });
           break;
         }
-        // Small pause between batches to avoid overwhelming the API
-        await new Promise((r) => setTimeout(r, 1500));
+        await new Promise((r) => setTimeout(r, 3000));
       }
       router.refresh();
     } catch {
@@ -183,7 +231,6 @@ export function SyncPanel({
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "x-enrich-secret": enrichSecret,
           },
           body: JSON.stringify({ batch: enrichPeopleBatch }),
         });
@@ -192,13 +239,21 @@ export function SyncPanel({
           setEnrichPeopleResult({ ok: false, error: data?.error ?? "Request failed." });
           break;
         }
-        totalDone += data.processed ?? 0;
+        const batchProcessed = data.processed ?? 0;
+        const batchResults = data.results ?? [];
+        // If nothing was processed but items remain, all failed (rate limit / API error) — stop looping
+        if (batchProcessed === 0 && batchResults.length > 0 && (data.remaining ?? 0) > 0) {
+          const firstError = batchResults.find((r) => !r.ok)?.error ?? "API error — try again later";
+          setEnrichPeopleResult({ ok: false, error: firstError });
+          break;
+        }
+        totalDone += batchProcessed;
         setEnrichPeopleProgress({ done: totalDone, remaining: data.remaining ?? 0 });
         if (!loop || data.done || data.remaining === 0) {
           setEnrichPeopleResult({ ...data, ok: true });
           break;
         }
-        await new Promise((r) => setTimeout(r, 1500));
+        await new Promise((r) => setTimeout(r, 3000));
       }
       router.refresh();
     } catch {
@@ -206,6 +261,25 @@ export function SyncPanel({
     } finally {
       setEnrichPeopleLoading(false);
       setEnrichPeopleProgress(null);
+    }
+  }
+
+  async function handleAvatarSync() {
+    setAvatarLoading(true);
+    setAvatarResult(null);
+    try {
+      const res = await fetch("/api/admin/sync-avatars", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ limit: avatarLimit }),
+      });
+      const data = await res.json() as typeof avatarResult;
+      setAvatarResult(data);
+      router.refresh();
+    } catch {
+      setAvatarResult({ ok: false, error: "Network error." });
+    } finally {
+      setAvatarLoading(false);
     }
   }
 
@@ -218,14 +292,15 @@ export function SyncPanel({
         {/* Channel Sync */}
         <section className="rounded-lg border border-accent-cyan/20 bg-accent-cyan/5 p-6 space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan">/// sync_episodes</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan">{"/// sync_episodes"}</p>
             <h2 className="font-display text-lg font-bold text-text-primary">Import All Episodes</h2>
             <p className="text-xs text-text-muted leading-relaxed">
-              Sweeps the full uploads history of <strong className="text-text-primary">@CultofPsyche</strong> and{" "}
-              <strong className="text-text-primary">@PsychesNightmares</strong> on YouTube.
+              Sweeps the full uploads history of <strong className="text-text-primary">@CultofPsyche</strong>,{" "}
+              <strong className="text-text-primary">@PsychesNightmares</strong>, and{" "}
+              <strong className="text-text-primary">@NightmareFrequenciesTV</strong> on YouTube.
               Safe to re-run; only inserts videos not already in the DB.
             </p>
-            <p className="font-mono text-[9px] text-text-muted/60">
+            <p className="font-mono text-[12px] text-text-muted">
               Requires <code>YOUTUBE_API_KEY</code>. Takes 1–3 minutes.
             </p>
           </div>
@@ -244,7 +319,7 @@ export function SyncPanel({
                     ✓ {syncResult.totalCreated} new episode{syncResult.totalCreated !== 1 ? "s" : ""} created
                   </p>
                   {syncResult.results && Object.entries(syncResult.results).map(([handle, r]) => (
-                    <div key={handle} className="font-mono text-[10px] text-text-muted space-y-0.5">
+                    <div key={handle} className="font-mono text-[12px] text-text-muted space-y-0.5">
                       <p className="text-text-primary">{handle}</p>
                       <p>Fetched: {r.fetched} · Created: {r.created} · Skipped: {r.skipped}</p>
                     </div>
@@ -260,18 +335,18 @@ export function SyncPanel({
         {/* Transcript Sync */}
         <section className="rounded-lg border border-accent-violet/20 bg-accent-violet/5 p-6 space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-violet">/// sync_transcripts</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">{"/// sync_transcripts"}</p>
             <h2 className="font-display text-lg font-bold text-text-primary">Fetch Transcripts</h2>
             <p className="text-xs text-text-muted leading-relaxed">
               Pulls YouTube auto-captions for episodes with a video ID but no transcript yet.
               Stored as searchable <code>TranscriptSegment</code> rows.
             </p>
-            <p className="font-mono text-[9px] text-text-muted/60">
-              {withoutTranscript.toLocaleString()} episodes still need transcripts. No API key required.
+            <p className="font-mono text-[12px] text-text-muted">
+              {withoutTranscript.toLocaleString("en-US")} episodes still need transcripts. No API key required.
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <label className="font-mono text-[10px] text-text-muted whitespace-nowrap">Batch size</label>
+            <label className="font-mono text-[12px] text-text-muted whitespace-nowrap">Batch size</label>
             <select
               value={transcriptLimit}
               onChange={(e) => setTranscriptLimit(Number(e.target.value))}
@@ -286,7 +361,7 @@ export function SyncPanel({
           <button
             onClick={() => handleTranscriptSync(false)}
             disabled={transcriptLoading || withoutTranscript === 0}
-            className="w-full flex items-center justify-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 hover:bg-accent-violet/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-violet transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 rounded border border-accent-violet/50 bg-accent-violet/10 hover:bg-accent-violet/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-violet-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {transcriptLoading
               ? <><Spinner /> Fetching {transcriptLimit} transcripts…</>
@@ -295,19 +370,27 @@ export function SyncPanel({
               : `Fetch Next ${transcriptLimit} Transcripts →`}
           </button>
           <button
+            onClick={() => handleTranscriptSync(false, true)}
+            disabled={transcriptLoading}
+            className="w-full flex items-center justify-center gap-2 rounded border border-accent-cyan/40 bg-accent-cyan/5 hover:bg-accent-cyan/10 px-4 py-2 font-mono text-[12px] uppercase tracking-widest text-accent-cyan/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Clears the no_captions mark and retries all previously-failed episodes using youtube-transcript fallback."
+          >
+            ↻ Reset &amp; retry no-caption episodes
+          </button>
+          <button
             onClick={() => handleTranscriptSync(true)}
             disabled={transcriptLoading}
-            className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/40 bg-accent-gold/5 hover:bg-accent-gold/10 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-accent-gold/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            title="Re-try episodes previously marked as having no captions, using Whisper ASR generation."
+            className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/40 bg-accent-gold/5 hover:bg-accent-gold/10 px-4 py-2 font-mono text-[12px] uppercase tracking-widest text-accent-gold-text/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Re-try episodes previously marked as having no captions."
           >
-            ↻ Retry no-caption episodes (forces ASR)
+            ↻ Retry no-caption episodes
           </button>
           {transcriptResult && (
             <div className={`rounded border px-4 py-3 space-y-2 ${transcriptResult.ok ? "border-accent-violet/30 bg-accent-violet/5" : "border-red-500/30 bg-red-500/5"}`}>
               {transcriptResult.ok && transcriptResult.summary ? (
                 <>
-                  <div className="flex flex-wrap gap-4 font-mono text-[10px]">
-                    <span className="text-accent-violet">✓ {transcriptResult.summary.ok} fetched</span>
+                  <div className="flex flex-wrap gap-4 font-mono text-[12px]">
+                    <span className="text-accent-violet-text">✓ {transcriptResult.summary.ok} fetched</span>
                     {transcriptResult.summary.no_transcript > 0 && (
                       <span className="text-text-muted">— {transcriptResult.summary.no_transcript} no captions</span>
                     )}
@@ -315,18 +398,23 @@ export function SyncPanel({
                       <span className="text-red-400">✗ {transcriptResult.summary.errors} errors</span>
                     )}
                     {transcriptResult.summary.remaining > 0 && (
-                      <span className="text-accent-gold">{transcriptResult.summary.remaining.toLocaleString()} remaining</span>
+                      <span className="text-accent-gold-text">{transcriptResult.summary.remaining.toLocaleString("en-US")} remaining</span>
                     )}
                   </div>
+                  {transcriptResult.summary.timedOut && (
+                    <p className="font-mono text-[12px] text-accent-gold-text/80">
+                      ⏱ Hit the time budget and returned early — nothing was lost. Click again to continue.
+                    </p>
+                  )}
                   {transcriptResult.results && (
                     <div className="max-h-40 overflow-y-auto space-y-0.5 pt-1">
                       {transcriptResult.results.map((r) => (
-                        <div key={r.episodeId} className="flex items-center gap-2 font-mono text-[9px]">
-                          <span className={r.status === "ok" ? "text-accent-violet" : r.status === "no_transcript" ? "text-text-muted" : "text-red-400"}>
+                        <div key={r.episodeId} className="flex items-center gap-2 font-mono text-[12px]">
+                          <span className={r.status === "ok" ? "text-accent-violet-text" : r.status === "no_transcript" ? "text-text-muted" : "text-red-400"}>
                             {r.status === "ok" ? "✓" : r.status === "no_transcript" ? "—" : "✗"}
                           </span>
                           <span className="text-text-muted truncate flex-1">{r.slug}</span>
-                          {r.segments && <span className="text-text-muted/50">{r.segments}s</span>}
+                          {r.segments && <span className="text-text-muted">{r.segments}s</span>}
                           {r.reason && r.status !== "ok" && <span className="text-yellow-500/60 truncate">{r.reason}</span>}
                           {r.error && <span className="text-red-400/70 truncate">{r.error}</span>}
                         </div>
@@ -348,18 +436,18 @@ export function SyncPanel({
         {/* Episode Enrichment */}
         <section className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-6 space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">/// enrich_episodes</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">{"/// enrich_episodes"}</p>
             <h2 className="font-display text-lg font-bold text-text-primary">Enrich Episodes</h2>
             <p className="text-xs text-text-muted leading-relaxed">
               Runs Claude Haiku on each episode transcript to extract summaries, guests, quotes,
               lore, and topics. Only processes episodes with transcripts that haven&apos;t been enriched yet.
             </p>
-            <p className="font-mono text-[9px] text-text-muted/60">
-              {unenrichedEpisodes.toLocaleString()} episodes need enrichment. Requires <code>ENRICH_SECRET</code> + <code>ANTHROPIC_API_KEY</code>.
+            <p className="font-mono text-[12px] text-text-muted">
+              {unenrichedEpisodes.toLocaleString("en-US")} episodes need enrichment. Requires <code>ENRICH_SECRET</code> + an enrichment provider key (Anthropic, OpenRouter, Groq, Mistral or Bedrock).
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <label className="font-mono text-[10px] text-text-muted whitespace-nowrap">Batch size</label>
+            <label className="font-mono text-[12px] text-text-muted whitespace-nowrap">Batch size</label>
             <select
               value={enrichEpBatch}
               onChange={(e) => setEnrichEpBatch(Number(e.target.value))}
@@ -375,7 +463,7 @@ export function SyncPanel({
             <button
               onClick={() => handleEnrichEpisodes(false)}
               disabled={enrichEpLoading || unenrichedEpisodes === 0}
-              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {enrichEpLoading && !enrichEpProgress
                 ? <><Spinner /> Enriching…</>
@@ -386,29 +474,53 @@ export function SyncPanel({
             <button
               onClick={() => handleEnrichEpisodes(true)}
               disabled={enrichEpLoading || unenrichedEpisodes === 0}
-              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-gold bg-accent-gold/20 hover:bg-accent-gold/30 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-gold bg-accent-gold/20 hover:bg-accent-gold/30 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {enrichEpLoading && enrichEpProgress
                 ? <><Spinner /> {enrichEpProgress.done} done, {enrichEpProgress.remaining} left…</>
                 : "Run All →→"}
             </button>
           </div>
+          <button
+            onClick={() => handleEnrichEpisodes(true, false)}
+            disabled={enrichEpLoading}
+            className="w-full flex items-center justify-center gap-2 rounded border border-text-muted/30 bg-transparent hover:bg-elevated px-4 py-2 font-mono text-[12px] uppercase tracking-widest text-text-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Generates title-only summaries for episodes with no transcript (Shorts, live streams, etc.)"
+          >
+            ↻ Enrich no-transcript episodes (title only)
+          </button>
+          <button
+            onClick={() => handleEnrichEpisodes(true, false, true)}
+            disabled={enrichEpLoading || enrichmentQueued === 0}
+            className="w-full flex flex-col items-center gap-0.5 rounded border border-accent-gold/40 bg-accent-gold/5 hover:bg-accent-gold/15 px-4 py-2.5 font-mono transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title={enrichmentQueued === 0 ? "Queue episodes first from /admin/episodes → click '+ enrich' on any row" : `Re-enriches ${enrichmentQueued} manually queued episode${enrichmentQueued !== 1 ? "s" : ""}`}
+          >
+            <span className="text-[12px] uppercase tracking-widest text-accent-gold-text">
+              ⚡ Run enrichment queue
+              {enrichmentQueued > 0 && <span className="ml-1.5 rounded-full bg-accent-gold/20 px-1.5 py-0.5 text-accent-gold-text font-bold">{enrichmentQueued}</span>}
+            </span>
+            <span className="text-[12px] text-text-muted">
+              {enrichmentQueued === 0
+                ? "No episodes queued — go to Episodes and click + enrich"
+                : `Re-enriches ${enrichmentQueued} episode${enrichmentQueued !== 1 ? "s" : ""} even if already summarised`}
+            </span>
+          </button>
           {enrichEpResult && (
             <div className={`rounded border px-4 py-3 space-y-2 ${enrichEpResult.ok ? "border-accent-gold/30 bg-accent-gold/5" : "border-red-500/30 bg-red-500/5"}`}>
               {enrichEpResult.ok ? (
                 <>
-                  <div className="flex flex-wrap gap-4 font-mono text-[10px]">
-                    <span className="text-accent-gold">✓ {enrichEpResult.processed} enriched</span>
+                  <div className="flex flex-wrap gap-4 font-mono text-[12px]">
+                    <span className="text-accent-gold-text">✓ {enrichEpResult.processed} enriched</span>
                     {(enrichEpResult.remaining ?? 0) > 0 && (
-                      <span className="text-text-muted">{enrichEpResult.remaining?.toLocaleString()} remaining</span>
+                      <span className="text-text-muted">{enrichEpResult.remaining?.toLocaleString("en-US")} remaining</span>
                     )}
-                    {enrichEpResult.done && <span className="text-accent-gold">— all done</span>}
+                    {enrichEpResult.done && <span className="text-accent-gold-text">— all done</span>}
                   </div>
                   {enrichEpResult.results && (
                     <div className="max-h-40 overflow-y-auto space-y-0.5 pt-1">
                       {enrichEpResult.results.map((r, i) => (
-                        <div key={i} className="flex items-center gap-2 font-mono text-[9px]">
-                          <span className={r.ok ? "text-accent-gold" : "text-red-400"}>{r.ok ? "✓" : "✗"}</span>
+                        <div key={i} className="flex items-center gap-2 font-mono text-[12px]">
+                          <span className={r.ok ? "text-accent-gold-text" : "text-red-400"}>{r.ok ? "✓" : "✗"}</span>
                           <span className="text-text-muted truncate flex-1">{r.title}</span>
                           {r.error && <span className="text-red-400/70 truncate">{r.error}</span>}
                         </div>
@@ -426,18 +538,18 @@ export function SyncPanel({
         {/* People Enrichment */}
         <section className="rounded-lg border border-accent-crimson/20 bg-accent-crimson/5 p-6 space-y-5">
           <div className="space-y-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-crimson">/// enrich_people</p>
+            <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-crimson-text">{"/// enrich_people"}</p>
             <h2 className="font-display text-lg font-bold text-text-primary">Enrich People</h2>
             <p className="text-xs text-text-muted leading-relaxed">
               Generates <code>loreSummary</code> — a psychological/behavioral archive profile —
               for each person who has appearances but no profile yet. Feeds directly into Oracle answers.
             </p>
-            <p className="font-mono text-[9px] text-text-muted/60">
-              {unenrichedPeople.toLocaleString()} people need profiles. Requires <code>ENRICH_SECRET</code> + <code>ANTHROPIC_API_KEY</code>.
+            <p className="font-mono text-[12px] text-text-muted">
+              {unenrichedPeople.toLocaleString("en-US")} people need profiles. Requires <code>ENRICH_SECRET</code> + an enrichment provider key (Anthropic, OpenRouter, Groq, Mistral or Bedrock).
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <label className="font-mono text-[10px] text-text-muted whitespace-nowrap">Batch size</label>
+            <label className="font-mono text-[12px] text-text-muted whitespace-nowrap">Batch size</label>
             <select
               value={enrichPeopleBatch}
               onChange={(e) => setEnrichPeopleBatch(Number(e.target.value))}
@@ -453,7 +565,7 @@ export function SyncPanel({
             <button
               onClick={() => handleEnrichPeople(false)}
               disabled={enrichPeopleLoading || unenrichedPeople === 0}
-              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-crimson/50 bg-accent-crimson/10 hover:bg-accent-crimson/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-crimson transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-crimson/50 bg-accent-crimson/10 hover:bg-accent-crimson/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-crimson-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {enrichPeopleLoading && !enrichPeopleProgress
                 ? <><Spinner /> Profiling…</>
@@ -464,7 +576,7 @@ export function SyncPanel({
             <button
               onClick={() => handleEnrichPeople(true)}
               disabled={enrichPeopleLoading || unenrichedPeople === 0}
-              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-crimson bg-accent-crimson/20 hover:bg-accent-crimson/30 px-4 py-2.5 font-mono text-xs font-bold text-accent-crimson transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-crimson bg-accent-crimson/20 hover:bg-accent-crimson/30 px-4 py-2.5 font-mono text-xs font-bold text-accent-crimson-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {enrichPeopleLoading && enrichPeopleProgress
                 ? <><Spinner /> {enrichPeopleProgress.done} done, {enrichPeopleProgress.remaining} left…</>
@@ -475,18 +587,18 @@ export function SyncPanel({
             <div className={`rounded border px-4 py-3 space-y-2 ${enrichPeopleResult.ok ? "border-accent-crimson/30 bg-accent-crimson/5" : "border-red-500/30 bg-red-500/5"}`}>
               {enrichPeopleResult.ok ? (
                 <>
-                  <div className="flex flex-wrap gap-4 font-mono text-[10px]">
-                    <span className="text-accent-crimson">✓ {enrichPeopleResult.processed} profiled</span>
+                  <div className="flex flex-wrap gap-4 font-mono text-[12px]">
+                    <span className="text-accent-crimson-text">✓ {enrichPeopleResult.processed} profiled</span>
                     {(enrichPeopleResult.remaining ?? 0) > 0 && (
-                      <span className="text-text-muted">{enrichPeopleResult.remaining?.toLocaleString()} remaining</span>
+                      <span className="text-text-muted">{enrichPeopleResult.remaining?.toLocaleString("en-US")} remaining</span>
                     )}
-                    {enrichPeopleResult.done && <span className="text-accent-crimson">— all done</span>}
+                    {enrichPeopleResult.done && <span className="text-accent-crimson-text">— all done</span>}
                   </div>
                   {enrichPeopleResult.results && (
                     <div className="max-h-40 overflow-y-auto space-y-0.5 pt-1">
                       {enrichPeopleResult.results.map((r, i) => (
-                        <div key={i} className="flex items-center gap-2 font-mono text-[9px]">
-                          <span className={r.ok ? "text-accent-crimson" : "text-red-400"}>{r.ok ? "✓" : "✗"}</span>
+                        <div key={i} className="flex items-center gap-2 font-mono text-[12px]">
+                          <span className={r.ok ? "text-accent-crimson-text" : "text-red-400"}>{r.ok ? "✓" : "✗"}</span>
                           <span className="text-text-muted truncate flex-1">{r.name}</span>
                           {r.error && <span className="text-red-400/70 truncate">{r.error}</span>}
                         </div>
@@ -502,12 +614,72 @@ export function SyncPanel({
         </section>
       </div>
 
+      {/* ── Avatar Sync ── */}
+      <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 p-6 space-y-5">
+        <div className="space-y-1">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">{"/// sync_avatars"}</p>
+          <h2 className="font-display text-lg font-bold text-text-primary">Sync People Avatars</h2>
+          <p className="text-xs text-text-muted leading-relaxed">
+            Searches YouTube for a matching channel for each person without an avatar. Only writes when the channel title
+            closely matches the person&apos;s name. Requires <code>YOUTUBE_API_KEY</code>.
+          </p>
+          <p className="font-mono text-[12px] text-text-muted">
+            ⚠ Each search costs 100 YouTube API quota units. Daily limit = 10,000 units = 100 searches/day.
+            Keep batches at 20 or below. Quota resets at midnight Pacific.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <label className="font-mono text-[12px] text-text-muted whitespace-nowrap">Batch size</label>
+          <select
+            value={avatarLimit}
+            onChange={(e) => setAvatarLimit(Number(e.target.value))}
+            disabled={avatarLoading}
+            className="rounded border border-border bg-void px-2 py-1 font-mono text-xs text-text-primary focus:border-accent-gold focus:outline-none disabled:opacity-50"
+          >
+            {[10, 20, 50, 100].map((n) => (
+              <option key={n} value={n}>{n} people</option>
+            ))}
+          </select>
+        </div>
+        <button
+          onClick={handleAvatarSync}
+          disabled={avatarLoading}
+          className="w-full flex items-center justify-center gap-2 rounded border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {avatarLoading ? <><Spinner /> Searching YouTube…</> : "Sync Avatars from YouTube →"}
+        </button>
+        {avatarResult && (
+          <div className={`rounded border px-4 py-3 space-y-2 ${avatarResult.ok ? "border-accent-gold/30 bg-accent-gold/5" : "border-red-500/30 bg-red-500/5"}`}>
+            {avatarResult.ok ? (
+              <>
+                <div className="flex flex-wrap gap-4 font-mono text-[12px]">
+                  <span className="text-accent-gold-text">✓ {avatarResult.ok_count} matched</span>
+                  {(avatarResult.no_match ?? 0) > 0 && (
+                    <span className="text-text-muted">{avatarResult.no_match} no match</span>
+                  )}
+                  {(avatarResult.remaining ?? 0) > 0 && (
+                    <span className="text-text-muted">{avatarResult.remaining} remaining</span>
+                  )}
+                </div>
+                {(avatarResult.results ?? []).filter((r) => r.status === "ok").slice(0, 10).map((r) => (
+                  <p key={r.name} className="font-mono text-[12px] text-accent-gold-text/80">
+                    ✓ {r.name} → {r.channelTitle}
+                  </p>
+                ))}
+              </>
+            ) : (
+              <p className="font-mono text-xs text-red-400">✗ {avatarResult.error}</p>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* ── Pipeline guide ── */}
       <div className="rounded-lg border border-border bg-surface p-5 space-y-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-text-muted">/// full_pipeline</p>
+        <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">{"/// full_pipeline"}</p>
         <ol className="space-y-2 font-mono text-xs text-text-muted list-decimal list-inside">
           <li>Click <strong className="text-text-primary">Sync All Episodes</strong> — imports every YouTube video.</li>
-          <li>Click <strong className="text-text-primary">Fetch Next 100 Transcripts</strong> repeatedly until "remaining" hits 0.</li>
+          <li>Click <strong className="text-text-primary">Fetch Next 100 Transcripts</strong> repeatedly until &quot;remaining&quot; hits 0.</li>
           <li>Click <strong className="text-text-primary">Enrich Next 5 Episodes</strong> repeatedly — extracts guests, quotes, lore, topics.</li>
           <li>Click <strong className="text-text-primary">Generate Next 10 Profiles</strong> repeatedly — builds Oracle-ready character profiles.</li>
           <li>Go to <strong className="text-text-primary">Psychenomicon → Generate</strong> for deep-dive chapter generation.</li>

@@ -32,10 +32,10 @@ export function NotificationToggle({
       onClick={() => !isPending && handleChange(!checked)}
     >
       <div>
-        <p className="font-mono text-sm text-text-primary group-hover:text-accent-gold transition-colors">
+        <p className="font-mono text-sm text-text-primary group-hover:text-accent-gold-text transition-colors">
           {label}
         </p>
-        <p className="font-mono text-[10px] text-text-muted">{description}</p>
+        <p className="font-mono text-[12px] text-text-muted">{description}</p>
       </div>
       <div
         className={`relative h-6 w-11 rounded-full border transition-colors ${

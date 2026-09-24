@@ -58,8 +58,8 @@ export function TimelineStrip({ chapters, currentSlug }: TimelineStripProps) {
                 <div className={`relative z-10 rounded-full transition-all ${dotCls} group-hover:scale-125`} />
                 <div className="flex flex-col items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity absolute top-6 w-32 -translate-x-1/2 left-1/2 pointer-events-none z-20">
                   <div className="rounded border border-border bg-void/95 px-2 py-1.5 shadow-lg text-center">
-                    <p className="font-mono text-[9px] text-text-muted">CH.{String(ch.chapterNumber).padStart(3, "0")}</p>
-                    <p className="font-mono text-[10px] text-text-primary leading-tight line-clamp-2">{ch.title}</p>
+                    <p className="font-mono text-[12px] text-text-muted">CH.{String(ch.chapterNumber).padStart(3, "0")}</p>
+                    <p className="font-mono text-[12px] text-text-primary leading-tight line-clamp-2">{ch.title}</p>
                   </div>
                 </div>
               </Link>

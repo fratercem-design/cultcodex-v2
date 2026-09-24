@@ -28,8 +28,8 @@ export async function GET(
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "#0A0A0F",
-            color: "#F3EEDF",
+            backgroundColor: "#07060A",
+            color: "#EBE3D2",
             fontSize: 36,
             fontFamily: "sans-serif",
           }}

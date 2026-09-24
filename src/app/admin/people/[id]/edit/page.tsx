@@ -1,15 +1,21 @@
+export const dynamic = "force-dynamic";
+
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { AdminFormField } from "@/components/admin/admin-form-field";
 import { updatePerson } from "@/app/admin/actions";
 import { MergePersonForm } from "./merge-form";
+import { YouTubeSync } from "./youtube-sync";
 import Link from "next/link";
+import { requireAdminPage } from "@/lib/auth";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditPersonPage({ params }: PageProps) {
+  await requireAdminPage();
+
   const { id } = await params;
 
   const person = await prisma.person.findUnique({ where: { id } });
@@ -25,7 +31,7 @@ export default async function EditPersonPage({ params }: PageProps) {
     <main id="main-content" className="p-8 max-w-3xl">
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display text-2xl font-bold text-accent-gold">Edit Person</h1>
-        <Link href="/admin/people" className="font-mono text-xs text-text-muted hover:text-accent-gold">← Back</Link>
+        <Link href="/admin/people" className="font-mono text-xs text-text-muted hover:text-accent-gold-text">← Back</Link>
       </div>
 
       <form action={handleSubmit} className="space-y-4">
@@ -52,6 +58,13 @@ export default async function EditPersonPage({ params }: PageProps) {
         <AdminFormField label="Avatar URL" name="avatarUrl" type="url" defaultValue={person.avatarUrl} />
         <AdminFormField label="Alt Names (comma-separated)" name="altNames" defaultValue={person.altNames.join(", ")} />
 
+        {/* YouTube channel — syncs avatar + stores channel link */}
+        <YouTubeSync
+          personId={id}
+          initialChannelUrl={person.youtubeChannelUrl ?? null}
+          initialAvatarUrl={person.avatarUrl ?? null}
+        />
+
         <div className="flex items-center gap-3 pt-4">
           <button type="submit" className="rounded bg-accent-gold px-6 py-2 font-mono text-sm font-bold text-void hover:bg-accent-gold/80">
             Save Changes
@@ -62,7 +75,7 @@ export default async function EditPersonPage({ params }: PageProps) {
 
       {/* Merge section */}
       <div className="mt-10 border-t border-border pt-6">
-        <h2 className="font-display text-lg font-bold text-accent-gold mb-3">Merge Into Another Person</h2>
+        <h2 className="font-display text-lg font-bold text-accent-gold-text mb-3">Merge Into Another Person</h2>
         <p className="text-xs text-text-muted mb-4">
           All appearances, quotes, and connections will be moved to the target person. This person will be marked as merged.
         </p>

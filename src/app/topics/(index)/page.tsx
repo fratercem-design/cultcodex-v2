@@ -1,0 +1,121 @@
+import { PageHero } from "@/components/ui/page-hero";
+import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
+import { TopicCard } from "@/components/archive/topic-card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { SortFilterBar } from "@/components/archive/sort-filter-bar";
+import { PaginationControls } from "@/components/ui/pagination-controls";
+import { getTopics, getTopicCount } from "@/lib/queries/topics";
+import { getTopicAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
+import { formatRelativeDate } from "@/lib/format/date";
+import { IconTopic, IconLink } from "@/components/graphics/codex-icons";
+import {
+  DEFAULT_PAGE_SIZE,
+  parsePage,
+  paginationArgs,
+  buildPaginationMeta,
+} from "@/lib/pagination";
+import { collectionPageJsonLd, jsonLdScript } from "@/lib/seo";
+
+export const revalidate = 600;
+
+export const metadata = {
+  alternates: { canonical: "/topics" },
+  title: "Topics — CULT CODEX",
+  description: "Browse the recurring themes, behavioral patterns, and obsessions that run through the Cult of Psyche archive — each one mapped to the episodes and moments where it emerged.",
+};
+
+const SORT_OPTIONS = [
+  { label: "Most episodes", value: "connected" },
+  { label: "A → Z", value: "az" },
+  { label: "Z → A", value: "za" },
+];
+
+interface TopicsPageProps {
+  searchParams: Promise<{ sort?: string; page?: string }>;
+}
+
+export default async function TopicsPage({ searchParams }: TopicsPageProps) {
+  const params = await searchParams;
+  const currentSort = params.sort ?? "connected";
+
+  const [totalCount, aggregates, lastUpdated] = await Promise.all([
+    getTopicCount(),
+    getTopicAggregates(),
+    getArchiveLastUpdated(),
+  ]);
+  const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
+  const { skip, take } = paginationArgs(page);
+
+  // "connected" stays as the URL value so existing links keep working.
+  const sorted = await getTopics({
+    take,
+    skip,
+    sort: currentSort === "za" ? "za" : currentSort === "az" ? "az" : "episodes",
+  });
+
+  const paginationMeta = buildPaginationMeta(page, take, totalCount);
+
+  const glanceItems = [
+    { icon: <IconTopic size={14} />, label: `${aggregates.total} topic${aggregates.total !== 1 ? "s" : ""}` },
+    ...(aggregates.linkedEpisodes > 0 ? [{ icon: <IconLink size={14} />, label: `${aggregates.linkedEpisodes} episode link${aggregates.linkedEpisodes !== 1 ? "s" : ""}` }] : []),
+    ...(lastUpdated ? [{ icon: "\uD83D\uDD04", label: `Updated ${formatRelativeDate(lastUpdated)}` }] : []),
+  ];
+
+  return (
+    <>
+    {page === 1 && sorted.length > 0 && (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            collectionPageJsonLd({
+              name: "Topics — CultCodex",
+              description: metadata.description,
+              path: "/topics",
+              items: sorted.map((t) => ({ name: t.title, path: `/topics/${t.slug}` })),
+            })
+          ),
+        }}
+      />
+    )}
+    <PageHero
+      title="TOPICS"
+      subtitle="Key themes and recurring subjects"
+      backgroundImage="/long-form-background.jpg"
+    
+      label="signals"
+    />
+    <EntityGlanceBar items={glanceItems} />
+    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+      <SortFilterBar
+        basePath="/topics"
+        sortOptions={SORT_OPTIONS}
+        currentSort={currentSort}
+      />
+
+      {sorted.length === 0 ? (
+        <EmptyState message="No topics in the archive yet" />
+      ) : (
+        <>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {sorted.map((topic) => (
+              <TopicCard
+                key={topic.id}
+                topic={{
+                  title: topic.title,
+                  slug: topic.slug,
+                  description: topic.description,
+                  episodeCount: topic._count.episodes,
+                  personCount: topic._count.people,
+                  loreCount: topic._count.lore,
+                }}
+              />
+            ))}
+          </div>
+          <PaginationControls meta={paginationMeta} basePath="/topics" />
+        </>
+      )}
+    </main>
+    </>
+  );
+}

@@ -18,6 +18,7 @@ export default function NotFound() {
   const [quote, setQuote] = useState(lostTransmissions[0]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuote(lostTransmissions[Math.floor(Math.random() * lostTransmissions.length)]);
   }, []);
 
@@ -83,7 +84,7 @@ export default function NotFound() {
         404
       </h1>
 
-      <p className="mt-2 font-display text-lg text-accent-gold/70">
+      <p className="mt-2 font-display text-lg text-accent-gold-text/80">
         Lost in the Void
       </p>
 
@@ -103,7 +104,7 @@ export default function NotFound() {
       <div className="mt-6 flex gap-3">
         <Link
           href="/"
-          className="rounded-lg border border-accent-gold bg-accent-gold/10 px-4 py-2 font-mono text-xs text-accent-gold transition-all hover:bg-accent-gold/20 hover:shadow-lg hover:shadow-accent-gold/10"
+          className="rounded-lg border border-accent-gold bg-accent-gold/10 px-4 py-2 font-mono text-xs text-accent-gold-text transition-all hover:bg-accent-gold/20 hover:shadow-lg hover:shadow-accent-gold/10"
         >
           Return Home
         </Link>
@@ -116,7 +117,7 @@ export default function NotFound() {
       </div>
 
       {/* Easter egg hint */}
-      <p className="mt-12 font-mono text-[9px] text-text-muted/30 tracking-widest">
+      <p className="mt-12 font-mono text-[12px] text-text-muted tracking-widest">
         Psst... have you tried /oracle?
       </p>
     </main>

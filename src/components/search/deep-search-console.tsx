@@ -162,7 +162,7 @@ export function DeepSearchConsole() {
             />
           )}
         </div>
-        <p className="text-xs text-text-muted/60">Press Enter or comma to add each concept. Only episodes matching ALL concepts will surface.</p>
+        <p className="text-xs text-text-muted">Press Enter or comma to add each concept. Only episodes matching ALL concepts will surface.</p>
       </div>
 
       {/* Threshold + Era filters */}
@@ -254,9 +254,9 @@ export function DeepSearchConsole() {
       {gated && (
         <div className="rounded-xl border border-violet-900/50 bg-violet-950/30 p-6 text-center space-y-3">
           <p className="text-violet-200 font-medium">Deep Search is a subscriber feature.</p>
-          <p className="text-sm text-text-muted">Subscribe to unlock multi-concept intersection search across the full transcript archive.</p>
+          <p className="text-sm text-text-muted">Subscribe to search the full transcript archive for several concepts at once.</p>
           <Link
-            href="/subscribe"
+            href="/premium"
             className="inline-block rounded-lg bg-violet-700 px-5 py-2 text-sm font-semibold text-white hover:bg-violet-600 transition-colors"
           >
             Subscribe
@@ -289,7 +289,7 @@ export function DeepSearchConsole() {
                 >
                   {r.episodeTitle}
                   {r.episodeNumber && (
-                    <span className="ml-2 text-xs text-text-muted/50">#{r.episodeNumber}</span>
+                    <span className="ml-2 text-xs text-text-muted">#{r.episodeNumber}</span>
                   )}
                 </Link>
                 <Link
@@ -301,7 +301,7 @@ export function DeepSearchConsole() {
               </div>
 
               {r.speakerLabel && (
-                <p className="text-xs text-text-muted/60 uppercase tracking-wide">{r.speakerLabel}</p>
+                <p className="text-xs text-text-muted uppercase tracking-wide">{r.speakerLabel}</p>
               )}
 
               <blockquote className="text-sm text-text-primary leading-relaxed border-l-2 border-accent-violet/40 pl-3">
@@ -312,7 +312,7 @@ export function DeepSearchConsole() {
               <div className="flex flex-wrap gap-3 pt-1">
                 {Object.entries(r.conceptScores).map(([concept, score]) => (
                   <div key={concept} className="flex items-center gap-1.5 text-xs text-text-muted">
-                    <span className="text-text-muted/60">{concept}</span>
+                    <span className="text-text-muted">{concept}</span>
                     <ScoreBar score={score} />
                   </div>
                 ))}

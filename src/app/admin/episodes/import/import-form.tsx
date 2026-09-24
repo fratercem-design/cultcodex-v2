@@ -149,7 +149,7 @@ export function ImportForm() {
             onChange={(e) => setCsvText(e.target.value)}
             placeholder={`title,episodeNumber,airDate,youtubeVideoId,summaryShort,status\nThe Void Speaks,42,2024-01-15,dQw4w9WgXcQ,A deep dive into the void,published`}
             rows={8}
-            className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted/40 focus:border-accent-gold focus:outline-none"
+            className="w-full rounded border border-border bg-elevated px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent-gold focus:outline-none"
           />
         </div>
 
@@ -180,19 +180,19 @@ export function ImportForm() {
             <table className="w-full">
               <thead>
                 <tr className="bg-elevated">
-                  <th className="px-3 py-1.5 text-left font-mono text-[10px] text-text-muted uppercase">
+                  <th className="px-3 py-1.5 text-left font-mono text-[12px] text-text-muted uppercase">
                     Title
                   </th>
-                  <th className="px-3 py-1.5 text-left font-mono text-[10px] text-text-muted uppercase">
+                  <th className="px-3 py-1.5 text-left font-mono text-[12px] text-text-muted uppercase">
                     #
                   </th>
-                  <th className="px-3 py-1.5 text-left font-mono text-[10px] text-text-muted uppercase">
+                  <th className="px-3 py-1.5 text-left font-mono text-[12px] text-text-muted uppercase">
                     Date
                   </th>
-                  <th className="px-3 py-1.5 text-left font-mono text-[10px] text-text-muted uppercase">
+                  <th className="px-3 py-1.5 text-left font-mono text-[12px] text-text-muted uppercase">
                     Video ID
                   </th>
-                  <th className="px-3 py-1.5 text-left font-mono text-[10px] text-text-muted uppercase">
+                  <th className="px-3 py-1.5 text-left font-mono text-[12px] text-text-muted uppercase">
                     Status
                   </th>
                 </tr>
@@ -243,14 +243,14 @@ export function ImportForm() {
       {/* Results */}
       {result && (
         <div className="rounded border border-border bg-surface p-4 space-y-2">
-          <p className="font-mono text-sm text-accent-gold font-bold">
+          <p className="font-mono text-sm text-accent-gold-text font-bold">
             Import Complete
           </p>
           <p className="font-mono text-xs text-text-primary">
             ✓ Created: {result.created}
           </p>
           {result.skipped > 0 && (
-            <p className="font-mono text-xs text-accent-gold">
+            <p className="font-mono text-xs text-accent-gold-text">
               ⊘ Skipped (duplicate slug): {result.skipped}
             </p>
           )}
@@ -261,7 +261,7 @@ export function ImportForm() {
               </p>
               <ul className="space-y-0.5">
                 {result.errors.map((err, i) => (
-                  <li key={i} className="font-mono text-[10px] text-red-400">
+                  <li key={i} className="font-mono text-[12px] text-red-400">
                     {err}
                   </li>
                 ))}

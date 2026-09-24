@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useCallback, useRef, useState } from "react";
 
 interface SSEOptions {
   url: string;
@@ -16,9 +16,10 @@ export function useSSE({
   enabled = true,
 }: SSEOptions): { status: SSEStatus } {
   const onMessageRef = useRef(onMessage);
-  onMessageRef.current = onMessage;
+  useLayoutEffect(() => { onMessageRef.current = onMessage; });
 
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const connectRef = useRef<(() => EventSource | undefined) | undefined>(undefined);
 
   const [rawStatus, setRawStatus] = useState<SSEStatus>("connecting");
   const [displayStatus, setDisplayStatus] = useState<SSEStatus>("open");
@@ -44,14 +45,17 @@ export function useSSE({
       eventSource.close();
       setRawStatus("reconnecting");
       reconnectTimeoutRef.current = setTimeout(() => {
-        connect();
+        connectRef.current?.();
       }, 5000);
     };
 
     return eventSource;
   }, [url, enabled]);
 
+  useLayoutEffect(() => { connectRef.current = connect; });
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     const eventSource = connect();
     return () => {
       eventSource?.close();
@@ -65,6 +69,7 @@ export function useSSE({
   // rawStatus being non-"open". Flip back to "open" instantly.
   useEffect(() => {
     if (rawStatus === "open") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDisplayStatus("open");
       return;
     }

@@ -25,10 +25,10 @@ export function PageHero({ title, subtitle, backgroundImage, label }: PageHeroPr
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pb-6">
         {label && (
           <p
-            className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.4em]"
+            className="mb-1.5 font-mono text-[12px] uppercase tracking-[0.12em]"
             style={{ color: "var(--neon)", textShadow: "var(--glow-neon)" }}
           >
-            // {label}
+            {"// "}{label}
           </p>
         )}
         <h1 className="font-serif text-2xl sm:text-3xl font-black tracking-tight text-accent-gold drop-shadow-md">

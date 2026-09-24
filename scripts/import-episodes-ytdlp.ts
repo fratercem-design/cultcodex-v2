@@ -6,7 +6,7 @@
  *
  * Env vars:
  *   ENRICH_SECRET          — API auth key (required)
- *   VERCEL_URL             — defaults to https://cultcodex.me
+ *   APP_URL             — defaults to https://cultcodex.me
  *   YOUTUBE_COOKIES_FILE   — path to Netscape cookies file (required for CI)
  */
 import "dotenv/config";
@@ -16,7 +16,7 @@ import * as https from "https";
 import * as os from "os";
 import { execFileSync } from "child_process";
 
-const BASE_URL = (process.env.VERCEL_URL ?? "https://cultcodex.me").replace(/\/$/, "");
+const BASE_URL = (process.env.APP_URL ?? "https://cultcodex.me").replace(/\/$/, "");
 const SECRET = (process.env.ENRICH_SECRET ?? "").trim();
 const COOKIES_FILE = process.env.YOUTUBE_COOKIES_FILE ?? "";
 
@@ -194,6 +194,14 @@ async function main() {
     process.exit(1);
   }
 
+  // A rejected secret comes back as JSON ({ error: "Unauthorized" }), not a
+  // throw, and used to fall through to "Nothing to do — all caught up".
+  if (typeof status?.total !== "number") {
+    console.error(`  FATAL: unexpected status response — ${JSON.stringify(status).slice(0, 200)}`);
+    console.error("  Check ENRICH_SECRET matches the value set on the server.");
+    process.exit(1);
+  }
+
   console.log(`  Total episodes:    ${status.total}`);
   console.log(`  Have transcripts:  ${status.withTranscripts}`);
   console.log(`  Missing:           ${status.withoutTranscripts}`);
@@ -242,9 +250,14 @@ async function main() {
       }
     } catch (err) {
       failed++;
-      const msg = err instanceof Error ? err.message : String(err);
+      // execFileSync's message starts with the full command line, so the
+      // 80-char console slice never reached yt-dlp's reason. Prefer the
+      // ERROR line from stderr (bot check, no captions, private video, ...).
+      const stderr = String((err as { stderr?: unknown })?.stderr ?? "");
+      const ytError = stderr.split("\n").reverse().find((l) => l.includes("ERROR"))?.trim();
+      const msg = ytError || (err instanceof Error ? err.message : String(err));
       failures.push(`${epLabel} ${video.videoId}: ${msg.slice(0, 100)}`);
-      console.log(`  ${progress} ${epLabel} ✗ ${msg.slice(0, 80)} — ${video.title.slice(0, 30)}`);
+      console.log(`  ${progress} ${epLabel} ✗ ${msg.slice(0, 160)} — ${video.title.slice(0, 30)}`);
     }
 
     if (i < toProcess.length - 1) await sleep(delayMs);

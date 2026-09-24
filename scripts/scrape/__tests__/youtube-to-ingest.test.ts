@@ -54,4 +54,36 @@ describe("transformVideo", () => {
     const result = transformVideo(video, 1);
     expect(result.summaryShort).toBeUndefined();
   });
+
+  it("strips StreamYard promo prose, keeping real content", () => {
+    const video: YouTubeVideo = {
+      ...sampleVideo,
+      description:
+        "🎙️ New to streaming or looking to level up? Check out StreamYard and get $10 discount! 😍\nTonight we discuss the tarot and cosmic consciousness",
+    };
+    const result = transformVideo(video, 1);
+    expect(result.summaryShort).toBe("Tonight we discuss the tarot and cosmic consciousness");
+  });
+
+  it("leaves prose that merely MENTIONS StreamYard untouched", () => {
+    const video: YouTubeVideo = {
+      ...sampleVideo,
+      description:
+        "Psyche discusses his unexpected $93 charge from Streamyard and shares his experience with the platform. He also does a tarot reading.",
+    };
+    const result = transformVideo(video, 1);
+    expect(result.summaryShort).toBe(
+      "Psyche discusses his unexpected $93 charge from Streamyard and shares his experience with the platform. He also does a tarot reading.",
+    );
+  });
+
+  it("drops summaries that are pure promo boilerplate", () => {
+    const video: YouTubeVideo = {
+      ...sampleVideo,
+      description:
+        "🎙️ New to streaming or looking to level up? Check out StreamYard and get $10 discount! 😍",
+    };
+    const result = transformVideo(video, 1);
+    expect(result.summaryShort).toBeUndefined();
+  });
 });

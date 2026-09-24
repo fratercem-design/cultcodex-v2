@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "\ud83d\udc31 \u2014 CULT CODEX",
   description: "You weren\u2019t supposed to find this.",
+  alternates: { canonical: "/meow" },
 };
 
 const CAT_QUOTES = [
@@ -80,7 +81,7 @@ export default function MeowPage() {
 
         {/* Lenore */}
         <div className="rounded-lg border border-accent-gold/10 bg-accent-gold/[0.03] px-6 py-5">
-          <h2 className="font-display text-lg text-accent-gold">
+          <h2 className="font-display text-lg text-accent-gold-text">
             Lenore <span className="font-mono text-xs text-text-muted">(Pie)</span>
           </h2>
           <p className="mt-1 font-mono text-xs text-text-muted">
@@ -91,10 +92,10 @@ export default function MeowPage() {
 
       {/* Random cat quote */}
       <div className="mt-12 max-w-md text-center">
-        <p className="font-serif text-sm italic leading-relaxed text-accent-gold/70">
+        <p className="font-serif text-sm italic leading-relaxed text-accent-gold-text/80">
           {quote}
         </p>
-        <p className="mt-2 font-mono text-[10px] tracking-wider text-text-muted/50">
+        <p className="mt-2 font-mono text-[12px] tracking-wider text-text-muted">
           &mdash; Psyche, probably
         </p>
       </div>
@@ -102,7 +103,7 @@ export default function MeowPage() {
       {/* Back link */}
       <Link
         href="/"
-        className="mt-16 font-mono text-[10px] tracking-widest text-text-muted/40 transition-colors hover:text-accent-cyan/60"
+        className="mt-16 font-mono text-[12px] tracking-widest text-text-muted transition-colors hover:text-accent-cyan/60"
       >
         &larr; back to the void
       </Link>

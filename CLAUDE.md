@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run dev              # start dev server (Turbopack)
 npm run build            # production build (no migration)
-npm run build:migrate    # prisma migrate deploy + next build (used by Railway)
+npm run db:migrate       # apply committed Prisma migrations
 npm run lint             # eslint
 npm run test             # vitest (run once)
 npm run test:watch       # vitest watch mode
@@ -27,7 +27,7 @@ npm run enrich:pipeline       # Claude AI enrichment
 
 ## Architecture
 
-**Stack:** Next.js 16 (App Router), React 19, TypeScript, Prisma 7 + PostgreSQL (Neon), NextAuth v5, Stripe, Tailwind v4, Vitest.
+**Stack:** Next.js 16 (App Router), React 19, TypeScript, Prisma 7 + PostgreSQL (Xata), NextAuth v5, Stripe, Tailwind v4, Vitest.
 
 **Prisma client** is generated to `src/generated/prisma/` (not the default location). Import from `@/generated/prisma/client`. The DB singleton lives in `src/lib/db.ts` using `PrismaPg` adapter for connection pooling.
 
@@ -52,22 +52,36 @@ npm run enrich:pipeline       # Claude AI enrichment
 ## Key env vars
 
 ```
-DATABASE_URL          # Neon pooled connection
-DIRECT_URL            # Neon direct connection (for migrations)
+DATABASE_URL          # Xata pooled connection (app runtime)
+DIRECT_URL            # Xata direct connection (migrations — advisory locks need non-pooled)
 NEXTAUTH_URL          # must match deployed origin exactly
 NEXTAUTH_SECRET
 GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET
 ANTHROPIC_API_KEY
 OPENAI_API_KEY        # for embeddings
 STRIPE_SECRET_KEY / STRIPE_WEBHOOK_SECRET
-STRIPE_PRICE_ACCESS_ID / STRIPE_PRICE_SYSTEM_ID
+STRIPE_PRICE_ACCESS_ID / STRIPE_PRICE_SYSTEM_ID                # monthly price ids
+STRIPE_PRICE_ACCESS_ANNUAL_ID / STRIPE_PRICE_SYSTEM_ANNUAL_ID  # annual price ids
+RESEND_API_KEY        # transactional + lead-capture email (Subscriber list)
 ADMIN_EMAILS          # comma-separated, grants admin role without DB write
 ENRICH_SECRET         # protects all /api/admin/* routes
 ```
 
 ## Schema notes
 
-- Migrations live in `prisma/migrations/`. Railway runs `build:migrate` which calls `prisma migrate deploy` before building.
+- Migrations live in `prisma/migrations/`. Run the existing `Run DB Migrations` GitHub Action as an explicit pre-deploy gate whenever a release contains migrations. The Fly runtime image is intentionally lean and does not contain Prisma's development CLI.
+- The two daily jobs live in `.github/workflows/scheduled-jobs.yml`. They call the bearer-protected production routes at 15:00 and 17:00 UTC. See `docs/operations/fly-cloudflare-xata-migration.md` for service settings, cutover order, and rollback triggers.
 - `prisma.config.ts` uses `DIRECT_URL` (non-pooled) for migrations, falls back to `DATABASE_URL`.
-- If a migration fails in the Railway DB, clear it with: `npx prisma migrate resolve --rolled-back <migration_name>`
-- The `railway.json` at root configures Railway's build/start commands.
+- If a migration fails, clear it with: `npx prisma migrate resolve --rolled-back <migration_name>`
+- The Xata branch hibernates when idle; `.github/workflows/keep-alive.yml` pings `/api/keep-alive` so builds (which prerender thousands of DB-backed pages) don't hit a sleeping branch.
+- Local env: put real `DATABASE_URL` / `DIRECT_URL` in `.env.local`. `vercel env pull` writes `[SENSITIVE]` placeholders for Sensitive vars, so `.env` cannot supply them.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

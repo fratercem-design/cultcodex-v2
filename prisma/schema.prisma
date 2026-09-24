@@ -56,6 +56,53 @@ enum ContentType {
   clip
 }
 
+// ─── Trollopedia: Evidence + Relationship Engine ─────
+
+enum RelationType {
+  friend
+  former_friend
+  ally
+  frequent_collaborator
+  debate_rival
+  enemy
+  occasional_guest
+  moderator
+  supporter
+  critic
+  student
+  mentor
+  community_member
+  unknown
+}
+
+enum EvidenceSourceType {
+  youtube_video
+  livestream_transcript
+  chat_log
+  video_description
+  comment
+  screenshot
+  community_submission
+  archived_social_media
+  other
+}
+
+enum ConfidenceLevel {
+  confirmed
+  strong
+  moderate
+  weak
+  rumor
+}
+
+enum ClaimNature {
+  documented
+  opinion
+  satire
+  rumor
+  disputed
+}
+
 // ─── Core Models ─────────────────────────────────────
 
 model Episode {
@@ -70,6 +117,10 @@ model Episode {
   thumbnailUrl    String?
   summaryShort    String?
   summaryLong     String?
+  /** Transcript-grounded recap: what happened, who appeared, notable moments with timestamps */
+  summaryFacts    String?
+  /** AI interpretive layer: recurring patterns, thematic significance, arc context */
+  summaryThemes   String?
   cutOfPsyche     String?
   transcriptRaw   String?
   transcriptHtml  String?
@@ -79,6 +130,11 @@ model Episode {
   status          ContentStatus @default(draft)
   contentType     ContentType   @default(original)
   seriesId        String?
+  /** Set by an admin after manually reading and verifying the AI summary */
+  isHumanReviewed Boolean       @default(false)
+  humanReviewedAt DateTime?
+  /** Manually queued by admin for (re-)enrichment even if summaryLong already exists */
+  enrichmentQueued Boolean      @default(false)
   series          Series?       @relation(fields: [seriesId], references: [id])
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -98,11 +154,16 @@ model Episode {
   comments           CodexComment[]
   favorites          Favorite[]
   psychenomiconChapter PsychenomiconChapter?
+  transcriptRequests TranscriptRequest[]
+  evidence           Evidence[]
+  relationshipEvents RelationshipEvent[]
+  timelineEvents     TimelineEvent[]
 
   @@index([airDate])
   @@index([status])
   @@index([episodeNumber])
   @@index([seriesId])
+  @@index([airDate, status])
 }
 
 model Series {
@@ -129,6 +190,7 @@ model Person {
   shortBio                 String?
   loreSummary              String?
   avatarUrl                String?
+  youtubeChannelUrl        String?
   personType               PersonType @default(guest)
   searchText               String?
   firstAppearanceEpisodeId String?
@@ -144,8 +206,11 @@ model Person {
   loreConnections    PersonLore[]
   relatedFrom        RelatedPerson[] @relation("relatedPersonFrom")
   relatedTo          RelatedPerson[] @relation("relatedPersonTo")
+  relationshipEventsFrom RelationshipEvent[] @relation("relationshipEventsFrom")
+  relationshipEventsTo   RelationshipEvent[] @relation("relationshipEventsTo")
 
   @@index([personType])
+  @@index([displayName])
 }
 
 model LoreEntry {
@@ -170,6 +235,7 @@ model LoreEntry {
   relatedTo       RelatedLore[] @relation("relatedLoreTo")
 
   @@index([canonStatus])
+  @@index([title])
 }
 
 model Topic {
@@ -185,6 +251,8 @@ model Topic {
   people    PersonTopic[]
   lore      LoreTopic[]
   savedBy   SavedTopic[]
+
+  @@index([title])
 }
 
 model Quote {
@@ -207,6 +275,7 @@ model Quote {
 
   @@index([speakerPersonId])
   @@index([episodeId])
+  @@index([createdAt])
 }
 
 model TranscriptSegment {
@@ -218,11 +287,22 @@ model TranscriptSegment {
   speakerLabel String?
   text         String
   searchText   String?
+  // pgvector embedding column — exists in the DB via the 20260517000000_add_pgvector
+  // raw migration; declared here so Prisma's schema matches the live database and
+  // `prisma migrate diff` stops wanting to drop it. Written/queried only through
+  // raw SQL in src/lib/queries/semantic.ts and src/app/api/admin/embed/route.ts.
+  embedding    Unsupported("vector(1536)")?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   quotes Quote[]
 
+  // Natural key. Every ingest path (Vercel cron, GitHub Actions, the Windows
+  // whisper daemon, the admin API) does check-then-insert and they overlap in
+  // time; the `skipDuplicates` / ON CONFLICT DO NOTHING they all use is a no-op
+  // without this. Dedupe (scripts/maintenance/dedupe-transcript-segments.ts)
+  // before applying the migration that creates it.
+  @@unique([episodeId, startSeconds, endSeconds, text])
   @@index([episodeId])
   @@index([startSeconds])
 }
@@ -320,6 +400,74 @@ model RelatedEpisode {
   @@id([episodeAId, episodeBId])
 }
 
+/// A cited claim: the atomic unit of Trollopedia canon. Every dossier fact,
+/// relationship beat, and timeline event points at one of these.
+model Evidence {
+  id               String             @id @default(cuid())
+  claim            String
+  nature           ClaimNature        @default(documented)
+  confidence       ConfidenceLevel    @default(moderate)
+  sourceType       EvidenceSourceType
+  sourceUrl        String?
+  episodeId        String?
+  episode          Episode?           @relation(fields: [episodeId], references: [id])
+  timestampSeconds Int?
+  notes            String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  relationshipEvents RelationshipEvent[]
+  timelineEvents     TimelineEvent[]
+
+  @@index([episodeId])
+  @@index([confidence])
+  @@index([nature])
+}
+
+/// One beat in an evolving relationship between two people. Current state is
+/// derived from the latest event per pair; pairs are normalized personAId < personBId.
+model RelationshipEvent {
+  id           String       @id @default(cuid())
+  personAId    String
+  personBId    String
+  personA      Person       @relation("relationshipEventsFrom", fields: [personAId], references: [id], onDelete: Cascade)
+  personB      Person       @relation("relationshipEventsTo", fields: [personBId], references: [id], onDelete: Cascade)
+  relationType RelationType @default(unknown)
+  headline     String
+  details      String?
+  episodeId    String?
+  episode      Episode?     @relation(fields: [episodeId], references: [id])
+  occurredAt   DateTime?
+  evidenceId   String?
+  evidence     Evidence?    @relation(fields: [evidenceId], references: [id])
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([personAId, personBId])
+  @@index([episodeId])
+  @@index([relationType])
+}
+
+/// A dated event in the Psycheverse chronological history.
+model TimelineEvent {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  date        DateTime
+  category    String?
+  description String?
+  episodeId   String?
+  episode     Episode?      @relation(fields: [episodeId], references: [id])
+  evidenceId  String?
+  evidence    Evidence?     @relation(fields: [evidenceId], references: [id])
+  status      ContentStatus @default(published)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([date])
+  @@index([category])
+}
+
 model RelatedPerson {
   personAId String
   personBId String
@@ -353,10 +501,29 @@ model LiveStatus {
 model Subscriber {
   id               String   @id @default(cuid())
   email            String?  @unique
+  name             String?
+  source           String?
+  giftStage        Int      @default(0)
+  lastEmailAt      DateTime?
   pushSubscription Json?
   verified         Boolean  @default(false)
   createdAt        DateTime @default(now())
 
+  @@index([email])
+  @@index([giftStage])
+}
+
+model TranscriptRequest {
+  id          String   @id @default(cuid())
+  episodeId   String
+  email       String
+  createdAt   DateTime @default(now())
+  notifiedAt  DateTime?
+
+  episode     Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+
+  @@unique([episodeId, email])
+  @@index([episodeId])
   @@index([email])
 }
 
@@ -397,10 +564,19 @@ model CodexUser {
   memberTitle             String?   // chosen flair title e.g. "Oracle", "Acolyte"
   isPublicMember          Boolean   @default(false) // opt-in to public Member Roll
 
+  // Onboarding
+  handle                  String?   @unique
+  sigilGlyph              String?
+  onboardingCompleted     Boolean   @default(false)
+  userArchetype           String?   // archetype slug e.g. "oracle", "alchemist"
+
   // Personal codex page (system tier)
   bio                     String?
   codexSlug               String?   @unique
   codexPagePublic         Boolean   @default(true)
+  codexBanner             String?   // gradient preset: void|crimson|emerald|gold|violet|aurora|abyss|frost
+  codexLinks              Json?     // [{label: string, url: string}][] up to 5
+  codexShowCards          Boolean   @default(false)
 
   reactions               EpisodeReaction[]
   comments                CodexComment[]
@@ -417,6 +593,10 @@ model CodexUser {
   wallet                  UserWallet?
   packPurchases           PackPurchase[]
   quoteReactions          QuoteReaction[]
+  salonPosts              SalonPost[]
+  decks                   Deck[]
+  signalProposals         SignalProposal[]
+  annotations             Annotation[]
 }
 
 model CodexSession {
@@ -498,16 +678,50 @@ model CommentReport {
   @@unique([commentId, userId])
 }
 
+// ─── Salon (Oracle-tier members space) ─────────────
+
+/// A discussion prompt/topic in the Salon. Authored by staff (admin).
+model SalonThread {
+  id        String      @id @default(cuid())
+  title     String
+  prompt    String      @db.Text
+  pinned    Boolean     @default(false)
+  closed    Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  posts     SalonPost[]
+
+  @@index([pinned, createdAt])
+}
+
+/// A member contribution within a Salon thread.
+model SalonPost {
+  id            String      @id @default(cuid())
+  threadId      String
+  thread        SalonThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  userId        String
+  user          CodexUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content       String      @db.Text
+  flagged       Boolean     @default(false)
+  flaggedReason String?
+  createdAt     DateTime    @default(now())
+
+  @@index([threadId, createdAt])
+  @@index([userId])
+}
+
 // ─── Chat & Notifications ─────────────────────────
 
 model ChatMessage {
-  id          String    @id @default(cuid())
-  userId      String
-  user        CodexUser @relation(fields: [userId], references: [id])
-  displayName String
-  avatarUrl   String?
-  content     String
-  createdAt   DateTime  @default(now())
+  id               String    @id @default(cuid())
+  userId           String
+  user             CodexUser @relation(fields: [userId], references: [id])
+  displayName      String
+  avatarUrl        String?
+  content          String
+  flagged          Boolean   @default(false)
+  moderationReason String?
+  createdAt        DateTime  @default(now())
 
   @@index([createdAt])
 }
@@ -590,6 +804,11 @@ model PsychenomiconChapter {
   isMajorEvent   Boolean @default(false)
   status         String  @default("stable") // stable | contested | evolving
 
+  // AI-generated art — Supabase Storage public URLs, set by the art pipeline
+  // Shape: { cover, scene_01, scene_02, scene_03 }
+  artImageUrls   Json?
+  artGeneratedAt DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -598,6 +817,45 @@ model PsychenomiconChapter {
   archetypeEvents   ArchetypeEvent[]
 
   @@index([chapterNumber])
+}
+
+// Art image bytes stored directly in Postgres (Xata), served by
+// /api/psychenomicon-art/[slug]/[slot]. Avoids a separate object store.
+model PsychenomiconArtAsset {
+  id          String   @id @default(cuid())
+  chapterSlug String
+  slot        String // cover | scene_01 | scene_02 | scene_03
+  mimeType    String   @default("image/jpeg")
+  data        Bytes
+  createdAt   DateTime @default(now())
+
+  @@unique([chapterSlug, slot])
+  @@index([chapterSlug])
+}
+
+// A compiled, sellable Psychenomicon book edition (PDF bytes in Postgres).
+model BookEdition {
+  id          String   @id @default(cuid())
+  sku         String   @unique // e.g. "psychenomicon-vol-1"
+  title       String
+  mimeType    String   @default("application/pdf")
+  data        Bytes
+  pageCount   Int      @default(0)
+  chapterFrom Int      @default(0)
+  chapterTo   Int      @default(0)
+  generatedAt DateTime @default(now())
+}
+
+// One-time purchase entitlement (e.g. a book). Separate from subscriptions.
+model BookPurchase {
+  id              String   @id @default(cuid())
+  userId          String
+  sku             String
+  stripeSessionId String?
+  createdAt       DateTime @default(now())
+
+  @@unique([userId, sku])
+  @@index([userId])
 }
 
 model PsychenomiconEntity {
@@ -732,13 +990,17 @@ enum OracleChunkSource {
   psy_entity
 }
 
+// Legacy model — NOT referenced by any app code (grep oracleChunk in src/ is empty)
+// and its table has no migration. The embedder writes 1536-dim vectors, so keep the
+// declared type in sync with the real one to avoid a 1024/1536 mismatch if anything
+// ever inserts here. Candidates for removal once the schema is baselined.
 model OracleChunk {
   id           String              @id @default(cuid())
   sourceType   OracleChunkSource
   sourceId     String
   content      String              @db.Text
   searchText   String              @db.Text
-  embedding    Unsupported("vector(1024)")
+  embedding    Unsupported("vector(1536)")
   metadata     Json
   contentHash  String
   createdAt    DateTime            @default(now())
@@ -834,6 +1096,13 @@ enum CardType {
   MAHAVIDYA
   AVATAR
   INCIDENT
+  QUOTE
+  EPISODE
+  DEITY
+  LOCATION
+  RITUAL
+  SYMBOL
+  EVENT
 }
 
 model Card {
@@ -848,19 +1117,86 @@ model Card {
   statA       Int       @default(50)
   statB       Int       @default(50)
   statC       Int       @default(50)
-  abilities   String[]
+  abilities   String[]  @default([])
   personality String?
   totalMinted Int       @default(0)
   maxSupply   Int?
   isActive    Boolean   @default(true)
+
+  // ── Divinatory metadata (universal — any card type may participate in a reading) ──
+  uprightMeaning     String?  @db.Text
+  reversedMeaning    String?  @db.Text
+  divinationKeywords String[] @default([])
+  element            String?
+  planet             String?
+  archetype          String?
+  shadowAspect       String?  @db.Text
+  advice             String?  @db.Text
+  oraclePrompt       String?  @db.Text
+  meaningVersion     Int      @default(1)
+  divinationEligible Boolean  @default(false)
+  divinationStrength Int      @default(50)
+  oracleCategories   String[] @default([])
+  // ── Archive provenance / polymorphic source link ──
+  sourceType         String?
+  sourceRefId        String?
+  mythology          String?
+
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   packCards  PackCard[]
   ownedCards OwnedCard[]
+  deckCards  DeckCard[]
+  gifts      CardGift[]
 
   @@index([rarity])
   @@index([cardType])
+  @@index([isActive])
+  @@index([divinationEligible])
+  @@index([sourceType, sourceRefId])
+  @@index([mythology])
+}
+
+// Single-use gift/claim tokens for hand-distributed card editions (e.g. the
+// Founder's Edition drop). Table is created on prod via the idempotent
+// `apply-card-gift-migration` data-ops op — same path as subscriber-gift.
+model CardGift {
+  id        String    @id @default(cuid())
+  token     String    @unique @default(cuid())
+  cardId    String
+  serial    Int
+  edition   String    @default("founders")
+  note      String?
+  claimed   Boolean   @default(false)
+  claimedAt DateTime?
+  claimedBy String?
+  createdAt DateTime  @default(now())
+
+  card Card @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([cardId, edition, serial])
+  @@index([cardId])
+}
+
+// Daily/monthly LLM spend counters for the global budget breaker
+// (src/lib/llm-budget.ts). The table used to be created at runtime with
+// `CREATE TABLE IF NOT EXISTS`; it now ships as a real migration so Prisma
+// knows about it and the create-on-first-use race is gone.
+model LlmBudget {
+  bucket_day String @id
+  count      Int    @default(0)
+}
+
+// Shared fixed-window counters for abuse controls that must hold across every
+// serverless instance. One row is reused per endpoint + hashed caller key.
+model RateLimitBucket {
+  key       String   @id
+  count     Int      @default(0)
+  resetAt   DateTime
+  updatedAt DateTime @updatedAt
+
+  @@index([resetAt])
 }
 
 model CardPack {
@@ -910,6 +1246,14 @@ model OwnedCard {
   obtainedVia String   @default("pack")
   obtainedAt  DateTime @default(now())
 
+  // ── Provenance + evolution ──
+  evolutionStage    Int     @default(0)
+  source            String  @default("pack")
+  method            String?
+  serialNumber      Int?
+  evolvedFromCardId String?
+  firstOwnerId      String?
+
   user CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
   card Card      @relation(fields: [cardId], references: [id], onDelete: Cascade)
 
@@ -926,6 +1270,15 @@ model UserWallet {
   totalEarned      Int       @default(0)
   totalSpent       Int       @default(0)
   lastDailyClaimAt DateTime?
+  dailyStreak      Int       @default(0)
+  longestStreak    Int       @default(0)
+  // ── Daily Signal economy + divination progression (regamify) ──
+  signal        Int       @default(0)
+  signalResetAt DateTime?
+  drawStreak    Int       @default(0)
+  lastDrawAt    DateTime?
+  xp            Int       @default(0)
+  level         Int       @default(1)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
@@ -963,4 +1316,318 @@ model PackPurchase {
 
   @@index([userId])
   @@index([packId])
+}
+
+// ─── Deck Builder ────────────────────────────────────────────────────────────
+
+model Deck {
+  id          String     @id @default(cuid())
+  userId      String
+  user        CodexUser  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  isPublic    Boolean    @default(false)
+  deckCards   DeckCard[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([userId])
+}
+
+model DeckCard {
+  id     String @id @default(cuid())
+  deckId String
+  deck   Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  cardId String
+  card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  @@unique([deckId, cardId])
+  @@index([deckId])
+}
+
+// ─── Regamify: Reading Persistence, Collections, Divination ──────────────────
+// Schema present in the live DB via the orphaned cards_regamify_foundation
+// migration; re-declared here so the generated client is typed for the reading
+// engine. ReadingCard snapshots meaning at draw time (immutability of history).
+
+model Spread {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  cardCount   Int      @default(1)
+  signalCost  Int      @default(1)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  positions SpreadPosition[]
+  readings  Reading[]
+}
+
+model SpreadPosition {
+  id       String  @id @default(cuid())
+  spreadId String
+  index    Int
+  name     String
+  meaning  String?
+  spread   Spread  @relation(fields: [spreadId], references: [id], onDelete: Cascade)
+
+  @@unique([spreadId, index])
+  @@index([spreadId])
+}
+
+model Reading {
+  id         String   @id @default(cuid())
+  userId     String
+  spreadId   String?
+  question   String?  @db.Text
+  seed       String
+  reflection String?  @db.Text
+  createdAt  DateTime @default(now())
+
+  spread Spread?       @relation(fields: [spreadId], references: [id])
+  cards  ReadingCard[]
+
+  @@index([userId, createdAt])
+}
+
+model ReadingCard {
+  id           String  @id @default(cuid())
+  readingId    String
+  cardId       String
+  position     Int
+  positionName String?
+  orientation  String
+  borrowed     Boolean @default(false)
+
+  drawnMeaningVersion Int
+  titleSnapshot       String?
+  uprightMeaning      String?  @db.Text
+  reversedMeaning     String?  @db.Text
+  advice              String?  @db.Text
+  oraclePrompt        String?  @db.Text
+  keywords            String[] @default([])
+  element             String?
+  archetype           String?
+
+  reading Reading @relation(fields: [readingId], references: [id], onDelete: Cascade)
+
+  @@index([readingId])
+  @@index([cardId])
+}
+
+model CardSet {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  name             String
+  description      String?
+  setType          String   @default("tarot")
+  mythology        String?
+  sortOrder        Int      @default(0)
+  rewardCredits    Int      @default(0)
+  rewardTitle      String?
+  rewardFoilCardId String?
+  unlocksSpread    String?
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  members     CardSetMember[]
+  completions UserSetCompletion[]
+
+  @@index([setType])
+}
+
+model CardSetMember {
+  id     String  @id @default(cuid())
+  setId  String
+  cardId String
+  set    CardSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+
+  @@unique([setId, cardId])
+  @@index([setId])
+  @@index([cardId])
+}
+
+model UserSetCompletion {
+  id            String   @id @default(cuid())
+  userId        String
+  setId         String
+  completedAt   DateTime @default(now())
+  rewardClaimed Boolean  @default(false)
+  set           CardSet  @relation(fields: [setId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, setId])
+  @@index([userId])
+}
+
+model CardInstance {
+  id             String   @id @default(cuid())
+  cardId         String
+  ownerId        String
+  firstOwnerId   String?
+  serialNumber   Int?
+  isFoil         Boolean  @default(false)
+  evolutionStage Int      @default(0)
+  source         String   @default("pack")
+  method         String?
+  evolvedFromId  String?
+  obtainedAt     DateTime @default(now())
+
+  @@index([ownerId])
+  @@index([cardId])
+}
+
+model OracleAffinity {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  dominantElement   String?
+  dominantPlanet    String?
+  dominantArchetype String?
+  mostDrawnSuit     String?
+  shadowPattern     String?
+  recurringCards    Json     @default("[]")
+  readingsCount     Int      @default(0)
+  updatedAt         DateTime @updatedAt
+}
+
+model SeasonalEvent {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  description  String?
+  startsAt     DateTime
+  endsAt       DateTime
+  rewardCardId String?
+  badge        String?
+  collectGoal  Json     @default("[]")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  @@index([isActive, startsAt, endsAt])
+}
+
+// ─── Signal Proposals ────────────────────────────────────
+// Oracle-tier members propose what gets investigated next.
+model SignalProposal {
+  id        String   @id @default(cuid())
+  userId    String
+  user      CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question  String   @db.Text
+  context   String?  @db.Text
+  status    String   @default("open")   // open | under_review | investigating | published | declined
+  votes     Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ─── Stripe Webhook Event Deduplication ───────────────
+// Records processed Stripe event IDs so retried webhooks are no-oped.
+// Rows expire naturally — Stripe event IDs are globally unique.
+model StripeWebhookEvent {
+  id          String   @id          // Stripe event id (evt_…)
+  type        String                // event type, e.g. "checkout.session.completed"
+  processedAt DateTime @default(now())
+
+  @@index([processedAt])
+}
+
+// ─── Weekly Digest ────────────────────────────────────
+// Admin-curated "This week in the archive" selections.
+// quoteIds / episodeIds / personIds are arrays of DB IDs
+// that the public /this-week page resolves at render time.
+model WeeklyDigest {
+  id         String   @id @default(cuid())
+  weekOf     DateTime @unique
+  title      String
+  blurb      String?
+  published  Boolean  @default(false)
+  quoteIds   String[]
+  episodeIds String[]
+  personIds  String[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([weekOf])
+}
+
+// ─── Community Annotations ─────────────────────────────
+// Member-submitted notes/connections on archive entities. Submitted by
+// subscribers, displayed publicly once approved. Moderated at
+// /admin/annotations. targetId is the entity SLUG (stable, URL-aligned).
+model Annotation {
+  id         String   @id @default(cuid())
+  userId     String
+  user       CodexUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetType String   // "episode" | "lore" | "person" | "topic"
+  targetId   String   // slug of the target entity
+  body       String   @db.Text
+  status     String   @default("pending") // pending | approved | hidden
+  votes      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([targetType, targetId, status])
+  @@index([userId])
+  @@index([status])
+}
+
+// ─── Game Show Leaderboard ─────────────────────────────
+// A submitted run from the Panelverse Game Show. Anonymous handle by default;
+// optional soft link to a CodexUser. Read for weekly/monthly/all-time boards.
+model GameScore {
+  id        String   @id @default(cuid())
+  handle    String   // display name chosen by the player (or user displayName)
+  userId    String?  // optional; no FK — anonymous runs allowed
+  score     Int      // headline metric (correct answers in the run)
+  correct   Int
+  total     Int
+  round     String?  // round key or "all"
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([score])
+}
+
+// ─── Clap Tokens (#cultofpsyche) ───────────────────────
+// A ClapHolder is a nickname on the public /claps board with a permanent
+// token total. Each purchase (Stripe checkout or manual CashApp credit via
+// admin) appends a ClapToken: the token vests permanently to the holder AND
+// grants a 24-hour "clap" spotlight (spotlightUntil). Admin can add/adjust
+// at /admin/claps.
+model ClapHolder {
+  id        String      @id @default(cuid())
+  nickname  String      @unique // buyer-chosen display name (case-preserved)
+  tokens    Int         @default(0) // denormalized permanent total
+  hidden    Boolean     @default(false) // admin can hide a holder from the board
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  claps     ClapToken[]
+
+  @@index([tokens])
+  @@index([hidden, tokens])
+}
+
+model ClapToken {
+  id              String     @id @default(cuid())
+  holderId        String
+  holder          ClapHolder @relation(fields: [holderId], references: [id], onDelete: Cascade)
+  quantity        Int        @default(1)
+  source          String     // "stripe" | "cashapp" | "admin"
+  amountCents     Int?       // what was actually paid (1000 with coupon, 2000 without); null for admin grants
+  couponCode      String?    // e.g. "panel" when the discount applied
+  stripeSessionId String?    @unique // idempotency for webhook grants
+  note            String?    // admin note (e.g. "cashapp $psyche 07-22")
+  spotlightUntil  DateTime?  // 24h clap window from purchase
+  createdAt       DateTime   @default(now())
+
+  @@index([holderId])
+  @@index([spotlightUntil])
+  @@index([createdAt])
 }

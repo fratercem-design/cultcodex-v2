@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 /**
  * /codex/signals — full list of the user's saved topics.
  *
@@ -42,8 +44,8 @@ export default async function CodexSignalsPage() {
         id="main-content"
         className="mx-auto max-w-5xl px-4 py-10 space-y-6"
       >
-        <nav className="font-mono text-[11px] uppercase tracking-widest text-text-muted">
-          <Link href="/codex" className="hover:text-accent-gold transition-colors">
+        <nav className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
+          <Link href="/codex" className="hover:text-accent-gold-text transition-colors">
             ← Back to your codex
           </Link>
         </nav>
@@ -75,7 +77,7 @@ export default async function CodexSignalsPage() {
                   <h2 className="font-display text-lg font-bold text-accent-cyan group-hover:text-accent-cyan line-clamp-2">
                     {row.topic.title}
                   </h2>
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted whitespace-nowrap">
+                  <span className="font-mono text-[12px] uppercase tracking-widest text-text-muted whitespace-nowrap">
                     {formatDate(row.createdAt)}
                   </span>
                 </div>
@@ -84,7 +86,7 @@ export default async function CodexSignalsPage() {
                     {row.topic.description}
                   </p>
                 )}
-                <div className="mt-3 flex flex-wrap gap-3 font-mono text-[10px] text-text-muted">
+                <div className="mt-3 flex flex-wrap gap-3 font-mono text-[12px] text-text-muted">
                   <span>
                     <span className="text-accent-cyan font-bold">
                       {row.topic._count.episodes}

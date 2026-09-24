@@ -2211,16 +2211,16 @@ git commit -m "feat: add shareable quote cards with OG image generation and shar
 
 ---
 
-### Task 12: Push Schema to Neon and Deploy
+### Task 12: Push Schema to Xata and Deploy
 
 **Files:**
 - No new files
 
-**Step 1: Push schema changes to Neon production database**
+**Step 1: Push schema changes to Xata production database**
 
 ```bash
 cd "C:/Users/John Bates/Projects/cultcodex-v2"
-DATABASE_URL="postgresql://neondb_owner:npg_tkoGPp10JQwx@ep-wandering-mud-akzidlw0-pooler.c-3.us-west-2.aws.neon.tech/neondb?channel_binding=require&sslmode=require" npx prisma db push
+DATABASE_URL=" (Xata — set locally in .env.local)" npx prisma db push
 ```
 
 **Step 2: Set auth environment variables on Vercel**
@@ -2280,4 +2280,4 @@ git commit -m "chore: deploy Phase 2 community features to production"
 | 9 | Admin moderation API | `src/app/api/admin/comments/` |
 | 10 | Episode OG images | `src/app/episodes/[slug]/opengraph-image.tsx` |
 | 11 | Quote cards + share | `src/app/quotes/[id]/og/`, `src/components/quotes/` |
-| 12 | Deploy to production | Neon push, Vercel env vars, deploy |
+| 12 | Deploy to production | Xata push, Vercel env vars, deploy |

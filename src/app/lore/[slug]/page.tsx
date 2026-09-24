@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getLoreBySlug } from "@/lib/queries/lore";
 import { prisma } from "@/lib/db";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd, thinPageRobots } from "@/lib/seo";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
@@ -17,21 +17,13 @@ import { formatDate } from "@/lib/format/date";
 import { editorialFrame } from "@/lib/format/editorial-frame";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
+import { AnnotationSection } from "@/components/annotations/annotation-section";
 import type { Metadata } from "next";
 
-export const revalidate = 600;
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
-  try {
-    const entries = await prisma.loreEntry.findMany({
-      select: { slug: true },
-      take: 300,
-      orderBy: { updatedAt: "desc" },
-    });
-    return entries.map((e) => ({ slug: e.slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 interface PageProps {
@@ -50,11 +42,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
 
-  return buildMetadata({
-    title: entry.title,
-    description: entry.summary || entry.searchText || null,
-    path: `/lore/${entry.slug}`,
-  });
+  return {
+    ...buildMetadata({
+      title: entry.title,
+      description: entry.summary || entry.searchText || null,
+      path: `/lore/${entry.slug}`,
+    }),
+    ...thinPageRobots(entry.episodes.length),
+  };
 }
 
 const CANON_VARIANTS: Record<string, "green" | "purple" | "gold" | "muted"> = {
@@ -116,7 +111,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-6">
             {entry.summary && (
-              <SectionCard title="Summary" accent="violet">
+              <SectionCard headingLevel={2} title="Summary" accent="violet">
                 <p className="text-sm text-text-primary leading-relaxed">
                   {editorialFrame(entry.summary)}
                 </p>
@@ -124,7 +119,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
             )}
 
             {entry.fullEntry && (
-              <SectionCard title="Full Entry" accent="violet">
+              <SectionCard headingLevel={2} title="Full Entry" accent="violet">
                 <div className="prose prose-invert prose-sm max-w-none text-text-primary">
                   {editorialFrame(entry.fullEntry)}
                 </div>
@@ -133,10 +128,10 @@ export default async function LoreDetailPage({ params }: PageProps) {
 
             {/* Episode appearances */}
             {entry.episodes.length > 0 && (
-              <SectionCard title={`Episodes (${entry.episodes.length})`} accent="gold">
+              <SectionCard headingLevel={2} title={`Episodes (${entry.episodes.length})`} accent="gold">
                 <div className="grid gap-3">
                   {entry.episodes.map((e) => (
-                    <EpisodeListItem
+                    <EpisodeListItem headingLevel={3}
                       key={e.episode.id}
                       slug={e.episode.slug}
                       title={e.episode.title}
@@ -152,7 +147,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
 
             {/* Related lore */}
             {relatedLore.length > 0 && (
-              <SectionCard title={`Related Lore (${relatedLore.length})`} accent="violet">
+              <SectionCard headingLevel={2} title={`Related Lore (${relatedLore.length})`} accent="violet">
                 <div className="grid gap-3 sm:grid-cols-2">
                   {relatedLore.map((lore) => (
                     <Link
@@ -166,7 +161,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
                           variant={CANON_VARIANTS[lore.canonStatus] ?? "muted"}
                         />
                       </div>
-                      <h4 className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
+                      <h4 className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-2">
                         {lore.title}
                       </h4>
                       {lore.summary && (
@@ -192,7 +187,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
               ]}
             />
 
-            <SectionCard title="Classification">
+            <SectionCard headingLevel={2} title="Classification">
               <MetaRow
                 label="Canon Status"
                 value={<StatusBadge label={canonLabel} variant={canonVariant} />}
@@ -229,6 +224,14 @@ export default async function LoreDetailPage({ params }: PageProps) {
           </div>
         </div>
 
+        <div className="mt-10">
+          <AnnotationSection
+            targetType="lore"
+            targetId={entry.slug}
+            returnPath={`/lore/${entry.slug}`}
+          />
+        </div>
+
         <SuggestCorrection
           entityType="lore"
           entityTitle={entry.title}
@@ -239,7 +242,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: jsonLdScript({
             "@context": "https://schema.org",
             "@type": "Article",
             headline: entry.title,
@@ -251,7 +254,36 @@ export default async function LoreDetailPage({ params }: PageProps) {
               name: "CultCodex",
               url: "https://cultcodex.me",
             },
+            // Cross-entity mentions — builds the knowledge-graph edges
+            ...(entry.people.length > 0 || entry.topics.length > 0
+              ? {
+                  mentions: [
+                    ...entry.people.slice(0, 5).map((ep) => ({
+                      "@type": "Person",
+                      name: ep.person.displayName,
+                      url: `https://cultcodex.me/people/${ep.person.slug}`,
+                    })),
+                    ...entry.topics.slice(0, 5).map((et) => ({
+                      "@type": "DefinedTerm",
+                      name: et.topic.title,
+                      url: `https://cultcodex.me/topics/${et.topic.slug}`,
+                    })),
+                  ],
+                }
+              : {}),
           }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLdScript(
+            breadcrumbListJsonLd([
+              { name: "CultCodex", url: "https://cultcodex.me" },
+              { name: "Lore", url: "https://cultcodex.me/lore" },
+              { name: entry.title, url: `https://cultcodex.me/lore/${entry.slug}` },
+            ])
+          ),
         }}
       />
     </>

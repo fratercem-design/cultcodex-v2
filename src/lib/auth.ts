@@ -1,14 +1,32 @@
 import NextAuth from "next-auth";
+import { redirect } from "next/navigation";
 import Google from "next-auth/providers/google";
 import { prisma } from "@/lib/db";
 import type { CodexUserRole } from "@/generated/prisma/client";
+
+// Fail fast: an OAuth provider with undefined credentials fails only at
+// sign-in time, per request, with an opaque error. Surface a missing env var
+// at boot instead.
+//
+// But NOT during `next build`. Collecting page data imports this module for
+// every route that touches auth, and build environments (preview deploys, CI)
+// do not carry the OAuth secrets. Throwing at module scope there turned a
+// sign-in misconfiguration into a total build failure: every deployment,
+// including docs-only previews, died at page-data collection. src/lib/db.ts
+// guards on the same phase for the same reason.
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+if (!isBuildPhase && (!googleClientId || !googleClientSecret)) {
+  throw new Error("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set");
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: googleClientId ?? "",
+      clientSecret: googleClientSecret ?? "",
     }),
   ],
   session: {
@@ -23,6 +41,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { email: user.email },
           update: {
             avatarUrl: user.image ?? undefined,
+            // Claim the row. Accounts pre-provisioned by lead capture carry
+            // provider "initiate"; stamping the real provider here is what
+            // marks a captured lead as having become a signed-in initiate.
+            provider: account?.provider ?? undefined,
           },
           create: {
             email: user.email,
@@ -40,10 +62,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       if (session.user?.email) {
+        const adminEmails = (process.env.ADMIN_EMAILS ?? "")
+          .split(",")
+          .map((e) => e.trim().toLowerCase())
+          .filter(Boolean);
+        const isEnvAdmin = adminEmails.includes(session.user.email.toLowerCase());
+
         try {
           let codexUser = await prisma.codexUser.findUnique({
             where: { email: session.user.email },
-            select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true },
+            select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true, onboardingCompleted: true },
           });
 
           // If no DB record exists (e.g. signIn upsert failed when DB was down),
@@ -58,16 +86,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 avatarUrl: session.user.image ?? undefined,
                 provider: (token as { provider?: string })?.provider ?? "google",
               },
-              select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true },
+              select: { id: true, displayName: true, role: true, avatarUrl: true, subscriptionStatus: true, subscriptionTier: true, onboardingCompleted: true },
             });
           }
 
           if (codexUser) {
-            const adminEmails = (process.env.ADMIN_EMAILS ?? "")
-              .split(",")
-              .map((e) => e.trim().toLowerCase())
-              .filter(Boolean);
-            const isEnvAdmin = adminEmails.includes(session.user.email.toLowerCase());
             (session as SessionWithCodex).codexUser = {
               ...codexUser,
               role: isEnvAdmin ? "admin" : codexUser.role,
@@ -75,7 +98,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         } catch (err) {
           console.error("[auth] session callback DB error:", err);
-          // Return session without codexUser — user is OAuth-authenticated but DB unavailable
+          // Fallback: minimal select when subscription columns aren't migrated yet.
+          // This keeps env-admin users authenticated so the admin UI stays accessible.
+          try {
+            const minimal = await prisma.codexUser.findUnique({
+              where: { email: session.user.email },
+              select: { id: true, displayName: true, role: true, avatarUrl: true },
+            });
+            if (minimal) {
+              (session as SessionWithCodex).codexUser = {
+                id: minimal.id,
+                displayName: minimal.displayName,
+                role: isEnvAdmin ? "admin" : minimal.role,
+                avatarUrl: minimal.avatarUrl,
+                subscriptionStatus: null,
+                subscriptionTier: null,
+                onboardingCompleted: null,
+              };
+            }
+          } catch {
+            // DB completely unavailable — return session without codexUser
+          }
         }
       }
       return session;
@@ -94,6 +137,7 @@ export interface CodexSessionUser {
   avatarUrl: string | null;
   subscriptionStatus: string | null;
   subscriptionTier: string | null;
+  onboardingCompleted: boolean | null;
 }
 
 export interface SessionWithCodex {
@@ -125,6 +169,20 @@ export async function requireAuth(): Promise<CodexSessionUser> {
 export async function requireAdmin(): Promise<CodexSessionUser> {
   const user = await requireAuth();
   if (user.role !== "admin") throw new Error("Admin access required");
+  return user;
+}
+
+/**
+ * Gate for admin *pages*. Call it first in every admin page.tsx.
+ *
+ * The admin layout's redirect is not enough on its own: the App Router
+ * renders a layout and its page in parallel, so a page that fetches data
+ * still streams it in the body of the layout's 307 response. Redirecting
+ * here stops the page before any of its queries run.
+ */
+export async function requireAdminPage(): Promise<CodexSessionUser> {
+  const user = await getCurrentUser();
+  if (!user || user.role !== "admin") redirect("/auth/signin");
   return user;
 }
 

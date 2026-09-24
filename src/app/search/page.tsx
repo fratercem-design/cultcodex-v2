@@ -1,3 +1,6 @@
+import { trustedSummary } from "@/lib/format/speculative-summary";
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import { globalSearch } from "@/lib/queries/search";
 import type { SearchFilters } from "@/lib/queries/search";
@@ -9,11 +12,13 @@ import { formatDate } from "@/lib/format/date";
 import { formatSeconds } from "@/lib/format/duration";
 import { SearchInput } from "@/components/search/search-input";
 import { QuoteShareButton } from "@/components/quotes/share-button";
+import { PaginationControls } from "@/components/ui/pagination-controls";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Search — CULT CODEX",
   description: "Search the Cult of Psyche archive for episodes, people, and lore.",
+  alternates: { canonical: "/search" },
 };
 
 interface SearchPageProps {
@@ -25,6 +30,7 @@ interface SearchPageProps {
     transcript?: string;  // "yes" or "no"
     from?: string;        // date YYYY-MM-DD
     to?: string;          // date YYYY-MM-DD
+    page?: string;        // paginates a single selected entity type
   }>;
 }
 
@@ -53,6 +59,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   if (params.to) {
     filters.dateTo = params.to;
   }
+  const selectedTypes = params.type?.split(",").filter(Boolean) ?? [];
+  const page = /^\d+$/.test(params.page ?? "") ? Math.max(1, Number(params.page)) : 1;
+  if (selectedTypes.length === 1) filters.page = page;
 
   const results = query ? await globalSearch(query, filters) : null;
 
@@ -73,13 +82,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
       {/* Oracle crosslink */}
       <div className="mb-8 flex items-center justify-between gap-4 rounded-lg border border-accent-violet/20 bg-accent-violet/5 px-4 py-3">
-        <p className="font-mono text-[11px] text-text-muted leading-snug">
-          <span className="text-accent-violet font-bold">Want a synthesized answer?</span>{" "}
+        <p className="font-mono text-[12px] text-text-muted leading-snug">
+          <span className="text-accent-violet-text font-bold">Want a synthesized answer?</span>{" "}
           The Oracle is AI trained on the full archive — ask a question, get an answer with citations.
         </p>
         <Link
           href="/oracle"
-          className="shrink-0 inline-flex items-center gap-1 rounded border border-accent-violet/40 bg-surface px-3 py-1.5 font-mono text-[10px] font-bold text-accent-violet transition-colors hover:bg-accent-violet/10 whitespace-nowrap"
+          className="shrink-0 inline-flex items-center gap-1 rounded border border-accent-violet/40 bg-surface px-3 py-1.5 font-mono text-[12px] font-bold text-accent-violet-text transition-colors hover:bg-accent-violet/10 whitespace-nowrap"
         >
           Ask Oracle →
         </Link>
@@ -88,29 +97,53 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       {/* Filter bar */}
       {query && (
         <div className="mb-6 space-y-3">
-          {/* Entity type filters */}
-          <div className="flex flex-wrap gap-2">
-            {["episodes", "people", "lore", "topics", "quotes", "transcripts"].map((t) => {
+          {/* Entity type filters. "All" is an explicit chip, and a chip is
+              selected only when it is actually in the filter — before, every
+              chip rendered "active" whenever nothing was selected, so the
+              bar never showed what was filtering (2026-09 audit, SE-02). */}
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Result types">
+            {(() => {
+              const allTypes = ["episodes", "people", "lore", "topics", "quotes", "transcripts"];
               const currentTypes = params.type?.split(",").filter(Boolean) ?? [];
-              const isActive = currentTypes.length === 0 || currentTypes.includes(t);
-              const newTypes = isActive && currentTypes.length > 0
-                ? currentTypes.filter((ct) => ct !== t)
-                : [...currentTypes, t];
-              const href = buildSearchUrl(query, { ...params, type: newTypes.length > 0 && newTypes.length < 6 ? newTypes.join(",") : undefined });
-              return (
+              const chipClass = (on: boolean) =>
+                `inline-flex min-h-11 items-center gap-1.5 rounded-full border px-4 text-[13px] transition-colors ${
+                  on
+                    ? "border-ink bg-ink text-void font-semibold"
+                    : "border-line-strong text-ink-2 hover:border-ink hover:text-ink"
+                }`;
+              return [
                 <Link
-                  key={t}
-                  href={href}
-                  className={`rounded-full border px-3 py-1 font-mono text-xs transition-colors ${
-                    isActive
-                      ? "border-accent-gold text-accent-gold bg-accent-gold/10"
-                      : "border-border text-text-muted hover:border-accent-gold/50"
-                  }`}
+                  key="all"
+                  href={buildSearchUrl(query, { ...params, type: undefined })}
+                  aria-current={currentTypes.length === 0 ? "true" : undefined}
+                  className={chipClass(currentTypes.length === 0)}
                 >
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
-                </Link>
-              );
-            })}
+                  {currentTypes.length === 0 && <span aria-hidden="true">✓</span>}
+                  All
+                </Link>,
+                ...allTypes.map((t) => {
+                  const isActive = currentTypes.includes(t);
+                  const newTypes = isActive
+                    ? currentTypes.filter((ct) => ct !== t)
+                    : [...currentTypes, t];
+                  const href = buildSearchUrl(query, {
+                    ...params,
+                    type: newTypes.length > 0 && newTypes.length < allTypes.length ? newTypes.join(",") : undefined,
+                  });
+                  return (
+                    <Link
+                      key={t}
+                      href={href}
+                      aria-current={isActive ? "true" : undefined}
+                      className={chipClass(isActive)}
+                    >
+                      {isActive && <span aria-hidden="true">✓</span>}
+                      {t.charAt(0).toUpperCase() + t.slice(1)}
+                    </Link>
+                  );
+                }),
+              ];
+            })()}
           </div>
 
           {/* Advanced filters */}
@@ -123,10 +156,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 <Link
                   key={ct}
                   href={href}
-                  className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] transition-colors ${
+                  aria-current={isActive ? "true" : undefined}
+                  className={`inline-flex min-h-11 items-center rounded-full border px-3 font-mono text-[12px] transition-colors ${
                     isActive
-                      ? "border-accent-purple text-accent-purple bg-accent-purple/10"
-                      : "border-border text-text-muted hover:border-accent-purple/50"
+                      ? "border-ink bg-ink text-void font-semibold"
+                      : "border-line-strong text-ink-2 hover:border-ink"
                   }`}
                 >
                   {ct}
@@ -142,10 +176,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 <Link
                   key={`transcript-${val}`}
                   href={href}
-                  className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] transition-colors ${
+                  aria-current={isActive ? "true" : undefined}
+                  className={`inline-flex min-h-11 items-center rounded-full border px-3 font-mono text-[12px] transition-colors ${
                     isActive
-                      ? "border-accent-cyan text-accent-cyan bg-accent-cyan/10"
-                      : "border-border text-text-muted hover:border-accent-cyan/50"
+                      ? "border-ink bg-ink text-void font-semibold"
+                      : "border-line-strong text-ink-2 hover:border-ink"
                   }`}
                 >
                   {val === "yes" ? "has transcript" : "no transcript"}
@@ -178,22 +213,22 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="group flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3 font-mono text-sm text-text-primary transition-all hover:border-accent-gold hover:text-accent-gold hover:bg-accent-gold/5"
+                className="group flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3 font-mono text-sm text-text-primary transition-all hover:border-accent-gold hover:text-accent-gold-text hover:bg-accent-gold/5"
               >
                 {link.label}
-                <span className="text-text-muted group-hover:text-accent-gold transition-colors">&rarr;</span>
+                <span className="text-text-muted group-hover:text-accent-gold-text transition-colors">&rarr;</span>
               </Link>
             ))}
           </div>
 
           <div>
-            <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest mb-3">Try searching for:</p>
+            <p className="font-mono text-[12px] text-text-muted uppercase tracking-widest mb-3">Try searching for:</p>
             <div className="flex flex-wrap gap-2">
               {["tarot", "mythology", "quantum", "panel discussion", "astrology", "Lilith", "Cupid and Psyche", "scary tales"].map((q) => (
                 <Link
                   key={q}
                   href={`/search?q=${encodeURIComponent(q)}`}
-                  className="rounded-full border border-border bg-surface px-4 py-2 font-mono text-xs text-text-primary transition-all hover:border-accent-gold hover:text-accent-gold hover:bg-accent-gold/5 hover:shadow-sm"
+                  className="rounded-full border border-border bg-surface px-4 py-2 font-mono text-xs text-text-primary transition-all hover:border-accent-gold hover:text-accent-gold-text hover:bg-accent-gold/5 hover:shadow-sm"
                 >
                   {q}
                 </Link>
@@ -232,23 +267,23 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-0.5">
                           {ep.episodeNumber != null && (
-                            <span className="font-mono text-[10px] text-accent-gold font-bold">
+                            <span className="font-mono text-[12px] text-accent-gold-text font-bold">
                               EP.{String(ep.episodeNumber).padStart(3, "0")}
                             </span>
                           )}
                           {ep.airDate && (
-                            <span className="font-mono text-[10px] text-text-muted">
+                            <span className="font-mono text-[12px] text-text-muted">
                               {formatDate(ep.airDate)}
                             </span>
                           )}
                         </div>
-                        <p className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+                        <p className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
                           <HighlightMatch text={ep.title} query={query} />
                         </p>
-                        {ep.summaryShort && (
+                        {trustedSummary(ep.summaryShort) && (
                           <p className="mt-0.5 text-xs text-text-muted line-clamp-2">
                             <HighlightMatch
-                              text={ep.summaryShort}
+                              text={trustedSummary(ep.summaryShort) ?? ""}
                               query={query}
                             />
                           </p>
@@ -258,7 +293,26 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   </li>
                 ))}
               </ul>
+              {selectedTypes.length !== 1 && results.episodeTotalCount > results.episodes.length && (
+                <Link
+                  href={buildSearchUrl(query, { ...params, type: "episodes" })}
+                  className="mt-3 inline-flex font-mono text-xs text-accent-gold-text hover:underline"
+                >
+                  View all {results.episodeTotalCount} matching episodes →
+                </Link>
+              )}
             </SectionCard>
+          )}
+          {selectedTypes.length === 1 && selectedTypes[0] === "episodes" && (
+            <PaginationControls
+              basePath="/search"
+              meta={{
+                page,
+                pageSize: 20,
+                totalCount: results.episodeTotalCount,
+                totalPages: Math.max(1, Math.ceil(results.episodeTotalCount / 20)),
+              }}
+            />
           )}
 
           {/* ── People ──────────────────────────── */}
@@ -273,7 +327,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-0.5">
-                          <p className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+                          <p className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
                             <HighlightMatch
                               text={person.displayName}
                               query={query}
@@ -318,7 +372,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 mb-0.5">
-                          <p className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+                          <p className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
                             <HighlightMatch
                               text={entry.title}
                               query={query}
@@ -362,7 +416,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       className="group flex items-start gap-3 py-3 px-1 transition-colors hover:bg-elevated rounded"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+                        <p className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
                           <HighlightMatch text={topic.title} query={query} />
                         </p>
                         {topic.description && (
@@ -390,12 +444,12 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       </p>
                       <div className="mt-1 flex items-center gap-2 font-mono text-xs text-text-muted">
                         {quote.speakerName && (
-                          <span className="text-accent-gold">— {quote.speakerName}</span>
+                          <span className="text-accent-gold-text">— {quote.speakerName}</span>
                         )}
                         {quote.episodeSlug && quote.episodeTitle && (
                           <Link
                             href={`/episodes/${quote.episodeSlug}`}
-                            className="hover:text-accent-gold transition-colors"
+                            className="hover:text-accent-gold-text transition-colors"
                           >
                             in {quote.episodeTitle}
                           </Link>
@@ -420,11 +474,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       className="group block transition-colors hover:bg-elevated rounded p-1"
                     >
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-mono text-[10px] text-accent-gold">
+                        <span className="font-mono text-[12px] text-accent-gold-text">
                           {formatSeconds(seg.startSeconds)}
                         </span>
                         {seg.speakerLabel && (
-                          <span className="font-mono text-[10px] text-accent-purple font-bold uppercase">
+                          <span className="font-mono text-[12px] text-accent-violet-text font-bold uppercase">
                             {seg.speakerLabel}
                           </span>
                         )}
@@ -432,13 +486,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       <p className="text-sm text-text-primary line-clamp-2">
                         <HighlightMatch text={seg.text} query={query} />
                       </p>
-                      <div className="mt-1 font-mono text-[10px] text-text-muted">
+                      <div className="mt-1 font-mono text-[12px] text-text-muted">
                         {seg.episodeNumber != null && (
-                          <span className="text-accent-gold font-bold mr-1">
+                          <span className="text-accent-gold-text font-bold mr-1">
                             EP.{String(seg.episodeNumber).padStart(3, "0")}
                           </span>
                         )}
-                        <span className="group-hover:text-accent-gold transition-colors">
+                        <span className="group-hover:text-accent-gold-text transition-colors">
                           {seg.episodeTitle}
                         </span>
                       </div>
@@ -492,10 +546,10 @@ function HighlightMatch({
   return (
     <>
       {parts.map((part, i) =>
-        regex.test(part) ? (
+        i % 2 === 1 ? (
           <mark
             key={i}
-            className="bg-accent-gold/20 text-accent-gold rounded-sm px-0.5"
+            className="bg-accent-gold/20 text-accent-gold-text rounded-sm px-0.5"
           >
             {part}
           </mark>

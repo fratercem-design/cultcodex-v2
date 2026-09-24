@@ -12,7 +12,13 @@ import { getEraForEpisode } from "@/lib/eras";
 import { EraNeighbors } from "@/components/episodes/era-neighbors";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
-import { buildMetadata } from "@/lib/seo";
+import { buildMetadata, episodeJsonLd, jsonLdScript, detailBreadcrumbJsonLd } from "@/lib/seo";
+import { AiNotice } from "@/components/ui/ai-notice";
+import { getConfidenceTier } from "@/lib/format/confidence-tier";
+import { trustedSummary } from "@/lib/format/speculative-summary";
+import { renderWithTimestamps } from "@/lib/format/render-timestamps";
+import { HumanReviewBadge } from "@/components/ui/human-review-badge";
+import { SplitSummaryCard } from "@/components/episodes/split-summary";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { EpisodeHero } from "@/components/episodes/episode-hero";
 import { EpisodeGlanceBar } from "@/components/episodes/episode-glance-bar";
@@ -23,7 +29,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { YouTubeEmbed } from "@/components/media/youtube-embed";
 import { TranscriptViewer } from "@/components/media/transcript-viewer";
-import { PaywallGate } from "@/components/subscription/paywall-gate";
+import { groupSegments } from "@/lib/transcript/group-segments";
 import { isSubscribed } from "@/lib/subscription";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { ReactionBar } from "@/components/episodes/reaction-bar";
@@ -37,31 +43,22 @@ import { formatDuration } from "@/lib/format/duration";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
 import { DecodeModePanel } from "@/components/episodes/decode-mode-panel";
 import { WhatYouMissed } from "@/components/episodes/what-you-missed";
+import { TranscriptNotify } from "@/components/episodes/transcript-notify";
 import { EpisodeCrossRef } from "@/components/episodes/episode-cross-ref";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { RandomEpisodeButton } from "@/components/archive/random-episode-button";
 import { TranscriptBadge } from "@/components/ui/transcript-badge";
 import { ProvenanceBadge } from "@/components/ui/provenance-badge";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
-import { DataQualityBadge } from "@/components/ui/data-quality-badge";
+import { AnnotationSection } from "@/components/annotations/annotation-section";
 import { ColorLegend } from "@/components/ui/color-legend";
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
-  try {
-    const episodes = await prisma.episode.findMany({
-      where: {},
-      select: { slug: true },
-      take: 500,
-      orderBy: { airDate: "desc" },
-    });
-    return episodes.map((ep) => ({ slug: ep.slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 interface PageProps {
@@ -83,7 +80,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return buildMetadata({
     title: episode.title,
-    description: episode.summaryShort || episode.searchText || null,
+    description: trustedSummary(episode.summaryShort) || episode.searchText || null,
     path: `/episodes/${episode.slug}`,
     image: episode.thumbnailUrl ?? null,
   });
@@ -96,6 +93,15 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
   const episode = await getEpisodeBySlug(slug).catch(() => null);
 
   if (!episode) notFound();
+
+  // AI summaries written before a transcript existed guess from the title
+  // ("likely explores…", "without the availability of a transcript…"). They
+  // contradict the transcript on this very page, so they are suppressed and
+  // the page says "Summary pending" instead. See lib/format/speculative-summary.
+  const summaryShort = trustedSummary(episode.summaryShort);
+  const summaryLong = trustedSummary(episode.summaryLong);
+  const summaryFacts = trustedSummary(episode.summaryFacts);
+  const summaryThemes = summaryFacts ? trustedSummary(episode.summaryThemes) : null;
 
   const [relatedEpisodes, user] = await Promise.all([
     getRelatedEpisodes(episode.id, { limit: 6 }).catch(() => []),
@@ -121,6 +127,11 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     : null;
 
   const hasTranscript = episode.segments.length > 0;
+  // Group raw caption cues into paragraph blocks on the server. Every word
+  // still ships in the HTML — the transcript is the archive's SEO engine — but
+  // a long episode renders ~1.2k rows instead of ~12k.
+  const transcriptBlocks = hasTranscript ? groupSegments(episode.segments) : [];
+  const confidenceTier = getConfidenceTier(episode.segments.length, !!summaryLong);
   const hasTranscriptAccess = user ? await isSubscribed(user.id).catch(() => false) : false;
   const hasDecodeAccess = hasTranscriptAccess; // same tier — Initiate+
   const hasDecodeData = !!episode.decodeData;
@@ -187,6 +198,38 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
   return (
     <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: jsonLdScript(
+          episodeJsonLd({
+            title: cleanTitle(episode.title),
+            slug: episode.slug,
+            description: summaryShort ?? summaryLong ?? null,
+            airDate: episode.airDate,
+            thumbnailUrl: episode.thumbnailUrl,
+            youtubeVideoId: episode.youtubeVideoId,
+            duration: episode.duration,
+            // Transcript excerpt for the VideoObject schema (capped so it
+            // signals rich content without doubling page weight).
+            transcript: episode.segments.length
+              ? episode.segments.map((s) => s.text).join(" ").slice(0, 5000)
+              : null,
+          })
+        ),
+      }}
+    />
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: jsonLdScript(
+          detailBreadcrumbJsonLd(
+            { name: "Archive", path: "/episodes" },
+            { name: cleanTitle(episode.title), path: `/episodes/${episode.slug}` }
+          )
+        ),
+      }}
+    />
     {episode.series && (
       <nav className="mx-auto max-w-7xl px-4 pt-4">
         <ol className="flex items-center gap-2 font-mono text-xs text-text-muted">
@@ -200,7 +243,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     )}
     <EpisodeHero
       title={cleanTitle(episode.title)}
-      subtitle={episode.summaryShort ?? ""}
+      subtitle={summaryShort ?? ""}
       thumbnailUrl={episode.thumbnailUrl}
       episodeNumber={episode.episodeNumber}
       contentType={episode.contentType}
@@ -254,7 +297,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
               </svg>
               <p className="font-mono text-sm text-amber-400">Video unavailable</p>
-              <p className="font-mono text-[11px] text-text-muted">This episode's video has been privatized or removed. Browse the transcript, quotes, and metadata below.</p>
+              <p className="font-mono text-[12px] text-text-muted">This episode&apos;s video has been privatized or removed. Browse the transcript, quotes, and metadata below.</p>
             </div>
           )}
 
@@ -265,7 +308,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 <span className="text-2xl">📼</span>
               </div>
               <p className="font-mono text-sm text-text-muted">No video linked yet</p>
-              <p className="font-mono text-[10px] text-text-muted">This episode is archived from metadata. Check the transcript, summary, and quotes below.</p>
+              <p className="font-mono text-[12px] text-text-muted">This episode is archived from metadata. Check the transcript, summary, and quotes below.</p>
             </div>
           )}
 
@@ -329,28 +372,50 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
           {/* Tab layout */}
           <Suspense fallback={<div className="h-40" />}>
-            <EpisodeTabLayout tabs={tabs}>
+            <EpisodeTabLayout tabs={tabs} prerender={["transcript"]}>
               {{
                 overview: (
                   <div className="space-y-6">
-                    {/* Summary */}
-                    {episode.summaryLong && (
-                      <SectionCard title="Summary">
+                    {/* Summary — split view (new) or legacy single-blob (old) */}
+                    {summaryFacts ? (
+                      <SplitSummaryCard
+                        summaryFacts={summaryFacts}
+                        summaryThemes={summaryThemes}
+                        youtubeVideoId={episode.youtubeVideoId}
+                        confidenceTier={confidenceTier}
+                        isHumanReviewed={episode.isHumanReviewed}
+                        humanReviewedAt={episode.humanReviewedAt}
+                      />
+                    ) : summaryLong ? (
+                      <SectionCard headingLevel={2} title="Summary">
                         <p className="text-sm text-text-primary leading-relaxed">
-                          {episode.summaryLong}
+                          {renderWithTimestamps(summaryLong, episode.youtubeVideoId)}
+                        </p>
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          {episode.isHumanReviewed && (
+                            <HumanReviewBadge reviewedAt={episode.humanReviewedAt} variant="full" />
+                          )}
+                          <AiNotice tier={confidenceTier} />
+                        </div>
+                      </SectionCard>
+                    ) : hasTranscript ? (
+                      <SectionCard headingLevel={2} title="Summary">
+                        <p className="font-display text-[15px] leading-relaxed text-ink-2">
+                          Summary pending. The full transcript is available now in the{" "}
+                          <span className="font-semibold text-ink">Transcript</span> tab.
                         </p>
                       </SectionCard>
-                    )}
+                    ) : null}
 
                     {/* Guests (inline for mobile) — hosts filtered out */}
                     {actualGuests.length > 0 && (
-                      <SectionCard title={`Guests (${actualGuests.length})`} accent="gold">
+                      <SectionCard headingLevel={2} title={`Guests (${actualGuests.length})`} accent="gold">
                         <div className="flex flex-wrap gap-1.5">
                           {actualGuests.map((g) => (
                             <Link
                               key={g.person.slug}
                               href={`/people/${g.person.slug}`}
-                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-text-primary hover:border-accent-gold/30 hover:text-accent-gold transition-colors"
+                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[12px] text-text-primary hover:border-accent-gold/30 hover:text-accent-gold-text transition-colors"
                             >
                               {g.person.displayName}
                             </Link>
@@ -361,13 +426,13 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
                     {/* Topics (inline for mobile) */}
                     {episode.topics.length > 0 && (
-                      <SectionCard title={`Topics (${episode.topics.length})`} accent="cyan">
+                      <SectionCard headingLevel={2} title={`Topics (${episode.topics.length})`} accent="cyan">
                         <div className="flex flex-wrap gap-1.5">
                           {episode.topics.map((t) => (
                             <Link
                               key={t.topic.slug}
                               href={`/topics/${t.topic.slug}`}
-                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[11px] text-text-primary hover:border-accent-cyan/30 hover:text-accent-cyan transition-colors"
+                              className="inline-flex items-center rounded border border-border bg-surface px-2 py-0.5 font-mono text-[12px] text-text-primary hover:border-accent-cyan/30 hover:text-accent-cyan transition-colors"
                             >
                               {t.topic.title}
                             </Link>
@@ -378,36 +443,37 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
                     {/* Transcript status — show when no transcript */}
                     {!hasTranscript && (
-                      <SectionCard title="Transcript">
+                      <SectionCard headingLevel={2} title="Transcript">
                         <div className="flex items-center gap-3 py-2">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface border border-border">
-                            <span className="font-mono text-[10px] text-text-muted">░░░</span>
+                            <span className="font-mono text-[12px] text-text-muted">░░░</span>
                           </div>
                           <div>
                             <p className="font-mono text-xs text-text-muted">No transcript available</p>
-                            <p className="font-mono text-[10px] text-text-muted mt-0.5">
+                            <p className="font-mono text-[12px] text-text-muted mt-0.5">
                               {episode.youtubeVideoId
                                 ? "Auto-captions may be disabled for this video"
                                 : "No video source linked to extract captions from"}
                             </p>
                           </div>
                         </div>
+                        <TranscriptNotify episodeSlug={episode.slug} />
                       </SectionCard>
                     )}
 
                     {/* Related episodes */}
                     {relatedEpisodes.length > 0 && (
                       <section>
-                        <SectionCard title={`Related Episodes (${relatedEpisodes.length})`}>
+                        <SectionCard headingLevel={2} title={`Related Episodes (${relatedEpisodes.length})`}>
                           <div className="grid gap-3 sm:grid-cols-2">
                             {relatedEpisodes.map((ep) => (
-                              <EpisodeListItem
+                              <EpisodeListItem headingLevel={3}
                                 key={ep.id}
                                 slug={ep.slug}
                                 title={ep.title}
                                 episodeNumber={ep.episodeNumber}
                                 airDate={ep.airDate}
-                                summaryShort={ep.summaryShort}
+                                summaryShort={trustedSummary(ep.summaryShort)}
                               />
                             ))}
                           </div>
@@ -426,7 +492,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                         .slice(0, 3);
                       if (topicsWithDesc.length === 0) return null;
                       return (
-                        <SectionCard title="🐇 Go Deeper">
+                        <SectionCard headingLevel={2} title="🐇 Go Deeper">
                           <p className="text-xs text-text-muted mb-4">
                             Explore the ideas at the heart of this episode
                           </p>
@@ -442,10 +508,10 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                                   <span className="font-mono text-xs font-semibold text-accent-cyan group-hover:underline line-clamp-1">
                                     {t.title}
                                   </span>
-                                  <span className="text-[11px] text-text-muted leading-relaxed line-clamp-3">
+                                  <span className="text-[12px] text-text-muted leading-relaxed line-clamp-3">
                                     {desc}
                                   </span>
-                                  <span className="mt-auto font-mono text-[10px] text-text-muted group-hover:text-accent-cyan transition-colors">
+                                  <span className="mt-auto font-mono text-[12px] text-text-muted group-hover:text-accent-cyan transition-colors">
                                     Explore topic →
                                   </span>
                                 </Link>
@@ -458,21 +524,25 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   </div>
                 ),
                 ...(hasTranscript ? {
-                  transcript: hasTranscriptAccess ? (
+                  // Transcripts are PUBLIC — full text, server-rendered, indexable.
+                  // This is the archive's SEO engine: thousands of pages of real,
+                  // long-tail-searchable content. Premium value lives in the
+                  // interactive tools (Oracle, Decode, Red Room, annotations),
+                  // not behind the words themselves.
+                  //
+                  // "Indexable" only holds because this tab is listed in
+                  // `prerender` above: the layout otherwise renders just the
+                  // active tab, which left the transcript out of the canonical
+                  // URL's HTML entirely (it only existed inside the JSON-LD and
+                  // RSC <script> payloads, which are not page text to Google).
+                  transcript: (
                     <TerminalPanel header="TRANSCRIPT">
                       <TranscriptViewer
-                        segments={episode.segments}
+                        blocks={transcriptBlocks}
                         hasVideoEmbed={!!episode.youtubeVideoId}
                         initialTimestamp={initialTimestamp}
                         signalMap={signalMap}
-                      />
-                    </TerminalPanel>
-                  ) : (
-                    <TerminalPanel header="TRANSCRIPT">
-                      <PaywallGate
-                        previewSegments={episode.segments.slice(0, 5)}
-                        totalCount={episode.segments.length}
-                        isAuthenticated={!!user}
+                        episodeSlug={episode.slug}
                       />
                     </TerminalPanel>
                   ),
@@ -507,15 +577,25 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   </div>
                 ),
                 discussion: (
-                  <SectionCard title={`Comments (${commentsData.totalCount})`}>
-                    <CommentSection
-                      slug={episode.slug}
-                      initialComments={JSON.parse(JSON.stringify(commentsData.comments))}
-                      initialTotalCount={commentsData.totalCount}
-                      isAuthenticated={!!user}
-                      currentUserId={user?.id}
-                    />
-                  </SectionCard>
+                  <div className="space-y-6">
+                    <SectionCard headingLevel={2} title={`Comments (${commentsData.totalCount})`}>
+                      <CommentSection
+                        slug={episode.slug}
+                        initialComments={JSON.parse(JSON.stringify(commentsData.comments))}
+                        initialTotalCount={commentsData.totalCount}
+                        isAuthenticated={!!user}
+                        currentUserId={user?.id}
+                      />
+                    </SectionCard>
+                    <SectionCard headingLevel={2} title="Community Annotations">
+                      <AnnotationSection
+                        targetType="episode"
+                        targetId={episode.slug}
+                        returnPath={`/episodes/${episode.slug}`}
+                        label="Connections, corrections, and context added by Initiate+ members."
+                      />
+                    </SectionCard>
+                  </div>
                 ),
               }}
             </EpisodeTabLayout>
@@ -525,7 +605,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Meta */}
-          <SectionCard title="Metadata">
+          <SectionCard headingLevel={2} title="Metadata">
             <div className="space-y-0">
               {epNum && <MetaRow label="Episode" value={epNum} />}
               <MetaRow label="Aired" value={formatDate(episode.airDate)} />
@@ -557,28 +637,16 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 value={
                   <ProvenanceBadge
                     hasTranscript={hasTranscript}
-                    hasSummary={!!episode.summaryLong}
+                    hasSummary={!!summaryLong}
                   />
                 }
               />
               {episode.series && (
                 <MetaRow label="Series" value={episode.series.title} />
               )}
-              <MetaRow
-                label="Data"
-                value={
-                  <DataQualityBadge
-                    hasSummary={!!episode.summaryLong}
-                    hasTranscript={hasTranscript}
-                    guestCount={actualGuests.length}
-                    topicCount={episode.topics.length}
-                    quoteCount={episode.quotes.length}
-                    loreCount={episode.loreEntries.length}
-                    hasAirDate={!!episode.airDate}
-                    hasDuration={!!episode.duration}
-                  />
-                }
-              />
+              {/* The opaque "Data: D 45%" grade was removed (2026-09 audit):
+                  an internal completeness score read as a verdict on the
+                  episode. Transcript + Source rows above say what exists. */}
             </div>
           </SectionCard>
 
@@ -597,24 +665,24 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           {/* Upgrade CTA — only for non-subscribers */}
           {!hasTranscriptAccess && (
             <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-5 space-y-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-gold">/// initiate_layer</p>
-              <p className="font-mono text-xs font-bold text-accent-gold">Observers see the surface.</p>
+              <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">{"/// initiate_layer"}</p>
+              <p className="font-mono text-xs font-bold text-accent-gold-text">Observers see the surface.</p>
               <ul className="space-y-1.5">
                 {[
-                  "Full searchable transcript",
-                  "Decode Mode — AI analysis",
-                  "Jump to any timestamp",
-                  "Pattern search across all episodes",
+                  "Decode Mode — AI analysis of every episode",
+                  "Ask the Oracle across the whole archive",
+                  "The Psychenomicon — the archive's living myth engine",
+                  "Add annotations & help shape the canon",
                 ].map((f) => (
-                  <li key={f} className="flex items-start gap-2 font-mono text-[10px] text-text-muted">
-                    <span className="text-accent-gold mt-0.5">✦</span>
+                  <li key={f} className="flex items-start gap-2 font-mono text-[12px] text-text-muted">
+                    <span className="text-accent-gold-text mt-0.5">✦</span>
                     {f}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/premium"
-                className="block w-full rounded-lg border border-accent-gold bg-accent-gold/15 px-4 py-2.5 text-center font-mono text-xs font-bold text-accent-gold transition-all hover:bg-accent-gold/25"
+                className="block w-full rounded-lg border border-accent-gold bg-accent-gold/15 px-4 py-2.5 text-center font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25"
               >
                 Become Initiate+ — $10/mo
               </Link>
@@ -656,12 +724,12 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           )}
 
           {/* Semantic cross-references — related moments from other episodes */}
-          {(episode.summaryShort || episode.topics.length > 0) && (
+          {(summaryShort || episode.topics.length > 0) && (
             <Suspense fallback={null}>
               <EpisodeCrossRef
                 episodeId={episode.id}
                 concept={
-                  episode.summaryShort ||
+                  summaryShort ||
                   [episode.title, episode.topics[0]?.topic.title]
                     .filter(Boolean)
                     .join(" — ")
@@ -686,21 +754,6 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
         </div>
       </div>
     </main>
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "VideoObject",
-          name: episode.title,
-          description: episode.summaryShort ?? episode.title,
-          thumbnailUrl: episode.thumbnailUrl ?? undefined,
-          uploadDate: episode.airDate?.toISOString(),
-          url: `https://cultcodex.me/episodes/${episode.slug}`,
-          ...(episode.youtubeVideoId && { contentUrl: `https://www.youtube.com/watch?v=${episode.youtubeVideoId}` }),
-        }),
-      }}
-    />
     </>
   );
 }

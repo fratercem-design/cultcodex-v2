@@ -1,4 +1,6 @@
-import { requireAdmin } from "@/lib/auth";
+export const dynamic = "force-dynamic";
+
+import { requireAdminPage } from "@/lib/auth";
 import { AdminFormField } from "@/components/admin/admin-form-field";
 import { SlugField } from "@/components/admin/slug-field";
 import { createLoreEntry } from "@/app/admin/create-actions";
@@ -6,7 +8,7 @@ import { createLoreEntry } from "@/app/admin/create-actions";
 export const metadata = { title: "Create Lore Entry — CultCodex Admin" };
 
 export default async function CreateLoreEntryPage() {
-  await requireAdmin();
+  await requireAdminPage();
 
   return (
     <div className="max-w-2xl">

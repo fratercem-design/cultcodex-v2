@@ -46,7 +46,7 @@ export function SoftGate({
 
   const t = getTier(tier);
   const accentTextCls =
-    t.accent === "violet" ? "text-accent-violet" : "text-accent-gold";
+    t.accent === "violet" ? "text-accent-violet-text" : "text-accent-gold-text";
   const accentBorderCls =
     t.accent === "violet" ? "border-accent-violet/40" : "border-accent-gold/40";
   const accentBgCls =
@@ -81,14 +81,14 @@ export function SoftGate({
 
       {/* Unlock panel */}
       <div className={`relative -mt-2 rounded-b-lg border ${accentBorderCls} bg-gradient-to-b from-surface to-elevated p-6 text-center space-y-3 shadow-xl`}>
-        <p className={`font-mono text-[10px] uppercase tracking-[0.3em] ${accentTextCls}`}>
-          /// {t.role}_only
+        <p className={`font-mono text-[12px] uppercase tracking-[0.12em] ${accentTextCls}`}>
+          {"/// "}{t.role}{"_only"}
         </p>
         <h3 className={`font-display text-lg font-bold ${accentTextCls}`}>
           {t.role}s see this. Observers don&rsquo;t.
         </h3>
         <p className="text-sm text-text-muted max-w-md mx-auto leading-relaxed">
-          <span className="text-text-primary font-medium">{feature}</span> unlocks on {t.name} — ${t.priceMonthly}/mo.
+          <span className="text-text-primary font-medium">{feature}</span> is included with {t.name} (${t.priceMonthly}/mo).
         </p>
         <div className="flex flex-wrap justify-center gap-3 pt-1">
           <Link
@@ -99,7 +99,7 @@ export function SoftGate({
           </Link>
           <Link
             href="/premium"
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2 font-mono text-xs text-text-muted hover:text-text-primary hover:border-text-muted/40 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2 font-mono text-xs text-text-muted hover:text-text-primary hover:border-text-muted/60 transition-colors"
           >
             See all tiers
           </Link>

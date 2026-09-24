@@ -1,22 +1,44 @@
-// AI description generator for Topic records.
-// Finds topics with no description (or very short ones), fetches context
-// from linked episodes/lore/people, and calls Claude to write a concise
+// AI description generator for Topic records ("Signals" in the nav).
+// Finds topics with no description, fetches context from linked
+// episodes/lore/people, and asks the enrichment ladder to write a concise
 // Psycheverse-aware description. Updates topic.description in the DB.
 //
 // Usage:
-//   npx dotenvx run -- npx tsx scripts/enrich/enrich-topics.ts [--batch N] [--force] [--min-episodes N]
+//   npx dotenvx run -- npx tsx scripts/enrich/enrich-topics.ts [--batch N] [--min-episodes N] [--force | --regen-misgendered]
+//
+// Modes (pick one; default is "fill in missing descriptions"):
+//   --force               re-generate every candidate, even ones with a description
+//   --regen-misgendered   ONLY topics whose "In the Psycheverse:" paragraph refers to
+//                         Psyche with she/her — the output of runs that used the old
+//                         prompt copy without the pronoun rule. Overwrites those.
 //
 // Tips:
-//   --batch 50    process 50 topics per run (default: 30)
-//   --force       re-generate descriptions even if one already exists
-//   --min-episodes 2   only enrich topics with ≥ 2 linked episodes (avoids orphan topics)
+//   --batch 50          process 50 topics per run (default: 30)
+//   --offset 200        skip the first 200 eligible (title order) — chunk a big pool
+//                       without re-visiting rows an earlier chunk kept
+//   --min-episodes 2    only topics with ≥ 2 linked episodes (skips orphans, which
+//                       have nothing to write from)
+//
+// Provider: goes through src/lib/enrichment-llm's ladder, same as the admin
+// route, so any configured tier works (direct Anthropic, OpenRouter, Groq,
+// Mistral, Bedrock). Set ENRICHMENT_PROVIDER=bedrock to force one tier.
+//
+// Every overwrite is backed up first to enrich-topics.backup.jsonl (gitignored
+// with the log) as {id, slug, before} so a bad run can be reverted by hand.
 import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
-import Anthropic from "@anthropic-ai/sdk";
 import { getPrisma, disconnect } from "../ingest/lib";
+import { enrichComplete } from "../../src/lib/enrichment-llm";
+import {
+  TOPIC_ENRICHMENT_SYSTEM_PROMPT,
+  buildTopicEnrichmentMessage,
+  psycheverseParagraphMisgenders,
+  type TopicEnrichmentContext,
+} from "../../src/lib/prompts/topic-enrichment";
 
 const LOG_PATH = path.join(__dirname, "enrich-topics.log");
+const BACKUP_PATH = path.join(__dirname, "enrich-topics.backup.jsonl");
 
 function log(msg: string) {
   const line = `[${new Date().toISOString()}] ${msg}`;
@@ -24,80 +46,40 @@ function log(msg: string) {
   fs.appendFileSync(LOG_PATH, line + "\n");
 }
 
-const SYSTEM_PROMPT = `You are an expert archivist for CultCodex.me — the living archive of the "Cult of Psyche" show. The show is hosted by Psyche (also called Trix): a spiritual teacher, tarot reader, occultist, and livestreamer. The show covers consciousness, mythology, tarot, astrology, esoteric philosophy, panelverse drama, and community lore.
-
-You are writing short topic descriptions for the archive's knowledge graph. Each topic is a subject that appears across multiple episodes.
-
-Write a description in two parts separated by a blank line:
-
-Part 1 (1–2 sentences): A concise, factual definition of what this topic IS — as a neutral encyclopedia entry would describe it.
-
-Part 2 (1–2 sentences, start with "In the Psycheverse:"): How Psyche engages with this topic on the show — the angle, recurring themes, or why it's significant in this universe. Be specific and interesting, not generic.
-
-Rules:
-- Total length: 3–5 sentences maximum
-- Do not mention episode numbers or specific dates
-- Use present tense
-- Do not use filler phrases like "delves into" or "explores the intersection"
-- Return ONLY the description text — no JSON, no headers, no extra commentary`;
-
-function buildUserMessage(input: {
-  title: string;
-  episodeTitles: string[];
-  loreTitles: string[];
-  peopleName: string[];
-  sampleSummaries: string[];
-}): string {
-  const parts = [
-    `Topic: "${input.title}"`,
-  ];
-
-  if (input.sampleSummaries.length > 0) {
-    parts.push(
-      `\nSample episode summaries mentioning this topic:\n${input.sampleSummaries.slice(0, 5).map((s) => `- ${s}`).join("\n")}`
-    );
-  } else if (input.episodeTitles.length > 0) {
-    parts.push(
-      `\nEpisode titles where this topic appears:\n${input.episodeTitles.slice(0, 10).map((t) => `- ${t}`).join("\n")}`
-    );
-  }
-
-  if (input.loreTitles.length > 0) {
-    parts.push(`\nRelated lore entries: ${input.loreTitles.slice(0, 5).join(", ")}`);
-  }
-
-  if (input.peopleName.length > 0) {
-    parts.push(`\nPeople associated: ${input.peopleName.slice(0, 5).join(", ")}`);
-  }
-
-  return parts.join("\n");
-}
-
-function parseArgs(): { batch: number; force: boolean; minEpisodes: number } {
+function parseArgs(): { batch: number; offset: number; force: boolean; regenMisgendered: boolean; minEpisodes: number } {
   const args = process.argv.slice(2);
   let batch = parseInt(process.env.ENRICHMENT_BATCH_SIZE ?? "30", 10);
+  let offset = 0;
   let force = false;
+  let regenMisgendered = false;
   let minEpisodes = 1;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--batch" && args[i + 1]) { batch = parseInt(args[i + 1], 10); i++; }
+    if (args[i] === "--offset" && args[i + 1]) { offset = parseInt(args[i + 1], 10); i++; }
     if (args[i] === "--min-episodes" && args[i + 1]) { minEpisodes = parseInt(args[i + 1], 10); i++; }
     if (args[i] === "--force") force = true;
+    if (args[i] === "--regen-misgendered") regenMisgendered = true;
   }
-  return { batch, force, minEpisodes };
+  if (force && regenMisgendered) throw new Error("--force and --regen-misgendered are exclusive");
+  return { batch, offset, force, regenMisgendered, minEpisodes };
 }
 
 async function main() {
-  const { batch, force, minEpisodes } = parseArgs();
+  const { batch, offset, force, regenMisgendered, minEpisodes } = parseArgs();
   const prisma = getPrisma();
 
-  // Find topics needing descriptions
+  const mode = regenMisgendered ? "regen-misgendered" : force ? "force" : "fill-missing";
+  log(`Mode: ${mode}`);
+
+  // Candidate pool. --regen-misgendered filters in JS below (needs the text);
+  // the other two modes filter in SQL.
   const topics = await prisma.topic.findMany({
-    where: {
-      ...(force ? {} : {
-        OR: [{ description: null }, { description: "" }],
-      }),
-    },
+    where: regenMisgendered
+      ? { description: { contains: "In the Psycheverse:" } }
+      : force
+      ? {}
+      : { OR: [{ description: null }, { description: "" }] },
     include: {
       episodes: {
         include: {
@@ -119,21 +101,19 @@ async function main() {
     orderBy: { title: "asc" },
   });
 
-  // Filter by minimum episode count
-  const candidates = topics
-    .filter((t) => t.episodes.length >= minEpisodes)
-    .slice(0, batch);
+  const eligible = topics.filter(
+    (t) =>
+      t.episodes.length >= minEpisodes &&
+      (!regenMisgendered || psycheverseParagraphMisgenders(t.description))
+  );
+  const candidates = eligible.slice(offset, offset + batch);
 
-  log(`Topics needing description: ${topics.filter(t => t.episodes.length >= minEpisodes).length}`);
-  log(`Processing batch of ${candidates.length} (min-episodes: ${minEpisodes})`);
-
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
-  const client = new Anthropic({ apiKey });
-  const model = process.env.ENRICHMENT_MODEL ?? "claude-haiku-4-5-20251001"; // Haiku for cost-efficiency on bulk
+  log(`Topics eligible: ${eligible.length} (min-episodes: ${minEpisodes})`);
+  log(`Processing batch of ${candidates.length} (offset ${offset})`);
 
   let success = 0;
   let failures = 0;
+  let stillMisgendered = 0;
 
   for (const topic of candidates) {
     try {
@@ -141,18 +121,38 @@ async function main() {
         .flatMap((e) => [e.episode.summaryShort, e.episode.summaryLong?.slice(0, 200)])
         .filter((s): s is string => !!s && s.length > 20);
 
-      const description = await generateDescription(client, model, {
+      const description = await generateDescription({
         title: topic.title,
         episodeTitles: topic.episodes.map((e) => e.episode.title),
         loreTitles: topic.lore.map((l) => l.loreEntry.title),
-        peopleName: topic.people.map((p) => p.person.displayName),
+        peopleNames: topic.people.map((p) => p.person.displayName),
         sampleSummaries,
       });
 
-      await prisma.topic.update({
-        where: { id: topic.id },
+      // A regenerated description that STILL misgenders is not an improvement;
+      // keep the old one and flag it rather than swap one wrong text for another.
+      if (regenMisgendered && psycheverseParagraphMisgenders(description)) {
+        stillMisgendered++;
+        log(`  ⚠ STILL MISGENDERED (kept old) ${topic.title}`);
+        continue;
+      }
+
+      if (topic.description) {
+        fs.appendFileSync(
+          BACKUP_PATH,
+          JSON.stringify({ id: topic.id, slug: topic.slug, before: topic.description, at: new Date().toISOString() }) + "\n"
+        );
+      }
+
+      // Guard on the exact prior text so a concurrent edit is skipped, not clobbered.
+      const res = await prisma.topic.updateMany({
+        where: { id: topic.id, description: topic.description },
         data: { description },
       });
+      if (res.count === 0) {
+        log(`  ↷ SKIPPED (changed underneath us) ${topic.title}`);
+        continue;
+      }
 
       log(`  ✓ ${topic.title}`);
       success++;
@@ -166,28 +166,20 @@ async function main() {
     }
   }
 
-  log(`\nDone — success: ${success}, failures: ${failures}`);
-  log(`Run again to continue. Total remaining: ${topics.filter(t => t.episodes.length >= minEpisodes).length - success}`);
+  log(`\nDone — success: ${success}, failures: ${failures}${regenMisgendered ? `, still misgendered (kept): ${stillMisgendered}` : ""}`);
+  log(`Run again to continue. Remaining in pool: ${eligible.length - success}`);
 
   await disconnect();
 }
 
-async function generateDescription(
-  client: Anthropic,
-  model: string,
-  input: Parameters<typeof buildUserMessage>[0]
-): Promise<string> {
-  const response = await client.messages.create({
-    model,
-    max_tokens: 300,
-    system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: buildUserMessage(input) }],
+async function generateDescription(input: TopicEnrichmentContext): Promise<string> {
+  const text = await enrichComplete({
+    system: TOPIC_ENRICHMENT_SYSTEM_PROMPT,
+    user: buildTopicEnrichmentMessage(input),
+    maxTokens: 300,
   });
-
-  const textBlock = response.content.find((b) => b.type === "text");
-  if (!textBlock || textBlock.type !== "text") throw new Error("No text response");
-
-  return textBlock.text.trim();
+  if (!text.trim()) throw new Error("No text response");
+  return text.trim();
 }
 
 main().catch((e) => {

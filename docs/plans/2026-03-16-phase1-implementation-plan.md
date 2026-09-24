@@ -6,7 +6,7 @@
 
 **Architecture:** Add ContentType enum to Episode model for livestream/original/short/clip classification. Seed 18 series with regex + Claude API classification. Enhance episode detail pages with synopsis, related episodes, chapters, and CTAs. Extend search with Topics/Quotes results, filters, autocomplete, and suggested searches.
 
-**Tech Stack:** Next.js 16, Prisma 7, PostgreSQL (local Docker + Neon cloud), Claude API (Sonnet), Vitest, Tailwind CSS.
+**Tech Stack:** Next.js 16, Prisma 7, PostgreSQL (local Docker + Xata), Claude API (Sonnet), Vitest, Tailwind CSS.
 
 ---
 
@@ -42,11 +42,11 @@ npx prisma migrate dev --name add-content-type-to-episode
 ```
 Expected: Migration created, Prisma client regenerated.
 
-**Step 3: Push to Neon cloud**
+**Step 3: Push to Xata**
 
 Run:
 ```bash
-export DATABASE_URL='postgresql://neondb_owner:npg_tkoGPp10JQwx@ep-wandering-mud-akzidlw0-pooler.c-3.us-west-2.aws.neon.tech/neondb?channel_binding=require&sslmode=require'
+export DATABASE_URL=' (Xata — set locally in .env.local)'
 npx prisma db push
 ```
 Expected: "The database is already in sync" or schema applied.
@@ -120,10 +120,10 @@ npx dotenvx run -- npx tsx scripts/seed-series.ts
 ```
 Expected: 18 lines of "✓ Series Name".
 
-**Step 3: Run against Neon**
+**Step 3: Run against Xata**
 
 ```bash
-export DATABASE_URL='postgresql://neondb_owner:npg_tkoGPp10JQwx@ep-wandering-mud-akzidlw0-pooler.c-3.us-west-2.aws.neon.tech/neondb?channel_binding=require&sslmode=require'
+export DATABASE_URL=' (Xata — set locally in .env.local)'
 npx tsx scripts/seed-series.ts
 ```
 
@@ -232,7 +232,7 @@ npx dotenvx run -- npx tsx scripts/classify-episodes.ts
 ```
 Expected: "Matched: ~400-500, Unmatched: ~700"
 
-**Step 3: Run against Neon**
+**Step 3: Run against Xata**
 
 ```bash
 export DATABASE_URL='...' npx tsx scripts/classify-episodes.ts
@@ -363,7 +363,7 @@ main();
 npx dotenvx run -- npx tsx scripts/classify-remaining.ts
 ```
 
-**Step 3: Run against Neon, then commit**
+**Step 3: Run against Xata, then commit**
 
 ```bash
 git add scripts/classify-remaining.ts
@@ -811,7 +811,7 @@ Pass `truncatedTranscript` instead of `transcriptText` to `enrichEpisode()`.
 import "dotenv/config";
 import { execSync } from "child_process";
 
-const NEON_URL = "postgresql://neondb_owner:npg_tkoGPp10JQwx@ep-wandering-mud-akzidlw0-pooler.c-3.us-west-2.aws.neon.tech/neondb?channel_binding=require&sslmode=require";
+const DATABASE_URL = process.env.DATABASE_URL!; // Xata — set in .env.local
 
 function run(cmd: string, env?: Record<string, string>) {
   console.log(`\n▶ ${cmd}`);
@@ -827,8 +827,8 @@ async function main() {
   console.log("\n═══ STEP 2: Import to local DB ═══");
   run("npx tsx scripts/enrich/import-enriched.ts");
 
-  console.log("\n═══ STEP 3: Import to Neon ═══");
-  run("npx tsx scripts/enrich/import-enriched.ts", { DATABASE_URL: NEON_URL });
+  console.log("\n═══ STEP 3: Import to Xata ═══");
+  run("npx tsx scripts/enrich/import-enriched.ts", { DATABASE_URL: DATABASE_URL });
 
   console.log("\n═══ STEP 4: Deploy to Vercel ═══");
   run("npx vercel --prod --yes");

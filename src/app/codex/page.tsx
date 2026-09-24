@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 /**
  * /codex — The personal codex dashboard.
  *
@@ -29,6 +31,7 @@ import { formatDate } from "@/lib/format/date";
 import { SavedSearchesBlock } from "@/components/codex/saved-searches-block";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/codex" },
   title: "My Codex — CULT CODEX",
   description:
     "Your personal map of the Cult of Psyche — saved signals, transmissions, and moments.",
@@ -66,8 +69,8 @@ export default async function CodexPage() {
       >
         {/* Mythic framing */}
         <section className="text-center max-w-2xl mx-auto space-y-2">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-accent-gold">
-            /// private · {user.displayName}
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">
+            {"/// private · "}{user.displayName}
           </p>
           <p className="text-sm text-text-muted leading-relaxed">
             The archive is shared. The codex is yours. Save the signals
@@ -102,7 +105,7 @@ export default async function CodexPage() {
                       {row.topic.description}
                     </p>
                   )}
-                  <p className="mt-3 font-mono text-[10px] text-text-muted">
+                  <p className="mt-3 font-mono text-[12px] text-text-muted">
                     {row.topic._count.episodes} transmission
                     {row.topic._count.episodes === 1 ? "" : "s"} · saved{" "}
                     {formatDate(row.createdAt)}
@@ -146,17 +149,17 @@ export default async function CodexPage() {
                   )}
                   <div className="flex items-center gap-2 mb-1">
                     {fav.episode.episodeNumber != null && (
-                      <span className="font-mono text-[10px] text-accent-gold font-bold">
+                      <span className="font-mono text-[12px] text-accent-gold-text font-bold">
                         EP.{String(fav.episode.episodeNumber).padStart(3, "0")}
                       </span>
                     )}
                     {fav.episode.airDate && (
-                      <span className="font-mono text-[10px] text-text-muted">
+                      <span className="font-mono text-[12px] text-text-muted">
                         {formatDate(fav.episode.airDate)}
                       </span>
                     )}
                   </div>
-                  <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-2">
+                  <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-2">
                     {fav.episode.title}
                   </h3>
                 </Link>
@@ -201,7 +204,7 @@ export default async function CodexPage() {
                         className="h-5 w-5 rounded-full object-cover"
                       />
                     )}
-                    <p className="font-mono text-[10px] text-accent-violet">
+                    <p className="font-mono text-[12px] text-accent-violet-text">
                       {row.quote.speaker?.displayName ?? "Unknown speaker"}
                     </p>
                   </div>
@@ -246,9 +249,9 @@ function CodexSection({
   const a =
     accent === "gold"
       ? {
-          eyebrow: "text-accent-gold",
-          title: "text-accent-gold",
-          cta: "text-accent-gold hover:text-accent-gold/80",
+          eyebrow: "text-accent-gold-text",
+          title: "text-accent-gold-text",
+          cta: "text-accent-gold-text hover:text-accent-gold-text/80",
         }
       : accent === "cyan"
         ? {
@@ -257,9 +260,9 @@ function CodexSection({
             cta: "text-accent-cyan hover:text-accent-cyan/80",
           }
         : {
-            eyebrow: "text-accent-violet",
-            title: "text-accent-violet",
-            cta: "text-accent-violet hover:text-accent-violet/80",
+            eyebrow: "text-accent-violet-text",
+            title: "text-accent-violet-text",
+            cta: "text-accent-violet-text hover:text-accent-violet-text/80",
           };
 
   return (
@@ -267,7 +270,7 @@ function CodexSection({
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <div className="space-y-1">
           <p
-            className={`font-mono text-[10px] uppercase tracking-[0.3em] ${a.eyebrow}`}
+            className={`font-mono text-[12px] uppercase tracking-[0.12em] ${a.eyebrow}`}
           >
             {eyebrow}
           </p>
@@ -281,7 +284,7 @@ function CodexSection({
         {count > 0 && (
           <Link
             href={indexHref}
-            className={`font-mono text-[11px] uppercase tracking-widest inline-flex items-center gap-2 group ${a.cta}`}
+            className={`font-mono text-[12px] uppercase tracking-widest inline-flex items-center gap-2 group ${a.cta}`}
           >
             View all <span aria-hidden className="group-hover:translate-x-0.5 transition-transform">→</span>
           </Link>
@@ -293,7 +296,7 @@ function CodexSection({
           <p className="text-sm text-text-muted">{emptyBody}</p>
           <Link
             href={emptyCta.href}
-            className={`inline-flex items-center gap-2 rounded border border-border px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-text-primary transition-colors hover:border-text-muted/50 hover:bg-surface`}
+            className={`inline-flex items-center gap-2 rounded border border-border px-4 py-2 font-mono text-[12px] uppercase tracking-widest text-text-primary transition-colors hover:border-text-muted/50 hover:bg-surface`}
           >
             {emptyCta.label} <span aria-hidden>→</span>
           </Link>

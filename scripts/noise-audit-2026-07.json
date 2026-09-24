@@ -1,0 +1,321 @@
+﻿{
+    "op":  "noise-audit",
+    "total":  1195,
+    "flagged":  28,
+    "safeDeleteCount":  14,
+    "byBucket":  {
+                     "label":  10,
+                     "label_token":  14,
+                     "numberish":  4
+                 },
+    "records":  [
+                    {
+                        "slug":  "an-unnamed-female-psychic",
+                        "name":  "An unnamed female psychic",
+                        "type":  "guest",
+                        "bucket":  "label_token",
+                        "appearances":  1,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "an-unnamed-woman",
+                        "name":  "An unnamed woman",
+                        "type":  "mentioned",
+                        "bucket":  "label_token",
+                        "appearances":  0,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "anonymous-italian-user",
+                        "name":  "Anonymous Italian user",
+                        "type":  "guest",
+                        "bucket":  "label_token",
+                        "appearances":  1,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "another-panel-guest-unnamed",
+                        "name":  "Another panel guest (unnamed)",
+                        "type":  "guest",
+                        "bucket":  "label_token",
+                        "appearances":  1,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "brother-unnamed-guest",
+                        "name":  "Brother (unnamed guest)",
+                        "type":  "guest",
+                        "bucket":  "label_token",
+                        "appearances":  0,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "caller",
+                        "name":  "Caller",
+                        "type":  "guest",
+                        "bucket":  "label",
+                        "appearances":  1,
+                        "quotes":  3,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "co-host",
+                        "name":  "Co-host",
+                        "type":  "guest",
+                        "bucket":  "label",
+                        "appearances":  1,
+                        "quotes":  5,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "co-host-unnamed",
+                        "name":  "Co-host (unnamed)",
+                        "type":  "guest",
+                        "bucket":  "label_token",
+                        "appearances":  1,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "debate-partner-unnamed",
+                        "name":  "Debate Partner (unnamed)",
+                        "type":  "guest",
+                        "bucket":  "label_token",
+                        "appearances":  0,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "female-panelist",
+                        "name":  "Female panelist",
+                        "type":  "guest",
+                        "bucket":  "label_token",
+                        "appearances":  0,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "guest",
+                        "name":  "Guest",
+                        "type":  "recurring",
+                        "bucket":  "label",
+                        "appearances":  6,
+                        "quotes":  39,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "money420",
+                        "name":  "Money420",
+                        "type":  "recurring",
+                        "bucket":  "numberish",
+                        "appearances":  6,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "money422",
+                        "name":  "Money422",
+                        "type":  "guest",
+                        "bucket":  "numberish",
+                        "appearances":  1,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "narrator",
+                        "name":  "Narrator",
+                        "type":  "host",
+                        "bucket":  "label",
+                        "appearances":  2,
+                        "quotes":  7,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "new-guest-unnamed",
+                        "name":  "New Guest (unnamed)",
+                        "type":  "guest",
+                        "bucket":  "label_token",
+                        "appearances":  0,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "none",
+                        "name":  "None",
+                        "type":  "recurring",
+                        "bucket":  "label",
+                        "appearances":  234,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "panelist",
+                        "name":  "Panelist",
+                        "type":  "guest",
+                        "bucket":  "label",
+                        "appearances":  1,
+                        "quotes":  4,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "recovered1983",
+                        "name":  "Recovered1983",
+                        "type":  "guest",
+                        "bucket":  "numberish",
+                        "appearances":  1,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "recurring-panelist",
+                        "name":  "Recurring Panelist",
+                        "type":  "guest",
+                        "bucket":  "label",
+                        "appearances":  0,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "recurring-panel-guests",
+                        "name":  "Recurring panel guests",
+                        "type":  "guest",
+                        "bucket":  "label_token",
+                        "appearances":  0,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "special-guest",
+                        "name":  "Special Guest",
+                        "type":  "guest",
+                        "bucket":  "label",
+                        "appearances":  1,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "streamed-individual-unnamed",
+                        "name":  "Streamed individual (unnamed)",
+                        "type":  "guest",
+                        "bucket":  "label_token",
+                        "appearances":  1,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    },
+                    {
+                        "slug":  "unidentified-guest",
+                        "name":  "Unidentified Guest",
+                        "type":  "guest",
+                        "bucket":  "label_token",
+                        "appearances":  1,
+                        "quotes":  2,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "unidentified-speaker",
+                        "name":  "Unidentified speaker",
+                        "type":  "guest",
+                        "bucket":  "label_token",
+                        "appearances":  1,
+                        "quotes":  2,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "unknown",
+                        "name":  "Unknown",
+                        "type":  "recurring",
+                        "bucket":  "label",
+                        "appearances":  90,
+                        "quotes":  210,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "unnamed-guest",
+                        "name":  "Unnamed Guest",
+                        "type":  "recurring",
+                        "bucket":  "label_token",
+                        "appearances":  26,
+                        "quotes":  19,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "m420",
+                        "name":  "m420",
+                        "type":  "guest",
+                        "bucket":  "numberish",
+                        "appearances":  1,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  false
+                    },
+                    {
+                        "slug":  "mod",
+                        "name":  "mod",
+                        "type":  "guest",
+                        "bucket":  "label",
+                        "appearances":  1,
+                        "quotes":  0,
+                        "lore":  0,
+                        "hasBio":  true,
+                        "safeDelete":  true
+                    }
+                ]
+}

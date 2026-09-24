@@ -14,6 +14,11 @@ const NAV_ITEMS = [
   { href: "/admin/comments", label: "Comments", icon: "\uD83D\uDCAC" },
   { href: "/admin/live", label: "Live Stream", icon: "\uD83D\uDD34" },
   { href: "/admin/psychenomicon", label: "Psychenomicon", icon: "\u03C8" },
+  { href: "/admin/users", label: "Users", icon: "\uD83D\uDC65" },
+  { href: "/admin/leads", label: "Leads", icon: "\u2709" },
+  { href: "/admin/signals", label: "Signals", icon: "\u25C8" },
+  { href: "/admin/annotations", label: "Annotations", icon: "\u270E" },
+  { href: "/admin/claps", label: "Clap Tokens", icon: "\uD83D\uDC4F" },
   { href: "/admin/sync", label: "Sync & Ingest", icon: "\u21BB" },
 ];
 
@@ -34,10 +39,10 @@ export function AdminSidebar({ userName, userAvatar }: AdminSidebarProps) {
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-60 flex-col border-r border-border bg-surface">
       {/* Header */}
       <div className="border-b border-border px-4 py-4">
-        <h1 className="font-display text-sm font-bold text-accent-gold">
+        <h1 className="font-display text-sm font-bold text-accent-gold-text">
           CULT CODEX
         </h1>
-        <p className="font-mono text-[10px] text-text-muted">Admin Panel</p>
+        <p className="font-mono text-[12px] text-text-muted">Admin Panel</p>
       </div>
 
       {/* Nav */}
@@ -48,7 +53,7 @@ export function AdminSidebar({ userName, userAvatar }: AdminSidebarProps) {
             href={item.href}
             className={`flex items-center gap-2.5 rounded px-3 py-2 font-mono text-xs transition-colors ${
               isActive(item.href)
-                ? "bg-accent-gold/10 text-accent-gold"
+                ? "bg-accent-gold/10 text-accent-gold-text"
                 : "text-text-muted hover:bg-elevated hover:text-text-primary"
             }`}
           >
@@ -68,7 +73,7 @@ export function AdminSidebar({ userName, userAvatar }: AdminSidebarProps) {
               className="h-6 w-6 rounded-full"
             />
           ) : (
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-purple/20 font-mono text-[10px] text-accent-purple">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-purple/20 font-mono text-[12px] text-accent-violet-text">
               {userName?.[0]?.toUpperCase() ?? "?"}
             </div>
           )}
@@ -78,7 +83,7 @@ export function AdminSidebar({ userName, userAvatar }: AdminSidebarProps) {
         </div>
         <Link
           href="/"
-          className="flex items-center gap-1.5 font-mono text-[10px] text-text-muted hover:text-accent-gold transition-colors"
+          className="flex items-center gap-1.5 font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors"
         >
           ← Back to Site
         </Link>

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 /**
  * /codex/quotes — full list of the user's saved quotes.
  *
@@ -15,6 +17,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { formatDate } from "@/lib/format/date";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/codex/quotes" },
   title: "Saved Quotes — CULT CODEX",
   description: "The lines that stayed with you.",
 };
@@ -42,8 +45,8 @@ export default async function CodexQuotesPage() {
         id="main-content"
         className="mx-auto max-w-4xl px-4 py-10 space-y-6"
       >
-        <nav className="font-mono text-[11px] uppercase tracking-widest text-text-muted">
-          <Link href="/codex" className="hover:text-accent-gold transition-colors">
+        <nav className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
+          <Link href="/codex" className="hover:text-accent-gold-text transition-colors">
             ← Back to your codex
           </Link>
         </nav>
@@ -57,7 +60,7 @@ export default async function CodexQuotesPage() {
             <div className="text-center">
               <Link
                 href="/quotes"
-                className="inline-flex items-center gap-2 rounded border border-accent-violet/40 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet transition-all hover:bg-accent-violet/20"
+                className="inline-flex items-center gap-2 rounded border border-accent-violet/40 bg-accent-violet/10 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text transition-all hover:bg-accent-violet/20"
               >
                 Browse quotes <span aria-hidden>→</span>
               </Link>
@@ -92,12 +95,12 @@ export default async function CodexQuotesPage() {
                     {row.quote.speaker ? (
                       <Link
                         href={`/people/${row.quote.speaker.slug}`}
-                        className="font-mono text-[11px] uppercase tracking-widest text-accent-violet hover:underline"
+                        className="font-mono text-[12px] uppercase tracking-widest text-accent-violet-text hover:underline"
                       >
                         {row.quote.speaker.displayName}
                       </Link>
                     ) : (
-                      <span className="font-mono text-[11px] uppercase tracking-widest text-text-muted">
+                      <span className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
                         Unknown speaker
                       </span>
                     )}
@@ -108,7 +111,7 @@ export default async function CodexQuotesPage() {
                         </span>
                         <Link
                           href={`/episodes/${row.quote.episode.slug}#quote-${row.quote.id}`}
-                          className="font-mono text-[10px] text-text-muted hover:text-accent-gold transition-colors"
+                          className="font-mono text-[12px] text-text-muted hover:text-accent-gold-text transition-colors"
                         >
                           {row.quote.episode.episodeNumber != null && (
                             <>
@@ -121,7 +124,7 @@ export default async function CodexQuotesPage() {
                       </>
                     )}
                   </div>
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-text-muted">
+                  <span className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
                     saved {formatDate(row.createdAt)}
                   </span>
                 </div>

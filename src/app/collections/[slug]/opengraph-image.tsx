@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getCollectionBySlug } from "@/lib/collections/themed-collections";
+import { ogFonts } from "@/lib/og-fonts";
 
 export const runtime = "nodejs";
 export const alt = "Collection preview";
@@ -9,9 +10,9 @@ export const contentType = "image/png";
 const ACCENT_COLORS: Record<string, string> = {
   violet: "#9b59b6",
   cyan: "#00d9ff",
-  gold: "#C8A96B",
+  gold: "#C8392E",
   crimson: "#dc2626",
-  mixed: "#C8A96B",
+  mixed: "#C8392E",
 };
 
 export default async function OGImage({
@@ -40,9 +41,9 @@ export default async function OGImage({
     </div>
   );
 
-  if (!collection) return new ImageResponse(fallback, { ...size });
+  if (!collection) return new ImageResponse(fallback, { ...size, fonts: await ogFonts() });
 
-  const accentColor = ACCENT_COLORS[collection.accent] ?? "#C8A96B";
+  const accentColor = ACCENT_COLORS[collection.accent] ?? "#C8392E";
 
   return new ImageResponse(
     (
@@ -52,12 +53,31 @@ export default async function OGImage({
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
-          backgroundColor: "#0a0a0a",
-          padding: "60px",
+          backgroundColor: "#080810",
           fontFamily: "monospace",
+          position: "relative",
         }}
       >
+        {/* Accent bar — uses collection colour */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 4,
+            backgroundColor: accentColor,
+          }}
+        />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            flex: 1,
+            padding: "52px 56px",
+          }}
+        >
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <div
             style={{
@@ -105,7 +125,7 @@ export default async function OGImage({
         >
           <div
             style={{
-              color: "#C8A96B",
+              color: "#C8392E",
               fontSize: 24,
               fontWeight: 700,
               letterSpacing: "0.15em",
@@ -117,8 +137,9 @@ export default async function OGImage({
             CULT OF PSYCHE ARCHIVE
           </div>
         </div>
+        </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts: await ogFonts() }
   );
 }

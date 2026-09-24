@@ -19,7 +19,7 @@ export function UserMenu({ user }: UserMenuProps) {
     return (
       <Link
         href="/auth/signin"
-        className="rounded-lg border border-accent-gold/30 bg-accent-gold/10 px-3 py-1.5 font-mono text-xs text-accent-gold transition-colors hover:bg-accent-gold/20"
+        className="rounded-lg border border-accent-gold/30 bg-accent-gold/10 px-3 py-1.5 font-mono text-xs text-accent-gold-text transition-colors hover:bg-accent-gold/20"
       >
         Sign In
       </Link>
@@ -35,7 +35,7 @@ export function UserMenu({ user }: UserMenuProps) {
         {user.avatarUrl ? (
           <img src={user.avatarUrl} alt="" className="h-5 w-5 rounded-full" />
         ) : (
-          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-gold/20 text-[10px] text-accent-gold">
+          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-gold/20 text-[12px] text-accent-gold-text">
             {user.displayName[0]?.toUpperCase()}
           </div>
         )}
@@ -46,7 +46,7 @@ export function UserMenu({ user }: UserMenuProps) {
         <div className="absolute right-0 z-50 mt-1 w-48 rounded-lg border border-border bg-surface py-1 shadow-lg">
           <div className="px-3 py-2 border-b border-border">
             <p className="text-xs text-text-primary font-medium truncate">{user.displayName}</p>
-            <p className="text-[10px] text-text-muted font-mono">{user.role.toUpperCase()}</p>
+            <p className="text-[12px] text-text-muted font-mono">{user.role.toUpperCase()}</p>
           </div>
           <Link
             href={`/user/${user.id}`}
@@ -57,17 +57,31 @@ export function UserMenu({ user }: UserMenuProps) {
           </Link>
           <Link
             href="/codex"
-            className="block w-full px-3 py-2 text-left text-xs font-bold text-accent-gold hover:bg-elevated transition-colors"
+            className="block w-full px-3 py-2 text-left text-xs font-bold text-accent-gold-text hover:bg-elevated transition-colors"
             onClick={() => setOpen(false)}
           >
             ✦ Your Codex
           </Link>
           <Link
             href="/settings/profile"
-            className="block w-full px-3 py-2 text-left text-xs text-accent-gold hover:bg-elevated transition-colors"
+            className="block w-full px-3 py-2 text-left text-xs text-accent-gold-text hover:bg-elevated transition-colors"
             onClick={() => setOpen(false)}
           >
             ✦ Member Profile
+          </Link>
+          <Link
+            href="/rank"
+            className="block w-full px-3 py-2 text-left text-xs text-text-primary hover:bg-elevated transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            ▲ Your Rank
+          </Link>
+          <Link
+            href="/quests"
+            className="block w-full px-3 py-2 text-left text-xs text-text-primary hover:bg-elevated transition-colors"
+            onClick={() => setOpen(false)}
+          >
+            ◈ The Trials
           </Link>
           <Link
             href="/members"
@@ -86,7 +100,7 @@ export function UserMenu({ user }: UserMenuProps) {
           <div className="border-t border-border my-1" />
           <Link
             href="/premium"
-            className="block w-full px-3 py-2 text-left text-xs font-bold text-accent-gold hover:bg-elevated transition-colors"
+            className="block w-full px-3 py-2 text-left text-xs font-bold text-accent-gold-text hover:bg-elevated transition-colors"
             onClick={() => setOpen(false)}
           >
             ✦ Premium
@@ -94,7 +108,7 @@ export function UserMenu({ user }: UserMenuProps) {
           <form action="/api/auth/signout" method="POST">
             <button
               type="submit"
-              className="w-full px-3 py-2 text-left text-xs text-accent-crimson hover:bg-elevated transition-colors"
+              className="w-full px-3 py-2 text-left text-xs text-accent-crimson-text hover:bg-elevated transition-colors"
               onClick={() => setOpen(false)}
             >
               Sign Out

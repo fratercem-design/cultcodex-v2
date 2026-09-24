@@ -18,7 +18,7 @@ can pick them up.
 
 ## Required env
 
-- `DATABASE_URL` — Neon Postgres (already set in `.env`)
+- `DATABASE_URL` — the configured Xata PostgreSQL connection
 - `ELEVENLABS_API_KEY` — only if using the ElevenLabs backend
 - `ANTHROPIC_API_KEY` — for the final enrichment step
 

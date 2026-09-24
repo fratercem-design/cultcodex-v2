@@ -7,6 +7,13 @@ on:
         description: 'Episodes to enrich per run'
         required: false
         default: '50'
+      provider:
+        description: 'LLM provider (openrouter = free, anthropic = paid Haiku)'
+        type: choice
+        options:
+          - openrouter
+          - anthropic
+        default: openrouter
 
 jobs:
   enrich:
@@ -17,12 +24,18 @@ jobs:
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      ENRICHMENT_MODEL: claude-haiku-4-5-20251001
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      # Provider is chosen per-run. The openrouter model is free with a 1M
+      # context window, which matters because buildTranscriptText() does not
+      # truncate - a multi-hour transcript is an enormous prompt. anthropic
+      # uses Haiku and bills the account.
+      ENRICHMENT_PROVIDER: ${{ inputs.provider || 'openrouter' }}
+      ENRICHMENT_MODEL: ${{ (inputs.provider == 'anthropic') && 'claude-haiku-4-5-20251001' || 'nvidia/nemotron-3-ultra-550b-a55b:free' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: 'npm'

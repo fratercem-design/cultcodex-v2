@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
@@ -20,13 +21,11 @@ import {
 import { formatDate } from "@/lib/format/date";
 import { formatDuration } from "@/lib/format/duration";
 import { formatSeconds } from "@/lib/format/duration";
-import { auth } from "@/lib/auth";
-import { isSubscribed } from "@/lib/subscription";
-import { SubscriptionCTA } from "@/components/subscription/subscription-cta";
 
 export const revalidate = 600;
 
 export const metadata = {
+  alternates: { canonical: "/transcripts" },
   title: "Transcripts — CULT CODEX",
   description: "Search and browse episode transcripts from the Cult of Psyche archive",
 };
@@ -44,66 +43,10 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
 
   const glanceItems = [
     { icon: "\uD83C\uDFA4", label: `${stats.episodeCount} transcribed episodes` },
-    { icon: "\uD83D\uDCC4", label: `${stats.totalSegments.toLocaleString()} segments` },
+    { icon: "\uD83D\uDCC4", label: `${stats.totalSegments.toLocaleString("en-US")} segments` },
   ];
 
   if (isSearch) {
-    // Transcript search requires an active subscription
-    const session = await auth().catch(() => null);
-    const userId = (session?.user as { id?: string } | undefined)?.id;
-    const hasAccess = userId ? await isSubscribed(userId).catch(() => false) : false;
-
-    if (!hasAccess) {
-      // Count results without returning any content — used to tease the paywall
-      const { totalCount: teasedCount } = await searchWithinTranscripts(query, { take: 0, skip: 0 });
-
-      return (
-        <>
-          <PageHero
-            title="TRANSCRIPTS"
-            subtitle="Full-text transcript search is a subscriber feature"
-            backgroundImage="/search-database-background.jpg"
-            label="transcripts"
-          />
-          <EntityGlanceBar items={glanceItems} />
-          <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
-            {/* Teased result count */}
-            <div className="mb-8 rounded-lg border border-accent-cyan/20 bg-accent-cyan/5 p-5 text-center">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60 mb-2">
-                // search_results for "{query}"
-              </p>
-              <div className="relative inline-block">
-                <span
-                  className="font-display text-5xl font-bold text-accent-cyan"
-                  style={{ filter: "blur(6px)", userSelect: "none" }}
-                  aria-hidden="true"
-                >
-                  {teasedCount.toLocaleString()}
-                </span>
-                <span className="sr-only">{teasedCount} results found — subscribe to view</span>
-              </div>
-              <p className="mt-2 font-mono text-sm text-text-muted">
-                {teasedCount === 0
-                  ? "No matches found."
-                  : teasedCount === 1
-                  ? "1 transcript segment matches."
-                  : `${teasedCount.toLocaleString()} transcript segments match.`}
-              </p>
-              <p className="mt-1 font-mono text-[10px] text-text-muted/60">
-                Subscribe to unlock full results with timestamps and episode links.
-              </p>
-            </div>
-            <div className="mx-auto max-w-lg">
-              <SubscriptionCTA />
-              <p className="mt-4 text-center font-mono text-xs text-text-muted">
-                Or browse the episode directory below for free.
-              </p>
-            </div>
-          </main>
-        </>
-      );
-    }
-
     const totalCount = (await searchWithinTranscripts(query, { take: 0, skip: 0 })).totalCount;
     const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
     const { skip, take } = paginationArgs(page);
@@ -114,7 +57,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
       <>
         <PageHero
           title="TRANSCRIPTS"
-          subtitle={`${results.totalCount.toLocaleString()} result${results.totalCount !== 1 ? "s" : ""} for "${query}"`}
+          subtitle={`${results.totalCount.toLocaleString("en-US")} result${results.totalCount !== 1 ? "s" : ""} for "${query}"`}
           backgroundImage="/search-database-background.jpg"
         label="transcripts"
         />
@@ -131,7 +74,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
             <>
               <div className="mb-4 flex items-center gap-2">
                 <span className="font-mono text-xs text-text-muted">
-                  Showing {skip + 1}–{Math.min(skip + take, results.totalCount)} of {results.totalCount.toLocaleString()} matches
+                  Showing {skip + 1}–{Math.min(skip + take, results.totalCount)} of {results.totalCount.toLocaleString("en-US")} matches
                 </span>
                 <Link
                   href="/transcripts"
@@ -148,13 +91,13 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
                     className="group block rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-cyan/40 hover:bg-elevated"
                   >
                     <div className="mb-1 flex items-center gap-2">
-                      <span className="font-mono text-[11px] text-accent-gold">
+                      <span className="font-mono text-[12px] text-accent-gold-text">
                         {hit.episodeNumber != null ? `EP ${hit.episodeNumber}` : "Episode"}
                       </span>
-                      <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors">
+                      <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors">
                         {hit.episodeTitle}
                       </span>
-                      <span className="ml-auto font-mono text-[10px] text-accent-cyan">
+                      <span className="ml-auto font-mono text-[12px] text-accent-cyan">
                         {formatSeconds(hit.startSeconds)}
                       </span>
                     </div>
@@ -197,7 +140,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
         {/* Search prominently at top */}
         <SectionCard title="Search Transcripts">
           <p className="mb-3 text-xs text-text-muted">
-            Search across all {stats.totalSegments.toLocaleString()} transcript segments from {stats.episodeCount} episodes.
+            Search across all {stats.totalSegments.toLocaleString("en-US")} transcript segments from {stats.episodeCount} episodes.
           </p>
           <TranscriptSearchBox defaultValue="" />
         </SectionCard>
@@ -230,11 +173,11 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
                   className="group block rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-cyan/40 hover:bg-elevated"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="flex h-8 w-12 items-center justify-center rounded bg-accent-gold/10 font-mono text-xs font-bold text-accent-gold">
+                    <span className="flex h-8 w-12 items-center justify-center rounded bg-accent-gold/10 font-mono text-xs font-bold text-accent-gold-text">
                       {ep.episodeNumber != null ? `#${ep.episodeNumber}` : "—"}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold transition-colors line-clamp-1">
+                      <span className="text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors line-clamp-1">
                         {ep.title}
                       </span>
                       <div className="mt-1 flex flex-wrap items-center gap-1.5">
@@ -250,7 +193,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
                         )}
                       </div>
                     </div>
-                    <span className="hidden sm:block font-mono text-[10px] text-text-muted whitespace-nowrap">
+                    <span className="hidden sm:block font-mono text-[12px] text-text-muted whitespace-nowrap">
                       {formatDate(ep.airDate)}
                     </span>
                   </div>
@@ -294,9 +237,9 @@ function StatCard({ icon, label, value }: { icon: string; label: string; value: 
     <div className="rounded-lg border border-border bg-surface p-3 text-center">
       <span className="text-lg">{icon}</span>
       <p className="mt-1 font-mono text-lg font-bold text-accent-cyan">
-        {typeof value === "number" ? value.toLocaleString() : value}
+        {typeof value === "number" ? value.toLocaleString("en-US") : value}
       </p>
-      <p className="font-mono text-[10px] text-text-muted uppercase tracking-wider">{label}</p>
+      <p className="font-mono text-[12px] text-text-muted uppercase tracking-wider">{label}</p>
     </div>
   );
 }
