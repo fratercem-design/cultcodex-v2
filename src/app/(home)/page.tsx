@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Bodoni_Moda } from "next/font/google";
+import localFont from "next/font/local";
+import "./fonts/fallbacks.css";
 import { ThresholdHero } from "@/components/home/threshold-hero";
 import { OracleCathedral } from "@/components/home/oracle-cathedral";
 import { EpisodeCard } from "@/components/archive/episode-card";
@@ -38,12 +39,29 @@ export const revalidate = 60;
 // Threshold typography — Bodoni Moda italic is the ritual display face and is
 // used for exactly one moment: "the Codex." (Cinzel was dropped in the
 // 2026-09 redesign: a fifth typeface with no job.)
-const thresholdDisplay = Bodoni_Moda({
-  subsets: ["latin"],
-  style: ["italic", "normal"],
-  weight: ["400", "500"],
+//
+// Self-hosted rather than next/font/google: fetching Google Fonts at build time
+// made CI fail intermittently. The files are Google's latin-subset variable
+// woff2s. The upright face is kept too: the ◣ sigil is set in it, and although
+// that glyph comes from the fallback, this face's metrics size its line box.
+// Provenance and licenses
+// (SIL OFL 1.1) are in ./fonts; fallbacks.css explains the fallback face.
+const thresholdDisplay = localFont({
+  src: [
+    { path: "./fonts/BodoniModa-Italic-latin.woff2", weight: "400 500", style: "italic" },
+    { path: "./fonts/BodoniModa-latin.woff2", weight: "400 500", style: "normal" },
+  ],
   variable: "--threshold-font-display",
   display: "swap",
+  declarations: [
+    {
+      prop: "unicode-range",
+      value:
+        "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    },
+  ],
+  adjustFontFallback: false,
+  fallback: ["Bodoni Moda Fallback"],
 });
 
 export async function generateMetadata() {

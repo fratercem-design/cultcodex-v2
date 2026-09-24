@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import {
-  Space_Grotesk,
-  JetBrains_Mono,
-} from "next/font/google";
+import { spaceGrotesk, jetbrainsMono } from "@/fonts";
 import { LiveBanner } from "@/components/layout/live-banner";
 import { ScrollReset } from "@/components/layout/scroll-reset";
 import { EntryBanner } from "@/components/layout/entry-banner";
@@ -26,22 +23,6 @@ import "./globals.css";
 // Layout data fetches (getCounts, getLiveChannels) are already wrapped in
 // .catch() and the user menu loads client-side — no server-side session reads.
 // revalidate=60 enables Next.js server-side ISR caching for the layout shell.
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-display",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-// JetBrains Mono — primary monospace for the neon-terminal aesthetic.
-// Overrides --font-mono so all existing `font-mono` consumers pick it up
-// without per-component changes.
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono",
-  weight: ["300", "400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
 
 const SITE_DESCRIPTION =
   "The complete archive of the Cult of Psyche: nearly 3,000 transmissions, searchable transcripts, lore entries, guest profiles, relationship maps, and AI-powered exploration of every word ever spoken in the stream.";
