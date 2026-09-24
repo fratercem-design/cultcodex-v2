@@ -50,6 +50,10 @@ AUDIO_DIR = os.path.join(HERE, "scrape", "data", "audio")
 TRANSCRIPT_DIR = os.path.join(HERE, "scrape", "data", "transcripts")
 CAPTION_TMP = os.path.join(HERE, "scrape", "data", "rumble-vtt")
 MATCHES_OUT = os.path.join(HERE, "asr-rumble-matches.json")
+# Listing the channel takes ~70 page fetches and trips Rumble's 429 limit, so
+# the result is cached and reused for a day (--refresh re-lists).
+VIDEOS_CACHE = os.path.join(HERE, "scrape", "data", "rumble-videos.json")
+CACHE_MAX_AGE_S = 24 * 3600
 LOG_FILE = os.path.join(HERE, "asr-rumble.log")
 DEFAULT_CHANNEL = "https://rumble.com/user/PanelverseVODs/videos"
 
@@ -324,9 +328,9 @@ def slug_date(title: str):
         return None
 
 
-def best_match(ep_title: str, videos: list, norm_index: list, threshold: float,
-               air_date: str = None, date_index: list = None):
-    """Return (video, score) for the closest Rumble video, or (None, score).
+def match_scores(ep_title: str, norm_index: list, air_date: str = None,
+                 date_index: list = None) -> list:
+    """Score one episode against every Rumble video (0-1, index-aligned).
 
     When the episode has an airDate, a VOD dated that day scores 0.95 and one
     dated a day either side 0.85 (airDate is UTC; a late-night US stream can
@@ -340,12 +344,15 @@ def best_match(ep_title: str, videos: list, norm_index: list, threshold: float,
             air = datetime.date.fromisoformat(air_date[:10])
         except ValueError:
             air = None
-    best, best_score = None, 0.0
-    for i, (vid, ntitle) in enumerate(zip(videos, norm_index)):
+    scores = []
+    for i, ntitle in enumerate(norm_index):
         sim = difflib.SequenceMatcher(None, target, ntitle).ratio() if target else 0.0
         score = sim
-        # Boost when one title contains the other (mirrors often add prefixes)
-        if target and ntitle and (target in ntitle or ntitle in target):
+        # Boost when one title contains the other (mirrors often add prefixes).
+        # Only for real titles: placeholder names like "d" or "movie" are
+        # substrings of unrelated VOD titles.
+        if (min(len(target), len(ntitle)) >= 12
+                and (target in ntitle or ntitle in target)):
             score = max(score, 0.9)
         vdate = date_index[i] if date_index else None
         if air and vdate:
@@ -354,11 +361,42 @@ def best_match(ep_title: str, videos: list, norm_index: list, threshold: float,
                 score = max(score, 0.95 + sim * 0.04)
             elif gap == 1:
                 score = max(score, 0.85 + sim * 0.04)
-        if score > best_score:
-            best, best_score = vid, score
-    if best_score >= threshold:
-        return best, best_score
-    return None, best_score
+        scores.append(score)
+    return scores
+
+
+def best_match(ep_title: str, videos: list, norm_index: list, threshold: float,
+               air_date: str = None, date_index: list = None):
+    """Return (video, score) for the closest Rumble video, or (None, score)."""
+    scores = match_scores(ep_title, norm_index, air_date, date_index)
+    if not scores:
+        return None, 0.0
+    i = max(range(len(scores)), key=scores.__getitem__)
+    return (videos[i], scores[i]) if scores[i] >= threshold else (None, scores[i])
+
+
+def assign_matches(pending: list, videos: list, norm_index: list, date_index: list,
+                   threshold: float) -> list:
+    """One-to-one episode -> video assignment: [(video|None, score), ...].
+
+    Two episodes on the same day (or a day apart) would otherwise both claim
+    that day's VOD. Pairs are taken best-score first, so each VOD goes to the
+    episode it fits best and the other episode is reported as unmatched with
+    its best score.
+    """
+    table = [match_scores(ep.get("title", ""), norm_index, ep.get("airDate"), date_index)
+             for ep in pending]
+    pairs = sorted(((sc, e, v) for e, row in enumerate(table)
+                    for v, sc in enumerate(row) if sc >= threshold), reverse=True)
+    result = [(None, max(row, default=0.0)) for row in table]
+    used_eps, used_vids = set(), set()
+    for sc, e, v in pairs:
+        if e in used_eps or v in used_vids:
+            continue
+        used_eps.add(e)
+        used_vids.add(v)
+        result[e] = (videos[v], sc)
+    return result
 
 
 def main() -> int:
@@ -367,6 +405,12 @@ def main() -> int:
     ap.add_argument("--search", action="append",
                     help="Rumble search query to page through for more videos "
                          f"(repeatable; default {DEFAULT_SEARCH!r}; pass --search '' to skip)")
+    ap.add_argument("--title-filter", default="psyche",
+                    help="Only match Rumble videos whose title contains this (default 'psyche'). "
+                         "PanelverseVODs archives many streamers' VODs, so a date alone would pair an "
+                         "episode with another streamer's stream. Pass '' to match against all.")
+    ap.add_argument("--refresh", action="store_true",
+                    help="Re-list the channel instead of reusing the cached list (< 24h old)")
     ap.add_argument("--batch", type=int, default=999)
     ap.add_argument("--threshold", type=float, default=0.6,
                     help="Min title-similarity 0-1 to accept a match (default 0.6)")
@@ -378,7 +422,19 @@ def main() -> int:
     args = ap.parse_args()
 
     searches = [q for q in (args.search if args.search is not None else DEFAULT_SEARCH) if q]
-    videos = list_rumble_channel(args.channel, searches)
+    videos = None
+    if not args.refresh and os.path.exists(VIDEOS_CACHE):
+        age = time.time() - os.path.getmtime(VIDEOS_CACHE)
+        if age < CACHE_MAX_AGE_S:
+            with open(VIDEOS_CACHE, "r", encoding="utf-8") as f:
+                videos = json.load(f)
+            log(f"Using cached channel list ({len(videos)} videos, {age / 3600:.1f}h old; --refresh to re-list)")
+    if videos is None:
+        videos = list_rumble_channel(args.channel, searches)
+        if videos:
+            os.makedirs(os.path.dirname(VIDEOS_CACHE), exist_ok=True)
+            with open(VIDEOS_CACHE, "w", encoding="utf-8") as f:
+                json.dump(videos, f, ensure_ascii=False)
     if not videos:
         log("No videos found. Check the --channel URL (try /c/Name or /user/Name).")
         return 1
@@ -394,6 +450,13 @@ def main() -> int:
     with open(PENDING, "r", encoding="utf-8") as f:
         pending = json.load(f)
 
+    if args.title_filter:
+        needle = normalize(args.title_filter)
+        videos = [v for v in videos if needle in normalize(v["title"])]
+        log(f"  {len(videos)} videos have '{args.title_filter}' in the title.")
+        if not videos:
+            return 1
+
     os.makedirs(AUDIO_DIR, exist_ok=True)
     norm_index = [normalize(v["title"]) for v in videos]
     date_index = [slug_date(v["title"]) for v in videos]
@@ -402,7 +465,8 @@ def main() -> int:
     with_captions, captions_saved = 0, 0
     match_report = []
 
-    for ep in pending:
+    assignments = assign_matches(pending, videos, norm_index, date_index, args.threshold)
+    for idx, ep in enumerate(pending):
         ytid = ep["ytId"]
         title = ep.get("title", "")
         mp3_path = os.path.join(AUDIO_DIR, f"{ytid}.mp3")
@@ -413,8 +477,7 @@ def main() -> int:
             skipped += 1
             continue
 
-        vid, score = best_match(title, videos, norm_index, args.threshold,
-                                ep.get("airDate"), date_index)
+        vid, score = assignments[idx]
         if not vid:
             no_match += 1
             log(f"  NO MATCH (best {score:.2f})  EP.{ep.get('ep')} ({ep.get('airDate')})  {title[:55]}")
