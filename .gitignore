@@ -103,3 +103,7 @@ logs/
 modify_schema.py
 prisma/*.bak
 prisma/migrations.backup/
+
+# psychenomicon-deslop.ts review output
+deslop-proposals*.json
+deslop-proposals*.md
