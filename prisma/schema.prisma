@@ -114,6 +114,9 @@ model Episode {
   duration        String?
   youtubeVideoId  String?
   rumbleVideoId   String?
+  /// Rumble's player id ("v7czczu"), which differs from the page id in
+  /// rumbleVideoId ("v7f5pxc"); rumble.com/embed/ only accepts this one.
+  rumbleEmbedId   String?
   thumbnailUrl    String?
   summaryShort    String?
   summaryLong     String?
