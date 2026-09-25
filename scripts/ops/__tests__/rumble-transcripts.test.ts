@@ -4,9 +4,29 @@ import * as path from "path";
 
 vi.mock("../../ingest/lib", () => ({ getPrisma: vi.fn(), disconnect: vi.fn(), slugify: (s: string) => s }));
 
-import { formatDuration, parseCsv, parseIndex, parseRumbleTitle, parseSrt, rumbleIdFromUrl } from "../rumble-transcripts";
+import {
+  formatDuration, overlap, parseCsv, parseIndex, parseRumbleTitle, parseSrt, rumbleIdFromUrl, SAME_STREAM, shingles,
+} from "../rumble-transcripts";
 
 const DATA = path.resolve(__dirname, "../../ingest/data/rumble-transcripts");
+
+const transcript = (id: string) => {
+  const file = readdirSync(DATA).find((f) => f.startsWith(`${id}_`))!;
+  return shingles(parseSrt(readFileSync(path.join(DATA, file), "utf8")).map((s) => s.text).join(" "));
+};
+
+describe("overlap", () => {
+  it("scores a stream against a re-captioned copy of itself above the cutoff", () => {
+    const a = shingles("so today we are going to pull a card for every sign and see what the moon has to say");
+    const b = shingles("ok so today we are going to pull a card for every sign and see what the moon has to say tonight");
+    expect(overlap(a, b)).toBeGreaterThanOrEqual(SAME_STREAM);
+  });
+
+  it("keeps different streams that share a title below the cutoff", () => {
+    // Two separate "Psyche's Nightmares Live Stream Part 2" VODs (06-24 and 06-25).
+    expect(overlap(transcript("v7bto3y"), transcript("v7bvdmk"))).toBeLessThan(SAME_STREAM);
+  });
+});
 
 describe("parseRumbleTitle", () => {
   it("keeps only the episode name and the air date", () => {

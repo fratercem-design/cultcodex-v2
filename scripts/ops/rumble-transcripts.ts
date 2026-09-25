@@ -154,6 +154,29 @@ function normalize(title: string): string {
   return title.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim();
 }
 
+/**
+ * Word trigrams of a transcript. Two caption engines transcribing the same
+ * stream share a large share of these; unrelated streams share almost none.
+ */
+export function shingles(text: string): Set<string> {
+  const words = text.toLowerCase().replace(/[^a-z0-9' ]+/g, " ").split(/\s+/).filter(Boolean);
+  const out = new Set<string>();
+  for (let i = 2; i < words.length; i++) out.add(`${words[i - 2]} ${words[i - 1]} ${words[i]}`);
+  return out;
+}
+
+/** Share of the smaller transcript's trigrams that also appear in the other. */
+export function overlap(a: Set<string>, b: Set<string>): number {
+  const [small, big] = a.size <= b.size ? [a, b] : [b, a];
+  if (small.size === 0) return 0;
+  let hits = 0;
+  for (const g of small) if (big.has(g)) hits++;
+  return hits / small.size;
+}
+
+/** At or above this overlap two same-titled transcripts are one stream. */
+export const SAME_STREAM = 0.3;
+
 // Rumble titles carry the US stream date; episodes created from YouTube carry
 // the upload date, a day later in UTC. Two days covers that drift without
 // merging different streams that reused a title (e.g. four "I'm Back"s).
@@ -184,7 +207,32 @@ export async function run(apply: boolean) {
   });
   let nextNumber = (maxEp?.episodeNumber ?? 0) + 1;
 
-  const tally = { transcripts: 0, created: 0, linked: 0, skippedHasTranscript: 0, empty: 0, segments: 0 };
+  const tally = { transcripts: 0, created: 0, linked: 0, skippedHasTranscript: 0, empty: 0, segments: 0, duplicates: 0 };
+
+  // Episode dates are unreliable (bulk YouTube uploads carry the upload day),
+  // so same-titled episodes are compared by transcript text as well.
+  const shingleCache = new Map<string, Set<string>>();
+  const episodeShingles = async (id: string) => {
+    let set = shingleCache.get(id);
+    if (!set) {
+      const segs = await prisma.transcriptSegment.findMany({ where: { episodeId: id }, select: { text: true } });
+      set = shingles(segs.map((s) => s.text).join(" "));
+      shingleCache.set(id, set);
+    }
+    return set;
+  };
+  /** Transcribed, same-titled episodes other than `except`, with their overlap against `mine`, best first. */
+  const twinsOf = async (title: string, mine: Set<string>, except?: string) => {
+    const twins = episodes.filter((e) => e.id !== except && normalize(e.title) === normalize(title));
+    const scored = await Promise.all(
+      twins.map(async (e) => ({ e, score: e._count.segments > 0 ? overlap(mine, await episodeShingles(e.id)) : 0 })),
+    );
+    return scored.sort((a, b) => b.score - a.score);
+  };
+  const twinLine = ({ e, score }: { e: (typeof episodes)[number]; score: number }) =>
+    `      same title: "${e.slug}" aired ${e.airDate?.toISOString().slice(0, 10) ?? "unknown"}, ` +
+    `${e.status}, ${e._count.segments} segments${e.rumbleVideoId ? `, rumble ${e.rumbleVideoId}` : ""}, ` +
+    `overlap ${score.toFixed(2)}`;
 
   for (const row of rows) {
     const rumbleId = rumbleIdFromUrl(row.rumbleUrl);
@@ -202,6 +250,27 @@ export async function run(apply: boolean) {
     //    repeat across streams, so the date must agree too).
     let ep = rumbleId ? byRumble.get(rumbleId) : undefined;
     let how = "rumble id";
+    const mine = shingles(segments.map((s) => s.text).join(" "));
+
+    // A draft an earlier run created, for a stream the archive already had
+    // under a drifted date: remove it and put its Rumble id on the original.
+    if (ep?.status === "draft") {
+      const draft = ep;
+      const best = (await twinsOf(title, mine, draft.id)).find((t) => t.e.status !== "draft");
+      if (best && best.score >= SAME_STREAM) {
+        console.log(`  - ${label}: draft "${draft.slug}" duplicates "${best.e.slug}" (overlap ${best.score.toFixed(2)}) — draft removed`);
+        tally.duplicates++;
+        claimed.add(best.e.id);
+        if (apply) {
+          await prisma.$transaction([
+            prisma.episode.delete({ where: { id: draft.id } }),
+            ...(best.e.rumbleVideoId ? [] : [prisma.episode.update({ where: { id: best.e.id }, data: { rumbleVideoId: rumbleId } })]),
+          ]);
+        }
+        continue;
+      }
+    }
+
     if (!ep) {
       const gap = (e: (typeof episodes)[number]) =>
         airDate && e.airDate ? Math.abs(e.airDate.getTime() - airDate.getTime()) : 0;
@@ -216,10 +285,19 @@ export async function run(apply: boolean) {
         .sort((a, b) => gap(a) - gap(b))[0];
       how = "title + date";
     }
+    if (!ep) {
+      const best = (await twinsOf(title, mine)).find(
+        (t) => !claimed.has(t.e.id) && (!t.e.rumbleVideoId || t.e.rumbleVideoId === rumbleId),
+      );
+      if (best && best.score >= SAME_STREAM) {
+        ep = best.e;
+        how = `title + transcript (overlap ${best.score.toFixed(2)})`;
+      }
+    }
     if (ep) claimed.add(ep.id);
 
     if (ep && ep._count.segments > 0) {
-      console.log(`  = ${label}: episode "${ep.slug}" already has ${ep._count.segments} segments — skipped`);
+      console.log(`  = ${label}: episode "${ep.slug}" already has ${ep._count.segments} segments — skipped${how === "rumble id" ? "" : ` (${how})`}`);
       tally.skippedHasTranscript++;
       continue;
     }
@@ -233,14 +311,9 @@ export async function run(apply: boolean) {
       if (slugs.has(slug)) slug = `${base}-${rumbleId}`;
       slugs.add(slug);
       console.log(`  + ${label}: new draft episode "${slug}" with ${segments.length} segments`);
-      // Same-titled episodes outside the date window: usually the same stream
-      // with a drifted date, sometimes a different show that reused the title.
-      for (const twin of episodes.filter((e) => normalize(e.title) === normalize(title))) {
-        console.log(
-          `      same title: "${twin.slug}" aired ${twin.airDate?.toISOString().slice(0, 10) ?? "unknown"}, ` +
-            `${twin.status}, ${twin._count.segments} segments${twin.rumbleVideoId ? `, rumble ${twin.rumbleVideoId}` : ""}`,
-        );
-      }
+      // Same-titled episodes whose transcripts differ: a different show that
+      // reused the title. The overlap is printed so the cutoff can be checked.
+      for (const twin of await twinsOf(title, mine)) console.log(twinLine(twin));
       tally.created++;
       tally.transcripts++;
       tally.segments += segments.length;
@@ -290,7 +363,8 @@ export async function run(apply: boolean) {
   console.log(
     `\nSummary: ${apply ? "imported" : "would import"} ${tally.transcripts} transcripts ` +
       `(${tally.segments} segments) · new draft episodes ${tally.created} · matched by title ${tally.linked} · ` +
-      `skipped (already transcribed) ${tally.skippedHasTranscript} · unreadable ${tally.empty}`,
+      `skipped (already transcribed) ${tally.skippedHasTranscript} · unreadable ${tally.empty} · ` +
+      `duplicate drafts ${apply ? "removed" : "to remove"} ${tally.duplicates}`,
   );
   await disconnect();
 }
