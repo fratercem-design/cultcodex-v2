@@ -24,6 +24,11 @@ const EMOJIS = [
   { src: "/images/youtube-members/tarot.webp", name: "Tarot" },
   { src: "/images/youtube-members/cosmic-egg.webp", name: "Cosmic Egg" },
   { src: "/images/youtube-members/seal.webp", name: "Seal of Approval" },
+  { src: "/images/youtube-members/heart-butterfly.webp", name: "Heart Butterfly" },
+  { src: "/images/youtube-members/third-eye-kitten.webp", name: "Third-Eye Kitten" },
+  { src: "/images/youtube-members/witch-moon.webp", name: "Witch Moon" },
+  { src: "/images/youtube-members/sacred-heart.webp", name: "Sacred Heart" },
+  { src: "/images/youtube-members/moon-moth.webp", name: "Moon Moth" },
 ];
 
 const TIERS = [
