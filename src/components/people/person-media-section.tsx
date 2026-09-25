@@ -213,7 +213,6 @@ function VideoChannelSection({
 
 const KNOWN_CHANNELS: Record<string, { label: string; url: string }> = {
   "@irlnewstime": { label: "irlnewstime", url: "https://www.youtube.com/@irlnewstime" },
-  "@alexandramayers": { label: "AlexandraMayers", url: "https://www.youtube.com/@AlexandraMayers" },
 };
 
 function channelMeta(handle: string | null): { label: string; url: string } {
@@ -240,9 +239,8 @@ export function PersonMediaSection({ personName, videos, wiki }: Props) {
   }
 
   // Stable channel order: irlnewstime first, then others alphabetically.
-  // Filter out @alexandramayers
   const channelOrder = [...byChannel.keys()]
-    .filter((handle) => !["@alexandramayers", "@irlnewstime", "@ip2wikiinfo"].includes(handle))
+    .filter((handle) => !["@irlnewstime", "@ip2wikiinfo"].includes(handle))
     .sort((a, b) => {
       if (a === "@irlnewstime") return -1;
       if (b === "@irlnewstime") return 1;
@@ -255,7 +253,7 @@ export function PersonMediaSection({ personName, videos, wiki }: Props) {
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-border" />
         <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
-          alexandra mayers — external content
+          {personName} — external content
         </p>
         <div className="h-px flex-1 bg-border" />
       </div>

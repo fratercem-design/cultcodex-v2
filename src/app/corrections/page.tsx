@@ -2,6 +2,8 @@ import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { CorrectionForm } from "@/components/corrections/correction-form";
+import { defaultCorrectionType } from "@/lib/corrections";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/corrections" },
@@ -31,11 +33,6 @@ export default async function CorrectionsPage({
       label="corrections"
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
-        {bannerTitle && (
-          <div className="rounded-lg border border-border/50 bg-surface/30 px-4 py-3 font-mono text-xs text-text-muted">
-            Reporting: {type} &mdash; &ldquo;{bannerTitle}&rdquo;
-          </div>
-        )}
         <SectionCard title="Report an Error">
           <div className="space-y-3 text-sm text-text-primary leading-relaxed">
             <p>
@@ -53,26 +50,15 @@ export default async function CorrectionsPage({
           </div>
         </SectionCard>
 
-        <SectionCard title="How to Submit">
-          <div className="space-y-3 text-sm text-text-primary leading-relaxed">
-            <p>
-              To submit a correction, please provide:
-            </p>
-            <ol className="space-y-2 list-decimal list-inside text-text-muted">
-              <li>The URL of the page containing the error</li>
-              <li>A description of what is incorrect</li>
-              <li>The correct information (if known)</li>
-              <li>Any supporting context (e.g., timestamp in the episode)</li>
-            </ol>
-            <p className="mt-4">
-              Email the archive maintainers at{" "}
-              <a
-                href={correctionEmail}
-                className="text-accent-gold-text hover:underline"
-              >
+        <SectionCard title="Submit a Correction">
+          <div className="space-y-5">
+            <CorrectionForm initialType={defaultCorrectionType(type)} entityTitle={bannerTitle} />
+            <p className="text-xs leading-relaxed text-text-muted">
+              Prefer email? Write to{" "}
+              <a href={correctionEmail} className="text-accent-gold-text hover:underline">
                 psychetarotchannel@gmail.com
-              </a>
-              . The subject line will include the page you came from when available.
+              </a>{" "}
+              with the page URL, what&apos;s wrong, and the correct information if you know it.
             </p>
           </div>
         </SectionCard>
@@ -85,8 +71,9 @@ export default async function CorrectionsPage({
               <a href={removalEmail} className="text-accent-gold-text hover:underline">
                 private content removal request
               </a>
-              . Include the page URL and the change you need. We will review and
-              respond promptly; do not put sensitive personal information in a public issue.
+              , or use the form above and choose &ldquo;Privacy concern or removal
+              request&rdquo;. Both reach the maintainers privately. Include the page URL
+              and the change you need, and we will review and respond promptly.
             </p>
             <p className="text-text-muted text-xs">
               All content in this archive is derived from publicly available streams
