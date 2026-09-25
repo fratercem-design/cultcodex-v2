@@ -51,26 +51,44 @@ export async function run(apply: boolean) {
     .map((r) => rumbleIdFromUrl(r.rumbleUrl))
     .filter((id): id is string => !!id);
 
-  const todo = await prisma.episode.findMany({
+  const drafts = await prisma.episode.findMany({
     where: {
       status: "draft",
       rumbleVideoId: { in: rumbleIds },
       segments: { some: {} },
-      OR: [{ summaryLong: null }, { summaryLong: "" }],
     },
-    select: { id: true, slug: true, title: true, episodeNumber: true, airDate: true, _count: { select: { segments: true } } },
+    select: {
+      id: true, slug: true, title: true, episodeNumber: true, airDate: true,
+      summaryShort: true, summaryFacts: true, summaryLong: true,
+      _count: { select: { segments: true } },
+    },
     orderBy: { airDate: "desc" },
   });
+  // Drafts another enrichment run already summarised only need publishing;
+  // re-enriching them would pay for the same summary twice.
+  const hasSummary = (ep: (typeof drafts)[number]) =>
+    [ep.summaryShort, ep.summaryFacts, ep.summaryLong].some((v) => v && v.trim() && v.trim() !== "—");
+  const ready = drafts.filter(hasSummary);
+  const todo = drafts.filter((ep) => !hasSummary(ep));
 
-  console.log(`${apply ? "APPLY" : "REPORT (read-only)"} — ${todo.length} Rumble draft episodes to enrich and publish\n`);
+  console.log(
+    `${apply ? "APPLY" : "REPORT (read-only)"} — ${ready.length} Rumble drafts already enriched (publish only), ` +
+      `${todo.length} to enrich and publish\n`,
+  );
   if (!apply) {
+    for (const ep of ready) console.log(`  ✓ ${ep.airDate?.toISOString().slice(0, 10) ?? "????-??-??"} ${ep.slug} (already enriched)`);
     for (const ep of todo) console.log(`  ${ep.airDate?.toISOString().slice(0, 10) ?? "????-??-??"} ${ep.slug} (${ep._count.segments} segments)`);
     await disconnect();
     return;
   }
 
+  if (ready.length) {
+    await prisma.episode.updateMany({ where: { id: { in: ready.map((e) => e.id) } }, data: { status: "published" } });
+    console.log(`  published ${ready.length} already-enriched drafts`);
+  }
+
   const started = Date.now();
-  const tally = { published: 0, failed: 0 };
+  const tally = { published: 0, failed: 0, alreadyEnriched: ready.length };
   let next = 0;
   // An empty API balance fails every remaining call, so stop at the first one.
   let outOfCredit = false;
@@ -107,7 +125,8 @@ export async function run(apply: boolean) {
 
   const left = todo.length - tally.published - tally.failed;
   console.log(
-    `\nSummary: enriched and published ${tally.published} · failed ${tally.failed} (still drafts) · ` +
+    `\nSummary: published ${tally.alreadyEnriched} already enriched · enriched and published ${tally.published} · ` +
+      `failed ${tally.failed} (still drafts) · ` +
       `not reached ${left}${outOfCredit ? " — stopped: Anthropic credit balance is empty" : left ? " — run again to continue" : ""}`,
   );
   await disconnect();
