@@ -16,7 +16,7 @@ import {
   paginationArgs,
   buildPaginationMeta,
 } from "@/lib/pagination";
-import { PERSON_TYPE_DOT } from "@/lib/people/person-type";
+import { PERSON_TYPE_DOT, PERSON_TYPE_EDGE, PERSON_TYPE_SECTION, PERSON_TYPE_TINT } from "@/lib/people/person-type";
 import type { PersonType } from "@/generated/prisma/client";
 import { collectionPageJsonLd, jsonLdScript } from "@/lib/seo";
 
@@ -43,6 +43,35 @@ const FILTER_OPTIONS = [
 
 // How many special mentions to show inline before truncating
 const MENTIONS_PREVIEW = 40;
+
+// Default view is sectioned by role. Hosts and recurring cast are small sets
+// shown whole; guests are a long tail, so only the most-seen show here and
+// the rest are one click away under the Guest filter.
+const SECTION_TAKE = { host: 50, recurring: 200, guest: 24 } as const;
+const SECTIONS = ["host", "recurring", "guest"] as const;
+
+type PersonCardRow = Awaited<ReturnType<typeof getPeopleCards>>[number];
+
+function PeopleGrid({ people }: { people: PersonCardRow[] }) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      {people.map((person) => (
+        <PersonCard
+          key={person.id}
+          person={{
+            displayName: person.displayName,
+            slug: person.slug,
+            shortBio: person.shortBio,
+            loreSummary: person.loreSummary,
+            avatarUrl: person.avatarUrl,
+            personType: person.personType,
+            appearanceCount: person._count.guestAppearances + person._count.mentions,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 
 interface PeoplePageProps {
   searchParams: Promise<{ sort?: string; filter?: string; page?: string }>;
@@ -75,7 +104,17 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
   const sortMode = (validSorts as readonly string[]).includes(currentSort)
     ? (currentSort as PeopleSort)
     : "most";
-  const sorted = await getPeopleCards({ take, skip, type: typeFilter, sort: sortMode });
+  const [sorted, ...sectionRows] = await Promise.all([
+    typeFilter ? getPeopleCards({ take, skip, type: typeFilter, sort: sortMode }) : Promise.resolve([]),
+    ...SECTIONS.map((type) =>
+      typeFilter ? Promise.resolve([]) : getPeopleCards({ take: SECTION_TAKE[type], type, sort: sortMode }),
+    ),
+  ]);
+  // Counts use the same profiled filter as the lists, so "All N" matches what the filter shows.
+  const [hostCount, recurringCount, guestCount] = typeFilter
+    ? [0, 0, 0]
+    : await Promise.all(SECTIONS.map((type) => getPersonCount(type)));
+  const sectionCounts = { host: hostCount, recurring: recurringCount, guest: guestCount };
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
@@ -94,7 +133,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
 
   return (
     <>
-    {page === 1 && sorted.length > 0 && (
+    {page === 1 && (sorted.length > 0 || sectionRows.some((r) => r.length > 0)) && (
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -103,7 +142,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
               name: "People — CultCodex",
               description: metadata.description,
               path: "/people",
-              items: sorted.map((p) => ({ name: p.displayName, path: `/people/${p.slug}` })),
+              items: (typeFilter ? sorted : sectionRows.flat()).map((p) => ({ name: p.displayName, path: `/people/${p.slug}` })),
             })
           ),
         }}
@@ -140,34 +179,64 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
         currentFilter={currentFilter}
       />
 
-      {sorted.length === 0 ? (
-        <EmptyState message="No people match the current filters" />
+      {typeFilter ? (
+        sorted.length === 0 ? (
+          <EmptyState message="No people match the current filters" />
+        ) : (
+          <>
+            <PeopleGrid people={sorted} />
+            <PaginationControls meta={paginationMeta} basePath="/people" />
+          </>
+        )
       ) : (
         <>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {sorted.map((person) => (
-              <PersonCard
-                key={person.id}
-                person={{
-                  displayName: person.displayName,
-                  slug: person.slug,
-                  shortBio: person.shortBio,
-                  loreSummary: person.loreSummary,
-                  avatarUrl: person.avatarUrl,
-                  personType: person.personType,
-                  appearanceCount:
-                    person._count.guestAppearances + person._count.mentions,
-                }}
-              />
+          {/* Colour key: the same role colours run through cards, badges and the graph */}
+          <div className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[12px] text-text-muted">
+            {SECTIONS.map((type) => (
+              <a key={type} href={`#${type}`} className="inline-flex items-center gap-1.5 hover:text-text-primary transition-colors">
+                <span className={`h-2 w-2 rounded-full ${PERSON_TYPE_DOT[type]}`} />
+                {PERSON_TYPE_SECTION[type].title}
+              </a>
             ))}
+            <a href="#mentions" className="inline-flex items-center gap-1.5 hover:text-text-primary transition-colors">
+              <span className={`h-2 w-2 rounded-full ${PERSON_TYPE_DOT.mentioned}`} />
+              Mentioned
+            </a>
           </div>
-          <PaginationControls meta={paginationMeta} basePath="/people" />
+
+          {SECTIONS.map((type, i) => {
+            const rows = sectionRows[i];
+            if (rows.length === 0) return null;
+            const total = sectionCounts[type];
+            return (
+              <section key={type} id={type} className="mb-10 scroll-mt-24">
+                <div className={`mb-4 flex items-end justify-between gap-4 border-l-2 pl-3 ${PERSON_TYPE_EDGE[type]}`}>
+                  <div>
+                    <h2 className={`font-mono text-sm font-bold uppercase tracking-[0.14em] ${PERSON_TYPE_TINT[type]}`}>
+                      {PERSON_TYPE_SECTION[type].title}
+                      <span className="ml-2 font-normal text-text-muted">{total}</span>
+                    </h2>
+                    <p className="mt-0.5 font-mono text-[12px] text-text-muted">{PERSON_TYPE_SECTION[type].blurb}</p>
+                  </div>
+                  {total > rows.length && (
+                    <Link
+                      href={`/people?filter=${type}&sort=${sortMode}`}
+                      className="shrink-0 font-mono text-[12px] uppercase tracking-widest text-text-muted hover:text-accent-gold-text transition-colors"
+                    >
+                      All {total} →
+                    </Link>
+                  )}
+                </div>
+                <PeopleGrid people={rows} />
+              </section>
+            );
+          })}
         </>
       )}
 
       {/* Special Mentions — compact strip, only on default (unfiltered) view */}
       {!typeFilter && mentionsPreview.length > 0 && (
-        <section className="mt-10 border-t border-border pt-8">
+        <section id="mentions" className="mt-10 scroll-mt-24 border-t border-border pt-8">
           <div className="mb-4 flex items-baseline justify-between gap-4">
             <div>
               <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
