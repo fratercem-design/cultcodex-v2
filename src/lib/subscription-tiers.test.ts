@@ -14,6 +14,8 @@ describe("subscription tier contract", () => {
     expect(INITIATE_ORACLE_MONTHLY_LIMIT).toBe(100);
     expect(initiate.features.join(" ")).toContain("100 Oracle questions a month");
     expect(initiate.features.join(" ").toLowerCase()).not.toContain("unlimited oracle");
-    expect(oracle.features.join(" ").toLowerCase()).toContain("unlimited oracle");
+    expect(oracle.features.join(" ").toLowerCase()).toContain("no monthly cap on oracle questions");
+    // The route still rate-limits per minute, so "unlimited" would overstate it.
+    expect(oracle.features.join(" ").toLowerCase()).not.toContain("unlimited oracle");
   });
 });

@@ -8,7 +8,7 @@ import { OracleAmbience } from "@/components/oracle/oracle-ambience";
 import { LilithOracle } from "@/components/oracle/lilith-oracle";
 import { ShadowOracle } from "@/components/oracle/shadow-oracle";
 import Link from "next/link";
-import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
+import { getCounts, getCountsOrNull, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getTier, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
 
 const initiateTier = getTier("access");
@@ -55,7 +55,9 @@ export default async function OraclePage() {
     : [];
   const quote = quotes[0] ?? null;
 
-  const archiveSize = await prisma.transcriptSegment.count();
+  // Same guarded, cached counts as the rest of the site: null when the archive
+  // can't be read, so the page never claims to search "0 archive moments".
+  const archiveSize = (await getCountsOrNull())?.segments ?? null;
 
   return (
     <div className="relative min-h-screen bg-void">
@@ -100,11 +102,18 @@ export default async function OraclePage() {
         <div className="mt-5 w-24 h-px bg-gradient-to-r from-transparent via-accent-gold/40 to-transparent" />
         <MysticalDivider className="mt-4 opacity-40 [&_svg]:!text-accent-violet-text/25" />
 
-        <p className="mx-auto mt-4 max-w-md px-4 font-display text-[17px] leading-relaxed text-ink-2">
-          Ask a question. The Oracle searches{" "}
-          <span className="text-evidence">{archiveSize.toLocaleString("en-US")} archive moments</span>{" "}
-          and answers with citations back to the source.
-        </p>
+        {archiveSize !== null ? (
+          <p className="mx-auto mt-4 max-w-md px-4 font-display text-[17px] leading-relaxed text-ink-2">
+            Ask a question. The Oracle searches{" "}
+            <span className="text-evidence">{archiveSize.toLocaleString("en-US")} archive moments</span>{" "}
+            and answers with citations back to the source.
+          </p>
+        ) : (
+          <p role="status" className="mx-auto mt-4 max-w-md px-4 font-display text-[17px] leading-relaxed text-ink-2">
+            The archive can&apos;t be read right now, so the Oracle has nothing to search.
+            Try again in a few minutes.
+          </p>
+        )}
 
         {/* What it knows, what it doesn't, how it cites — stated before the
             ask box, not in a footer (2026-09 audit, OR-01). */}
