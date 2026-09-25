@@ -2,38 +2,41 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("../../ingest/lib", () => ({ getPrisma: vi.fn(), disconnect: vi.fn() }));
 
-import { matchesNamed, nameKey, NAMED } from "../people-dedupe";
+import { matchesNamed, nameKey, nameParts, NAMED } from "../people-dedupe";
 
 const named = (keep: string) => NAMED.find((n) => n.keep === keep)!;
+const yes = (keep: string, names: string[]) => names.forEach((n) => expect(matchesNamed(named(keep), n), n).toBe(true));
+const no = (keep: string, names: string[]) => names.forEach((n) => expect(matchesNamed(named(keep), n), n).toBe(false));
 
 describe("named clusters", () => {
-  it("gathers the Mayers spellings but never McQueen", () => {
-    const m = named("Alexandra Mayers");
-    for (const n of ["Alexandra Mayers", "Alexander Mayors", "Alexandra Meyers / Alexandra Mayers", "Alexandra Myers", "Alex Mayer", "Alexandra (Monica Foster)", "Alexandra"])
-      expect(matchesNamed(m, [n]), n).toBe(true);
-    for (const n of ["Alexander McQueen", "Alex and Me", "Alexandra McQueen Mayers", "Alexander"])
-      expect(matchesNamed(m, [n]), n).toBe(false);
+  it("gathers Mayers spellings, never McQueen", () => {
+    yes("Alexandra Mayers", ["Alexandra Mayers", "Alexander Mayors", "Alex Myers", "Alexandra Mayers / Monica Foster", "Alexandra Mayers (AM)", "Alexandra", "Alexandra/Alex", "Alexandra Melody Mayers"]);
+    no("Alexandra Mayers", ["Alexander McQueen", "Alex", "Alexandra (Alexander McQueen)", "Alexandra Mayers / Bita", "INX (Alexandra)"]);
   });
 
-  it("gathers McQueen spellings but not rows that also name Mayers", () => {
-    const m = named("Alexander McQueen");
-    for (const n of ["Alexander McQueen", "Alexander Mc Queen", "McQueen", "Alex McQueen (INX)"]) expect(matchesNamed(m, [n]), n).toBe(true);
-    for (const n of ["Alexandra McQueen Mayers", "Alexandra Mayers"]) expect(matchesNamed(m, [n]), n).toBe(false);
+  it("gathers McQueen spellings, not other McQueens or rows naming someone else", () => {
+    yes("Alexander McQueen", ["Alexander McQueen", "Alex McQueen", "McQueen", "Alexander McQueen / Alex", "Alex / A.M. / Alexander McQueen", "Alex McQueen / Alice McQueen"]);
+    no("Alexander McQueen", ["Peter Mason McQueen", "Alexander McQueen (Ghost)", "Mr. Extendo (Alex McQueen)", "Alexandra Mayers"]);
   });
 
-  it("gathers Beeta spellings but not the word beta", () => {
-    const m = named("Beeta");
-    for (const n of ["Beeta", "Beedah", "Bita", "Beeta (Beeda)"]) expect(matchesNamed(m, [n]), n).toBe(true);
-    for (const n of ["Beta Tester", "Betamax"]) expect(matchesNamed(m, [n]), n).toBe(false);
+  it("gathers Beeta and Beta but not rows that also name another person", () => {
+    yes("Beeta", ["Beeta", "Beta", "Bita", "Beta (Beeta)", "Beeda (Beeta)", "Beat (or Bita)", "Bea / Beeta"]);
+    no("Beeta", ["Saman / Beeta", "Bita / Christine", "Summer/Beta", "Beta / VA / Beeta", "Beta Tester", "Bea"]);
   });
 
-  it("checks alt names too", () => {
-    expect(matchesNamed(named("Beeta"), ["B", "Bita"])).toBe(true);
+  it("gathers Samman spellings", () => {
+    yes("Samman", ["Samman", "Saman", "Sam Man", "Sandman", "Samman (Sam Man)", "Sam/Samman", "Saman / SamanMan NYC"]);
+    no("Samman", ["Sam", "Good Times / Sam-Man", "Sam Man / Samian / Samuel Torres"]);
   });
 });
 
-describe("nameKey", () => {
-  it("drops case, punctuation and trailing aliases", () => {
+describe("name parts and keys", () => {
+  it("splits every name a row carries", () => {
+    expect(nameParts("Beeta (Beeda) / Bita")).toEqual(["beeta", "beeda", "bita"]);
+    expect(nameParts("Beat (or Bita)")).toEqual(["beat", "bita"]);
+  });
+
+  it("keys drop case, punctuation and trailing aliases", () => {
     expect(nameKey("Chris Kay")).toBe(nameKey("chris  kay."));
     expect(nameKey("Samman (Sam Man)")).toBe("samman");
     expect(nameKey("Eldo / Eldorado")).toBe("eldo");

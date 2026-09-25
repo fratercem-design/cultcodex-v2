@@ -21,22 +21,51 @@ import type { PersonType } from "../../src/generated/prisma/client";
 
 interface Named {
   keep: string;
-  match: RegExp;
-  exclude?: RegExp;
+  /** A part that on its own identifies the person. */
+  core: RegExp;
+  /** A part that is fine alongside a core part but proves nothing alone. */
+  alias?: RegExp;
 }
 
-/** Kept apart on purpose: McQueen and Mayers are different people. */
+const MAYERS = String.raw`(alexandr[ae]|alexandria|alexander|alex)\s+(melody\s+)?m[aey]{1,2}[eo]?rs?`;
+
+/**
+ * Known people whose names the captions and enrichment spell many ways.
+ * McQueen and Mayers are different people and never share a cluster.
+ */
 export const NAMED: Named[] = [
   {
     keep: "Alexandra Mayers",
-    match: /\b(alexandr[ae]|alexandria|alexander|alex)\b[^/]*?\bm[aey]{1,2}[eo]?rs?\b|\bmonica foster\b|^alexandra$/i,
-    exclude: /mc\s?queen/i,
+    core: new RegExp(String.raw`^(${MAYERS}|alexandra|monica foster)$`),
+    alias: /^(alex|alexandre|am|a\.?m\.?)$/,
   },
-  { keep: "Alexander McQueen", match: /\bmc\s?queen\b/i, exclude: /\bm[aey]{1,2}[eo]?rs\b/i },
-  { keep: "Beeta", match: /\b(beeta|beetah|beeda|beedah|bita|beda)\b/i },
+  {
+    keep: "Alexander McQueen",
+    core: /^((alex|alexander|alexandra)\s+)?mc\s?queen$|^mean mc\s?queen$|^alice mc\s?queen$/,
+    alias: /^(alex|alexander|a\.?m\.?)$/,
+  },
+  {
+    keep: "Beeta",
+    core: /^(beeta|beetah|beeda|beedah|bita|beda|beta)$/,
+    alias: /^(bea|beat|beata|beia|be|beatus|or bita|beet)$/,
+  },
+  {
+    keep: "Samman",
+    core: /^(samm?an|sam\s?-?man|sandman|saman\s?man(\s?nyc)?|samannyc|samman\s?nyc)$/,
+    alias: /^(sam|sammy|samon|samian|salmon)$/,
+  },
 ];
 
 const ROLE_RANK: Record<PersonType, number> = { host: 3, recurring: 2, guest: 1, mentioned: 0 };
+
+/** "Beeta (Beeda) / Bita" → ["beeta", "beeda", "bita"]: every name a row carries. */
+export function nameParts(name: string): string[] {
+  return name
+    .replace(/[()[\]]/g, "/")
+    .split(/[/,]/)
+    .map((s) => s.toLowerCase().replace(/["'“”‘’]/g, "").replace(/\b(also known as|aka|or)\s+/g, "").replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+}
 
 /** Name with case, punctuation, and a trailing alias ("(…)", "/ …") removed. */
 export function nameKey(name: string): string {
@@ -49,8 +78,10 @@ export function nameKey(name: string): string {
     .trim();
 }
 
-export function matchesNamed(n: Named, names: string[]): boolean {
-  return names.some((s) => n.match.test(s)) && !names.some((s) => n.exclude?.test(s));
+/** Every part is this person's name or alias, and at least one part is the name itself. */
+export function matchesNamed(n: Named, displayName: string): boolean {
+  const parts = nameParts(displayName);
+  return parts.some((x) => n.core.test(x)) && parts.every((x) => n.core.test(x) || !!n.alias?.test(x));
 }
 
 function oneEditApart(a: string, b: string): boolean {
@@ -82,7 +113,7 @@ export async function run(apply: boolean) {
   const clusters: { keep: Row; dupes: Row[]; why: string }[] = [];
 
   for (const n of NAMED) {
-    const rows = people.filter((r) => matchesNamed(n, [r.displayName, ...r.altNames]));
+    const rows = people.filter((r) => !taken.has(r.id) && matchesNamed(n, r.displayName));
     if (rows.length < 2) continue;
     const keep =
       rows.find((r) => r.displayName.toLowerCase() === n.keep.toLowerCase()) ??
@@ -91,11 +122,20 @@ export async function run(apply: boolean) {
     clusters.push({ keep, dupes: rows.filter((r) => r.id !== keep.id), why: `named: ${n.keep}` });
   }
 
+  // A combined row ("Crystal / Christine") names a second person who has a
+  // record of their own; folding it into either would lose the other.
+  const knownKeys = new Set(people.filter((r) => weight(r) > 0).map((r) => nameKey(r.displayName)));
+  const combined: Row[] = [];
   const byKey = new Map<string, Row[]>();
   for (const r of people) {
     if (taken.has(r.id)) continue;
     const k = nameKey(r.displayName);
     if (k.length < 3) continue;
+    const others = nameParts(r.displayName).slice(1).map(nameKey).filter((o) => o && o !== k);
+    if (others.some((o) => knownKeys.has(o))) {
+      if (r.displayName.includes("/")) combined.push(r);
+      continue;
+    }
     byKey.set(k, [...(byKey.get(k) ?? []), r]);
   }
   for (const [k, rows] of byKey) {
@@ -110,6 +150,9 @@ export async function run(apply: boolean) {
     for (const d of c.dupes) console.log(`   ← ${show(d)}`);
     merges += c.dupes.length;
   }
+
+  if (combined.length)
+    console.log(`\nCombined names left alone (they name someone with their own record):\n  ${combined.map(show).join("\n  ")}`);
 
   // Near misses: listed for a human to judge, never merged automatically.
   const keys = [...byKey.keys()].filter((k) => k.length >= 6).sort();
