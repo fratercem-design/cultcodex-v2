@@ -286,9 +286,10 @@ export async function run(apply: boolean) {
       how = "title + date";
     }
     if (!ep) {
-      const best = (await twinsOf(title, mine)).find(
-        (t) => !claimed.has(t.e.id) && (!t.e.rumbleVideoId || t.e.rumbleVideoId === rumbleId),
-      );
+      // Matching text means the archive already has this stream, even when a
+      // second Rumble upload of it already claimed the episode, so no claim or
+      // Rumble-id filter here: at worst this skips, it never merges streams.
+      const [best] = await twinsOf(title, mine);
       if (best && best.score >= SAME_STREAM) {
         ep = best.e;
         how = `title + transcript (overlap ${best.score.toFixed(2)})`;
