@@ -20,3 +20,8 @@ cd "${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 # rewriting package-lock.json: the container's npm 10 drops the `libc` fields
 # that npm 11 (Dependabot/CI) writes, which left the tree dirty every session.
 npm install --no-save
+# Use `npm ci` rather than `npm install`: install rewrites package-lock.json
+# when the container's npm differs from the one that wrote it (e.g. dropping
+# `libc` fields), leaving a dirty tree every session. ci never touches the
+# lockfile. --prefer-offline reuses the npm cache to offset the clean install.
+npm ci --prefer-offline --no-audit --no-fund
