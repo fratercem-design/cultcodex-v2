@@ -6,8 +6,9 @@ import { OracleConsole } from "@/components/oracle/oracle-console";
 import { OracleExampleExchanges } from "@/components/oracle/oracle-example-exchanges";
 import { OracleAmbience } from "@/components/oracle/oracle-ambience";
 import { LilithOracle } from "@/components/oracle/lilith-oracle";
+import { ShadowOracle } from "@/components/oracle/shadow-oracle";
 import Link from "next/link";
-import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
+import { getCounts, getCountsOrNull, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getTier, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
 
 const initiateTier = getTier("access");
@@ -54,7 +55,9 @@ export default async function OraclePage() {
     : [];
   const quote = quotes[0] ?? null;
 
-  const archiveSize = await prisma.transcriptSegment.count();
+  // Same guarded, cached counts as the rest of the site: null when the archive
+  // can't be read, so the page never claims to search "0 archive moments".
+  const archiveSize = (await getCountsOrNull())?.segments ?? null;
 
   return (
     <div className="relative min-h-screen bg-void">
@@ -99,11 +102,18 @@ export default async function OraclePage() {
         <div className="mt-5 w-24 h-px bg-gradient-to-r from-transparent via-accent-gold/40 to-transparent" />
         <MysticalDivider className="mt-4 opacity-40 [&_svg]:!text-accent-violet-text/25" />
 
-        <p className="mx-auto mt-4 max-w-md px-4 font-display text-[17px] leading-relaxed text-ink-2">
-          Ask a question. The Oracle searches{" "}
-          <span className="text-evidence">{archiveSize.toLocaleString("en-US")} archive moments</span>{" "}
-          and answers with citations back to the source.
-        </p>
+        {archiveSize !== null ? (
+          <p className="mx-auto mt-4 max-w-md px-4 font-display text-[17px] leading-relaxed text-ink-2">
+            Ask a question. The Oracle searches{" "}
+            <span className="text-evidence">{archiveSize.toLocaleString("en-US")} archive moments</span>{" "}
+            and answers with citations back to the source.
+          </p>
+        ) : (
+          <p role="status" className="mx-auto mt-4 max-w-md px-4 font-display text-[17px] leading-relaxed text-ink-2">
+            The archive can&apos;t be read right now, so the Oracle has nothing to search.
+            Try again in a few minutes.
+          </p>
+        )}
 
         {/* What it knows, what it doesn't, how it cites — stated before the
             ask box, not in a footer (2026-09 audit, OR-01). */}
@@ -151,8 +161,29 @@ export default async function OraclePage() {
           </>
         )}
 
+        {/* ── The Shadow Oracle: face of the divination mode ── */}
+        <section className="space-y-5 text-center">
+          <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
+            {"/// the_shadow_oracle"}
+          </p>
+          <ShadowOracle />
+          <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-[0.06em] text-text-primary">
+            The Shadow Oracle
+          </h2>
+          <p className="mx-auto max-w-lg font-display text-[16px] leading-relaxed text-ink-2">
+            She sits on the drives the archive lives on. When the record has no answer, she draws one card
+            from the CultCodex deck and reads it against your question and everything ever said on the show.
+          </p>
+          <a
+            href="#divine"
+            className="inline-flex items-center gap-2 rounded-full border border-accent-violet/50 bg-accent-violet/10 px-6 py-2.5 font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text transition-colors hover:bg-accent-violet/20"
+          >
+            ✶ Draw a card
+          </a>
+        </section>
+
         {/* ── Oracle Console ── */}
-        <section>
+        <section id="divine" className="scroll-mt-24">
           <OracleConsole />
           {!canAccess && (
             <p className="mt-3 text-center font-mono text-[12px] text-text-muted uppercase tracking-widest">

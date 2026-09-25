@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "Grep",
+      "Glob",
+      "Write(wiki/concepts/**)",
+      "Edit(wiki/concepts/**)",
+      "Write(wiki/analyses/**)",
+      "Edit(wiki/analyses/**)",
+      "Edit(log.md)",
+      "Bash(date)"
+    ]
+  }
+}

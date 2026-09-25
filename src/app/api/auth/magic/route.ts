@@ -4,6 +4,7 @@ import { Resend } from "resend";
 import crypto from "crypto";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
 import { consumeDailyBudget } from "@/lib/llm-budget";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://cultcodex.me";
@@ -43,10 +44,7 @@ export async function POST(req: NextRequest) {
   // Validate callbackUrl server-side: only allow same-origin relative paths.
   // This prevents open-redirect attacks where an attacker embeds an external
   // URL in the magic link and the user is redirected there post-auth.
-  const safeCallback =
-    callbackUrl && callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")
-      ? callbackUrl
-      : undefined;
+  const safeCallback = safeRedirectPath(callbackUrl, "") || undefined;
 
   if (!email || typeof email !== "string") {
     return NextResponse.json({ error: "Email is required" }, { status: 400 });

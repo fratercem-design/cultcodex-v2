@@ -28,7 +28,9 @@ export function EpisodeTabLayout({ tabs, children, prerender = [] }: EpisodeTabL
   const router = useRouter();
   const pathname = usePathname();
 
-  const activeTab = searchParams.get("tab") ?? tabs[0]?.id ?? "overview";
+  // A shared moment link (?t=) lands on the transcript, where that line is.
+  const momentTab = searchParams.has("t") && tabs.some((t) => t.id === "transcript") ? "transcript" : undefined;
+  const activeTab = searchParams.get("tab") ?? momentTab ?? tabs[0]?.id ?? "overview";
 
   const setTab = useCallback(
     (tabId: string) => {

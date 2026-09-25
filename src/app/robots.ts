@@ -10,6 +10,7 @@ export default function robots(): MetadataRoute.Robots {
     "/settings/",
     "/members/",
     "/red-room/",
+    "/stairwell/",
     "/salon/",
     "/onboarding/",
     "/claim/",

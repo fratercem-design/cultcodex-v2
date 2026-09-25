@@ -619,7 +619,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
               />
             )}
 
-            <RelationshipDossier entries={relationshipDossier} personName={person.displayName} />
+            <RelationshipDossier entries={relationshipDossier} personName={person.displayName} personSlug={person.slug} />
 
             {coAppearances.length > 0 && (
               <SectionCard headingLevel={2} title="Frequently Appears With" accent="gold">

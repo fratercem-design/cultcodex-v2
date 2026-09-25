@@ -1,0 +1,2151 @@
+1
+00:00:10,260 --> 00:00:18,260
+But in the unmoderated corners of the internet lies a broadcasting ecosystem that runs entirely on conflict.
+
+2
+00:00:18,450 --> 00:00:23,450
+In communities like IP2, creators stream for hours on end,
+
+3
+00:00:23,450 --> 00:00:29,450
+relying on a constant cycle of outrage and feuds to keep viewers locked into the feed.
+
+4
+00:00:29,450 --> 00:00:34,450
+Alexandra Mayers has positioned herself at the center of this world.
+
+5
+00:00:34,450 --> 00:00:38,450
+Her public-facing persona is that of a whistleblower,
+
+6
+00:00:38,450 --> 00:00:44,450
+claiming her primary goal is to expose rival creators who she alleges manufacture fake drama
+
+7
+00:00:44,670 --> 00:00:49,070
+to trap people into lucrative, out-of-court financial settlements.
+
+8
+00:00:49,070 --> 00:00:53,570
+But the whistleblower persona often gives way to something more volatile.
+
+9
+00:00:53,570 --> 00:00:57,270
+In the same broadcasts where she condemns toxic behavior,
+
+10
+00:00:57,270 --> 00:01:01,270
+mayors frequently issues her own direct threats of physical harm
+
+11
+00:01:01,270 --> 00:01:04,970
+and public blackmail against those she deems enemies.
+
+12
+00:01:04,970 --> 00:01:07,870
+This dynamic raises a difficult question.
+
+13
+00:01:07,870 --> 00:01:10,870
+In a space with no rules and no oversight,
+
+14
+00:01:10,900 --> 00:01:18,060
+How does a single creator manage to establish and maintain a position of absolute dominance over their peers?
+
+15
+00:01:18,060 --> 00:01:22,740
+Survival in this environment isn't achieved by avoiding the toxicity.
+
+16
+00:01:22,740 --> 00:01:26,780
+Instead, certain figures have learned to weaponize the chaos,
+
+17
+00:01:26,780 --> 00:01:31,380
+using a specific set of behaviors to neutralize everyone else in the room.
+
+18
+00:01:31,380 --> 00:01:37,460
+One of the most frequent methods of intimidation in this space is the constant invocation of the legal system.
+
+19
+00:01:37,470 --> 00:01:41,170
+Mayors routinely accuses rivals, like the creator Beta,
+
+20
+00:01:41,170 --> 00:01:43,970
+of orchestrating elaborate criminal conspiracies
+
+21
+00:01:43,970 --> 00:01:46,970
+designed to extort money through private settlements.
+
+22
+00:01:46,970 --> 00:01:49,870
+She then adopts the same posture she criticizes,
+
+23
+00:01:49,870 --> 00:01:51,970
+warning that anyone who mentions her name
+
+24
+00:01:51,970 --> 00:01:55,170
+will face immediate civil and criminal litigation.
+
+25
+00:01:55,170 --> 00:01:57,970
+This building, the Superior Court of California,
+
+26
+00:01:57,970 --> 00:02:00,270
+is a recurring anchor in her rhetoric.
+
+27
+00:02:00,270 --> 00:02:02,870
+She cites specific laws and active law firms
+
+28
+00:02:02,870 --> 00:02:04,960
+to lend professional legitimacy.
+
+29
+00:02:04,960 --> 00:02:09,600
+She even referenced a lawyer fined for citing fake, AI-generated cases,
+
+30
+00:02:09,600 --> 00:02:12,400
+suggesting her opponents are equally deceptive.
+
+31
+00:02:12,500 --> 00:02:18,000
+The sexual accuracy of the legal claims is often secondary to the weight of the language itself.
+
+32
+00:02:18,000 --> 00:02:21,500
+By flooding the broadcast with specialized terminology,
+
+33
+00:02:21,500 --> 00:02:27,500
+she forces uneducated rivals to choose between silence or the risk of a lawsuit they don't understand.
+
+34
+00:02:27,500 --> 00:02:32,000
+This aggression frequently shifts into a softer, almost parental role.
+
+35
+00:02:32,000 --> 00:02:35,000
+Mayors often rebrand herself as a mediator,
+
+36
+00:02:35,000 --> 00:02:39,360
+a maternal figure stepping in to settle disputes that she claims have gone too far.
+
+37
+00:02:39,360 --> 00:02:44,000
+We saw this when she attempted to broker a truce between the creator's psych and beta.
+
+38
+00:02:44,000 --> 00:02:49,680
+The peace offering was performative, a 12-pack of white claws to signify ending their public feud.
+
+39
+00:02:49,680 --> 00:02:53,280
+However, a leaked backstage chat revealed a different objective.
+
+40
+00:02:53,280 --> 00:02:58,000
+Rather than seeking a neutral resolution, Mayer's was actively coaching the outcome,
+
+41
+00:02:58,000 --> 00:03:02,080
+instructing psych to let beta win for a bit because she appeared to be in distress.
+
+42
+00:03:02,720 --> 00:03:06,800
+This communication shows a desire for control rather than reconciliation.
+
+43
+00:03:06,940 --> 00:03:14,940
+Peace, in this context, is a narrative tool used to position herself as the ultimate arbiter of the community's behavior.
+
+44
+00:03:14,940 --> 00:03:21,940
+When this type of manipulation fails to silence a critic, the response shifts toward total escalation.
+
+45
+00:03:21,940 --> 00:03:25,940
+This was the case in her conflict with a creator known as Clumsy.
+
+46
+00:03:26,220 --> 00:03:32,220
+The breaking point occurred when Clumsy reportedly discussed Mayor's deceased father during a live stream.
+
+47
+00:03:32,220 --> 00:03:41,220
+Her father's legacy is tied to Houston City Hall, where he was a prominent figure in the LGBTQ community and campaigned for the city council.
+
+48
+00:03:41,220 --> 00:03:44,220
+Mayor's reaction was immediate and absolute.
+
+49
+00:03:44,220 --> 00:03:50,220
+She demanded Clumsy stand down and explicitly threatened to have him assaulted and sent back to prison,
+
+50
+00:03:55,660 --> 00:04:00,300
+The rapid oscillation between a helpful mediator and a ruthless aggressor
+
+51
+00:04:00,300 --> 00:04:03,500
+keeps opponents in a state of constant uncertainty,
+
+52
+00:04:03,500 --> 00:04:06,420
+unsure whether they are dealing with a community leader
+
+53
+00:04:06,420 --> 00:04:08,500
+or a genuine threat to their safety.
+
+54
+00:04:08,500 --> 00:04:11,340
+This behavior doesn't happen in isolation.
+
+55
+00:04:11,340 --> 00:04:13,660
+Streamers like Samman NYC
+
+56
+00:04:13,660 --> 00:04:15,980
+watch these broadcasts in real time,
+
+57
+00:04:15,980 --> 00:04:18,460
+pulling their own audiences into the drama.
+
+58
+00:04:18,580 --> 00:04:22,380
+Instead of distancing themselves from threats of violence or doxing,
+
+59
+00:04:22,380 --> 00:04:24,380
+these peers debate the clips,
+
+60
+00:04:24,380 --> 00:04:27,580
+often accusing one another of giving mayors a pass
+
+61
+00:04:27,580 --> 00:04:29,780
+or failing to react strongly enough.
+
+62
+00:04:29,940 --> 00:04:33,780
+The surrounding community has a financial stake in volatility.
+
+63
+00:04:33,780 --> 00:04:36,900
+Aggressive clips are recycled as reaction content,
+
+64
+00:04:36,900 --> 00:04:41,140
+generating outrage to dry engagement and donations to their channels.
+
+65
+00:04:41,140 --> 00:04:43,860
+Because conflict is the primary currency here,
+
+66
+00:04:43,860 --> 00:04:47,700
+everyone is incentivized to ensure no feud is ever resolved.
+
+67
+00:04:47,700 --> 00:04:49,940
+In the deep internet attention economy,
+
+68
+00:04:49,940 --> 00:04:53,620
+the line between performance and real danger has been eroded.
+
+69
+00:04:53,620 --> 00:04:55,940
+As long as the chaos remains profitable,
+
+70
+00:04:56,030 --> 00:05:00,190
+the most volatile actors will continue to set the agenda for everyone else.
+
+71
+00:05:01,020 --> 00:05:03,580
+Oh, yeah. And we want to, we want this con
+
+72
+00:05:03,580 --> 00:05:05,020
+setting the agenda for everyone else.
+
+73
+00:05:05,020 --> 00:05:06,860
+OK, guys, I'm really upset.
+
+74
+00:05:06,860 --> 00:05:09,820
+Actually, my hair is all falling out.
+
+75
+00:05:10,340 --> 00:05:11,580
+My hairline is receding.
+
+76
+00:05:11,580 --> 00:05:13,420
+It's running away from me as we speak.
+
+77
+00:05:13,420 --> 00:05:15,980
+My moles are disappearing.
+
+78
+00:05:15,980 --> 00:05:18,100
+My nose is turning into a witch's nose.
+
+79
+00:05:18,300 --> 00:05:21,980
+Hey, OK, so I challenge all of Zandra Mayer's to a contest.
+
+80
+00:05:22,500 --> 00:05:25,220
+Alex, take off your take off your weave.
+
+81
+00:05:25,970 --> 00:05:29,730
+And then I'll just comb my hair because I don't wear a weave and this is just my natural hair
+
+82
+00:05:29,810 --> 00:05:36,130
+Okay, but to take off your weave and let's do a contest and we'll see who has more hair
+
+83
+00:05:36,810 --> 00:05:39,790
+The only hair
+
+84
+00:05:39,790 --> 00:05:46,410
+Growing on you is the hair growing out of your green pussy lips. Okay, bitch. Okay, let's listen to this. Okay
+
+85
+00:05:46,750 --> 00:05:48,750
+Okay, I don't know if I'm going too far
+
+86
+00:05:49,470 --> 00:05:55,510
+Yeah, but she was chased out of the porn industry because she has green stuff coming out of a vagina and
+
+87
+00:05:56,830 --> 00:05:58,830
+Actually, they chased her off the set
+
+88
+00:05:59,920 --> 00:06:04,280
+The chaser off the set, but no, but I'm evil look look look you see oh my gosh
+
+89
+00:06:04,280 --> 00:06:08,420
+I have a mole. Oh, this is for that the mole brand new as this bring up
+
+90
+00:06:08,420 --> 00:06:12,760
+It's not cuz I just shaved recently and they're my moles don't but no no no no no no
+
+91
+00:06:12,760 --> 00:06:18,960
+Oh, it's cuz I'm possessed by a demon. I'm sorry. I think I know it's disgusting. Yeah, and she probably has AIDS too
+
+92
+00:06:18,960 --> 00:06:22,560
+I mean yes, Patricia Licious's ex ex
+
+93
+00:06:23,400 --> 00:06:25,400
+Who was an opponent should I believe?
+
+94
+00:06:26,050 --> 00:06:29,530
+Got aids from her. I mean, that's all kind of
+
+95
+00:06:30,820 --> 00:06:35,900
+Documenting knowledge now, but oh, oh, oh, I'm gonna shut up. I'm gonna shut up now. Oh
+
+96
+00:06:36,460 --> 00:06:41,620
+Whoops, because you know what she did tonight. She made she made at least three people that I know cry
+
+97
+00:06:42,750 --> 00:06:45,620
+Okay
+
+98
+00:06:45,940 --> 00:06:50,060
+Three of three people close to me cry from what she said
+
+99
+00:06:50,660 --> 00:06:56,440
+You know, I had to say to her I just had to say this is a fucking dumbass fucking ugly
+
+100
+00:06:57,440 --> 00:06:59,040
+cross-eyed
+
+101
+00:06:59,040 --> 00:07:02,080
+Stupid and I gg er
+
+102
+00:07:02,560 --> 00:07:10,960
+Bitch that shit fucking die now. Oh, I'm so sorry. Did I go too far? Oops. I didn't mean to I didn't mean to say that
+
+103
+00:07:10,960 --> 00:07:15,120
+Oh my god, it must be the demons coming out of me. The demons are coming out of me
+
+104
+00:07:15,720 --> 00:07:19,030
+Who cried?
+
+105
+00:07:19,870 --> 00:07:21,840
+Three of my close friends
+
+106
+00:07:21,840 --> 00:07:27,470
+three of my very close friends because they couldn't take what she was saying about me.
+
+107
+00:07:27,470 --> 00:07:36,370
+But you know what? I said, don't cry. Hey, baby, don't cry. This is a disgusting bitch.
+
+108
+00:07:36,370 --> 00:07:39,490
+Okay, so let's go to Kiwi Farms. Should we go to Kiwi Farms?
+
+109
+00:07:40,780 --> 00:07:46,180
+Let's go to Q farms and we'll get to the bottom of this. Okay, cuz this is what she's been afraid of the whole time
+
+110
+00:07:46,180 --> 00:07:52,460
+Oh, I held back. I held back from sharing this. Let's just share it and this is a guy's I am so
+
+111
+00:07:53,260 --> 00:07:55,260
+I'm so
+
+112
+00:07:55,260 --> 00:07:57,660
+Fine, I am absolutely fine
+
+113
+00:07:58,750 --> 00:08:02,730
+Guys don't worry about me and also like I told her earlier tonight
+
+114
+00:08:03,510 --> 00:08:10,580
+My family is well aware what's going on. They said they said well this woman's obviously insane
+
+115
+00:08:11,950 --> 00:08:16,950
+They felt sorry for her because they have hearts. She has no heart. Okay, we're gonna go to Kiwi Farms
+
+116
+00:08:16,950 --> 00:08:20,950
+Let's look up. Let's look up Alexander Milady mayors on Kiwi Farms. How will we do that?
+
+117
+00:08:21,310 --> 00:08:22,110
+Let's do that
+
+118
+00:08:22,110 --> 00:08:25,270
+I'm not gonna show on the screen because I don't want to dox any personal information
+
+119
+00:08:25,910 --> 00:08:29,030
+Because her because if you go there, yeah, you can find her mother's address
+
+120
+00:08:29,030 --> 00:08:33,070
+You can find her sister's address and all kinds of things there. I'm not I'm not gonna go that low
+
+121
+00:08:33,590 --> 00:08:37,870
+Even though she's posting my sister's name address all the kind of things
+
+122
+00:08:38,350 --> 00:08:42,510
+Even though she's doing that to me, I'm not gonna go as low, but I will direct you to the Kiwi Farms.
+
+123
+00:08:42,510 --> 00:08:44,670
+You can look up Alexander Melody Mayors.
+
+124
+00:08:44,670 --> 00:08:46,350
+Let me just look it up right now.
+
+125
+00:08:46,350 --> 00:08:48,030
+Okay, oh, I have to go to Lowel Cowz.
+
+126
+00:08:48,030 --> 00:08:49,710
+I have to go to Lowel Cowz.
+
+127
+00:08:49,710 --> 00:08:52,350
+Yes, then I'll search for Alexander Mayors right there.
+
+128
+00:08:52,990 --> 00:08:53,790
+Okay, perfect.
+
+129
+00:08:55,300 --> 00:08:58,980
+Let's just look up, I'll just read.
+
+130
+00:08:58,980 --> 00:09:00,260
+I'm not gonna make up anything.
+
+131
+00:09:02,130 --> 00:09:03,170
+And RG, you're next.
+
+132
+00:09:06,670 --> 00:09:08,030
+By the way, RG, you're next.
+
+133
+00:09:09,010 --> 00:09:13,770
+And the police are very involved in this at this time, not even the police the FBI
+
+134
+00:09:14,770 --> 00:09:17,290
+Okay, so so Monica Foster. Oh
+
+135
+00:09:18,470 --> 00:09:23,750
+My god, what an ugly picture. Oh my god. I mean imagine the green gush
+
+136
+00:09:24,250 --> 00:09:28,190
+Let's call it. I'll just call her green gusher. I think I think her nickname should be green gusher
+
+137
+00:09:28,190 --> 00:09:32,530
+Let's call a green gusher from now on so Monica Foster a Alexander milley mayors
+
+138
+00:09:33,110 --> 00:09:39,150
+Retired porn actress one of the many people whom Donnie long has been a raging hate boner for
+
+139
+00:09:39,630 --> 00:09:45,630
+Just like other people in the porn industry, Monica is a raving loon herself according to her page on WikiLeaks.
+
+140
+00:09:46,210 --> 00:09:50,410
+She's a fail to just about everything in her life, considering the source of information.
+
+141
+00:09:50,410 --> 00:09:54,210
+It's a bit hard to separate fact from fiction, but I'll provide the run-in anyway.
+
+142
+00:09:54,210 --> 00:09:59,210
+She was born in Washington State to a mother who was a teacher and father who was an engineer.
+
+143
+00:09:59,210 --> 00:10:05,010
+According to the Wiki, Monica's father came out of the closet as gay in 1993 and then ran off.
+
+144
+00:10:05,010 --> 00:10:10,610
+Also, according to the Wiki, Monica was given everything she needed to succeed in life and she still failed.
+
+145
+00:10:15,250 --> 00:10:20,390
+She dropped out of high school, got her GED, went to college at Florida Atlantic University.
+
+146
+00:10:20,390 --> 00:10:23,090
+After one year, she dropped out to be a Miss Tripper.
+
+147
+00:10:23,090 --> 00:10:26,050
+Well, that seems like a great career path, okay?
+
+148
+00:10:26,050 --> 00:10:30,270
+She did it for a few months before quitting because she thought she was better than she was.
+
+149
+00:10:30,270 --> 00:10:32,810
+Oh no, I've seen your poor no monica.
+
+150
+00:10:32,810 --> 00:10:35,610
+It's disgusting. It's disgusting.
+
+151
+00:10:35,820 --> 00:10:39,540
+Okay, she went into porn before retiring after about 35 scenes.
+
+152
+00:10:39,540 --> 00:10:44,620
+That's an incredibly short career, by the way, well because usually in the porn industry
+
+153
+00:10:44,620 --> 00:10:48,740
+they usually let the people do as many scenes as they can do.
+
+154
+00:10:48,740 --> 00:10:54,460
+In her case, they said she's too disgusting of a human being to be in porn.
+
+155
+00:10:54,460 --> 00:10:57,680
+Sorry, not sorry.
+
+156
+00:10:57,680 --> 00:11:01,200
+On average, porn stars usually do a couple hundred scenes through their careers.
+
+157
+00:11:01,200 --> 00:11:03,400
+Well, she's literally a failed porn star.
+
+158
+00:11:03,400 --> 00:11:04,270
+Wow.
+
+159
+00:11:04,270 --> 00:11:11,760
+I mean, I feel porn star, I mean I can be a porn, I can go on fucking on a chatterbait
+
+160
+00:11:11,760 --> 00:11:15,400
+and be a porn star, probably more successful than her too, right?
+
+161
+00:11:15,400 --> 00:11:20,000
+Okay, let's, let's, oh let's say, oh some of her suicide threat, oh wasn't she saying
+
+162
+00:11:20,000 --> 00:11:22,440
+I'm a su, I'm a su, what did this say?
+
+163
+00:11:23,250 --> 00:11:27,330
+Retweet Monica Foster by Kelly Shore Wednesday, 2011
+
+164
+00:11:27,330 --> 00:11:30,470
+This is let's go back some time guys, but she doesn't have a problem showing up
+
+165
+00:11:31,690 --> 00:11:35,570
+LA Times article from 14 years ago where I was
+
+166
+00:11:36,290 --> 00:11:40,970
+Briefly detained and released just put that she makes it sound like I was arrested of that
+
+167
+00:11:42,540 --> 00:11:48,140
+The person in the car had a fake ID or something like that was arrested. I was I was released in the scene
+
+168
+00:11:48,180 --> 00:11:54,020
+But so let's see what it says. It says oh and Monica. Oh, do I care about I'm doing this?
+
+169
+00:11:54,020 --> 00:11:57,500
+Oh, oh, I've been waiting for this moment. I
+
+170
+00:11:58,420 --> 00:12:01,880
+Waited a whole and I have a better voice than your sister
+
+171
+00:12:02,180 --> 00:12:06,500
+Okay, and I'm gonna find your sister and I'm gonna find your mom and they're both of me on the show
+
+172
+00:12:06,620 --> 00:12:11,900
+And they're gonna tell us everything about you. Okay, but I don't want to spoil the plot
+
+173
+00:12:13,230 --> 00:12:19,150
+So, um, Retreat Monica Foster, I do plan on killing whoever is created and maintains
+
+174
+00:12:19,150 --> 00:12:27,150
+up the Owl site, whether I kill you, or what you love most, or just you, it will happen.
+
+175
+00:12:27,660 --> 00:12:31,520
+That's not like witchcraft to me and then she says Monica Foster is not enough
+
+176
+00:12:31,980 --> 00:12:36,220
+Yeah, Kevin Blatt or shy love will hook you up with a rapist
+
+177
+00:12:36,620 --> 00:12:41,540
+Learn about that on Monica thorn.com. That's the longer a good website
+
+178
+00:12:41,540 --> 00:12:43,540
+Then she says if you want AIDS or HIV
+
+179
+00:12:44,060 --> 00:12:46,060
+She's in her poor without using a condom
+
+180
+00:12:46,500 --> 00:12:52,060
+Donald Sione Michael Faith writer and many others will give you that gift. I think she got that gift
+
+181
+00:12:52,910 --> 00:13:00,230
+Sorry, not sorry Monica. You have fucking aides. Okay. Sorry. Not sorry. Okay. Anyway, I'm not Monica not not Alexander
+
+182
+00:13:00,230 --> 00:13:06,710
+I'm not Monica a fictional character. I'm not accusing anything. I'm just I'll say Monica Foster, okay? Take it a step further
+
+183
+00:13:06,710 --> 00:13:11,850
+Oh, you don't want to fuck with me. Oh, you don't want to fuck with me, bitch. Oh, oh
+
+184
+00:13:12,910 --> 00:13:14,910
+You made a mistake
+
+185
+00:13:16,270 --> 00:13:21,830
+I'm gonna fry you. I'm gonna fry you. Oh, we all know oh, I'm gonna sit
+
+186
+00:13:21,830 --> 00:13:26,490
+Oh, do you know that you know the amber age age age age already has charges on you
+
+187
+00:13:26,490 --> 00:13:32,390
+That's why you that's why you're hiding in wherever you're hiding Texas New Mexico, whatever it is. Hey, bitch, okay?
+
+188
+00:13:32,510 --> 00:13:39,190
+You're to fuck with me. Okay. Okay. Okay, okay? Okay? Hey, you're best friend beta. What happened? You're best friend beta
+
+189
+00:13:39,190 --> 00:13:44,810
+Oh, so you don't have a Christine that but Christine aren't you friends of beta? What is really gonna think about Christine?
+
+190
+00:13:45,540 --> 00:13:47,460
+on Monica Foster's side.
+
+191
+00:13:47,460 --> 00:13:51,300
+Okay guys, I want everyone to share this live right now.
+
+192
+00:13:51,300 --> 00:13:54,020
+I'm gonna fucking grill this bitch.
+
+193
+00:13:54,020 --> 00:13:56,200
+Talk about cooking, talk about cooking.
+
+194
+00:13:56,200 --> 00:13:58,820
+I'm gonna read this whole five fucking page
+
+195
+00:13:58,820 --> 00:14:01,260
+Kiwi Farms about her, okay?
+
+196
+00:14:01,260 --> 00:14:04,340
+Alexandra, you might sound like Oprah,
+
+197
+00:14:04,340 --> 00:14:05,580
+but you're fucking done.
+
+198
+00:14:05,580 --> 00:14:07,420
+And everyone in my family knows about you
+
+199
+00:14:07,420 --> 00:14:09,140
+and we are ready to press charges.
+
+200
+00:14:09,140 --> 00:14:11,020
+So try me bitch, okay?
+
+201
+00:14:11,540 --> 00:14:13,700
+Well, let's take it a step further, she says.
+
+202
+00:14:13,700 --> 00:14:15,580
+Et la, la, la, la, la, la, la, la, la.
+
+203
+00:14:15,580 --> 00:14:17,860
+Don't you know the point, losers?
+
+204
+00:14:17,860 --> 00:14:19,660
+What are you really dealing with in this end?
+
+205
+00:14:19,660 --> 00:14:21,420
+What, are we dealing with Satan?
+
+206
+00:14:21,420 --> 00:14:22,940
+What are we dealing with?
+
+207
+00:14:22,940 --> 00:14:26,180
+Are we dealing with a green gusher of a vagina
+
+208
+00:14:26,180 --> 00:14:27,020
+that you have?
+
+209
+00:14:27,020 --> 00:14:28,900
+Oh, that's probably it, right?
+
+210
+00:14:28,900 --> 00:14:30,860
+So the sense, sooner the better.
+
+211
+00:14:31,090 --> 00:14:37,790
+I'll play. I'll post this image. Here we go. Monica Foster. This is a fictional character. This is not a real character.
+
+212
+00:14:37,790 --> 00:14:44,770
+Oh, oh, Alexandra. I'm so sorry. I'm so sorry.
+
+213
+00:14:44,980 --> 00:14:49,420
+Hey, I tried to prevent this as much as I could.
+
+214
+00:14:49,420 --> 00:14:51,340
+You are cooked.
+
+215
+00:14:51,340 --> 00:14:53,380
+You are cooked, Alexandra.
+
+216
+00:14:53,380 --> 00:14:56,940
+I'm so sorry to see my mole and my hair all falling out.
+
+217
+00:14:56,940 --> 00:14:58,460
+I must be turning into a witch.
+
+218
+00:14:58,460 --> 00:15:00,540
+Oh my God, well, that meant to be her.
+
+219
+00:15:00,540 --> 00:15:02,100
+Okay, well, let's just look at it.
+
+220
+00:15:02,100 --> 00:15:04,660
+Here's the image file of this, okay?
+
+221
+00:15:04,660 --> 00:15:05,980
+Ready to see?
+
+222
+00:15:05,980 --> 00:15:06,820
+I'll share everything.
+
+223
+00:15:06,820 --> 00:15:07,780
+Here we go.
+
+224
+00:15:07,780 --> 00:15:09,460
+Okay, what does it say?
+
+225
+00:15:09,460 --> 00:15:11,540
+Monica, oh, these are her tweets.
+
+226
+00:15:11,710 --> 00:15:19,650
+Okay, so she says she I think she's admitting that she has AIDS that she got it from Michael fatty writer or some many others
+
+227
+00:15:19,650 --> 00:15:21,650
+I don't know how many people she fucked
+
+228
+00:15:21,790 --> 00:15:23,510
+Take it a step further
+
+229
+00:15:23,510 --> 00:15:29,310
+We don't know at this point loser what you really dealing with what we're dealing with a fucking AIDS ridden whore
+
+230
+00:15:29,310 --> 00:15:31,590
+I guess right the sooner the better
+
+231
+00:15:31,590 --> 00:15:36,070
+I always had to make condoms mandatory and born because I was ticket the disease small pricks
+
+232
+00:15:36,430 --> 00:15:40,500
+Don't make me
+
+233
+00:15:40,500 --> 00:15:44,100
+Guys, you can go to Pornhub, search Monica Foster,
+
+234
+00:15:44,100 --> 00:15:47,260
+if you wanna lose your erection, okay?
+
+235
+00:15:47,260 --> 00:15:49,260
+You're gonna see a green gusher.
+
+236
+00:15:49,260 --> 00:15:53,980
+You're gonna see an insecure, sad woman
+
+237
+00:15:53,980 --> 00:15:56,620
+named Monica Foster, a.k.a.
+
+238
+00:15:56,620 --> 00:15:59,260
+Alexandra Mayers, a.k.a.
+
+239
+00:15:59,260 --> 00:16:00,820
+Stupid Cunt.
+
+240
+00:16:00,820 --> 00:16:02,580
+Okay, oh, am I going too far?
+
+241
+00:16:02,580 --> 00:16:03,250
+Oops.
+
+242
+00:16:03,250 --> 00:16:09,690
+Okay. Oh, let's see these next tweets. Oh, she doesn't make death threats. She doesn't do suicide
+
+243
+00:16:10,090 --> 00:16:16,530
+Bating or coercion. No, she doesn't she just wants to say that I do it, right? Okay. Let's pull it up
+
+244
+00:16:17,260 --> 00:16:21,860
+Hey, hey, hey, hey game on bitch game on bitch. I've been waiting
+
+245
+00:16:21,860 --> 00:16:27,380
+I've been this is better than a sister saying in America now her sister sucks and singing but but I
+
+246
+00:16:28,300 --> 00:16:39,660
+Waited for a lifetime for a moment like this Monica Foster. You're so fucked. I got you now bitch
+
+247
+00:16:42,610 --> 00:16:48,250
+Oh my family think you're disgusting by the way, and you'll be really being sued by the way, but what does this tweet say oh?
+
+248
+00:16:49,410 --> 00:16:55,550
+If you have anything to do with this, I'll personally kill you because I don't trust you. Okay. That's Monica Foster. Oh, let's share all of them
+
+249
+00:16:55,550 --> 00:17:02,410
+Oh, oh Monica Foster. You're so fucking screwed. Oh, go ahead Monica foster
+
+250
+00:17:02,410 --> 00:17:09,690
+What what do we said? What do we say the Evan said? I have a tapeworm. I killed my cats. I'm a demon. I'm a werewolf
+
+251
+00:17:10,300 --> 00:17:12,480
+What else do you have to say, Monica Foster?
+
+252
+00:17:12,480 --> 00:17:15,760
+We can look at those little ear tweets.
+
+253
+00:17:15,760 --> 00:17:17,400
+I don't have to do anything, okay?
+
+254
+00:17:17,400 --> 00:17:20,000
+I know it's disgusting, it's disgusting.
+
+255
+00:17:20,000 --> 00:17:22,880
+Guys, guys, you better get your barf bag out
+
+256
+00:17:22,880 --> 00:17:24,440
+to deal with this woman.
+
+257
+00:17:24,440 --> 00:17:27,320
+Okay, she's gonna personally kill people, okay?
+
+258
+00:17:27,320 --> 00:17:28,520
+Let's see what else she has to say.
+
+259
+00:17:28,520 --> 00:17:29,880
+I can't show my face too much
+
+260
+00:17:29,880 --> 00:17:32,240
+because I'm so embarrassed I'm bringing you a demon.
+
+261
+00:17:32,240 --> 00:17:34,360
+Okay, what else does she has to say?
+
+262
+00:17:35,570 --> 00:17:43,410
+Regardless of whether I get support from others or not, the fucking Nazis, Shelly Lou Banner, aka Shelly Moore, and Rick Fitzgimmons are done
+
+263
+00:17:43,410 --> 00:17:49,990
+Okay, I don't really know what that means. Let's see what else Monica Foster has to say. I'm down to read all of this like QE Farms tonight
+
+264
+00:17:51,480 --> 00:17:58,760
+Guys, please share this live. Share this live. Tag it Alexander Mayers. Please. Please do this
+
+265
+00:17:59,660 --> 00:18:01,560
+Okay
+
+266
+00:18:01,560 --> 00:18:03,560
+Paper to me. What does this one say?
+
+267
+00:18:04,080 --> 00:18:11,720
+I can barely see it. It says I'm done. I wish I was dead because I have no options left. I can't handle this
+
+268
+00:18:12,610 --> 00:18:19,870
+That this to me. I feel like throwing up and I wish that whoever wants to LOL or kill me
+
+269
+00:18:20,450 --> 00:18:25,930
+We'll just do it and get over with fucking cowards. So you're suicide baiting, okay?
+
+270
+00:18:25,930 --> 00:18:30,330
+I don't know what to do. I embarrass my family and put them in danger
+
+271
+00:18:30,890 --> 00:18:34,570
+And I'm being terrorized by whoever Donnie Long is going to do
+
+272
+00:18:35,210 --> 00:18:39,190
+Help I hope that anyone who knows who runs that fucking
+
+273
+00:18:39,740 --> 00:18:42,160
+Uh, I can't read that word.
+
+274
+00:18:42,160 --> 00:18:45,040
+Derrickson, Kara, I don't get it,
+
+275
+00:18:45,040 --> 00:18:48,800
+uh, bored and don't speak up goes to hell because of this way.
+
+276
+00:18:48,800 --> 00:18:51,320
+Well, she said, she said, she did say I'm,
+
+277
+00:18:51,320 --> 00:18:54,440
+this is Monica Foster, by the way, uh, fictional character.
+
+278
+00:18:54,440 --> 00:18:56,440
+This is all, this is all a Minecraft guys.
+
+279
+00:18:56,440 --> 00:19:00,560
+But she did say that I would never kill myself because, um,
+
+280
+00:19:00,560 --> 00:19:02,060
+I'm going to hell anyway.
+
+281
+00:19:02,060 --> 00:19:03,560
+So she's an alcoholic.
+
+282
+00:19:03,710 --> 00:19:09,230
+he's usually seen drinking during her camp shows yep we could all we could all know this right
+
+283
+00:19:09,230 --> 00:19:14,190
+her wiki page mentions one incident in particular in which foster appeared to be drinking an
+
+284
+00:19:14,190 --> 00:19:19,070
+excessive amount of red wine she appeared to be making crazy violent movements and looked
+
+285
+00:19:19,070 --> 00:19:24,110
+haggard at one point of the show it looked as if she was attempting to eat a house plant
+
+286
+00:19:24,750 --> 00:19:29,550
+viewers of her live broadcast also reported foster making strange comments here are some
+
+287
+00:19:33,250 --> 00:19:36,510
+She says she's the biggest black female porn star out there today
+
+288
+00:19:36,510 --> 00:19:42,550
+Well, she's the biggest AIDS AIDS case and SD case that no one was asleep with but it was she tell the porn industry
+
+289
+00:19:42,550 --> 00:19:48,770
+But that's that's besides the point Tori black is not fresh anymore. Well, she's a story black is not fresh
+
+290
+00:19:48,770 --> 00:19:51,510
+I mean look at your rotten pussy
+
+291
+00:19:51,970 --> 00:19:59,450
+T-Reel doesn't help the sisters. She's the most well-connected star out there with websites and cam shows. Oh my god
+
+292
+00:19:59,450 --> 00:20:04,710
+I feel sorry for anybody who watches those. She's too good-looking. I don't know. She's a wonky-eyed
+
+293
+00:20:05,290 --> 00:20:13,730
+NIGGR. I'm sorry, not sorry. And Bill Clinton is a black man. Drinking alone as falsehood as occasion or constantly is one of the
+
+294
+00:20:13,730 --> 00:20:15,730
+warnings that alcoholism, okay?
+
+295
+00:20:15,970 --> 00:20:16,960
+Yeah
+
+296
+00:20:16,960 --> 00:20:21,360
+I mean, I have cats. I dream of my cats. Where's her cats? I don't know. Oh, she doesn't have cats. That's right
+
+297
+00:20:21,360 --> 00:20:25,740
+She's like animals. Oh, but she's worried about my cats. Okay. We'll continue on
+
+298
+00:20:26,260 --> 00:20:32,880
+So we have some more screen caps in question and they are now taken down because they're probably too disturbing
+
+299
+00:20:33,440 --> 00:20:38,840
+And I'm not going to look at her porn videos because I'm going to throw up as Donnie along has a raging hate boner for her
+
+300
+00:20:38,840 --> 00:20:43,640
+She seems to have one for him. She posts about him regularly on our website porn news today
+
+301
+00:20:43,640 --> 00:20:50,000
+She makes plans of which may or may not be true and overall seems to be bitter about him as he is about her as
+
+302
+00:20:50,440 --> 00:20:53,840
+Detail as Donnie's thread. He's apparently because he leaves a date
+
+303
+00:20:54,040 --> 00:21:00,680
+She dumped him for a black man who may or not have been beaten and raped him. Okay? Wow
+
+304
+00:21:01,600 --> 00:21:03,280
+Whoa
+
+305
+00:21:03,280 --> 00:21:07,320
+Okay, someone get up the fuck up here. Someone get up there get up here now
+
+306
+00:21:07,880 --> 00:21:13,700
+Hey, I'm falling in love Tom. Yeah, I know think that is oh my god
+
+307
+00:21:13,700 --> 00:21:16,100
+Do you know she's writing to you too by the way, right?
+
+308
+00:21:16,100 --> 00:21:21,500
+You know she's writing to you your life actually that she was gonna kill you think it is you didn't hear that part
+
+309
+00:21:21,500 --> 00:21:25,340
+Okay, I had to go back to her lives. She's still like it's still up there. Okay
+
+310
+00:21:26,020 --> 00:21:27,740
+Well, there she is
+
+311
+00:21:27,740 --> 00:21:31,900
+It's Monica Foster. Okay, you know, okay, you know, she you know, she did okay
+
+312
+00:21:32,300 --> 00:21:34,580
+Well, if anyone cares about things that is I would say
+
+313
+00:21:35,250 --> 00:21:40,200
+Maybe you stick up for a thing that is I will and then it says at some point in the show
+
+314
+00:21:40,200 --> 00:21:45,000
+Look, she's eating a paid cows plant. What I guess she was eating wheat grass or something. I'll give her that
+
+315
+00:21:45,000 --> 00:21:50,680
+Okay wheat grass. Okay wheat grass gonna be good for somebody. It's a long term or short career. What does she do now?
+
+316
+00:21:51,040 --> 00:21:54,520
+Well, she just bothers a bunch of streamers on the panel verse
+
+317
+00:21:54,600 --> 00:21:58,640
+She got drunk thought they were rolling and end up being the wrong bush. Oopsie
+
+318
+00:21:59,360 --> 00:22:02,770
+That was a good one. I have to say
+
+319
+00:22:02,770 --> 00:22:07,720
+She ate the wrong bush. Hey, and you fuck with the wrong bitch
+
+320
+00:22:09,870 --> 00:22:14,190
+Anyway, the wrong bush. Oopie. Guys, I need everyone here right now.
+
+321
+00:22:14,900 --> 00:22:21,380
+This is really 11 people. I need everyone to share the live right now. I'm doing a full expose. I'm gonna read the little QE Farms article
+
+322
+00:22:21,380 --> 00:22:27,820
+I need 20 people in here before I do that. Otherwise, I thank you so much. Otherwise, I'm gonna, I'll tell you my
+
+323
+00:22:27,820 --> 00:22:31,940
+She's in my werewolf video. She said I'm a werewolf. I know I know I'm so sorry
+
+324
+00:22:31,940 --> 00:22:34,780
+I have a little beauty mark right there. I know I'm turning you into a
+
+325
+00:22:35,260 --> 00:22:39,220
+Yes, she did ask me to follow her child. She said will I please follow her child?
+
+326
+00:22:39,220 --> 00:22:43,180
+She would like to send the a private car over and get my
+
+327
+00:22:43,950 --> 00:22:48,750
+Put my sperm in a bank for her. She would love to my child. She said she's got good genetics
+
+328
+00:22:48,750 --> 00:22:53,310
+Even though she told my mom a wish now and all kinds of things. Yes, she did ask some mother of my child
+
+329
+00:22:53,820 --> 00:22:58,340
+Okay, and she said she would give I wouldn't be responsible at all for it
+
+330
+00:22:58,580 --> 00:23:03,640
+Maybe I was dumb enough to agree with it, but thankfully I was on look I was not dumb enough to give him my sperm
+
+331
+00:23:03,840 --> 00:23:05,940
+Okay, so let me just get give me a minute
+
+332
+00:23:05,940 --> 00:23:10,220
+I need all of you to share the live and I'm gonna play the werewolf video
+
+333
+00:23:10,220 --> 00:23:14,720
+She is in the werewolf video and I don't care if my channels take it now because of this because
+
+334
+00:23:15,100 --> 00:23:22,000
+What the fuck ever I'll go on fuck it. I know death threats it I'll go on tiktok. Go fuck with me on tiktok bitch, okay?
+
+335
+00:23:22,740 --> 00:23:29,780
+You're such a stupid cunt and you're gonna be sued to the fucking Brinks and I have the codex too
+
+336
+00:23:29,780 --> 00:23:31,780
+Oh, we have a guest coming up
+
+337
+00:23:31,910 --> 00:23:36,570
+Let's welcome the show
+
+338
+00:23:36,810 --> 00:23:40,380
+BG I don't know if I want to talk to BG
+
+339
+00:23:40,880 --> 00:23:45,870
+I'm just gonna kick him out of the studio. I don't feel like talking to him right now. Get out of here nigger
+
+340
+00:23:46,510 --> 00:23:49,690
+Okay, anyway, okay, so let's read some more
+
+341
+00:23:50,540 --> 00:23:56,980
+Okay, so way short, Donnie Longclaves would have done over 1,000 films, the average is
+
+342
+00:23:56,980 --> 00:24:01,380
+somewhere in the hundreds, the ops seems to be working in progress, I'm still digging.
+
+343
+00:24:01,380 --> 00:24:05,940
+As far as I know she runs a blog called Poor News Today, whether she makes money from that
+
+344
+00:24:05,940 --> 00:24:09,220
+or not, well she doesn't make any money from that, it was like a Tumblr blog, right?
+
+345
+00:24:09,680 --> 00:24:17,440
+You don't know. After quitting porn, she became a cam model for a while, but then she probably got no business because she's disgusting, and it doesn't do it anymore.
+
+346
+00:24:17,440 --> 00:24:21,680
+At one point, she apparently for her husband, boyfriend over Twitter, because she had to move.
+
+347
+00:24:21,680 --> 00:24:26,080
+Again, still working on the OP. I don't know what OP stands for.
+
+348
+00:24:26,190 --> 00:24:30,670
+some spoiler news in the OP would unite I don't want to see her I don't want to see her pussy again
+
+349
+00:24:30,670 --> 00:24:35,390
+it's gonna be me throw up right now I had a little bit of a trick. Maka Fosher is more of a never was
+
+350
+00:24:35,390 --> 00:24:40,910
+than it has been among the porn chicks her main claim to fame in the porn biz was that she started
+
+351
+00:24:40,910 --> 00:24:45,470
+the porn version of the Cosby show yes she played the Felicia Rashad role that film was
+
+352
+00:24:45,470 --> 00:24:50,030
+seemingly requires me five people really six people but the most of the people threw up and
+
+353
+00:24:53,470 --> 00:24:58,110
+Okay, all these porn cows are incredibly unremarkable, looking for people who are
+
+354
+00:24:58,110 --> 00:25:01,390
+supposed to be attractive bodies to masturbate over.
+
+355
+00:25:01,390 --> 00:25:05,470
+She looks very drunk, even her porn pictures, and that's depressing.
+
+356
+00:25:05,470 --> 00:25:08,590
+She's not a new drunk. She's been doing this for a long while. You can see in her
+
+357
+00:25:08,590 --> 00:25:11,790
+eyes. Yeah, she has that wonky eye, that alcoholic eye, right?
+
+358
+00:25:11,790 --> 00:25:14,700
+We can all see it. We can all see it.
+
+359
+00:25:14,700 --> 00:25:20,700
+Sluttyness is what makes porn star attractive and what makes porn star attractive is, well, she's a slut too.
+
+360
+00:25:20,700 --> 00:25:23,700
+Giving her her own thread is kind of reaching.
+
+361
+00:25:23,700 --> 00:25:28,700
+They're saying she's not even worth the thread. She's so insignificant.
+
+362
+00:25:28,700 --> 00:25:34,700
+Unless you find evidence examples of chimpouts, this is a sex worker with potential substance abuse problems.
+
+363
+00:25:34,700 --> 00:25:41,700
+It's entirely unremarkable. The only reason you're honing in on her is because Donnie keeps screaming her name.
+
+364
+00:25:42,290 --> 00:25:47,890
+I got a call that's kind of pathetic, dude. I think that's probably her. It's D.A.C.O.T.E. on QE Farms.
+
+365
+00:25:47,890 --> 00:25:54,490
+You can talk to the D.A.C.O.T.E. ask him what he meant. And it goes, then this red balloon person, autistic dragon kin.
+
+366
+00:25:54,490 --> 00:26:01,790
+I actually think it's likely a porn star is a less attractive than the average person because the more attractive people will have other options available to them.
+
+367
+00:26:01,790 --> 00:26:08,490
+Wow, isn't that, isn't that a wow eye opener? I thought she was Felicia Rashad. I thought she was Oprah.
+
+368
+00:26:08,610 --> 00:26:14,330
+No, she's just a failed porn star if you fail. I mean I can be a failed whatever
+
+369
+00:26:15,050 --> 00:26:21,650
+I'm not a failed porn star. I mean that's just really sad. This is kind of cat grass. Maybe she had a hairball
+
+370
+00:26:22,730 --> 00:26:27,770
+Possibly, but she's not enough cat energy for that. She's more of a dog energy more of like a
+
+371
+00:26:29,290 --> 00:26:31,290
+Retarded pit bull I would say
+
+372
+00:26:31,620 --> 00:26:37,060
+There's plenty of new dinner at Xvideos page. You can go to Xvideos. Look at Monica Foster. Please do it all you can.
+
+373
+00:26:38,180 --> 00:26:44,740
+Share it around to make people sick. This is the first time I've seen news in a thread. Oh, this person liked your news. Okay
+
+374
+00:26:45,700 --> 00:26:47,700
+That's a weak grasp in the picture. Okay
+
+375
+00:26:48,110 --> 00:27:02,320
+The account name, oh, she, she, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she, um, she
+
+376
+00:27:02,320 --> 00:27:05,200
+No clue at this point. I was online when she said that.
+
+377
+00:27:05,200 --> 00:27:08,240
+A sad cow, in my humble opinion, someone says,
+
+378
+00:27:08,240 --> 00:27:13,680
+just in their deeply troubled person, chewed up and spit out by the adult film biz.
+
+379
+00:27:13,680 --> 00:27:18,480
+As much as an obvious asshole is dying along, as I kind of feel the same way about him as well.
+
+380
+00:27:18,480 --> 00:27:23,200
+Okay, bumping her, bumping because the almighty straight male
+
+381
+00:27:23,200 --> 00:27:28,000
+porn guard long said, I can't deny any request from someone so straight and it should be negative.
+
+382
+00:27:31,410 --> 00:27:35,240
+Okay, we went through page one the puttas their favorite part
+
+383
+00:27:35,740 --> 00:27:42,310
+It's fine at least they're apart. I'm so sorry guys. You can see my I have a huge disgusting mole right there
+
+384
+00:27:42,310 --> 00:27:44,090
+I'm turning into a
+
+385
+00:27:44,090 --> 00:27:46,020
+vampire witch
+
+386
+00:27:46,020 --> 00:27:48,020
+Okay, I'm 45 years old and
+
+387
+00:27:48,860 --> 00:27:56,900
+Ball game. I mean I'm a mess a mess, but have her take off her wig Donnie long is not in prison
+
+388
+00:27:57,900 --> 00:28:03,480
+Well, she would be in prison. He went to finishing school. Someone come up beside BG. I don't feel like talking to that n-word
+
+389
+00:28:03,960 --> 00:28:07,820
+Okay, and you want to come up and share their Monica Foster experiences?
+
+390
+00:28:08,080 --> 00:28:14,260
+This is a Monica Foster stream since she does she did three streams about me today. Okay
+
+391
+00:28:14,820 --> 00:28:20,220
+Doxing my family saying I have a tapeworm saying I killed my cats. Okay
+
+392
+00:28:20,800 --> 00:28:26,940
+Fair's fair. She said well, you know, don't don't talk about me unless you unless I you know, you're responding
+
+393
+00:28:26,940 --> 00:28:32,900
+I'm just responding. I'm responding to her three shrooms today. I do a super matter today. I'm responding to her three shrooms today
+
+394
+00:28:33,460 --> 00:28:39,840
+I'm so sorry guys. I do I know I know me hideous. I know me hideous, but my porn star
+
+395
+00:28:40,080 --> 00:28:45,800
+I'm just a dude. I mean aren't guys supposed to be a kind of ugly. I don't know
+
+396
+00:28:46,140 --> 00:28:50,140
+I don't think I'm that bad. I'm not as ugly as her. That's for sure
+
+397
+00:28:51,120 --> 00:29:05,580
+You know what? And my spirit is majestic compared to her ugly, trollish, midget, doorfish, disgusting spirit.
+
+398
+00:29:05,580 --> 00:29:08,580
+Hey guys, I need 20 people in the chat before I continue.
+
+399
+00:29:09,580 --> 00:29:18,060
+Everyone tell your friends. Somebody come up here? Anybody feel like coming up? Am I going too far? Did I say too much?
+
+400
+00:29:20,300 --> 00:29:26,920
+Can we call her just green gusher from now on? Can that be a new nickname? She calls me aka, you know, my name
+
+401
+00:29:26,920 --> 00:29:28,920
+I can call her green gusher
+
+402
+00:29:29,360 --> 00:29:34,520
+Okay, if you want to hear an orgasm it looks like you know
+
+403
+00:29:35,630 --> 00:29:38,250
+Green gushers are coming out of her pussy
+
+404
+00:29:39,590 --> 00:29:41,230
+Sorry, not sorry
+
+405
+00:29:41,230 --> 00:29:49,810
+The baby's journey. There'll be no baby. I gave no come to her
+
+406
+00:29:50,510 --> 00:29:55,210
+Tom, I'll talk to Tom. I'll talk to anybody. I'll talk to Chris Lann. I'll talk to
+
+407
+00:29:55,770 --> 00:30:00,730
+Gamble. I don't want to talk to Brandon Q, but you know she loves Brandon Q
+
+408
+00:30:01,370 --> 00:30:07,030
+That's who she wants. This is the father of a baby. She wants a Latino. She wants some of that Latino
+
+409
+00:30:07,530 --> 00:30:14,810
+So until you have 20 people and until somebody comes on the panel, I will not be continuing
+
+410
+00:30:14,970 --> 00:30:18,790
+I'll sit here and I will play my viral video. I don't care if you leave
+
+411
+00:30:19,430 --> 00:30:21,630
+Tell your friends guys
+
+412
+00:30:21,630 --> 00:30:27,630
+Guys when I see a crash out when I see I do I give a fucking anymore if I'm on YouTube and ever again. No
+
+413
+00:30:28,270 --> 00:30:30,270
+Because she did too much. I
+
+414
+00:30:30,990 --> 00:30:37,060
+Listen, I protected this green gusher of a bio human being I protected her
+
+415
+00:30:37,830 --> 00:30:40,020
+tried to
+
+416
+00:30:40,020 --> 00:30:45,250
+From everybody from everybody. I know I'm dumb
+
+417
+00:30:45,810 --> 00:30:51,130
+I'm gonna post my link again and BG you're just not welcome. So just stay the fuck away from me
+
+418
+00:30:52,400 --> 00:30:56,740
+She said she's half Asian. Well, I don't think so. I think her dad's black. I don't think her mom was black
+
+419
+00:30:57,300 --> 00:31:03,200
+There's a lot of white in there because our sister on American Idol. I'll play that later
+
+420
+00:31:04,270 --> 00:31:06,470
+Can't sing with the shit. No, they're can she
+
+421
+00:31:08,910 --> 00:31:13,630
+I waited a lifetime for a moment like this
+
+422
+00:31:15,120 --> 00:31:20,720
+Sorry, I'm sorry. I mean because of ugly. I'll be right back. I'm gonna play my I'm gonna play my world video
+
+423
+00:31:21,360 --> 00:31:24,760
+Guys, I need you all to share the video guys spread the word
+
+424
+00:31:27,220 --> 00:31:31,300
+I'm I'm gonna I'm I'm fucking I'm done
+
+425
+00:31:31,940 --> 00:31:41,170
+This bitch is done. I held back so much and it's all gonna come gushing out in a green
+
+426
+00:31:41,810 --> 00:31:43,170
+slimy
+
+427
+00:31:43,170 --> 00:31:45,460
+stream
+
+428
+00:32:11,920 --> 00:32:20,920
+One small secret underneath my tiny hat. I'm a moon-blessed fairy tale and I'm magical at that
+
+429
+00:32:23,280 --> 00:32:25,980
+Find the chillies where the enchanted freeway ends
+
+430
+00:32:25,980 --> 00:32:29,080
+With the bird-certificating glitteroons
+
+431
+00:32:29,080 --> 00:32:38,850
+And moths as legal friends
+
+432
+00:32:38,850 --> 00:32:44,160
+Message till the sun itself comes out
+
+433
+00:32:44,160 --> 00:32:46,260
+If you tax me okay with the period
+
+434
+00:32:46,260 --> 00:32:48,060
+I'll assume our friendship's through
+
+435
+00:32:48,060 --> 00:32:49,960
+Then I'll howl into the forest
+
+436
+00:32:49,960 --> 00:32:53,060
+What did that punctuation do?
+
+437
+00:32:53,060 --> 00:32:57,540
+Sacred candle flickered
+
+438
+00:32:57,540 --> 00:32:59,140
+The lacroix hit the floor
+
+439
+00:32:59,140 --> 00:33:02,540
+Our emotional support possum
+
+440
+00:33:02,540 --> 00:33:04,640
+Said I can't do this!
+
+441
+00:33:07,820 --> 00:33:37,820
+What she did says he's our treasurer, but everybody knows the truth
+
+442
+00:33:54,420 --> 00:33:59,260
+He's an ageless forest oracle in business casual youth during rituals
+
+443
+00:33:59,260 --> 00:34:05,540
+He raises one immortal hand and says circle back next quarter to the existential dread
+
+444
+00:34:05,860 --> 00:34:25,940
+Has chosen and vanished in a
+
+445
+00:34:27,580 --> 00:34:57,580
+Chanel bless, but she did chicken and tissue the brunch incident
+
+446
+00:35:22,580 --> 00:35:25,460
+We signed the napkin. We took the oath
+
+447
+00:35:34,220 --> 00:35:54,750
+bring force to the vibes
+
+448
+00:35:54,750 --> 00:35:56,520
+hit author
+
+449
+00:35:56,520 --> 00:36:24,660
+package and mac
+
+450
+00:36:24,660 --> 00:36:40,250
+dim tool
+
+451
+00:36:40,250 --> 00:36:49,960
+it's gentle grace
+
+452
+00:36:49,960 --> 00:36:55,900
+it's the mile of your work
+
+453
+00:36:55,900 --> 00:37:21,930
+I'm gonna speed out of your attention
+
+454
+00:37:21,930 --> 00:37:23,930
+I'll show my speed to 20 viewers
+
+455
+00:37:23,930 --> 00:37:27,880
+at 30 viewers I'll tw-
+
+456
+00:37:27,880 --> 00:37:28,880
+I'm not doing it until 20
+
+457
+00:37:28,880 --> 00:37:34,940
+I am in the speedo
+
+458
+00:37:34,940 --> 00:37:37,450
+I don't care
+
+459
+00:37:37,450 --> 00:37:40,440
+I need 20 people in here though
+
+460
+00:37:40,440 --> 00:37:43,440
+guys this will be such good confidence
+
+461
+00:37:43,440 --> 00:37:45,440
+numbers are going down
+
+462
+00:37:45,440 --> 00:37:53,100
+I don't understand
+
+463
+00:37:55,250 --> 00:37:57,250
+at the end of the day
+
+464
+00:37:57,250 --> 00:37:58,250
+and then
+
+465
+00:37:58,250 --> 00:37:59,310
+ahhh
+
+466
+00:37:59,310 --> 00:38:00,310
+it's a demon
+
+467
+00:38:00,310 --> 00:38:01,310
+at the end of the day
+
+468
+00:38:01,310 --> 00:38:02,310
+you know
+
+469
+00:38:02,310 --> 00:38:04,410
+you don't want to crash out
+
+470
+00:38:04,410 --> 00:38:06,630
+you're little pussies
+
+471
+00:38:06,630 --> 00:38:08,630
+you're fucking pussies
+
+472
+00:38:08,630 --> 00:38:10,700
+you don't want to see it
+
+473
+00:38:10,700 --> 00:38:13,430
+oh you're so lame
+
+474
+00:38:13,430 --> 00:38:15,430
+you're so lame
+
+475
+00:38:15,430 --> 00:38:16,430
+you're niggers
+
+476
+00:38:16,430 --> 00:38:20,900
+sorry
+
+477
+00:38:20,900 --> 00:38:21,900
+you don't want to see it
+
+478
+00:38:21,900 --> 00:38:22,900
+oh yeah
+
+479
+00:38:22,900 --> 00:38:23,900
+the numbers go down
+
+480
+00:38:23,900 --> 00:38:24,900
+when I get to 10
+
+481
+00:38:24,900 --> 00:38:25,900
+I'm just gonna end the stream
+
+482
+00:38:25,900 --> 00:38:27,900
+you'll never see me again
+
+483
+00:38:29,200 --> 00:38:33,840
+You better share the stream. Okay, 13. Okay. Okay. It's going down if you don't yeah
+
+484
+00:38:34,540 --> 00:38:36,540
+You don't share the stream right now
+
+485
+00:38:38,190 --> 00:38:40,190
+It'll just be legendary
+
+486
+00:38:40,190 --> 00:38:43,900
+In fact that there are people in there. It could have helped
+
+487
+00:38:44,340 --> 00:38:46,340
+They could have had it all revealed
+
+488
+00:38:46,500 --> 00:38:59,530
+All of it you could have had all revealed you could have you could have you're just so stupid and words
+
+489
+00:39:00,130 --> 00:39:03,940
+You couldn't take it. You can take the content papas
+
+490
+00:39:04,850 --> 00:39:06,850
+You want to say this?
+
+491
+00:39:19,100 --> 00:39:22,100
+I just see the numbers falling and I just think
+
+492
+00:39:23,640 --> 00:39:26,700
+Most of the people that are watching me are just a bunch of stupid niggers
+
+493
+00:39:27,400 --> 00:39:34,480
+That's all I could think of
+
+494
+00:39:34,480 --> 00:39:36,350
+That's true
+
+495
+00:39:36,350 --> 00:39:39,570
+That's true. We're gonna be to 20 20 viewers. No, no
+
+496
+00:39:40,270 --> 00:39:41,490
+Okay
+
+497
+00:39:41,490 --> 00:39:46,630
+Hey, oh wow, you're gonna watch me crash out. I possibly would have unalived myself on the stream
+
+498
+00:39:47,270 --> 00:39:48,590
+but uh
+
+499
+00:39:48,590 --> 00:39:54,460
+Guess you don't even want that you don't see Chris Lane cry you want to see whatever
+
+500
+00:39:54,980 --> 00:40:00,650
+You might be. I'm not gonna use things. I'm talking to
+
+501
+00:40:01,290 --> 00:40:06,540
+The thing is you're a friend you're a mod in the chat. I was wondering did you share who shares alive?
+
+502
+00:40:06,540 --> 00:40:12,060
+I want to see someone say they share the life if I don't get to 20 people by 225
+
+503
+00:40:12,930 --> 00:40:18,930
+I will be leaving YouTube forever. You'll never see me again. You'll never get any more content, Papas.
+
+504
+00:40:18,930 --> 00:40:23,380
+I just don't understand. People are saying don't go to there.
+
+505
+00:40:23,380 --> 00:40:29,440
+Okay, okay.
+
+506
+00:40:29,440 --> 00:40:30,440
+Do you not care?
+
+507
+00:40:30,440 --> 00:40:34,420
+The thing that is, you better share it now.
+
+508
+00:40:34,420 --> 00:40:45,350
+Hi, sweetheart.
+
+509
+00:40:45,350 --> 00:40:47,350
+Okay.
+
+510
+00:40:47,350 --> 00:40:52,180
+You now have two minutes. Two minutes.
+
+511
+00:40:52,180 --> 00:40:54,180
+This is gonna be so legendary.
+
+512
+00:40:54,580 --> 00:40:59,400
+All the 11 people in here. We'll see who Damon is and all the people this is listen
+
+513
+00:40:59,640 --> 00:41:05,560
+You will be legendary for being such stupid niggers. You couldn't fucking do it for the content
+
+514
+00:41:06,410 --> 00:41:08,410
+Couldn't do it for the content. I love you, sweetheart
+
+515
+00:41:09,230 --> 00:41:11,800
+Okay
+
+516
+00:41:11,800 --> 00:41:18,540
+223, okay, it's almost there. I'm just waiting. I'm gonna wait. I'm ready to leave. I'm ready to leave
+
+517
+00:41:19,140 --> 00:41:22,620
+You'll never see me again
+
+518
+00:41:22,620 --> 00:41:26,880
+Because you're too stupid to share the live you're too stupid to tell anybody
+
+519
+00:41:27,310 --> 00:41:32,480
+The word's not getting out. I mean, I'm like fucking half naked and
+
+520
+00:41:34,290 --> 00:41:37,860
+Listen, I guess this is the one that people want
+
+521
+00:41:38,500 --> 00:41:45,540
+They don't want this then that anybody that plays this stream you will your channel be struck because this tube is staying up
+
+522
+00:41:45,950 --> 00:41:49,850
+I will strike anybody that dares play my stream.
+
+523
+00:41:49,850 --> 00:41:50,690
+Okay, 10 people.
+
+524
+00:41:50,690 --> 00:41:51,530
+When it hits nine people,
+
+525
+00:41:51,530 --> 00:41:53,270
+I'm gonna leave and you'll never see me again.
+
+526
+00:41:53,270 --> 00:41:54,650
+Somebody leave, somebody leave.
+
+527
+00:41:54,650 --> 00:41:56,810
+Somebody fucking leave right now.
+
+528
+00:41:56,810 --> 00:41:58,570
+When it gets under double digits,
+
+529
+00:41:58,570 --> 00:42:00,650
+I'm gonna leave and you'll never see me again.
+
+530
+00:42:00,650 --> 00:42:07,080
+Oh, oh, oh, the numbers are coming up.
+
+531
+00:42:07,080 --> 00:42:08,760
+When it gets to nine, I'll leave.
+
+532
+00:42:08,760 --> 00:42:10,160
+Oh, it's 12 and I'll get down.
+
+533
+00:42:10,160 --> 00:42:12,440
+Okay, okay, now we're talking.
+
+534
+00:42:12,440 --> 00:42:13,280
+Now we're talking.
+
+535
+00:42:13,280 --> 00:42:14,640
+You wanna see a crash out?
+
+536
+00:42:14,670 --> 00:42:21,090
+I mean, I thought you lived for crash-outs, isn't everyone lived for crash-outs? No. Okay. Um, it went to nine
+
+537
+00:42:21,330 --> 00:42:25,370
+So fuck you niggers. I hate you and fucking die niggers. Bye
+
+538
+00:42:26,790 --> 00:42:28,790
+Die niggers all of you

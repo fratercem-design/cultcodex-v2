@@ -94,8 +94,12 @@ export default async function EpisodesPage({
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
+  // The archive always has episodes. Zero means it couldn't be read (wrong or
+  // unreachable database) — never present that as the archive's size.
+  const archiveUnavailable = aggregates.total === 0;
+
   const glanceItems = [
-    { icon: "\uD83C\uDFAC", label: `${aggregates.total} episode${aggregates.total !== 1 ? "s" : ""}` },
+    ...(archiveUnavailable ? [] : [{ icon: "\uD83C\uDFAC", label: `${aggregates.total} episode${aggregates.total !== 1 ? "s" : ""}` }]),
     ...(aggregates.earliestDate && aggregates.latestDate
       ? [{ icon: "\uD83D\uDCC5", label: `${formatDate(aggregates.earliestDate)} — ${formatDate(aggregates.latestDate)}` }]
       : []),
@@ -111,7 +115,7 @@ export default async function EpisodesPage({
     <>
     <PageHero
       title="EPISODES"
-      subtitle={`${totalCount} transmissions in the archive`}
+      subtitle={archiveUnavailable ? "The archive can't be read right now" : `${totalCount} transmissions in the archive`}
       backgroundImage="/articles-bacgkground.jpg"
     
       label="archive"
@@ -190,10 +194,14 @@ export default async function EpisodesPage({
       </div>
 
       {cards.length === 0 ? (
-        <EmptyState
-          message="No episodes in the archive yet"
-          suggestion="Episodes will appear here once data is ingested"
-        />
+        archiveUnavailable ? (
+          <EmptyState
+            message="The archive can't be read right now"
+            suggestion="Episodes will be back shortly. Try again in a few minutes."
+          />
+        ) : (
+          <EmptyState message="No episodes match the current filters" />
+        )
       ) : (
         <>
           {currentView === "list" ? (

@@ -106,6 +106,19 @@ export const getCounts = unstable_cache(
   { revalidate: 300, tags: ["archive-counts"] }
 );
 
+/**
+ * getCounts() for display: null when the archive can't be read.
+ *
+ * A failed query and an archive reporting zero episodes are treated the same.
+ * The archive is never empty in production, so zero means the app is reading
+ * an unreachable or wrong database — and showing "0 episodes" as the archive's
+ * size is worse than saying it is unavailable (2026-09-25 audit).
+ */
+export async function getCountsOrNull(): Promise<SiteCounts | null> {
+  const counts = await getCounts().catch(() => null);
+  return counts && counts.episodes > 0 ? counts : null;
+}
+
 // ─── Formatting helpers ───────────────────────────────────────────────────────
 
 /** Format a number with locale commas: 2600 → "2,600" */

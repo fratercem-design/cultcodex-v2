@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PersonSigil } from "@/components/ui/person-sigil";
-import { PERSON_TYPE_BADGE, PERSON_TYPE_LABEL } from "@/lib/people/person-type";
+import { PERSON_TYPE_BADGE, PERSON_TYPE_DOT, PERSON_TYPE_EDGE, PERSON_TYPE_LABEL } from "@/lib/people/person-type";
 import type { PersonType } from "@/generated/prisma/client";
 
 interface PersonCardProps {
@@ -33,7 +33,7 @@ export function PersonCard({ person }: PersonCardProps) {
   return (
     <Link
       href={personHref(person)}
-      className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated"
+      className={`group flex items-start gap-3 rounded-lg border border-l-2 border-border ${PERSON_TYPE_EDGE[person.personType]} bg-surface p-4 transition-colors hover:border-accent-gold/30 hover:bg-elevated`}
     >
       {person.avatarUrl ? (
         <Image
@@ -57,7 +57,7 @@ export function PersonCard({ person }: PersonCardProps) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
           <h3 className="font-sans text-sm font-medium text-text-primary group-hover:text-accent-gold-text transition-colors truncate">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent-gold/60 mr-1.5 align-middle" />
+            <span className={`inline-block w-1.5 h-1.5 rounded-full ${PERSON_TYPE_DOT[person.personType]} mr-1.5 align-middle`} />
             {person.displayName}
           </h3>
           <StatusBadge label={PERSON_TYPE_LABEL[person.personType]} variant={PERSON_TYPE_BADGE[person.personType]} />

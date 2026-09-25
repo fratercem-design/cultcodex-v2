@@ -8,8 +8,9 @@ const THRESHOLD_SEEN_KEY = "ccx.threshold.seen";
 interface ThresholdHeroProps {
   /** e.g. "2026.07.10" — the date the counts below are true as of */
   dateLabel: string;
-  episodeCount: number;
-  transcribedPct: number;
+  /** null when the archive can't be read — shown as a dash, never as 0 */
+  episodeCount: number | null;
+  transcribedPct: number | null;
   /** next/font variable classes for Bodoni Moda */
   fontClass?: string;
 }
@@ -91,12 +92,12 @@ export function ThresholdHero({
         <dl className="threshold__meta">
           <div>
             <dt>Episodes</dt>
-            <dd>{episodeCount.toLocaleString("en-US")}</dd>
+            <dd>{episodeCount === null ? "—" : episodeCount.toLocaleString("en-US")}</dd>
           </div>
           <div className="threshold__meta-div" aria-hidden="true" />
           <div>
             <dt>Transcribed</dt>
-            <dd>{transcribedPct}%</dd>
+            <dd>{transcribedPct === null ? "—" : `${transcribedPct}%`}</dd>
           </div>
           <div className="threshold__meta-div" aria-hidden="true" />
           <div>

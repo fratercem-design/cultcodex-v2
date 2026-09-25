@@ -43,7 +43,7 @@ export function loadEnrichmentFiles(): EnrichmentFile[] {
 }
 
 // ─── Import a single enrichment file into DB ────────
-async function importEnrichment(
+export async function importEnrichment(
   prisma: ReturnType<typeof getPrisma>,
   entry: EnrichmentFile
 ): Promise<void> {

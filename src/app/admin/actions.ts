@@ -438,7 +438,8 @@ export async function grantOracleAccess(email: string) {
   await prisma.codexUser.update({
     where: { id: user.id },
     data: {
-      role: "admin",
+      // Oracle is a subscription tier, not a role. Never touch `role` here —
+      // requireAdmin() trusts it, so writing "admin" would grant full admin.
       isLifetimeMember: true,
       subscriptionStatus: "active",
       subscriptionTier: "system",

@@ -103,3 +103,11 @@ logs/
 modify_schema.py
 prisma/*.bak
 prisma/migrations.backup/
+
+# psychenomicon-deslop.ts review output
+deslop-proposals*.json
+deslop-proposals*.md
+
+# Generated Obsidian transcript vault (npm run brain:export). Large; export to
+# its own repo with --out if you want it versioned.
+/second-brain/transcripts-vault/

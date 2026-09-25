@@ -8,10 +8,12 @@ import { EpisodeCard } from "@/components/archive/episode-card";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SearchInput } from "@/components/search/search-input";
 import { getEpisodeCards } from "@/lib/queries/episodes";
-import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
+import { getCounts, getCountsOrNull, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
 import { DailyTransmission } from "@/components/home/daily-transmission";
+import { OnThisDayStrip } from "@/components/on-this-day/on-this-day-strip";
+import { getOnThisDay, todayMonthDay } from "@/lib/queries/on-this-day";
 import { getQuoteReactionCounts } from "@/lib/queries/quote-reactions";
 import { OnboardingGate } from "@/components/auth/onboarding-gate";
 import { prisma } from "@/lib/db";
@@ -66,16 +68,21 @@ const thresholdDisplay = localFont({
 
 export async function generateMetadata() {
   const counts = await getCounts().catch(() => null);
-    return {
+  // One title and one description for search, Open Graph and Twitter, so every
+  // preview sets the same expectation (2026-09-25 audit). The social copy used
+  // to pitch "AI breakdowns" and "behavioral maps" while search described an
+  // archive; the page itself describes an archive.
+  const title = "CultCodex — The Searchable Archive of Cult of Psyche";
+  const description =
+    `Search every Cult of Psyche episode: ${fmtEpisodeCount(counts?.episodes ?? 0)} episodes of the live show on tarot, consciousness and open-panel debate, with full transcripts, guest profiles and an AI Oracle that cites its sources.`;
+  return {
     robots: { index: true, follow: true },
     alternates: { canonical: "/" },
-    title: "CultCodex — The Archive of Cult of Psyche | Tarot, Consciousness & Open Panels",
-    description:
-      `Cult of Psyche is a live, unscripted internet show — tarot, consciousness, spirituality, open-panel debates, and the strange edges of human behavior. CultCodex is its complete searchable archive: ${fmtEpisodeCount(counts?.episodes ?? 0)} episodes with full transcripts, guest profiles, lore, and an AI Oracle.`,
+    title,
+    description,
     openGraph: {
-      title: "CultCodex — Decode Cult of Psyche",
-      description:
-        "Every Cult of Psyche transmission indexed. Psychological patterns, behavioral archetypes, guest profiles, and searchable transcripts — live since October 2024.",
+      title,
+      description,
       type: "website" as const,
       url: "/",
       // Required explicitly. Next replaces the `openGraph` object wholesale
@@ -86,9 +93,8 @@ export async function generateMetadata() {
     },
     twitter: {
       card: "summary_large_image" as const,
-      title: "CultCodex — Decode Cult of Psyche",
-      description:
-        "AI breakdowns, guest profiles, behavioral maps, and full transcript coverage for every Cult of Psyche live stream.",
+      title,
+      description,
       // Same replacement rule as openGraph above - `summary_large_image` with
       // no image is the worst of both worlds.
       images: ["/images/site/og.jpg"],
@@ -97,12 +103,10 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, liveStatus, popularTopics, dailyTransmission] = await Promise.all([
-    getCounts().catch(() => ({
-      episodes: 0, segments: 0, people: 0, topics: 0,
-      lore: 0, quotes: 0, totalHours: 0,
-      transcribedEpisodes: 0, transcribedPct: 0,
-    })),
+  const today = todayMonthDay();
+  const [stats, recentEpisodes, liveStatus, popularTopics, dailyTransmission, onThisDay] = await Promise.all([
+    // null when the archive can't be read; the page says so instead of 0.
+    getCountsOrNull(),
     // Decoded episodes only. The newest stream is usually still in the
     // transcription queue for a day or so, and a "No Transcript" card in the
     // most prominent slot on the site undercuts the whole archive pitch. It
@@ -117,6 +121,7 @@ export default async function HomePage() {
       spotlightEpisode: null,
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
+    getOnThisDay(today).catch(() => ({ episodes: [], events: [] })),
   ]);
 
   // Reaction TOTALS are public and identical for every visitor, so they are
@@ -152,8 +157,8 @@ export default async function HomePage() {
       {/* ── 1 · THRESHOLD — the one ritual moment ─────────────────────── */}
       <ThresholdHero
         dateLabel={dateLabel}
-        episodeCount={stats.episodes}
-        transcribedPct={stats.transcribedPct}
+        episodeCount={stats?.episodes ?? null}
+        transcribedPct={stats?.transcribedPct ?? null}
         fontClass={thresholdDisplay.variable}
       />
 
@@ -218,7 +223,7 @@ export default async function HomePage() {
       {/* ── 3 · PROOF — one consistent line of scale ──────────────────── */}
       <ArchiveStatsLine
         asOf={asOf}
-        stats={[
+        stats={stats && [
           { value: stats.episodes, label: "episodes" },
           { value: stats.people, label: "people" },
           { value: stats.segments, label: "transcript moments" },
@@ -239,7 +244,7 @@ export default async function HomePage() {
                 Latest episodes
               </h2>
               <Link href="/episodes" className="text-[15px] text-ink underline underline-offset-4 hover:text-brand-ink">
-                All {fmtEpisodeCount(stats.episodes)} →
+                All {fmtEpisodeCount(stats?.episodes ?? 0)} →
               </Link>
             </div>
 
@@ -320,6 +325,9 @@ export default async function HomePage() {
           quoteReactions={dailyQuoteReactions}
         />
 
+        {/* ── 7b · ON THIS DAY — the archive's anniversaries ──────────── */}
+        <OnThisDayStrip day={today} episodes={onThisDay.episodes} />
+
         {/* ── 8 · HOW THIS ARCHIVE IS MADE — trust ────────────────────── */}
         <ArchiveDisclaimer variant="full" />
 
@@ -352,7 +360,7 @@ export default async function HomePage() {
 
       {/* WebSite + SearchAction JSON-LD is emitted once in the root layout —
           avoid a second, conflicting WebSite block here. */}
-      <JsonLd data={organizationJsonLd(stats.episodes)} />
+      <JsonLd data={organizationJsonLd(stats?.episodes)} />
     </>
   );
 }

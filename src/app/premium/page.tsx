@@ -13,7 +13,7 @@ const oracleTier = getTier("system");
 
 export const metadata: Metadata = buildMetadata({
   title: "Join the Archive — Choose Your Role",
-  description: `Initiate+ ($${initiateTier.priceMonthly}/mo): ${INITIATE_ORACLE_MONTHLY_LIMIT} cited Oracle questions a month, transcripts, and the Psychenomicon. Oracle ($${oracleTier.priceMonthly}/mo): unlimited Oracle questions, the Red Room, and your own archive page.`,
+  description: `Initiate+ ($${initiateTier.priceMonthly}/mo): ${INITIATE_ORACLE_MONTHLY_LIMIT} cited Oracle questions a month, transcripts, and the Psychenomicon. Oracle ($${oracleTier.priceMonthly}/mo): no monthly cap on Oracle questions, the Red Room, and your own archive page.`,
   path: "/premium",
 });
 

@@ -75,7 +75,7 @@ export const TIERS: Tier[] = [
     priceEnvVarAnnual: "STRIPE_PRICE_SYSTEM_ANNUAL_ID",
     features: [
       "Full Initiate+ access",
-      "Unlimited Oracle communion — no monthly meter",
+      "No monthly cap on Oracle questions (a per-minute limit still applies)",
       "Your own page woven permanently into the archive",
       "Your signal shapes what gets investigated next",
       "Propose what gets analyzed — your questions become the work",

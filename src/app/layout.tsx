@@ -11,7 +11,7 @@ import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { RadialDialNav } from "@/components/layout/radial-dial-nav";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { ConsoleSigil } from "@/components/layout/console-sigil";
-import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
+import { getCountsOrNull, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
 import { SkipLink } from "@/components/ui/skip-link";
@@ -20,8 +20,8 @@ import { JsonLd } from "@/components/JsonLd";
 import { CookieConsent } from "@/components/layout/cookie-consent";
 import "./globals.css";
 
-// Layout data fetches (getCounts, getLiveChannels) are already wrapped in
-// .catch() and the user menu loads client-side — no server-side session reads.
+// Layout data fetches never throw: getCountsOrNull() returns null (shown as
+// "unavailable", never as 0) and getLiveChannels is wrapped in .catch() and the user menu loads client-side — no server-side session reads.
 // revalidate=60 enables Next.js server-side ISR caching for the layout shell.
 
 const SITE_DESCRIPTION =
@@ -80,17 +80,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const [counts, liveChannels] = await Promise.all([
-    getCounts().catch(() => ({
-      episodes: 0,
-      segments: 0,
-      people: 0,
-      topics: 0,
-      lore: 0,
-      quotes: 0,
-      totalHours: 0,
-      transcribedEpisodes: 0,
-      transcribedPct: 0,
-    })),
+    getCountsOrNull(),
     getLiveChannels().catch(() => ({ cultOfPsyche: false, psychesNightmares: false, nightmareFrequencies: false })),
   ]);
 
@@ -138,7 +128,7 @@ export default async function RootLayout({
           <ScrollReset />
         </Suspense>
         <LiveBanner />
-        <EntryBanner episodeCount={fmtEpisodeCount(counts.episodes)} />
+        <EntryBanner episodeCount={fmtEpisodeCount(counts?.episodes ?? 0)} />
         <div className="terminal-grid">
           <TerminalTopBar />
           <TerminalSidebar counts={counts} liveChannels={liveChannels} />
@@ -151,7 +141,7 @@ export default async function RootLayout({
             {children}
             <SiteFooter />
           </div>
-          <TerminalStatusBar feedCount={counts.episodes} />
+          <TerminalStatusBar feedCount={counts?.episodes ?? null} />
         </div>
         <MobileBottomNav />
         <RadialDialNav />

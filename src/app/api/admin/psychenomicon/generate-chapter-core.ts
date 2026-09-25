@@ -7,6 +7,7 @@ import { prisma } from "@/lib/db";
 import OpenAI from "openai";
 import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { bedrockModelId } from "@/lib/anthropic";
+import { CHAPTER_STYLE_RULES } from "@/lib/psychenomicon-slop";
 
 function getOpenRouterClient(): OpenAI {
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -86,6 +87,8 @@ Each chapter must contain:
 - archetypes: Who appeared, what archetype they embodied in this chapter, why it matters.
 - entities: Full entity data for each significant person — current archetype, trait scores, behavior patterns, any archetype shift from previous appearance.
 - threads: Narrative threads active, emerging, or resolved in this chapter.
+
+${CHAPTER_STYLE_RULES}
 
 You must respond with valid JSON only. No prose before or after. No markdown.`;
 
@@ -232,11 +235,11 @@ ${transcriptText}
 
 Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JSON with this exact shape:
 {
-  "title": "chapter title (evocative, not descriptive)",
+  "title": "chapter title, 2-6 words, specific to this episode",
   "isMajorEvent": false,
   "canonText": "factual account, 3-5 paragraphs",
   "interpretationText": "behavioral + psychological layer, 2-3 paragraphs",
-  "mythicText": "symbolic/archetypal layer, 1-2 paragraphs — subtle, grounded",
+  "mythicText": "symbolic/archetypal layer, 1-2 paragraphs, subtle and grounded",
   "emergingSignals": ["signal 1", "signal 2", "signal 3"],
   "archetypes": [{"name": "person name", "archetype": "The X", "significance": "why this archetype in this chapter"}],
   "entities": [{"name": "person name", "archetype": "The X", "archetypeShift": null, "traits": {"influence": 7, "volatility": 6, "manipulation": 4, "control": 5, "emotionalIntensity": 8}, "behaviorPatterns": ["pattern"], "notes": "how they evolved"}],

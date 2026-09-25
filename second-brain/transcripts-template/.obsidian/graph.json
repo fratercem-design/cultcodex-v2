@@ -1,0 +1,13 @@
+{
+  "search": "-path:raw",
+  "showTags": false,
+  "showAttachments": false,
+  "hideUnresolved": true,
+  "showOrphans": false,
+  "colorGroups": [
+    { "query": "path:wiki/people", "color": { "a": 1, "rgb": 14701138 } },
+    { "query": "path:wiki/lore", "color": { "a": 1, "rgb": 11621088 } },
+    { "query": "path:wiki/topics", "color": { "a": 1, "rgb": 5431378 } },
+    { "query": "path:wiki/concepts OR path:wiki/analyses", "color": { "a": 1, "rgb": 16766720 } }
+  ]
+}
