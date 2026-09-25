@@ -72,9 +72,11 @@ export async function run(apply: boolean) {
   const started = Date.now();
   const tally = { published: 0, failed: 0 };
   let next = 0;
+  // An empty API balance fails every remaining call, so stop at the first one.
+  let outOfCredit = false;
 
   const worker = async () => {
-    while (next < todo.length && Date.now() - started < TIME_BUDGET_MS) {
+    while (!outOfCredit && next < todo.length && Date.now() - started < TIME_BUDGET_MS) {
       const ep = todo[next++];
       try {
         const segments = await prisma.transcriptSegment.findMany({
@@ -94,8 +96,10 @@ export async function run(apply: boolean) {
         tally.published++;
         console.log(`  ✓ ${ep.slug}: ${data.guests.length} guests, ${data.quotes.length} quotes, ${data.topics.length} topics — published`);
       } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
         tally.failed++;
-        console.log(`  ✗ ${ep.slug}: ${err instanceof Error ? err.message : String(err)} — left as draft`);
+        console.log(`  ✗ ${ep.slug}: ${message} — left as draft`);
+        if (message.includes("credit balance is too low")) outOfCredit = true;
       }
     }
   };
@@ -104,7 +108,7 @@ export async function run(apply: boolean) {
   const left = todo.length - tally.published - tally.failed;
   console.log(
     `\nSummary: enriched and published ${tally.published} · failed ${tally.failed} (still drafts) · ` +
-      `not reached ${left}${left ? " — run again to continue" : ""}`,
+      `not reached ${left}${outOfCredit ? " — stopped: Anthropic credit balance is empty" : left ? " — run again to continue" : ""}`,
   );
   await disconnect();
 }
