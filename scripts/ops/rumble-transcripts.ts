@@ -31,6 +31,8 @@ export interface IndexRow {
   title: string;
   durationSeconds: number;
   rumbleUrl: string;
+  /** Rumble player id: the one rumble.com/embed/ accepts. */
+  playerId: string;
 }
 
 export interface Segment {
@@ -74,6 +76,7 @@ export function parseIndex(csv: string): IndexRow[] {
     title: r[col("title")],
     durationSeconds: Number(r[col("duration_seconds")]) || 0,
     rumbleUrl: r[col("rumble_url")],
+    playerId: r[col("player_id")] ?? "",
   }));
 }
 
@@ -323,7 +326,7 @@ export async function run(apply: boolean) {
       await prisma.$transaction(async (tx) => {
         const created = await tx.episode.create({
           data: {
-            title, slug, episodeNumber: nextNumber, airDate, rumbleVideoId: rumbleId,
+            title, slug, episodeNumber: nextNumber, airDate, rumbleVideoId: rumbleId, rumbleEmbedId: row.playerId || null,
             duration: formatDuration(row.durationSeconds), status: "draft", contentType: "livestream",
             transcriptRaw: rawText.slice(0, 200000),
             searchText: [slug, title, rawText].join(" ").toLowerCase().slice(0, 10000),
@@ -355,7 +358,7 @@ export async function run(apply: boolean) {
         data: {
           transcriptRaw: rawText.slice(0, 200000),
           searchText: [matched.slug, rawText].join(" ").toLowerCase().slice(0, 10000),
-          ...(matched.rumbleVideoId ? {} : { rumbleVideoId: rumbleId }),
+          ...(matched.rumbleVideoId ? {} : { rumbleVideoId: rumbleId, rumbleEmbedId: row.playerId || null }),
         },
       });
     }, { timeout: 60_000 });

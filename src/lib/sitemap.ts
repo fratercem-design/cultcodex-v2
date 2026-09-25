@@ -109,6 +109,8 @@ async function pagesSegment(): Promise<SitemapEntry[]> {
     { url: `${b}/appear`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${b}/media-kit`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${b}/this-week`, lastModified: episodesUpdated, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${b}/on-this-day`, changeFrequency: "daily", priority: 0.6 },
+    { url: `${b}/drama/feuds`, lastModified: peopleUpdated, changeFrequency: "weekly", priority: 0.6 },
     { url: `${b}/stats`, lastModified: archiveUpdated, changeFrequency: "weekly", priority: 0.5 },
     { url: `${b}/lexicon`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${b}/mythic-map`, changeFrequency: "monthly", priority: 0.7 },

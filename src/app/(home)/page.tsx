@@ -12,6 +12,8 @@ import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
 import { DailyTransmission } from "@/components/home/daily-transmission";
+import { OnThisDayStrip } from "@/components/on-this-day/on-this-day-strip";
+import { getOnThisDay, todayMonthDay } from "@/lib/queries/on-this-day";
 import { getQuoteReactionCounts } from "@/lib/queries/quote-reactions";
 import { OnboardingGate } from "@/components/auth/onboarding-gate";
 import { prisma } from "@/lib/db";
@@ -97,7 +99,8 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, liveStatus, popularTopics, dailyTransmission] = await Promise.all([
+  const today = todayMonthDay();
+  const [stats, recentEpisodes, liveStatus, popularTopics, dailyTransmission, onThisDay] = await Promise.all([
     getCounts().catch(() => ({
       episodes: 0, segments: 0, people: 0, topics: 0,
       lore: 0, quotes: 0, totalHours: 0,
@@ -117,6 +120,7 @@ export default async function HomePage() {
       spotlightEpisode: null,
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
+    getOnThisDay(today).catch(() => ({ episodes: [], events: [] })),
   ]);
 
   // Reaction TOTALS are public and identical for every visitor, so they are
@@ -319,6 +323,9 @@ export default async function HomePage() {
           data={dailyTransmission}
           quoteReactions={dailyQuoteReactions}
         />
+
+        {/* ── 7b · ON THIS DAY — the archive's anniversaries ──────────── */}
+        <OnThisDayStrip day={today} episodes={onThisDay.episodes} />
 
         {/* ── 8 · HOW THIS ARCHIVE IS MADE — trust ────────────────────── */}
         <ArchiveDisclaimer variant="full" />
