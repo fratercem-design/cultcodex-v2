@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { NOISE_PERSON_SLUGS } from "@/lib/people/noise-slugs";
+import { NOISE_PERSON_SLUGS, REMOVED_PERSON_SLUGS, isRemovedPerson } from "@/lib/people/noise-slugs";
 import type { Prisma, PersonType } from "@/generated/prisma/client";
 
 const EPISODE_CARD_SELECT = {
@@ -69,7 +69,7 @@ const GUEST_ELIGIBLE: Prisma.PersonWhereInput = {
 };
 
 function profiledWhere(type?: PersonType): Prisma.PersonWhereInput {
-  const notNoise = { slug: { notIn: [...NOISE_PERSON_SLUGS] } };
+  const notNoise = { slug: { notIn: [...NOISE_PERSON_SLUGS, ...REMOVED_PERSON_SLUGS] } };
   if (type === "host" || type === "recurring") return { personType: type, ...notNoise };
   if (type === "guest") {
     return { ...GUEST_ELIGIBLE, ...notNoise };
@@ -169,7 +169,7 @@ export async function getPeopleCards(options?: {
 export async function getSpecialMentions() {
   return prisma.person.findMany({
     where: {
-      slug: { notIn: [...NOISE_PERSON_SLUGS] },
+      slug: { notIn: [...NOISE_PERSON_SLUGS, ...REMOVED_PERSON_SLUGS] },
       OR: [
         { personType: "mentioned" },
         { personType: "guest", shortBio: null, loreSummary: null },
@@ -209,6 +209,7 @@ export async function getPersonEpisodeDates(
 }
 
 export async function getPersonBySlug(slug: string) {
+  if (isRemovedPerson(slug)) return null;
   return prisma.person.findUnique({
     where: { slug },
     include: buildPersonInclude(),
