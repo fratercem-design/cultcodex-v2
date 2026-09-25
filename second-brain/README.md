@@ -13,6 +13,8 @@ What's in this kit:
 | `vault/CLAUDE.md` | The rules Claude follows inside the vault |
 | `install.sh` | Creates a new vault, or adds the kit to a vault you already have |
 
+> **Looking for the transcript wiki?** See [Transcript vault](#transcript-vault-every-episode-as-a-linked-wiki) at the bottom. It's a separate vault generated from the CultCodex database, not your personal notes.
+
 ---
 
 ## 1. The idea in 60 seconds
@@ -239,3 +241,46 @@ Your vault is your inner life in plain text. Before you run this:
 Settings → Daily notes: folder `Daily`, format `YYYY-MM-DD`, template `_system/templates/Daily Note`.
 Settings → Templates: folder `_system/templates`.
 Settings → Files & links: turn on "Automatically update internal links".
+
+---
+
+## Transcript vault: every episode as a linked wiki
+
+A second, separate vault built from the CultCodex database, following Andrej Karpathy's "LLM wiki" pattern: raw transcripts you never edit, a linked wiki on top, and Claude Code growing the wiki over time. Because the database already holds the people, topics, lore and quotes the enrichment pipeline extracted, the first build costs nothing: no LLM ingest pass over hundreds of transcripts.
+
+### Build it
+
+```bash
+npm run brain:export                          # -> second-brain/transcripts-vault (gitignored)
+npm run brain:export -- --out ~/CultBrain     # or anywhere else, e.g. its own git repo
+```
+
+Needs the real `DATABASE_URL` in `.env.local`. Then in Obsidian: **Open folder as vault** → pick the output folder. Start Claude Code in that folder (`cd ~/CultBrain && claude`, or a terminal plugin inside Obsidian).
+
+### What you get
+
+| Path | Contents |
+|---|---|
+| `index.md` | Catalog: people by number of appearances, topics, lore, episodes by year with one-line summaries |
+| `raw/transcripts/` | Every transcript, grouped into paragraphs, each starting with a timestamp that links to that moment on YouTube |
+| `wiki/episodes/` | Summary, guests, mentions, topics, lore, quotes, and a link to the transcript |
+| `wiki/people/` | Bio, every appearance and mention, their quotes. Alternate names are Obsidian `aliases`, so `[[Psy]]` finds `Psyche` |
+| `wiki/topics/`, `wiki/lore/` | One note each, linking every episode they appear in |
+| `wiki/concepts/`, `wiki/analyses/` | Empty at first. This is where Claude writes what it learns |
+| `CLAUDE.md` | The rules and workflows Claude follows in the vault |
+
+The graph view hides `raw/` and colours people, lore, topics and Claude's notes differently, so it stays readable with thousands of notes.
+
+### Using it
+
+| Command | What it does |
+|---|---|
+| `/ask <question>` | Answers from the wiki and transcripts with timestamped citations. Worth-keeping answers are saved to `wiki/analyses/` |
+| `/ingest` | After a re-export, reads the new episodes listed in `log.md` and folds them into concept notes (running bits, arcs, feuds) |
+| `/lint` | Health check: uncited claims, broken links, stale or contradictory concept notes, missing pages |
+
+### Keeping it current
+
+Re-run `npm run brain:export` after the normal ingest pipeline. It only rewrites files that changed, deletes notes for records that were removed, logs new episodes in `log.md`, and never touches `wiki/concepts/`, `wiki/analyses/`, or your edits to `CLAUDE.md`. Then run `/ingest` in the vault. Fix wrong facts in episode, people, topic or lore notes in the database (admin panel), not in the vault: the next export overwrites them.
+
+Only `published` and `unavailable` episodes are exported from the database. The Rumble caption files in `scripts/ingest/data/rumble-transcripts/` are added too: a file for a stream the export already has fills in its transcript if the database has none (matched by Rumble ID, then by title within two days), and every other file becomes a caption-only episode tagged `#captions-only`, with timestamps linking to Rumble.

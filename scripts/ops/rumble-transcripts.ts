@@ -150,7 +150,7 @@ export function formatDuration(seconds: number): string | null {
   return h > 0 ? `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}` : `${m}:${String(s).padStart(2, "0")}`;
 }
 
-function normalize(title: string): string {
+export function normalize(title: string): string {
   return title.toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim();
 }
 
@@ -180,7 +180,7 @@ export const SAME_STREAM = 0.3;
 // Rumble titles carry the US stream date; episodes created from YouTube carry
 // the upload date, a day later in UTC. Two days covers that drift without
 // merging different streams that reused a title (e.g. four "I'm Back"s).
-const MATCH_WINDOW_MS = 2 * 86_400_000;
+export const MATCH_WINDOW_MS = 2 * 86_400_000;
 
 export async function run(apply: boolean) {
   const prisma = getPrisma();
