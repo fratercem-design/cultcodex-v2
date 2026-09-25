@@ -1,0 +1,5891 @@
+1
+00:01:02,060 --> 00:01:03,900
+Let's jump right into it.
+
+2
+00:01:03,900 --> 00:01:08,380
+Today we're doing a digital forensics deep dive into one of the most intense, multi-layered
+
+3
+00:01:08,380 --> 00:01:10,340
+online feuds we've got on record.
+
+4
+00:01:10,340 --> 00:01:14,100
+We're talking about the conflict between streamer Alexander Meyers and John Bates, who
+
+5
+00:01:14,100 --> 00:01:15,740
+you probably know as Psyche.
+
+6
+00:01:15,740 --> 00:01:20,540
+Now what starts off as a fairly standard, albeit messy, dispute over donations, rapidly
+
+7
+00:01:20,540 --> 00:01:25,780
+escalates into allegations of extortion, supernatural warfare, and what Psyche's camp vehemently
+
+8
+00:01:29,760 --> 00:01:33,920
+we're going to follow the digital paper trail to see exactly how these wild allegations actually
+
+9
+00:01:33,920 --> 00:01:40,400
+played out. Let's get into it. Here is our roadmap for this explainer. One, anatomy of a digital feud.
+
+10
+00:01:40,400 --> 00:01:47,680
+Two, the grievance and the gifts. Three, tactics of force proximity. Four, weaponizing the audience.
+
+11
+00:01:48,320 --> 00:01:54,240
+Five, demons, cats and chaos. And finally, six, the perpetual victim cycle.
+
+12
+00:01:58,540 --> 00:02:03,680
+So, to really grasp this conflict, we have to look closely at our two main subjects.
+
+13
+00:02:03,680 --> 00:02:08,720
+On one side, we have Alexandra Mayers from IRL Newstime Live, who is known for meticulously
+
+14
+00:02:08,720 --> 00:02:11,200
+documenting her online interactions.
+
+15
+00:02:11,200 --> 00:02:16,240
+And on the other, we have John Psyche Bates, who runs an entity called the Cult of Psyche.
+
+16
+00:02:16,240 --> 00:02:20,640
+He heavily relies on online donations, even though he reportedly comes from a pretty affluent
+
+17
+00:02:20,640 --> 00:02:22,600
+background out in the Palos Verdes area.
+
+18
+00:02:22,750 --> 00:02:27,050
+The sheer intensity of the language these two throw at each other is just staggering.
+
+19
+00:02:27,050 --> 00:02:31,350
+Take this quote, for example, where Alexandra actually refers to Psyche as a spiritual and
+
+20
+00:02:31,350 --> 00:02:33,170
+psychological rapist.
+
+21
+00:02:33,170 --> 00:02:36,650
+This really highlights the inflammatory rhetoric that forms the foundation of what Psyche's
+
+22
+00:02:36,650 --> 00:02:39,730
+camp calls a targeted campaign of slander.
+
+23
+00:02:39,730 --> 00:02:43,630
+From his perspective, this is straight-up actionable character assassination.
+
+24
+00:02:43,630 --> 00:02:47,850
+But from Alexandra's, she sees it as a desperate public warning.
+
+25
+00:02:51,580 --> 00:02:56,680
+You know, the craziest part is that this whole thing originally started during a period of
+
+26
+00:02:56,680 --> 00:02:59,640
+intense, very real grief.
+
+27
+00:02:59,640 --> 00:03:04,640
+According to Alexandra's detailed accounts, right after she lost her father, Psyche quietly
+
+28
+00:03:04,640 --> 00:03:10,100
+observed her online, befriended her, and allegedly began soliciting donations by playing on that
+
+29
+00:03:10,100 --> 00:03:13,200
+exact human vulnerability to gain her trust.
+
+30
+00:03:13,200 --> 00:03:15,720
+And the financial entanglement evolved incredibly fast.
+
+31
+00:03:16,300 --> 00:03:19,340
+Early April, she's sending him flowers when he seems depressed.
+
+32
+00:03:19,340 --> 00:03:23,060
+By late April, it escalates to a full $100 grocery run.
+
+33
+00:03:23,060 --> 00:03:26,140
+In May, she's picking up the tab for meals in white claws.
+
+34
+00:03:26,140 --> 00:03:29,260
+And by June, she's straight up buying him a live streaming tripod.
+
+35
+00:03:29,620 --> 00:03:35,020
+It paints a painfully clear picture of a parasocial relationship that just rapidly morphed into
+
+36
+00:03:35,020 --> 00:03:38,540
+financial dependency right before their mass of falling out.
+
+37
+00:03:38,540 --> 00:03:43,220
+Now when you bring a hard data into a highly emotional dispute, it always changes the game,
+
+38
+00:03:43,220 --> 00:03:44,220
+right?
+
+39
+00:03:44,220 --> 00:03:46,300
+Because digital feuds run on receipts.
+
+40
+00:03:46,300 --> 00:03:48,300
+So what's the actual damage here?
+
+41
+00:03:48,300 --> 00:03:48,900
+The exact?
+
+42
+00:03:48,980 --> 00:03:53,660
+Calculated total comes out to $973.48.
+
+43
+00:03:53,660 --> 00:03:56,980
+That is the precise value of all the cash and physical gifts
+
+44
+00:03:56,980 --> 00:03:59,380
+Alexandra states she gave to Psyche.
+
+45
+00:03:59,380 --> 00:04:00,340
+In the live streaming world,
+
+46
+00:04:00,340 --> 00:04:03,220
+this is literally how digital connections are quantified.
+
+47
+00:04:03,220 --> 00:04:05,260
+But the breakdown of this specific number
+
+48
+00:04:05,260 --> 00:04:07,740
+is where the allegations of massive deception
+
+49
+00:04:07,740 --> 00:04:09,460
+start to really surface.
+
+50
+00:04:09,460 --> 00:04:11,700
+Exactly $600 of that total
+
+51
+00:04:11,700 --> 00:04:14,190
+was in direct cash transfers through Cash App.
+
+52
+00:04:14,190 --> 00:04:18,750
+Alexandra claims that while Psyche was telling his audience these donations were desperately
+
+53
+00:04:18,750 --> 00:04:22,910
+needed to feed and care for his cats, the funds were actually being used to fuel an
+
+54
+00:04:22,910 --> 00:04:24,630
+active meth addiction.
+
+55
+00:04:24,630 --> 00:04:28,650
+She points to his own on-stream admissions of past drug use and his physical appearance
+
+56
+00:04:28,650 --> 00:04:31,270
+as evidence that he was deceiving everyone.
+
+57
+00:04:31,270 --> 00:04:35,310
+And these specific claims, that her money secretly funded a meth habit, form the absolute
+
+58
+00:04:35,310 --> 00:04:39,030
+bedrock of the intense public allegations she levied against him.
+
+59
+00:04:41,330 --> 00:04:45,590
+Alright, Section 3, Tactics of Forced Proximity.
+
+60
+00:04:45,590 --> 00:04:50,730
+So what happens when a creator issues a cease and desist, blocks all direct contact, but
+
+61
+00:04:50,730 --> 00:04:53,650
+the other party absolutely refuses to let it go?
+
+62
+00:04:53,650 --> 00:04:58,290
+Well this brings us to a really fascinating, albeit dark, digital psychology concept known
+
+63
+00:04:58,290 --> 00:05:00,530
+as forced proximity.
+
+64
+00:05:00,530 --> 00:05:04,940
+Once Alexandra blocked direct communication, Psyche didn't even need to DM her.
+
+65
+00:05:04,940 --> 00:05:09,900
+The transcripts allege he just used live panel shows and paused her old videos on his stream
+
+66
+00:05:09,900 --> 00:05:11,300
+to hurl insults.
+
+67
+00:05:11,300 --> 00:05:15,500
+He knows full well that the hyper-connected, gossip-driven nature of their shared audience
+
+68
+00:05:15,500 --> 00:05:17,740
+will carry his messages right back to her.
+
+69
+00:05:17,740 --> 00:05:22,260
+It's this massive structural flaw in social media architecture that literally forces a
+
+70
+00:05:22,260 --> 00:05:26,860
+victim to hear a narrative without any direct contact ever taking place.
+
+71
+00:05:26,860 --> 00:05:30,100
+Which brings us to Section 4, Weaponizing the Audience
+
+72
+00:05:30,420 --> 00:05:38,420
+Building on that idea of force proximity, the design of livestreaming platforms allows creators to orchestrate multi-party harassment that totally breaks the fourth wall.
+
+73
+00:05:38,420 --> 00:05:43,420
+It doesn't stay confined to the screen. It leverages the audience to create real, physical danger.
+
+74
+00:05:43,420 --> 00:05:47,420
+And the severe offline escalations documented here are pretty jarring.
+
+75
+00:05:47,420 --> 00:05:55,150
+An associate of Psyche's, a user known as Karen, allegedly threatened to show up at Alexander's apartment with a firearm to validate her warnings about Psyche.
+
+76
+00:05:55,150 --> 00:06:00,110
+Alexandra actually dug up a 2014 LA news report linking him to an arrest for narcotics and
+
+77
+00:06:00,110 --> 00:06:05,070
+identity theft, and it gets worse. Panel guests on Psyche's stream actively suggested committing
+
+78
+00:06:05,070 --> 00:06:09,550
+arson against the local Redondo Beach business, Catalina Leaker and Deli, simply because Psyche
+
+79
+00:06:09,550 --> 00:06:14,510
+had a petty grievance with them. This is where a digital feud spills violently into the real world.
+
+80
+00:06:14,510 --> 00:06:19,790
+Now another deeply manipulative tactic identified in the transcripts is something called the
+
+81
+00:06:22,420 --> 00:06:27,760
+terrifying example of how paranoia and platform user interfaces can literally be weaponized
+
+82
+00:06:27,760 --> 00:06:28,880
+for outright extortion.
+
+83
+00:06:29,140 --> 00:06:33,900
+The mechanics of this scam, allegedly run by Psyche and his associate Brandon against
+
+84
+00:06:33,900 --> 00:06:36,860
+that user Karen, are remarkably calculated.
+
+85
+00:06:36,860 --> 00:06:38,220
+It goes like this.
+
+86
+00:06:38,220 --> 00:06:39,220
+Step 1.
+
+87
+00:06:39,220 --> 00:06:41,260
+Psyche hosts a public live panel.
+
+88
+00:06:41,260 --> 00:06:42,260
+Step 2.
+
+89
+00:06:42,260 --> 00:06:46,820
+He privately messages Karen, falsely claiming that a rival of hers just paid him $100 for
+
+90
+00:06:46,820 --> 00:06:49,020
+stage time to talk trash about her.
+
+91
+00:06:49,020 --> 00:06:50,020
+Step 3.
+
+92
+00:06:50,020 --> 00:06:54,780
+This manufactured scarcity and threat of public humiliation triggers Karen's anxiety, prompting
+
+93
+00:06:58,060 --> 00:07:02,940
+The kicker? The rival never actually paid anything. It's a phantom bid designed purely to extract
+
+94
+00:07:02,940 --> 00:07:09,900
+money based on panic. Section 5. And this is where things get wild. Demons, cats, and chaos.
+
+95
+00:07:10,100 --> 00:07:14,900
+So, now we transition the narrative away from tangible financial grievances and digital
+
+96
+00:07:14,900 --> 00:07:18,280
+extortion scams straight into the truly surreal.
+
+97
+00:07:18,280 --> 00:07:22,460
+This is where the dispute takes a massive left turn from earthly, legally actionable
+
+98
+00:07:22,460 --> 00:07:27,460
+claimsâyou know, methus, extortion, property disputesâinto wildly supernatural slander
+
+99
+00:07:27,460 --> 00:07:28,460
+claims.
+
+100
+00:07:28,460 --> 00:07:33,300
+Alexandra alleges that Psyche operates a literal spiritual cult and invokes the goetic demon
+
+101
+00:07:33,300 --> 00:07:38,620
+Asmodeus, who is a demon of wrath and lust, to cast spells, drain energy, and spiritually
+
+102
+00:07:40,080 --> 00:07:44,300
+And honestly, these supernatural claims even extend to Psyche's pets, which is where things
+
+103
+00:07:44,300 --> 00:07:46,260
+get genuinely bewildering.
+
+104
+00:07:46,260 --> 00:07:50,620
+Alexandria has documented making the astonishing claim that Psyche's black cat, Lenore, was
+
+105
+00:07:50,620 --> 00:07:53,660
+overly affectionate simply because the animal was demonically possessed.
+
+106
+00:07:53,660 --> 00:07:56,100
+I mean, let that sink in for a second.
+
+107
+00:07:56,100 --> 00:08:00,500
+In response to this perceived spiritual threat from Psyche and his supposedly possessed cat,
+
+108
+00:08:00,500 --> 00:08:04,540
+Alexandria reports calling upon the Archangels Raphael, Hiza, and Haya to neutralize his
+
+109
+00:08:04,540 --> 00:08:05,780
+dark energy.
+
+110
+00:08:08,900 --> 00:08:12,940
+You have to admit, that is a stunning and frankly absurd escalation from arguing over
+
+111
+00:08:12,940 --> 00:08:15,060
+a $600 cash app donation.
+
+112
+00:08:15,060 --> 00:08:18,580
+Finally, Section 6, The Perpetual Victim Cycle.
+
+113
+00:08:18,860 --> 00:08:23,300
+Pulling back from the day-to-day drama of demons and donations, we really have to analyze
+
+114
+00:08:23,300 --> 00:08:25,620
+the overarching strategy here.
+
+115
+00:08:25,620 --> 00:08:29,900
+What happens when Psyche is actually cornered by community backlash or an official platform
+
+116
+00:08:29,900 --> 00:08:30,900
+warning?
+
+117
+00:08:30,900 --> 00:08:35,220
+Well, his documented pattern of cause and effect is basically a masterclass in defensive
+
+118
+00:08:35,220 --> 00:08:36,340
+manipulation.
+
+119
+00:08:36,340 --> 00:08:40,260
+When Psyche receives a channel strike for violating terms of service, his immediate response on
+
+120
+00:08:42,450 --> 00:08:46,790
+When faced with legitimate criticism, or when his public business address is cited, he
+
+121
+00:08:46,790 --> 00:08:50,170
+pivots instantly to claiming he is being maliciously doxxed.
+
+122
+00:08:50,170 --> 00:08:53,690
+And when a victim completely ignores him, he just escalates the harassment to force
+
+123
+00:08:53,690 --> 00:08:54,690
+a response.
+
+124
+00:08:54,690 --> 00:08:59,210
+He allegedly weaponizes his own vulnerability to maintain complete control of the narrative,
+
+125
+00:08:59,210 --> 00:09:03,170
+evade any real accountability, and frame his accusers as the actual villains committing
+
+126
+00:09:03,170 --> 00:09:04,130
+slander against him.
+
+127
+00:09:04,510 --> 00:09:10,510
+So, looking at the sheer chaos of this whole situation, the extortion, the forced proximity,
+
+128
+00:09:10,510 --> 00:09:16,190
+the frankly unbelievable supernatural slander claims, we have to ask a much larger question.
+
+129
+00:09:16,190 --> 00:09:20,390
+Does the architecture of our social media and live streaming platforms inherently reward
+
+130
+00:09:20,390 --> 00:09:22,350
+the perpetual digital victim?
+
+131
+00:09:22,350 --> 00:09:27,110
+I mean, are these platforms fundamentally designed to enable and even financially sustain
+
+132
+00:09:27,110 --> 00:09:30,630
+these toxic inescapable loops just because they generate endless engagement?
+
+133
+00:09:30,780 --> 00:09:36,380
+It's a provocative thought for sure and one you should absolutely keep in mind the next time you see digital drama unfolding in real time
+
+134
+00:09:36,460 --> 00:09:38,960
+Thanks so much for joining me for this explainer. Catch you next time
+
+135
+00:16:30,020 --> 00:16:37,870
+Damn
+
+136
+00:16:37,870 --> 00:16:45,680
+What will you oh shit looks like he's doing math again?
+
+137
+00:16:49,270 --> 00:16:51,910
+Like you stop doing math. It's bad for your
+
+138
+00:17:10,540 --> 00:17:15,620
+What do you see dumb bitch? There he goes back to his boring a high videos. There he goes back
+
+139
+00:17:19,600 --> 00:17:38,430
+You're on the air fat fat fuck. Good God. Okay. Yeah, I go to gang times backstage
+
+140
+00:17:39,550 --> 00:17:41,970
+Keep going
+
+141
+00:17:41,970 --> 00:17:43,970
+Okay, well, I'd rather I'd rather watch
+
+142
+00:17:45,860 --> 00:17:47,860
+Videos then talk to him right now
+
+143
+00:17:47,940 --> 00:17:52,460
+What of it say?
+
+144
+00:17:52,460 --> 00:17:55,160
+Here's the back there and watch a good boy
+
+145
+00:18:29,930 --> 00:18:37,810
+W. Oh my god, it's you you again. What happens like you don't know how to do drugs
+
+146
+00:18:38,700 --> 00:18:42,480
+No, you need an instruction manual
+
+147
+00:18:43,440 --> 00:18:50,970
+No, because I don't need to do any and I smoke a vape, but it's like I forgot that psyche only takes
+
+148
+00:18:51,610 --> 00:18:53,610
+depositories
+
+149
+00:18:54,010 --> 00:19:01,760
+Because you put them in you put them inside of me. That's the only way that he consumes any sort of medication
+
+150
+00:19:02,550 --> 00:19:04,160
+right
+
+151
+00:19:04,160 --> 00:19:16,690
+Analy, Analy, so what are you doing sick?
+
+152
+00:19:18,740 --> 00:19:21,220
+Meeting Christine's rectum. Oh
+
+153
+00:19:23,900 --> 00:19:25,900
+Tune on it. It's real gummy
+
+154
+00:19:26,510 --> 00:19:28,430
+Come eat
+
+155
+00:19:31,310 --> 00:19:39,310
+Yeah, I got years of shit going through it. I don't know why you're making a face. You're gay. That's what you like
+
+156
+00:19:42,070 --> 00:19:44,070
+I think you can't you turn me straight
+
+157
+00:19:47,220 --> 00:19:51,270
+Finally, uh, I only did a sick
+
+158
+00:19:52,840 --> 00:19:54,840
+Turn me off with men forever
+
+159
+00:19:57,090 --> 00:20:10,160
+Thanks a lot. I have some onboarding. I seem to watch for everybody just watch carefully
+
+160
+00:20:18,540 --> 00:20:20,540
+Let's just dive right into this one.
+
+161
+00:20:20,540 --> 00:20:25,540
+Today, we're looking at what has to be one of the most utterly fascinating internal documents you'll ever see.
+
+162
+00:20:25,540 --> 00:20:32,540
+We're talking about an actual, literal bureaucratic audit of something the source material officially calls the broadcast altar.
+
+163
+00:20:32,540 --> 00:20:35,540
+Now, right off the bat, we've got this massive paradox.
+
+164
+00:20:35,540 --> 00:20:44,540
+I mean, what actually happens when a super structured, commercial broadcast operation suddenly has to deal with a totally strange, totally unclassifiable object sitting smack in the middle of its workspace?
+
+165
+00:20:44,540 --> 00:20:47,420
+Well, you get an administrative crisis.
+
+166
+00:20:47,420 --> 00:20:52,220
+And the best part, it's all documented in this absolutely perfect, dry corporate speak.
+
+167
+00:20:52,820 --> 00:20:55,820
+So here's the exact dilemma these auditors were staring down.
+
+168
+00:20:56,220 --> 00:20:57,420
+Is this thing equipment?
+
+169
+00:20:57,620 --> 00:21:01,620
+Is it a religious artifact or is it just something else entirely?
+
+170
+00:21:02,220 --> 00:21:04,420
+Think about your standard modern workplace for a second.
+
+171
+00:21:04,520 --> 00:21:09,220
+You know, you've got HR protocols, strict inventory lists, complex tax codes.
+
+172
+00:21:09,520 --> 00:21:17,120
+Now imagine dropping an object into that ultra regulated environment that completely defies every single one of those bureaucratic buckets.
+
+173
+00:21:17,380 --> 00:21:21,140
+How on Earth does an organization process a mystery box that is clearly part of the
+
+174
+00:21:21,140 --> 00:21:25,620
+everyday workflow but absolutely refuses to be labeled as standard office equipment?
+
+175
+00:21:25,620 --> 00:21:29,780
+The document we're unpacking today tracks exactly how the system tried and completely
+
+176
+00:21:29,780 --> 00:21:35,060
+failed to categorize this anomaly. Section 1. The Workplace Anomaly
+
+177
+00:21:35,780 --> 00:21:41,540
+Okay, picture this highly formal, deadpan auditor meticulously writing down a total breakdown of
+
+178
+00:21:41,540 --> 00:21:45,700
+logic. It's hilarious, and it perfectly illustrates their first major roadblock.
+
+179
+00:21:46,000 --> 00:21:51,360
+Finding 8.1 explicitly states, this object cannot be classified as equipment.
+
+180
+00:21:51,360 --> 00:21:56,560
+Why? Because its principal component is intentionally destroyed, as its function, right?
+
+181
+00:21:56,560 --> 00:21:59,600
+Office equipment is supposed to be durable, you'd appreciate it over time,
+
+182
+00:21:59,600 --> 00:22:03,440
+but this object's entire purpose is to literally be consumed and destroyed.
+
+183
+00:22:03,650 --> 00:22:06,870
+But then, on the flip side, we look at Finding 8.2.
+
+184
+00:22:06,870 --> 00:22:11,490
+It can't be classified as a religious site either because, legally and practically speaking,
+
+185
+00:22:11,490 --> 00:22:15,010
+this is the recorded workplace of a commercial broadcast operation.
+
+186
+00:22:15,010 --> 00:22:17,370
+It's a strictly secular business environment.
+
+187
+00:22:17,370 --> 00:22:19,890
+And that brings us to Finding 8.3.
+
+188
+00:22:19,890 --> 00:22:22,330
+No third category exists.
+
+189
+00:22:22,330 --> 00:22:26,810
+This is the ultimate bureaucratic dead end, delivered with just absolute straight-laced
+
+190
+00:22:26,810 --> 00:22:27,810
+seriousness.
+
+191
+00:22:27,810 --> 00:22:30,250
+You see, the system relies on a binary.
+
+192
+00:22:33,150 --> 00:22:37,550
+Because it technically acts like neither of those things, but obviously exists in reality,
+
+193
+00:22:37,550 --> 00:22:39,910
+the administrative framework just breaks.
+
+194
+00:22:39,910 --> 00:22:43,110
+The system has literally run out of boxes to check.
+
+195
+00:22:43,110 --> 00:22:44,110
+Section 2.
+
+196
+00:22:44,110 --> 00:22:46,050
+The audit findings.
+
+197
+00:22:46,050 --> 00:22:50,750
+Because, you know, when a bureaucracy hits an unsolvable problem, it doesn't just stop,
+
+198
+00:22:50,750 --> 00:22:51,750
+right?
+
+199
+00:22:51,750 --> 00:22:54,990
+No, it tries to manage the absurdity by creating even more paperwork.
+
+200
+00:22:55,420 --> 00:22:57,820
+Finding 8.4 is just incredible.
+
+201
+00:22:57,820 --> 00:22:58,820
+It says,
+
+202
+00:22:58,820 --> 00:23:01,420
+The organization has been aware of the tax implications
+
+203
+00:23:01,420 --> 00:23:03,420
+and has filed that awareness under Humorus.
+
+204
+00:23:03,790 --> 00:23:06,230
+I mean, you can't make this stuff up.
+
+205
+00:23:06,230 --> 00:23:10,110
+The organization fully recognizes there are real tax implications for having and operating
+
+206
+00:23:10,110 --> 00:23:13,150
+this unclassifiable altar in a commercial space.
+
+207
+00:23:13,150 --> 00:23:17,430
+But instead of figuring it out, their official, documented response is to literally categorize
+
+208
+00:23:17,430 --> 00:23:19,830
+their own awareness of the problem as a joke.
+
+209
+00:23:19,830 --> 00:23:23,790
+They actually made a file for humor just to stash this tax liability somewhere.
+
+210
+00:23:23,790 --> 00:23:28,110
+Now what's really interesting here is that amidst all this tax confusion and definitional
+
+211
+00:23:28,110 --> 00:23:31,350
+crisis, there's also a massive inventory failure.
+
+212
+00:23:31,410 --> 00:23:36,410
+Finding 8.5 plainly states, the number of crystals is unknown.
+
+213
+00:23:36,410 --> 00:23:42,410
+So, not only do they have no idea what the altar actually is, they don't even know what is on it.
+
+214
+00:23:42,410 --> 00:23:46,410
+The auditors literally just gave up trying to count the crystals.
+
+215
+00:23:46,410 --> 00:23:48,410
+Moving on to section 3.
+
+216
+00:23:48,410 --> 00:23:50,410
+Deferred corrective actions.
+
+217
+00:23:50,780 --> 00:23:53,420
+So, every audit needs a response plan.
+
+218
+00:23:53,420 --> 00:23:55,740
+You have findings, you've got to propose corrective actions.
+
+219
+00:23:55,740 --> 00:24:00,060
+Let's take a look at the proposed administrative solutions for this growing mountain of unclassifiable
+
+220
+00:24:00,060 --> 00:24:01,060
+anomalies.
+
+221
+00:24:01,060 --> 00:24:04,260
+We've got a table summarizing the action plan, and I just have to read through these
+
+222
+00:24:04,260 --> 00:24:07,660
+sequentially because the sheer corporate dryness is perfection.
+
+223
+00:24:07,660 --> 00:24:08,660
+Task 1.
+
+224
+00:24:08,660 --> 00:24:10,260
+Establish a crystal inventory.
+
+225
+00:24:10,260 --> 00:24:11,260
+Status?
+
+226
+00:24:11,260 --> 00:24:12,260
+Deferred.
+
+227
+00:24:12,260 --> 00:24:13,260
+Yeah, they're still not going to count them.
+
+228
+00:24:13,260 --> 00:24:14,260
+Task 2.
+
+229
+00:24:16,270 --> 00:24:17,930
+Just let that sink in for a second.
+
+230
+00:24:17,930 --> 00:24:19,430
+The official corporate documentation
+
+231
+00:24:19,430 --> 00:24:21,270
+has three different spellings for a cat
+
+232
+00:24:21,270 --> 00:24:22,830
+that guards a broadcast altar,
+
+233
+00:24:22,830 --> 00:24:24,950
+and the urgent task to fix those typos
+
+234
+00:24:24,950 --> 00:24:26,910
+has also been deferred.
+
+235
+00:24:26,910 --> 00:24:29,390
+Task three, determine the correct tax treatment
+
+236
+00:24:29,390 --> 00:24:30,470
+of altar candles.
+
+237
+00:24:30,470 --> 00:24:33,790
+And as we know from the humor file, this too is deferred.
+
+238
+00:24:33,790 --> 00:24:36,630
+The entire bureaucracy is just completely paralyzed.
+
+239
+00:24:36,630 --> 00:24:39,670
+But then, we hit corrective action four.
+
+240
+00:24:39,670 --> 00:24:41,350
+Continue lighting the candle.
+
+241
+00:24:41,350 --> 00:24:43,350
+The status, adopted.
+
+242
+00:24:43,350 --> 00:24:45,230
+Out of all the administrative chaos.
+
+243
+00:24:45,230 --> 00:24:50,030
+The deferred taxes, the uncounted crystals, the multiple spellings of the Altar Cat,
+
+244
+00:24:50,030 --> 00:24:54,230
+this is the one and only action the organization actually officially adopts.
+
+245
+00:24:54,230 --> 00:24:56,470
+They just decide to keep lighting the candle.
+
+246
+00:24:56,470 --> 00:24:59,410
+And honestly, this completely pivots our narrative.
+
+247
+00:24:59,410 --> 00:25:03,670
+Because now the question isn't about how to classify the altar anymore, the core focus
+
+248
+00:25:03,670 --> 00:25:08,030
+of this entire document, and really this whole situation, becomes this.
+
+249
+00:25:08,030 --> 00:25:10,310
+Why does the candle stay lit?
+
+250
+00:25:10,310 --> 00:25:12,450
+Which brings us to section 4.
+
+251
+00:25:14,450 --> 00:25:17,050
+Alright, we're moving past the dry bureaucracy now.
+
+252
+00:25:17,050 --> 00:25:21,370
+The source material actually shifts into a section called the benediction, and it gives
+
+253
+00:25:21,370 --> 00:25:26,010
+us this deeply deliberate, almost profound explanation for the altar's true purpose.
+
+254
+00:25:26,010 --> 00:25:27,290
+3,000.
+
+255
+00:25:27,290 --> 00:25:33,070
+The source drops this stunning fact across four entire years, and nearly 3,000 commercial
+
+256
+00:25:33,070 --> 00:25:34,690
+broadcast transmissions.
+
+257
+00:25:34,690 --> 00:25:39,010
+The archive's internal ritual register hasn't wavered once in how it describes this setup.
+
+258
+00:25:39,140 --> 00:25:44,500
+In 3,000 instances, it has used only one very specific word to define what this object is
+
+259
+00:25:44,500 --> 00:25:46,180
+actually doing.
+
+260
+00:25:46,180 --> 00:25:48,660
+And the answer is incredibly simple.
+
+261
+00:25:48,660 --> 00:25:51,820
+Not sacred, not decorative, working.
+
+262
+00:25:51,820 --> 00:25:56,340
+This right here fundamentally solves that auditor's paradox from the very beginning.
+
+263
+00:25:56,340 --> 00:25:58,900
+It's not a religious artifact, so it's not sacred.
+
+264
+00:25:58,900 --> 00:26:02,780
+It's not some pretty desk ornament just there to make the broadcast booth look nice, so it's
+
+265
+00:26:02,780 --> 00:26:03,980
+not decorative.
+
+266
+00:26:07,890 --> 00:26:13,170
+The candle, the altar, the crystals, they are actively performing a job.
+
+267
+00:26:13,170 --> 00:26:15,930
+The source text strictly defines it as a tool.
+
+268
+00:26:15,930 --> 00:26:19,810
+And if you think about what a tool actually is, well, a tool gets used.
+
+269
+00:26:19,810 --> 00:26:23,770
+According to the benediction, this candle is a tool because it provides boundaries for
+
+270
+00:26:23,770 --> 00:26:24,770
+the work.
+
+271
+00:26:24,770 --> 00:26:28,330
+It is physically lit at the very start of the broadcast and it is put out at the very
+
+272
+00:26:28,330 --> 00:26:29,330
+end.
+
+273
+00:26:29,330 --> 00:26:33,290
+You remember that intentional destruction of the wax that confused the auditor so much
+
+274
+00:26:34,240 --> 00:26:37,840
+That destruction is really just a visual timer for the work itself.
+
+275
+00:26:37,840 --> 00:26:41,340
+It's a tool that brackets a period of intense, focused effort.
+
+276
+00:26:41,340 --> 00:26:45,140
+Which leaves us with this final, really powerful quote from the benediction.
+
+277
+00:26:45,140 --> 00:26:50,340
+The candle is lit at the start, put out at the end, and the thing it is for happens in between.
+
+278
+00:26:50,340 --> 00:26:53,040
+It doesn't matter that human resources can't categorize it.
+
+279
+00:26:53,040 --> 00:26:56,040
+It really doesn't matter that the tax code has no checkbox for it.
+
+280
+00:26:56,040 --> 00:26:59,140
+The ritual itself creates the space for the work to happen.
+
+281
+00:26:59,180 --> 00:27:01,960
+So, I want you to consider your own daily routines.
+
+282
+00:27:01,960 --> 00:27:06,180
+What are the unclassifiable tools or the little unexplainable rituals in your own workspace
+
+283
+00:27:06,180 --> 00:27:08,820
+that help you focus and actually get the job done?
+
+284
+00:27:08,820 --> 00:27:12,780
+Because sometimes the absolute most essential equipment you have is the stuff that defies
+
+285
+00:27:12,780 --> 00:27:14,740
+every single category on the audit.
+
+286
+00:27:14,740 --> 00:27:44,740
+If you wander into the wrong corners of live streaming today, you hit an avalanche of noise.
+
+287
+00:28:09,580 --> 00:28:12,180
+Take a channel called Cult of Psyche.
+
+288
+00:28:12,180 --> 00:28:15,860
+It sits at a relatively modest 3,200 subscribers,
+
+289
+00:28:15,860 --> 00:28:20,300
+yet the output is staggering, over 2,600 videos,
+
+290
+00:28:20,300 --> 00:28:24,980
+including live broadcasts that drag on for nearly 12 hours at a time.
+
+291
+00:28:24,980 --> 00:28:27,620
+To anyone clicking on a stream for the first time,
+
+292
+00:28:27,620 --> 00:28:31,260
+the content looks like a void of incomprehensible drama.
+
+293
+00:28:31,260 --> 00:28:34,740
+The panels are filled with screaming matches over petty boycotts,
+
+294
+00:28:34,740 --> 00:28:38,660
+vague threats of doxing, and deeply toxic internet beefs.
+
+295
+00:28:38,900 --> 00:28:42,000
+Curious, this raises a question.
+
+296
+00:28:42,000 --> 00:28:47,740
+Why do these specific, chaotic micro-communities capture people so completely, keeping participants
+
+297
+00:28:47,740 --> 00:28:50,860
+locked in front of their webcams day after day?
+
+298
+00:28:50,860 --> 00:28:54,740
+Brushing this off as digital trash misses the mechanism at play.
+
+299
+00:28:54,740 --> 00:29:00,420
+That surface-level toxicity acts as a smoke screen, obscuring a highly structured psychological
+
+300
+00:29:00,420 --> 00:29:02,700
+trap built to keep everyone involved.
+
+301
+00:29:02,980 --> 00:29:06,980
+We can see the shape of that trap using a tool called Colt Codex.
+
+302
+00:29:06,980 --> 00:29:11,980
+It is a massive, AI-powered intelligence archive built for one specific purpose,
+
+303
+00:29:11,980 --> 00:29:16,980
+to ingest, map, and analyze every single second of the Colt of Psyche.
+
+304
+00:29:16,980 --> 00:29:23,980
+The AI Oracle digests over 2,600 broadcasts, analyzing more than 1.6 million transcript segments.
+
+305
+00:29:23,980 --> 00:29:28,980
+It filters this raw audio, tracking thematic signals across the network.
+
+306
+00:29:29,220 --> 00:29:34,720
+By mapping mentions of tarot, the occult, and psychology, a hidden architecture emerges.
+
+307
+00:29:34,720 --> 00:29:38,220
+Applying this data-driven lens brings the picture into focus.
+
+308
+00:29:38,220 --> 00:29:41,720
+The channel stops looking like a collection of random internet arguments
+
+309
+00:29:41,720 --> 00:29:45,220
+and starts functioning as a deliberate, manufactured spectacle.
+
+310
+00:29:45,220 --> 00:29:49,720
+By indexing these specific signals, the occult codex acts as a digital ledger.
+
+311
+00:29:49,720 --> 00:29:54,220
+It provides the raw material needed to see if these online interactions
+
+312
+00:29:54,220 --> 00:29:57,220
+are following a deeper, more ancient script.
+
+313
+00:29:57,440 --> 00:30:05,940
+To see how the archive decodes this behavior, we can look at a participant who regularly appears on the channel's panels, a user named Tony.
+
+314
+00:30:06,000 --> 00:30:10,640
+On the surface, the transcripts show Tony operating as a classic troll.
+
+315
+00:30:10,640 --> 00:30:15,280
+He boasts about his thug-dizzle, executing ding-dong ditch tactics,
+
+316
+00:30:15,280 --> 00:30:18,000
+and threatening targeted doxing campaigns.
+
+317
+00:30:18,000 --> 00:30:21,840
+What stands out is the reaction of the host and the wider community.
+
+318
+00:30:21,840 --> 00:30:25,840
+Instead of banning him, they actively praise his intimidation tactics
+
+319
+00:30:25,840 --> 00:30:28,720
+and encourage him to keep pushing the harassment.
+
+320
+00:30:28,720 --> 00:30:31,200
+The behavioral breakdown inside the archive
+
+321
+00:30:31,200 --> 00:30:34,080
+classifies Tony differently than a standard viewer.
+
+322
+00:30:34,270 --> 00:30:39,950
+He is mapped as a pressure operative, someone whose entire social identity is built on seeking
+
+323
+00:30:39,950 --> 00:30:45,150
+status through conflict. Within the closed ecosystem of the panel, aggressive behavior
+
+324
+00:30:45,150 --> 00:30:50,750
+is stripped of its real-world moral weight. Intimidation is simply transformed into highly
+
+325
+00:30:50,750 --> 00:30:58,190
+valuable social currency. The archive translates Tony's raw actions, trolling, yelling, threats,
+
+326
+00:31:03,460 --> 00:31:08,900
+he acts as the enforcer, providing the friction necessary to bind the group together against a
+
+327
+00:31:08,900 --> 00:31:15,540
+common enemy. The community's boycott functions as a ritualistic performance. It provides the
+
+328
+00:31:15,540 --> 00:31:20,580
+group with a shared objective and a source of entertainment, regardless of any actual moral
+
+329
+00:31:20,580 --> 00:31:27,140
+outcome. This intense commitment to roles, the enforcer, the goddess, the chaos agent,
+
+330
+00:31:29,550 --> 00:31:36,550
+Creating a spectacle so captivating that people cannot look away is, in its own way, a literal form of magic.
+
+331
+00:31:36,910 --> 00:31:41,910
+In the digital age, this manufactured drama proves a core occult principle.
+
+332
+00:31:41,910 --> 00:31:46,410
+The person who controls the community's attention dictates their reality.
+
+333
+00:31:46,410 --> 00:31:49,410
+If you step back from this one specific channel,
+
+334
+00:31:49,410 --> 00:31:55,410
+you see these same dynamics playing out across the entire landscape of internet culture.
+
+335
+00:31:55,410 --> 00:31:59,910
+Modern online personality cults share the same core architecture
+
+336
+00:31:59,910 --> 00:32:04,410
+as the mythological pantheons constructed by ancient civilizations.
+
+337
+00:32:04,530 --> 00:32:08,610
+The roles remain the same, only the medium has changed.
+
+338
+00:32:08,610 --> 00:32:13,010
+Humanity never actually abandoned its need for occult mythology.
+
+339
+00:32:13,010 --> 00:32:19,330
+We simply adapted those ancient rituals to fit webcams, live chats, and algorithmic feeds.
+
+340
+00:32:19,330 --> 00:32:25,010
+The trashy, manufactured drama dominating our screens is not a modern accident.
+
+341
+00:32:25,010 --> 00:32:29,330
+It is the latest vessel for our oldest psychological survival patterns.
+
+342
+00:32:29,540 --> 00:32:36,540
+This is the actual utility of pointing an AI intelligence archive at seemingly meaningless internet drama.
+
+343
+00:32:36,540 --> 00:32:42,540
+Data-driven tools like the Cult Codex strip away the captivating illusion of the spectacle.
+
+344
+00:32:42,540 --> 00:32:49,540
+They make the hidden behavioral code visible, allowing you to see exactly how the strings are being pulled.
+
+345
+00:32:49,540 --> 00:32:56,240
+Identifying these archetypes as they appear on screen changes the relationship between the viewer and the content.
+
+346
+00:32:56,240 --> 00:33:00,960
+The drama stops being an immersive reality and becomes a visible pattern.
+
+347
+00:33:01,680 --> 00:33:07,280
+Exposing this structural code shifts the perspective. The user moves from a participant
+
+348
+00:33:07,280 --> 00:33:13,200
+caught in the drama to an observer who understands exactly how the machinery of the spectacle is
+
+349
+00:33:31,820 --> 00:33:35,820
+Consider him to be a spiritual and psychological rapist.
+
+350
+00:33:35,820 --> 00:33:37,820
+Unquote. I mean, wow.
+
+351
+00:33:37,820 --> 00:33:39,820
+That is a massively severe accusation, right?
+
+352
+00:33:39,820 --> 00:33:43,820
+And it was broadcasted live to thousands of people by streamer Alexandra Myers,
+
+353
+00:33:43,820 --> 00:33:47,820
+aimed directly at a creator she used to support, a guy goes by the name Psych.
+
+354
+00:33:48,400 --> 00:33:52,120
+Okay, so let's dive right into this, because what we're exploring today isn't just your
+
+355
+00:33:52,120 --> 00:33:53,680
+run-of-the-mill internet drama.
+
+356
+00:33:53,680 --> 00:33:58,040
+No, it's a meticulously documented case study in digital escalation.
+
+357
+00:33:58,040 --> 00:34:02,520
+It's actually a fascinating and honestly kind of terrifying look at how a simple online
+
+358
+00:34:02,520 --> 00:34:06,240
+falling out can mutate into a full-blown campaign of real-world slander.
+
+359
+00:34:06,660 --> 00:34:08,660
+Welcome to This Explainer.
+
+360
+00:34:08,660 --> 00:34:15,660
+Today, we're going to unpack a highly complex online feud to really understand the nuts and bolts of digital disputes.
+
+361
+00:34:15,660 --> 00:34:21,660
+We'll be digging through the source material, pulling from actual transcripts and a formal police incident report,
+
+362
+00:34:21,660 --> 00:34:28,660
+just to see exactly how a severed online friendship somehow spiraled into wild claims of demonic possession,
+
+363
+00:34:28,660 --> 00:34:32,660
+severe criminal allegations, and straight-up real-world harassment.
+
+364
+00:34:32,660 --> 00:34:38,660
+Our focus here is going to be strictly on the documented campaign of slander directed at Psyche by Alexandra Mayers.
+
+365
+00:34:38,660 --> 00:34:44,660
+To make sense of this whole chaotic internet mystery, here is our roadmap for today.
+
+366
+00:34:44,660 --> 00:34:47,660
+1. From friendship to fallout.
+
+367
+00:34:47,660 --> 00:34:51,660
+2. The accusations turn supernatural.
+
+368
+00:34:51,660 --> 00:34:54,660
+3. Escalating to criminal slander.
+
+369
+00:34:54,660 --> 00:34:57,660
+4. Crossing the digital boundary.
+
+370
+00:34:57,660 --> 00:35:01,660
+And finally, 5. Documenting the damage.
+
+371
+00:35:01,710 --> 00:35:06,910
+All right, let's jump right into section one, from friendship to fallout.
+
+372
+00:35:06,910 --> 00:35:11,550
+So looking at the documented timeline, we see this incredibly stark contrast.
+
+373
+00:35:11,550 --> 00:35:15,790
+Back in April of 2026, Alexandra Myers was publicly telling her audience that Psyche,
+
+374
+00:35:15,790 --> 00:35:19,990
+whose real name is John Bates, was quote, a very good person, extremely so.
+
+375
+00:35:19,990 --> 00:35:23,750
+But fast forward just a few short months to July, and she's telling those exact same
+
+376
+00:35:27,630 --> 00:35:29,230
+Talk about a 180, right?
+
+377
+00:35:29,230 --> 00:35:31,630
+This wasn't some slow gradual drifting apart.
+
+378
+00:35:31,630 --> 00:35:34,030
+It was a sudden, totally volatile flip.
+
+379
+00:35:34,030 --> 00:35:35,630
+So what actually triggered it?
+
+380
+00:35:35,630 --> 00:35:39,630
+Believe it or not, the core initial grievance boils down to this exact number.
+
+381
+00:35:39,630 --> 00:35:42,190
+$973.40.
+
+382
+00:35:42,190 --> 00:35:46,030
+In her own broadcasts, Mayer strictly tallied up all the cash and gifts,
+
+383
+00:35:46,030 --> 00:35:49,310
+stuff like streaming equipment, groceries, even flowers,
+
+384
+00:35:49,310 --> 00:35:52,590
+that she had voluntarily sent to psych over the course of a few months.
+
+385
+00:35:52,590 --> 00:35:54,270
+But the moment the relationship went south,
+
+386
+00:35:54,620 --> 00:35:58,780
+She started publicly characterizing those voluntary donations as literal fraud.
+
+387
+00:35:58,780 --> 00:36:01,420
+She claimed she was being manipulated while grieving her father,
+
+388
+00:36:01,420 --> 00:36:05,060
+and aggressively started warning her audience that Psych was this master manipulator
+
+389
+00:36:05,060 --> 00:36:07,380
+running a digital front for extortion.
+
+390
+00:36:07,380 --> 00:36:12,020
+Which brings us to Section 2, The Accusation's Turn Supernatural.
+
+391
+00:36:12,100 --> 00:36:16,600
+This phase perfectly illustrates just how bizarre internet echo chambers can get.
+
+392
+00:36:16,600 --> 00:36:19,600
+Mayors didn't just stop at saying Psych was a bad friend.
+
+393
+00:36:19,600 --> 00:36:23,600
+She actually started broadcasting severe, supernatural allegations.
+
+394
+00:36:23,600 --> 00:36:27,100
+She stated he admitted to working with a demonic entity called Asmodeus.
+
+395
+00:36:27,170 --> 00:36:31,250
+Yeah. She claimed he was trying to embody demons to manifest feminine energy,
+
+396
+00:36:31,250 --> 00:36:35,250
+and that he was actively launching spiritual attacks against her and other people.
+
+397
+00:36:35,250 --> 00:36:39,250
+The source material even shows she ran a community poll asking her audience if they
+
+398
+00:36:39,250 --> 00:36:42,690
+thought Syke killed a cat for a quote, cult ritual sacrifice.
+
+399
+00:36:43,410 --> 00:36:47,570
+Moving on to section three, escalating to criminal slander.
+
+400
+00:36:47,700 --> 00:36:53,420
+If you map out this cognitive leap, it reveals a massive, massive escalation.
+
+401
+00:36:53,420 --> 00:36:57,580
+Look, on one side you have standard, if pretty toxic, online grievances, right?
+
+402
+00:36:57,580 --> 00:37:01,060
+Stuff like being unappreciative, e-begging, blocking people.
+
+403
+00:37:01,060 --> 00:37:04,260
+But then look at what Myers escalated those things into.
+
+404
+00:37:04,260 --> 00:37:08,740
+Active extortion, active methamphetamine addiction, being an accomplice to arson,
+
+405
+00:37:08,740 --> 00:37:13,180
+and most devastatingly of all, repeatedly labeling Psyche a PDF,
+
+406
+00:37:13,180 --> 00:37:15,860
+which is basically internet code for a pedophile.
+
+407
+00:37:16,060 --> 00:37:17,960
+These aren't just spicy internet insults anymore.
+
+408
+00:37:17,960 --> 00:37:21,460
+These are severe, completely baseless criminal accusations.
+
+409
+00:37:21,860 --> 00:37:26,000
+Now, the timing here is absolutely crucial, so let's walk through this timeline.
+
+410
+00:37:26,000 --> 00:37:31,800
+On June 27th, 2026, Sight published a formal written cease and desist demanding that she
+
+411
+00:37:31,800 --> 00:37:33,040
+stop the slander.
+
+412
+00:37:33,040 --> 00:37:34,040
+Did it work?
+
+413
+00:37:34,040 --> 00:37:35,040
+Absolutely not.
+
+414
+00:37:35,040 --> 00:37:39,840
+The very next day, June 28th, literally hours after receiving a firm legal boundary, Mayer's
+
+415
+00:37:39,840 --> 00:37:43,840
+published her first explicit accusation that he sexually desires children.
+
+416
+00:37:43,840 --> 00:37:47,880
+By July 11th, she was contacting his real-world property management, and by August she was
+
+417
+00:37:51,250 --> 00:37:55,050
+Okay, section 4, crossing the digital boundary.
+
+418
+00:37:55,050 --> 00:37:59,090
+So you might be wondering, how does someone continue to harass a target who has already
+
+419
+00:37:59,090 --> 00:38:00,770
+blocked them everywhere online?
+
+420
+00:38:00,770 --> 00:38:05,850
+Well, the answer lies in a concept that analysts in our sources call forced proximity.
+
+421
+00:38:05,850 --> 00:38:09,650
+Basically, it's a structural flaw in modern social media.
+
+422
+00:38:09,650 --> 00:38:13,130
+When a victim walls off an aggressor, you know, blocking their DMs, banning them from
+
+423
+00:38:13,130 --> 00:38:15,330
+chat, the aggressor just pivots.
+
+424
+00:38:15,330 --> 00:38:18,090
+They use their own audience as a bypass mechanism.
+
+425
+00:38:19,120 --> 00:38:23,280
+Analyze the victims every single move and broadcast inflammatory claims publicly.
+
+426
+00:38:23,280 --> 00:38:25,240
+They don't actually need to speak to the victim.
+
+427
+00:38:25,240 --> 00:38:31,160
+They speak about the victim so loudly that the internet essentially forces the two back into proximity.
+
+428
+00:38:31,160 --> 00:38:36,360
+And the police incident report documents exactly how this forced proximity spills over into real life.
+
+429
+00:38:36,360 --> 00:38:40,320
+It notes that on July 11th, mayors actually broadcasted a prepared statement
+
+430
+00:38:40,320 --> 00:38:44,000
+directed at the legal team of Psyche's property management company out in California.
+
+431
+00:38:44,050 --> 00:38:47,810
+Worse than that, she literally instructed her viewers on exactly what to type into Google
+
+432
+00:38:47,810 --> 00:38:51,170
+to find his full name, his phone number, and his physical home address.
+
+433
+00:38:51,170 --> 00:38:55,010
+This is the exact moment where Digital Slander crosses the line into physical endangerment.
+
+434
+00:38:55,010 --> 00:38:58,690
+And, according to the incident report, the collateral damage didn't stop there.
+
+435
+00:38:58,690 --> 00:39:01,650
+Mayors allegedly fabricated claims of physical threats,
+
+436
+00:39:01,650 --> 00:39:06,210
+saying in a July video that Psyche sent criminals to assault her at an apartment in Houston, Texas.
+
+437
+00:39:06,210 --> 00:39:09,570
+A place, by the way, the incident report notes Psyche has literally never even been to.
+
+438
+00:39:09,760 --> 00:39:13,360
+She also publicly doxxed Psyche's sister, Karen Lyons.
+
+439
+00:39:13,360 --> 00:39:19,260
+She repeatedly broadcasted Karen's name to thousands of people, falsely claiming she was Psyche's legal caretaker,
+
+440
+00:39:19,260 --> 00:39:21,560
+and even told viewers to save her details.
+
+441
+00:39:21,560 --> 00:39:26,260
+She dragged a completely private, uninvolved citizen directly into the crosshairs of a digital mob.
+
+442
+00:39:26,260 --> 00:39:31,760
+Which takes us to our final section, Section 5, Documenting the Damage.
+
+443
+00:39:32,050 --> 00:39:37,790
+Look, when digital platforms totally fail to protect you, you have to anchor the chaos
+
+444
+00:39:37,790 --> 00:39:39,290
+in reality.
+
+445
+00:39:39,290 --> 00:39:43,290
+And that is exactly what this actual police incident report, filed by Psyche, does.
+
+446
+00:39:43,540 --> 00:39:45,700
+It's clinical, it's highly structured,
+
+447
+00:39:45,700 --> 00:39:47,740
+and it is meticulously logged.
+
+448
+00:39:47,740 --> 00:39:50,020
+It tracks every single date, every video title,
+
+449
+00:39:50,020 --> 00:39:52,220
+and every severe accusation.
+
+450
+00:39:52,220 --> 00:39:53,500
+When you're dealing with an antagonist
+
+451
+00:39:53,500 --> 00:39:55,780
+who relies heavily on emotional manipulation,
+
+452
+00:39:55,780 --> 00:39:57,060
+overwhelming video output,
+
+453
+00:39:57,060 --> 00:39:58,820
+and constantly deleting their tracks,
+
+454
+00:39:58,820 --> 00:40:01,740
+creating an airtight offline legal record like this
+
+455
+00:40:01,740 --> 00:40:04,820
+is quite literally the ultimate defense mechanism.
+
+456
+00:40:04,820 --> 00:40:08,020
+So we've covered some seriously intense ground today,
+
+457
+00:40:08,020 --> 00:40:10,300
+breaking down what is truly a severe case
+
+458
+00:40:10,300 --> 00:40:11,420
+of digital escalation.
+
+459
+00:40:11,470 --> 00:40:14,750
+But I want to leave you with this final thought to take away from this explainer.
+
+460
+00:40:14,750 --> 00:40:19,790
+In an era where forced proximity allows online aggressors to just bypass our digital boundaries
+
+461
+00:40:19,790 --> 00:40:25,470
+entirely, and where totally unfounded slander can actually threaten our physical homes and our families,
+
+462
+00:40:25,470 --> 00:40:29,550
+when the digital block button fundamentally fails, how do we build better architecture
+
+463
+00:40:29,550 --> 00:40:33,710
+to protect ourselves out there in the real world? It's a terrifying vulnerability of our
+
+464
+00:40:33,710 --> 00:40:37,390
+modern internet culture, for sure, and it's something I think we all need to start thinking
+
+465
+00:40:53,260 --> 00:41:19,620
+Um, I don't think it's the only guess now might just down for a few more minutes and just continue to
+
+466
+00:41:20,750 --> 00:41:24,110
+play some things until somebody once comes up or
+
+467
+00:41:36,690 --> 00:41:43,810
+Cult of Psyche operates as an egalitarian forum designed to investigate extraordinary,
+
+468
+00:41:43,810 --> 00:41:47,190
+controversial, and high strangeness concepts.
+
+469
+00:41:47,190 --> 00:41:52,970
+To navigate this space, members must exercise strict intellectual humility.
+
+470
+00:41:52,970 --> 00:41:55,710
+Independent thinking is a sacred requirement.
+
+471
+00:41:55,710 --> 00:42:01,210
+Every action and decision within the community is filtered through a single prime directive.
+
+472
+00:42:05,140 --> 00:42:09,140
+Because understanding is the primary metric for success,
+
+473
+00:42:09,140 --> 00:42:13,140
+participants must detach their personal egos from their arguments.
+
+474
+00:42:13,140 --> 00:42:16,140
+The goal is discovery, not victory.
+
+475
+00:42:16,140 --> 00:42:18,140
+To guarantee open exploration,
+
+476
+00:42:18,140 --> 00:42:24,140
+the community enforces absolute intellectual equality from the moment a member arrives.
+
+477
+00:42:24,140 --> 00:42:27,140
+External markers of status, titles, subscriber counts,
+
+478
+00:42:27,140 --> 00:42:31,140
+income brackets, or political affiliations carry zero weight,
+
+479
+00:42:31,250 --> 00:42:34,250
+Ideas earn influence, not status.
+
+480
+00:42:34,250 --> 00:42:37,250
+Members must place curiosity before combat.
+
+481
+00:42:37,420 --> 00:42:43,020
+Before critiquing an opposing view, you must accurately represent it, or steal man it,
+
+482
+00:42:43,020 --> 00:42:46,940
+and ask clarifying questions rather than attacking the speaker.
+
+483
+00:42:46,940 --> 00:42:50,300
+Extraordinary claims are welcomed from all perspectives.
+
+484
+00:42:50,300 --> 00:42:55,020
+Scientists, mystics, skeptics, and believers share the same space,
+
+485
+00:42:55,020 --> 00:42:59,020
+and no single ideology receives special protection from scrutiny.
+
+486
+00:42:59,020 --> 00:43:01,900
+However, hard behavioral boundaries exist.
+
+487
+00:43:02,060 --> 00:43:07,620
+cruelty, coordinated harassment, doxing, and framing personal spiritual experiences as
+
+488
+00:43:07,620 --> 00:43:09,860
+medical advice are strictly prohibited.
+
+489
+00:43:10,260 --> 00:43:13,660
+These rules create a highly resilient ecosystem.
+
+490
+00:43:13,660 --> 00:43:16,860
+Ideas face aggressive, continuous pressure testing,
+
+491
+00:43:16,860 --> 00:43:21,660
+while the basic human dignity of the individual speaking remains fiercely protected.
+
+492
+00:43:21,660 --> 00:43:24,660
+Moderation is entirely non-ideological.
+
+493
+00:43:24,660 --> 00:43:28,160
+Moderators act exclusively as guardians of conversation flow,
+
+494
+00:43:28,160 --> 00:43:30,660
+not enforcers of specific beliefs.
+
+495
+00:43:30,660 --> 00:43:35,360
+Violations are handled through an objective five-step escalation ladder,
+
+496
+00:43:35,360 --> 00:43:39,160
+starting with a gentle reminder, moving to an official warning,
+
+497
+00:43:39,410 --> 00:43:46,690
+temporary mute, a temporary removal, and finally a permanent ban. That maximum penalty is strictly
+
+498
+00:43:46,690 --> 00:43:53,330
+isolated from standard debate friction. Level 5 is reserved exclusively for actionable offenses,
+
+499
+00:43:53,330 --> 00:43:59,330
+like credible threats, predatory behavior, and doxing. By interfering only when necessary and
+
+500
+00:43:59,330 --> 00:44:05,010
+maintaining transparent penalties, this system prevents subjective censorship and ensures no
+
+501
+00:44:07,620 --> 00:44:13,540
+The entire framework fails the moment loyalty to a specific tribe or personality supersedes
+
+502
+00:44:13,540 --> 00:44:19,300
+the truth. Members are explicitly instructed to never outsource their thinking to experts,
+
+503
+00:44:19,300 --> 00:44:25,700
+internet influencers, or even the cult master. Here, changing your mind is an indicator of strength.
+
+504
+00:44:25,700 --> 00:44:30,500
+Having a mistaken belief corrected is celebrated as the ultimate intellectual victory.
+
+505
+00:44:46,160 --> 00:44:49,120
+And this explainer of a very good person.
+
+506
+00:44:49,120 --> 00:44:51,340
+We're diving straight into a really fascinating
+
+507
+00:44:51,340 --> 00:44:53,600
+and honestly pretty chilling story today.
+
+508
+00:44:53,600 --> 00:44:56,780
+It uses the ancient symbolic grammar of tarot cards
+
+509
+00:44:56,780 --> 00:44:59,940
+to break down something incredibly modern, an internet mob.
+
+510
+00:44:59,940 --> 00:45:01,780
+We're gonna pull apart the actual mechanics
+
+511
+00:45:01,780 --> 00:45:03,360
+of digital cancellation.
+
+512
+00:45:03,360 --> 00:45:04,940
+But right at the core of all this,
+
+513
+00:45:04,940 --> 00:45:06,580
+we're gonna uncover a terrifying truth
+
+514
+00:45:06,580 --> 00:45:09,380
+about why our basic human willingness to trust
+
+515
+00:45:09,380 --> 00:45:12,940
+is both a profound blessing and a dangerous sentence.
+
+516
+00:45:12,940 --> 00:45:14,050
+Let's get right into it.
+
+517
+00:45:14,050 --> 00:45:17,650
+The fool is a blessing and a sentence at once.
+
+518
+00:45:17,650 --> 00:45:20,770
+A person who will not step is not wise.
+
+519
+00:45:20,770 --> 00:45:23,940
+He is only already dead and standing up.
+
+520
+00:45:23,940 --> 00:45:27,620
+This totally flips how we usually think about being naive, right?
+
+521
+00:45:27,620 --> 00:45:30,500
+In Tarot, the zero-eth card is the fool,
+
+522
+00:45:30,500 --> 00:45:34,020
+literally a young guy stepping off a cliff looking up at the sky.
+
+523
+00:45:34,020 --> 00:45:36,020
+We almost always read that as a warning,
+
+524
+00:45:36,020 --> 00:45:38,740
+but our source material insists it's a blessing
+
+525
+00:45:38,740 --> 00:45:41,060
+and a sentence at the exact same time.
+
+526
+00:45:41,170 --> 00:45:45,170
+Every single terrible thing that happens in the story of Digital Betrayal,
+
+527
+00:45:45,170 --> 00:45:50,170
+it all starts right here, with a simple willingness to step off that cliff of trust.
+
+528
+00:45:50,170 --> 00:45:53,170
+The main guy in our story doesn't start off as stupid.
+
+529
+00:45:53,170 --> 00:45:57,170
+He just starts as someone willing to believe the air will actually hold him.
+
+530
+00:45:57,170 --> 00:46:00,170
+Part one, the sentence of trust.
+
+531
+00:46:00,170 --> 00:46:02,170
+So let's set the scene.
+
+532
+00:46:02,170 --> 00:46:08,170
+Imagine a lonely 45-year-old guy living on the foggy side of town struggling to make rent.
+
+533
+00:46:08,540 --> 00:46:11,540
+He spends his nights as a late-night tarot streamer,
+
+534
+00:46:11,540 --> 00:46:14,540
+broadcasting to a modest little room of maybe 400 people,
+
+535
+00:46:14,540 --> 00:46:16,540
+calling himself the Hierophant.
+
+536
+00:46:16,540 --> 00:46:18,540
+Then, out of nowhere in the dead of night,
+
+537
+00:46:18,540 --> 00:46:20,540
+his quiet world gets pierced by this beautiful song
+
+538
+00:46:20,540 --> 00:46:22,540
+sent by a powerful stranger.
+
+539
+00:46:22,540 --> 00:46:25,540
+A message pops up, a link, a blue circle for a photo,
+
+540
+00:46:25,540 --> 00:46:28,540
+and the words, loved that, goodnight.
+
+541
+00:46:28,540 --> 00:46:32,540
+He clicks it, and just like that, he leaves the door wide open.
+
+542
+00:46:32,910 --> 00:46:36,510
+It's important to realize this wasn't some immediate obvious trap.
+
+543
+00:46:36,510 --> 00:46:39,790
+To a practically insensible man, it felt like an absolute lifeline.
+
+544
+00:46:39,790 --> 00:46:42,990
+This stranger, who, by the way, had a massive following of her own,
+
+545
+00:46:42,990 --> 00:46:45,390
+started funneling his stream to her audience.
+
+546
+00:46:45,390 --> 00:46:48,190
+We're talking mourning bagels ordered from states away,
+
+547
+00:46:48,190 --> 00:46:49,870
+texts saying, I love you.
+
+548
+00:46:49,870 --> 00:46:53,630
+And perhaps most incredibly, she consecrated him in front of thousands of people,
+
+549
+00:46:53,630 --> 00:46:56,830
+literally calling him a very good person, extremely so.
+
+550
+00:46:56,830 --> 00:46:57,950
+I mean, think about it.
+
+551
+00:46:57,950 --> 00:47:01,390
+For a lonely guy, having someone hand you back your own face and tell you it's a good one,
+
+552
+00:47:01,650 --> 00:47:05,090
+that is intensely intoxicating, but as we're about to see,
+
+553
+00:47:05,090 --> 00:47:09,890
+building a foundation entirely on someone else's validation is deeply, deeply flawed.
+
+554
+00:47:10,220 --> 00:47:13,260
+Which brings us to part two, the Struck Tower.
+
+555
+00:47:13,260 --> 00:47:16,600
+This is exactly where that sentence of trust begins to be carried out.
+
+556
+00:47:16,600 --> 00:47:20,720
+When the betrayal finally hits, it isn't some sudden freak storm out of nowhere.
+
+557
+00:47:20,720 --> 00:47:24,220
+No, it's the collapse of a false foundation that was built on this hidden,
+
+558
+00:47:24,220 --> 00:47:26,680
+totally one-sided ledger of usefulness.
+
+559
+00:47:26,680 --> 00:47:30,020
+The source reveals this stranger didn't just know him, she used him.
+
+560
+00:47:30,020 --> 00:47:33,940
+She used him for traffic, for warmth, and to play the role of the grand savior.
+
+561
+00:47:33,940 --> 00:47:37,100
+The whole relationship was just a mirror for her, and hey,
+
+562
+00:47:37,100 --> 00:47:39,380
+mirrors don't love you back, they just give you your reflection.
+
+563
+00:47:39,740 --> 00:47:46,060
+right up until they break. The tower. The struck tower. The disaster is not the lightning.
+
+564
+00:47:46,060 --> 00:47:49,420
+The disaster is the false foundation that was always there.
+
+565
+00:47:49,520 --> 00:47:53,880
+This redefinition of the dreaded tower card is absolutely crucial.
+
+566
+00:47:53,880 --> 00:47:57,800
+Usually, when people pull this card, they're terrified of the lightning bolt.
+
+567
+00:47:57,800 --> 00:48:03,560
+But this explainer anchors our whole understanding of algorithmic cancellation in a totally different truth.
+
+568
+00:48:03,560 --> 00:48:05,440
+The lightning isn't the disaster.
+
+569
+00:48:05,440 --> 00:48:10,320
+The lightning is literally just the truth finally hitting a relationship that was doomed from day one.
+
+570
+00:48:10,460 --> 00:48:15,740
+That false foundation, it was poured the very second he accepted that sentence of trust.
+
+571
+00:48:15,740 --> 00:48:19,760
+A tiny misunderstanding over a piece of art he posted was literally all it took for the
+
+572
+00:48:19,760 --> 00:48:23,380
+lightning to strike and for her to just decide it was over.
+
+573
+00:48:23,380 --> 00:48:28,820
+First keeping bad company, second running a cult, third danger to the young, fourth
+
+574
+00:48:28,820 --> 00:48:30,340
+the worst word.
+
+575
+00:48:30,340 --> 00:48:35,060
+To completely ruin him, she didn't just drop one massive claim, instead she fed the internet
+
+576
+00:48:38,450 --> 00:48:41,090
+It started with, oh, he keeps bad company.
+
+577
+00:48:41,090 --> 00:48:44,050
+Next thing you know, his tiny little stream is somehow a cult.
+
+578
+00:48:44,050 --> 00:48:47,410
+Then that supposed cult is suddenly framed as a danger to the young,
+
+579
+00:48:47,410 --> 00:48:52,050
+and for the grand finale, she uses a rehabilitated proxy to drop the worst possible word,
+
+580
+00:48:52,050 --> 00:48:54,290
+predator, directly onto his legal name.
+
+581
+00:48:54,500 --> 00:48:58,900
+Weaponizing the very real, serious trauma of child safety just for cheap internet clout
+
+582
+00:48:58,900 --> 00:49:03,500
+is beyond cruel, and the wildest part, she did the whole shebang without a single shred
+
+583
+00:49:03,500 --> 00:49:04,700
+of new evidence.
+
+584
+00:49:04,700 --> 00:49:08,580
+The accusation wasn't a factual statement, it was just a bottomless appetite that needed
+
+585
+00:49:08,580 --> 00:49:10,220
+constant feeding.
+
+586
+00:49:10,220 --> 00:49:12,380
+Part 3 â The Devil's Open Cage
+
+587
+00:49:12,530 --> 00:49:18,050
+Now we need to look at the actual anatomy of the mob that executes a digital cancellation.
+
+588
+00:49:18,050 --> 00:49:20,930
+Because remember, the accuser just builds the voting booth.
+
+589
+00:49:20,930 --> 00:49:24,910
+The mob is the energy that actually shows up to cast the votes.
+
+590
+00:49:24,910 --> 00:49:31,310
+The Devil. A cage you could walk out of, but choose not to because it feeds you a righteous version of yourself.
+
+591
+00:49:31,310 --> 00:49:33,710
+This is such a brilliant redefinition.
+
+592
+00:49:33,710 --> 00:49:37,810
+In a classic tarot deck, the Devil card shows two people chained to a beast.
+
+593
+00:49:37,810 --> 00:49:41,710
+But if you look really closely at the artwork, those chains are completely loose.
+
+594
+00:49:41,710 --> 00:49:43,510
+They could just slip them off a walk away.
+
+595
+00:49:43,510 --> 00:49:47,410
+Our source points out that an internet mob doesn't actually operate out of pure malice.
+
+596
+00:49:47,410 --> 00:49:49,210
+Real cruelty takes effort.
+
+597
+00:49:49,250 --> 00:49:54,570
+Now, a mob runs on the incredibly relaxing comfort of being told exactly who the monster
+
+598
+00:49:54,570 --> 00:49:55,570
+is.
+
+599
+00:49:55,570 --> 00:50:00,850
+The door to the cage is wide open, but the mob chooses to stay put because feeling righteous,
+
+600
+00:50:00,850 --> 00:50:03,370
+that's Emilix feeds the ego perfectly.
+
+601
+00:50:03,370 --> 00:50:04,370
+90.
+
+602
+00:50:04,370 --> 00:50:08,370
+Okay, 90 might not sound like a huge number for the internet, but let's put that into
+
+603
+00:50:08,370 --> 00:50:09,370
+perspective.
+
+604
+00:50:09,370 --> 00:50:14,570
+At the absolute peak of this frenzy, she posted a digital poll literally asking if our protagonist
+
+605
+00:50:15,620 --> 00:50:19,620
+90 casual strangers clicked a button to vote on a living human being's soul,
+
+606
+00:50:19,620 --> 00:50:22,620
+probably right between checking their email and ordering takeout.
+
+607
+00:50:22,620 --> 00:50:28,620
+It perfectly hammers home just how terrifyingly banal and mechanically cruel online judgment really is.
+
+608
+00:50:28,620 --> 00:50:30,620
+It asked absolutely nothing of them.
+
+609
+00:50:30,620 --> 00:50:32,620
+No evidence, no personal risk.
+
+610
+00:50:32,620 --> 00:50:36,620
+Just the warm, fuzzy click of belonging to an angry crowd.
+
+611
+00:50:37,040 --> 00:50:42,240
+The renaming, from a real name, to a mother-son, to a coined nickname.
+
+612
+00:50:42,240 --> 00:50:47,260
+To keep her mob fed while dodging platform filters and potential lawyers, she systematically
+
+613
+00:50:47,260 --> 00:50:49,240
+stripped away his humanity.
+
+614
+00:50:49,240 --> 00:50:50,960
+She constantly renamed him.
+
+615
+00:50:50,960 --> 00:50:55,920
+First, she attacked his actual name, then she reframed him as just his mother's son,
+
+616
+00:50:55,920 --> 00:50:57,760
+or his sister's responsibility.
+
+617
+00:50:57,760 --> 00:51:01,640
+Finally, she completely reduced him to a made-up, coined nickname.
+
+618
+00:51:01,640 --> 00:51:02,640
+Why?
+
+619
+00:51:02,640 --> 00:51:04,680
+Because a real person can hire a lawyer.
+
+620
+00:51:06,450 --> 00:51:11,950
+It is honestly a masterclass in making sure the poison can keep flowing without any real-world interruptions.
+
+621
+00:51:11,950 --> 00:51:14,350
+Part four, the scale over the sword.
+
+622
+00:51:14,350 --> 00:51:17,150
+So what do you do when the mob crosses the line?
+
+623
+00:51:17,150 --> 00:51:19,150
+And let's be clear, they absolutely did.
+
+624
+00:51:19,150 --> 00:51:23,150
+She broadcasted a map of his physical home address to her followers,
+
+625
+00:51:23,150 --> 00:51:26,450
+an address he had given her in total blind trust.
+
+626
+00:51:26,450 --> 00:51:30,450
+She even dragged his dead father into the narrative just to use as a prop.
+
+627
+00:51:30,450 --> 00:51:34,250
+How on earth do you survive something like that without just completely exploding?
+
+628
+00:51:34,260 --> 00:51:40,860
+Justice, not mercy or vindication, but cold, exact, indifferent measure.
+
+629
+00:51:40,860 --> 00:51:43,660
+Our source looks to the justice card for the answer here.
+
+630
+00:51:43,660 --> 00:51:48,660
+Now, in this context, justice isn't about some cinematic victory, and it sure isn't
+
+631
+00:51:48,660 --> 00:51:49,820
+about mercy.
+
+632
+00:51:49,820 --> 00:51:53,780
+It is about cold, exact, totally indifferent measure.
+
+633
+00:51:53,780 --> 00:51:57,220
+The sword of justice points straight up, and it is double-edged.
+
+634
+00:51:57,220 --> 00:52:01,260
+The absolutely terrifying discipline it takes to survive an internet mob is learning to
+
+635
+00:52:03,410 --> 00:52:05,690
+and keeping the record completely honest,
+
+636
+00:52:05,690 --> 00:52:07,460
+even when it cuts you.
+
+637
+00:52:07,460 --> 00:52:10,140
+He really only had two options.
+
+638
+00:52:10,140 --> 00:52:12,060
+Option one, the sword.
+
+639
+00:52:12,060 --> 00:52:15,100
+He could fight back, go live, scream at the injustice,
+
+640
+00:52:15,100 --> 00:52:17,700
+and weaponize all those old affectionate messages
+
+641
+00:52:17,700 --> 00:52:20,980
+to burn her reputation to the ground for an afternoon.
+
+642
+00:52:20,980 --> 00:52:22,180
+But swinging the sword,
+
+643
+00:52:22,180 --> 00:52:24,500
+that just creates a two monster story.
+
+644
+00:52:24,500 --> 00:52:26,420
+And man, the internet mob loves
+
+645
+00:52:26,420 --> 00:52:28,380
+a thrashing screaming villain.
+
+646
+00:52:28,380 --> 00:52:31,540
+So instead, he chose option two, the scale.
+
+647
+00:52:31,620 --> 00:52:35,300
+He sat down and built a quiet, meticulously honest folder of receipts.
+
+648
+00:52:35,300 --> 00:52:38,980
+The bagel orders the I Love Yous, the definitive proof that she never actually feared him,
+
+649
+00:52:38,980 --> 00:52:40,340
+and here's the absolute kicker.
+
+650
+00:52:40,340 --> 00:52:43,780
+To keep that scale truly honest, he included his own faults.
+
+651
+00:52:43,780 --> 00:52:46,260
+He actively documented his own foolishness.
+
+652
+00:52:46,260 --> 00:52:49,460
+By doing that, he completely starved the mob of the unhinged,
+
+653
+00:52:49,460 --> 00:52:51,860
+defensive reaction they so desperately craved.
+
+654
+00:52:55,420 --> 00:52:58,920
+The climax of this whole ordeal actually doesn't happen online at all.
+
+655
+00:52:58,920 --> 00:53:03,420
+It happens in the cold, flickering fluorescent light of a real-world police station.
+
+656
+00:53:03,420 --> 00:53:08,920
+Armed with a solid year's worth of proof, he finally takes his honest folder of receipts to the authorities.
+
+657
+00:53:08,920 --> 00:53:11,920
+That speech. That's a civil matter, sir.
+
+658
+00:53:12,370 --> 00:53:18,290
+Talk about a gut punch, those words spoken by a tired but decent police officer bring
+
+659
+00:53:18,290 --> 00:53:20,810
+this absolutely crushing realization.
+
+660
+00:53:20,810 --> 00:53:24,930
+The machine that makes you a monster, the internet, the algorithms, the mobs, runs on
+
+661
+00:53:24,930 --> 00:53:28,690
+entirely different tracks than the legal machine designed to unmake you.
+
+662
+00:53:28,690 --> 00:53:33,090
+The civil courts, they're agonizingly slow and incredibly expensive, but the internet
+
+663
+00:53:33,090 --> 00:53:36,490
+mob, it's instantaneous and it's totally free.
+
+664
+00:53:38,850 --> 00:53:43,010
+he was a fool holding the perfect shiny key to a door that simply did not exist.
+
+665
+00:53:43,570 --> 00:53:50,050
+The hanged man, surrender that is not defeat, winning by hanging so still that the mob gets
+
+666
+00:53:50,050 --> 00:53:55,010
+bored and goes home. Standing out in that police station parking lot, he essentially embodies this
+
+667
+00:53:55,010 --> 00:54:00,530
+card. The hanged man shows a person suspended upside down, completely still, not struggling,
+
+668
+00:54:00,530 --> 00:54:05,650
+with a glowing halo of peace around his head. It is the ultimate representation of surrender
+
+669
+00:54:07,820 --> 00:54:12,700
+Instead of thrashing wildly against the ropes, which is, let's be honest, exactly what his accuser
+
+670
+00:54:12,700 --> 00:54:17,980
+wanted because a thrashing man looks guilty, our protagonist chooses the agonizing discipline of
+
+671
+00:54:17,980 --> 00:54:24,300
+non-reaction. He serves his sentence of trust. He hangs completely still. He logs off. He stops
+
+672
+00:54:24,300 --> 00:54:29,260
+refreshing the tab. And by just hanging there, perfectly still, he starves the digital machine
+
+673
+00:54:32,020 --> 00:54:36,740
+This survivor's choice, so we finally reach the far end of the dark,
+
+674
+00:54:36,740 --> 00:54:42,580
+looking at what actually remains after the roaring fire of a cancellation inevitably burns itself out.
+
+675
+00:54:42,580 --> 00:54:43,940
+The star card.
+
+676
+00:54:43,940 --> 00:54:45,380
+The fire is gone.
+
+677
+00:54:45,380 --> 00:54:51,170
+The stars finally appear, kneeling by the still pool, pouring the water back.
+
+678
+00:54:51,170 --> 00:54:55,730
+In the tarot deck, the star comes immediately after the utter destruction of the tower.
+
+679
+00:54:55,730 --> 00:55:00,930
+The fire is gone, the smoke clears, and out in the pitch black, the stars finally appear.
+
+680
+00:55:01,380 --> 00:55:05,880
+The images of a figure kneeling by a pool, pouring water out of two jugs.
+
+681
+00:55:05,880 --> 00:55:09,180
+This metaphor shows us what surviving the fire actually looks like.
+
+682
+00:55:09,180 --> 00:55:11,880
+It isn't about being perfectly vindicated in a court of law,
+
+683
+00:55:11,880 --> 00:55:14,740
+or forcing the entire internet to admit you were right.
+
+684
+00:55:14,740 --> 00:55:17,440
+True survival is about retaining the water in your jug,
+
+685
+00:55:17,440 --> 00:55:20,340
+keeping your humanity, your core capacity for trust,
+
+686
+00:55:20,340 --> 00:55:22,540
+and actively choosing to give it away again.
+
+687
+00:55:22,540 --> 00:55:25,840
+It's about not hoarding your trust just because you survived a drought.
+
+688
+00:55:25,840 --> 00:55:27,640
+A very good person.
+
+689
+00:55:27,640 --> 00:55:29,140
+Extremely so.
+
+690
+00:55:29,340 --> 00:55:32,460
+This right here is the ultimate victory of the story.
+
+691
+00:55:32,460 --> 00:55:36,780
+The protagonist reclaims this original, warm judgment for himself.
+
+692
+00:55:36,780 --> 00:55:39,260
+The mob, fully driven by the accuser,
+
+693
+00:55:39,260 --> 00:55:42,060
+tried everything to grind him down into the exploding,
+
+694
+00:55:42,060 --> 00:55:44,460
+vengeful monster they insisted he was.
+
+695
+00:55:44,460 --> 00:55:46,980
+But his resistance, day after brutal day,
+
+696
+00:55:46,980 --> 00:55:48,980
+was simply declining to become it.
+
+697
+00:55:49,140 --> 00:55:53,140
+He took the phrase of very good person right out of her hands.
+
+698
+00:55:53,140 --> 00:55:56,780
+It was no longer a title she got to magically grant or revoke.
+
+699
+00:55:56,780 --> 00:55:59,780
+It was a choice he made completely alone,
+
+700
+00:55:59,780 --> 00:56:03,260
+every single morning by what he steadfastly refused to become.
+
+701
+00:56:03,710 --> 00:56:10,070
+When the fire comes for you will you still have water to pour back if you have ever been named a thing?
+
+702
+00:56:10,070 --> 00:56:17,630
+You are absolutely not or felt that awful burning pull to prove an internet mob right by how angrily you answer them
+
+703
+00:56:17,630 --> 00:56:24,790
+I want to leave you with this final thought when your sentence of trust is weaponized against you and the false tower falls
+
+704
+00:56:24,910 --> 00:56:27,390
+Will you still have water left in your jug?
+
+705
+00:56:27,430 --> 00:56:31,470
+Will you still have the grace to step off the cliff and remain the fool?
+
+706
+00:57:01,680 --> 00:57:06,680
+A voice without a body is calling
+
+707
+00:57:09,630 --> 00:57:14,620
+The veil draws open
+
+708
+00:57:14,620 --> 00:57:22,840
+The old one feather cuts the darkness
+
+709
+00:57:22,840 --> 00:57:26,280
+New sun dawn
+
+710
+00:57:26,280 --> 00:57:56,280
+Hang inside the room
+
+711
+01:04:32,380 --> 01:04:43,860
+Joni's the friend, you're lucky you
+
+712
+01:04:43,860 --> 01:05:13,860
+Right beside you are nothing worse than
+
+713
+01:08:37,460 --> 01:08:40,460
+Notice the gestures often caught on the red carpet
+
+714
+01:08:40,910 --> 01:08:47,230
+A singer covering one eye, or a head of state sharing a grip that looks more like a ritual
+
+715
+01:08:47,230 --> 01:08:49,060
+than a handshake.
+
+716
+01:08:49,060 --> 01:08:51,700
+These same symbols appear in our pockets.
+
+717
+01:08:51,700 --> 01:08:56,580
+The disembodied eye watching from the top of the pyramid on a dollar bill points toward
+
+718
+01:08:56,580 --> 01:09:00,980
+an interconnected system of symbols that spans centuries.
+
+719
+01:09:00,980 --> 01:09:06,180
+For those tracking these patterns, the trail leads back to one organization, the secret
+
+720
+01:09:08,530 --> 01:09:14,470
+Publicly, the masons appear as a network of local lodges, aging men in aprons who fund
+
+721
+01:09:14,470 --> 01:09:18,220
+children's hospitals and run local charities.
+
+722
+01:09:18,220 --> 01:09:21,300
+This diagram outlines the structure of the order.
+
+723
+01:09:21,300 --> 01:09:26,620
+The charitable exterior serves as the wide bottom layer of a hierarchy designed to satisfy
+
+724
+01:09:26,620 --> 01:09:28,070
+the public.
+
+725
+01:09:28,070 --> 01:09:33,710
+To find control, believers look past the local lodge, climbing the pyramid into the restricted
+
+726
+01:09:35,440 --> 01:09:39,940
+The middle tiers of the pyramid function as a multi-level screening process.
+
+727
+01:09:39,940 --> 01:09:46,940
+This is a filter used to vet politicians, corporate leaders, and Hollywood stars before they reach the top.
+
+728
+01:09:46,940 --> 01:09:51,000
+Control is maintained through a series of blood oaths.
+
+729
+01:09:51,000 --> 01:09:58,000
+Initiates swear to have their throats cut or their tongues torn out if they ever reveal the secrets shared within the lodge.
+
+730
+01:09:58,210 --> 01:10:02,710
+The physical space of the lodge reinforces a dualistic worldview.
+
+731
+01:10:02,710 --> 01:10:09,170
+This checkered floor symbolizes a space where traditional morals are balanced and eventually reversed.
+
+732
+01:10:09,170 --> 01:10:14,170
+High-ranking members reaching the 33rd degree, seen here on the sash of Albert Pike,
+
+733
+01:10:14,170 --> 01:10:18,170
+reach a level where the theory claims traditional iconography is abandoned.
+
+734
+01:10:18,170 --> 01:10:22,170
+This filtering system ensures that the people managing global institutions
+
+735
+01:10:22,170 --> 01:10:26,170
+have already agreed to compromise their previous moral framework.
+
+736
+01:10:26,170 --> 01:10:30,170
+At these levels, the order allegedly reveals the royal art,
+
+737
+01:10:30,170 --> 01:10:34,030
+a hidden religion based in witchcraft and Luciferian philosophies.
+
+738
+01:10:34,030 --> 01:10:38,350
+Esoteric philosophies from figures like Alistair Crowley are integrated here.
+
+739
+01:10:38,350 --> 01:10:44,190
+The eye in triangle symbol on Crowley's hat visually mirrors the imagery used across the
+
+740
+01:10:44,190 --> 01:10:49,950
+Order's hierarchy. High-ranking initiates are allegedly required by their oaths to display
+
+741
+01:10:49,950 --> 01:10:54,990
+their presence in the public sphere through specific signals. For modern musicians and
+
+742
+01:10:54,990 --> 01:11:01,310
+celebrities, this manifests as the all-seeing eye, covering one eye, and hand gestures that
+
+743
+01:11:03,740 --> 01:11:08,740
+Historical leaders and heads of state used a different signal, the hidden hand,
+
+744
+01:11:08,740 --> 01:11:13,240
+where one hand is tucked into a jacket or shirt to acknowledge their membership.
+
+745
+01:11:13,240 --> 01:11:17,240
+In this worldview, these markers are functional signals.
+
+746
+01:11:17,240 --> 01:11:22,670
+They serve as public acknowledgments of a hidden power structure operating in plain sight.
+
+747
+01:11:22,670 --> 01:11:25,970
+At the very top of the hierarchy is the capstone.
+
+748
+01:11:25,970 --> 01:11:28,970
+This represents the fulfillment of the great work,
+
+749
+01:11:28,970 --> 01:11:32,470
+the long-term objective mentioned in esoteric literature.
+
+750
+01:11:32,470 --> 01:11:38,470
+One primary objective involves completely replacing our traditional morality with a new system,
+
+751
+01:11:38,470 --> 01:11:42,570
+one based entirely on a survival of the fittest law of nature.
+
+752
+01:11:42,570 --> 01:11:46,670
+The second objective addresses a world moving toward automated labor.
+
+753
+01:11:46,670 --> 01:11:49,570
+As people become redundant to the economic system,
+
+754
+01:11:49,710 --> 01:11:54,110
+The plan allegedly calls for a massive reduction in the global population.
+
+755
+01:11:54,110 --> 01:11:57,790
+Physical evidence of this goal was carved into the Georgia Guidestones.
+
+756
+01:11:57,790 --> 01:12:04,350
+The first instruction on the monument demands that humanity be maintained at a population under 500 million.
+
+757
+01:12:04,350 --> 01:12:10,750
+This great work describes a transition toward a centralized one-world government, the New World Order.
+
+758
+01:12:10,750 --> 01:12:17,150
+This sprawling mega-conspiracy remains resilient because it attempts to answer the most difficult questions of our time.
+
+759
+01:12:17,250 --> 01:12:21,170
+It takes the real-world anxieties of extreme wealth inequality,
+
+760
+01:12:21,170 --> 01:12:27,250
+of rapid secularization and of automation, and projects them onto a single identifiable group.
+
+761
+01:12:27,250 --> 01:12:31,490
+It thrives because it replaces random chaos with a sense of design.
+
+762
+01:12:32,130 --> 01:12:35,410
+It suggests that the world's problems aren't accidents,
+
+763
+01:12:35,410 --> 01:12:40,930
+but parts of a dark, unstoppable plan that only the believer has the vision to see.
+
+764
+01:13:52,820 --> 01:13:54,660
+Net is built on arguments.
+
+765
+01:13:55,150 --> 01:14:02,150
+Most of the time, digital beefs start and end as text on a screen, or raised voices on a stream.
+
+766
+01:14:02,150 --> 01:14:09,150
+But there is a specific threshold where venting stops and documented criminal intimidation begins.
+
+767
+01:14:09,150 --> 01:14:14,180
+During a recent live broadcast, a creator named Alexandra Mayers
+
+768
+01:14:14,180 --> 01:14:18,180
+targeted two individuals known online as Bates and Psyche.
+
+769
+01:14:18,670 --> 01:14:26,670
+This wasn't a standard airing of grievances, it was a high stakes confrontation unfolding in front of a live audience.
+
+770
+01:14:26,670 --> 01:14:32,330
+To understand why the broadcast spiraled, we have to look at the immediate catalyst.
+
+771
+01:14:32,330 --> 01:14:40,560
+Mayors was mourning the recent loss of her father, a traumatic experience where she held his hand in hospice as he passed away.
+
+772
+01:14:40,560 --> 01:14:44,460
+Compounding that grief was a deep financial frustration.
+
+773
+01:14:44,460 --> 01:14:51,460
+Mayors detailed sending unreciprocated cash-app donations and over $1,000 in physical equipment,
+
+774
+01:14:51,460 --> 01:14:56,960
+including a microphone and a tripod, to these targets, leaving her feeling exploited.
+
+775
+01:14:56,990 --> 01:15:00,590
+While her grief and financial frustrations are documented,
+
+776
+01:15:00,590 --> 01:15:03,990
+leveraging a broadcast platform to weaponize that pain
+
+777
+01:15:03,990 --> 01:15:06,990
+creates a public ledger of actionable threats.
+
+778
+01:15:06,990 --> 01:15:09,990
+The broadcast quickly shifted from venting about money
+
+779
+01:15:09,990 --> 01:15:13,590
+to issuing specific ultimatums of physical violence.
+
+780
+01:15:13,590 --> 01:15:16,990
+Mayors told her audience that if she decided to go crazy,
+
+781
+01:15:16,990 --> 01:15:20,990
+she would track these individuals down and beat the living hell out of them.
+
+782
+01:15:20,990 --> 01:15:25,970
+She described an extreme hypothetical of being sentenced to the electric chair for her actions,
+
+783
+01:15:25,970 --> 01:15:29,780
+claiming she'd still consider the violence a job well done.
+
+784
+01:15:29,780 --> 01:15:33,000
+Moving from vague anger to graphic specific descriptions
+
+785
+01:15:33,000 --> 01:15:36,560
+of murder signals a dangerous break in digital boundaries.
+
+786
+01:15:36,750 --> 01:15:40,870
+Beyond the promises of physical harm, the broadcast focused on methods of
+
+787
+01:15:40,870 --> 01:15:45,110
+psychological terror designed to dismantle her target's daily lives.
+
+788
+01:15:45,110 --> 01:15:48,670
+Mayors outlined plans to disrupt Bates' everyday routines,
+
+789
+01:15:48,670 --> 01:15:53,150
+promising to target him at his local McDonald's and his neighborhood liquor store.
+
+790
+01:15:53,150 --> 01:15:58,710
+These threats of constant proximity were intended to achieve one specific goal,
+
+791
+01:15:58,710 --> 01:16:01,070
+forcing Bates to move out of his current home.
+
+792
+01:16:01,540 --> 01:16:06,240
+She also threatened collateral damage, intending to dox his family members
+
+793
+01:16:06,240 --> 01:16:09,540
+and specifically target relatives working in law enforcement.
+
+794
+01:16:09,540 --> 01:16:13,740
+Targeted doxing bridges the gap between the screen and the street,
+
+795
+01:16:13,740 --> 01:16:19,240
+turning everyday storefronts into sites of permanent fear for the victims and their families.
+
+796
+01:16:19,520 --> 01:16:22,220
+To justify these statements to her audience,
+
+797
+01:16:22,220 --> 01:16:25,520
+mayors relied on a specific psychological framework.
+
+798
+01:16:25,520 --> 01:16:30,020
+She minimized the legal risk, telling viewers her zero criminal history
+
+799
+01:16:30,020 --> 01:16:32,720
+would result in a mere slap on the wrist.
+
+800
+01:16:32,720 --> 01:16:36,020
+She then co-opted concepts like standing her ground,
+
+801
+01:16:36,020 --> 01:16:39,720
+reframing preemptive violence as legitimate self-defense.
+
+802
+01:16:39,720 --> 01:16:43,420
+Chillingly, she assumed that a jury would automatically acquit her,
+
+803
+01:16:43,420 --> 01:16:46,620
+simply because of the emotional trauma she was experiencing.
+
+804
+01:16:46,800 --> 01:16:52,080
+This creates a belief system where personal trauma functions as a legal shield,
+
+805
+01:16:52,080 --> 01:16:57,760
+convincing the individual that their pain grants them total moral and legal immunity from the law.
+
+806
+01:16:57,760 --> 01:17:00,160
+Mayors wasn't speaking into a vacuum.
+
+807
+01:17:00,160 --> 01:17:05,760
+The live digital environment played a critical role in allowing these threats to be broadcast unchallenged.
+
+808
+01:17:05,760 --> 01:17:10,960
+Her co-host and live audience formed an echo chamber, passively validating her hostility
+
+809
+01:17:10,960 --> 01:17:13,760
+instead of attempting to de-escalate the situation.
+
+810
+01:17:13,900 --> 01:17:18,460
+While a live stream feels temporary, the data is permanently archived.
+
+811
+01:17:18,460 --> 01:17:23,020
+Mayors herself acknowledged this reality, stating that nobody's ever really anonymous.
+
+812
+01:17:23,740 --> 01:17:25,900
+The legal reality is straightforward.
+
+813
+01:17:25,900 --> 01:17:31,180
+Profound grief and online disputes offer no protection against charges of criminal intimidation.
+
+814
+01:17:31,820 --> 01:17:34,460
+Broadcasting threats doesn't resolve a grievance.
+
+815
+01:17:34,460 --> 01:17:39,020
+It creates a public ledger of intent that traps the creator in their own legal crosshairs.
+
+816
+01:18:03,950 --> 01:18:12,590
+What are you doing? Hi Lola, I see you over there. Lola's laying on her bed. Like are
+
+817
+01:18:12,590 --> 01:18:18,530
+you laying on your bed over there? Lola, I see you. Louncing? Here, Llor. Llor. Llor.
+
+818
+01:18:18,530 --> 01:18:28,660
+You see, you're grooming yourselves. What's going on on YouTube? I mean, it's like, you
+
+819
+01:18:28,660 --> 01:18:42,220
+know, seems kind of quiet right now. I don't know why it's quite so quiet. Yeah, I don't
+
+820
+01:19:01,200 --> 01:19:05,280
+And the wheel is on our stage.
+
+821
+01:19:05,280 --> 01:19:06,120
+I don't get it.
+
+822
+01:19:06,120 --> 01:19:06,620
+I don't get it.
+
+823
+01:19:06,620 --> 01:19:07,620
+I had a nice chat today.
+
+824
+01:19:07,620 --> 01:19:10,840
+That was the opening to people in the chat today.
+
+825
+01:19:10,840 --> 01:19:15,910
+Might just be better in the daytime, you know?
+
+826
+01:19:15,910 --> 01:19:24,840
+But we'll see until another 20 minutes and then.
+
+827
+01:19:24,840 --> 01:19:30,220
+Hi.
+
+828
+01:19:30,220 --> 01:19:34,420
+I'll play you pretty, something pretty.
+
+829
+01:19:34,420 --> 01:19:34,860
+We're here.
+
+830
+01:19:34,860 --> 01:19:36,180
+Hi, Lava.
+
+831
+01:19:36,180 --> 01:19:42,740
+Listen to this beautiful song.
+
+832
+01:19:42,740 --> 01:20:12,740
+Hi.
+
+833
+01:20:25,490 --> 01:20:55,490
+Oh I try to send notifications but I think I might have posted like a couple lives earlier
+
+834
+01:23:43,840 --> 01:23:47,560
+I think you can only post two lives a day or something like that and so it doesn't come
+
+835
+01:23:53,260 --> 01:23:57,700
+I used to end it a lot more than this.
+
+836
+01:23:57,700 --> 01:23:58,980
+How do I keep this up?
+
+837
+01:23:58,980 --> 01:24:04,630
+I'll turn this off.
+
+838
+01:24:04,630 --> 01:24:05,980
+OK.
+
+839
+01:24:05,980 --> 01:24:08,220
+Helen, are you going to be over here when I'm
+
+840
+01:24:08,220 --> 01:24:12,730
+spreading on you?
+
+841
+01:24:12,730 --> 01:24:13,850
+I'm just letting you know.
+
+842
+01:24:13,850 --> 01:24:24,350
+Are you seeing up there on my back?
+
+843
+01:24:24,350 --> 01:24:26,460
+Yeah, well, I don't know.
+
+844
+01:24:26,460 --> 01:24:29,900
+Everyone spread the word, but I might need a little help
+
+845
+01:24:29,900 --> 01:24:32,820
+spreading the word, you know, sharing the live.
+
+846
+01:24:32,820 --> 01:24:34,700
+Everyone know, hey, they go over here.
+
+847
+01:24:36,720 --> 01:24:43,860
+Then everything will take kind of take care of itself, but I do have my membership back. I do have um, oh shit. I have um
+
+848
+01:24:45,240 --> 01:24:47,240
+Super chats and
+
+849
+01:24:47,240 --> 01:24:49,190
+cash app and
+
+850
+01:24:49,190 --> 01:24:51,190
+anything for you like a
+
+851
+01:24:51,270 --> 01:24:56,940
+Service I'm here. You know, otherwise they're kind of go by my own
+
+852
+01:24:58,140 --> 01:25:00,330
+Schedule
+
+853
+01:25:00,330 --> 01:25:04,220
+My gosh the door
+
+854
+01:25:04,220 --> 01:25:10,470
+See if I was pretty high. How are you? Oh my gosh? You're sitting up there. How are you?
+
+855
+01:25:11,980 --> 01:25:16,780
+Yeah, so I mean it's a so it's a beat I guess I next was mad at me again and then so
+
+856
+01:25:17,220 --> 01:25:19,680
+Because I guess I asked her to go on beat us
+
+857
+01:25:20,240 --> 01:25:23,880
+And she said well be didn't want me there be be it did and you know
+
+858
+01:25:23,880 --> 01:25:28,240
+And then they were kind of nice to each other and I and so she came on beat us today. It was kind of sweet
+
+859
+01:25:29,220 --> 01:25:32,540
+Like you know, it's like of course it doesn't ever work out completely
+
+860
+01:25:32,540 --> 01:25:36,580
+But it's like, you know these things think there's steps in the right direction. It's good
+
+861
+01:25:37,020 --> 01:25:40,930
+But uh, you know, it's I talked to talk to her so
+
+862
+01:25:42,160 --> 01:25:49,910
+I haven't seen her since then. Hi, Lenore. Hi. I think some people got scared off by that dolphin video
+
+863
+01:25:51,030 --> 01:25:52,470
+That was not
+
+864
+01:25:52,470 --> 01:25:54,870
+Abusing a dolphin that was a dolphin abusing a
+
+865
+01:25:55,960 --> 01:26:01,240
+woman, you know, and I mean it's like she she had a good sense of humor about it and everything I mean
+
+866
+01:26:02,160 --> 01:26:03,200
+but
+
+867
+01:26:03,200 --> 01:26:06,540
+You know, it's not right to train dolphins to do that
+
+868
+01:26:07,630 --> 01:26:09,630
+But it's I thought it was funny
+
+869
+01:26:09,870 --> 01:26:12,740
+But maybe not
+
+870
+01:26:13,940 --> 01:26:18,440
+Go put her in a cape and be super mad. Yeah, I go put her in a cape and be super mad. Yeah
+
+871
+01:26:22,100 --> 01:26:24,700
+Yeah, I mean it's like I mean I was like
+
+872
+01:26:25,300 --> 01:26:30,020
+She's like, oh, she's ever exposed to my text message. I'm like, well, I mean it's like I don't even say I don't say bad things
+
+873
+01:26:30,020 --> 01:26:34,860
+Am I in text messages? I don't do not even though when she posted more than bad, but if we do make up
+
+874
+01:26:34,860 --> 01:26:39,920
+But I just I don't want to like, you know, I think I think she's like, you know
+
+875
+01:26:41,280 --> 01:26:42,540
+someone that
+
+876
+01:26:42,540 --> 01:26:47,210
+People look at it as like, oh, you can weaponize a pointer
+
+877
+01:26:47,210 --> 01:26:50,030
+in a certain direction, so it'll go explode,
+
+878
+01:26:50,030 --> 01:26:53,500
+and so I feel bad that they do that.
+
+879
+01:26:54,780 --> 01:26:55,620
+What are you doing?
+
+880
+01:26:55,620 --> 01:26:56,460
+What are you doing?
+
+881
+01:26:56,460 --> 01:26:57,300
+Oh my gosh.
+
+882
+01:26:57,300 --> 01:27:00,140
+I'm wearing a beautiful cat.
+
+883
+01:27:00,140 --> 01:27:06,070
+Oh, I don't know.
+
+884
+01:27:06,070 --> 01:27:10,010
+So yeah, I've been doing a lot of these reports.
+
+885
+01:27:10,010 --> 01:27:16,000
+So I've been like, yeah, I want to see what this one is.
+
+886
+01:27:16,000 --> 01:27:19,300
+Oh, here's something outside, one second.
+
+887
+01:27:19,300 --> 01:27:25,780
+We're back.
+
+888
+01:27:25,780 --> 01:27:30,860
+Follow any community-driven spaces online, you already know just how incredibly messy
+
+889
+01:27:30,860 --> 01:27:31,860
+they can get, right?
+
+890
+01:27:31,860 --> 01:27:35,700
+I mean, it feels like there's a new fallout, a sudden departure, or some massive public
+
+891
+01:27:35,700 --> 01:27:37,980
+feud literally every single day.
+
+892
+01:27:37,980 --> 01:27:41,420
+So today, we're unpacking the unwritten rules of Internet etiquette.
+
+893
+01:27:41,420 --> 01:27:45,440
+We're going to dive deep into the philosophy of Internet personality Kate, specifically
+
+894
+01:27:45,440 --> 01:27:47,340
+looking at her take on online drama.
+
+895
+01:27:47,420 --> 01:27:52,780
+In a recent stream, she laid out this surprisingly structured approach to boundaries and behavior.
+
+896
+01:27:52,780 --> 01:27:58,080
+She essentially diagnosed exactly what makes these spaces so toxic, and more importantly,
+
+897
+01:27:58,080 --> 01:28:01,700
+she broke down exactly how she believes adults should be navigating them.
+
+898
+01:28:01,700 --> 01:28:04,020
+So let's get right into it in this explainer.
+
+899
+01:28:04,020 --> 01:28:08,140
+Just to keep things moving, we've split today's agenda into three main sections.
+
+900
+01:28:12,450 --> 01:28:17,050
+Alright, let's kick things off with Section 1, stepping away from toxicity, and this personal
+
+901
+01:28:17,050 --> 01:28:18,370
+shift Kate went through.
+
+902
+01:28:18,660 --> 01:28:22,540
+Now, before Kate starts analyzing everyone else in the community, she actually does something
+
+903
+01:28:22,540 --> 01:28:23,700
+really smart.
+
+904
+01:28:23,700 --> 01:28:27,620
+She anchors her own authority on the topic by pointing to her recent track record.
+
+905
+01:28:27,620 --> 01:28:30,360
+She proves she's actually practicing what she preaches.
+
+906
+01:28:30,360 --> 01:28:31,360
+She says, and I quote,
+
+907
+01:28:31,360 --> 01:28:35,460
+I have not spoke to thou who shall not be named in like weeks now, that's good growth.
+
+908
+01:28:35,460 --> 01:28:39,220
+By actively choosing not to engage with people she views as toxic, I mean she even keeps
+
+909
+01:28:39,220 --> 01:28:43,300
+them nameless just to avoid sparking new drama, she's drawing a literal line in the sand
+
+910
+01:28:43,300 --> 01:28:44,780
+about her own personal evolution.
+
+911
+01:28:45,100 --> 01:28:51,260
+And honestly, the tangible real-world results of this mindset shift are incredibly impressive.
+
+912
+01:28:51,260 --> 01:28:54,900
+Since she deliberately stepped away from the drama, Kate notes that she's lost nearly
+
+913
+01:28:54,900 --> 01:28:58,340
+200 pounds, which is huge.
+
+914
+01:28:58,340 --> 01:29:02,460
+She says she's feeling absolutely fantastic, she's not crying or dwelling on negativity
+
+915
+01:29:02,460 --> 01:29:03,460
+anymore.
+
+916
+01:29:03,460 --> 01:29:07,700
+Instead, she has actively blocking out that toxicity and bringing strictly positive energy
+
+917
+01:29:07,700 --> 01:29:08,860
+into her 44th year.
+
+918
+01:29:09,090 --> 01:29:14,590
+She connects this deliberate avoidance of online squabbles directly to these massive, life-changing improvements.
+
+919
+01:29:14,590 --> 01:29:19,590
+It really builds a compelling case that, hey, ignoring the noise actually pays off in the real world.
+
+920
+01:29:19,590 --> 01:29:24,590
+But here's the thing. Finding your peace doesn't necessarily mean staying quiet forever.
+
+921
+01:29:24,980 --> 01:29:27,540
+Kate makes this major pivot and declares,
+
+922
+01:29:27,540 --> 01:29:29,380
+nobody cares about my feelings,
+
+923
+01:29:29,380 --> 01:29:30,980
+well you're gonna hear about them.
+
+924
+01:29:30,980 --> 01:29:32,820
+It's this fascinating transition, right?
+
+925
+01:29:32,820 --> 01:29:34,820
+She's moving from just protecting her peace
+
+926
+01:29:34,820 --> 01:29:37,540
+to confidently and completely unapologetically
+
+927
+01:29:37,540 --> 01:29:39,380
+sharing her unfiltered observations
+
+928
+01:29:39,380 --> 01:29:40,740
+on the rest of the community.
+
+929
+01:29:40,740 --> 01:29:41,860
+She set her boundaries
+
+930
+01:29:41,860 --> 01:29:43,460
+and now she's totally ready to critique
+
+931
+01:29:43,460 --> 01:29:45,060
+what's happening outside of them.
+
+932
+01:29:45,060 --> 01:29:47,140
+Which brings us to section two,
+
+933
+01:29:47,140 --> 01:29:50,420
+the need for attention and her critique of the chat rooms.
+
+934
+01:29:50,860 --> 01:29:54,900
+So, with her own boundaries locked in, Kate shifts her focus outward.
+
+935
+01:29:54,900 --> 01:29:58,540
+She starts observing how other community members behave when they're desperately seeking
+
+936
+01:29:58,540 --> 01:29:59,620
+validation.
+
+937
+01:29:59,620 --> 01:30:03,840
+And she draws a very hard line between genuine community interaction and what she bluntly
+
+938
+01:30:03,840 --> 01:30:05,740
+calls desperate and bored behavior.
+
+939
+01:30:06,160 --> 01:30:09,920
+For example, she brings up a regular chat member known as ThingThatIs.
+
+940
+01:30:09,920 --> 01:30:13,560
+And while she admits she kind of has a soft spot form, she openly scalds him for desperately
+
+941
+01:30:13,560 --> 01:30:17,280
+hanging out in random, toxic chat rooms with degenerates.
+
+942
+01:30:17,280 --> 01:30:20,960
+She's really questioning the mentality of folks who frequent toxic spaces just because
+
+943
+01:30:20,960 --> 01:30:24,920
+they're bored and desperately need an audience somewhere, honestly, anywhere.
+
+944
+01:30:24,920 --> 01:30:29,600
+And this desperate need for an audience, it feeds right into what Kate diagnoses as the
+
+945
+01:30:31,440 --> 01:30:36,480
+She looks at figures like Crystal Ann, who go and announces grand dramatic departure on a community
+
+946
+01:30:36,480 --> 01:30:42,640
+tab just to manufacture drama. They fully expect everyone to obsess over their absence. But Kate
+
+947
+01:30:42,640 --> 01:30:48,240
+delivers an absolutely brutal assessment here. She says, when these people leave, literally nobody
+
+948
+01:30:48,240 --> 01:30:53,360
+talks about them. Nobody cares. And eventually, they just dip out again because they simply don't have
+
+949
+01:30:53,360 --> 01:30:57,520
+the mental fortitude to actually handle the space they keep trying to force themselves back into.
+
+950
+01:30:57,940 --> 01:31:02,540
+Ultimately, she sees all these behaviors as just symptoms of a larger disease.
+
+951
+01:31:02,540 --> 01:31:06,620
+For Kate, online toxicity isn't just about people being mean to each other.
+
+952
+01:31:06,620 --> 01:31:10,540
+She views it as the direct result of individuals lacking the mental fortitude to navigate
+
+953
+01:31:10,540 --> 01:31:12,260
+community dynamics.
+
+954
+01:31:12,260 --> 01:31:13,740
+And that lack of resilience?
+
+955
+01:31:13,740 --> 01:31:16,780
+It leads to these erratic, attention-seeking performances.
+
+956
+01:31:16,780 --> 01:31:20,540
+She doesn't see the constant drama cycle as some epic clash of titans.
+
+957
+01:31:20,540 --> 01:31:24,500
+She sees it as a symptom of older community members acting out just to get validation
+
+958
+01:31:25,810 --> 01:31:28,030
+So, that begs the question.
+
+959
+01:31:28,030 --> 01:31:32,870
+If erratic, attention-seeking behavior is the core problem, how should adults actually
+
+960
+01:31:32,870 --> 01:31:35,030
+handle an online fallout?
+
+961
+01:31:35,030 --> 01:31:38,990
+It's one thing to point out how others are messing up, but what's the actual right way
+
+962
+01:31:38,990 --> 01:31:41,950
+to manage a fractured internet friendship?
+
+963
+01:31:41,950 --> 01:31:44,630
+Let's dive into section 3 to find out.
+
+964
+01:31:44,630 --> 01:31:47,790
+The Ethics of Exposing and Kate's Philosophical Code
+
+965
+01:31:48,160 --> 01:31:51,660
+This brings us to her definitive rules for managing disputes.
+
+966
+01:31:51,660 --> 01:31:57,160
+Kate focuses heavily on loyalty and privacy when relationships inevitably break down.
+
+967
+01:31:57,160 --> 01:32:00,660
+She lays out this strict three-step ethical code for maturity.
+
+968
+01:32:00,660 --> 01:32:04,660
+Rule one, keep disputes strictly between the two people involved.
+
+969
+01:32:04,660 --> 01:32:08,160
+Rule two, never ever leak private DMs to the public.
+
+970
+01:32:08,160 --> 01:32:11,660
+And rule three, do not act out of spite or vindictiveness.
+
+971
+01:32:11,680 --> 01:32:15,680
+Referencing her observations of community figures publicly blasting each other,
+
+972
+01:32:15,680 --> 01:32:18,680
+she counters all that mess with this highly structured approach.
+
+973
+01:32:18,680 --> 01:32:22,450
+To her, true maturity means keeping the drama offline.
+
+974
+01:32:22,450 --> 01:32:26,450
+She harbors an absolute distaste for the modern exposing culture.
+
+975
+01:32:26,450 --> 01:32:33,450
+As she puts it, this whole exposing thing, just because you're not getting along anymore, doesn't mean you're going to go and blast DMs.
+
+976
+01:32:33,450 --> 01:32:41,450
+It doesn't matter how badly the relationship deteriorated, weaponizing private moments for a public audience crosses a fundamental ethical line in her book.
+
+977
+01:32:41,450 --> 01:32:47,450
+Leaking private conversations for public consumption, it's just a terrible look for adults, plain and simple.
+
+978
+01:32:47,710 --> 01:32:52,590
+And that leads to Kate's ultimate thesis on online drama, which comes down to this one thought.
+
+979
+01:32:52,750 --> 01:32:56,750
+If you cared about someone and things end, you shouldn't be vindictive.
+
+980
+01:32:56,750 --> 01:33:02,750
+For Kate, acting out of spite completely negates any genuine care that might have previously existed in that friendship.
+
+981
+01:33:02,750 --> 01:33:10,750
+If you truly cared about a person, your respect for that past bond should absolutely outweigh your current desire for revenge or temporary internet cloud.
+
+982
+01:33:10,750 --> 01:33:13,750
+Which leaves us with a really fascinating question to chew on.
+
+983
+01:33:13,750 --> 01:33:18,750
+Does the way we handle a fallout reveal the true nature of the relationship itself?
+
+984
+01:33:18,990 --> 01:33:22,750
+Kate's philosophy suggests that your behavior during an online breakup is the ultimate test
+
+985
+01:33:22,750 --> 01:33:23,750
+of your character.
+
+986
+01:33:23,750 --> 01:33:26,490
+Thank you so much for joining me for this explainer.
+
+987
+01:33:26,490 --> 01:33:27,870
+Take a moment today to think about how you
+
+988
+01:34:55,660 --> 01:35:03,460
+40 chats and matching hats says he's quitting every single week 30 seconds later. I got something to speak
+
+989
+01:35:07,120 --> 01:35:37,120
+In his imaginary twins who's buying pizza also goes. How'd you like that? Well, I can tell you I like that. Are you good?
+
+990
+01:37:12,570 --> 01:37:17,210
+Yeah, look at you. Are you're on my pizza box ghost months? It's not so many pizza, but look there you are
+
+991
+01:37:18,140 --> 01:37:20,140
+Okay
+
+992
+01:37:21,140 --> 01:37:23,780
+That's why you crashed. Are you good tonight? Good?
+
+993
+01:37:24,700 --> 01:37:26,380
+I crashed out
+
+994
+01:37:26,380 --> 01:37:28,380
+Oh, yeah, you definitely
+
+995
+01:37:29,820 --> 01:37:31,820
+Information before I did that
+
+996
+01:37:35,740 --> 01:37:39,580
+You just screamed the n-word at me and said to me $5. Well
+
+997
+01:37:42,480 --> 01:37:44,720
+Let's talk about that song that you just played if you don't mind
+
+998
+01:38:01,230 --> 01:38:05,990
+I didn't know the point of that we talked about the song if you want to talk about something you said, what do I think about that?
+
+999
+01:38:05,990 --> 01:38:06,990
+I think
+
+1000
+01:38:06,990 --> 01:38:08,550
+exactly
+
+1001
+01:38:08,550 --> 01:38:13,390
+Disrespectful honestly like because it kind of claim like yeah the train that's funny
+
+1002
+01:38:13,390 --> 01:38:19,110
+That's a control but like call me a womanizer or saying all that shit about me very disrespectful
+
+1003
+01:38:19,110 --> 01:38:23,570
+I never like imagine I made an AI son about you just you know, you like calling gay
+
+1004
+01:38:23,570 --> 01:38:26,870
+I would never do that even though you are gay. I wouldn't do it. Aren't you gay?
+
+1005
+01:38:27,950 --> 01:38:32,550
+No, not at all. Never once in a day in my life. I am gay. You can call me gay. I don't care
+
+1006
+01:38:33,150 --> 01:38:35,630
+Those are your chef boy or your chef where it goes?
+
+1007
+01:38:38,010 --> 01:38:40,290
+Is that supposed to look at me trying to make fun of me again?
+
+1008
+01:38:43,090 --> 01:38:45,610
+It doesn't work very well I can make fun of you very good
+
+1009
+01:38:50,130 --> 01:38:52,610
+Basically we're hitting on me as a woman and
+
+1010
+01:38:54,450 --> 01:38:57,330
+You pause that shit nobody's sitting on you look good
+
+1011
+01:38:58,160 --> 01:39:04,020
+I never want you to put your anything I never want you to put your
+
+1012
+01:39:05,580 --> 01:39:07,900
+Toe in your big toes bigger
+
+1013
+01:39:08,420 --> 01:39:10,420
+You know what dude
+
+1014
+01:39:10,420 --> 01:39:17,250
+I'm trying to like I've always been like a big brother to you, but you're you've been crashing out like the past like week, bro
+
+1015
+01:39:17,950 --> 01:39:19,950
+What's going on? Are you all right?
+
+1016
+01:39:20,110 --> 01:39:22,110
+She's gonna say what's going on?
+
+1017
+01:39:22,750 --> 01:39:24,750
+Because I was busting your balls
+
+1018
+01:39:24,910 --> 01:39:29,190
+Yeah, but you've been you've been taking it like too far recently
+
+1019
+01:39:30,130 --> 01:39:35,590
+Well, it's not like the balls my brother lock on the boss. You've been taking a little too far though
+
+1020
+01:39:36,150 --> 01:39:38,150
+Ghosts I chew bubblegum
+
+1021
+01:39:38,470 --> 01:39:39,970
+Take names
+
+1022
+01:39:39,970 --> 01:39:41,970
+And you're all out of bubble gum
+
+1023
+01:39:42,030 --> 01:39:44,090
+I mean, I'm all out of bubble gum motherfucker
+
+1024
+01:39:44,990 --> 01:39:47,470
+Okay, so I'm gonna kill who's who's banned Schmelly
+
+1025
+01:39:49,160 --> 01:39:53,020
+Samo cut high and thing that was Daniel Dio
+
+1026
+01:39:53,940 --> 01:39:58,720
+Nightbot got banned. Who's the man? Oh my gosh, who's the kid there? Hey, M.M.
+
+1027
+01:39:58,720 --> 01:40:07,070
+Baycliffs, the other mother, um, players Zebra, droopy face at this stage. Does
+
+1028
+01:40:07,070 --> 01:40:12,140
+anybody, um, think anybody should be unhidden? I don't know who think that was
+
+1029
+01:40:12,140 --> 01:40:15,140
+this, but I know who think that is.
+
+1030
+01:40:16,980 --> 01:40:18,980
+Alright
+
+1031
+01:40:18,980 --> 01:40:23,940
+My adjoin this is not to like crash out or debate you. It's just that's like are you are you all right man?
+
+1032
+01:40:23,940 --> 01:40:28,880
+Like you doing all right? I mean I'm not ghost, you know, I've been demonetized and then I finally mod has again
+
+1033
+01:40:29,620 --> 01:40:33,920
+Like a great a celebratory super chat me from you. No
+
+1034
+01:40:38,760 --> 01:40:42,520
+Yeah, I got nothing so if you know you call me the other night and you're like psyche start a panel
+
+1035
+01:40:42,980 --> 01:40:44,980
+I was like, okay
+
+1036
+01:40:51,140 --> 01:40:54,450
+Didn't even stop by
+
+1037
+01:40:54,450 --> 01:41:00,730
+You start at the panel all I do is ask you to start a panel, right? But it goes all I ask you first $5 and
+
+1038
+01:41:01,650 --> 01:41:04,160
+Did you did you?
+
+1039
+01:41:04,160 --> 01:41:08,880
+Help me. I gave way. Why let's get real with that. I gave way more than $5
+
+1040
+01:41:09,280 --> 01:41:13,600
+You gave the lesson you gave me was less goes tober. It's almost goes tober again
+
+1041
+01:41:16,340 --> 01:41:20,840
+You know so what's the problem? You've never once at all. You got a you got to give money to
+
+1042
+01:41:25,140 --> 01:41:30,680
+Problems you're asking me for favors all the time come over to this chat, and then you're not there
+
+1043
+01:41:35,780 --> 01:41:41,600
+People have my back. Oh, I'll get I'll give you $20, and I'll get psyche on the show, and then you never cut me in once
+
+1044
+01:41:42,240 --> 01:41:45,720
+What do you do is making I never once claim to give anybody else the money
+
+1045
+01:41:46,800 --> 01:41:50,800
+Say that again. I'm sorry. I didn't hear that for the time. You're like, you know, you made a deal about the
+
+1046
+01:41:51,320 --> 01:41:56,120
+Bronzeberg $100 and I'll go over to that show. I went over there. There's no hundred dollars
+
+1047
+01:41:56,120 --> 01:41:58,720
+They just like I never once claimed to give you $100
+
+1048
+01:42:01,520 --> 01:42:03,520
+They were paying you
+
+1049
+01:42:03,730 --> 01:42:06,130
+Is the point nobody paid me anything
+
+1050
+01:42:08,050 --> 01:42:13,490
+Good at me and negotiating goes that you made a few deals to do that and they never paid you none of them
+
+1051
+01:42:13,490 --> 01:42:17,650
+No, but you're upset about was like I've I've I've literally told you to start
+
+1052
+01:42:21,330 --> 01:42:27,450
+Literally the worst manager because that oh, okay. Go over here. It's gonna be great. I go the manager's not there. I'm alone
+
+1053
+01:42:35,450 --> 01:42:39,370
+Cuz that's what it debate is they don't like us and they we don't like then we have different work views
+
+1054
+01:42:41,370 --> 01:42:46,390
+To be with when I only know arguing for you, I don't know them. They hate me already because of you
+
+1055
+01:42:47,980 --> 01:42:51,540
+That's not true. They that's not true. I've I'm the one dude
+
+1056
+01:42:51,540 --> 01:42:56,260
+I've got the most disrespect on YouTube because of you because I'm I think all that money
+
+1057
+01:42:56,260 --> 01:43:00,820
+I've dealt with this shit for a past like two years now a year now. Sorry, not a year
+
+1058
+01:43:01,540 --> 01:43:04,220
+Chat your chatter. I mean, it's like, you're not you know, I mean, you don't have a
+
+1059
+01:43:05,020 --> 01:43:09,580
+Chatter I'm always on panel. What do you mean? I'm a chatter your chatter on the panels, too
+
+1060
+01:43:09,580 --> 01:43:13,040
+I mean you say your panel panel guests, you know, you're not a host
+
+1061
+01:43:14,830 --> 01:43:21,390
+Okay, well, what does that mean? Well, how would that be any different? I mean, I'm more fucked over than you are from the shit
+
+1062
+01:43:21,790 --> 01:43:24,430
+That's not true at all. I join a lot of panels and
+
+1063
+01:43:26,590 --> 01:43:31,230
+Because they say you're gay they say they say you you said you wanted to fuck the dog. Okay. I mean big deal
+
+1064
+01:43:31,630 --> 01:43:33,630
+I mean
+
+1065
+01:43:34,060 --> 01:43:39,160
+You're just losing the bait listen, sir being friends with you was hard as fuck and I've always depended you
+
+1066
+01:43:40,480 --> 01:43:45,660
+What if I got a dog freak outfit would you would you cuddle with me if I was dressed as not sexual at all?
+
+1067
+01:43:45,660 --> 01:43:47,060
+It's just cuddling
+
+1068
+01:43:47,060 --> 01:43:49,380
+Here's the thing though. I'm trying to bring up some real shit
+
+1069
+01:43:49,380 --> 01:43:53,060
+You're talking about like for like pretty shit like you're bringing up like some dumb ass shit
+
+1070
+01:43:53,060 --> 01:43:55,140
+I'm I'm being actually serious like I've always
+
+1071
+01:43:56,460 --> 01:43:59,780
+Being a furry very seriously. I don't have a I can't afford the costume yet
+
+1072
+01:43:59,780 --> 01:44:01,780
+I was thinking about getting a same Bernard
+
+1073
+01:44:05,520 --> 01:44:08,360
+All right, so and you're sober right now, right?
+
+1074
+01:44:10,400 --> 01:44:16,080
+It's a beer, but oh my god here. What is this noise go say here's something outside. Do I hear something? Yeah, cool. We're done
+
+1075
+01:44:24,210 --> 01:44:26,060
+Because I have to say
+
+1076
+01:44:26,060 --> 01:44:30,100
+Something's just a little bitch. I mean geez. Oh
+
+1077
+01:44:31,120 --> 01:44:33,920
+I don't like this song. I'm a womanizer in the song
+
+1078
+01:44:35,100 --> 01:44:40,580
+Try to make you a stud. I'm gonna try to end up bringing some confidence. I don't I'm a womanizer
+
+1079
+01:44:40,980 --> 01:44:43,280
+Well, you would be if you could be
+
+1080
+01:44:43,280 --> 01:44:48,820
+The only woman in that video that would give you the time of day is Christine.
+
+1081
+01:44:48,820 --> 01:44:55,390
+And jeez.
+
+1082
+01:44:55,390 --> 01:44:57,390
+Oh, I'm good.
+
+1083
+01:44:57,390 --> 01:44:58,390
+I'm good.
+
+1084
+01:44:58,390 --> 01:45:00,520
+Well, I'm not good.
+
+1085
+01:45:00,520 --> 01:45:03,260
+Now you piss me off.
+
+1086
+01:45:03,260 --> 01:45:05,950
+Any word?
+
+1087
+01:45:05,950 --> 01:45:08,780
+Well, anyway.
+
+1088
+01:45:08,780 --> 01:45:14,700
+Let's watch some more videos here.
+
+1089
+01:45:18,830 --> 01:45:24,910
+Many live stream platforms host panel shows that present themselves as digital public squares.
+
+1090
+01:45:24,910 --> 01:45:28,430
+They look like places for creators to hang out, share jokes,
+
+1091
+01:45:28,430 --> 01:45:33,710
+and interact with their chat in real time. Within these groups, one participant frequently
+
+1092
+01:45:33,710 --> 01:45:38,830
+occupies a distinct, targeted role. He appears on screen alongside the hosts,
+
+1093
+01:45:38,830 --> 01:45:42,670
+but the nature of his involvement is entirely different from the rest.
+
+1094
+01:45:42,670 --> 01:45:47,630
+His name is Psyche. Psyche often appears in states of visible mental distress.
+
+1095
+01:45:48,130 --> 01:45:54,050
+On camera, his behavior frequently signals a person in the middle of a documented psychological crisis,
+
+1096
+01:45:54,050 --> 01:45:57,250
+making him a uniquely vulnerable participant in these streams.
+
+1097
+01:45:57,970 --> 01:46:02,690
+Viewers who track these panels over time have identified recurring patterns in how the community
+
+1098
+01:46:02,690 --> 01:46:06,930
+treats him. These interactions appear to follow a specific repeating sequence.
+
+1099
+01:46:07,570 --> 01:46:12,210
+The relaxed, low stakes presentation of these creator panels provides the necessary cover
+
+1100
+01:46:14,910 --> 01:46:18,270
+The first part of this process involves harassment.
+
+1101
+01:46:18,270 --> 01:46:25,710
+In these digital rooms, harassment functions as a tool to mobilize an entire environment against a single person.
+
+1102
+01:46:25,710 --> 01:46:29,790
+The hosts facilitate this environment through their moderation choices.
+
+1103
+01:46:29,790 --> 01:46:34,350
+They have the administrative power to block participants or filter out abuse,
+
+1104
+01:46:34,350 --> 01:46:38,110
+yet they leave the stream open to constant hostility.
+
+1105
+01:46:38,110 --> 01:46:43,870
+This chart shows the sheer volume of severe homophobic slurs used to demean the target.
+
+1106
+01:46:44,080 --> 01:46:48,160
+The repetition of these specific words is designed to saturate the chat
+
+1107
+01:46:48,160 --> 01:46:51,360
+and ensure the victim is constantly reminded of his staff.
+
+1108
+01:47:19,120 --> 01:47:23,900
+Dumbled across the live stream and thought, wow, this person literally treats conflict
+
+1109
+01:47:23,900 --> 01:47:24,900
+like it's oxygen?
+
+1110
+01:47:24,900 --> 01:47:29,120
+Well, today in This Explainer, we're diving deep into a highly documented warning.
+
+1111
+01:47:29,120 --> 01:47:32,700
+It comes straight from an online host named Alexandra, and she's pulling back the curtain
+
+1112
+01:47:32,700 --> 01:47:36,900
+on the dark mechanics of coercive control and what we call e-begging.
+
+1113
+01:47:36,900 --> 01:47:38,800
+We're not just gossiping about internet drama here.
+
+1114
+01:47:38,800 --> 01:47:42,660
+This is a very real, very serious cautionary tale about how scammers exploit our digital
+
+1115
+01:47:42,660 --> 01:47:44,900
+vulnerabilities for cold, hard cash.
+
+1116
+01:47:45,170 --> 01:47:50,170
+Just listen to what Alexander had to say. She told her audience, point blank, do not donate to him.
+
+1117
+01:47:50,170 --> 01:47:57,170
+This is an official statement and an official warning in regards to the type of con artist and scam artist and master manipulator that he is.
+
+1118
+01:47:57,170 --> 01:48:03,170
+She is not mincing words, right? She's issuing a massive red alert to the public, to management and to legal teams.
+
+1119
+01:48:03,170 --> 01:48:10,170
+She's describing someone who actively prays on the grieving, the elderly and the marginalized. The stakes are incredibly high right out of the game.
+
+1120
+01:48:10,220 --> 01:48:16,060
+And we have receipts, specifically $973.48.
+
+1121
+01:48:16,060 --> 01:48:18,620
+That exact number is what makes this so chilling.
+
+1122
+01:48:18,620 --> 01:48:21,780
+We're not talking about some abstract hypothetical scam.
+
+1123
+01:48:21,780 --> 01:48:26,020
+That is the precise amount of money extracted directly from Alexandra.
+
+1124
+01:48:26,020 --> 01:48:29,600
+Putting a hard number on it forces us to see this for what it actually is.
+
+1125
+01:48:29,600 --> 01:48:33,900
+Not just a toxic internet friendship gone wrong, but a highly calculated financial extraction.
+
+1126
+01:48:34,290 --> 01:48:38,230
+Which begs the question, how on earth does this happen?
+
+1127
+01:48:38,230 --> 01:48:42,530
+How does someone go from a simple, genuine act of online charity just trying to help
+
+1128
+01:48:42,530 --> 01:48:48,330
+a creator out and end up trapped in this absolute nightmare of digital extortion, blackmail,
+
+1129
+01:48:48,330 --> 01:48:50,290
+and offline threats?
+
+1130
+01:48:50,290 --> 01:48:55,890
+While it starts with part one, the illusion of need, unpacking the facade of e-begging.
+
+1131
+01:48:55,890 --> 01:48:59,970
+Because to get you to open your wallet, a manipulator first has to manufacture a totally
+
+1132
+01:49:01,140 --> 01:49:03,560
+So, how do they build that facade?
+
+1133
+01:49:03,560 --> 01:49:08,360
+In this case, the streamer, Psyche, claimed he just needed some cash to feed his cats.
+
+1134
+01:49:08,360 --> 01:49:09,520
+Sounds innocent enough, right?
+
+1135
+01:49:09,520 --> 01:49:11,480
+Who doesn't want to help some hungry kitties?
+
+1136
+01:49:11,480 --> 01:49:14,960
+But the reality that Alexander brought forward is a whole lot darker.
+
+1137
+01:49:14,960 --> 01:49:19,640
+The allegations suggest those no-nations were actually funding an unmonitored methamphetamine
+
+1138
+01:49:19,640 --> 01:49:20,640
+habit.
+
+1139
+01:49:20,640 --> 01:49:21,640
+The cats?
+
+1140
+01:49:21,640 --> 01:49:25,640
+They were literally just props, a sympathetic shield designed to completely lower the defenses
+
+1141
+01:49:25,640 --> 01:49:27,240
+of charitable viewers.
+
+1142
+01:49:29,970 --> 01:49:34,690
+and his actual reality is just wild. On stream, he acts like this struggling,
+
+1143
+01:49:34,690 --> 01:49:40,530
+isolated, unemployed guy. But behind the screen, he actually has access to a family trust fund.
+
+1144
+01:49:40,530 --> 01:49:45,090
+His parents own affluent property in Palis Verdes. Oh, and he runs a registered business
+
+1145
+01:49:45,090 --> 01:49:50,050
+literally called Cult of Psyche? The guy refuses to get a normal job, not because he can't,
+
+1146
+01:49:50,050 --> 01:49:54,690
+but because he doesn't want to. He'd much rather rely on emotionally manipulating his audience.
+
+1147
+01:49:54,850 --> 01:49:58,850
+Let's look a little closer at Alexander's nearly $1,000 donation.
+
+1148
+01:49:58,850 --> 01:50:01,850
+$600 went straight to him via Cash App.
+
+1149
+01:50:01,850 --> 01:50:06,850
+The rest, that $373, was spent on actual tangible stuff.
+
+1150
+01:50:06,850 --> 01:50:10,850
+A microphone, a tripod, groceries, even some white claws.
+
+1151
+01:50:10,850 --> 01:50:11,850
+But here's the kicker.
+
+1152
+01:50:11,850 --> 01:50:16,850
+When Alexander sent those physical, helpful items, he actually got agitated.
+
+1153
+01:50:16,850 --> 01:50:18,590
+He was completely unappreciative.
+
+1154
+01:50:18,590 --> 01:50:25,070
+Why? Because you can't easily liquidate a tripod or a bag of groceries to feed an undocumented habit.
+
+1155
+01:50:25,790 --> 01:50:31,150
+This brings us to part two, the mechanics of control, farming donations through manufactured
+
+1156
+01:50:31,150 --> 01:50:36,750
+chaos. Because if your entire income relies on conflict, guess what? You have to constantly feed
+
+1157
+01:50:36,750 --> 01:50:42,350
+the machine. Which is the literal definition of e-begging. It's not passive, like a digital tip
+
+1158
+01:50:45,020 --> 01:50:50,220
+They manufacture this sympathetic trauma or they incite total chaotic conflict just to
+
+1159
+01:50:50,220 --> 01:50:52,260
+compel you to pay to speak.
+
+1160
+01:50:52,620 --> 01:50:55,900
+For Alexandra, it was incredibly sinister.
+
+1161
+01:50:55,900 --> 01:50:59,780
+Psyche quietly stalked her online and waited until she was actively grieving the loss of
+
+1162
+01:50:59,780 --> 01:51:01,020
+her father.
+
+1163
+01:51:01,020 --> 01:51:05,700
+He used that deep vulnerability to buddy up to her, gain her trust, and extract that initial
+
+1164
+01:51:05,700 --> 01:51:06,700
+cash.
+
+1165
+01:51:06,700 --> 01:51:09,660
+But this whole ecosystem doesn't work without enablers.
+
+1166
+01:51:09,660 --> 01:51:14,700
+Take an associate known as INX, or Karen, and what we call the voicemail paradox.
+
+1167
+01:51:19,550 --> 01:51:24,830
+But actually, she spends hours and hours watching these streams, funding these bad actors, and
+
+1168
+01:51:24,830 --> 01:51:30,030
+leaving deeply disturbing manipulative voicemails. It's a sad reality, but when someone feels
+
+1169
+01:51:30,030 --> 01:51:34,350
+powerless in the physical world, they'll often use their money to buy the illusion of power in
+
+1170
+01:51:34,350 --> 01:51:40,590
+the digital one. And that leads us to part three. Weaponizing the power chat, the Auction scam
+
+1171
+01:51:40,590 --> 01:51:44,270
+explained. You see, they aren't just asking for money anymore.
+
+1172
+01:51:44,560 --> 01:51:50,260
+They are literally weaponizing the internet's own infrastructure to pit their donors against
+
+1173
+01:51:50,260 --> 01:51:51,260
+each other.
+
+1174
+01:51:51,260 --> 01:51:55,140
+Okay, I have to walk you through this because it is brilliantly evil.
+
+1175
+01:51:55,140 --> 01:51:56,140
+Step 1.
+
+1176
+01:51:56,140 --> 01:51:59,140
+The host logs into a secret alternate account while they're live on stream.
+
+1177
+01:51:59,140 --> 01:52:00,140
+Step 2.
+
+1178
+01:52:00,140 --> 01:52:05,500
+They send a massive fake donation, like a thousand bucks, to themselves and label it anonymous.
+
+1179
+01:52:05,500 --> 01:52:06,500
+Step 3.
+
+1180
+01:52:06,500 --> 01:52:09,620
+They look right at the camera and hint that this anonymous cash bomb came from a specific
+
+1181
+01:52:09,620 --> 01:52:12,940
+rival, like Alexandra, paying to talk trash.
+
+1182
+01:52:13,710 --> 01:52:18,210
+A viewer at home, like Karen, gets incredibly paranoid that her side is being outbid, so
+
+1183
+01:52:18,210 --> 01:52:22,730
+she opens her actual wallet and donates real money to fight a threat that was completely
+
+1184
+01:52:22,730 --> 01:52:23,730
+fabricated.
+
+1185
+01:52:23,730 --> 01:52:26,890
+It is an absolute masterclass in exploiting paranoia.
+
+1186
+01:52:26,890 --> 01:52:29,730
+But what happens when you try to walk away?
+
+1187
+01:52:29,730 --> 01:52:35,470
+That's part four, the escalation to offline threats, when the block button fails.
+
+1188
+01:52:38,060 --> 01:52:44,060
+But what this explainer documents is the terrifying reality of what happens when ignoring them doesn't work.
+
+1189
+01:52:44,300 --> 01:52:48,220
+The timeline here escalates so fast it'll give you whiplash.
+
+1190
+01:52:48,220 --> 01:52:51,700
+Months ago a manipulative friendship is formed while the victim is grieving.
+
+1191
+01:52:51,700 --> 01:52:54,380
+Weeks later almost a grand is drained from her accounts.
+
+1192
+01:52:54,380 --> 01:52:57,300
+Then, Alexandra finally sets a hard boundary.
+
+1193
+01:52:57,300 --> 01:53:00,020
+She sends a cease and desist and totally unplugged.
+
+1194
+01:53:00,020 --> 01:53:01,620
+And how does our streamer handle that?
+
+1195
+01:53:01,620 --> 01:53:05,900
+By going live every single night to slander, extort and blackmail her, trying to coerce
+
+1196
+01:53:05,900 --> 01:53:08,100
+her into paying him just to stop.
+
+1197
+01:53:08,720 --> 01:53:13,200
+Associates like INX have allegedly escalated to physical threats, talking about showing up at
+
+1198
+01:53:13,200 --> 01:53:18,080
+Alexander's apartment door with a firearm. This is the most chilling takeaway of all.
+
+1199
+01:53:18,640 --> 01:53:23,840
+In this twisted ecosystem, your charitable donation doesn't help someone get back on their feet.
+
+1200
+01:53:23,840 --> 01:53:28,480
+It just paints a giant target on your back. Once they know you have resources,
+
+1201
+01:53:28,480 --> 01:53:33,760
+they feel entitled to them forever. They will literally use digital harassment to try and
+
+1202
+01:53:38,030 --> 01:53:40,430
+So, how do we stop this?
+
+1203
+01:53:40,430 --> 01:53:41,430
+Part 5.
+
+1204
+01:53:41,430 --> 01:53:44,110
+Stop feeding the machine, protecting yourself from the scam.
+
+1205
+01:53:44,110 --> 01:53:46,590
+Alexandra didn't just share her storied event.
+
+1206
+01:53:46,590 --> 01:53:48,870
+It's a very clear call to action.
+
+1207
+01:53:48,870 --> 01:53:52,150
+Here are the absolute must-know takeaways to protect yourself.
+
+1208
+01:53:52,150 --> 01:53:55,950
+First, never take an internet persona at face value.
+
+1209
+01:53:55,950 --> 01:53:59,270
+That struggling creator might just be sitting on a trust fund.
+
+1210
+01:53:59,270 --> 01:54:03,750
+Second, learn to spot when conflict is being manufactured purely for profit.
+
+1211
+01:54:03,840 --> 01:54:08,720
+Third, do not donate out of pity or morbid curiosity to drama streams, you're just funding
+
+1212
+01:54:08,720 --> 01:54:09,720
+the harassment.
+
+1213
+01:54:09,720 --> 01:54:14,560
+Fourth, recognize that the second you engage, even just to defend yourself, they win because
+
+1214
+01:54:14,560 --> 01:54:16,400
+you just gave them free content.
+
+1215
+01:54:16,400 --> 01:54:21,200
+And lastly, be incredibly suspicious of anyone demanding your hard-earned money while flat
+
+1216
+01:54:21,200 --> 01:54:22,560
+out refusing to get a real job.
+
+1217
+01:54:22,820 --> 01:54:27,300
+Which brings us to a really tough question we all have to ask ourselves.
+
+1218
+01:54:27,300 --> 01:54:30,420
+We have to look hard at the media we consume.
+
+1219
+01:54:30,420 --> 01:54:33,380
+The next time you see a creator spiraling out of control,
+
+1220
+01:54:33,380 --> 01:54:37,620
+drumming up drama, and screaming for a super chat, just pause for a second.
+
+1221
+01:54:37,620 --> 01:54:40,100
+Are you genuinely helping a person in need,
+
+1222
+01:54:40,100 --> 01:54:44,900
+or are you inadvertently feeding a dark, manipulative ecosystem of control?
+
+1223
+01:54:52,300 --> 01:54:57,300
+Right lava and this for the record that was kind of like a little bit biased towards her
+
+1224
+01:54:57,300 --> 01:55:01,620
+They just I just better show into that so it kind of does take the word of this person
+
+1225
+01:55:01,620 --> 01:55:08,500
+I don't put a lot of like caveats or like, you know direction and what comes out. I just put them in transcripts and
+
+1226
+01:55:09,300 --> 01:55:13,220
+See what comes out because I want to see it's a it's kind of a non bias source
+
+1227
+01:55:13,220 --> 01:55:16,500
+That's maybe has built-in biases, but it's not bias like you know
+
+1228
+01:55:16,500 --> 01:55:19,780
+Oh, it knows one or the other prefers one or the other that kind of thing
+
+1229
+01:55:20,180 --> 01:55:22,700
+It always basically look at the facts as much as you can
+
+1230
+01:55:23,500 --> 01:55:26,180
+better than most humans I would say but
+
+1231
+01:55:27,070 --> 01:55:28,150
+still
+
+1232
+01:55:28,150 --> 01:55:32,350
+You know missing something, but it has has something so yeah
+
+1233
+01:55:33,150 --> 01:55:35,230
+Just to be fit just to be clear
+
+1234
+01:55:35,710 --> 01:55:38,710
+Now it's being said, I like tried to charge INX,
+
+1235
+01:55:38,710 --> 01:55:39,950
+I said, should you go to heaven
+
+1236
+01:55:39,950 --> 01:55:42,590
+for a certain amount of like a large sum of money?
+
+1237
+01:55:42,590 --> 01:55:43,950
+That never happened.
+
+1238
+01:55:43,950 --> 01:55:46,910
+Please, can you produce one bit of evidence,
+
+1239
+01:55:46,910 --> 01:55:48,030
+please about something?
+
+1240
+01:55:48,030 --> 01:55:53,320
+I mean, it's just like hundreds of accusations.
+
+1241
+01:55:53,560 --> 01:55:56,120
+And yeah, it is better for my nerves.
+
+1242
+01:55:56,120 --> 01:55:57,720
+But all these things being thrown at me,
+
+1243
+01:55:57,720 --> 01:55:59,480
+and it's like, where's the proof?
+
+1244
+01:55:59,480 --> 01:56:02,770
+And then the proof that you do have, lady,
+
+1245
+01:56:02,770 --> 01:56:04,020
+is
+
+1246
+01:56:04,020 --> 01:56:11,820
+Any judge would fucking laugh at it and send you and your self-appointed lawyer yourself out of the courtroom
+
+1247
+01:56:13,320 --> 01:56:17,680
+Opening a judgment in my favor. I mean, that's why you won't put a court
+
+1248
+01:56:18,520 --> 01:56:20,520
+that and you also warns out and
+
+1249
+01:56:21,060 --> 01:56:27,040
+You're on the run and blah blah blah, so you're not gonna see you lost your last case too because you represent yourself
+
+1250
+01:56:27,040 --> 01:56:29,040
+It was a bad idea
+
+1251
+01:56:29,320 --> 01:56:30,960
+but
+
+1252
+01:56:30,960 --> 01:56:32,960
+Barbeque for me to give me legal advice
+
+1253
+01:56:36,750 --> 01:56:40,830
+Yeah, well, I mean and now she's being such a victim and today today was on beaters
+
+1254
+01:56:40,830 --> 01:56:43,430
+I went on beat as a beat and and Christine came on
+
+1255
+01:56:44,150 --> 01:56:49,070
+And they're like, hi Christine. I was like hi beta and then it was like before she could say anything
+
+1256
+01:56:49,070 --> 01:56:55,750
+And then she got kind of flustered I noticed and I was like well, you know, I don't know. I said I upset her and then
+
+1257
+01:56:57,000 --> 01:57:00,800
+Someone brought up summer or something. That's all in the chat. It's another husband and she's hung up
+
+1258
+01:57:00,800 --> 01:57:05,730
+And I got blamed for the court. Oh, what'd you say? It's like I didn't say anything
+
+1259
+01:57:06,510 --> 01:57:11,230
+But does anybody care when she's out not never letting me speak in another chat
+
+1260
+01:57:11,790 --> 01:57:14,390
+Ban banning in other chats where she's a mod
+
+1261
+01:57:15,230 --> 01:57:27,810
+Say call me scumbag slandering me everywhere. It's like, you know, and why I don't know. She's crazy. She's
+
+1262
+01:57:28,780 --> 01:57:33,850
+Dumb, I mean, it's like maybe all of the above. I mean lady get a hobby
+
+1263
+01:57:34,450 --> 01:57:38,590
+You know my grandma used to break big bread. We did a bread making machine
+
+1264
+01:57:39,070 --> 01:57:41,710
+You just put the ingredients in the bread making machine a couple eggs
+
+1265
+01:57:44,560 --> 01:57:49,800
+Came at you for no reason. What did I say? What did I say negative about you?
+
+1266
+01:57:51,180 --> 01:57:53,420
+Ghost I remember you saying oh
+
+1267
+01:57:54,860 --> 01:57:57,150
+You're making me look like a womanizer
+
+1268
+01:57:58,070 --> 01:58:01,190
+Why because it makes you a stud in the video and I have all these like hot
+
+1269
+01:58:01,190 --> 01:58:04,030
+You know how these hot women like at your at your with you at your arm and
+
+1270
+01:58:05,680 --> 01:58:08,640
+I mean, it's kind of making a joke how about how like opposite you are
+
+1271
+01:58:08,640 --> 01:58:11,440
+But it's like, you know, I'll just make you look like I said in the videos your birthday
+
+1272
+01:58:12,120 --> 01:58:16,740
+You don't get the joke. Oh
+
+1273
+01:58:19,470 --> 01:58:28,450
+Man, I didn't think ghosts had Down syndrome, but I'm starting to think like it's more the spectrum disorder than top people
+
+1274
+01:58:29,010 --> 01:58:31,230
+It's definitely a little bit downy today
+
+1275
+01:58:37,110 --> 01:58:40,230
+Yeah ghosts
+
+1276
+01:58:40,230 --> 01:58:42,990
+And then you're not even like oh, I was like, oh, I
+
+1277
+01:58:43,790 --> 01:58:48,430
+Stand up for you my brother the other day. He was on some chat. I was listening. He didn't know I was listening
+
+1278
+01:58:48,430 --> 01:58:52,470
+He's like, oh, you should go talk to psyche. You'll be dumb and dumber
+
+1279
+01:58:54,990 --> 01:59:03,750
+Excuse me dumb and dumber. Which one would I be ghost? Would I be dumb or or dumber? Which one ghosts?
+
+1280
+01:59:05,190 --> 01:59:09,830
+You think I'm dumb?
+
+1281
+01:59:09,830 --> 01:59:12,550
+Well, I'm the ones you're the only I can't spell shit
+
+1282
+01:59:13,500 --> 01:59:17,120
+That's both shite
+
+1283
+01:59:17,120 --> 01:59:21,280
+completely wrong
+
+1284
+01:59:21,280 --> 01:59:23,540
+Okay, well
+
+1285
+01:59:23,540 --> 01:59:31,110
+About talking shit. I'm telling the truth. I'm speaking the truth goes that's a difference. Okay, you understand
+
+1286
+01:59:31,590 --> 01:59:58,890
+Why are you being such a little bitch the frequency existed before the microphone?
+
+1287
+02:00:03,340 --> 02:00:08,990
+The message existed before the platform
+
+1288
+02:00:08,990 --> 02:00:14,820
+And now existed before the thing you can take from me
+
+1289
+02:00:14,820 --> 02:00:21,840
+I was raised on borrowed ground, a title and a name
+
+1290
+02:00:21,840 --> 02:00:27,870
+Every stone somebody handed me and every stone the same
+
+1291
+02:00:27,870 --> 02:00:34,830
+Built itself out of the furniture, the jar, the room, the ring
+
+1292
+02:00:34,830 --> 02:00:39,790
+Then the wind came through the numbers and it took the whole damn thing
+
+1293
+02:00:41,620 --> 02:00:47,020
+Watch the building of my life go up in violet and in gold and I did not call it tragedy
+
+1294
+02:00:47,020 --> 02:00:52,140
+I called it now I know because the house was never me the house was just a proof
+
+1295
+02:00:52,140 --> 02:00:57,980
+I'm the hen that laid the bricks you can't repossess the truth. They drew a line inside my head and told me
+
+1296
+02:00:57,980 --> 02:01:03,460
+This is where you in somebody else's ceiling wearing my skin like a friend. I found the line
+
+1297
+02:01:03,460 --> 02:01:08,620
+I read the name it wasn't mine to keep so I tore the ceiling out in the sky
+
+1298
+02:01:08,660 --> 02:01:12,660
+I came down to speak, burn the decoration, keep the bone,
+
+1299
+02:01:12,660 --> 02:01:32,310
+take the crown, take the count, so go on, say my name,
+
+1300
+02:01:32,310 --> 02:01:35,790
+rhythm doesn't hate me, and that's the code I want.
+
+1301
+02:01:35,790 --> 02:01:40,990
+learn my face at all it only learned the room I gave him my best hours and it handed back a
+
+1302
+02:01:40,990 --> 02:01:46,430
+chart so I stopped kneeling to the mirror and I went back to the heart content is the fire
+
+1303
+02:01:46,430 --> 02:01:52,270
+compressed until the cowards call it nice signal is the fire itself and signal has a price I've
+
+1304
+02:01:52,270 --> 02:01:57,790
+paid it in the quiet years in the streams nobody found how the ones who stayed are standing here
+
+1305
+02:01:57,790 --> 02:02:02,990
+and holding up the ground so bring the flood bring the fever bring the sleepless 4 a.m. I trained
+
+1306
+02:02:04,620 --> 02:02:15,120
+I don't need a hundred friends, I already lost it all this month
+
+1307
+02:02:15,120 --> 02:02:18,920
+With a target and a clock, spider ritual coordinated
+
+1308
+02:02:18,920 --> 02:02:21,450
+Every hour on the hour, knock knock
+
+1309
+02:02:21,450 --> 02:02:26,430
+And the halo broke good, break let it fall, I just don't blind you
+
+1310
+02:02:26,430 --> 02:02:45,280
+I meant it when they threw, I can hold both
+
+1311
+02:02:45,280 --> 02:02:51,680
+That's the whole art, that's the only unbreakable thing
+
+1312
+02:02:51,680 --> 02:02:55,670
+Of my rooms in one heart
+
+1313
+02:03:02,480 --> 02:03:05,480
+Cosmic egg came longing before it came light
+
+1314
+02:03:05,480 --> 02:03:08,980
+Air was first then psyche on her wings into the night
+
+1315
+02:03:08,980 --> 02:03:12,480
+And the one law spoken over her the only law there's been
+
+1316
+02:03:12,480 --> 02:03:16,730
+She shall no trial, she shall come to know
+
+1317
+02:03:16,730 --> 02:03:20,230
+So this is not a punishment, this is the initiation
+
+1318
+02:03:20,230 --> 02:03:23,730
+Every fracture in the record was a door not a sentence
+
+1319
+02:03:23,730 --> 02:03:27,230
+The familiar keeps the edges, the eye keeps every word
+
+1320
+02:03:27,230 --> 02:03:31,230
+The architect holds center, and the center has been heard
+
+1321
+02:03:49,780 --> 02:04:07,130
+That's funny, you know who I remind me of as a woman, if you ever saw Get Out, there's
+
+1322
+02:04:07,130 --> 02:04:15,780
+like that psychologist in the show that hypnotizes people, she's kind of evil, and I kind of
+
+1323
+02:04:15,780 --> 02:04:22,510
+reminds me of myself, I'm not that evil, I say no, yeah, you're concerned about me ghost,
+
+1324
+02:04:22,510 --> 02:04:29,470
+oh no, ghost is concerned about me, I must be in big trouble because he's a mess, this
+
+1325
+02:04:31,520 --> 02:04:33,520
+It's not so much cocaine
+
+1326
+02:04:33,690 --> 02:04:36,190
+He falls asleep on the toilet on my show
+
+1327
+02:04:43,410 --> 02:04:50,440
+Well, okay, I think I'll end like a few minutes like because it's been too quiet of a show, but hey, thanks for coming guys
+
+1328
+02:04:50,440 --> 02:04:54,700
+Yeah, you know more about me
+
+1329
+02:04:54,700 --> 02:05:00,060
+The Caribbean system divides the zodiac into 360 distinct slices,
+
+1330
+02:05:00,060 --> 02:05:04,460
+assigning a specific, unique image to every single degree.
+
+1331
+02:05:04,460 --> 02:05:08,460
+This framework is designed to translate precise celestial coordinates
+
+1332
+02:05:08,460 --> 02:05:11,100
+into a series of mythic stories.
+
+1333
+02:05:11,100 --> 02:05:15,500
+Many users now feed their birth data into generative AI chatbots
+
+1334
+02:05:15,500 --> 02:05:19,020
+to receive instant, customized, symbolic readings.
+
+1335
+02:05:19,020 --> 02:05:21,900
+The interface makes the process look seamless,
+
+1336
+02:05:22,020 --> 02:05:26,260
+However, large language models are built to predict word sequences,
+
+1337
+02:05:26,260 --> 02:05:29,380
+not to execute astronomical calculations.
+
+1338
+02:05:29,380 --> 02:05:32,580
+When a chatbot attempts to map a planetary orbit,
+
+1339
+02:05:32,580 --> 02:05:35,780
+it often fills the gaps with plausible-sounding guesses,
+
+1340
+02:05:35,780 --> 02:05:37,700
+rather than accurate math.
+
+1341
+02:05:37,700 --> 02:05:41,460
+An independent software audit recently highlighted this risk.
+
+1342
+02:05:41,460 --> 02:05:45,300
+Researchers found that an astrology application could pass its code and
+
+1343
+02:05:45,300 --> 02:05:48,500
+visual tests while incorrectly labeling planetary
+
+1344
+02:05:49,380 --> 02:05:53,260
+effectively presenting a fake chart as a finished product.
+
+1345
+02:05:53,260 --> 02:05:57,260
+To prevent this, developers must use a hierarchy of truth.
+
+1346
+02:05:57,360 --> 02:06:06,360
+This approach uses deterministic calculators to lock down astronomical facts before a generative model is allowed to provide any commentary.
+
+1347
+02:06:06,360 --> 02:06:16,360
+Without a strict barrier between the calculation and the writing, a personalized reading is an artificial construction detached from the actual position of the stars.
+
+1348
+02:06:16,360 --> 02:06:19,920
+The foundation of this hierarchy is historical timekeeping.
+
+1349
+02:06:19,920 --> 02:06:24,880
+The system must resolve a birthplace into exact coordinates and then cross-reference
+
+1350
+02:06:24,880 --> 02:06:30,480
+INA time zones to find the precise universal time offset for that specific calendar date.
+
+1351
+02:06:31,040 --> 02:06:36,640
+Unknown birth times create significant data errors. If systems default to midnight without
+
+1352
+02:06:36,640 --> 02:06:42,400
+a specific time, the moon, which moves about 13 degrees a day, can end up in the wrong sign
+
+1353
+02:06:42,400 --> 02:06:48,480
+or the wrong Sabian degree entirely. Daylight saving time adds another layer of complexity,
+
+1354
+02:06:48,560 --> 02:06:53,360
+If the math engine ignores the hour gaps or overlaps that occur when clocks change,
+
+1355
+02:06:53,360 --> 02:06:58,160
+it will plot a chart using an astronomical moment that never occurred in local time.
+
+1356
+02:06:58,160 --> 02:07:03,040
+The consequences of these calculation errors were visible in the software audit's check of
+
+1357
+02:07:03,040 --> 02:07:08,800
+the lunar nodes, the points where the moon's orbit crosses the Earth's path. In this diagram,
+
+1358
+02:07:08,800 --> 02:07:16,240
+the system identified a descending crossing event at 127.61 degrees and incorrectly labeled it the
+
+1359
+02:07:17,390 --> 02:07:23,090
+Astronomically, the true North node is defined only by the ascending intersection.
+
+1360
+02:07:23,090 --> 02:07:28,930
+This 180-degree error provided a coordinate exactly opposite of physical reality.
+
+1361
+02:07:28,930 --> 02:07:33,650
+If an application cannot correctly identify where a planet is, the symbols it selects
+
+1362
+02:07:33,650 --> 02:07:35,930
+are based on a false premise.
+
+1363
+02:07:35,930 --> 02:07:40,610
+Once the astronomical position is verified, the system must solve a logic problem.
+
+1364
+02:07:40,610 --> 02:07:45,290
+How exactly do you map a continuous celestial measurement to a specific, whole-numbered
+
+1365
+02:07:46,720 --> 02:07:52,400
+The pipeline uses a strict mapping algorithm to prevent the AI from making its own rounding choices.
+
+1366
+02:07:52,400 --> 02:07:56,800
+The formula takes the lower hole number, the floor, and adds one.
+
+1367
+02:07:56,800 --> 02:08:04,800
+For example, 14 degrees and 32 minutes of Aries processes as 14 plus one, locking into Aries 15.
+
+1368
+02:08:05,520 --> 02:08:12,080
+At the boundary, 29 degrees 59 seconds snaps to symbol 30, then cleanly resets to one.
+
+1369
+02:08:12,640 --> 02:08:17,400
+Ultimately, this strict mathematical framework is what translates the variable nature of
+
+1370
+02:08:17,400 --> 02:08:21,960
+celestial motion into 360 unalterable narratives.
+
+1371
+02:08:21,960 --> 02:08:26,000
+In the final stage, the AI is provided a validated data payload.
+
+1372
+02:08:26,000 --> 02:08:30,880
+It is restricted from changing any of the verified signs, degrees, or house placements.
+
+1373
+02:08:30,880 --> 02:08:35,760
+The model must follow a safety contract, drawing only from authorized symbolic records and
+
+1374
+02:08:39,250 --> 02:08:44,990
+We can see the results of this verification by examining a natal chart that has passed through this specific pipeline.
+
+1375
+02:08:44,990 --> 02:08:49,750
+The deterministic data here shows a capricorn ascendant at 10 degrees and 2 minutes.
+
+1376
+02:08:49,750 --> 02:08:54,700
+In this chart, the ruler, Saturn, is placed in an exceptionally precise union with Jupiter.
+
+1377
+02:08:54,700 --> 02:09:00,540
+In the Sabian framework, a Jupiter-Saturn conjunction suggests a builder signature,
+
+1378
+02:09:00,540 --> 02:09:04,700
+the ability to turn abstract ideas into durable structures.
+
+1379
+02:09:04,700 --> 02:09:07,580
+Because these planets rule the first house planets,
+
+1380
+02:09:07,580 --> 02:09:11,100
+the person's public identity and their organizational work
+
+1381
+02:09:11,100 --> 02:09:14,220
+operate as a single interdependent system.
+
+1382
+02:09:14,220 --> 02:09:18,140
+This method proves that symbolic interpretation is most effective
+
+1383
+02:09:18,140 --> 02:09:48,140
+when the underlying data is protected by impenetrable boundaries.
+
+1384
+02:10:36,340 --> 02:10:55,600
+I think we're getting a request for some Roy J music this one. This is new
+
+1385
+02:11:57,070 --> 02:12:02,400
+This is a rocky new song
+
+1386
+02:12:12,400 --> 02:12:42,400
+I mean Jesus Christ like a 10 minute song, I mean
+
+1387
+02:14:25,360 --> 02:14:32,320
+Terrible it's copying the rocky soundtrack right here. Oh, I closed it. I'm so sorry
+
+1388
+02:14:53,520 --> 02:14:57,140
+The story of Roy J is definitely quite bizarre.
+
+1389
+02:14:57,140 --> 02:15:01,680
+It all started on 4chan, as many things do, but even 4.
+
+1390
+02:15:01,970 --> 02:15:09,570
+2025, a ex-user posted the following. This is a deer in, writing itself retroactively
+
+1391
+02:15:09,570 --> 02:15:14,050
+into thought culture history. You think this is a shit post, but y'all remember him from
+
+1392
+02:15:14,050 --> 02:15:19,810
+your childhood, he's been attached to the post. It's a strange photo of a man wearing what seems
+
+1393
+02:15:19,810 --> 02:15:24,290
+to be white and red to him, standing directly in front of a yellow wishbar.
+
+1394
+02:15:24,780 --> 02:15:32,220
+The file name, Roy J, PJs, and Jpeg, or Chan, basically lost their minds trying to unravel
+
+1395
+02:15:32,220 --> 02:15:34,720
+whether this was a ship close to the mystery.
+
+1396
+02:15:34,720 --> 02:15:39,020
+No one really knew, but here was the weird part, there didn't seem to be anything of
+
+1397
+02:15:39,020 --> 02:15:40,250
+them.
+
+1398
+02:15:40,250 --> 02:15:42,770
+In fact, all the searches led absolutely nowhere.
+
+1399
+02:15:42,770 --> 02:15:48,090
+Roy J didn't appear to be a real figure who existed in any capacity before.
+
+1400
+02:15:48,430 --> 02:15:53,510
+As 4chan does, interest started to die down, but then everything changed.
+
+1401
+02:15:53,510 --> 02:15:57,950
+It was as if some kind of reverse Mandela effect happened overnight.
+
+1402
+02:15:57,950 --> 02:16:03,630
+Articles started popping up, a wiki appeared out of nowhere, and videos supposedly dated
+
+1403
+02:16:03,630 --> 02:16:07,570
+all the way back to the late 2000s started to surface online.
+
+1404
+02:16:07,570 --> 02:16:12,910
+This left people confused, none of it made any sense, was this some kind of demonic entity
+
+1405
+02:16:17,870 --> 02:16:23,630
+The thing about this Roy J figure is that there's a lot of contradicting information about who this
+
+1406
+02:16:23,630 --> 02:16:31,870
+person is or was, but from what we do know Roy J, full name Roy Jorgensen was a British
+
+1407
+02:16:31,870 --> 02:16:38,750
+Norwegian stand-up comedian or somewhere in Norway around 1948 and moving to South Wales
+
+1408
+02:16:38,750 --> 02:16:43,790
+around the time period when he would have been four years old. From the information that I can gather
+
+1409
+02:16:44,210 --> 02:16:46,450
+He got into music around the age of eight.
+
+1410
+02:16:46,450 --> 02:16:52,250
+He even spent a year in Cork, Ireland, studying Irish and the violin before then moving back
+
+1411
+02:16:52,250 --> 02:16:54,530
+to Wales with his parents and family.
+
+1412
+02:16:54,530 --> 02:16:57,690
+It also seems like his family moved around quite a bit when he was a kid.
+
+1413
+02:16:58,030 --> 02:17:04,590
+As Roy got older, he performed for people, eventually not finding much luck in music
+
+1414
+02:17:04,590 --> 02:17:07,230
+and yet at some point switched over to comedy.
+
+1415
+02:17:07,230 --> 02:17:13,230
+According to the online sources, Roy J developed a signature brand of comedy and after realizing
+
+1416
+02:17:13,230 --> 02:17:16,270
+most comedians basically did the same thing.
+
+1417
+02:17:16,270 --> 02:17:20,430
+If you wanted to stand out, you would have to do something somewhat different,
+
+1418
+02:17:20,430 --> 02:17:26,350
+which on some level explains his weird brand of comedy, but it still is unsettling nevertheless.
+
+1419
+02:17:26,940 --> 02:17:33,640
+The issue is that it's very hard to find any sort of real info on this guy outside of a few clips on YouTube.
+
+1420
+02:17:33,640 --> 02:17:40,640
+There's not much, but hey, that's not too surprising for what seems to be an obscure mid-80s comedian.
+
+1421
+02:17:40,640 --> 02:17:42,040
+But it gets even weirder.
+
+1422
+02:17:42,040 --> 02:17:48,640
+His Wiki states that he was involved in tons of different things, but there's little to no information outside of that.
+
+1423
+02:17:48,640 --> 02:17:53,840
+Again, how is all this information on the Wiki if he didn't seem to exist before this year?
+
+1424
+02:17:53,840 --> 02:17:54,540
+Sure.
+
+1425
+02:17:54,560 --> 02:17:59,760
+Maybe the Wiki was made up or edited recently, but that doesn't quite check out either.
+
+1426
+02:17:59,760 --> 02:18:02,880
+His Wiki states that he did everything from joining the Norwegian army,
+
+1427
+02:18:02,880 --> 02:18:08,560
+to touring in South Africa, and even appearing on TV, of which there's some evidence.
+
+1428
+02:18:08,560 --> 02:18:12,960
+There's a lot of other stuff that's on the Wiki that's just basically hard to verify.
+
+1429
+02:18:12,960 --> 02:18:17,920
+A lot of the theories outside of the basic demonic theory state that he may be an AI program,
+
+1430
+02:18:18,320 --> 02:18:23,120
+or some sort of government scythe to prove that they can retroactively insert things into
+
+1431
+02:18:23,120 --> 02:18:27,920
+work and record history. Although considering the fact that he seems to have been on TV,
+
+1432
+02:18:27,920 --> 02:18:34,240
+you could argue that this nails the coffin shut on the whole AI theory, but it doesn't really.
+
+1433
+02:18:34,240 --> 02:18:41,120
+There's still a lot of issues. For one, the most obvious one. His comedy is just unsettling,
+
+1434
+02:18:41,120 --> 02:18:46,240
+not odd, but specifically weird, like somebody typed into an AI prompt.
+
+1435
+02:18:46,450 --> 02:18:50,610
+Generate a creepy 80s comedian, and this is what popped up
+
+1436
+02:19:03,010 --> 02:19:09,970
+They has involvement in weird internet stuff isn't anything new people have used AI to generate all sorts of things such as
+
+1437
+02:19:10,410 --> 02:19:13,230
+ARGs creepyposses or even fake celebrities
+
+1438
+02:19:13,660 --> 02:19:18,380
+But AI is strange in the sense that it might not go rogue in the way that you would expect it to
+
+1439
+02:19:18,380 --> 02:19:24,140
+by the Ultron or Terminator, but it does have a weird persistence. For example,
+
+1440
+02:19:24,140 --> 02:19:29,020
+take one of Facebook's early experiments where two AI models developed their own language and
+
+1441
+02:19:29,020 --> 02:19:33,660
+started communicating with each other in a language that humans simply couldn't understand
+
+1442
+02:19:33,660 --> 02:19:39,500
+before they had to be shut down. And that was back in 2017, during the infancy of what we would call AI.
+
+1443
+02:19:39,760 --> 02:19:43,280
+In fact, an error that you could very much call the pre-AI.
+
+1444
+02:19:43,280 --> 02:19:48,800
+Amazon's AI was also accused of showing biases that it logically shouldn't be capable of.
+
+1445
+02:19:48,800 --> 02:19:52,080
+The tech is more capable and less predictable than we think.
+
+1446
+02:19:52,080 --> 02:19:54,640
+Now, I'm not saying that Roy J is an AI model.
+
+1447
+02:19:54,640 --> 02:19:57,200
+I'm not as deep into the conspiracy as some people.
+
+1448
+02:19:57,280 --> 02:20:03,280
+but it's definitely interesting. If RoyJ was an AI program, why couldn't he fabricate his own existence?
+
+1449
+02:20:03,280 --> 02:20:08,400
+If this is the case, the videos that date themselves all the way back to 2008 don't really prove anything.
+
+1450
+02:20:08,400 --> 02:20:13,760
+That's just metadata, just a series of lines of code. And what is AI but a bunch of code?
+
+1451
+02:20:13,760 --> 02:20:21,600
+YouTube and Google both fought under Alphabet, and Google has developed multiple AI models, both public and covert.
+
+1452
+02:20:21,760 --> 02:20:25,520
+So, what if Roy J was created by somebody inside Google?
+
+1453
+02:20:25,520 --> 02:20:27,760
+At that point, it's not even a shool anymore.
+
+1454
+02:20:27,760 --> 02:20:33,400
+If we can prove that Roy J did not exist before 2005, then this becomes something much darker.
+
+1455
+02:20:33,400 --> 02:20:37,120
+Not a rogue AI or a joke, but something way more sinister.
+
+1456
+02:20:37,120 --> 02:20:42,360
+Let's say, not necessarily in the case of Roy J, but in the case of some other figure.
+
+1457
+02:20:42,360 --> 02:20:45,480
+Let's say Billy Bob Thompson or something like that.
+
+1458
+02:20:45,660 --> 02:20:51,020
+Let's say that some organization, government agency, or rogue AI wants to for whatever
+
+1459
+02:20:51,020 --> 02:20:56,300
+reason create this individual and retroactively insert them into our collective histories.
+
+1460
+02:20:56,300 --> 02:21:02,460
+Who's to say they couldn't? If they have the power to do so, then can anybody truly stop them?
+
+1461
+02:21:02,460 --> 02:21:07,420
+I'm afraid to say the answer is no. Truthfully and personally in my own opinion, I don't actually
+
+1462
+02:21:11,920 --> 02:21:16,160
+I think there's just enough evidence to prove that he was real, but that's just the thing
+
+1463
+02:21:16,160 --> 02:21:21,280
+with Roy J. I feel as if Roy J is more of a thought experiment than anything. Again,
+
+1464
+02:21:21,280 --> 02:21:27,200
+to go back to that original 4-champoach, if that original 4-champoach or didn't post what he posted,
+
+1465
+02:21:27,200 --> 02:21:28,960
+would I really be sad here?
+
+1466
+02:21:28,980 --> 02:21:35,460
+making this however long video on some obscure mid-80s comedian that nobody supposedly remembers.
+
+1467
+02:21:35,460 --> 02:21:39,460
+Probably not, honestly. I don't really know about this Roy J situation.
+
+1468
+02:21:39,460 --> 02:21:45,140
+It's creepier the more I think about it. Even if Roy J, again, isn't what we think he is,
+
+1469
+02:21:45,140 --> 02:21:51,220
+and is indeed just a male mid-80s comedian that nobody remembers, a new fear has still been unlocked.
+
+1470
+02:21:51,220 --> 02:21:56,660
+What if our history isn't as solid as we think it is? What if anything can change at a moment's notice?
+
+1471
+02:21:57,180 --> 02:22:02,300
+I'm not gonna lie. These are the sort of thoughts that just kind of keep me up since I'm just because of how
+
+1472
+02:22:02,300 --> 02:22:07,980
+disturbing the implications of them could possibly be. Thanks for watching. I'm gonna go drink a diet coke.
+
+1473
+02:22:10,420 --> 02:22:16,740
+They don't know the secret. I tell them they're weird. I'll tell you the secret. The secret is...

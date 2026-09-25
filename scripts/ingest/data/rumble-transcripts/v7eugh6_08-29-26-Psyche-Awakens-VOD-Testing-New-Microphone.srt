@@ -1,0 +1,807 @@
+1
+00:00:14,290 --> 00:00:20,370
+Five-hour marathon live stream functions through the rigid mechanics of a digital courtroom,
+
+2
+00:00:20,370 --> 00:00:23,330
+locked into one perpetual, unyielding session.
+
+3
+00:00:23,970 --> 00:00:29,490
+Inside Thunder Thursday, the recurring cast, including Beda, Arthur, and Christine,
+
+4
+00:00:29,490 --> 00:00:33,730
+kicks off the broadcast by exchanging their customary, ritualistic greetings.
+
+5
+00:00:34,290 --> 00:00:40,210
+Sustaining a live broadcast for five continuous hours requires a specific type of fuel.
+
+6
+00:00:40,350 --> 00:00:43,350
+To keep the participants awake and the audience engaged,
+
+7
+00:00:43,350 --> 00:00:47,670
+the room demands a rolling influx of conflict and accusation.
+
+8
+00:00:47,670 --> 00:00:51,630
+The ecosystem maintains order by mimicking legal procedures.
+
+9
+00:00:51,630 --> 00:00:54,510
+Chat moderators function as bailiffs in the margins,
+
+10
+00:00:54,510 --> 00:00:56,830
+while the panelists seamlessly swap roles
+
+11
+00:00:56,830 --> 00:01:00,310
+between zealous prosecution and defensive counsel.
+
+12
+00:01:00,310 --> 00:01:03,910
+The panel executes a highly structured parasocial trial,
+
+13
+00:01:03,910 --> 00:01:07,230
+refining interpersonal grievances into a precise engine
+
+14
+00:01:09,460 --> 00:01:14,460
+Tonight's first docket item begins with a claim brought by a user named Carl.
+
+15
+00:01:14,460 --> 00:01:21,460
+He let us that another community member, Norcal, sent unsolicited explicit images to a woman named Mimi.
+
+16
+00:01:21,460 --> 00:01:26,460
+While the accusation carries heavy social weight, it relies entirely on hearsay.
+
+17
+00:01:26,460 --> 00:01:31,460
+When confronted, both Norcal and Mimi immediately deny the interaction ever occurred.
+
+18
+00:01:31,460 --> 00:01:34,220
+The trial then moves to Case B.
+
+19
+00:01:34,220 --> 00:01:38,940
+A panelist known as clumsy stands accused of fabricating a story about a pregnancy loss
+
+20
+00:01:38,940 --> 00:01:41,260
+to manipulate the community's collective sympathy.
+
+21
+00:01:41,980 --> 00:01:46,220
+Across both of these cases, the evidentiary standard is non-existent.
+
+22
+00:01:46,220 --> 00:01:51,180
+No concrete proof is offered to the panel, and the people acting as the jury never actually demand
+
+23
+00:01:51,180 --> 00:01:56,620
+to see any. This illustrates how information flows through the room. An unverified claim
+
+24
+00:01:56,620 --> 00:02:01,900
+enters the system, multiplies as it is repeated across the panel, and eventually caches out into
+
+25
+00:02:03,010 --> 00:02:05,730
+entirely bypassing a verification layer.
+
+26
+00:02:05,730 --> 00:02:07,690
+This system creates a paradox,
+
+27
+00:02:07,690 --> 00:02:10,810
+a community that has adopted every mechanism of a courtroom
+
+28
+00:02:10,810 --> 00:02:13,370
+while discarding the necessity of proof.
+
+29
+00:02:13,370 --> 00:02:16,010
+In a space devoid of physical evidence,
+
+30
+00:02:16,010 --> 00:02:19,250
+absolute belief becomes the required membership fee
+
+31
+00:02:19,250 --> 00:02:20,970
+for holding a seat on the panel.
+
+32
+00:02:21,360 --> 00:02:28,360
+During Arthur's interrogation, Bytetta and Christine spend nearly 30 minutes grilling him for the act of tattling.
+
+33
+00:02:28,360 --> 00:02:33,360
+His offense was visiting a rival chat and relaying what was said about the group.
+
+34
+00:02:33,360 --> 00:02:36,360
+The room demands a strict loyalty oath.
+
+35
+00:02:36,360 --> 00:02:43,360
+Anyone who associates with the outgroup or even questions the prevailing narrative faces immediate social punishment.
+
+36
+00:02:43,860 --> 00:02:47,860
+The true purpose of this trial is never to resolve the initial claim.
+
+37
+00:02:47,860 --> 00:02:51,860
+The accusations serve as a stress test to enforce tribal boundaries
+
+38
+00:02:51,860 --> 00:02:54,860
+and verify who remains strictly loyal to the host.
+
+39
+00:02:55,410 --> 00:03:01,210
+To enforce these loyalties, the community relies on a specific set of makeshift penal tools.
+
+40
+00:03:01,210 --> 00:03:05,810
+They threaten to ban rival alt accounts by digging through years of archived video,
+
+41
+00:03:05,810 --> 00:03:09,310
+they mute opposing microphones down to 10% volume,
+
+42
+00:03:09,310 --> 00:03:12,610
+and they force public apologies through live chat polls.
+
+43
+00:03:12,610 --> 00:03:16,610
+Eventually, the broadcast polls a real-world tragedy,
+
+44
+00:03:16,610 --> 00:03:22,810
+the Delphi double murder case, directly into the digital court to use as social ammunition.
+
+45
+00:03:22,960 --> 00:03:27,760
+A panelist named Frank is interrogated over his true crime channel.
+
+46
+00:03:27,760 --> 00:03:35,260
+The group accuses him of displaying redacted crime scene photos of the Delphi victims during his own separate broadcast.
+
+47
+00:03:35,260 --> 00:03:39,860
+This press conference highlights the reality of the actual police investigation,
+
+48
+00:03:39,860 --> 00:03:43,760
+which carries a gravity that the digital panel cannot replicate.
+
+49
+00:03:43,760 --> 00:03:50,760
+Yet, the real-world legal boundaries of this horrific case are dragged into the petty squabbles of the livestream.
+
+50
+00:03:50,860 --> 00:03:55,860
+Here we see the Monon High Bridge, the physical location of the crime.
+
+51
+00:03:55,860 --> 00:04:03,860
+Against this backdrop, the panelists judge Frank's morality to decide who is cast out of their social circle and who remains safe.
+
+52
+00:04:04,030 --> 00:04:08,190
+The Parasocial Court co-ops the weight of real-world justice,
+
+53
+00:04:08,190 --> 00:04:13,230
+twisting a genuine tragedy into a tool for arbitrary community sentencing.
+
+54
+00:04:13,230 --> 00:04:18,550
+By the five-hour mark, the sheer volume of prosecution and defensive shouting
+
+55
+00:04:18,550 --> 00:04:21,870
+suggests the loom should shatter under its own tension.
+
+56
+00:04:21,870 --> 00:04:25,350
+Instead, the participants warmly bid each other goodnight.
+
+57
+00:04:25,350 --> 00:04:30,790
+They express genuine affection for the exact people they just spent the evening prosecuting.
+
+58
+00:04:30,980 --> 00:04:34,900
+This reveals that the fierce accusations and the threats of bans
+
+59
+00:04:34,900 --> 00:04:40,020
+are secondary to the performance itself. Uncovering the truth matters less than
+
+60
+00:04:40,020 --> 00:04:45,700
+maintaining the momentum of the prosecution. The conflict is a shared ritual. It provides
+
+61
+00:04:45,700 --> 00:04:50,900
+these individuals with a place to be, a defined role to play, and a reason to stay logged in.
+
+62
+00:04:51,460 --> 00:04:55,460
+The court never truly adjourns because no one wants to leave the room.
+
+63
+00:05:03,280 --> 00:05:05,120
+Hi guys, you hear me okay?
+
+64
+00:05:05,120 --> 00:05:06,960
+I'm just testing out my new microphone.
+
+65
+00:05:09,580 --> 00:05:13,140
+Very thoughtful, very thoughtful gift.
+
+66
+00:05:13,140 --> 00:05:14,300
+You have a joker, might do a panel.
+
+67
+00:05:14,300 --> 00:05:15,220
+Okay, well he's doing a panel.
+
+68
+00:05:15,220 --> 00:05:17,860
+Okay, well, we can go over there, but here,
+
+69
+00:05:17,860 --> 00:05:20,100
+I'll show you the video if you did a joker.
+
+70
+00:05:20,100 --> 00:05:21,380
+And then I'll send you over there.
+
+71
+00:05:21,380 --> 00:05:22,740
+Hopefully the microphone sound are good.
+
+72
+00:05:22,740 --> 00:05:25,820
+Just short check in, saying hi.
+
+73
+00:05:25,820 --> 00:05:31,790
+Here's the joker song.
+
+74
+00:05:31,790 --> 00:05:41,490
+They went looking for the channel, found a black screen,
+
+75
+00:05:41,490 --> 00:06:00,940
+but the laugh was already in the room.
+
+76
+00:06:00,940 --> 00:06:05,580
+through the side door static on his coat no throne no sponsor just a live wide
+
+77
+00:06:05,580 --> 00:06:10,620
+joke one clip caught fire one frame made him blush turned it air-electric when
+
+78
+00:06:10,620 --> 00:06:15,460
+the whole room hushed they painted his face let the portrait find a home built a
+
+79
+00:06:15,460 --> 00:06:19,300
+little signal where the wild ones are on mister extendo on the tank
+
+80
+00:06:19,300 --> 00:06:24,490
+joker when he's live it can disappear but the story still survived when the
+
+81
+00:06:24,490 --> 00:06:29,260
+door goes dark that ain't the end
+
+82
+00:06:29,260 --> 00:06:31,260
+A name travels farther
+
+83
+00:06:31,260 --> 00:06:35,460
+Every time somebody hits in
+
+84
+00:06:35,460 --> 00:06:36,460
+You can kill the lake
+
+85
+00:06:36,460 --> 00:06:39,490
+But not the signal black out the name
+
+86
+00:06:39,490 --> 00:06:40,580
+But not the flame
+
+87
+00:06:40,580 --> 00:06:43,580
+Joker in the wires laughing through the silence
+
+88
+00:06:43,580 --> 00:06:46,580
+The screen goes dark but the wildcard stays
+
+89
+00:06:46,580 --> 00:06:49,580
+Joker in the wires, Joker in the room
+
+90
+00:06:49,580 --> 00:06:51,680
+A little violent lightning in the digital gloom
+
+91
+00:06:51,680 --> 00:06:55,350
+No crown, no corporate machine
+
+92
+00:06:55,350 --> 00:06:59,410
+Just a grassroots ghost in a busted screen
+
+93
+00:07:11,920 --> 00:07:16,200
+No city left to burn, just a car, nobody counted when the cameras turned
+
+94
+00:07:16,200 --> 00:07:19,000
+Cut him out of context, the whole joke comes back
+
+95
+00:07:19,000 --> 00:07:22,010
+The eye keeps the footprints when the road goes black
+
+96
+00:07:22,010 --> 00:07:24,990
+Every pan-rip till he crossed the line
+
+97
+00:07:24,990 --> 00:07:28,430
+Mr. Fath, me are always hard to defy
+
+98
+00:07:28,430 --> 00:07:30,590
+Comes the legend, and the legend gets bigger
+
+99
+00:07:30,590 --> 00:07:33,110
+Call him Mr. Extender when the lights hit
+
+100
+00:07:33,110 --> 00:07:37,860
+Joker in the door goes dark, that ain't goodbye
+
+101
+00:07:37,860 --> 00:07:44,360
+Some voices need a channel, some voices electrify
+
+102
+00:07:44,400 --> 00:07:47,430
+You can feel the link but not the signal
+
+103
+00:11:12,340 --> 00:11:17,140
+You guys feel like do it. How's my microphone sound? I'm okay today. I'm gonna try to get on get on a show still
+
+104
+00:11:17,140 --> 00:11:22,010
+Let me try to get the link. Yeah, Nick Johnson over there. Oh, there it is. Okay
+
+105
+00:12:16,500 --> 00:12:22,120
+Pieces so if you graduate from tube one then you can add another
+
+106
+00:12:23,180 --> 00:12:25,180
+What's your boss name?
+
+107
+00:12:25,540 --> 00:12:27,540
+Yeah, just keep adding to
+
+108
+00:12:28,420 --> 00:12:31,690
+All right, this is the cat knit challenge
+
+109
+00:12:32,250 --> 00:12:34,570
+You wearing dolphin shorts
+
+110
+00:12:36,340 --> 00:12:38,340
+Oh
+
+111
+00:12:42,380 --> 00:12:47,640
+Every streaming you're on my show too Mr. Extender, why do you keep flipping the camera all the time?
+
+112
+00:12:48,500 --> 00:12:50,500
+Thank you. Can I ask a question? What's up?
+
+113
+00:12:51,020 --> 00:12:58,300
+Is it true? Yeah, that's better. This is one thing that you and I do we like the fish on that me and thing
+
+114
+00:12:58,740 --> 00:13:04,940
+Yeah, no, we're not doing a straight first. Oh, okay. Okay. No, I'm not interested. I like bald man
+
+115
+00:13:05,500 --> 00:13:08,940
+Hey, I saw your picture recently. No, man. You're pretty cute. I didn't know that
+
+116
+00:13:14,530 --> 00:13:17,090
+You and I thought you were a couple
+
+117
+00:13:22,220 --> 00:13:24,860
+You kind of pissed off Vanessa God, that's not right.
+
+118
+00:13:24,860 --> 00:13:28,260
+You were mugging the shit off Vanessa God yesterday.
+
+119
+00:13:28,260 --> 00:13:29,820
+I'm not Vanessa God?
+
+120
+00:13:29,820 --> 00:13:31,300
+You put him in his place.
+
+121
+00:13:31,300 --> 00:13:33,500
+You put him in his place.
+
+122
+00:13:33,500 --> 00:13:35,260
+Always happy.
+
+123
+00:13:35,260 --> 00:13:36,380
+I went to his show today.
+
+124
+00:13:36,380 --> 00:13:38,940
+You see his friend there?
+
+125
+00:13:38,940 --> 00:13:42,700
+He's really on, he's really in a different app for personality
+
+126
+00:13:42,700 --> 00:13:45,180
+on his own show.
+
+127
+00:13:45,180 --> 00:13:47,060
+What's the name of this shit before you put on your shirt?
+
+128
+00:13:47,060 --> 00:13:49,020
+We take off his shirt once in a while, you know?
+
+129
+00:13:49,020 --> 00:13:49,970
+He's like.
+
+130
+00:13:49,970 --> 00:13:51,970
+You know
+
+131
+00:13:53,130 --> 00:13:59,530
+Yeah, you and thing are not dating. No, no, no, no, no, I think it is a straight. I think I mean, I don't know if he's ever
+
+132
+00:13:59,770 --> 00:14:01,860
+experimented but
+
+133
+00:14:01,860 --> 00:14:05,780
+Who are you? Are you with are you married the burger the burger King says hello psyche?
+
+134
+00:14:10,380 --> 00:14:15,060
+Hey, stay blessed. What are you doing in here, man? Stay blessed. What are you doing in here?
+
+135
+00:14:15,660 --> 00:14:22,680
+You guys stay blessed as a troll man. He's a troll. I'm not sure if you guys have him in your channels
+
+136
+00:14:22,680 --> 00:14:27,980
+But I had them in mind. I see them in other channels. They blesses is the troll the troll a blast
+
+137
+00:14:27,980 --> 00:14:34,470
+I think isn't he modded in my channel? I think yes, they blessed. I made him a moderate in my channel, too
+
+138
+00:14:34,990 --> 00:14:37,020
+Yeah, I must say say bless
+
+139
+00:14:37,020 --> 00:14:46,400
+But he's a big troll though. He's a big troll. He's calling. He's calling. He's calling psychia
+
+140
+00:14:47,070 --> 00:14:50,070
+I don't think that's cool.
+
+141
+00:14:50,070 --> 00:14:54,070
+Do some people just got to make the chats move.
+
+142
+00:14:54,070 --> 00:15:00,120
+So you just type something, you know, it just types out there.
+
+143
+00:15:00,120 --> 00:15:04,150
+Be nice to other people, you know.
+
+144
+00:15:04,150 --> 00:15:09,460
+That's scary. That's very scary.
+
+145
+00:15:09,460 --> 00:15:19,430
+Where did Mr. Extendo go?
+
+146
+00:15:19,430 --> 00:15:22,880
+No, you are dating thing that is.
+
+147
+00:15:22,880 --> 00:15:25,880
+You are dating and it's okay. I really support you guys.
+
+148
+00:15:28,500 --> 00:15:41,180
+And the he suffers from he suffers from premature ejaculation. Hey, where's your where's your
+
+149
+00:15:59,410 --> 00:16:01,410
+Let's get it up
+
+150
+00:16:01,410 --> 00:16:06,050
+Anyone dude finesse God didn't press anyone. He just always cares about his views. I'm like I
+
+151
+00:16:06,610 --> 00:16:08,610
+Let Joe
+
+152
+00:16:10,290 --> 00:16:17,530
+Extender stream and he keeps saying oh subscribe to me, you know, he's self-promoting himself selfish. Oh
+
+153
+00:16:19,900 --> 00:16:26,420
+Fucking well a lot of people like I get stopped and then they pay you actually know mr. Extender
+
+154
+00:16:27,300 --> 00:16:29,390
+As a matter of fact, I do
+
+155
+00:16:29,390 --> 00:16:37,030
+I got my cousins here, you guys. I got my cousins here. So what's up, everybody? Oh, yeah, we're so tough now
+
+156
+00:16:41,410 --> 00:16:47,460
+We must not know that we know Mr. Extendon I'm letting
+
+157
+00:16:51,100 --> 00:16:55,460
+You guys know the brain last for days. He's a asshole
+
+158
+00:16:56,160 --> 00:16:57,440
+Yeah
+
+159
+00:16:57,440 --> 00:17:01,520
+He was talking shit about me on his live and he banged me so I couldn't say nothing
+
+160
+00:17:02,670 --> 00:17:16,990
+Salmon and he kicked me off of his discord. I don't know brain blast for days. That's that's his YouTube account
+
+161
+00:17:23,550 --> 00:17:28,470
+I didn't like what he was saying you guys could use this check it out. He was like four days ago five days ago
+
+162
+00:17:31,430 --> 00:17:33,430
+What what's this right?
+
+163
+00:17:37,270 --> 00:17:41,030
+Hey, yo, nice dog nice dog. Thank you. Thank you
+
+164
+00:17:41,680 --> 00:17:46,480
+He likes ice, but it's not good. It's not good for their teeth. So
+
+165
+00:18:01,870 --> 00:18:04,990
+Did you hear that mr. Extender used to date thing that is
+
+166
+00:18:07,420 --> 00:18:09,420
+Yeah, he actually did
+
+167
+00:18:13,300 --> 00:18:15,740
+I do
+
+168
+00:18:15,820 --> 00:18:17,900
+I mean how can you resist how can you resist?
+
+169
+00:18:20,430 --> 00:18:24,270
+Who the hell is who the hell is a benefit God?
+
+170
+00:18:25,470 --> 00:18:29,910
+Psychi is actually a straight method active on the scene horizontal all day
+
+171
+00:18:35,460 --> 00:18:38,000
+Master actor emphasizing the MEP is
+
+172
+00:18:46,970 --> 00:18:48,970
+I'm glad you're not on drugs anymore
+
+173
+00:19:02,420 --> 00:19:04,420
+I
+
+174
+00:19:09,860 --> 00:19:11,860
+Yes, it's a very exciting
+
+175
+00:19:12,500 --> 00:19:14,500
+Everybody has decided to wear a hoodie
+
+176
+00:19:16,690 --> 00:19:22,130
+That cold the AC is off and it's the summer like the fuck is wrong with you people
+
+177
+00:19:22,130 --> 00:19:24,130
+Why are you wearing hoodies in the middle of summer?
+
+178
+00:19:24,290 --> 00:19:31,530
+AC is blaring cold in here. You know, that's not cheap. You know that that's not cheap. Why are you paying for?
+
+179
+00:19:32,370 --> 00:19:33,490
+that
+
+180
+00:19:35,180 --> 00:19:37,180
+It's America
+
+181
+00:19:37,550 --> 00:19:41,910
+I have the right to be cold in my own home.
+
+182
+00:19:41,910 --> 00:19:44,160
+Remember what?
+
+183
+00:19:44,160 --> 00:19:46,640
+I've heard about them American folk.
+
+184
+00:19:46,640 --> 00:19:49,950
+They're rebellious.
+
+185
+00:19:49,950 --> 00:19:51,950
+Yeah, yeah, we're supposed to stop by,
+
+186
+00:19:51,950 --> 00:19:54,060
+but I never went over there yet.
+
+187
+00:19:54,060 --> 00:19:55,180
+Oh, they crazy.
+
+188
+00:19:55,180 --> 00:19:57,240
+I hear they folk be crazy.
+
+189
+00:19:58,800 --> 00:20:02,920
+I mean look at the one in the bottom link. Do you have two examples?
+
+190
+00:20:02,920 --> 00:20:07,520
+They're gonna one up divorce that Joker and then the one in the bottom
+
+191
+00:20:08,240 --> 00:20:11,160
+single single cat that's like
+
+192
+00:20:14,770 --> 00:20:19,300
+You are the cat father. How does it feel to be a cat father?
+
+193
+00:20:27,090 --> 00:20:31,450
+Somebody in the chat said they have 7-0. I never tried 7-0 before bro
+
+194
+00:20:31,890 --> 00:20:36,080
+Yo, it's like I ordered a boutique babe. I've never had 7-0 up
+
+195
+00:20:36,880 --> 00:20:43,900
+No, it's seven. Oh, it's like a synthetic opiate. What these fucking drug is I
+
+196
+00:20:44,670 --> 00:20:50,530
+Ordered a boutique. I ordered a boutique vape. The one with three
+
+197
+00:20:54,280 --> 00:20:58,460
+Does it have three flavors? Yeah, that's one I ordered
+
+198
+00:21:07,860 --> 00:21:09,860
+Those
+
+199
+00:21:19,500 --> 00:21:21,500
+You want to join the cabinet?
+
+200
+00:21:27,500 --> 00:21:30,340
+Get me now
+
+201
+00:21:33,820 --> 00:21:35,820
+Can you hear me Joker's
+
+202
+00:21:38,540 --> 00:21:41,520
+Hey Joker remember two years ago when you had like

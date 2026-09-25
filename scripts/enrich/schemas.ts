@@ -3,7 +3,12 @@ import { z } from "zod";
 
 export const EnrichedGuestSchema = z.object({
   name: z.string().min(1),
-  personType: z.enum(["guest", "host", "mentioned", "recurring"]),
+  // Same leniency as canonStatus below: an invented label ("co-host",
+  // "caller") files the person as "mentioned" instead of failing the episode.
+  personType: z.preprocess(
+    (v) => (typeof v === "string" ? v.trim().toLowerCase() : v),
+    z.enum(["guest", "host", "mentioned", "recurring"]).catch("mentioned"),
+  ),
   shortBio: z.string(),
 });
 
