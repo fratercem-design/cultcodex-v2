@@ -79,7 +79,7 @@ export const TIERS: Tier[] = [
       "Your own page woven permanently into the archive",
       "Your signal shapes what gets investigated next",
       "Propose what gets analyzed — your questions become the work",
-      "Access unedited transmissions — what didn't make the cut",
+      "Access lost and deleted streams",
       "Red Room: no-filter analysis, nothing softened",
       "See the full power structure — who connects to whom and how",
       "Deep behavioral profiles on every recurring figure",
