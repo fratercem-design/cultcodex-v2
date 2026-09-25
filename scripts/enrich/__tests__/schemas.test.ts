@@ -73,17 +73,17 @@ describe("EnrichmentResultSchema", () => {
     expect(EnrichmentResultSchema.parse(input).lore[0].canonStatus).toBe("speculative");
   });
 
-  it("rejects invalid personType", () => {
+  it("files an unknown personType as mentioned", () => {
     const input = {
       summaryShort: "x",
       summaryLong: "x",
       cutOfPsyche: "",
-      guests: [{ name: "x", personType: "villain", shortBio: "" }],
+      guests: [{ name: "x", personType: "villain", shortBio: "" }, { name: "y", personType: " Host ", shortBio: "" }],
       quotes: [],
       lore: [],
       topics: [],
     };
-    expect(() => EnrichmentResultSchema.parse(input)).toThrow();
+    expect(EnrichmentResultSchema.parse(input).guests.map((g) => g.personType)).toEqual(["mentioned", "host"]);
   });
 });
 
