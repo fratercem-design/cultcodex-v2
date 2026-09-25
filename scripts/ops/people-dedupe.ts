@@ -35,6 +35,12 @@ const MAYERS = String.raw`(alexandr[ae]|alexandria|alexander|alex)\s+(melody\s+)
  */
 export const NAMED: Named[] = [
   {
+    // The host goes by Psyche, Trix and his name, John Bates.
+    keep: "Psyche",
+    core: /^(psyche|psych|trix|john bates|psyche awakens|father psyche)$/,
+    alias: /^(john|bates|host|the host|s psych|sy|sagi|co-analyst|streamer)$/,
+  },
+  {
     keep: "Alexandra Mayers",
     core: new RegExp(String.raw`^(${MAYERS}|alexandra|monica foster)$`),
     alias: /^(alex|alexandre|am|a\.?m\.?)$/,
@@ -121,6 +127,9 @@ export async function run(apply: boolean) {
     rows.forEach((r) => taken.add(r.id));
     clusters.push({ keep, dupes: rows.filter((r) => r.id !== keep.id), why: `named: ${n.keep}` });
   }
+  // "Psyche (character)" shares the named keeper's key: it joins that cluster
+  // rather than seeding a second one.
+  const namedByKey = new Map(clusters.map((c) => [nameKey(c.keep.displayName), c]));
 
   // A combined row ("Crystal / Christine") names a second person who has a
   // record of their own; folding it into either would lose the other.
@@ -136,7 +145,9 @@ export async function run(apply: boolean) {
       if (r.displayName.includes("/")) combined.push(r);
       continue;
     }
-    byKey.set(k, [...(byKey.get(k) ?? []), r]);
+    const named = namedByKey.get(k);
+    if (named) named.dupes.push(r);
+    else byKey.set(k, [...(byKey.get(k) ?? []), r]);
   }
   for (const [k, rows] of byKey) {
     if (rows.length < 2) continue;

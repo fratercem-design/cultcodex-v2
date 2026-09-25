@@ -24,6 +24,11 @@ describe("named clusters", () => {
     no("Beeta", ["Saman / Beeta", "Bita / Christine", "Summer/Beta", "Beta / VA / Beeta", "Beta Tester", "Bea"]);
   });
 
+  it("gathers Psyche's names", () => {
+    yes("Psyche", ["Psyche", "Psyche (Trix)", "Trix / Psyche", "Psyche (John Bates / Trix)", "John / Psyche", "Psyche / Trix (Host)"]);
+    no("Psyche", ["John", "Tricks / Trixie", "Psyche / Christine"]);
+  });
+
   it("gathers Samman spellings", () => {
     yes("Samman", ["Samman", "Saman", "Sam Man", "Sandman", "Samman (Sam Man)", "Sam/Samman", "Saman / SamanMan NYC"]);
     no("Samman", ["Sam", "Good Times / Sam-Man", "Sam Man / Samian / Samuel Torres"]);
