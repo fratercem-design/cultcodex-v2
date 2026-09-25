@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { frontDoorTextExclusions } from "@/lib/content-hygiene";
 import { currentRelationState, relationshipTimeline } from "@/lib/relationships";
 import type { RelationType } from "@/generated/prisma/client";
+import { isRemovedPerson } from "@/lib/people/noise-slugs";
 import { HOSTILE, feudSlug, mentionNames, orderFeudItems, type FeudItem } from "@/lib/feuds";
 
 export { feudSlug, parseFeudSlug } from "@/lib/feuds";
@@ -30,6 +31,7 @@ export async function getFeuds(take = 40): Promise<FeudSummary[]> {
   const byPair = new Map<string, typeof events>();
   for (const e of events) {
     if (e.personAId === e.personBId) continue;
+    if (isRemovedPerson(e.personA.slug) || isRemovedPerson(e.personB.slug)) continue;
     const key = [e.personAId, e.personBId].sort().join(":");
     byPair.set(key, [...(byPair.get(key) ?? []), e]);
   }
@@ -69,6 +71,7 @@ export interface Feud {
  * links to its moment in the stream.
  */
 export async function getFeud(slugA: string, slugB: string): Promise<Feud | null> {
+  if (isRemovedPerson(slugA) || isRemovedPerson(slugB)) return null;
   const people = await prisma.person.findMany({
     where: { slug: { in: [slugA, slugB] } },
     select: { id: true, slug: true, displayName: true, altNames: true, avatarUrl: true, shortBio: true },

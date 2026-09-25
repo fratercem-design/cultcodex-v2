@@ -398,7 +398,6 @@ export default async function PersonDetailPage({ params }: PageProps) {
           />
         }
         badges={[{ label: typeLabel, variant: typeVariant }]}
-        neonTitle={person.slug === "alexandra-mayers"}
         label="voice"
       />
       <Breadcrumbs items={[
@@ -760,7 +759,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
               />
             </Suspense>
 
-          {/* Alexandra Mayers external content section */}
+          {/* External content section */}
           {hasPersonMedia && (
             <PersonMediaSection
               personName={person.displayName}

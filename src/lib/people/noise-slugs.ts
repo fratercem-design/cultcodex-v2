@@ -22,6 +22,18 @@ export const NOISE_PERSON_SLUGS = [
   "unnamed-guest",
 ] as const;
 
+/**
+ * People removed at their own request. Unlike noise slugs these are blocked
+ * everywhere, including direct /people/[slug] access, so a re-ingest or a
+ * stray row can't bring a profile back. The DB rows are purged separately by
+ * scripts/ops/remove-person-apply.ts.
+ */
+export const REMOVED_PERSON_SLUGS = ["alexandra-mayers"] as const;
+
+export function isRemovedPerson(slug: string): boolean {
+  return (REMOVED_PERSON_SLUGS as readonly string[]).includes(slug);
+}
+
 export const MIN_INDEXABLE_PERSON_APPEARANCES = 2;
 
 const UNNAMED_IDENTITY_PATTERN =
@@ -43,6 +55,7 @@ interface PersonIndexSignals {
  */
 export function isIndexablePerson(person: PersonIndexSignals): boolean {
   if ((NOISE_PERSON_SLUGS as readonly string[]).includes(person.slug)) return false;
+  if (isRemovedPerson(person.slug)) return false;
   if (person.personType === "mentioned") return false;
   if (UNNAMED_IDENTITY_PATTERN.test(person.slug) || UNNAMED_IDENTITY_PATTERN.test(person.displayName)) {
     return false;
