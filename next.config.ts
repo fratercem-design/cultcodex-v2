@@ -64,8 +64,8 @@ const nextConfig: NextConfig = {
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         { key: "X-DNS-Prefetch-Control", value: "on" },
         { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
-        // Site assets are not an embedding API. YouTube remains a framed
-        // third-party origin and is governed separately by frame-src.
+        // Site assets are not an embedding API. YouTube and Rumble remain framed
+        // third-party origins and are governed separately by frame-src.
         { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
         {
           key: "Permissions-Policy",
@@ -80,7 +80,7 @@ const nextConfig: NextConfig = {
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             "font-src 'self' https://fonts.gstatic.com",
             "img-src 'self' data: blob: https:",
-            "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
+            "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://rumble.com",
             "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com",
             "object-src 'none'",
             "base-uri 'self'",
