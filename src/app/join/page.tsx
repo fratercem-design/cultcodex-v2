@@ -114,6 +114,12 @@ export default async function JoinPage() {
           <Link href="/premium" className="font-mono text-xs text-accent-gold-text hover:underline">
             Compare Initiate+ and Oracle on the single membership page →
           </Link>
+          <p className="text-sm leading-relaxed text-text-muted">
+            Supporting the show on YouTube instead?
+          </p>
+          <Link href="/youtube-members" className="font-mono text-xs text-accent-violet-text hover:underline">
+            See the $5 and $10 channel memberships and member emojis →
+          </Link>
         </section>
 
         <MysticalDivider />

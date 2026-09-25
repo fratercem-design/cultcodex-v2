@@ -5,6 +5,7 @@ import { PILLARS } from "@/lib/pillars/pillars";
 import { getFreePreviewChapterNumbers } from "@/lib/psychenomicon";
 import { isThinPage } from "@/lib/seo";
 import { isIndexablePerson } from "@/lib/people/noise-slugs";
+import { RECOMMENDATIONS } from "@/lib/recommendations";
 
 export interface SitemapEntry {
   url: string;
@@ -102,6 +103,9 @@ async function pagesSegment(): Promise<SitemapEntry[]> {
     { url: `${b}/start-here`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${b}/explore`, lastModified: archiveUpdated, changeFrequency: "weekly", priority: 0.8 },
     { url: `${b}/join`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${b}/youtube-members`, changeFrequency: "monthly", priority: 0.6 },
+    // Listed once it has links; while empty the page is noindex.
+    ...(RECOMMENDATIONS.length > 0 ? [{ url: `${b}/recommends`, changeFrequency: "monthly" as const, priority: 0.5 }] : []),
     { url: `${b}/rank`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${b}/leaderboard`, changeFrequency: "daily", priority: 0.6 },
     { url: `${b}/quests`, changeFrequency: "weekly", priority: 0.5 },
