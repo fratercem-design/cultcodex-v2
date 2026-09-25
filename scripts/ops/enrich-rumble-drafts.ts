@@ -19,7 +19,7 @@ import { importEnrichment } from "../enrich/import-enriched";
 import { parseIndex, rumbleIdFromUrl } from "./rumble-transcripts";
 
 const DATA_DIR = path.resolve(__dirname, "../ingest/data/rumble-transcripts");
-const CONCURRENCY = 3;
+const CONCURRENCY = 5;
 const TIME_BUDGET_MS = 24 * 60_000;
 // ~75k tokens: leaves Haiku's 200k window room for the prompt and the reply.
 const MAX_TRANSCRIPT_CHARS = 300_000;
