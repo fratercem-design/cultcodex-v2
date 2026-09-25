@@ -73,15 +73,17 @@ export function nameParts(name: string): string[] {
     .filter(Boolean);
 }
 
-/** Name with case, punctuation, and a trailing alias ("(…)", "/ …") removed. */
+/**
+ * Name with case, punctuation, spacing, and a trailing alias ("(…)", "/ …")
+ * removed, so "Bay Clips" and "BayClips" share a key.
+ */
 export function nameKey(name: string): string {
   return name
     .replace(/\(.*?\)/g, " ")
     .split("/")[0]
     .toLowerCase()
     .normalize("NFKD")
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
+    .replace(/[^a-z0-9]+/g, "");
 }
 
 /** Every part is this person's name or alias, and at least one part is the name itself. */

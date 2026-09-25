@@ -45,6 +45,8 @@ describe("name parts and keys", () => {
     expect(nameKey("Chris Kay")).toBe(nameKey("chris  kay."));
     expect(nameKey("Samman (Sam Man)")).toBe("samman");
     expect(nameKey("Eldo / Eldorado")).toBe("eldo");
+    expect(nameKey("Bay Clips")).toBe(nameKey("BayClips"));
+    expect(nameKey("Money 420")).toBe(nameKey("Money420"));
     expect(nameKey("Kate the Turtle")).not.toBe(nameKey("Kate"));
   });
 });
