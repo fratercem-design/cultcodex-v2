@@ -62,6 +62,7 @@ export default async function FeudPage({ params }: PageProps) {
         <p className="font-mono text-[12px] text-text-muted">
           {feud.counts.events} recorded turn{feud.counts.events === 1 ? "" : "s"} · {feud.counts.quotes} on-stream quote
           {feud.counts.quotes === 1 ? "" : "s"}
+          {feud.counts.shownQuotes < feud.counts.quotes && ` (latest ${feud.counts.shownQuotes} shown)`}
         </p>
       </header>
 

@@ -52,12 +52,15 @@ export async function getFeuds(take = 40): Promise<FeudSummary[]> {
   return feuds.sort((a, b) => b.hostile - a.hostile || b.events - a.events).slice(0, take);
 }
 
+const QUOTE_LIMIT = 120;
+
 export interface Feud {
   slug: string;
   people: { id: string; slug: string; displayName: string; avatarUrl: string | null; shortBio: string | null }[];
   state: RelationType;
   items: FeudItem[];
-  counts: { events: number; quotes: number };
+  /** quotes is the full count; shownQuotes may be lower when it passes QUOTE_LIMIT. */
+  counts: { events: number; quotes: number; shownQuotes: number };
 }
 
 /**
@@ -77,23 +80,32 @@ export async function getFeud(slugA: string, slugB: string): Promise<Feud | null
     where: { OR: [{ personAId: a.id, personBId: b.id }, { personAId: b.id, personBId: a.id }] },
     include: { episode: { select: { slug: true, title: true, airDate: true, status: true } } },
   });
+  // Only pairs with a recorded hostile turn are feuds; any other pair of names
+  // in the URL must not be labelled one.
+  if (!events.some((e) => HOSTILE.includes(e.relationType))) return null;
 
   const quoteAbout = (speaker: typeof a, target: typeof a) => ({
     speakerPersonId: speaker.id,
     OR: mentionNames(target).map((name) => ({ text: { contains: name, mode: "insensitive" as const } })),
   });
-  const quotes = await prisma.quote.findMany({
-    where: {
-      OR: [quoteAbout(a, b), quoteAbout(b, a)],
-      episode: { status: "published" },
-      AND: frontDoorTextExclusions("text"),
-    },
-    select: {
-      id: true, text: true, timestampSeconds: true, speakerPersonId: true,
-      episode: { select: { slug: true, title: true, airDate: true } },
-    },
-    take: 80,
-  });
+  const quoteWhere = {
+    OR: [quoteAbout(a, b), quoteAbout(b, a)],
+    episode: { status: "published" as const },
+    AND: frontDoorTextExclusions("text"),
+  };
+  const [quotes, quoteTotal] = await Promise.all([
+    prisma.quote.findMany({
+      where: quoteWhere,
+      select: {
+        id: true, text: true, timestampSeconds: true, speakerPersonId: true,
+        episode: { select: { slug: true, title: true, airDate: true } },
+      },
+      // Most recent first, so a long feud keeps its latest exchanges.
+      orderBy: [{ episode: { airDate: "desc" } }, { timestampSeconds: "asc" }, { id: "asc" }],
+      take: QUOTE_LIMIT,
+    }),
+    prisma.quote.count({ where: quoteWhere }),
+  ]);
 
   const byId = new Map(people.map((p) => [p.id, p]));
   const items: FeudItem[] = [
@@ -131,6 +143,6 @@ export async function getFeud(slugA: string, slugB: string): Promise<Feud | null
     people: [a, b].map((p) => ({ id: p.id, slug: p.slug, displayName: p.displayName, avatarUrl: p.avatarUrl, shortBio: p.shortBio })),
     state: currentRelationState(events),
     items: orderFeudItems(items),
-    counts: { events: events.length, quotes: quotes.length },
+    counts: { events: events.length, quotes: quoteTotal, shownQuotes: quotes.length },
   };
 }
