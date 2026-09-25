@@ -34,6 +34,8 @@ export interface VaultEpisode {
   loreIds: string[];
   quotes: VaultQuote[];
   hasTranscript: boolean;
+  /** Not in the database export: only a Rumble auto-caption file exists. */
+  captionsOnly?: boolean;
 }
 
 export interface VaultPerson {
@@ -179,7 +181,9 @@ function linkList(ids: string[], names: Map<string, string>): string {
 
 function timestampLink(ep: VaultEpisode, seconds: number): string {
   const label = formatSeconds(seconds);
-  return ep.youtubeVideoId ? `[${label}](${youtubeUrl(ep.youtubeVideoId, seconds)})` : label;
+  if (ep.youtubeVideoId) return `[${label}](${youtubeUrl(ep.youtubeVideoId, seconds)})`;
+  if (ep.rumbleVideoId) return `[${label}](https://rumble.com/${ep.rumbleVideoId}?start=${seconds})`;
+  return label;
 }
 
 function byAirDate(a: VaultEpisode, b: VaultEpisode): number {
@@ -202,6 +206,7 @@ export function renderTranscript(
     episode: `[[${names.episode.get(ep.id)}]]`,
     date: isoDate(ep.airDate),
     youtube: ep.youtubeVideoId ? youtubeUrl(ep.youtubeVideoId) : null,
+    rumble: ep.rumbleVideoId ? `https://rumble.com/${ep.rumbleVideoId}` : null,
     tags: ["transcript"],
   });
   const title = `# ${cleanTitle(ep.title)} (transcript)\n\nEpisode notes: [[${names.episode.get(ep.id)}]]\n\n`;
@@ -242,6 +247,9 @@ export function renderEpisode(ep: VaultEpisode, names: NoteNames): string {
   const meta = [
     ep.hasTranscript ? `**Transcript:** [[${names.transcript.get(ep.id)}]]` : "**Transcript:** none yet",
     watch.length ? `**Watch:** ${watch.join(" · ")}` : null,
+    ep.captionsOnly
+      ? "**Source:** Rumble auto-captions only. This stream isn't in the CultCodex export yet, so it has no summary, guests or topics."
+      : null,
   ].filter(Boolean);
 
   const quotes = ep.quotes
@@ -261,7 +269,7 @@ export function renderEpisode(ep: VaultEpisode, names: NoteNames): string {
       series: ep.seriesTitle,
       content_type: ep.contentType,
       duration: ep.duration,
-      tags: ["episode", ep.contentType],
+      tags: ["episode", ep.contentType, ...(ep.captionsOnly ? ["captions-only"] : [])],
     }) +
     `# ${cleanTitle(ep.title)}\n\n` +
     (ep.summaryShort?.trim() ? `> ${ep.summaryShort.trim()}\n\n` : "") +

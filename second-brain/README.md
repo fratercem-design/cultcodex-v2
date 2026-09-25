@@ -283,4 +283,4 @@ The graph view hides `raw/` and colours people, lore, topics and Claude's notes 
 
 Re-run `npm run brain:export` after the normal ingest pipeline. It only rewrites files that changed, deletes notes for records that were removed, logs new episodes in `log.md`, and never touches `wiki/concepts/`, `wiki/analyses/`, or your edits to `CLAUDE.md`. Then run `/ingest` in the vault. Fix wrong facts in episode, people, topic or lore notes in the database (admin panel), not in the vault: the next export overwrites them.
 
-Only `published` and `unavailable` episodes are exported.
+Only `published` and `unavailable` episodes are exported from the database. The Rumble caption files in `scripts/ingest/data/rumble-transcripts/` are added too: a file for a stream the export already has fills in its transcript if the database has none (matched by Rumble ID, then by title within two days), and every other file becomes a caption-only episode tagged `#captions-only`, with timestamps linking to Rumble.

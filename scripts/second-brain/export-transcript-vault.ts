@@ -1,5 +1,6 @@
 /**
- * Exports every published episode transcript, plus the people, topics and lore
+ * Exports every published episode transcript (plus the local Rumble caption
+ * files, see rumble-srt.ts) and the people, topics and lore
  * they link to, into an Obsidian vault Claude Code can read as an "LLM wiki".
  *
  *   npm run brain:export                      # -> second-brain/transcripts-vault
@@ -13,6 +14,8 @@
 import * as fs from "fs";
 import * as path from "path";
 import { getPrisma, disconnect } from "../ingest/lib";
+import { parseIndex, parseSrt } from "../ops/rumble-transcripts";
+import { planRumbleTranscripts } from "./rumble-srt";
 import {
   assignNoteNames,
   renderEpisode,
@@ -27,6 +30,7 @@ import {
 const REPO_ROOT = path.resolve(__dirname, "../..");
 const TEMPLATE_DIR = path.join(REPO_ROOT, "second-brain/transcripts-template");
 const DEFAULT_OUT = path.join(REPO_ROOT, "second-brain/transcripts-vault");
+const RUMBLE_DIR = path.join(REPO_ROOT, "scripts/ingest/data/rumble-transcripts");
 
 /** Folders the exporter owns: rebuilt every run, stale notes deleted. */
 const OWNED = {
@@ -144,6 +148,16 @@ async function main() {
     hasTranscript: r._count.segments > 0 || hasRaw.has(r.id),
   }));
 
+  const rumble = planRumbleTranscripts(
+    parseIndex(fs.readFileSync(path.join(RUMBLE_DIR, "index.csv"), "utf8")),
+    episodes
+  );
+  episodes.push(...rumble.standalone);
+  console.log(
+    `Rumble captions: ${rumble.attach.size} fill missing transcripts, ${rumble.standalone.length} caption-only streams, ` +
+      `${rumble.skipped} already covered by the database`
+  );
+
   const personIds = new Set(
     episodes.flatMap((e) => [
       ...e.guestIds,
@@ -192,12 +206,19 @@ async function main() {
   for (let i = 0; i < withTranscript.length; i += BATCH) {
     await Promise.all(
       withTranscript.slice(i, i + BATCH).map(async (ep) => {
-        const segments = await p.transcriptSegment.findMany({
-          where: { episodeId: ep.id },
-          orderBy: { startSeconds: "asc" },
-          select: { startSeconds: true, speakerLabel: true, text: true },
-        });
-        const raw = segments.length
+        const srt = rumble.attach.get(ep.id) ?? rumble.standaloneFiles.get(ep.id);
+        const segments = srt
+          ? parseSrt(fs.readFileSync(path.join(RUMBLE_DIR, srt), "utf8")).map((s) => ({
+              startSeconds: s.startSeconds,
+              speakerLabel: null,
+              text: s.text,
+            }))
+          : await p.transcriptSegment.findMany({
+              where: { episodeId: ep.id },
+              orderBy: { startSeconds: "asc" },
+              select: { startSeconds: true, speakerLabel: true, text: true },
+            });
+        const raw = segments.length || srt
           ? null
           : (await p.episode.findUnique({ where: { id: ep.id }, select: { transcriptRaw: true } }))?.transcriptRaw ?? null;
         emit("transcripts", names.transcript.get(ep.id)!, renderTranscript(ep, names, segments, raw));

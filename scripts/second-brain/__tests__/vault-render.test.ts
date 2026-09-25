@@ -145,3 +145,16 @@ describe("renderIndex", () => {
     expect(md).toContain("### 2025\n\n- [[2025-05-15 The Veil's Edge]] Psyche reads cards.");
   });
 });
+
+describe("Rumble-only episodes", () => {
+  it("links timestamps to Rumble and flags caption-only notes", () => {
+    const ep = episode({ youtubeVideoId: null, rumbleVideoId: "v7aaa", captionsOnly: true, quotes: [] });
+    const names = assignNoteNames([ep], [], [], []);
+    expect(renderTranscript(ep, names, [{ startSeconds: 90, speakerLabel: null, text: "hi" }], null)).toContain(
+      "**[1:30](https://rumble.com/v7aaa?start=90)** hi"
+    );
+    const md = renderEpisode(ep, names);
+    expect(md).toContain("Rumble auto-captions only");
+    expect(md).toContain('  - "captions-only"');
+  });
+});
