@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
+import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 export const revalidate = 600;
 
@@ -23,6 +24,7 @@ export default async function TrollopediaPage() {
   const entries = await prisma.loreEntry
     .findMany({
       where: {
+        ...NOT_REMOVED_LORE,
         OR: [
           { title: { contains: "troll", mode: "insensitive" } },
           { summary: { contains: "troll", mode: "insensitive" } },

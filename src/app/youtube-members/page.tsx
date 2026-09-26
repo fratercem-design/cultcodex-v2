@@ -24,12 +24,17 @@ const EMOJIS = [
   { src: "/images/youtube-members/tarot.webp", name: "Tarot" },
   { src: "/images/youtube-members/cosmic-egg.webp", name: "Cosmic Egg" },
   { src: "/images/youtube-members/seal.webp", name: "Seal of Approval" },
+  { src: "/images/youtube-members/heart-butterfly.webp", name: "Heart Butterfly" },
+  { src: "/images/youtube-members/third-eye-kitten.webp", name: "Third-Eye Kitten" },
+  { src: "/images/youtube-members/witch-moon.webp", name: "Witch Moon" },
+  { src: "/images/youtube-members/sacred-heart.webp", name: "Sacred Heart" },
+  { src: "/images/youtube-members/moon-moth.webp", name: "Moon Moth" },
 ];
 
 const TIERS = [
   {
     price: 5,
-    name: "Tier I",
+    name: "Initiate",
     accent: "gold",
     perks: [
       "Loyalty badge next to your name in chat",
@@ -39,10 +44,10 @@ const TIERS = [
   },
   {
     price: 10,
-    name: "Tier II",
+    name: "Adept",
     accent: "violet",
     perks: [
-      "Everything in Tier I",
+      "Everything in Initiate",
       "Priority for open-panel spots on the live show",
     ],
   },

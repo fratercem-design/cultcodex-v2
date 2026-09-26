@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
+import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/draw" },
@@ -22,11 +23,11 @@ async function randomOf<T>(count: number, take: (skip: number) => Promise<T | nu
 }
 
 async function drawLore() {
-  const count = await prisma.loreEntry.count({ where: { canonStatus: "humorous" } }).catch(() => 0);
+  const count = await prisma.loreEntry.count({ where: { ...NOT_REMOVED_LORE, canonStatus: "humorous" } }).catch(() => 0);
   return randomOf(count, (skip) =>
     prisma.loreEntry
       .findFirst({
-        where: { canonStatus: "humorous" },
+        where: { ...NOT_REMOVED_LORE, canonStatus: "humorous" },
         select: { title: true, slug: true, summary: true, category: true },
         skip,
         orderBy: { id: "asc" },
@@ -55,11 +56,11 @@ async function drawQuote() {
 }
 
 async function drawProphecy() {
-  const count = await prisma.loreEntry.count({ where: { category: "prophecy" } }).catch(() => 0);
+  const count = await prisma.loreEntry.count({ where: { ...NOT_REMOVED_LORE, category: "prophecy" } }).catch(() => 0);
   return randomOf(count, (skip) =>
     prisma.loreEntry
       .findFirst({
-        where: { category: "prophecy" },
+        where: { ...NOT_REMOVED_LORE, category: "prophecy" },
         select: { title: true, slug: true, summary: true },
         skip,
         orderBy: { id: "asc" },

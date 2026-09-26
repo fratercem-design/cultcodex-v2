@@ -8,6 +8,7 @@ import OpenAI from "openai";
 import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { bedrockModelId } from "@/lib/anthropic";
 import { CHAPTER_STYLE_RULES } from "@/lib/psychenomicon-slop";
+import { viaAnthropic } from "@/lib/enrichment-llm";
 
 function getOpenRouterClient(): OpenAI {
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -246,23 +247,35 @@ Generate Chapter ${nextChapterNumber} of the Psychenomicon. Output ONLY valid JS
   "threads": [{"title": "thread title", "description": "what this thread tracks", "status": "active|emerging|resolved"}]
 }`;
 
-  const model = process.env.ENRICHMENT_MODEL ?? "gemini-3.5-flash";
-  console.log(`[psychenomicon] CH.${nextChapterNumber} — model: ${model}`);
+  // Direct Anthropic (prepaid credits) leads when a key is set; any failure or
+  // empty output falls through to the OpenRouter → Bedrock path below.
+  let rawText = "";
+  if (process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN) {
+    try {
+      console.log(`[psychenomicon] CH.${nextChapterNumber} — trying Anthropic API`);
+      rawText = (await viaAnthropic({ system: SYSTEM_PROMPT, user: userPrompt, maxTokens: 8000 })).trim();
+    } catch (err) {
+      console.warn(`  ⚠ Anthropic failed (${err instanceof Error ? err.message : err}) — falling back to OpenRouter`);
+    }
+  }
 
-  let rawText: string;
-  try {
-    const completion = await getOpenRouterClient().chat.completions.create({
-      model, max_tokens: 8000,
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: userPrompt },
-      ],
-    });
-    rawText = completion.choices[0]?.message?.content?.trim() ?? "";
-  } catch (err) {
-    if (!isBluesmindsUnavailable(err)) throw err;
-    console.warn(`  ⚠ Bluesminds unavailable (${err instanceof Error ? err.message : err}) — falling back to AWS Bedrock`);
-    rawText = await generateViaBedrock(SYSTEM_PROMPT, userPrompt);
+  if (!rawText) {
+    try {
+      const model = process.env.ENRICHMENT_MODEL ?? "gemini-3.5-flash";
+      console.log(`[psychenomicon] CH.${nextChapterNumber} — model: ${model}`);
+      const completion = await getOpenRouterClient().chat.completions.create({
+        model, max_tokens: 8000,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: userPrompt },
+        ],
+      });
+      rawText = completion.choices[0]?.message?.content?.trim() ?? "";
+    } catch (err) {
+      if (!isBluesmindsUnavailable(err)) throw err;
+      console.warn(`  ⚠ Bluesminds unavailable (${err instanceof Error ? err.message : err}) — falling back to AWS Bedrock`);
+      rawText = await generateViaBedrock(SYSTEM_PROMPT, userPrompt);
+    }
   }
 
   let generated: GeneratedChapter;

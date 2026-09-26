@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
+import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 // Recompute at most twice an hour so a new day's card appears shortly after
 // local midnight; within a day the pick is a pure function of the date, so
@@ -30,11 +31,11 @@ async function pickAt<T>(count: number, seed: number, take: (skip: number) => Pr
 }
 
 async function loreOfDay(seed: number) {
-  const count = await prisma.loreEntry.count({ where: { canonStatus: "humorous" } }).catch(() => 0);
+  const count = await prisma.loreEntry.count({ where: { ...NOT_REMOVED_LORE, canonStatus: "humorous" } }).catch(() => 0);
   return pickAt(count, seed, (skip) =>
     prisma.loreEntry
       .findFirst({
-        where: { canonStatus: "humorous" },
+        where: { ...NOT_REMOVED_LORE, canonStatus: "humorous" },
         select: { title: true, slug: true, summary: true, category: true },
         skip,
         orderBy: { id: "asc" },
@@ -63,11 +64,11 @@ async function quoteOfDay(seed: number) {
 }
 
 async function prophecyOfDay(seed: number) {
-  const count = await prisma.loreEntry.count({ where: { category: "prophecy" } }).catch(() => 0);
+  const count = await prisma.loreEntry.count({ where: { ...NOT_REMOVED_LORE, category: "prophecy" } }).catch(() => 0);
   return pickAt(count, seed, (skip) =>
     prisma.loreEntry
       .findFirst({
-        where: { category: "prophecy" },
+        where: { ...NOT_REMOVED_LORE, category: "prophecy" },
         select: { title: true, slug: true, summary: true },
         skip,
         orderBy: { id: "asc" },

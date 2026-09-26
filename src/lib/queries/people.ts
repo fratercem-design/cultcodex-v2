@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { NOISE_PERSON_SLUGS, REMOVED_PERSON_SLUGS, isRemovedPerson } from "@/lib/people/noise-slugs";
 import type { Prisma, PersonType } from "@/generated/prisma/client";
+import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 const EPISODE_CARD_SELECT = {
   id: true,
@@ -43,7 +44,7 @@ export function buildPersonInclude() {
       take: PERSON_MENTIONS_TAKE,
     },
     topics: { include: { topic: true } },
-    loreConnections: { include: { loreEntry: true } },
+    loreConnections: { where: { loreEntry: NOT_REMOVED_LORE }, include: { loreEntry: true } },
     quotes: {
       select: {
         id: true,

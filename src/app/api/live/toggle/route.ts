@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  let notified = { emailCount: 0, pushCount: 0 };
+  let notified = { emailCount: 0, emailFailed: 0, pushCount: 0 };
   if (goingLive && updated.videoId) {
     notified = await notifySubscribers(
       updated.title ?? "Cult of Psyche Live Stream",
