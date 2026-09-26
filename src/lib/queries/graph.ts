@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { NOISE_PERSON_SLUGS } from "@/lib/people/noise-slugs";
+import { NOISE_PERSON_SLUGS, REMOVED_PERSON_SLUGS } from "@/lib/people/noise-slugs";
 
 export interface GraphNode {
   id: string;
@@ -55,7 +55,7 @@ export async function fetchRelationshipGraph(
     // Catch-all/label person records — real quotes, not real distinct people;
     // excluded from the graph the same way they're excluded from /people.
     prisma.person.findMany({
-      where: { slug: { in: [...NOISE_PERSON_SLUGS] } },
+      where: { slug: { in: [...NOISE_PERSON_SLUGS, ...REMOVED_PERSON_SLUGS] } },
       select: { id: true },
     }),
   ]);
