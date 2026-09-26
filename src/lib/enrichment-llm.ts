@@ -187,17 +187,20 @@ export const NO_ENRICHMENT_PROVIDER_ERROR =
 
 export async function enrichComplete(args: EnrichArgs): Promise<string> {
   const tiers = ladder();
-  let lastErr: unknown;
+  // Report every tier's failure, not just the last one: the last tier is the
+  // Bedrock backstop, so its "no AWS credentials" error hid why Anthropic failed.
+  const failures: string[] = [];
   for (const tier of tiers) {
     try {
       const out = await tier.run(args);
       if (out && out.trim()) return out;
       // Empty output → treat as a miss and try the next tier.
-      lastErr = new Error(`${tier.name} returned empty output`);
+      failures.push(`${tier.name}: returned empty output`);
     } catch (e) {
-      lastErr = e;
-      console.error(`[enrich] ${tier.name} failed, trying next tier:`, e instanceof Error ? e.message : e);
+      const msg = e instanceof Error ? e.message : String(e);
+      failures.push(msg.startsWith(`${tier.name}:`) ? msg : `${tier.name}: ${msg}`);
+      console.error(`[enrich] ${tier.name} failed, trying next tier:`, msg);
     }
   }
-  throw lastErr instanceof Error ? lastErr : new Error("all enrichment tiers failed");
+  throw new Error(failures.join(" | ") || "all enrichment tiers failed");
 }
