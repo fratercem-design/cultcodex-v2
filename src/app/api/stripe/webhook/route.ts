@@ -5,6 +5,7 @@ import { getStripe } from "@/lib/stripe";
 import { getTierByPriceId } from "@/lib/subscription-tiers";
 import { getCreditBundle } from "@/lib/credit-bundles";
 import { grantPurchasedCredits } from "@/lib/queries/credit-purchases";
+import { handleKitCheckoutCompleted } from "@/lib/kit/fulfillment";
 import { sendInitiateWelcomeEmail, sendOracleWelcomeEmail } from "@/lib/notifications";
 import type Stripe from "stripe";
 
@@ -218,6 +219,12 @@ export async function POST(request: NextRequest) {
               return NextResponse.json({ error: "Credit grant failed" }, { status: 500 });
             }
           }
+        }
+
+        // Transmission Kit order (payment or subscription) → email owner + buyer.
+        // Never throws; the order itself lives in Stripe.
+        if (session.metadata?.kind === "kit") {
+          await handleKitCheckoutCompleted(session);
         }
         break;
       }
