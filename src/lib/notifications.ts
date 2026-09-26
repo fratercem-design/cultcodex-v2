@@ -957,3 +957,67 @@ export async function sendSubscribeConfirmation(email: string, confirmUrl: strin
   });
   if (error) throw new Error(error.message);
 }
+
+// ── Transmission Kit order emails ────────────────────────────────────────────
+// Plain text on purpose: the replay link is buyer input and never becomes HTML.
+
+export interface KitOrderEmail {
+  buyerEmail: string;
+  planName: string;
+  amount: string;
+  replayUrl: string;
+  stripeSessionId: string;
+  recurring: boolean;
+}
+
+/** Tells the owner a kit was bought. Reply-To is the buyer so a reply reaches them. */
+export async function sendKitOrderAdminEmail(order: KitOrderEmail, adminEmail: string) {
+  const resend = getResend();
+  if (!resend) throw new Error("RESEND_API_KEY not configured");
+  const { error } = await resend.emails.send({
+    from: "CultCodex <notifications@cultcodex.me>",
+    to: adminEmail,
+    replyTo: order.buyerEmail,
+    subject: `New kit order: ${order.planName} (${order.amount})`,
+    text: [
+      `Plan: ${order.planName}${order.recurring ? " (monthly)" : ""}`,
+      `Paid: ${order.amount}`,
+      `Buyer: ${order.buyerEmail}`,
+      `Replay: ${order.replayUrl}`,
+      "",
+      `Stripe: https://dashboard.stripe.com/checkout/sessions/${order.stripeSessionId}`,
+      "",
+      "Deliver within 48 hours. Reply to this email to reach the buyer.",
+    ].join("\n"),
+  });
+  if (error) throw new Error(error.message);
+}
+
+/** Confirms the order to the buyer. Reply-To is the owner. */
+export async function sendKitOrderBuyerEmail(order: KitOrderEmail, adminEmail: string) {
+  const resend = getResend();
+  if (!resend) throw new Error("RESEND_API_KEY not configured");
+  const { error } = await resend.emails.send({
+    from: "Psyche — CultCodex <notifications@cultcodex.me>",
+    to: order.buyerEmail,
+    replyTo: adminEmail,
+    subject: "Your Transmission Kit is on the way",
+    text: [
+      "Thanks for your order. Here's what happens next.",
+      "",
+      `Plan: ${order.planName}`,
+      `Replay we're working from: ${order.replayUrl}`,
+      "",
+      "Your kit (chapters, clip moments, description and Shorts hooks) arrives by email within 48 hours.",
+      ...(order.recurring
+        ? ["On the monthly plan, reply to this email with each new replay link and we'll get to work."]
+        : []),
+      "",
+      "Wrong link, or want to add a note? Just reply to this email.",
+      "",
+      "Psyche",
+      "Cult of Psyche · cultcodex.me/kit",
+    ].join("\n"),
+  });
+  if (error) throw new Error(error.message);
+}
