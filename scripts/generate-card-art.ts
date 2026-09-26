@@ -1,5 +1,5 @@
 /**
- * Generate unique illustrative images for trading cards via DALL-E 3.
+ * Generate unique illustrative images for trading cards via Kling (or OpenAI).
  *
  * Images are saved to public/cards/art/[slug].png and artUrl is updated in DB.
  * Portraits are 1024×1792 (DALL-E 3 portrait size) — ~52% art area fill on card.
@@ -17,6 +17,7 @@
  * Rate limit: 5 images/min — script waits 13s between requests automatically.
  */
 import "dotenv/config";
+import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import OpenAI from "openai";
@@ -63,7 +64,66 @@ if (LIMIT_RAW !== undefined && (isNaN(LIMIT_RAW) || LIMIT_RAW <= 0)) {
   process.exit(1);
 }
 const LIMIT = LIMIT_RAW;
-const LIMIT      = LIMIT_ARG ? parseInt(LIMIT_ARG, 10) : undefined;
+
+// ── Image providers ──────────────────────────────────────────────────────────
+// Kling is used when KLING_ACCESS_KEY + KLING_SECRET_KEY are set (Kling
+// developer console → API keys); otherwise falls back to OpenAI gpt-image-1.
+
+const KLING_API_BASE = process.env.KLING_API_BASE ?? "https://api-singapore.klingai.com";
+const KLING_IMAGE_MODEL = process.env.KLING_IMAGE_MODEL ?? "kling-v2-1";
+const USE_KLING = Boolean(process.env.KLING_ACCESS_KEY && process.env.KLING_SECRET_KEY);
+
+/** Kling auth: a short-lived HS256 JWT signed with the secret key. */
+function klingToken(): string {
+  const b64 = (o: object) => Buffer.from(JSON.stringify(o)).toString("base64url");
+  const now = Math.floor(Date.now() / 1000);
+  const body = `${b64({ alg: "HS256", typ: "JWT" })}.${b64({ iss: process.env.KLING_ACCESS_KEY, exp: now + 1800, nbf: now - 5 })}`;
+  const sig = crypto.createHmac("sha256", process.env.KLING_SECRET_KEY!).update(body).digest("base64url");
+  return `${body}.${sig}`;
+}
+
+async function klingGenerate(prompt: string): Promise<Buffer> {
+  const headers = { Authorization: `Bearer ${klingToken()}`, "Content-Type": "application/json" };
+  const submit = await fetch(`${KLING_API_BASE}/v1/images/generations`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ model_name: KLING_IMAGE_MODEL, prompt: prompt.slice(0, 2500), aspect_ratio: "2:3", n: 1 }),
+  });
+  const submitted = await submit.json();
+  const taskId = submitted?.data?.task_id;
+  if (!submit.ok || !taskId) throw new Error(`Kling submit failed: ${JSON.stringify(submitted)}`);
+
+  // Poll up to ~5 minutes.
+  for (let attempt = 0; attempt < 60; attempt++) {
+    await new Promise(r => setTimeout(r, 5_000));
+    const res = await fetch(`${KLING_API_BASE}/v1/images/generations/${taskId}`, {
+      headers: { Authorization: `Bearer ${klingToken()}` },
+    });
+    const task = (await res.json())?.data;
+    if (task?.task_status === "succeed") {
+      const url = task.task_result?.images?.[0]?.url;
+      if (!url) throw new Error("Kling task succeeded with no image URL");
+      return Buffer.from(await (await fetch(url)).arrayBuffer());
+    }
+    if (task?.task_status === "failed") throw new Error(`Kling task failed: ${task.task_status_msg ?? "unknown"}`);
+  }
+  throw new Error(`Kling task ${taskId} timed out`);
+}
+
+async function openaiGenerate(openai: OpenAI, prompt: string): Promise<Buffer> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const response = await (openai.images.generate as any)({
+    model: "gpt-image-1",
+    prompt,
+    n: 1,
+    size: "1024x1536",
+    quality: "medium",
+  });
+  // gpt-image-1 returns base64-encoded PNG
+  const b64 = response.data?.[0]?.b64_json;
+  if (!b64) throw new Error("No image data in response");
+  return Buffer.from(b64, "base64");
+}
 
 // ── Rarity palette hints ──────────────────────────────────────────────────────
 
@@ -249,8 +309,8 @@ async function ensureMahavidyas(): Promise<void> {
 async function main() {
   console.log("═══ GENERATE CARD ART ═══\n");
 
-  if (!process.env.OPENAI_API_KEY) {
-    console.error("✗ OPENAI_API_KEY not set");
+  if (!USE_KLING && !process.env.OPENAI_API_KEY) {
+    console.error("✗ Set KLING_ACCESS_KEY + KLING_SECRET_KEY (or OPENAI_API_KEY)");
     process.exit(1);
   }
 
@@ -281,7 +341,9 @@ async function main() {
 
   const estimatedCost = (cards.length * 0.08).toFixed(2);
   console.log(`Cards to process: ${cards.length}${LIMIT ? ` (limited to ${LIMIT})` : ""}`);
-  console.log(`Estimated cost: ~$${estimatedCost} (gpt-image-1 medium, 1024×1536)`);
+  console.log(USE_KLING
+    ? `Provider: Kling (${KLING_IMAGE_MODEL}, 2:3)`
+    : `Estimated cost: ~$${estimatedCost} (gpt-image-1 medium, 1024×1536)`);
   if (DRY_RUN) console.log("DRY RUN — no API calls will be made\n");
   console.log();
 
@@ -306,7 +368,7 @@ async function main() {
     return;
   }
 
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const openai = USE_KLING ? null : new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   let generated = 0;
   let failed = 0;
@@ -371,20 +433,8 @@ async function main() {
     console.log(`  Prompt: ${prompt.slice(0, 120)}…`);
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response = await (openai.images.generate as any)({
-        model: "gpt-image-1",
-        prompt,
-        n: 1,
-        size: "1024x1536",
-        quality: "medium",
-      });
-
-      // gpt-image-1 returns base64-encoded PNG
-      const b64 = response.data?.[0]?.b64_json;
-      if (!b64) throw new Error("No image data in response");
-
-      fs.writeFileSync(outputPath, Buffer.from(b64, "base64"));
+      const image = openai ? await openaiGenerate(openai, prompt) : await klingGenerate(prompt);
+      fs.writeFileSync(outputPath, image);
       await prisma.card.update({ where: { id: card.id }, data: { artUrl } });
       console.log(`  ✓ Saved → public/cards/art/${card.slug}.png`);
       generated++;

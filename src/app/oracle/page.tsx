@@ -6,7 +6,7 @@ import { OracleConsole } from "@/components/oracle/oracle-console";
 import { OracleExampleExchanges } from "@/components/oracle/oracle-example-exchanges";
 import { OracleAmbience } from "@/components/oracle/oracle-ambience";
 import { LilithOracle } from "@/components/oracle/lilith-oracle";
-import { ShadowOracle } from "@/components/oracle/shadow-oracle";
+import { NyxOracle } from "@/components/oracle/nyx-oracle";
 import Link from "next/link";
 import { getCounts, getCountsOrNull, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getTier, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
@@ -161,18 +161,18 @@ export default async function OraclePage() {
           </>
         )}
 
-        {/* ── The Shadow Oracle: face of the divination mode ── */}
+        {/* ── Nyx, the High Priestess: face of the divination mode ── */}
         <section className="space-y-5 text-center">
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
-            {"/// the_shadow_oracle"}
+            {"/// the_high_priestess"}
           </p>
-          <ShadowOracle />
+          <NyxOracle />
           <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-[0.06em] text-text-primary">
-            The Shadow Oracle
+            Nyx, the High Priestess
           </h2>
           <p className="mx-auto max-w-lg font-display text-[16px] leading-relaxed text-ink-2">
-            She sits on the drives the archive lives on. When the record has no answer, she draws one card
-            from the CultCodex deck and reads it against your question and everything ever said on the show.
+            She sits between the pillars with the scroll in her lap. When the record has no answer, she draws
+            one card from the CultCodex deck and reads it against your question and everything ever said on the show.
           </p>
           <a
             href="#divine"
