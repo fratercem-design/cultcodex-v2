@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
 import { SampleKitTabs } from "@/components/kit/sample-kit-tabs";
-import { KIT_PLANS, KIT_FAQ, formatPlanPrice } from "@/lib/kit/sample-kit";
+import { KitPricing } from "@/components/kit/kit-pricing";
+import { KIT_FAQ } from "@/lib/kit/sample-kit";
+import { KIT_FOUNDER_CODE } from "@/lib/kit/checkout";
 import { getCountsOrNull } from "@/lib/queries/stats";
 import { buildMetadata } from "@/lib/seo";
 
@@ -129,42 +131,11 @@ export default async function KitPage() {
             {"/// pricing"}
           </p>
           <h2 className="font-serif text-2xl font-black text-text-primary">Pick a plan</h2>
-          <p className="text-sm text-accent-cyan">Founding price: the first 10 Single Kits are $19.</p>
-          <div className="grid gap-4 md:grid-cols-3">
-            {KIT_PLANS.map((plan) => (
-              <div
-                key={plan.id}
-                className={`flex flex-col rounded-lg border p-5 ${
-                  plan.highlight ? "border-accent-gold bg-accent-gold-dim" : "border-border bg-surface/50"
-                }`}
-              >
-                {plan.highlight && (
-                  <p className="mb-2 font-mono text-[11px] uppercase tracking-wider text-accent-gold-text">
-                    Most streamers pick this
-                  </p>
-                )}
-                <p className="font-display text-lg font-bold text-text-primary">{plan.name}</p>
-                <p className="mt-1 font-serif text-3xl font-black text-text-primary">{formatPlanPrice(plan)}</p>
-                <p className="mt-1 text-sm text-text-muted">{plan.tagline}</p>
-                <ul className="mt-4 flex-1 space-y-2 text-sm text-text-primary">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex gap-2">
-                      <span className="text-accent-cyan">✓</span>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href={mailto(`Transmission Kit: ${plan.name}`)}
-                  className={`mt-5 rounded-md px-4 py-2.5 text-center font-display font-bold transition-opacity hover:opacity-90 ${
-                    plan.highlight ? "bg-accent-gold text-white" : "border border-border text-text-primary"
-                  }`}
-                >
-                  Choose {plan.name}
-                </a>
-              </div>
-            ))}
-          </div>
+          <p className="text-sm text-accent-cyan">
+            Founding price: the first 10 Single Kits are $19 with code{" "}
+            <span className="font-mono font-bold">{KIT_FOUNDER_CODE}</span> at checkout.
+          </p>
+          <KitPricing />
         </section>
 
         {/* Who's behind it */}
