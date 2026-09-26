@@ -88,7 +88,7 @@ const viaMistral = (args: EnrichArgs) =>
 // credits. This is a SEPARATE wallet from Bedrock below, which bills through AWS
 // even though it serves the same Claude models — so having Bedrock working tells
 // you nothing about whether this tier will.
-async function viaAnthropic({ system, user, maxTokens }: EnrichArgs): Promise<string> {
+export async function viaAnthropic({ system, user, maxTokens }: EnrichArgs): Promise<string> {
   // Zero-arg constructor also picks up ANTHROPIC_AUTH_TOKEN or an `ant auth login`
   // profile, so an unset ANTHROPIC_API_KEY doesn't necessarily mean no credentials.
   // The explicit check keeps the ladder's "skip silently if unconfigured" contract.
