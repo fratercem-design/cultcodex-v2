@@ -13,6 +13,7 @@ import { consumeLlmBudget, consumeMonthlyMeter, refundMonthlyMeter } from "@/lib
 import { describeDraw, drawOracleCard, spokenPartOfReading } from "@/lib/cards/codex/divination";
 import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cache";
 import { groqChat, groqConfigured } from "@/lib/free-llm";
+import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -260,6 +261,7 @@ async function searchArchive(question: string, ctx?: OracleSearchContext) {
     }),
     prisma.loreEntry.findMany({
       where: {
+        ...NOT_REMOVED_LORE,
         OR: [
           { title: { contains: primaryQuery, mode: "insensitive" } },
           { summary: { contains: primaryQuery, mode: "insensitive" } },
@@ -552,6 +554,7 @@ async function handleSearchArchive(
   if (types.has("lore")) {
     const lore = await prisma.loreEntry.findMany({
       where: {
+        ...NOT_REMOVED_LORE,
         OR: [
           { title: { contains: primary, mode: "insensitive" } },
           { summary: { contains: primary, mode: "insensitive" } },

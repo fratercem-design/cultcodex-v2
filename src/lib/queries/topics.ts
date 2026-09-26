@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import type { Prisma } from "@/generated/prisma/client";
+import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 /** Card-shaped episode fields — the only ones a topic page renders. The old
  *  `include: { episode: true }` pulled every column for every linked episode,
@@ -39,6 +40,7 @@ export function buildTopicInclude() {
       take: TOPIC_PEOPLE_TAKE,
     },
     lore: {
+      where: { loreEntry: NOT_REMOVED_LORE },
       select: { loreEntry: { select: { title: true, slug: true } } },
       take: TOPIC_LORE_TAKE,
     },
