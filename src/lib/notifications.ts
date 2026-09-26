@@ -1021,3 +1021,33 @@ export async function sendKitOrderBuyerEmail(order: KitOrderEmail, adminEmail: s
   });
   if (error) throw new Error(error.message);
 }
+
+export interface KitPilotRequestEmail {
+  name: string;
+  email: string;
+  channelUrl: string;
+  replayUrl?: string;
+  note?: string;
+}
+
+/** Free-pilot request from /kit. Reply-To is the applicant. */
+export async function sendKitPilotRequestEmail(req: KitPilotRequestEmail, adminEmail: string) {
+  const resend = getResend();
+  if (!resend) throw new Error("RESEND_API_KEY not configured");
+  const { error } = await resend.emails.send({
+    from: "CultCodex <notifications@cultcodex.me>",
+    to: adminEmail,
+    replyTo: req.email,
+    subject: `Free pilot request: ${req.name}`,
+    text: [
+      `Name: ${req.name}`,
+      `Email: ${req.email}`,
+      `Channel: ${req.channelUrl}`,
+      `Replay: ${req.replayUrl || "(not sent yet)"}`,
+      ...(req.note ? ["", "Note:", req.note] : []),
+      "",
+      "Reply to this email to reach them.",
+    ].join("\n"),
+  });
+  if (error) throw new Error(error.message);
+}
