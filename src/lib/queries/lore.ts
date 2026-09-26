@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import type { Prisma, CanonStatus } from "@/generated/prisma/client";
+import { NOT_REMOVED_LORE, isRemovedLore } from "@/lib/lore/removed-lore";
 
 export function buildLoreInclude() {
   return {
@@ -7,8 +8,8 @@ export function buildLoreInclude() {
     episodes: { include: { episode: true } },
     people: { include: { person: true } },
     topics: { include: { topic: true } },
-    relatedFrom: { include: { loreB: true } },
-    relatedTo: { include: { loreA: true } },
+    relatedFrom: { where: { loreB: NOT_REMOVED_LORE }, include: { loreB: true } },
+    relatedTo: { where: { loreA: NOT_REMOVED_LORE }, include: { loreA: true } },
   } satisfies Prisma.LoreEntryInclude;
 }
 
@@ -22,6 +23,7 @@ export async function getLoreEntries(options?: {
 
   return prisma.loreEntry.findMany({
     where: {
+      ...NOT_REMOVED_LORE,
       ...(canon ? { canonStatus: canon } : {}),
       ...(category ? { category } : {}),
     },
@@ -39,6 +41,7 @@ export async function getLoreCount(options?: {
   const { canon, category } = options ?? {};
   return prisma.loreEntry.count({
     where: {
+      ...NOT_REMOVED_LORE,
       ...(canon ? { canonStatus: canon } : {}),
       ...(category ? { category } : {}),
     },
@@ -46,6 +49,7 @@ export async function getLoreCount(options?: {
 }
 
 export async function getLoreBySlug(slug: string) {
+  if (isRemovedLore(slug)) return null;
   return prisma.loreEntry.findUnique({
     where: { slug },
     include: buildLoreInclude(),

@@ -6,6 +6,7 @@ import { getFreePreviewChapterNumbers } from "@/lib/psychenomicon";
 import { isThinPage } from "@/lib/seo";
 import { isIndexablePerson } from "@/lib/people/noise-slugs";
 import { RECOMMENDATIONS } from "@/lib/recommendations";
+import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 export interface SitemapEntry {
   url: string;
@@ -185,7 +186,7 @@ async function peopleSegment(): Promise<SitemapEntry[]> {
 async function loreSegment(): Promise<SitemapEntry[]> {
   const b = baseUrl();
   const rows = await prisma.loreEntry
-    .findMany({ select: LINKED_PAGE_SELECT })
+    .findMany({ where: NOT_REMOVED_LORE, select: LINKED_PAGE_SELECT })
     .then(indexableLinkedSubset)
     .catch(() => []);
   return rows.map((l) => ({

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
+import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 export const revalidate = 600;
 
@@ -22,7 +23,7 @@ const CANON_BADGE: Record<string, { label: string; cls: string }> = {
 export default async function PropheciesPage() {
   const prophecies = await prisma.loreEntry
     .findMany({
-      where: { category: "prophecy" },
+      where: { ...NOT_REMOVED_LORE, category: "prophecy" },
       select: { title: true, slug: true, summary: true, canonStatus: true },
       orderBy: [{ canonStatus: "asc" }, { title: "asc" }],
       take: 200,
