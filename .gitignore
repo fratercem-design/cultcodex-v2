@@ -111,3 +111,6 @@ deslop-proposals*.md
 # Generated Obsidian transcript vault (npm run brain:export). Large; export to
 # its own repo with --out if you want it versioned.
 /second-brain/transcripts-vault/
+
+# Transmission Kit drafts hold buyers' stream content
+/kit-drafts/
