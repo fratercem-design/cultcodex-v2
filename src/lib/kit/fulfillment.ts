@@ -4,6 +4,11 @@ import { sendKitOrderAdminEmail, sendKitOrderBuyerEmail, type KitOrderEmail } fr
 
 const DEFAULT_ADMIN_EMAIL = "psychetarotchannel@gmail.com";
 
+/** Where kit order and pilot notices go. */
+export function kitAdminEmail(): string {
+  return process.env.KIT_ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL;
+}
+
 /** Turns a completed kit Checkout Session into the order emails' fields, or null if it isn't a paid kit order. */
 export function kitOrderFromSession(session: Stripe.Checkout.Session): KitOrderEmail | null {
   if (session.metadata?.kind !== "kit" || session.payment_status === "unpaid") return null;
@@ -34,7 +39,7 @@ export async function handleKitCheckoutCompleted(session: Stripe.Checkout.Sessio
     console.error("[kit] completed session missing order details:", session.id);
     return;
   }
-  const adminEmail = process.env.KIT_ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL;
+  const adminEmail = kitAdminEmail();
   const results = await Promise.allSettled([
     sendKitOrderAdminEmail(order, adminEmail),
     sendKitOrderBuyerEmail(order, adminEmail),
