@@ -16,7 +16,7 @@ It lives inside CultCodex as two routes and one API endpoint. It has no accounts
 | Route | What it is |
 |---|---|
 | `/stream-alchemist` | Landing page: benefits, a real sample clip, pricing, FAQ, CTAs |
-| `/stream-alchemist/app` | The tool: paste, analyze, results, exports, upsell |
+| `/stream-alchemist/app` | The tool: paste or open a .srt / .vtt / .txt file, analyze, results, exports, upsell. Files are read in the browser; only the text is sent when you analyze |
 | `POST /api/stream-alchemist/analyze` | `{ transcript }` → `AnalysisResult` (see `src/lib/stream-alchemist/types.ts`) |
 
 ## Files
@@ -150,6 +150,5 @@ The question to answer before writing billing code: **will hosts pay for clip pl
 ## Deliberately not built yet
 
 - Accounts, usage limits per user, and billing webhooks. Free-tier limits are shown, not enforced: anyone can run another transcript.
-- File upload. Pasting covers SRT/VTT/TXT for now; a client-side "open file" button is a small next step.
 - Pulling transcripts from a YouTube URL. CultCodex already has `youtube-transcript` installed, so this is the most-requested feature to expect.
 - Video cutting or rendering.
