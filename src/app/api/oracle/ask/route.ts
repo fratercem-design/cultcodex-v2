@@ -13,6 +13,7 @@ import { consumeLlmBudget, consumeMonthlyMeter, refundMonthlyMeter } from "@/lib
 import { describeDraw, drawOracleCard, spokenPartOfReading } from "@/lib/cards/codex/divination";
 import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cache";
 import { groqChat, groqConfigured } from "@/lib/free-llm";
+import { hasPaidFallback, paidFallbackComplete } from "@/lib/enrichment-llm";
 import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 export const runtime = "nodejs";
@@ -1062,7 +1063,7 @@ export async function POST(req: NextRequest) {
   const bedrockConfigured =
     process.env.ORACLE_USE_BEDROCK === "true" &&
     Boolean(process.env.AWS_REGION || process.env.AWS_ACCESS_KEY_ID);
-  if (!groqConfigured() && !bedrockConfigured) {
+  if (!groqConfigured() && !bedrockConfigured && !hasPaidFallback()) {
     await refundTrial();
     return NextResponse.json(
       { ok: false, error: "Oracle not configured." } satisfies OracleResponse,
@@ -1158,13 +1159,10 @@ export async function POST(req: NextRequest) {
   // The expensive agentic Bedrock/Opus path (multi-step tool retrieval) is now
   // OPT-IN via ORACLE_USE_BEDROCK=true — flip it on once AWS Activate credits
   // cover the cost and you want the premium tier to run on Claude.
+  const userPrompt = `Archive context (pre-searched):\n${contextText}\n\n${contextPreamble}Question: ${question}`;
   if (groqConfigured()) {
     try {
-      const groqAnswer = await groqChat({
-        system,
-        user: `Archive context (pre-searched):\n${contextText}\n\n${contextPreamble}Question: ${question}`,
-        maxTokens,
-      });
+      const groqAnswer = await groqChat({ system, user: userPrompt, maxTokens });
       if (groqAnswer.trim()) { answer = groqAnswer.trim(); citations = preFlightCitations; }
     } catch (groqErr) {
       console.error("[oracle] groq primary failed:", groqErr instanceof Error ? groqErr.message : groqErr);
@@ -1181,6 +1179,17 @@ export async function POST(req: NextRequest) {
       citations = result.citations;
     } catch (err) {
       console.error("[oracle] bedrock fallback error:", err instanceof Error ? err.message : err);
+    }
+  }
+
+  // Last resort: prepaid Anthropic credits, then OpenRouter. Same pre-searched
+  // context as the Groq path, so a Groq outage no longer rests the Oracle.
+  if (answer == null && hasPaidFallback()) {
+    try {
+      const fallbackAnswer = await paidFallbackComplete({ system, user: userPrompt, maxTokens });
+      if (fallbackAnswer.trim()) { answer = fallbackAnswer.trim(); citations = preFlightCitations; }
+    } catch (err) {
+      console.error("[oracle] paid fallback failed:", err instanceof Error ? err.message : err);
     }
   }
 

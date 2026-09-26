@@ -186,7 +186,32 @@ export const NO_ENRICHMENT_PROVIDER_ERROR =
   "No enrichment provider configured. Set one of ANTHROPIC_API_KEY, OPENROUTER_API_KEY, GROQ_API_KEY, MISTRAL_API_KEY, or AWS credentials for Bedrock.";
 
 export async function enrichComplete(args: EnrichArgs): Promise<string> {
-  const tiers = ladder();
+  return runTiers(ladder(), args, "enrich");
+}
+
+/**
+ * Paid backstop for the Oracle and Tarot when their free Groq tier fails:
+ * prepaid Anthropic credits first, then OpenRouter. Each tier throws and falls
+ * through when its key is unset.
+ */
+export function hasPaidFallback(): boolean {
+  return Boolean(
+    process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN || process.env.OPENROUTER_API_KEY,
+  );
+}
+
+export async function paidFallbackComplete(args: EnrichArgs): Promise<string> {
+  return runTiers(
+    [
+      { name: "anthropic", run: viaAnthropic },
+      { name: "openrouter", run: viaOpenRouter },
+    ],
+    args,
+    "fallback",
+  );
+}
+
+async function runTiers(tiers: Tier[], args: EnrichArgs, tag: string): Promise<string> {
   // Report every tier's failure, not just the last one: the last tier is the
   // Bedrock backstop, so its "no AWS credentials" error hid why Anthropic failed.
   const failures: string[] = [];
@@ -199,7 +224,7 @@ export async function enrichComplete(args: EnrichArgs): Promise<string> {
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       failures.push(msg.startsWith(`${tier.name}:`) ? msg : `${tier.name}: ${msg}`);
-      console.error(`[enrich] ${tier.name} failed, trying next tier:`, msg);
+      console.error(`[${tag}] ${tier.name} failed, trying next tier:`, msg);
     }
   }
   throw new Error(failures.join(" | ") || "all enrichment tiers failed");
