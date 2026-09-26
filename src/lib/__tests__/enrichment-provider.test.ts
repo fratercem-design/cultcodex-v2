@@ -82,3 +82,40 @@ describe("enrichComplete", () => {
     vi.doUnmock("@anthropic-ai/bedrock-sdk");
   });
 });
+
+describe("paidFallbackComplete", () => {
+  it("falls through a failing Anthropic key to OpenRouter", async () => {
+    vi.resetModules();
+    vi.doMock("@anthropic-ai/sdk", () => ({
+      default: class {
+        messages = { create: () => Promise.reject(new Error("API key is invalid.")) };
+      },
+    }));
+    vi.doMock("openai", () => ({
+      default: class {
+        chat = {
+          completions: { create: () => Promise.resolve({ choices: [{ message: { content: "the answer" } }] }) },
+        };
+      },
+    }));
+    clearAll();
+    process.env.ANTHROPIC_API_KEY = "sk-test";
+    process.env.OPENROUTER_API_KEY = "or-test";
+    const { paidFallbackComplete, hasPaidFallback } = await import("@/lib/enrichment-llm");
+
+    expect(hasPaidFallback()).toBe(true);
+    await expect(paidFallbackComplete({ system: "s", user: "u", maxTokens: 10 })).resolves.toBe("the answer");
+
+    vi.doUnmock("@anthropic-ai/sdk");
+    vi.doUnmock("openai");
+  });
+
+  it("is unavailable with only Groq or AWS configured", async () => {
+    clearAll();
+    process.env.GROQ_API_KEY = "gsk-test";
+    process.env.AWS_ACCESS_KEY_ID = "id";
+    process.env.AWS_SECRET_ACCESS_KEY = "secret";
+    const { hasPaidFallback } = await import("@/lib/enrichment-llm");
+    expect(hasPaidFallback()).toBe(false);
+  });
+});

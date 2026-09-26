@@ -3,6 +3,7 @@ import { anthropic as client, bedrockModelId } from "@/lib/anthropic";
 import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
 import { consumeLlmBudget } from "@/lib/llm-budget";
 import { groqChat, groqConfigured } from "@/lib/free-llm";
+import { hasPaidFallback, paidFallbackComplete } from "@/lib/enrichment-llm";
 import { getCurrentUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -151,14 +152,15 @@ export async function POST(req: NextRequest) {
   }
 
   const hasBedrock = !!(process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY);
-  if (!groqConfigured() && !hasBedrock) {
+  if (!groqConfigured() && !hasBedrock && !hasPaidFallback()) {
     return NextResponse.json({ error: "Oracle not configured" }, { status: 500 });
   }
 
   const prompt = buildPrompt(body);
 
   // Prefer free Groq for this single-shot creative-JSON task; fall back to
-  // Bedrock (Opus) if Groq is unset, errors, or returns unparseable output.
+  // Bedrock (Opus), then Anthropic/OpenRouter, if Groq is unset, errors, or
+  // returns unparseable output.
   async function viaGroq(): Promise<string> {
     return groqChat({ system: SYSTEM, user: prompt, maxTokens: 1024, json: true });
   }
@@ -170,6 +172,10 @@ export async function POST(req: NextRequest) {
       messages: [{ role: "user", content: prompt }],
     });
     return response.content.find((b) => b.type === "text")?.text ?? "";
+  }
+
+  async function viaPaidFallback(): Promise<string> {
+    return paidFallbackComplete({ system: SYSTEM, user: prompt, maxTokens: 1024 });
   }
 
   function parseReading(text: string): InterpretResponse | null {
@@ -188,6 +194,7 @@ export async function POST(req: NextRequest) {
   const providers: Array<{ name: string; run: () => Promise<string>; enabled: boolean }> = [
     { name: "groq", run: viaGroq, enabled: groqConfigured() },
     { name: "bedrock", run: viaBedrock, enabled: hasBedrock },
+    { name: "paid-fallback", run: viaPaidFallback, enabled: hasPaidFallback() },
   ];
 
   for (const p of providers) {
