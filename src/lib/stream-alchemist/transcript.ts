@@ -22,12 +22,19 @@ function toSeconds(h?: string, m?: string, s?: string, ms?: string): number {
   );
 }
 
+/** Remove VTT inline tags, repeating so nested ones ("<<b>script>") can't reassemble. */
+function stripTags(text: string): string {
+  let prev: string;
+  let out = text;
+  do {
+    prev = out;
+    out = out.replace(/<[^<>]*>/g, "");
+  } while (out !== prev);
+  return out.replace(/[<>]/g, "");
+}
+
 function cleanText(text: string): string {
-  return text
-    .replace(/<[^>]*>/g, "") // VTT inline tags
-    .replace(/[<>]/g, "") // leftovers from nested or broken tags, e.g. "<<b>script>"
-    .replace(/\s+/g, " ")
-    .trim();
+  return stripTags(text).replace(/\s+/g, " ").trim();
 }
 
 export function countWords(text: string): number {
