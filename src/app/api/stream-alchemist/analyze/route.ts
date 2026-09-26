@@ -13,8 +13,11 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 120;
 
 const MIN_CHARS = 300;
-// ~3 hours of speech. Longer inputs are rejected rather than silently cut.
+// ~3 hours of speech, measured on the spoken text so SRT/VTT cue numbers and
+// timestamps don't count. Longer inputs are rejected rather than silently cut.
 const MAX_CHARS = 200_000;
+// Raw input ceiling, before parsing. SRT roughly doubles the size of the text.
+const MAX_RAW_CHARS = 600_000;
 const AI_PER_CALLER_PER_DAY = 5;
 const AI_DAILY_CAP = Number(process.env.STREAM_ALCHEMIST_DAILY_AI_CAP ?? 100);
 
@@ -34,9 +37,14 @@ export async function POST(req: NextRequest) {
   if (transcript.trim().length < MIN_CHARS) {
     return json({ error: "Paste a longer transcript: a few minutes of talk at least." }, 400);
   }
-  if (transcript.length > MAX_CHARS) {
+  const tooLong = (chars: number) =>
+    json(
+      { error: `That transcript is ${chars.toLocaleString()} characters of speech. The limit is ${MAX_CHARS.toLocaleString()} (about 3 hours). Split it and run each part.` },
+      413,
+    );
+  if (transcript.length > MAX_RAW_CHARS) {
     return json(
-      { error: `That transcript is ${transcript.length.toLocaleString()} characters. The limit is ${MAX_CHARS.toLocaleString()} (about 3 hours). Split it and run each part.` },
+      { error: `That file is ${transcript.length.toLocaleString()} characters, more than any 3-hour transcript needs. Split it and run each part.` },
       413,
     );
   }
@@ -51,6 +59,8 @@ export async function POST(req: NextRequest) {
   }
 
   const parsed = parseTranscript(transcript);
+  const spokenChars = parsed.segments.reduce((n, s) => n + s.text.length + 1, 0);
+  if (spokenChars > MAX_CHARS) return tooLong(spokenChars);
   let mode: AnalysisResult["mode"] = "demo";
   let clips: Clip[] | null = null;
   let notice: string | undefined;

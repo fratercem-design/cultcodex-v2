@@ -1,14 +1,18 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { Download, FileText, Loader2, Sparkles, Wand2 } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { Download, FileText, FileUp, Loader2, Sparkles, Wand2 } from "lucide-react";
 import { track } from "@/lib/stream-alchemist/analytics";
 import { DEMO_TRANSCRIPT } from "@/lib/stream-alchemist/demo-transcript";
 import { toCsv, toMarkdown } from "@/lib/stream-alchemist/export";
+import { parseTranscript } from "@/lib/stream-alchemist/transcript";
 import type { AnalysisResult } from "@/lib/stream-alchemist/types";
 import { ClipCard, LockedClipCard } from "./clip-card";
 
 type Status = "idle" | "loading" | "done" | "error";
+
+// A 3-hour SRT is well under 1 MB; anything far bigger isn't a transcript.
+const MAX_FILE_BYTES = 2 * 1024 * 1024;
 
 function download(filename: string, content: string, type: string) {
   // BOM so Excel opens the CSV as UTF-8 (curly quotes, emoji in captions).
@@ -29,12 +33,41 @@ export function Analyzer({ upsell }: { upsell: React.ReactNode }) {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState("");
   const [usedDemo, setUsedDemo] = useState(false);
+  const [fileName, setFileName] = useState("");
   const resultsRef = useRef<HTMLDivElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const pasteDemo = () => {
     setTranscript(DEMO_TRANSCRIPT);
     setUsedDemo(true);
+    setFileName("");
     track("sa_demo_used");
+  };
+
+  // Read the file in the browser and drop its text into the textarea.
+  // Nothing is uploaded until the user clicks "Find my clips".
+  const openFile = async (file: File | undefined) => {
+    if (!file) return;
+    if (!/\.(srt|txt|vtt)$/i.test(file.name)) {
+      setError("That file type isn't supported. Choose a .srt, .vtt or .txt file.");
+      setStatus("error");
+      return;
+    }
+    if (file.size > MAX_FILE_BYTES) {
+      setError(`${file.name} is ${(file.size / 1024 / 1024).toFixed(1)} MB. Transcript files are usually well under 1 MB.`);
+      setStatus("error");
+      return;
+    }
+    try {
+      setTranscript(await file.text());
+      setFileName(file.name);
+      setUsedDemo(false);
+      setError("");
+      setStatus("idle");
+    } catch {
+      setError(`Couldn't read ${file.name}.`);
+      setStatus("error");
+    }
   };
 
   const analyze = async () => {
@@ -66,7 +99,8 @@ export function Analyzer({ upsell }: { upsell: React.ReactNode }) {
     else download(`stream-alchemist-clips-${stamp}.md`, toMarkdown(result.clips), "text/markdown;charset=utf-8");
   };
 
-  const words = transcript.trim() ? transcript.trim().split(/\s+/).length : 0;
+  // Spoken words only, so SRT cue numbers and timestamps don't inflate the count.
+  const words = useMemo(() => (transcript.trim() ? parseTranscript(transcript).wordCount : 0), [transcript]);
   const tooShort = transcript.trim().length < 300;
 
   return (
@@ -76,18 +110,40 @@ export function Analyzer({ upsell }: { upsell: React.ReactNode }) {
           <label htmlFor="sa-transcript" className="font-display text-lg font-semibold text-ink">
             Your transcript
           </label>
-          <button
-            type="button"
-            onClick={pasteDemo}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-oracle/40 px-3 py-1.5 font-mono text-[12px] uppercase tracking-wider text-oracle transition hover:bg-oracle/10"
-          >
-            <Sparkles className="size-3.5" aria-hidden /> Paste demo transcript
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-line-strong px-3 py-1.5 font-mono text-[12px] uppercase tracking-wider text-ink transition hover:bg-elevated"
+            >
+              <FileUp className="size-3.5" aria-hidden /> Open .srt / .txt
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept=".srt,.vtt,.txt,text/plain,application/x-subrip,text/vtt"
+              className="hidden"
+              onChange={(e) => {
+                void openFile(e.target.files?.[0]);
+                e.target.value = ""; // lets the same file be picked again
+              }}
+            />
+            <button
+              type="button"
+              onClick={pasteDemo}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-oracle/40 px-3 py-1.5 font-mono text-[12px] uppercase tracking-wider text-oracle transition hover:bg-oracle/10"
+            >
+              <Sparkles className="size-3.5" aria-hidden /> Paste demo transcript
+            </button>
+          </div>
         </div>
         <textarea
           id="sa-transcript"
           value={transcript}
-          onChange={(e) => setTranscript(e.target.value)}
+          onChange={(e) => {
+            setTranscript(e.target.value);
+            if (!e.target.value) setFileName("");
+          }}
           rows={12}
           spellCheck={false}
           placeholder={"Paste a transcript. Timestamps like [01:23], 00:01:23, or SRT/VTT captions give you exact clip times.\n\n[00:00] Okay we are live…\n[00:07] Welcome back to the show…"}
@@ -95,6 +151,7 @@ export function Analyzer({ upsell }: { upsell: React.ReactNode }) {
         />
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="font-mono text-[12px] text-ink-3">
+            {fileName && <span className="text-ink-2">{fileName} · </span>}
             {words.toLocaleString()} words
             {words > 0 && ` · ~${Math.max(1, Math.round(words / 150))} min of talk`}
           </p>
