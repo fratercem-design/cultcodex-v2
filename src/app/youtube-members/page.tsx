@@ -34,7 +34,7 @@ const EMOJIS = [
 const TIERS = [
   {
     price: 5,
-    name: "Tier I",
+    name: "Initiate",
     accent: "gold",
     perks: [
       "Loyalty badge next to your name in chat",
@@ -44,10 +44,10 @@ const TIERS = [
   },
   {
     price: 10,
-    name: "Tier II",
+    name: "Adept",
     accent: "violet",
     perks: [
-      "Everything in Tier I",
+      "Everything in Initiate",
       "Priority for open-panel spots on the live show",
     ],
   },
