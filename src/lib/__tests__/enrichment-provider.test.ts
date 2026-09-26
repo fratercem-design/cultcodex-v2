@@ -10,6 +10,7 @@ const KEYS = [
   "OPENROUTER_API_KEY",
   "GROQ_API_KEY",
   "MISTRAL_API_KEY",
+  "ENRICHMENT_PROVIDER",
 ] as const;
 
 const saved = Object.fromEntries(KEYS.map((k) => [k, process.env[k]]));
