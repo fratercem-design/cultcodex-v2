@@ -29,7 +29,7 @@ export function CommunityEmailSignup() {
 
       setEmail("");
       setState("success");
-      setMessage("You are on the signal list.");
+      setMessage("Check your inbox and click the link to confirm.");
     } catch (error) {
       setState("error");
       setMessage(error instanceof Error ? error.message : "Please try again.");

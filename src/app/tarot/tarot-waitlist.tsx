@@ -29,7 +29,7 @@ export function TarotWaitlist({ episodeCount }: { episodeCount: string }) {
       });
       if (res.ok) {
         setState("done");
-        setMsg("Transmission received. You'll hear when the deck is ready.");
+        setMsg("Check your inbox and click the link to confirm.");
       } else {
         setState("error");
         setMsg("Something broke. Try again.");

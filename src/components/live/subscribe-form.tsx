@@ -26,7 +26,7 @@ export function SubscribeForm() {
 
       if (res.ok) {
         setStatus("success");
-        setMessage("You'll be notified when we go live!");
+        setMessage("Check your inbox and click the link to confirm. Then you'll hear when we go live.");
         setEmail("");
       } else {
         setStatus("error");
