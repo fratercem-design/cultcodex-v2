@@ -452,6 +452,80 @@ export async function grantOracleAccess(email: string) {
   revalidatePath("/members");
 }
 
+/**
+ * Undo grantOracleAccess: clear the lifetime flag and the Oracle tier it set.
+ * The account stays. Refuses when the user has a Stripe subscription, whose
+ * status and period end belong to the Stripe webhook; cancel that in Stripe.
+ */
+export async function revokeLifetimeAccess(userId: string): Promise<{ error?: string }> {
+  await requireAdmin();
+
+  const user = await prisma.codexUser.findUnique({
+    where: { id: userId },
+    select: { subscriptionId: true },
+  });
+  // Returned, not thrown: production strips thrown server-action messages.
+  if (!user) return { error: "User not found." };
+  if (user.subscriptionId) {
+    return { error: "This user has a Stripe subscription. Cancel it in Stripe instead." };
+  }
+
+  await prisma.codexUser.update({
+    where: { id: userId },
+    data: {
+      isLifetimeMember: false,
+      subscriptionStatus: null,
+      subscriptionTier: null,
+      currentPeriodEnd: null,
+      isPublicMember: false,
+    },
+  });
+
+  revalidatePath("/admin/users");
+  revalidatePath("/members");
+  return {};
+}
+
+/**
+ * Permanently delete a user's account. The caller must type the account's
+ * email to confirm. Most user-owned rows cascade; ChatMessage,
+ * NotificationPreference and Favorite predate the migrations and have no
+ * cascade in the schema, so they are removed first in the same transaction.
+ * Deleting doesn't ban: the person can sign in with Google again and get a
+ * fresh free account.
+ */
+export async function deleteUserAccount(userId: string, confirmEmail: string): Promise<{ error?: string }> {
+  const admin = await requireAdmin();
+
+  const user = await prisma.codexUser.findUnique({
+    where: { id: userId },
+    select: { id: true, email: true, role: true, subscriptionId: true },
+  });
+  if (!user) return { error: "User not found." };
+  if (user.id === admin.id) return { error: "You can't delete your own account here." };
+  const adminEmails = (process.env.ADMIN_EMAILS ?? "").split(",").map((e) => e.trim().toLowerCase());
+  if (user.role === "admin" || (user.email && adminEmails.includes(user.email.toLowerCase()))) {
+    return { error: "Admins can't be deleted here. Remove them from ADMIN_EMAILS first." };
+  }
+  if (user.subscriptionId) {
+    return { error: "This user has a Stripe subscription. Cancel it in Stripe first." };
+  }
+  if (!user.email || confirmEmail.trim().toLowerCase() !== user.email.toLowerCase()) {
+    return { error: "The email you typed doesn't match this account." };
+  }
+
+  await prisma.$transaction([
+    prisma.chatMessage.deleteMany({ where: { userId } }),
+    prisma.notificationPreference.deleteMany({ where: { userId } }),
+    prisma.favorite.deleteMany({ where: { userId } }),
+    prisma.codexUser.delete({ where: { id: userId } }),
+  ]);
+
+  revalidatePath("/admin/users");
+  revalidatePath("/members");
+  return {};
+}
+
 export async function setMemberTitle(userId: string, title: string) {
   await requireAdmin();
 

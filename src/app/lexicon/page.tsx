@@ -435,7 +435,7 @@ const LEXICON: Term[] = [
   {
     word: "Neon Priestess",
     definition:
-      "A mythic archetype from Psyche's original music and poetry. Represents a figure of power, illumination, and mystery. The subject of a music video dedicated to Alexandra Mayers.",
+      "A mythic archetype from Psyche's original music and poetry. Represents a figure of power, illumination, and mystery.",
     category: "psycheverse",
   },
   {
@@ -1046,13 +1046,6 @@ const LEXICON: Term[] = [
     category: "psycheverse",
   },
   {
-    word: "The Oracle's Shield",
-    definition:
-      "Legendary moment in cult history when Alexandra Mayers (Neon Priestess) publicly defended Psyche against coordinated attacks and death threats, declaring on air that what the attackers were doing was not okay. Canonized as a turning point.",
-    origin: "Cult of Psyche — Alexandra Mayers defense moment",
-    category: "psycheverse",
-  },
-  {
     word: "Ring Light Hex",
     definition:
       "Psyche's concept that coordinated social-media smear campaigns function as a modern curse — the ring light and the phone camera replacing the candle and the sigil. The hex is cast through views, hashtags, and stitched reactions.",
@@ -1069,14 +1062,6 @@ const LEXICON: Term[] = [
     definition:
       "Psyche's recurring tradition of pranking other channels by raiding them in masks and under fake names on April 1st. A rare case where a raid is played purely for laughs, not loyalty or beef.",
     origin: "Cult of Psyche — annual April 1st bit",
-    category: "psycheverse",
-  },
-  {
-    word: "The Scalpel Quote",
-    definition:
-      "Alexandra Mayers' shadow-work revelation during the Beeta's Biscuit session (Ep. 428): 'I was in love with who I wanted him to be, not who he is.' Canonized on the show as a psychological scalpel — a single line that cuts to the bone of projection.",
-    usage: "\"I was in love with who I wanted him to be, not who he is.\"",
-    origin: "Cult of Psyche — Ep. 428, Alexandra Mayers",
     category: "psycheverse",
   },
   {

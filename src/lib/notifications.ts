@@ -2,6 +2,7 @@ import { Resend } from "resend";
 import webPush from "web-push";
 import { prisma } from "@/lib/db";
 import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
+import { subscriberLink } from "@/lib/subscriber-links";
 
 let vapidConfigured = false;
 
@@ -22,26 +23,45 @@ function ensureVapid() {
   }
 }
 
+// Resend's batch endpoint takes at most 100 messages per call.
+const EMAIL_BATCH_SIZE = 100;
+
 export async function notifySubscribers(title: string, videoId: string) {
   const subscribers = await prisma.subscriber.findMany();
   let emailCount = 0;
+  let emailFailed = 0;
   let pushCount = 0;
 
-  // Send emails
+  // One message per recipient. A single `to: [...]` list showed every
+  // subscriber every other subscriber's address. Only confirmed (double
+  // opt-in) addresses are mailed, so nobody can sign a stranger up.
   const resend = getResend();
-  const emailSubs = subscribers.filter((s) => s.email);
-  if (resend && emailSubs.length > 0) {
-    const emails = emailSubs.map((s) => s.email!);
-    try {
-      await resend.emails.send({
-        from: "CultCodex <notifications@cultcodex.me>",
-        to: emails,
-        subject: `🔴 LIVE NOW: ${title}`,
-        html: buildEmailHtml(title, videoId),
-      });
-      emailCount = emails.length;
-    } catch (err) {
-      console.error("Email send failed:", err);
+  const emails = subscribers.filter((s) => s.email && s.verified).map((s) => s.email!);
+  if (resend) {
+    for (let i = 0; i < emails.length; i += EMAIL_BATCH_SIZE) {
+      const chunk = emails.slice(i, i + EMAIL_BATCH_SIZE);
+      try {
+        const { error } = await resend.batch.send(
+          chunk.map((to) => {
+            const unsubscribe = subscriberLink("unsubscribe", to);
+            return {
+              from: "CultCodex <notifications@cultcodex.me>",
+              to,
+              subject: `🔴 LIVE NOW: ${title}`,
+              html: buildEmailHtml(title, videoId, unsubscribe),
+              headers: {
+                "List-Unsubscribe": `<${unsubscribe}>`,
+                "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+              },
+            };
+          }),
+        );
+        if (error) throw new Error(error.message);
+        emailCount += chunk.length;
+      } catch (err) {
+        emailFailed += chunk.length;
+        console.error(`[notifySubscribers] batch of ${chunk.length} failed:`, err);
+      }
     }
   }
 
@@ -73,7 +93,7 @@ export async function notifySubscribers(title: string, videoId: string) {
     }
   }
 
-  return { emailCount, pushCount };
+  return { emailCount, emailFailed, pushCount };
 }
 
 /**
@@ -882,7 +902,7 @@ function buildOracleWelcomeHtml(name: string): string {
 </html>`;
 }
 
-function buildEmailHtml(title: string, videoId: string): string {
+function buildEmailHtml(title: string, videoId: string, unsubscribeUrl: string): string {
   return `
 <!DOCTYPE html>
 <html>
@@ -907,10 +927,33 @@ function buildEmailHtml(title: string, videoId: string): string {
     </div>
     <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid #2a2a2a;">
       <p style="color:#6b6b6b;font-size:10px;margin:0;">
-        You're receiving this because you subscribed at cultcodex.me
+        You're receiving this because you subscribed at cultcodex.me ·
+        <a href="${unsubscribeUrl}" style="color:#6b6b6b;">Unsubscribe</a>
       </p>
     </div>
   </div>
 </body>
 </html>`;
+}
+
+/**
+ * Double opt-in: the only email an unconfirmed address ever gets. Nothing on
+ * the list is mailed until the recipient clicks this link.
+ */
+export async function sendSubscribeConfirmation(email: string, confirmUrl: string) {
+  const resend = getResend();
+  if (!resend) throw new Error("RESEND_API_KEY not configured");
+  const { error } = await resend.emails.send({
+    from: "CultCodex <notifications@cultcodex.me>",
+    to: email,
+    subject: "Confirm your CultCodex email updates",
+    text: [
+      "Someone (hopefully you) asked for CultCodex email updates at this address.",
+      "",
+      `Confirm here: ${confirmUrl}`,
+      "",
+      "If this wasn't you, ignore this email and you won't hear from us again.",
+    ].join("\n"),
+  });
+  if (error) throw new Error(error.message);
 }

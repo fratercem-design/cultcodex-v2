@@ -8,6 +8,11 @@ import { useEffect, useState, type CSSProperties } from "react";
  * Layout (left → right):
  *   [● SIGNAL_OK]  [CONN: TLS/1.3]  [FEED: 2,594]     [○ ORACLE_LIVE] [BUILD: vX] [UTC HH:MM:SS]
  *
+ * SIGNAL is the service (this page rendered); FEED is whether the archive
+ * could be read. They fail independently — a healthy server reading an
+ * unreachable or empty database must not report ORACLE_LIVE (2026-09-25
+ * audit). The Oracle answers from the archive, so it follows the feed.
+ *
  * The UTC clock updates once per second from a useEffect interval. The
  * initial render returns an empty time string so the server-rendered output
  * matches the first client render (avoids hydration mismatch).
@@ -43,10 +48,12 @@ const cellStyleLeftBorder: CSSProperties = {
 };
 
 interface TerminalStatusBarProps {
-  feedCount: number;
+  /** Episodes in the archive; null when the archive can't be read. */
+  feedCount: number | null;
 }
 
 export function TerminalStatusBar({ feedCount }: TerminalStatusBarProps) {
+  const feedOk = feedCount !== null;
   const [utc, setUtc] = useState<string>("");
 
   useEffect(() => {
@@ -91,7 +98,13 @@ export function TerminalStatusBar({ feedCount }: TerminalStatusBarProps) {
           <span style={{ color: "var(--neon)" }}>SIGNAL_OK</span>
         </span>
         <span style={cellStyle}>CONN: TLS/1.3</span>
-        <span style={cellStyle}>FEED: {feedCount.toLocaleString("en-US")}</span>
+        <span style={cellStyle}>
+          {feedOk ? (
+            <>FEED: {feedCount.toLocaleString("en-US")}</>
+          ) : (
+            <span style={{ color: "var(--neon-4)" }}>FEED: UNAVAILABLE</span>
+          )}
+        </span>
       </div>
 
       <div className="statusbar-right" style={{ alignItems: "stretch" }}>
@@ -99,13 +112,15 @@ export function TerminalStatusBar({ feedCount }: TerminalStatusBarProps) {
           <span
             aria-hidden="true"
             style={{
-              color: "var(--neon-3)",
-              textShadow: "var(--glow-magenta)",
+              color: feedOk ? "var(--neon-3)" : "var(--neon-4)",
+              textShadow: feedOk ? "var(--glow-magenta)" : "none",
             }}
           >
             ○
           </span>
-          <span style={{ color: "var(--neon-3)" }}>ORACLE_LIVE</span>
+          <span style={{ color: feedOk ? "var(--neon-3)" : "var(--neon-4)" }}>
+            {feedOk ? "ORACLE_LIVE" : "ORACLE_OFFLINE"}
+          </span>
         </span>
         <span style={cellStyleNoBorder} suppressHydrationWarning>
           <span style={{ color: "var(--term-fg-faint)" }}>UTC</span>

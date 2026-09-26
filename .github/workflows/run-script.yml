@@ -29,6 +29,7 @@ on:
           - ops/rumble-embed-ids-apply.ts
           - ops/db-identity.ts
           - ops/feature-check.ts
+          - ops/remove-person.ts
 
 permissions:
   contents: read
@@ -70,6 +71,7 @@ jobs:
           # dispatches, but re-check here for API dispatches.
           case "$SCRIPT" in
             validate-data.ts|_db-stats.ts|_drift-check.ts|_diagnose-migrations.ts|_psychenomicon-slop-audit.ts|ops/test-gemini.mjs|ops/test-providers.mjs|ops/placeholder-episodes.ts|ops/placeholder-episodes-apply.ts|ops/rumble-transcripts.ts|ops/rumble-transcripts-apply.ts|ops/enrich-rumble-drafts.ts|ops/enrich-rumble-drafts-apply.ts|ops/people-dedupe.ts|ops/people-dedupe-apply.ts|ops/rumble-embed-ids.ts|ops/rumble-embed-ids-apply.ts|ops/db-identity.ts|ops/feature-check.ts) ;;
+            validate-data.ts|_db-stats.ts|_drift-check.ts|_diagnose-migrations.ts|_psychenomicon-slop-audit.ts|ops/test-gemini.mjs|ops/test-providers.mjs|ops/placeholder-episodes.ts|ops/placeholder-episodes-apply.ts|ops/rumble-transcripts.ts|ops/rumble-transcripts-apply.ts|ops/enrich-rumble-drafts.ts|ops/enrich-rumble-drafts-apply.ts|ops/people-dedupe.ts|ops/people-dedupe-apply.ts|ops/rumble-embed-ids.ts|ops/rumble-embed-ids-apply.ts|ops/db-identity.ts|ops/remove-person.ts) ;;
             *) echo "::error::scripts/$SCRIPT is not on the allowlist"; exit 1 ;;
           esac
           echo "── Running scripts/$SCRIPT ──"

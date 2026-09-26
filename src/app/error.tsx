@@ -24,7 +24,8 @@ export default function GlobalError({
         Something Went Wrong
       </h1>
       <p className="mt-2 font-mono text-sm text-text-muted">
-        A disturbance in the psychic field has disrupted this transmission.
+        This page couldn&apos;t load. If the archive is briefly unavailable, trying again
+        in a minute usually works.
       </p>
       {error.digest && (
         <p className="mt-1 font-mono text-[12px] text-text-muted">

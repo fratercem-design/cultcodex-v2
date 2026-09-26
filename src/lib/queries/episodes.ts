@@ -3,6 +3,7 @@ import { cleanTitle } from "@/lib/format/text";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { getEraById } from "@/lib/eras";
 import type { Prisma, ContentStatus, PersonType } from "@/generated/prisma/client";
+import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 // Type for episode with all relations loaded
 export type EpisodeWithRelations = Prisma.EpisodeGetPayload<{
@@ -14,7 +15,7 @@ export function buildEpisodeInclude() {
     series: true,
     guests: { include: { person: true } },
     mentionedPeople: { include: { person: true } },
-    loreEntries: { include: { loreEntry: true } },
+    loreEntries: { where: { loreEntry: NOT_REMOVED_LORE }, include: { loreEntry: true } },
     topics: { include: { topic: true } },
     quotes: { include: { speaker: true } },
     segments: { orderBy: { startSeconds: "asc" as const } },

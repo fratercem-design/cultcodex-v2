@@ -118,8 +118,12 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
+  // The archive always has people. Zero means it couldn't be read (wrong or
+  // unreachable database), so say that instead of rendering an empty directory.
+  const archiveUnavailable = aggregates.total === 0;
+
   const glanceItems = [
-    { icon: <IconPerson size={14} />, label: `${aggregates.total} people` },
+    ...(archiveUnavailable ? [] : [{ icon: <IconPerson size={14} />, label: `${aggregates.total} people` }]),
     ...(aggregates.hosts > 0 ? [{ icon: <IconMicrophone size={14} />, label: `${aggregates.hosts} host${aggregates.hosts !== 1 ? "s" : ""}` }] : []),
     ...(aggregates.recurring > 0 ? [{ icon: <IconRecurring size={14} />, label: `${aggregates.recurring} recurring` }] : []),
     ...(aggregates.guests > 0 ? [{ icon: <IconMask size={14} />, label: `${aggregates.guests} guest${aggregates.guests !== 1 ? "s" : ""}` }] : []),
@@ -179,7 +183,12 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
         currentFilter={currentFilter}
       />
 
-      {typeFilter ? (
+      {archiveUnavailable ? (
+        <EmptyState
+          message="The archive can't be read right now"
+          suggestion="People will be back shortly. Try again in a few minutes."
+        />
+      ) : typeFilter ? (
         sorted.length === 0 ? (
           <EmptyState message="No people match the current filters" />
         ) : (
