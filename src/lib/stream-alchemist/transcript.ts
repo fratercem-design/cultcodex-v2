@@ -24,7 +24,8 @@ function toSeconds(h?: string, m?: string, s?: string, ms?: string): number {
 
 function cleanText(text: string): string {
   return text
-    .replace(/<[^>]+>/g, "") // VTT inline tags
+    .replace(/<[^>]*>/g, "") // VTT inline tags
+    .replace(/[<>]/g, "") // leftovers from nested or broken tags, e.g. "<<b>script>"
     .replace(/\s+/g, " ")
     .trim();
 }

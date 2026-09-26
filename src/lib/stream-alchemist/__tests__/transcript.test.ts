@@ -31,6 +31,11 @@ describe("parseTranscript", () => {
     ]);
   });
 
+  it("leaves no angle brackets behind, even from nested tags", () => {
+    const p = parseTranscript("[00:00] hi <<b>script>alert(1)<</b>/script> there\n[00:05] next");
+    expect(p.segments[0].text).not.toMatch(/[<>]/);
+  });
+
   it("reads YouTube's copied transcript, where each timestamp sits on its own line", () => {
     const p = parseTranscript("0:00\nwelcome back everyone\n0:04\ntoday we talk money\n1:15\nthe end");
     expect(p.segments.map((s) => [s.start, s.text])).toEqual([
