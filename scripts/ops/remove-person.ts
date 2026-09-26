@@ -25,6 +25,11 @@ const NAME_PATTERNS: Record<string, RegExp> = {
   "alexandra-mayers": /\b(alexandr[ae]|alexandria|alex)\s+(melody\s+)?m[aey]{1,2}[eo]?rs?\b/i,
 };
 
+// Rows the name pattern matches that are not the person. "Alex Myers /
+// Alexander McQueen" is a mixed row that also carries a different person's
+// appearances, so deleting it would take theirs too.
+const KEEP_SLUGS = new Set(["alex-myers-alexander-mcqueen"]);
+
 export async function run(apply: boolean): Promise<void> {
   const prisma = getPrisma();
   console.log(apply ? "APPLY — rows will be deleted" : "DRY RUN — nothing will change");
@@ -35,7 +40,9 @@ export async function run(apply: boolean): Promise<void> {
       select: { id: true, slug: true, displayName: true, altNames: true },
     });
     const people = everyone.filter(
-      (p) => p.slug === slug || (pattern && [p.displayName, ...p.altNames].some((n) => pattern.test(n))),
+      (p) =>
+        !KEEP_SLUGS.has(p.slug) &&
+        (p.slug === slug || (pattern && [p.displayName, ...p.altNames].some((n) => pattern.test(n)))),
     );
     const ids = people.map((p) => p.id);
     const slugs = people.map((p) => p.slug);
