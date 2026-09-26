@@ -34,6 +34,7 @@ export function Analyzer({ upsell }: { upsell: React.ReactNode }) {
   const [error, setError] = useState("");
   const [usedDemo, setUsedDemo] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [dragging, setDragging] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -137,18 +138,44 @@ export function Analyzer({ upsell }: { upsell: React.ReactNode }) {
             </button>
           </div>
         </div>
-        <textarea
-          id="sa-transcript"
-          value={transcript}
-          onChange={(e) => {
-            setTranscript(e.target.value);
-            if (!e.target.value) setFileName("");
-          }}
-          rows={12}
-          spellCheck={false}
-          placeholder={"Paste a transcript. Timestamps like [01:23], 00:01:23, or SRT/VTT captions give you exact clip times.\n\n[00:00] Okay we are live…\n[00:07] Welcome back to the show…"}
-          className="w-full resize-y rounded-xl border border-line bg-void p-4 font-mono text-[13px] leading-relaxed text-ink placeholder:text-ink-3/70 focus:border-line-strong focus:outline-none"
-        />
+        <div className="relative">
+          <textarea
+            id="sa-transcript"
+            value={transcript}
+            onChange={(e) => {
+              setTranscript(e.target.value);
+              if (!e.target.value) setFileName("");
+            }}
+            // Only file drags are intercepted; dragging text inside the box behaves as usual.
+            onDragOver={(e) => {
+              if (!e.dataTransfer.types.includes("Files")) return;
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "copy";
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              if (!e.dataTransfer.files.length) return;
+              e.preventDefault();
+              setDragging(false);
+              void openFile(e.dataTransfer.files[0]);
+            }}
+            rows={12}
+            spellCheck={false}
+            placeholder={"Paste a transcript or drop a .srt / .txt file here. Timestamps like [01:23], 00:01:23, or SRT/VTT captions give you exact clip times.\n\n[00:00] Okay we are live…\n[00:07] Welcome back to the show…"}
+            className={`w-full resize-y rounded-xl border bg-void p-4 font-mono text-[13px] leading-relaxed text-ink placeholder:text-ink-3/70 focus:border-line-strong focus:outline-none ${
+              dragging ? "border-dashed border-oracle" : "border-line"
+            }`}
+          />
+          {dragging && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-xl bg-oracle/10 font-mono text-[13px] uppercase tracking-wider text-oracle"
+            >
+              Drop your .srt, .vtt or .txt
+            </div>
+          )}
+        </div>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="font-mono text-[12px] text-ink-3">
             {fileName && <span className="text-ink-2">{fileName} · </span>}
