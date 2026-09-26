@@ -115,7 +115,7 @@ In this order:
 - `src/app/needle/r/[slug]/page.tsx`: public share page. Only visible if `isPublic` is true. Show the question, the three pulls, and the interpretation. Add a "make public / private" toggle for the owner through a server action.
 - `src/app/needle/r/[slug]/opengraph-image.tsx`: copy the pattern and fonts in `src/app/oracle/opengraph-image.tsx` and `src/lib/og-fonts.ts`. Show the question plus the Needle's quote line and episode title.
 - Metadata with `alternates.canonical`, the same way `src/app/draw/page.tsx` does it.
-- Add The Needle to site navigation in `src/lib/nav.ts`, next to the existing divination entries (tarot/draw).
+- Link The Needle from `src/components/layout/site-footer.tsx` next to the existing `/draw` and `/tarot` links. Leave the main nav in `src/lib/nav.ts` alone unless asked; it's a numbered, keyboard-shortcut list.
 - Add `/needle` to the sitemap where the other static routes live (`src/lib/sitemap.ts`).
 
 ### 7. Copy
