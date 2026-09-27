@@ -50,7 +50,8 @@
     "art:cards": "npx tsx scripts/generate-card-art.ts",
     "art:cards:dry": "npx tsx scripts/generate-card-art.ts --dry-run",
     "art:cards:mahavidya": "npx tsx scripts/generate-card-art.ts --type MAHAVIDYA",
-    "art:cards:tarot": "npx tsx scripts/generate-card-art.ts --slug cop-maj-00 --all"
+    "art:cards:tarot": "npx tsx scripts/generate-card-art.ts --slug cop-maj-00 --all",
+    "kit:draft": "npx tsx scripts/kit-draft.ts"
   },
   "dependencies": {
     "@anthropic-ai/bedrock-sdk": "^0.33.6",
