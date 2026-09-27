@@ -16,7 +16,7 @@ import {
   buildPaginationMeta,
 } from "@/lib/pagination";
 import type { CanonStatus } from "@/generated/prisma/client";
-import { collectionPageJsonLd, jsonLdScript } from "@/lib/seo";
+import { collectionPageJsonLd, jsonLdScript, socialMetadata } from "@/lib/seo";
 
 export const revalidate = 600;
 
@@ -24,6 +24,11 @@ export const metadata = {
   title: "Lore — CULT CODEX",
   description: "The concepts, doctrines, myths, and memes of the Cult of Psyche — every recurring idea, belief system, and inside reference catalogued and connected to the archive.",
   alternates: { canonical: "/lore" },
+  ...socialMetadata({
+    title: "Lore — CULT CODEX",
+    description: "The concepts, doctrines, myths, and inside references of the Cult of Psyche, each linked to the episodes where it comes up.",
+    path: "/lore",
+  }),
 };
 
 const SORT_OPTIONS = [

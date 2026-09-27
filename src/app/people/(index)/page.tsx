@@ -18,7 +18,7 @@ import {
 } from "@/lib/pagination";
 import { PERSON_TYPE_DOT, PERSON_TYPE_EDGE, PERSON_TYPE_SECTION, PERSON_TYPE_TINT } from "@/lib/people/person-type";
 import type { PersonType } from "@/generated/prisma/client";
-import { collectionPageJsonLd, jsonLdScript } from "@/lib/seo";
+import { collectionPageJsonLd, jsonLdScript, socialMetadata } from "@/lib/seo";
 
 export const revalidate = 3600;
 
@@ -26,6 +26,11 @@ export const metadata = {
   alternates: { canonical: "/people" },
   title: "People — CULT CODEX",
   description: "Hosts, recurring figures, and profiled guests from the Cult of Psyche archive. One-time appearances and unknowns are compiled at /people/the-rest.",
+  ...socialMetadata({
+    title: "People — CULT CODEX",
+    description: "Explore recurring guests, hosts, and profiled voices across the Cult of Psyche archive.",
+    path: "/people",
+  }),
 };
 
 const SORT_OPTIONS = [
