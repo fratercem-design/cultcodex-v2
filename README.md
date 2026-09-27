@@ -1,5 +1,9 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Products
+
+- **Transmission Kit** (`/kit`): paid chapters, clips and show notes for streamers. Setup, delivery and pricing: [docs/transmission-kit.md](docs/transmission-kit.md).
+
 ## Getting Started
 
 First, run the development server:
