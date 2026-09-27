@@ -4,6 +4,7 @@ import { requireAdmin } from "@/lib/auth";
 import { sweepSecretMatches } from "@/lib/admin-guard";
 import { notifyTranscriptReady } from "@/lib/notifications";
 import { YoutubeTranscript } from "youtube-transcript";
+import { captionsToMs } from "@/lib/transcript/caption-units";
 
 export const runtime = "nodejs";
 // Vercel serverless function limit. 300s requires Pro, or Hobby with Fluid Compute
@@ -74,9 +75,11 @@ async function fetchTranscriptYT(
   try {
     const segments = await YoutubeTranscript.fetchTranscript(videoId, { lang: "en" });
     if (!segments || segments.length === 0) return { chunks: null, reason: "yt_empty" };
-    const chunks: SupadataChunk[] = segments.map((s) => ({
+    // Milliseconds for srv3 captions but seconds for the classic format;
+    // normalise so the /1000 below is right either way.
+    const chunks: SupadataChunk[] = captionsToMs(segments).map((s) => ({
       text: s.text,
-      offset: s.offset,   // already milliseconds from InnerTube path
+      offset: s.offset,
       duration: s.duration,
       lang: s.lang ?? "en",
     }));
