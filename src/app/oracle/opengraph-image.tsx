@@ -81,7 +81,7 @@ export default async function OGImage() {
                 maxWidth: 700,
               }}
             >
-              AI trained on nearly 3,000 transmissions. Real answers drawn from transcripts, lore, and behavioral profiles — with citations.
+              AI search across every transmission. Real answers drawn from transcripts, lore, and behavioral profiles — with citations.
             </div>
           </div>
 

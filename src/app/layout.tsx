@@ -24,8 +24,11 @@ import "./globals.css";
 // "unavailable", never as 0) and getLiveChannels is wrapped in .catch() and the user menu loads client-side — no server-side session reads.
 // revalidate=60 enables Next.js server-side ISR caching for the layout shell.
 
+// No episode count here: this is static and shared by every route without its
+// own description, and a hard-coded count goes stale ("nearly 3,000" sat here
+// while the archive passed 3,300). Pages that quote a count compute it.
 const SITE_DESCRIPTION =
-  "The complete archive of the Cult of Psyche: nearly 3,000 transmissions, searchable transcripts, lore entries, guest profiles, relationship maps, and AI-powered exploration of every word ever spoken in the stream.";
+  "The searchable archive of the Cult of Psyche: episode transcripts, guest profiles, lore, recurring topics, and an AI Oracle that cites its sources.";
 
 // SITE_URL comes from @/lib/seo — single source of truth with a localhost guard,
 // so a stray dev value in NEXT_PUBLIC_SITE_URL can never become metadataBase.
@@ -64,6 +67,7 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [{ url: "/images/site/og.jpg", width: 1200, height: 630 }],
     siteName: "CultCodex",
+    locale: "en_US",
     type: "website",
   },
   twitter: {

@@ -4,7 +4,8 @@ import PsychenomiconChronicle from "@/components/psychenomicon/chronicle/psychen
 
 export const metadata: Metadata = buildMetadata({
   title: "The Psychenomicon",
-  description: "A living record of evolving patterns.",
+  description:
+    "A living book written from the Cult of Psyche archive: each episode becomes an illustrated chapter tracking the people, conflicts and patterns of the show.",
   path: "/psychenomicon",
 });
 
