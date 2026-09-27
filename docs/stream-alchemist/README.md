@@ -18,6 +18,7 @@ It lives inside CultCodex as two routes and one API endpoint. It has no accounts
 | `/stream-alchemist` | Landing page: benefits, a real sample clip, pricing, FAQ, CTAs |
 | `/stream-alchemist/app` | The tool: paste or open a .srt / .vtt / .txt file, analyze, results, exports, upsell. Files are read in the browser; only the text is sent when you analyze |
 | `POST /api/stream-alchemist/analyze` | `{ transcript }` → `AnalysisResult` (see `src/lib/stream-alchemist/types.ts`) |
+| `POST /api/stream-alchemist/youtube` | `{ url }` → `{ videoId, transcript, source }`. Captions as `[m:ss]` lines, ready to analyze |
 
 ## Files
 
@@ -73,6 +74,18 @@ How AI mode is protected:
 **Cost (estimate, please measure):** a 3-hour stream is about 27k words, or roughly 36k input tokens. With Opus 5 at $5 / $25 per million tokens, a full analysis should land around $0.20–$0.50. At 20 analyses a month, that's up to about $10 of a $19 Creator plan. If real usage runs near that, setting `STREAM_ALCHEMIST_MODEL=claude-sonnet-5` cuts it by roughly 60%. Check the output quality first.
 
 Free users only see 3 clips, but AI mode still generates all 10. That keeps one code path, and the locked cards show real timestamps and scores. If the free-tier AI spend gets noticeable, change `analyzeWithClaude(parsed, TARGET_CLIPS)` in the route to ask for fewer clips.
+
+## YouTube import
+
+Paste a video or past-live-stream link and the transcript box fills with its captions.
+
+1. The free [`youtube-transcript`](https://www.npmjs.com/package/youtube-transcript) scraper runs first, asking for English and then any language. It's the same package the admin transcript sync uses.
+2. If that fails, and `STREAM_ALCHEMIST_SUPADATA=1` and `SUPADATA_API_KEY` are both set, Supadata (paid) is tried. It's capped at 10 per caller per day and `STREAM_ALCHEMIST_SUPADATA_DAILY_CAP` (default 50) site-wide.
+3. Otherwise the user sees why, plus how to download the `.srt` from YouTube Studio instead.
+
+**The free path is unreliable from servers.** From a cloud IP it returned captions for some videos and "transcript disabled" for well-known captioned TED talks. The package can't tell "no captions" from "YouTube is refusing us", so both are treated as retryable. In production, turn on the Supadata fallback (`fly secrets set STREAM_ALCHEMIST_SUPADATA=1`; the key is already set) or expect a lot of "use the .srt instead" messages.
+
+Finished transcripts are cached in memory per video, so importing the same video twice doesn't hit YouTube or Supadata again.
 
 ## Deployment
 
@@ -150,5 +163,4 @@ The question to answer before writing billing code: **will hosts pay for clip pl
 ## Deliberately not built yet
 
 - Accounts, usage limits per user, and billing webhooks. Free-tier limits are shown, not enforced: anyone can run another transcript.
-- Pulling transcripts from a YouTube URL. CultCodex already has `youtube-transcript` installed, so this is the most-requested feature to expect.
 - Video cutting or rendering.
