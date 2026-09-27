@@ -22,6 +22,7 @@ describe("findSlop", () => {
 
   it("leaves in-world vocabulary and plain prose alone", () => {
     expect(findSlop("Psyche read the signal from chat and logged a new transmission in the vault.")).toEqual([]);
+    expect(findSlop("The chat became a labyrinth, and the stream a crucible.")).toEqual([]);
   });
 });
 
