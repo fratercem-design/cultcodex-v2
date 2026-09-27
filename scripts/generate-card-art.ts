@@ -309,10 +309,10 @@ async function ensureMahavidyas(): Promise<void> {
 async function main() {
   console.log("═══ GENERATE CARD ART ═══\n");
 
-  if (!USE_KLING && !process.env.OPENAI_API_KEY) {
-    console.error("✗ Set KLING_ACCESS_KEY + KLING_SECRET_KEY (or OPENAI_API_KEY)");
-    process.exit(1);
-  }
+  // Credentials are only needed when a card has no art on disk yet; linking
+  // existing .png/.webp files to artUrl works without them.
+  const hasProvider = USE_KLING || !!process.env.OPENAI_API_KEY;
+  if (!hasProvider) console.warn("⚠ No KLING_ACCESS_KEY + KLING_SECRET_KEY (or OPENAI_API_KEY): only existing art will be linked\n");
 
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
@@ -368,7 +368,7 @@ async function main() {
     return;
   }
 
-  const openai = USE_KLING ? null : new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const openai = USE_KLING || !process.env.OPENAI_API_KEY ? null : new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   let generated = 0;
   let failed = 0;
@@ -425,6 +425,12 @@ async function main() {
         break;
       }
       console.log(`  ⚠ no existing Chinnamastā art to reuse — falling through to API`);
+    }
+
+    if (!hasProvider) {
+      console.error(`  ✗ no art on disk and no image provider configured`);
+      failed++;
+      continue;
     }
 
     // Rate limit: enforce gap between consecutive API calls only
