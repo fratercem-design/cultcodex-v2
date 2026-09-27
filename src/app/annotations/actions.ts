@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireAuth } from "@/lib/auth";
+import { getCurrentUser, requireAuth } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { prisma } from "@/lib/db";
 
@@ -37,6 +37,17 @@ export async function submitAnnotation(formData: FormData) {
   if (returnPath.startsWith("/")) revalidatePath(returnPath);
 }
 
+/**
+ * Per-viewer annotation access, fetched client-side so pages that list
+ * annotations can stay cached. submitAnnotation still enforces this itself.
+ */
+export async function getAnnotationAccess(): Promise<{ signedIn: boolean; canAnnotate: boolean }> {
+  const user = await getCurrentUser();
+  if (!user) return { signedIn: false, canAnnotate: false };
+  const canAnnotate = user.role === "admin" || (await isSubscribed(user.id).catch(() => false));
+  return { signedIn: true, canAnnotate };
+}
+
 /** Upvote an approved annotation. Any authenticated user. */
 export async function voteAnnotation(annotationId: string, returnPath: string) {
   await requireAuth();
@@ -51,6 +62,8 @@ export async function voteAnnotation(annotationId: string, returnPath: string) {
 export async function moderateAnnotation(annotationId: string, status: "approved" | "hidden" | "pending") {
   const user = await requireAuth();
   if (user.role !== "admin") throw new Error("Admin only");
-  await prisma.annotation.update({ where: { id: annotationId }, data: { status } });
+  const a = await prisma.annotation.update({ where: { id: annotationId }, data: { status } });
   revalidatePath("/admin/annotations");
+  // Lore pages are cached (ISR); refresh the one this annotation belongs to.
+  if (a.targetType === "lore") revalidatePath(`/lore/${a.targetId}`);
 }
