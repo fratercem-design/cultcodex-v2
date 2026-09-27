@@ -60,6 +60,11 @@ describe("parseSrt", () => {
     ]);
   });
 
+  it("strips nested tags that a single pass would reassemble", () => {
+    const srt = "1\n00:00:01,000 --> 00:00:02,000\nhi <<b>script>alert(1)<</b>/script> there\n";
+    expect(parseSrt(srt)[0].text).not.toMatch(/[<>]/);
+  });
+
   it("handles a real 4-hour Rumble VOD export", () => {
     const srt = readFileSync(
       "scripts/ingest/data/rumble-transcripts/v6wjkx6_07-21-25-Psyche-Awakens-VOD-Messy-Monday-Tarot-Truth-Bombs-Hot-Panel-Energy-and-Cats.srt",

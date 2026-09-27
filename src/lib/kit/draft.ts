@@ -4,6 +4,7 @@
  * Pure helpers only; the Claude call and file IO live in scripts/kit-draft.ts.
  */
 import { z } from "zod/v4";
+import { stripTags } from "@/lib/stream-alchemist/transcript";
 
 export interface CaptionSegment {
   startSec: number;
@@ -31,7 +32,7 @@ export function parseSrt(srt: string): CaptionSegment[] {
     if (timeIdx === -1) continue;
     const m = lines[timeIdx].match(/(\d+):(\d{2}):(\d{2})[,.](\d{1,3})/);
     if (!m) continue;
-    const text = lines.slice(timeIdx + 1).join(" ").replace(/<[^>]+>/g, "").trim();
+    const text = stripTags(lines.slice(timeIdx + 1).join(" ")).trim();
     if (!text) continue;
     segments.push({ startSec: +m[1] * 3600 + +m[2] * 60 + +m[3] + +m[4].padEnd(3, "0") / 1000, text });
   }
