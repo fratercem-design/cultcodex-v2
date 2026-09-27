@@ -398,6 +398,13 @@ async function main() {
       generated++;
       continue;
     }
+    // Pre-rendered WebP art (e.g. the Kling tarot deck) counts as existing art too.
+    if (!REGEN_ALL && fs.existsSync(path.join(OUTPUT_DIR, `${safeSlug}.webp`))) {
+      console.log(`  ↷ webp exists, updating artUrl only`);
+      await prisma.card.update({ where: { id: card.id }, data: { artUrl: `/cards/art/${safeSlug}.webp` } });
+      generated++;
+      continue;
+    }
 
     // Chinnamastā variants: OpenAI's safety filter rejects this goddess's
     // iconography non-deterministically even with a fully nameless prompt.
