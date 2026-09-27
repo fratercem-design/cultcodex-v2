@@ -1,3 +1,4 @@
+import { captionsToMs } from "@/lib/transcript/caption-units";
 import { groupSegments } from "@/lib/transcript/group-segments";
 import { formatTime } from "./transcript";
 
@@ -36,16 +37,8 @@ export interface CaptionChunk {
   duration: number;
 }
 
-/**
- * youtube-transcript returns milliseconds from YouTube's srv3 captions but
- * seconds from the classic format. Real cues last a few seconds, so a median
- * duration under 100 can only be seconds.
- */
 function toSeconds(chunks: CaptionChunk[]): Array<{ start: number; end: number; text: string }> {
-  const durations = chunks.map((c) => c.duration).sort((a, b) => a - b);
-  const median = durations[Math.floor(durations.length / 2)] ?? 0;
-  const scale = median < 100 ? 1 : 1000;
-  return chunks.map((c) => ({ start: c.offset / scale, end: (c.offset + c.duration) / scale, text: c.text }));
+  return captionsToMs(chunks).map((c) => ({ start: c.offset / 1000, end: (c.offset + c.duration) / 1000, text: c.text }));
 }
 
 /**
