@@ -5,12 +5,13 @@ import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
 import { getPrisma, disconnect } from "./lib";
+import { captionsToMs } from "../../src/lib/transcript/caption-units";
 
 const TRANSCRIPTS_DIR = path.join(__dirname, "..", "scrape", "data", "transcripts");
 
 interface RawSegment {
-  offset: number;   // ms
-  duration: number;  // ms
+  offset: number;   // ms for srv3 captions, seconds for classic; normalised on read
+  duration: number;  // same unit as offset
   text: string;
 }
 
@@ -65,8 +66,11 @@ async function main() {
     }
 
     try {
-      const raw: RawSegment[] = JSON.parse(
-        fs.readFileSync(path.join(TRANSCRIPTS_DIR, file), "utf-8")
+      // Scraped files hold youtube-transcript's raw offsets: milliseconds for
+      // srv3 captions but seconds for the classic format. One file is one
+      // fetch, so the unit is consistent within it.
+      const raw: RawSegment[] = captionsToMs(
+        JSON.parse(fs.readFileSync(path.join(TRANSCRIPTS_DIR, file), "utf-8")) as RawSegment[]
       );
 
       if (raw.length === 0) {
