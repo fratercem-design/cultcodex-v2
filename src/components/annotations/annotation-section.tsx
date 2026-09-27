@@ -1,9 +1,6 @@
-import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { getCurrentUser } from "@/lib/auth";
-import { isSubscribed } from "@/lib/subscription";
 import { voteAnnotation } from "@/app/annotations/actions";
-import { AnnotationForm } from "./annotation-form";
+import { AnnotationGate } from "./annotation-gate";
 
 interface Props {
   targetType: "episode" | "lore" | "person" | "topic";
@@ -17,8 +14,10 @@ interface Props {
  * AnnotationSection — community annotations for an archive entity.
  *
  * Shows approved annotations (most-voted first) and, for Initiate+
- * members, a submit form. Degrades gracefully if the table is missing
- * (pre-migration) so it can never break a detail page.
+ * members, a submit form. Reads no cookies, so pages using it stay
+ * cacheable; the per-viewer form/prompt lives in AnnotationGate.
+ * Degrades gracefully if the table is missing (pre-migration) so it can
+ * never break a detail page.
  */
 export async function AnnotationSection({ targetType, targetId, returnPath, label }: Props) {
   let annotations: {
@@ -39,11 +38,6 @@ export async function AnnotationSection({ targetType, targetId, returnPath, labe
   } catch {
     return null; // table not migrated yet — fail silent
   }
-
-  const user = await getCurrentUser();
-  const canAnnotate = user
-    ? user.role === "admin" || (await isSubscribed(user.id).catch(() => false))
-    : false;
 
   return (
     <section className="space-y-4">
@@ -87,28 +81,11 @@ export async function AnnotationSection({ targetType, targetId, returnPath, labe
         </div>
       ) : (
         <p className="font-mono text-xs text-text-muted italic">
-          No annotations yet. {canAnnotate ? "Be the first to add one." : "Initiate+ members can add the first."}
+          No annotations yet.
         </p>
       )}
 
-      {/* Submit */}
-      {canAnnotate ? (
-        <div className="rounded-xl border border-accent-cyan/20 bg-accent-cyan/[0.03] p-4">
-          <AnnotationForm targetType={targetType} targetId={targetId} returnPath={returnPath} />
-        </div>
-      ) : (
-        <div className="rounded-xl border border-border bg-surface px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
-          <p className="font-mono text-[12px] text-text-muted">
-            {user ? "Annotating is an Initiate+ feature." : "Sign in as Initiate+ to annotate."}
-          </p>
-          <Link
-            href={user ? "/premium" : "/auth/signin"}
-            className="font-mono text-[12px] uppercase tracking-widest rounded border border-accent-gold/30 text-accent-gold-text px-3 py-1.5 hover:bg-accent-gold/5 transition-colors"
-          >
-            {user ? "Become Initiate+ →" : "Sign in →"}
-          </Link>
-        </div>
-      )}
+      <AnnotationGate targetType={targetType} targetId={targetId} returnPath={returnPath} />
     </section>
   );
 }
