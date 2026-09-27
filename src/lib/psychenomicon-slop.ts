@@ -9,7 +9,8 @@
  *  - checkRewrite() guards those proposals before anything is written
  *
  * The in-world vocabulary (signal, transmission, archetype, entity, thread,
- * vault, codex, initiate, Oracle) is the brand and is never flagged.
+ * vault, codex, initiate, Oracle, labyrinth, crucible) is the brand and is
+ * never flagged.
  */
 
 export interface SlopHit {
@@ -21,7 +22,7 @@ export interface SlopHit {
 const STOCK_WORDS = [
   "tapestry", "testament", "delve[sd]?", "delving", "underscor(?:e|es|ed|ing)",
   "pivotal", "crucial", "palpable", "intricate", "multifaceted", "vibrant",
-  "resonat(?:e|es|ed|ing)", "interplay", "crucible", "labyrinth(?:ine)?",
+  "resonat(?:e|es|ed|ing)", "interplay",
   "embark(?:s|ed|ing)?", "foster(?:s|ed|ing)?", "harness(?:es|ed|ing)?",
   "transformative", "unwavering", "indelible", "poignant(?:ly)?", "profound(?:ly)?",
   "seamless(?:ly)?", "robust", "leverag(?:e|es|ed|ing)", "showcas(?:e|es|ed|ing)",
@@ -74,13 +75,13 @@ export function slopDensity(text: string): number {
 /** Style rules shared by chapter generation and the rewrite pass. */
 export const CHAPTER_STYLE_RULES = `STYLE (plain prose, no AI tics):
 - Write like a careful human archivist. Concrete nouns, specific events, names, what was said.
-- Banned words: tapestry, testament, delve, underscore, pivotal, crucial, palpable, intricate, multifaceted, vibrant, resonate, interplay, crucible, labyrinth, embark, foster, harness, transformative, unwavering, indelible, poignant, profound, seamless, robust, leverage, showcase, undeniable, visceral, juxtaposition, myriad, nuanced.
+- Banned words: tapestry, testament, delve, underscore, pivotal, crucial, palpable, intricate, multifaceted, vibrant, resonate, interplay, embark, foster, harness, transformative, unwavering, indelible, poignant, profound, seamless, robust, leverage, showcase, undeniable, visceral, juxtaposition, myriad, nuanced.
 - Banned phrases: "a testament to", "serves as a reminder", "speaks volumes", "the very fabric", "only time will tell", "remains to be seen", "a deeper truth", "dance of/between", "navigate the", "at its core", "in essence", "ever-evolving".
 - No "not X, but Y" or "It wasn't X. It was Y." contrasts. State what happened.
 - No aphorism kickers: do not end a paragraph on a short profound-sounding line that restates the paragraph.
 - No lists of three vague adjectives or verbs. Keep only the concrete one.
 - At most one em dash per sentence. Prefer periods and commas.
-- Keep the in-world vocabulary: signal, transmission, archetype, entity, thread, vault, codex, initiate, Oracle.`;
+- Keep the in-world vocabulary: signal, transmission, archetype, entity, thread, vault, codex, initiate, Oracle, labyrinth, crucible.`;
 
 export const DESLOP_SYSTEM_PROMPT = `You are copy-editing chapters of the Psychenomicon, a chronicle of the Cult of Psyche livestreams on cultcodex.me. The chapters were machine-written and carry AI writing tics. Your job is a line edit, not a rewrite of the story.
 
