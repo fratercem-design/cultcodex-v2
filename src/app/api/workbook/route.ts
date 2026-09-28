@@ -62,12 +62,16 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       select: { email: true },
     });
     const email = existing?.email ?? typed;
+    // Sign both links before writing, so a missing AUTH_SECRET fails without
+    // leaving an orphan row behind.
+    const downloadUrl = workbookLink(email);
+    const unsubscribeUrl = subscriberLink("unsubscribe", email);
     if (!existing) {
       await prisma.subscriber.create({
         data: { email, source: parsed.source ? `${WORKBOOK_SOURCE}:${parsed.source}` : WORKBOOK_SOURCE, verified: false },
       });
     }
-    await sendWorkbookEmail(email, workbookLink(email), subscriberLink("unsubscribe", email));
+    await sendWorkbookEmail(email, downloadUrl, unsubscribeUrl);
   } catch (err) {
     console.error("[workbook] sign-up failed:", err);
     return NextResponse.json({ error: "We couldn't send the email. Please try again." }, { status: 500 });
