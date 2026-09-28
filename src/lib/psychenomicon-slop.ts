@@ -80,7 +80,7 @@ export const CHAPTER_STYLE_RULES = `STYLE (plain prose, no AI tics):
 - No "not X, but Y" or "It wasn't X. It was Y." contrasts. State what happened.
 - No aphorism kickers: do not end a paragraph on a short profound-sounding line that restates the paragraph.
 - No lists of three vague adjectives or verbs. Keep only the concrete one.
-- At most one em dash per sentence. Prefer periods and commas.
+- At most one em dash per sentence. A pair of dashes around an aside counts as two: put asides in commas or parentheses. Prefer periods and commas.
 - Keep the in-world vocabulary: signal, transmission, archetype, entity, thread, vault, codex, initiate, Oracle, labyrinth, crucible.`;
 
 export const DESLOP_SYSTEM_PROMPT = `You are copy-editing chapters of the Psychenomicon, a chronicle of the Cult of Psyche livestreams on cultcodex.me. The chapters were machine-written and carry AI writing tics. Your job is a line edit, not a rewrite of the story.
