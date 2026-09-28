@@ -4,7 +4,8 @@ A 44-page printable workbook hosted by Madame Sulphur. It follows the
 video's "digital product" step, adapted to the Codex: one rite a day across
 five gates, with optional tasks that send people into the archive.
 
-**Download:** [`the-30-day-initiation.pdf`](./the-30-day-initiation.pdf) (US Letter)
+**Live at:** [cultcodex.me/initiation](https://cultcodex.me/initiation), free in exchange for an email.
+The PDF itself is `src/assets/workbook/the-30-day-initiation.pdf` and is never public (see below).
 
 | Pages | What |
 |---|---|
@@ -25,9 +26,13 @@ Every link in the PDF is clickable and carries
 - Build: `node docs/marketing/ai-personas/workbook/build.mjs`
 
 The build needs Playwright + Chromium (local or global) and `curl`. Fonts are
-downloaded at build time and embedded in the PDF. Output goes to
-`the-30-day-initiation.pdf`, plus an `initiation-workbook.html` preview, which is
-gitignored.
+downloaded at build time and embedded in the PDF. It writes:
+
+- `src/assets/workbook/the-30-day-initiation.pdf`, the file readers download
+- `public/initiation/{cover,day,tracker}.jpg`, the previews on the landing page
+- `initiation-workbook.html`, a local preview (gitignored)
+
+Commit the PDF and the previews together after a rebuild.
 
 ## Content rules
 
@@ -38,10 +43,20 @@ gitignored.
   also carries the fan-project and not-therapy disclaimer.
 - Archetype "gift" lines paraphrase `src/lib/archetypes.ts` so they agree with the quiz.
 
-## How to use it
+## How delivery works
 
-Pick one of these (or test both):
-1. **Lead magnet:** free in exchange for an email (the `Subscriber` list). Madame's
-   bio link becomes "free 30-day workbook", and every copy leads to Initiate+.
-2. **Paid:** about $12, as in the video, sold as a one-off Stripe payment link.
-3. **Initiate+ bonus:** "Subscribe and get the workbook", to lift conversion on `/premium`.
+1. A reader enters their email at `/initiation` (form: `src/components/marketing/workbook-signup.tsx`).
+2. `POST /api/workbook` saves them as an **unconfirmed** `Subscriber` (source
+   `gift:initiation30`, plus the page's `utm_campaign` when there is one) and emails a
+   signed link. It sends at most 2 emails per address per hour and gives the same
+   answer whether or not the address is already on the list.
+3. The link opens `/initiation/download`, which **confirms** the address and offers the PDF
+   through `GET /api/workbook/download`. Both check the signed token. A broken or old link
+   shows a "send me a new one" page.
+
+Clicking the link proves the reader owns the inbox, so this is the double opt-in. Nobody
+can get the file, or sign someone else up, without that inbox. The workbook isn't part of
+the Gospel email drip (`giftStage` stays 0).
+
+To see where leads came from, check the "By source" table on `/admin/leads`: `gift:initiation30:persona_sulphur`
+means the lead came from Madame Sulphur's bio link.

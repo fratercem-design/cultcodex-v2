@@ -128,6 +128,7 @@ async function pagesSegment(): Promise<SitemapEntry[]> {
     { url: `${b}/symbols`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${b}/archetypes`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${b}/archetype-quiz`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${b}/initiation`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${b}/about/methodology`, changeFrequency: "monthly", priority: 0.4 },
     { url: `${b}/corrections`, changeFrequency: "monthly", priority: 0.3 },
     { url: `${b}/content-policy`, changeFrequency: "monthly", priority: 0.3 },

@@ -7,7 +7,7 @@
 // Madame Sulphur at ./cover.jpg (square works best) and it lands on the cover;
 // otherwise the cover shows the archetype glyph ring alone.
 
-import { writeFileSync, existsSync, readFileSync } from "node:fs";
+import { writeFileSync, existsSync, readFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
@@ -16,7 +16,12 @@ import { SITE, UTM, GATES, DAYS, FIELD_GUIDE, SPREADS } from "./content.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT_HTML = join(HERE, "initiation-workbook.html");
-const OUT_PDF = join(HERE, "the-30-day-initiation.pdf");
+// The PDF is served only through signed links (see src/lib/workbook.ts), so it
+// lives outside /public. The landing page gets small preview images instead.
+const REPO = join(HERE, "../../../..");
+const OUT_PDF = join(REPO, "src/assets/workbook/the-30-day-initiation.pdf");
+const OUT_PREVIEWS = join(REPO, "public/initiation");
+const PREVIEWS = { cover: 0, tracker: 3, day: 15 }; // page indexes: cover, tracker, Day 10
 const COVER = join(HERE, "cover.jpg");
 
 const esc = (s) =>
@@ -320,6 +325,7 @@ async function loadPlaywright() {
   }
 }
 
+mkdirSync(OUT_PREVIEWS, { recursive: true });
 const html = build();
 writeFileSync(OUT_HTML, html);
 const { chromium } = await loadPlaywright();
@@ -328,6 +334,11 @@ const page = await browser.newPage();
 await page.goto("file://" + OUT_HTML, { waitUntil: "networkidle" });
 await page.evaluate(() => document.fonts.ready);
 await page.pdf({ path: OUT_PDF, format: "Letter", printBackground: true, preferCSSPageSize: true });
-const count = await page.locator("section.page").count();
+const sections = page.locator("section.page");
+const count = await sections.count();
+await page.setViewportSize({ width: 816, height: 1056 });
+for (const [name, index] of Object.entries(PREVIEWS)) {
+  await sections.nth(index).screenshot({ path: join(OUT_PREVIEWS, `${name}.jpg`), type: "jpeg", quality: 82 });
+}
 await browser.close();
-console.log(`Wrote ${OUT_PDF} (${count} pages)`);
+console.log(`Wrote ${OUT_PDF} (${count} pages) and previews in ${OUT_PREVIEWS}`);
