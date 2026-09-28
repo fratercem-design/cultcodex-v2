@@ -177,7 +177,7 @@ export function locateQuote<T extends { text: string }>(quote: string, segments:
 
 // ── Report + repair ────────────────────────────────────────────────────────
 
-function fmt(seconds: number | null): string {
+export function fmt(seconds: number | null): string {
   if (seconds === null) return "?";
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
@@ -227,8 +227,58 @@ async function fetchCaptions(videoId: string) {
   }
 }
 
+/**
+ * In one transaction: replace an episode's segments, refresh transcriptRaw and
+ * searchText the way the admin sync does, and re-link its quotes to the new
+ * segments. A quote that can't be found loses its timestamp.
+ */
+export async function replaceTranscript(
+  episode: { episodeId: string; slug: string },
+  chunks: Array<{ text: string }>,
+  segments: NewSegment[],
+): Promise<{ total: number; relinked: number }> {
+  return getPrisma().$transaction(
+    async (tx) => {
+      await tx.transcriptSegment.deleteMany({ where: { episodeId: episode.episodeId } });
+      await tx.transcriptSegment.createMany({
+        data: segments.map((s) => ({ episodeId: episode.episodeId, ...s, searchText: s.text.toLowerCase() })),
+        skipDuplicates: true,
+      });
+
+      const rawText = chunks.map((c) => c.text).join(" ");
+      await tx.episode.update({
+        where: { id: episode.episodeId },
+        data: {
+          transcriptRaw: rawText.slice(0, 200000),
+          searchText: [episode.slug, rawText].join(" ").toLowerCase().slice(0, 10000),
+        },
+        // Read back only the id: an update otherwise returns every column.
+        select: { id: true },
+      });
+
+      const inserted = await tx.transcriptSegment.findMany({
+        where: { episodeId: episode.episodeId },
+        select: { id: true, startSeconds: true, text: true },
+        orderBy: [{ startSeconds: "asc" }, { endSeconds: "asc" }],
+      });
+      const quotes = await tx.quote.findMany({ where: { episodeId: episode.episodeId }, select: { id: true, text: true } });
+      let relinked = 0;
+      for (const q of quotes) {
+        const hit = locateQuote(q.text, inserted);
+        if (hit) relinked++;
+        await tx.quote.update({
+          where: { id: q.id },
+          data: { transcriptSegmentId: hit?.id ?? null, timestampSeconds: hit?.startSeconds ?? null },
+          select: { id: true },
+        });
+      }
+      return { total: quotes.length, relinked };
+    },
+    { timeout: 120_000 },
+  );
+}
+
 async function repair(rows: SquashedRow[]) {
-  const prisma = getPrisma();
   const eligible = rows.filter((r) => r.reason === "squashed" && !r.mixed && r.youtubeVideoId);
   const targets = eligible.slice(0, MAX_PER_RUN);
   const results: Array<{ slug: string; outcome: string; detail: string }> = [];
@@ -250,45 +300,7 @@ async function repair(rows: SquashedRow[]) {
         continue;
       }
 
-      const quoteStats = await prisma.$transaction(
-        async (tx) => {
-          await tx.transcriptSegment.deleteMany({ where: { episodeId: row.episodeId } });
-          await tx.transcriptSegment.createMany({
-            data: segments.map((s) => ({ episodeId: row.episodeId, ...s, searchText: s.text.toLowerCase() })),
-            skipDuplicates: true,
-          });
-
-          const rawText = chunks.map((c) => c.text).join(" ");
-          await tx.episode.update({
-            where: { id: row.episodeId },
-            data: {
-              transcriptRaw: rawText.slice(0, 200000),
-              searchText: [row.slug, rawText].join(" ").toLowerCase().slice(0, 10000),
-            },
-            // Read back only the id: an update otherwise returns every column.
-            select: { id: true },
-          });
-
-          const inserted = await tx.transcriptSegment.findMany({
-            where: { episodeId: row.episodeId },
-            select: { id: true, startSeconds: true, text: true },
-            orderBy: [{ startSeconds: "asc" }, { endSeconds: "asc" }],
-          });
-          const quotes = await tx.quote.findMany({ where: { episodeId: row.episodeId }, select: { id: true, text: true } });
-          let relinked = 0;
-          for (const q of quotes) {
-            const hit = locateQuote(q.text, inserted);
-            if (hit) relinked++;
-            await tx.quote.update({
-              where: { id: q.id },
-              data: { transcriptSegmentId: hit?.id ?? null, timestampSeconds: hit?.startSeconds ?? null },
-              select: { id: true },
-            });
-          }
-          return { total: quotes.length, relinked };
-        },
-        { timeout: 120_000 },
-      );
+      const quoteStats = await replaceTranscript(row, chunks, segments);
 
       const last = segments.reduce((m, s) => Math.max(m, s.endSeconds), 0);
       results.push({
