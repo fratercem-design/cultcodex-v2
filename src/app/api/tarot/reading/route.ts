@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { generateCardArtSvg } from "@/lib/cards/card-art";
 import { ALL_TAROT_CARDS } from "@/lib/cards/tarot-data";
+import { tarotArtUrl } from "@/lib/cards/tarot-art";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,7 @@ export async function GET(request: Request) {
       cardType:    card.cardType,
       rarity:      card.rarity,
       abilities:   card.abilities,
+      artUrl:      tarotArtUrl(card.slug),
       artSvg: generateCardArtSvg({
         slug:     card.slug,
         cardType: card.cardType,
