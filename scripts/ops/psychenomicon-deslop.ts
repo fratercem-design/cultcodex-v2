@@ -30,7 +30,7 @@ const CONCURRENCY = 5;
 const TIME_BUDGET_MS = 24 * 60_000;
 // Set before the first apply run. Anything updated after it has already been
 // through this pass (or was written under the new style rules).
-const PASS_STARTED = new Date("2026-09-28T03:00:00Z");
+const PASS_STARTED = new Date("2026-09-28T02:20:00Z");
 
 interface ChapterRow extends ChapterProse {
   id: string;
