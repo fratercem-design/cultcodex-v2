@@ -72,6 +72,15 @@ describe("POST /api/workbook", () => {
     expect(m.sendWorkbook).not.toHaveBeenCalled();
   });
 
+  it("writes nothing when links can't be signed (no AUTH_SECRET)", async () => {
+    vi.stubEnv("AUTH_SECRET", "");
+    m.findFirst.mockResolvedValue(null);
+    const res = await post({ email: "new@example.com" });
+    expect(res.status).toBe(500);
+    expect(m.create).not.toHaveBeenCalled();
+    expect(m.sendWorkbook).not.toHaveBeenCalled();
+  });
+
   it("reports a failed send so the reader can retry", async () => {
     m.findFirst.mockResolvedValue(null);
     m.sendWorkbook.mockRejectedValue(new Error("resend down"));
