@@ -10,8 +10,9 @@
  * wrapper rewrites every chapter in scope and saves the ones that pass the
  * guards. Saved text is a fresh rewrite, not the one the dry run printed.
  * The Run DB Script job times out at 30 minutes, so apply stops starting new
- * chapters after TIME_BUDGET_MS; a rerun picks up the rest because rewritten
- * chapters drop below MIN_HITS. Pages revalidate within 5 minutes.
+ * chapters after TIME_BUDGET_MS; a rerun picks up the rest. Chapters updated
+ * after PASS_STARTED are left out, so a chapter still at MIN_HITS after its
+ * edit is not edited again on the next run. Pages revalidate within 5 minutes.
  */
 import { getPrisma, disconnect } from "../ingest/lib";
 import { enrichComplete } from "../../src/lib/enrichment-llm";
@@ -27,6 +28,9 @@ const MIN_HITS = 10;
 const SAMPLE = 10;
 const CONCURRENCY = 5;
 const TIME_BUDGET_MS = 24 * 60_000;
+// Set before the first apply run. Anything updated after it has already been
+// through this pass (or was written under the new style rules).
+const PASS_STARTED = new Date("2026-09-28T03:00:00Z");
 
 interface ChapterRow extends ChapterProse {
   id: string;
@@ -84,7 +88,7 @@ export async function run(apply: boolean) {
       canonText: true, interpretationText: true, mythicText: true, emergingSignals: true,
     },
   });
-  const todo = pickChapters(rows);
+  const todo = pickChapters(rows.filter((r) => r.updatedAt < PASS_STARTED));
   const batch = apply ? todo : todo.slice(0, SAMPLE);
 
   console.log(
