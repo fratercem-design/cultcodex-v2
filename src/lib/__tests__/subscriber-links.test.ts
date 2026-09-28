@@ -16,6 +16,13 @@ describe("subscriber links", () => {
     expect(subscriberTokenValid("confirm", "reader@example.com", t, "other-secret")).toBe(false);
   });
 
+  it("keeps workbook links apart from confirm and unsubscribe links", () => {
+    const t = subscriberToken("workbook", "reader@example.com", secret);
+    expect(subscriberTokenValid("workbook", "reader@example.com", t, secret)).toBe(true);
+    expect(subscriberTokenValid("confirm", "reader@example.com", t, secret)).toBe(false);
+    expect(subscriberTokenValid("unsubscribe", "reader@example.com", t, secret)).toBe(false);
+  });
+
   it("rejects missing or malformed input", () => {
     expect(subscriberTokenValid("confirm", null, "x", secret)).toBe(false);
     expect(subscriberTokenValid("confirm", "a@b.co", null, secret)).toBe(false);

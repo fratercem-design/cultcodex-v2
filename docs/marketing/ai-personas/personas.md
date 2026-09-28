@@ -155,7 +155,7 @@ built.
 Madame Sulphur 🔮 AI reader of the 8 archetypes
 Which one are you? Which one are you dating?
 AI character · fan project, not official
-↓ take the free archetype quiz
+↓ free 30-day workbook
 ```
 **Handle ideas:** `@madame.sulphur`, `@sulphur.reads`
 
