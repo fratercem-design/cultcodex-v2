@@ -21,6 +21,8 @@ const nextConfig: NextConfig = {
   // image falls back to Satori's per-glyph font fetching again.
   outputFileTracingIncludes: {
     "/**": ["./src/assets/fonts/**"],
+    // The workbook PDF is read from disk behind a signed link (src/lib/workbook.ts).
+    "/api/workbook/download": ["./src/assets/workbook/**"],
   },
   poweredByHeader: false,
   env: {

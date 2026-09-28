@@ -18,7 +18,7 @@ Oracle Tier ($25/mo).
 |---|---|---|---|
 | **The Archivist** | Keeper of the Codex. Remembers every transmission. | Receipts: "on this day", running-joke traces, "he said this in 2023" | `/oracle`, `/search`, `/timeline` |
 | **Nyx** | Late-night operator of the Nightmare Frequencies | 3am atmosphere, eerie retellings, "a signal came in" | `/nightmare-frequencies`, `/cult-live` |
-| **Madame Sulphur** | Reader of the eight archetypes | Identity and relationships: "signs you're a Mirror Walker", "which archetype you're dating" | `/archetype-quiz` → `/tarot` → Initiate+ |
+| **Madame Sulphur** | Reader of the eight archetypes | Identity and relationships: "signs you're a Mirror Walker", "which archetype you're dating" | `/initiation` (free workbook) → `/archetype-quiz` → Initiate+ |
 
 Why three: the video's main lesson was that you can't predict the winner. His
 favourite flopped, and the one he dropped went viral. Launch all three, post 10
@@ -51,11 +51,12 @@ maps onto the relationships niche, which did well in the video.
 ```
 https://cultcodex.me/oracle?utm_source=instagram&utm_medium=social&utm_campaign=persona_archivist
 https://cultcodex.me/nightmare-frequencies?utm_source=instagram&utm_medium=social&utm_campaign=persona_nyx
-https://cultcodex.me/archetype-quiz?utm_source=instagram&utm_medium=social&utm_campaign=persona_sulphur
+https://cultcodex.me/initiation?utm_source=instagram&utm_medium=social&utm_campaign=persona_sulphur
 ```
 
 Swap `utm_source` for `tiktok` / `youtube` when cross-posting. Each account's
-bio link is the one line above for that persona.
+bio link is the one line above for that persona. Madame Sulphur's goes to the free
+workbook page, which records the `utm_campaign` on every email it collects.
 
 ## 7-day launch plan
 
