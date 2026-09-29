@@ -5,7 +5,6 @@ import type { Metadata } from "next";
 import { SECTION_HEADERS } from "@/lib/section-headers";
 import { CorrectionForm } from "@/components/corrections/correction-form";
 import { defaultCorrectionType } from "@/lib/corrections";
-import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/corrections" },
