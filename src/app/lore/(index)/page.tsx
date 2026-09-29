@@ -17,6 +17,7 @@ import {
 } from "@/lib/pagination";
 import type { CanonStatus } from "@/generated/prisma/client";
 import { collectionPageJsonLd, jsonLdScript, socialMetadata } from "@/lib/seo";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
@@ -103,7 +104,7 @@ export default async function LorePage({ searchParams }: LorePageProps) {
     <PageHero
       title="LORE ARCHIVE"
       subtitle="Concepts, doctrines, myths, and memes"
-      backgroundImage="/lore-header.jpg"
+      backgroundImage={SECTION_HEADERS.lore}
     
       label="lore_archive"
     />

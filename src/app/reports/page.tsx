@@ -11,6 +11,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { isSubscribed } from "@/lib/subscription";
 import { buildMetadata } from "@/lib/seo";
 import { curateReportPeople, PINNED_REPORT_PEOPLE } from "@/lib/content-hygiene";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
@@ -109,7 +110,7 @@ export default async function ReportsPage() {
       <PageHero
         title="CODEX REPORTS"
         subtitle="The archive, synthesized into intelligence."
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.transmissions}
         label="reports"
       />
 

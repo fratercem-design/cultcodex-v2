@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { getSeries } from "@/lib/queries/series";
 import { getSeriesAggregates } from "@/lib/queries/stats";
 import { IconSeries, IconTransmission } from "@/components/graphics/codex-icons";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
@@ -36,7 +37,7 @@ export default async function SeriesPage() {
           ? `${series.length} series in the archive`
           : "Series and collections"
       }
-      backgroundImage="/wiki-page-header.jpg"
+      backgroundImage={SECTION_HEADERS.transmissions}
       label="series"
     />
     <EntityGlanceBar items={glanceItems} />

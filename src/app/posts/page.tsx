@@ -5,6 +5,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import { prisma } from "@/lib/db";
 import { parsePage, paginationArgs, buildPaginationMeta } from "@/lib/pagination";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 300;
 
@@ -134,7 +135,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
       <PageHero
         title="Community Posts"
         subtitle={`${totalCount.toLocaleString("en-US")} posts from @CultofPsyche`}
-        backgroundImage="/articles-bacgkground.jpg"
+        backgroundImage={SECTION_HEADERS.transmissions}
       />
 
       <div className="mx-auto max-w-4xl px-4 py-8 space-y-6">

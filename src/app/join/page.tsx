@@ -7,6 +7,7 @@ import { CodexSigil } from "@/components/graphics/codex-sigil";
 import { getCounts } from "@/lib/queries/stats";
 import { buildMetadata } from "@/lib/seo";
 import { CommunityEmailSignup } from "@/components/join/community-email-signup";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
@@ -45,7 +46,7 @@ export default async function JoinPage() {
       <PageHero
         title="JOIN THE CULT"
         subtitle="There's no membership card. Only a door."
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.initiation}
         label="join"
       />
 

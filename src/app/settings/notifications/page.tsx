@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import { NotificationToggle } from "./notification-toggle";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata = {
   title: "Notification Preferences — CultCodex",
@@ -26,7 +27,7 @@ export default async function NotificationsPage() {
       <PageHero
         title="NOTIFICATIONS"
         subtitle="Manage your notification preferences"
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.sanctum}
       label="notifications"
       />
       <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">

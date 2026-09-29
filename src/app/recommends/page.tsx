@@ -4,6 +4,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { EmptyState } from "@/components/ui/empty-state";
 import { buildMetadata } from "@/lib/seo";
 import { RECOMMENDATIONS } from "@/lib/recommendations";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 const hasItems = RECOMMENDATIONS.length > 0;
 
@@ -26,7 +27,7 @@ export default function RecommendsPage() {
       <PageHero
         title="PSYCHE RECOMMENDS"
         subtitle="What Psyche actually uses — and links that support the show"
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.initiation}
         label="recommends"
       />
 

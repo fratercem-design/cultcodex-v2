@@ -15,6 +15,7 @@ import { getSavedSignals } from "@/lib/queries/codex";
 import { PageHero } from "@/components/ui/page-hero";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatDate } from "@/lib/format/date";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   title: "Saved Signals — CULT CODEX",
@@ -36,7 +37,7 @@ export default async function CodexSignalsPage() {
             ? "No signals pinned yet."
             : `${rows.length} signal${rows.length === 1 ? "" : "s"} in your codex`
         }
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.codex}
       label="saved_signals"
       />
 

@@ -5,6 +5,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { RankBadge } from "@/components/rank/rank-badge";
 import { getLeaderboard } from "@/lib/rankings/leaderboard";
 import { buildMetadata } from "@/lib/seo";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 300;
 
@@ -25,7 +26,7 @@ export default async function LeaderboardPage() {
       <PageHero
         title="THE ASCENDANT"
         subtitle="Who has gone deepest into the archive."
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.trials}
         label="leaderboard"
       />
 

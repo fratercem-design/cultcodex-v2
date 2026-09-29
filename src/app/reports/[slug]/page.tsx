@@ -10,6 +10,7 @@ import { isSubscribed } from "@/lib/subscription";
 import { formatDate } from "@/lib/format/date";
 import { cleanTitle } from "@/lib/format/text";
 import { buildMetadata, articleJsonLd, jsonLdScript } from "@/lib/seo";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const dynamic = "force-dynamic";
 
@@ -73,7 +74,7 @@ export default async function GuestReportPage({ params }: Props) {
       <PageHero
         title={person.displayName.toUpperCase()}
         subtitle="Guest Intelligence Report"
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.transmissions}
         label="report"
       />
 

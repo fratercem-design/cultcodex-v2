@@ -114,3 +114,8 @@ deslop-proposals*.md
 
 # Transmission Kit drafts hold buyers' stream content
 /kit-drafts/
+
+# Generated art: keep full-size images out of git
+/art/**/*.png
+/art/**/rejected/
+/art/**/alternates/

@@ -13,6 +13,7 @@ import { BroadcastCalendar } from "@/components/stats/broadcast-calendar";
 import { GuestRadialChart } from "@/components/stats/guest-radial-chart";
 import { TopicPulseChart } from "@/components/stats/topic-pulse-chart";
 import Link from "next/link";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 3600;
 
@@ -75,7 +76,7 @@ export default async function StatsPage() {
       <PageHero
         title="ARCHIVE STATS"
         subtitle="The Cult of Psyche by the numbers"
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.constellation}
       
       label="system_stats"
     />

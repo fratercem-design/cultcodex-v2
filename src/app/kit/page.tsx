@@ -8,6 +8,7 @@ import { KIT_FAQ } from "@/lib/kit/sample-kit";
 import { KIT_FOUNDER_CODE } from "@/lib/kit/checkout";
 import { getCountsOrNull } from "@/lib/queries/stats";
 import { buildMetadata } from "@/lib/seo";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
@@ -48,7 +49,7 @@ export default async function KitPage() {
       <PageHero
         title="TRANSMISSION KIT"
         subtitle="Your live ends. Your clips don't."
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.broadcast}
         label="for tarot + astrology streamers"
       />
 

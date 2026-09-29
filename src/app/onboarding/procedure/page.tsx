@@ -2,6 +2,7 @@ import Link from "next/link";
 import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 3600;
 
@@ -273,7 +274,7 @@ export default function OnboardingProcedurePage() {
       <PageHero
         title="THE FIRST GATE PROCEDURE"
         subtitle="How a stranger becomes a fellow traveler — written down, so it happens the same way every time"
-        backgroundImage="/lore-header.jpg"
+        backgroundImage={SECTION_HEADERS.initiation}
         label="procedure"
       />
 
