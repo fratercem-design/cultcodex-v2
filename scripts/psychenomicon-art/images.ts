@@ -8,6 +8,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import type { ChapterPrompts } from "./types";
+import { requireHttps } from "../../src/lib/openrouter-url";
 
 const USING_HCNSEC = Boolean(process.env.HCNSEC_API_KEY || process.env.ART_API_KEY);
 const API_BASE = (
@@ -74,9 +75,11 @@ async function fetchImage(
     throw new Error("No art API key set. Configure HCNSEC_API_KEY (preferred), ART_API_KEY, or OPENROUTER_API_KEY.");
   }
   const preparedPrompt = prepareImagePrompt(prompt);
+  // Checked here rather than at import so a bad override fails once, outside the retry loop.
+  const apiBase = requireHttps(API_BASE, "ART_API_BASE_URL / OPENROUTER_BASE_URL");
 
   try {
-    const res = await fetch(`${API_BASE}/images/generations`, {
+    const res = await fetch(`${apiBase}/images/generations`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${apiKey}`,
