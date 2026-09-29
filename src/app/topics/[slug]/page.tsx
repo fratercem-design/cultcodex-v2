@@ -15,6 +15,7 @@ import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import { SaveSignalButton } from "@/components/codex/save-signal-button";
 import type { Metadata } from "next";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const dynamic = "force-dynamic";
 
@@ -130,7 +131,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
       <EntityHero
         title={topic.title}
         subtitle={descBase ?? "Topic"}
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.constellation}
       label="signal"
       />
       <Breadcrumbs items={[

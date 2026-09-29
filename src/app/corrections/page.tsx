@@ -2,6 +2,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/corrections" },
@@ -27,7 +28,7 @@ export default async function CorrectionsPage({
       <PageHero
         title="CORRECTIONS"
         subtitle="Help us maintain an accurate archive"
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.colophon}
       label="corrections"
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">

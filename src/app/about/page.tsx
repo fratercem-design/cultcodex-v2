@@ -3,6 +3,7 @@ import Link from "next/link";
 import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 
 export const metadata: Metadata = buildMetadata({
@@ -36,7 +37,7 @@ export default function AboutPage() {
       <PageHero
         title="ABOUT CULTCODEX"
         subtitle="The searchable memory of the Cult of Psyche"
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.threshold}
         label="the archive"
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">

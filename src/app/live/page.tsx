@@ -5,6 +5,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { LivePlayer } from "./live-player";
 import { LiveChat } from "@/components/live/live-chat";
 import { SubscribeForm } from "@/components/live/subscribe-form";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/live" },
@@ -46,7 +47,7 @@ export default async function LivePage() {
       <PageHero
         title={isLive ? "🔴 LIVE NOW" : "LIVE STREAM"}
         subtitle={isLive ? title : "Next stream coming soon..."}
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.broadcast}
       label="live_feed"
       />
 

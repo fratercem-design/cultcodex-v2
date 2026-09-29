@@ -8,6 +8,7 @@ import { THEMED_COLLECTIONS } from "@/lib/collections/themed-collections";
 import { CollectionIcon } from "@/components/collections/collection-icon";
 import { accentFor } from "@/components/collections/collection-accents";
 import type { Metadata } from "next";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 3600;
 
@@ -148,7 +149,7 @@ export default async function CollectionsPage() {
       <PageHero
         title="COLLECTIONS"
         subtitle={`Curated paths through ${totalCollectionEpisodes} episodes`}
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.codex}
       
       label="signal_packs"
     />

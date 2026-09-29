@@ -24,6 +24,7 @@ import {
 } from "@/lib/pagination";
 import { formatDate } from "@/lib/format/date";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 import type { Metadata } from "next";
 
 export const revalidate = 600;
@@ -108,7 +109,7 @@ export default async function SeriesDetailPage({ params, searchParams }: PagePro
       <EntityHero
         title={series.title}
         subtitle={`${totalCount} episodes in this series`}
-        backgroundImage={series.coverImageUrl || "/wiki-page-header.jpg"}
+        backgroundImage={series.coverImageUrl || SECTION_HEADERS.transmissions}
         badges={[
           { label: typeLabel.toUpperCase(), variant: "green" },
           { label: series.status.toUpperCase(), variant: series.status === "published" ? "green" : "muted" },

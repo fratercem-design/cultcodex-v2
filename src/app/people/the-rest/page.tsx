@@ -15,6 +15,7 @@ import { SectionCard } from "@/components/ui/section-card";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
 import { AiNotice } from "@/components/ui/ai-notice";
 import type { Metadata } from "next";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 3600;
 
@@ -104,7 +105,7 @@ export default async function TheRestPage() {
       <PageHero
         title="THE REST"
         subtitle="Every guest, unknown, and passing voice"
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.voices}
         label="voices · archive"
       />
 

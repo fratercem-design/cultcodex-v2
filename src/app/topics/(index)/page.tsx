@@ -15,6 +15,7 @@ import {
   buildPaginationMeta,
 } from "@/lib/pagination";
 import { collectionPageJsonLd, jsonLdScript } from "@/lib/seo";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
@@ -81,7 +82,7 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
     <PageHero
       title="TOPICS"
       subtitle="Key themes and recurring subjects"
-      backgroundImage="/long-form-background.jpg"
+      backgroundImage={SECTION_HEADERS.constellation}
     
       label="signals"
     />

@@ -1,6 +1,7 @@
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import type { Metadata } from "next";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   title: "Panelverse Lexicon — CULT CODEX",
@@ -2669,7 +2670,7 @@ export default function LexiconPage() {
       <PageHero
         title="PANELVERSE LEXICON"
         subtitle={`${LEXICON.length} terms from the Cult of Psyche and the wider Panelverse`}
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.codex}
       
       label="lexicon"
     />

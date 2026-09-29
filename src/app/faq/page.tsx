@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { buildMetadata, jsonLdScript } from "@/lib/seo";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 
 export const metadata: Metadata = buildMetadata({
@@ -200,7 +201,7 @@ export default function FaqPage() {
       <PageHero
         title="FREQUENTLY ASKED QUESTIONS"
         subtitle="What CultCodex is, and how it works"
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.colophon}
         label="help"
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-5">

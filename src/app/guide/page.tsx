@@ -1,6 +1,7 @@
 import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata = buildMetadata({
   title: "The Cult Master's Guide",
@@ -215,7 +216,7 @@ export default function GuidePage() {
       <PageHero
         title="THE CULT MASTER'S GUIDE"
         subtitle="A safe, intelligent, and transformative community"
-        backgroundImage="/lore-header.jpg"
+        backgroundImage={SECTION_HEADERS.lore}
         label="doctrine"
       />
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">

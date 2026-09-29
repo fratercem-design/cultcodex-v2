@@ -5,6 +5,7 @@ import { MysticalDivider, OrnamentalBreak } from "@/components/graphics/mystical
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import type { Metadata } from "next";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/mythic-map" },
@@ -257,7 +258,7 @@ export default function MythicMapPage() {
       <PageHero
         title="THE MYTHIC MAP"
         subtitle="Archetypes, symbols & narrative currents of the archive"
-        backgroundImage="/lore-header.jpg"
+        backgroundImage={SECTION_HEADERS.lore}
       
       label="mythic_map"
     />

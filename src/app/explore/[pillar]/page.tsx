@@ -22,6 +22,7 @@ import { CodexSigil } from "@/components/graphics/codex-sigil";
 import { SignalGrid } from "@/components/collections/signal-grid";
 import { CollectionEpisodeCard } from "@/components/collections/collection-episode-card";
 import { accentFor } from "@/components/collections/collection-accents";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
@@ -107,7 +108,7 @@ export default async function PillarPage({ params }: PageProps) {
       <PageHero
         title={p.title.toUpperCase()}
         subtitle={p.tagline}
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.constellation}
         label="explore"
       />
 

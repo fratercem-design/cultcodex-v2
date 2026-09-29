@@ -9,6 +9,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { SubscriptionCTA } from "@/components/subscription/subscription-cta";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 3600;
 
@@ -133,7 +134,7 @@ export default async function PsychenomiconPage() {
       <PageHero
         title="THE PSYCHENOMICON"
         subtitle="The Forbidden Chronicle of the Cult of Psyche"
-        backgroundImage="/search-database-background.jpg"
+        backgroundImage={SECTION_HEADERS.lore}
       label="psychenomicon"
       />
 

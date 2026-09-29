@@ -102,3 +102,8 @@ logs/
 modify_schema.py
 prisma/*.bak
 prisma/migrations.backup/
+
+# Generated art: keep full-size images out of git
+/art/**/*.png
+/art/**/rejected/
+/art/**/alternates/

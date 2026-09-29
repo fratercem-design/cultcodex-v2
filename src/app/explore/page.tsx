@@ -4,6 +4,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { PILLARS } from "@/lib/pillars/pillars";
 import { accentFor } from "@/components/collections/collection-accents";
 import { buildMetadata } from "@/lib/seo";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 3600;
 
@@ -20,7 +21,7 @@ export default function ExploreIndexPage() {
       <PageHero
         title="EXPLORE THE ARCHIVE"
         subtitle={`${PILLARS.length} territories the Cult keeps returning to.`}
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.constellation}
         label="explore"
       />
 

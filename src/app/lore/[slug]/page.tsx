@@ -19,6 +19,7 @@ import { ArchiveDisclaimer } from "@/components/ui/archive-disclaimer";
 import { SuggestCorrection } from "@/components/ui/suggest-correction";
 import { AnnotationSection } from "@/components/annotations/annotation-section";
 import type { Metadata } from "next";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const dynamic = "force-dynamic";
 
@@ -97,7 +98,7 @@ export default async function LoreDetailPage({ params }: PageProps) {
       <EntityHero
         title={entry.title}
         subtitle={entry.category ?? undefined}
-        backgroundImage="/lore-header.jpg"
+        backgroundImage={SECTION_HEADERS.lore}
         badges={[{ label: canonLabel.toUpperCase(), variant: canonVariant }]}
       label="lore_entry"
       />

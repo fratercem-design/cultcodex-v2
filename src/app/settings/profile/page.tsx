@@ -8,6 +8,7 @@ import { isSubscribed, hasSystemTier } from "@/lib/subscription";
 import { PageHero } from "@/components/ui/page-hero";
 import { ProfileForm } from "./profile-form";
 import type { Metadata } from "next";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   title: "Member Profile — CultCodex",
@@ -50,7 +51,7 @@ export default async function ProfilePage() {
       <PageHero
         title="MEMBER PROFILE"
         subtitle="Your identity in the Psycheverse"
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.sanctum}
       label="identity"
       />
       <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">

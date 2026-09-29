@@ -15,6 +15,7 @@ import { getSavedQuotes } from "@/lib/queries/codex";
 import { PageHero } from "@/components/ui/page-hero";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatDate } from "@/lib/format/date";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/codex/quotes" },
@@ -37,7 +38,7 @@ export default async function CodexQuotesPage() {
             ? "No moments saved yet."
             : `${rows.length} moment${rows.length === 1 ? "" : "s"} in your codex`
         }
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.codex}
       label="saved_quotes"
       />
 
