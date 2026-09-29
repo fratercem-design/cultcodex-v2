@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import {
-  Space_Grotesk,
-  JetBrains_Mono,
-} from "next/font/google";
+import { spaceGrotesk, jetbrainsMono } from "@/fonts";
 import { LiveBanner } from "@/components/layout/live-banner";
 import { ScrollReset } from "@/components/layout/scroll-reset";
 import { EntryBanner } from "@/components/layout/entry-banner";
@@ -14,7 +11,7 @@ import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { RadialDialNav } from "@/components/layout/radial-dial-nav";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { ConsoleSigil } from "@/components/layout/console-sigil";
-import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
+import { getCountsOrNull, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getLiveChannels } from "@/lib/queries/live-status";
 import { ClientOverlays } from "@/components/layout/client-overlays";
 import { SkipLink } from "@/components/ui/skip-link";
@@ -23,28 +20,15 @@ import { JsonLd } from "@/components/JsonLd";
 import { CookieConsent } from "@/components/layout/cookie-consent";
 import "./globals.css";
 
-// Layout data fetches (getCounts, getLiveChannels) are already wrapped in
-// .catch() and the user menu loads client-side — no server-side session reads.
+// Layout data fetches never throw: getCountsOrNull() returns null (shown as
+// "unavailable", never as 0) and getLiveChannels is wrapped in .catch() and the user menu loads client-side — no server-side session reads.
 // revalidate=60 enables Next.js server-side ISR caching for the layout shell.
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-display",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-// JetBrains Mono — primary monospace for the neon-terminal aesthetic.
-// Overrides --font-mono so all existing `font-mono` consumers pick it up
-// without per-component changes.
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono",
-  weight: ["300", "400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
+// No episode count here: this is static and shared by every route without its
+// own description, and a hard-coded count goes stale ("nearly 3,000" sat here
+// while the archive passed 3,300). Pages that quote a count compute it.
 const SITE_DESCRIPTION =
-  "The complete archive of the Cult of Psyche: nearly 3,000 transmissions, searchable transcripts, lore entries, guest profiles, relationship maps, and AI-powered exploration of every word ever spoken in the stream.";
+  "The searchable archive of the Cult of Psyche: episode transcripts, guest profiles, lore, recurring topics, and an AI Oracle that cites its sources.";
 
 // SITE_URL comes from @/lib/seo — single source of truth with a localhost guard,
 // so a stray dev value in NEXT_PUBLIC_SITE_URL can never become metadataBase.
@@ -83,6 +67,7 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [{ url: "/images/site/og.jpg", width: 1200, height: 630 }],
     siteName: "CultCodex",
+    locale: "en_US",
     type: "website",
   },
   twitter: {
@@ -99,17 +84,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const [counts, liveChannels] = await Promise.all([
-    getCounts().catch(() => ({
-      episodes: 0,
-      segments: 0,
-      people: 0,
-      topics: 0,
-      lore: 0,
-      quotes: 0,
-      totalHours: 0,
-      transcribedEpisodes: 0,
-      transcribedPct: 0,
-    })),
+    getCountsOrNull(),
     getLiveChannels().catch(() => ({ cultOfPsyche: false, psychesNightmares: false, nightmareFrequencies: false })),
   ]);
 
@@ -157,7 +132,7 @@ export default async function RootLayout({
           <ScrollReset />
         </Suspense>
         <LiveBanner />
-        <EntryBanner episodeCount={fmtEpisodeCount(counts.episodes)} />
+        <EntryBanner episodeCount={fmtEpisodeCount(counts?.episodes ?? 0)} />
         <div className="terminal-grid">
           <TerminalTopBar />
           <TerminalSidebar counts={counts} liveChannels={liveChannels} />
@@ -170,7 +145,7 @@ export default async function RootLayout({
             {children}
             <SiteFooter />
           </div>
-          <TerminalStatusBar feedCount={counts.episodes} />
+          <TerminalStatusBar feedCount={counts?.episodes ?? null} />
         </div>
         <MobileBottomNav />
         <RadialDialNav />

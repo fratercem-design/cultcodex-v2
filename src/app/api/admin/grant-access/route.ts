@@ -31,8 +31,9 @@ export async function POST(req: NextRequest) {
 
   const updated = await prisma.codexUser.update({
     where: { id: user.id },
+    // Grants the lifetime Oracle (system) tier only. `role` stays untouched:
+    // requireAdmin() trusts it, and admin is granted via ADMIN_EMAILS.
     data: {
-      role: "admin",
       isLifetimeMember: true,
       subscriptionStatus: "active",
       subscriptionTier: "system",

@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/db";
 import { ogFonts } from "@/lib/og-fonts";
+import { isRemovedLore } from "@/lib/lore/removed-lore";
 
 export const runtime = "nodejs";
 export const alt = "Lore entry preview";
@@ -22,7 +23,7 @@ export default async function OGImage({
 }) {
   const { slug } = await params;
 
-  const entry = await prisma.loreEntry.findUnique({
+  const entry = isRemovedLore(slug) ? null : await prisma.loreEntry.findUnique({
     where: { slug },
     select: {
       title: true,

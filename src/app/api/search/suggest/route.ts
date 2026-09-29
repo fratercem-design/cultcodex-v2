@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,7 @@ export async function GET(req: NextRequest) {
       take: 2,
     }),
     prisma.loreEntry.findMany({
-      where: { title: { contains: q, mode: "insensitive" } },
+      where: { ...NOT_REMOVED_LORE, title: { contains: q, mode: "insensitive" } },
       select: { title: true, slug: true },
       take: 2,
     }),

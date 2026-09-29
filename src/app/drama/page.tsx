@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getLoreEntries, getLoreCount } from "@/lib/queries/lore";
+import { getFeuds } from "@/lib/queries/feuds";
 
 export const revalidate = 600;
 
@@ -24,9 +25,10 @@ function severityFor(index: number): string {
 export default async function DramaPage() {
   // Prerendering runs without a database, so a query rejection must degrade
   // to the empty state below rather than failing the whole build.
-  const [entries, total] = await Promise.all([
+  const [entries, total, feuds] = await Promise.all([
     getLoreEntries({ category: "drama", take: 100 }).catch(() => []),
     getLoreCount({ category: "drama" }).catch(() => 0),
+    getFeuds(5).catch(() => []),
   ]);
 
   return (
@@ -52,6 +54,28 @@ export default async function DramaPage() {
       </section>
 
       <div className="mx-auto max-w-3xl px-4 py-10 space-y-4">
+        {feuds.length > 0 && (
+          <section className="mb-8 rounded border border-red-500/25 bg-red-500/5 p-5">
+            <div className="flex items-baseline justify-between gap-4">
+              <h2 className="font-mono text-[12px] uppercase tracking-[0.12em] text-red-400/80">{"/// active_feuds"}</h2>
+              <Link href="/drama/feuds" className="font-mono text-[12px] text-text-muted hover:text-red-300 transition-colors">
+                All feuds →
+              </Link>
+            </div>
+            <ul className="mt-3 divide-y divide-red-500/10">
+              {feuds.map((f) => (
+                <li key={f.slug}>
+                  <Link href={`/drama/feuds/${f.slug}`} className="group flex items-center justify-between gap-3 py-2">
+                    <span className="font-display text-base font-bold text-text-primary group-hover:text-red-300 transition-colors">
+                      {f.people[0].displayName} <span className="text-red-400/70">vs</span> {f.people[1].displayName}
+                    </span>
+                    <span className="flex-shrink-0 font-mono text-[12px] text-text-muted">{f.events} beats →</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
         {entries.length === 0 ? (
           <div className="rounded border border-border bg-surface px-6 py-16 text-center space-y-3">
             <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-red-400/60">

@@ -3,6 +3,10 @@ import { z } from "zod/v4";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/db";
 import { rateLimit, sharedRateLimit, clientKey } from "@/lib/rate-limit";
+import { sendSubscribeConfirmation } from "@/lib/notifications";
+import { subscriberLink } from "@/lib/subscriber-links";
+
+const CONFIRM_RESEND_MS = 60 * 60 * 1000;
 
 const subscribeSchema = z.object({
   email: z.email().optional(),
@@ -31,32 +35,38 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const push = data.pushSubscription as Prisma.InputJsonValue | undefined;
+    let confirmationSent = false;
+
     if (data.email) {
-      // Upsert by email — add push subscription if provided
-      await prisma.subscriber.upsert({
-        where: { email: data.email },
-        create: {
-          email: data.email,
-          pushSubscription: (data.pushSubscription as Prisma.InputJsonValue) ?? undefined,
-          verified: true,
-        },
-        update: {
-          pushSubscription: data.pushSubscription
-            ? (data.pushSubscription as Prisma.InputJsonValue)
-            : undefined,
-        },
-      });
-    } else if (data.pushSubscription) {
-      // Push-only subscriber
-      await prisma.subscriber.create({
-        data: {
-          pushSubscription: data.pushSubscription as Prisma.InputJsonValue,
-          verified: true,
-        },
-      });
+      const existing = await prisma.subscriber.findUnique({ where: { email: data.email } });
+      if (!existing) {
+        // Double opt-in: saved unconfirmed and mailed nothing but the
+        // confirmation link, so a stranger's address can't be signed up.
+        await prisma.subscriber.create({
+          data: { email: data.email, pushSubscription: push, verified: false },
+        });
+      } else if (push) {
+        // Never overwrite an existing row's push endpoint on the strength of
+        // knowing its email. The browser's own subscription gets its own row.
+        await prisma.subscriber.create({ data: { pushSubscription: push, verified: true } });
+      }
+      // At most one confirmation per address per hour, so the form can't be
+      // used to flood a stranger's inbox. Unconfirmed rows are giftStage 0,
+      // which the gift drip ignores, so lastEmailAt is free to use here.
+      const recentlyMailed =
+        existing?.lastEmailAt && Date.now() - existing.lastEmailAt.getTime() < CONFIRM_RESEND_MS;
+      if ((!existing || !existing.verified) && !recentlyMailed) {
+        await sendSubscribeConfirmation(data.email, subscriberLink("confirm", data.email));
+        await prisma.subscriber.update({ where: { email: data.email }, data: { lastEmailAt: new Date() } });
+        confirmationSent = true;
+      }
+    } else if (push) {
+      // Push-only: the browser permission prompt is the consent.
+      await prisma.subscriber.create({ data: { pushSubscription: push, verified: true } });
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, confirmationSent });
   } catch (err) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid input" }, { status: 400 });

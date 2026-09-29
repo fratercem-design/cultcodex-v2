@@ -1,21 +1,15 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { adminKeyValid } from "@/lib/admin-key";
 
 // Reports total DB size + biggest tables for capacity and cost planning.
-// Gated by admin session or
-// a `?key=` token = base64url(HMAC-SHA256(AUTH_SECRET, "db-size")).
+// Read-only. Gated by admin session or a short-lived `?key=` token from
+// `scripts/mint-admin-key.ts db-size` (see src/lib/admin-key.ts).
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 function keyValid(req: Request): boolean {
-  const key = new URL(req.url).searchParams.get("key");
-  const secret = process.env.AUTH_SECRET;
-  if (!key || !secret) return false;
-  const expected = createHmac("sha256", secret).update("db-size").digest("base64url");
-  const a = Buffer.from(key);
-  const b = Buffer.from(expected);
-  return a.length === b.length && timingSafeEqual(a, b);
+  return adminKeyValid(new URL(req.url).searchParams.get("key"), "db-size");
 }
 
 export async function GET(req: Request) {

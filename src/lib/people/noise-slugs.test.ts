@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isIndexablePerson } from "./noise-slugs";
+import { isIndexablePerson, isRemovedPerson } from "./noise-slugs";
 
 describe("isIndexablePerson", () => {
   it("keeps named hosts, recurring figures, and established guests", () => {
@@ -14,5 +14,13 @@ describe("isIndexablePerson", () => {
     expect(isIndexablePerson({ slug: "psyche-community-figure", displayName: "Psyche Community Figure", personType: "recurring", appearanceCount: 9 })).toBe(false);
     expect(isIndexablePerson({ slug: "public-figure", displayName: "Public Figure", personType: "mentioned", appearanceCount: 5 })).toBe(false);
     expect(isIndexablePerson({ slug: "minty-20", displayName: "Minty 20", personType: "guest", appearanceCount: 1 })).toBe(false);
+  });
+});
+
+describe("isRemovedPerson", () => {
+  it("blocks removed people everywhere, including search indexing", () => {
+    expect(isRemovedPerson("alexandra-mayers")).toBe(true);
+    expect(isRemovedPerson("psyche")).toBe(false);
+    expect(isIndexablePerson({ slug: "alexandra-mayers", displayName: "Alexandra Mayers", personType: "recurring", appearanceCount: 50 })).toBe(false);
   });
 });

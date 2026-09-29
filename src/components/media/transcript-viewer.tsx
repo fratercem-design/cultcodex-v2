@@ -110,8 +110,9 @@ export function TranscriptViewer({
   }, [initialTimestamp, blocks]);
 
   function seekTo(seconds: number) {
+    // YouTube or Rumble: both players take ?start= and autoplay.
     const iframe = document.querySelector<HTMLIFrameElement>(
-      'iframe[src*="youtube-nocookie.com"]'
+      'iframe[src*="youtube-nocookie.com"], iframe[src*="rumble.com/embed"]'
     );
     if (iframe) {
       const baseUrl = iframe.src.split("?")[0];

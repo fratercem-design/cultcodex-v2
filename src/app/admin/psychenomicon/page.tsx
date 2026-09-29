@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import Link from "next/link";
 import { GenerateChapterButton } from "./generate-chapter-button";
+import { requireAdminPage } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,8 @@ export const metadata = {
 };
 
 export default async function AdminPsychenomiconPage() {
+  await requireAdminPage();
+
   const [chapters, entities, threads, eligibleEpisodes] = await Promise.all([
     prisma.psychenomiconChapter.findMany({
       orderBy: { chapterNumber: "desc" },

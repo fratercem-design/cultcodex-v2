@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
 import { grantClapTokens, renameClapHolder, toggleClapHolderHidden } from "./actions";
+import { requireAdminPage } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -9,6 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminClapsPage() {
+  await requireAdminPage();
+
   const now = new Date();
   const holders = await prisma.clapHolder.findMany({
     orderBy: [{ tokens: "desc" }, { createdAt: "asc" }],

@@ -1,6 +1,6 @@
 {
  "generatedFrom": "prod Xata (lore/prophecy/quotes/people/troll/episodes+thumbnails) + combinatorial decoys + authored trivia",
- "total": 1000,
+ "total": 998,
  "rounds": [
   {
    "key": "real-or-fake-lore",
@@ -5353,21 +5353,6 @@
    "answerIndex": 2,
    "explain": "He said it on \"C.F.F. Chat Friends Forever\".",
    "sourceHref": "/episodes/c-f-f-chat-friends-forever"
-  },
-  {
-   "id": "q0312",
-   "round": "did-psyche-say-it",
-   "type": "multiple-choice",
-   "prompt": "Psyche really said ONE of these on the show. The others we invented. Which is REAL?",
-   "options": [
-    "\"I don't speak to her anymore I have nothing to say no comment we're not I don't like her she lied about me\"",
-    "\"I'm a little bit too drunk to figure it out right now. I think I had a lot of drinks.\"",
-    "\"So stability and foreign foundations to rest on. So that being said that those things are disrupted right now.\"",
-    "\"I fell asleep. And then I woke up and I was like, 'I'll get a coffee.'\""
-   ],
-   "answerIndex": 1,
-   "explain": "He said it on \"A Night Out: Drinks, Dinner, and Unexpected Adventures with Alexandra Mayers of @IRLNewsTime\".",
-   "sourceHref": "/episodes/a-night-out-drinks-dinner-and-unexpected-adventures-with-alexandra-mayers-of-irlnewstime"
   },
   {
    "id": "q0313",
@@ -11668,21 +11653,6 @@
    "answerIndex": 2,
    "explain": "\"The Arrrival of CultCodex.me: The Archive That Talks Back\" is a real episode. Yes, really.",
    "sourceHref": "/episodes/the-arrrival-of-cultcodex-me-the-archive-that-talks-back"
-  },
-  {
-   "id": "q0675",
-   "round": "real-title",
-   "type": "multiple-choice",
-   "prompt": "One of these is an ACTUAL Cult of Psyche episode title. The rest we made up. Which chaos is REAL?",
-   "options": [
-    "The Night the Moon Called Collect",
-    "Apology for the Fridge Started Preaching",
-    "The Great the Tarot Deck Called in Sick",
-    "The Neon Priestess Returns @AlexandraMayers"
-   ],
-   "answerIndex": 3,
-   "explain": "\"The Neon Priestess Returns @AlexandraMayers\" is a real episode. Yes, really.",
-   "sourceHref": "/episodes/the-neon-priestess-returns-alexandramayers"
   },
   {
    "id": "q0676",

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/db";
+import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 export const revalidate = 600;
 
@@ -27,7 +28,7 @@ function glyphFor(title: string): string {
 export default async function BestiaryPage() {
   const beasts = await prisma.loreEntry
     .findMany({
-      where: { canonStatus: "humorous", category: { in: BESTIARY_CATEGORIES } },
+      where: { ...NOT_REMOVED_LORE, canonStatus: "humorous", category: { in: BESTIARY_CATEGORIES } },
       select: { title: true, slug: true, summary: true, category: true },
       orderBy: { title: "asc" },
       take: 200,

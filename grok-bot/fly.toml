@@ -1,0 +1,11 @@
+# Discord bots hold a gateway websocket and serve no HTTP, so there is no
+# [http_service] block and the machine must never auto-stop.
+app = "grok-bot"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

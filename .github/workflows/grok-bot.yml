@@ -1,0 +1,29 @@
+name: Grok Bot
+
+on:
+  pull_request:
+    paths: ["grok-bot/**", ".github/workflows/grok-bot.yml"]
+  push:
+    branches: [master]
+    paths: ["grok-bot/**", ".github/workflows/grok-bot.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: grok-bot
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: grok-bot/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build

@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
+import { redirect } from "next/navigation";
 import Google from "next-auth/providers/google";
 import { prisma } from "@/lib/db";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 import type { CodexUserRole } from "@/generated/prisma/client";
 
 // Fail fast: an OAuth provider with undefined credentials fails only at
@@ -32,6 +34,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "jwt",
   },
   callbacks: {
+    // Explicit rather than relying on the library default: post-sign-in
+    // redirects stay on this origin whatever callbackUrl a link carries.
+    redirect({ url, baseUrl }) {
+      // Absolute URLs on this origin are reduced to their path first; a
+      // look-alike host ("https://site.me.evil.com") leaves a non-path
+      // remainder that safeRedirectPath rejects.
+      const candidate = url.startsWith(baseUrl) ? url.slice(baseUrl.length) : url;
+      const path = safeRedirectPath(candidate, "");
+      return path ? `${baseUrl}${path}` : baseUrl;
+    },
     async signIn({ user, account }) {
       if (!user.email) return false;
 
@@ -168,6 +180,20 @@ export async function requireAuth(): Promise<CodexSessionUser> {
 export async function requireAdmin(): Promise<CodexSessionUser> {
   const user = await requireAuth();
   if (user.role !== "admin") throw new Error("Admin access required");
+  return user;
+}
+
+/**
+ * Gate for admin *pages*. Call it first in every admin page.tsx.
+ *
+ * The admin layout's redirect is not enough on its own: the App Router
+ * renders a layout and its page in parallel, so a page that fetches data
+ * still streams it in the body of the layout's 307 response. Redirecting
+ * here stops the page before any of its queries run.
+ */
+export async function requireAdminPage(): Promise<CodexSessionUser> {
+  const user = await getCurrentUser();
+  if (!user || user.role !== "admin") redirect("/auth/signin");
   return user;
 }
 

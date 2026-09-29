@@ -51,7 +51,8 @@ const liveBadgeStyle: CSSProperties = {
 };
 
 interface TerminalSidebarProps {
-  counts: ArchiveCounts;
+  /** null when the archive can't be read — badges hide rather than show 0. */
+  counts: ArchiveCounts | null;
   liveChannels?: LiveChannels;
 }
 
@@ -59,7 +60,7 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
   const pathname = usePathname();
   const router = useRouter();
 
-  const integrityPct = counts.episodes > 0
+  const integrityPct = counts
     ? Math.round((counts.transcribedEpisodes / counts.episodes) * 100)
     : 0;
 
@@ -168,7 +169,7 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
                   transition: "color 120ms linear, background 120ms linear, border-color 120ms linear",
                 };
 
-                const badgeText = item.countKey
+                const badgeText = item.countKey && counts
                   ? counts[item.countKey].toLocaleString("en-US")
                   : null;
 
@@ -230,7 +231,7 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
       >
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
           <span>TRANSCRIBED</span>
-          <span style={{ color: "var(--neon)" }}>{integrityPct}%</span>
+          <span style={{ color: "var(--neon)" }}>{counts ? `${integrityPct}%` : "—"}</span>
         </div>
         <div
           style={{
@@ -256,7 +257,9 @@ export function TerminalSidebar({ counts, liveChannels }: TerminalSidebarProps) 
           />
         </div>
         <div style={{ marginTop: 6 }}>
-          {counts.transcribedEpisodes.toLocaleString("en-US")} / {counts.episodes.toLocaleString("en-US")} eps
+          {counts
+            ? `${counts.transcribedEpisodes.toLocaleString("en-US")} / ${counts.episodes.toLocaleString("en-US")} eps`
+            : "ARCHIVE UNAVAILABLE"}
         </div>
       </div>
     </aside>

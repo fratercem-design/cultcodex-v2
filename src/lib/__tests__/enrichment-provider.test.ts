@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { hasEnrichmentProvider } from "@/lib/enrichment-llm";
 
 const KEYS = [
@@ -10,6 +10,7 @@ const KEYS = [
   "OPENROUTER_API_KEY",
   "GROQ_API_KEY",
   "MISTRAL_API_KEY",
+  "ENRICHMENT_PROVIDER",
 ] as const;
 
 const saved = Object.fromEntries(KEYS.map((k) => [k, process.env[k]]));
@@ -49,5 +50,72 @@ describe("hasEnrichmentProvider", () => {
     expect(hasEnrichmentProvider()).toBe(false);
     process.env.AWS_SECRET_ACCESS_KEY = "secret";
     expect(hasEnrichmentProvider()).toBe(true);
+  });
+});
+
+describe("enrichComplete", () => {
+  it("reports every tier's failure, Anthropic's first, not just Bedrock's", async () => {
+    vi.resetModules();
+    vi.doMock("@anthropic-ai/sdk", () => ({
+      default: class {
+        messages = { create: () => Promise.reject(new Error("credit balance is too low")) };
+      },
+    }));
+    vi.doMock("@anthropic-ai/bedrock-sdk", () => ({
+      default: class {
+        messages = {
+          create: () => Promise.reject(new Error("Failed to resolve AWS credentials from the credential provider chain.")),
+        };
+      },
+    }));
+    clearAll();
+    process.env.ANTHROPIC_API_KEY = "sk-test";
+    const { enrichComplete } = await import("@/lib/enrichment-llm");
+
+    const err = await enrichComplete({ system: "s", user: "u", maxTokens: 10 }).catch((e: Error) => e);
+    expect(err).toBeInstanceOf(Error);
+    const msg = (err as Error).message;
+    expect(msg.startsWith("anthropic: credit balance is too low")).toBe(true);
+    expect(msg).toContain("bedrock: Failed to resolve AWS credentials");
+
+    vi.doUnmock("@anthropic-ai/sdk");
+    vi.doUnmock("@anthropic-ai/bedrock-sdk");
+  });
+});
+
+describe("paidFallbackComplete", () => {
+  it("falls through a failing Anthropic key to OpenRouter", async () => {
+    vi.resetModules();
+    vi.doMock("@anthropic-ai/sdk", () => ({
+      default: class {
+        messages = { create: () => Promise.reject(new Error("API key is invalid.")) };
+      },
+    }));
+    vi.doMock("openai", () => ({
+      default: class {
+        chat = {
+          completions: { create: () => Promise.resolve({ choices: [{ message: { content: "the answer" } }] }) },
+        };
+      },
+    }));
+    clearAll();
+    process.env.ANTHROPIC_API_KEY = "sk-test";
+    process.env.OPENROUTER_API_KEY = "or-test";
+    const { paidFallbackComplete, hasPaidFallback } = await import("@/lib/enrichment-llm");
+
+    expect(hasPaidFallback()).toBe(true);
+    await expect(paidFallbackComplete({ system: "s", user: "u", maxTokens: 10 })).resolves.toBe("the answer");
+
+    vi.doUnmock("@anthropic-ai/sdk");
+    vi.doUnmock("openai");
+  });
+
+  it("is unavailable with only Groq or AWS configured", async () => {
+    clearAll();
+    process.env.GROQ_API_KEY = "gsk-test";
+    process.env.AWS_ACCESS_KEY_ID = "id";
+    process.env.AWS_SECRET_ACCESS_KEY = "secret";
+    const { hasPaidFallback } = await import("@/lib/enrichment-llm");
+    expect(hasPaidFallback()).toBe(false);
   });
 });

@@ -434,7 +434,7 @@ export default async function StartHerePage() {
               { href: "/search", label: "Search", desc: "Full-text across the archive" },
               { href: "/graph", label: "Relationship Map", desc: "Who appeared with whom — as a live network" },
               { href: "/topics", label: "Signals", desc: "Every theme and concept" },
-              { href: "/collections", label: "Collections", desc: "Curated groupings" },
+              { href: "/collections", label: "Collections", desc: "Episodes grouped by theme" },
               { href: "/episodes", label: "Episodes", desc: `${stats.episodes.toLocaleString("en-US")} transmissions` },
             ],
           },

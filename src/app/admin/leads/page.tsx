@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import type { Metadata } from "next";
+import { requireAdminPage } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -112,6 +113,8 @@ function LeadRow({ lead }: { lead: Lead }) {
 }
 
 export default async function AdminLeadsPage() {
+  await requireAdminPage();
+
   const leads = await getLeads();
 
   if (!leads) {

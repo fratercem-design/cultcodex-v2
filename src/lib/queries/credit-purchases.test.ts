@@ -89,6 +89,21 @@ describe("grantPurchasedCredits", () => {
     expect(mocks.ledger).toHaveLength(2);
   });
 
+  it("reports already granted when the unique index rejects a racing insert", async () => {
+    // Simulates the concurrent case: the findFirst missed, then the insert hit
+    // the partial unique index. The transaction rolls back, so nothing is kept.
+    mocks.tx.creditTransaction.create.mockRejectedValueOnce(
+      Object.assign(new Error("Unique constraint failed"), { code: "P2002" })
+    );
+    const r = await grantPurchasedCredits(input);
+    expect(r).toEqual({ granted: false, reason: "already_granted" });
+  });
+
+  it("rethrows other database errors so the webhook can retry", async () => {
+    mocks.tx.creditTransaction.create.mockRejectedValueOnce(new Error("connection reset"));
+    await expect(grantPurchasedCredits(input)).rejects.toThrow(/connection reset/);
+  });
+
   it("refuses a non-positive or non-integer credit amount", async () => {
     await expect(grantPurchasedCredits({ ...input, credits: 0 })).rejects.toThrow(/invalid credits/);
     await expect(grantPurchasedCredits({ ...input, credits: 1.5 })).rejects.toThrow(/invalid credits/);

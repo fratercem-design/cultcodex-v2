@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Standalone Discord bot with its own toolchain.
+    "grok-bot/**",
   ]),
   // Scripts are one-off utility files — relax strict typing rules there.
   {

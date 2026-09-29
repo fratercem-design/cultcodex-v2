@@ -549,7 +549,10 @@ def main() -> int:
     log(f"Pending episodes:   {len(pending)}")
     log(f"Title matched:      {matched}")
     log(f"No match:           {no_match}")
-    log(f"Already had audio:  {skipped}")
+    if args.captions:
+        log(f"Transcript on disk: {skipped}  (skipped; import with npm run asr:import)")
+    else:
+        log(f"Already had audio:  {skipped}")
     if args.captions:
         log(f"Checked:            {downloaded}")
         log(f"Have captions:      {with_captions}")

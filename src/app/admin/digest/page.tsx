@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/auth";
+import { requireAdminPage } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { formatDate } from "@/lib/format/date";
 import { upsertWeeklyDigest, deleteWeeklyDigest, togglePublished } from "./actions";
@@ -20,7 +20,7 @@ interface PageProps {
 }
 
 export default async function AdminDigestPage({ searchParams }: PageProps) {
-  await requireAdmin();
+  await requireAdminPage();
 
   const { q } = await searchParams;
   const search = q?.trim();

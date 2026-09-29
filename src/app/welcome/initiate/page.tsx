@@ -28,7 +28,7 @@ const BENEFITS = [
   {
     icon: "⚡",
     title: "Key Moments Timeline",
-    body: "Every episode has a curated Key Moments strip — the peaks, turns, and revelations — so you can navigate without rewatching.",
+    body: "Every episode has a Key Moments strip marking where it turns, so you can jump straight there instead of rewatching.",
   },
   {
     icon: "📚",
@@ -38,7 +38,7 @@ const BENEFITS = [
   {
     icon: "🎭",
     title: "Members-Only Playlists",
-    body: "Curated sequences you can't build from the public archive. Thematic runs. Guest arcs. Pattern threads.",
+    body: "Sequences you can't build from the public archive: thematic runs, guest arcs, and pattern threads.",
   },
 ];
 

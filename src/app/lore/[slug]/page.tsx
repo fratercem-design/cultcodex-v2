@@ -21,7 +21,10 @@ import { AnnotationSection } from "@/components/annotations/annotation-section";
 import type { Metadata } from "next";
 import { SECTION_HEADERS } from "@/lib/section-headers";
 
-export const dynamic = "force-dynamic";
+// ISR: each lore page renders on first visit, then is served from cache and
+// refreshed at most every 10 minutes. Nothing here may read cookies/headers
+// (the per-user annotation controls load client-side) or it goes dynamic again.
+export const revalidate = 600;
 
 export async function generateStaticParams() {
   return [];

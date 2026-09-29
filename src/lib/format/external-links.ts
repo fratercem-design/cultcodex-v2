@@ -12,9 +12,6 @@ export interface ExternalLink {
 }
 
 const PERSON_LINKS: Record<string, ExternalLink[]> = {
-  "alexandra-mayers": [
-    { label: "ip2wiki.info", url: "https://ip2wiki.info", icon: "🔗" }
-  ],
   "psyche": [
     { label: "Cult of Psyche", url: "https://www.youtube.com/@cultofpsyche", icon: "▶" }
   ],

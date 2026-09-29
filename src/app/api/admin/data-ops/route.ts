@@ -18,7 +18,7 @@
  * op: "set-alt-names"    — edit a person's altNames: { slug, altNames?: string[] (full replace), remove?: string[], add?: string[], dryRun? }
  * op: "corpus-extract"   — READ-ONLY: scan episode transcripts/summaries for a person's aliases and return
  *                          keyword-context excerpts, paginated: { slug, terms?: string[], sinceDate?, page?, pageSize? }
- * op: "grant-admin"      — set a CodexUser's role to admin + lifetime system tier (mirrors /admin/grant-access):
+ * op: "grant-admin"      — set a CodexUser's role to admin + lifetime system tier (grant-access grants the tier only, not the role):
  *                          { email, memberTitle?, dryRun? }
  * op: "clean-episode-summaries" — scrub sponsor/boilerplate prose (StreamYard promos, vidIQ, AI
  *                          preambles) from episode summaries; junk-only summaries → null so the UI
@@ -1046,8 +1046,8 @@ export async function POST(req: NextRequest) {
   }
 
   // ── grant-admin ────────────────────────────────────────────────────────────
-  // Set a CodexUser's role to admin + lifetime system tier. Mirrors the existing
-  // /api/admin/grant-access route, but authed via x-maint-key so it can run
+  // Set a CodexUser's role to admin + lifetime system tier. Unlike
+  // /api/admin/grant-access (tier only), this deliberately grants admin. Authed via x-maint-key so it can run
   // without the (Vercel-sensitive) ENRICH_SECRET. Optional memberTitle flair.
   if (op === "grant-admin") {
     const email = String(body.email ?? "").trim().toLowerCase();

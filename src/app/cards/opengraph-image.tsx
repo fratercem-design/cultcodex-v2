@@ -82,7 +82,7 @@ export default async function OGImage() {
                   maxWidth: 520,
                 }}
               >
-                Collect signal credits. Unlock rare cards. Build your deck from the archetypes, voices, and lore of the Cult of Psyche.
+                Earn Signal Credits, open packs, and build a deck from the archetypes, voices, and lore of the Cult of Psyche.
               </div>
             </div>
 

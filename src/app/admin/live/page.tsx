@@ -2,10 +2,13 @@ import { prisma } from "@/lib/db";
 import { SectionCard } from "@/components/ui/section-card";
 import { formatDate } from "@/lib/format/date";
 import { LiveToggleForm } from "./live-toggle-form";
+import { requireAdminPage } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminLivePage() {
+  await requireAdminPage();
+
   const [copStatus, pnStatus, nfStatus] = await Promise.all([
     prisma.liveStatus.findUnique({ where: { id: "singleton" } }),
     prisma.liveStatus.findUnique({ where: { id: "psyches-nightmares" } }),

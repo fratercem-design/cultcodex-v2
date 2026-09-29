@@ -7,6 +7,7 @@ import { AdminStatCard } from "@/components/admin/admin-stat-card";
 import { SectionCard } from "@/components/ui/section-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatDate, formatRelativeDate } from "@/lib/format/date";
+import { requireAdminPage } from "@/lib/auth";
 
 /** Health metric with label, count, severity, and optional link */
 interface HealthMetric {
@@ -19,6 +20,8 @@ interface HealthMetric {
 }
 
 export default async function AdminDashboard() {
+  await requireAdminPage();
+
   const [stats, flaggedCount, recentEpisodes, liveStatus, health] = await Promise.all([
     getCounts(),
     prisma.codexComment.count({ where: { flagged: true } }),

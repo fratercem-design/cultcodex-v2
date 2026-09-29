@@ -7,12 +7,15 @@ import { updatePerson } from "@/app/admin/actions";
 import { MergePersonForm } from "./merge-form";
 import { YouTubeSync } from "./youtube-sync";
 import Link from "next/link";
+import { requireAdminPage } from "@/lib/auth";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditPersonPage({ params }: PageProps) {
+  await requireAdminPage();
+
   const { id } = await params;
 
   const person = await prisma.person.findUnique({ where: { id } });

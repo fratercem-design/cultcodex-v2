@@ -4,8 +4,11 @@ import { prisma } from "@/lib/db";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatDate } from "@/lib/format/date";
 import { CommentActions } from "./comment-actions";
+import { requireAdminPage } from "@/lib/auth";
 
 export default async function AdminCommentsPage() {
+  await requireAdminPage();
+
   const comments = await prisma.codexComment.findMany({
     orderBy: [{ flagged: "desc" }, { createdAt: "desc" }],
     take: 50,

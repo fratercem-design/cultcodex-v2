@@ -7,12 +7,15 @@ import { updateEpisode, toggleHumanReview } from "@/app/admin/actions";
 import { PsychenomiconWidget } from "./psychenomicon-widget";
 import { HumanReviewBadge } from "@/components/ui/human-review-badge";
 import Link from "next/link";
+import { requireAdminPage } from "@/lib/auth";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditEpisodePage({ params }: PageProps) {
+  await requireAdminPage();
+
   const { id } = await params;
 
   const episode = await prisma.episode.findUnique({

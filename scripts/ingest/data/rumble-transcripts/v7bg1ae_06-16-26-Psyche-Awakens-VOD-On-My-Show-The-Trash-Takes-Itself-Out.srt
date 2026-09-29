@@ -1,0 +1,2347 @@
+1
+00:00:53,900 --> 00:01:23,900
+I'm trying to drink energy drink. It's not really working. Hi. Yeah, I believe it
+
+2
+00:07:36,590 --> 00:07:42,320
+I guess I was playing like girls gone wild not like the like the cross stuff, but the
+
+3
+00:07:43,040 --> 00:07:47,910
+actual fighting was actually going wild like like animals, but um
+
+4
+00:07:48,400 --> 00:08:05,110
+Yeah, I guess there was some some breasts in that or something. Not drinking alcohol. That's good. I have a huge bag of nuts
+
+5
+00:08:05,750 --> 00:08:12,350
+two
+
+6
+00:08:12,350 --> 00:08:21,960
+Pounds got a big bag and that's a party started
+
+7
+00:08:23,350 --> 00:08:53,350
+Everybody I've won like the beat is Bush song, but I have to
+
+8
+00:08:59,890 --> 00:09:01,740
+This is a good day.
+
+9
+00:09:01,740 --> 00:09:03,460
+Welcome to The Explainer.
+
+10
+00:09:03,460 --> 00:09:07,560
+Today, we're taking a completely fascinating sociological dive
+
+11
+00:09:07,560 --> 00:09:11,900
+into the hidden mechanics of a very specific digital ecosystem.
+
+12
+00:09:11,900 --> 00:09:15,020
+We're going to look at exactly how it transforms everyday passive
+
+13
+00:09:15,020 --> 00:09:18,690
+viewers into highly active, totally chaotic actors.
+
+14
+00:09:18,690 --> 00:09:21,650
+We'll be digging into the data, the wild community interactions,
+
+15
+00:09:21,650 --> 00:09:24,530
+and this massive shift in how guests actually behave.
+
+16
+00:09:24,530 --> 00:09:25,570
+It's pretty wild.
+
+17
+00:09:25,570 --> 00:09:27,650
+Okay, let's dive into this.
+
+18
+00:09:27,650 --> 00:09:31,570
+Just listen to this bizarre, highly specific quote for a second.
+
+19
+00:09:31,570 --> 00:09:35,150
+The docks are going to keep a knock in, doing my thug-dizzle.
+
+20
+00:09:35,150 --> 00:09:39,150
+Yeah, I know, it sounds like totally impenetrable internet slang, right?
+
+21
+00:09:39,150 --> 00:09:43,150
+But this is actually a direct quote from a community participant we're analyzing today.
+
+22
+00:09:43,150 --> 00:09:47,150
+And it serves as the perfect cold open because it brilliantly demonstrates the intense,
+
+23
+00:09:47,150 --> 00:09:51,150
+confrontational, almost theatrical culture we're about to unpack.
+
+24
+00:09:51,150 --> 00:09:55,150
+You see, it's not just about leaving a simple comment anymore, it's literally about playing a role.
+
+25
+00:09:55,150 --> 00:10:01,150
+So, to understand how we actually get to that kind of quote, here's our roadmap for today's explainer.
+
+26
+00:10:01,380 --> 00:10:06,260
+First, we'll step inside the cult of Psyche, then we'll look at content versus community
+
+27
+00:10:06,260 --> 00:10:09,940
+chaos, followed by the evolution of guests.
+
+28
+00:10:09,940 --> 00:10:15,100
+After that, we'll analyze a specific user, Tony, as the enforcer archetype, and finally,
+
+29
+00:10:15,100 --> 00:10:18,140
+we'll break down how conflict becomes social currency.
+
+30
+00:10:18,140 --> 00:10:20,140
+Alright, let's get started.
+
+31
+00:10:20,140 --> 00:10:21,740
+Part 1.
+
+32
+00:10:23,500 --> 00:10:28,460
+To really grasp the behavior of the guests here, we first absolutely have to look at
+
+33
+00:10:28,460 --> 00:10:34,340
+the sheer scale and the foundational reality of the environments this host has built.
+
+34
+00:10:34,340 --> 00:10:39,260
+Consider this staggering number for a second, 2200.
+
+35
+00:10:39,260 --> 00:10:42,220
+That is the massive volume of videos uploaded by this channel.
+
+36
+00:10:42,540 --> 00:10:44,620
+But here's the really fascinating part.
+
+37
+00:10:44,620 --> 00:10:47,660
+The channel only has around 3.22k subscribers.
+
+38
+00:10:47,660 --> 00:10:51,220
+I mean, that ratio is just wildly disproportionate.
+
+39
+00:10:51,220 --> 00:10:56,220
+It completely illustrates this intense, high-output digital ecosystem where the creator is literally
+
+40
+00:10:56,220 --> 00:10:57,940
+churning out material nonstop.
+
+41
+00:10:57,940 --> 00:11:03,300
+They're building this highly insulated, deeply entrenched world for a very specific, concentrated
+
+42
+00:11:03,300 --> 00:11:04,180
+little audience.
+
+43
+00:11:04,510 --> 00:11:08,990
+And honestly, it's not just the sheer volume of videos, it's the run times.
+
+44
+00:11:08,990 --> 00:11:09,990
+Get this.
+
+45
+00:11:09,990 --> 00:11:15,310
+An early morning panel runs for 51 minutes, another chat hits over 2 hours, and one stream
+
+46
+00:11:15,310 --> 00:11:18,310
+literally clocks in at nearly 12 hours.
+
+47
+00:11:18,310 --> 00:11:20,190
+12 hours.
+
+48
+00:11:20,190 --> 00:11:23,870
+This brutally varying run time just proves the channel's main engine isn't your standard
+
+49
+00:11:23,870 --> 00:11:25,710
+tightly scripted 10 minute upload.
+
+50
+00:11:25,710 --> 00:11:29,710
+No, instead it relies entirely on sprawling, unedited live hangouts.
+
+51
+00:11:29,870 --> 00:11:33,470
+It's basically an open door for anyone to wander in, sit for hours on end,
+
+52
+00:11:33,470 --> 00:11:36,270
+and just become part of the fabric of the show.
+
+53
+00:11:36,270 --> 00:11:40,270
+Which brings us to part two, content versus community chaos.
+
+54
+00:11:40,270 --> 00:11:42,670
+Because what the channel actually presents itself as,
+
+55
+00:11:42,670 --> 00:11:44,990
+and what happens down in the trenches,
+
+56
+00:11:44,990 --> 00:11:47,470
+well, they are two very different things.
+
+57
+00:11:48,110 --> 00:11:51,150
+And this brilliantly illustrates that exact divide.
+
+58
+00:11:51,310 --> 00:11:53,950
+Notice the formal video uploads on the one side,
+
+59
+00:11:53,950 --> 00:11:56,350
+these high-minded mythological titles like
+
+60
+00:11:56,350 --> 00:11:58,670
+The Magical and Mysterious Yakshinas,
+
+61
+00:11:58,670 --> 00:12:01,150
+or The Great Goddess Chaos Speaks.
+
+62
+00:12:01,150 --> 00:12:05,230
+But then, contrast that with the community tab reality right next to it.
+
+63
+00:12:05,230 --> 00:12:07,070
+It's a totally different world.
+
+64
+00:12:07,070 --> 00:12:09,790
+It's filled with hyper-aggressive drama posts calling out users
+
+65
+00:12:09,790 --> 00:12:12,350
+for sending thousands of dollars to someone named Ziya,
+
+66
+00:12:12,350 --> 00:12:14,830
+and promotions for literal nightmare channels.
+
+67
+00:12:14,960 --> 00:12:20,960
+Basically, this philosophical front is covering up a deeply chaotic, interpersonal battleground.
+
+68
+00:12:20,960 --> 00:12:24,480
+Moving on to part 3, the evolution of guests.
+
+69
+00:12:24,480 --> 00:12:31,000
+You know, in an environment that mixes sprawling, 12-hour open panels with intense, non-stop
+
+70
+00:12:31,000 --> 00:12:36,480
+community drama, the whole nature of participation fundamentally shifts.
+
+71
+00:12:36,480 --> 00:12:40,760
+Guests are no longer just regular people dropping by to chat about the latest upload.
+
+72
+00:12:40,760 --> 00:12:41,710
+Oh no.
+
+73
+00:12:41,710 --> 00:12:44,710
+They evolve into what we can define as a pressure operative.
+
+74
+00:12:44,710 --> 00:12:48,710
+Now, this is a community participant who functions way less as a traditional commentator
+
+75
+00:12:48,710 --> 00:12:50,710
+and much more as an aggressive enforcer.
+
+76
+00:12:50,710 --> 00:12:54,710
+They utilize persistence, intimidation, and coordinated pressure.
+
+77
+00:12:54,710 --> 00:12:56,710
+They absolutely aren't there to discuss the Great Goddess.
+
+78
+00:12:56,710 --> 00:12:59,710
+They are there to police the community, enforce norms,
+
+79
+00:12:59,710 --> 00:13:02,710
+and wage these crazy interpersonal proxy wars.
+
+80
+00:13:02,710 --> 00:13:05,710
+Part four, Tony, the enforcer archetype.
+
+81
+00:13:05,940 --> 00:13:09,940
+To truly grasp this shift, we need a solid case study.
+
+82
+00:13:09,940 --> 00:13:14,440
+The source material highlights a specific user who perfectly embodies this new,
+
+83
+00:13:14,440 --> 00:13:17,940
+chaotic form of participation on the channel's open panels.
+
+84
+00:13:17,940 --> 00:13:20,940
+So we're turning to that bizarre quote from the beginning of our explainer.
+
+85
+00:13:20,940 --> 00:13:26,940
+Tony joins a panel, and to describe his contribution to a boycott pressure campaign against the host,
+
+86
+00:13:26,940 --> 00:13:29,870
+he casually says he is doing my thug-dizzle.
+
+87
+00:13:29,870 --> 00:13:33,310
+The sheer performative energy of that phrase is absolutely key here.
+
+88
+00:13:33,310 --> 00:13:38,110
+He's adopting a persona, acting as this semi-chaotic, anti-psychic participant.
+
+89
+00:13:38,110 --> 00:13:40,510
+It's essentially a form of intimidation theater,
+
+90
+00:13:40,510 --> 00:13:44,510
+where the language is deliberately exaggerated just to establish dominance in the group.
+
+91
+00:13:44,510 --> 00:13:48,670
+And he backs up that persona with some serious, dramatic loyalty signaling.
+
+92
+00:13:48,670 --> 00:13:51,470
+Before leaving the panel, he reaffirms his stance by stating,
+
+93
+00:13:51,470 --> 00:13:52,910
+I'm dedicated to the cause.
+
+94
+00:13:53,470 --> 00:13:57,390
+This gives the distinct impression that Tony's conflict with the channel isn't just some passing
+
+95
+00:13:58,800 --> 00:14:03,600
+It is deeply inextricably tied to his social identity within that specific digital circle.
+
+96
+00:14:03,730 --> 00:14:07,730
+The cause gives him a reason to show up, a role to play, and, most importantly,
+
+97
+00:14:07,730 --> 00:14:09,730
+an audience to perform for.
+
+98
+00:14:09,730 --> 00:14:12,730
+Just look at the specific terminology used by Tony and the host
+
+99
+00:14:12,730 --> 00:14:14,730
+to describe his hard work for this cause.
+
+100
+00:14:14,730 --> 00:14:18,730
+We have ding dong ditching, pressing, and holding people accountable.
+
+101
+00:14:18,730 --> 00:14:20,730
+He even predicts a real crash out for the host
+
+102
+00:14:20,730 --> 00:14:23,730
+and brags about surviving what he calls a failed ox,
+
+103
+00:14:23,730 --> 00:14:25,730
+meaning someone tried to leak his personal information,
+
+104
+00:14:25,730 --> 00:14:29,500
+but totally failed because they had the wrong outdated address.
+
+105
+00:14:29,500 --> 00:14:33,660
+Walking through these terms, it becomes incredibly clear that Tony's reputation is built entirely
+
+106
+00:14:33,660 --> 00:14:38,860
+on harassment-style trolling activism, rather than your typical friendly panel chatting.
+
+107
+00:14:38,860 --> 00:14:43,580
+His actual value to the ecosystem is simply his willingness to be the antagonist.
+
+108
+00:14:43,580 --> 00:14:48,900
+And that leads us to our final section, conflict as social currency.
+
+109
+00:14:48,900 --> 00:14:52,020
+Why are guests like Tony incentivized to act this way?
+
+110
+00:14:52,020 --> 00:14:57,380
+I mean, what is the psychological reward for spending hours on a live panel just to wage
+
+111
+00:14:58,320 --> 00:15:01,600
+So the crucial point is this behavioral feedback loop.
+
+112
+00:15:01,600 --> 00:15:02,560
+Let's break it down.
+
+113
+00:15:02,560 --> 00:15:06,000
+Step one, a guest joins the panel with highly dramatic rhetoric.
+
+114
+00:15:06,000 --> 00:15:08,400
+Step two, rather than being banned or kicked out,
+
+115
+00:15:08,400 --> 00:15:10,560
+the host actually praises their hard work.
+
+116
+00:15:10,560 --> 00:15:14,400
+Step three, the other panelists laugh and totally validate the behavior.
+
+117
+00:15:14,400 --> 00:15:17,520
+And step four, this aggressive behavior officially becomes status.
+
+118
+00:15:17,520 --> 00:15:19,840
+The group actively validates the escalation.
+
+119
+00:15:19,840 --> 00:15:22,560
+Literally, nobody distances themselves from the harassment talk.
+
+120
+00:15:22,560 --> 00:15:24,240
+Instead, they reward it with attention,
+
+121
+00:15:27,330 --> 00:15:32,610
+Ultimately, the boycott operates primarily as entertainment and spectacle.
+
+122
+00:15:32,610 --> 00:15:37,790
+Despite all the moral framing where participants claim they're out there holding people accountable,
+
+123
+00:15:37,790 --> 00:15:42,850
+this ecosystem is really just about group bonding through shared antagonism.
+
+124
+00:15:42,850 --> 00:15:47,850
+Tony plays right into that by escalating his rhetoric, presenting himself as a chaos agent
+
+125
+00:15:47,850 --> 00:15:51,850
+character, and giving the audience the exact drama they crave.
+
+126
+00:15:56,380 --> 00:16:00,220
+which leaves us with this final, provocative question to ponder.
+
+127
+00:16:00,220 --> 00:16:01,740
+In the modern digital era,
+
+128
+00:16:01,740 --> 00:16:04,940
+are online communities actually built on shared interests
+
+129
+00:16:04,940 --> 00:16:07,500
+or simply on shared antagonism?
+
+130
+00:16:07,500 --> 00:16:10,140
+When we look at ecosystems like the cold of psyche,
+
+131
+00:16:10,140 --> 00:16:12,460
+it really challenges everything we think we know
+
+132
+00:16:12,460 --> 00:16:15,260
+about how and why people connect on the internet.
+
+133
+00:16:15,260 --> 00:16:17,180
+It definitely makes you rethink the true nature
+
+134
+00:16:17,180 --> 00:16:19,340
+of the communities you might be a part of.
+
+135
+00:16:19,340 --> 00:16:21,660
+Thank you so much for joining me on this explainer.
+
+136
+00:16:21,660 --> 00:16:25,380
+Keep asking questions, and I'll catch you next time.
+
+137
+00:16:27,700 --> 00:16:32,310
+Oh, here it is, oh here it is, okay.
+
+138
+00:16:32,310 --> 00:16:48,010
+Pretty good, hold on.
+
+139
+00:16:48,010 --> 00:17:18,010
+Let's put on the best of, let's see what we got.
+
+140
+00:17:26,350 --> 00:17:29,750
+This is probably from about a year ago, yes.
+
+141
+00:17:29,750 --> 00:17:33,920
+Popular, oh, there's Trixie.
+
+142
+00:17:33,920 --> 00:17:39,420
+See, I mean, some of these.
+
+143
+00:17:39,420 --> 00:17:51,110
+Yeah, I'll just put this on, it's several hours.
+
+144
+00:17:51,110 --> 00:17:54,950
+Now for the show, star shine is so bright,
+
+145
+00:17:54,950 --> 00:17:57,670
+watch the secrets unfold,
+
+146
+00:18:01,390 --> 00:18:05,390
+whisper what the future holds
+
+147
+00:18:08,290 --> 00:18:10,900
+to the mystery
+
+148
+00:18:10,900 --> 00:18:18,110
+get at the tower
+
+149
+00:18:18,110 --> 00:18:26,800
+with a with a
+
+150
+00:18:26,800 --> 00:18:35,390
+an open door
+
+151
+00:18:35,390 --> 00:18:37,390
+feel the romance
+
+152
+00:18:37,390 --> 00:18:39,390
+in every arcane lore
+
+153
+00:18:41,390 --> 00:18:43,390
+destiny entwined
+
+154
+00:18:43,390 --> 00:18:45,620
+as the moon
+
+155
+00:18:45,620 --> 00:19:15,620
+hello testing
+
+156
+00:20:30,980 --> 00:20:33,740
+okay hi
+
+157
+00:20:36,980 --> 00:20:41,460
+Um, I wanted to just come on for, maybe I'll do like, well, let me see.
+
+158
+00:20:41,540 --> 00:20:41,820
+Oh yeah.
+
+159
+00:20:41,820 --> 00:20:48,350
+Well, we have graphic for tonight's show.
+
+160
+00:20:56,060 --> 00:20:56,980
+This is pretty cool.
+
+161
+00:20:56,980 --> 00:20:57,980
+I mean, this is just chat.
+
+162
+00:20:57,980 --> 00:20:59,540
+GPT just made that for me.
+
+163
+00:20:59,620 --> 00:21:01,660
+It actually made a better one than that.
+
+164
+00:21:01,820 --> 00:21:02,980
+And this is what I'm sure you're going to check.
+
+165
+00:21:06,960 --> 00:21:07,640
+Here you go.
+
+166
+00:21:09,420 --> 00:21:10,000
+Hi.
+
+167
+00:21:10,000 --> 00:21:11,180
+How are you letting Nancy?
+
+168
+00:21:13,020 --> 00:21:13,280
+Yeah.
+
+169
+00:21:13,280 --> 00:21:15,960
+I picked up, I had a coupon, some coupons for the bagel store.
+
+170
+00:21:15,960 --> 00:21:25,560
+So I thought it was a vanilla cream cold brew, but I'm out of
+
+171
+00:21:26,960 --> 00:21:32,100
+And so I'm going to maybe go get some in a little bit.
+
+172
+00:21:32,100 --> 00:21:39,280
+Also, my tripod I have is kind of like not doing too good.
+
+173
+00:21:41,500 --> 00:21:46,500
+So I'm gonna be probably returning the new one I got
+
+174
+00:21:46,500 --> 00:21:48,000
+because it doesn't really work for me.
+
+175
+00:21:48,000 --> 00:21:51,610
+I might keep it actually because I need a selfie stick.
+
+176
+00:21:51,610 --> 00:21:56,180
+But this other one, it's like it doesn't stay in there.
+
+177
+00:21:56,350 --> 00:21:59,550
+There's an attached anymore, so I just I just I was gonna get a new one
+
+178
+00:21:59,550 --> 00:22:03,630
+But I just ordered and then I like to refund it and everything, but I just I just ordered darksave
+
+179
+00:22:04,110 --> 00:22:06,270
+So it will come today
+
+180
+00:22:06,270 --> 00:22:08,590
+And I could uh, I can fix it
+
+181
+00:22:09,870 --> 00:22:11,870
+How's everybody doing?
+
+182
+00:22:13,740 --> 00:22:18,340
+But yeah, I had a good night last night, but I just wanted to give a make sure like you know
+
+183
+00:22:18,740 --> 00:22:21,380
+Since I'm starting to have the panel sponsored now
+
+184
+00:22:23,280 --> 00:22:27,760
+you know, if you do sponsor a panel in the future, if you have anything to advertise,
+
+185
+00:22:27,760 --> 00:22:33,200
+you know, I'll put it on the banner, your channel too, Duct Tape will always work. Yeah,
+
+186
+00:22:33,200 --> 00:22:37,940
+it's just like, see, it's like this, you just see how it is, like, are you see the alien?
+
+187
+00:22:40,910 --> 00:22:44,830
+My friend. Yeah, this like, it has this like, you know,
+
+188
+00:22:45,780 --> 00:22:49,460
+where you screwed this part in, you screw this into like this thing.
+
+189
+00:22:49,780 --> 00:22:54,380
+But they're like all war all the they're all worn down just for me for me using it so much
+
+190
+00:22:54,380 --> 00:22:57,340
+So it's all over you. So I ordered some gorilla tape
+
+191
+00:22:58,670 --> 00:23:04,190
+But it will come today. I had to pay a few bucks extra to have it come today, but you know, uh-oh
+
+192
+00:23:04,710 --> 00:23:08,230
+It's worth it for the show. I even one. How are you?
+
+193
+00:23:09,180 --> 00:23:12,300
+Yeah, it's cool. Yeah, the spunky got this for me. Isn't that awesome?
+
+194
+00:23:13,140 --> 00:23:15,940
+Alia with the kitty cat
+
+195
+00:23:16,910 --> 00:23:22,750
+Hey, what's up? How's everyone doing? So guys guess what I found out? I found out I was like I was like
+
+196
+00:23:23,390 --> 00:23:27,750
+Got like a discord notification or something or something or rumble notification
+
+197
+00:23:27,750 --> 00:23:35,350
+I got a notification on rumble and I said it was like oh it had it had my name on it. It was like it was like
+
+198
+00:23:36,270 --> 00:23:40,150
+Saying like my show psyche awakens tarot. They had my exact title
+
+199
+00:23:40,920 --> 00:23:43,920
+Other what is this and I went and I looked and someone is someone
+
+200
+00:23:44,920 --> 00:23:46,920
+Someone streams my show
+
+201
+00:23:48,180 --> 00:23:53,600
+Onto rumble and it's on this channel called panel verse and so it's already on rumble and it's like, you know, I
+
+202
+00:23:54,300 --> 00:23:59,300
+Tried to scream to rumble. It's just too complicated. It's also I can have a minimum thing
+
+203
+00:23:59,300 --> 00:24:01,640
+It seems like it's streamed you you're still evil
+
+204
+00:24:02,700 --> 00:24:05,660
+Well, yeah, so there's a minimum like a number of like ways to
+
+205
+00:24:08,510 --> 00:24:14,830
+Know to stream right now, but I don't think rumble will be the way to go. I mean I was getting some views there, but
+
+206
+00:24:15,520 --> 00:24:20,640
+I don't care if this other person that who's called the panel versus streams my every show because actually it's kind of cool because
+
+207
+00:24:21,230 --> 00:24:23,630
+then I have the archive of my shows without
+
+208
+00:24:24,910 --> 00:24:29,470
+How they to save all them I can still delete them on my shirt my channel. It's pretty cool
+
+209
+00:24:29,950 --> 00:24:34,510
+Yeah, I don't know who cares about it. Thank you. You get form on rumble. I don't think for rumble
+
+210
+00:24:34,510 --> 00:24:36,510
+Even like it checks the videos or anything
+
+211
+00:24:39,760 --> 00:24:45,040
+Yeah, so let me see how am I gonna hold up my I think I put it up in a tissue box. Let me see
+
+212
+00:24:46,180 --> 00:24:57,360
+That's kind of a little bit low. Put it inside. Oh, yeah, it's not like ideal right now. I'll put it like that.
+
+213
+00:25:01,260 --> 00:25:05,860
+I will work. As soon as the gorilla tape gets here, I will put this on.
+
+214
+00:25:05,860 --> 00:25:09,380
+Put that up like, okay, that kind of works. Well, not really. That does not work.
+
+215
+00:25:24,590 --> 00:25:27,590
+Hey, oh, you want to link random guy? Okay, hold on. Oh
+
+216
+00:25:28,890 --> 00:25:35,850
+Shit, yeah, we do have an hour from summer. Still I'm carrying over from last night. I will carry over the
+
+217
+00:25:37,100 --> 00:25:41,930
+The hours if I happen to end and soon, you know, I mean I make sure that
+
+218
+00:25:43,020 --> 00:25:49,100
+And also I'm going to make sure if you if anybody does sponsor a panel in the future
+
+219
+00:25:49,100 --> 00:25:54,980
+Good morning. Not only does open the panel, but you get a full advertisement on the screen on the banner the whole time
+
+220
+00:25:55,580 --> 00:25:59,100
+That uh, it will run. Okay, so that's pretty good
+
+221
+00:25:59,990 --> 00:26:12,940
+Deal, I think maybe I'll do some other things like have a raffle for the people that have sponsored panel and for
+
+222
+00:26:13,620 --> 00:26:16,260
+free gift or something like that too, so
+
+223
+00:26:18,100 --> 00:26:21,500
+How would I make sure everyone has fun? Oh, you're coming random guy
+
+224
+00:26:25,200 --> 00:26:31,140
+You're gay, right? Would you would you fucking would you rock that? I think sick bro. Come on
+
+225
+00:26:31,760 --> 00:26:33,760
+Would you rock that? I
+
+226
+00:26:33,940 --> 00:26:37,900
+Like that's like the fucking Marth mobile almost kind of huh?
+
+227
+00:26:39,060 --> 00:26:43,400
+What should I do try to drive it? Should I drive it? Should I keep it? What should I do? Come on? What should I do?
+
+228
+00:26:43,940 --> 00:26:47,700
+I'd you like it. Yeah, look at it like it. It's cute. I mean it's a cute little
+
+229
+00:26:48,980 --> 00:26:54,860
+Yeah, I don't really see a light blue car nowadays, you know, it's not that calm of a color like a little powder blue or
+
+230
+00:26:56,780 --> 00:26:58,780
+Yeah, does it remind you of Wayne's World?
+
+231
+00:26:59,970 --> 00:27:05,490
+I don't know. I haven't seen Wayne's World in so long, but you know, I bet it would if I seen it recently
+
+232
+00:27:06,850 --> 00:27:08,850
+But I don't know what happened your car's being towed away
+
+233
+00:27:09,740 --> 00:27:15,300
+No, it's I'm telling it fool. Are you towing it? Are you a tow truck driver? Yeah. Oh
+
+234
+00:27:16,100 --> 00:27:17,230
+cool
+
+235
+00:27:17,230 --> 00:27:25,330
+it's a good little little little job well gotta go see you bye you just wanted to show me that
+
+236
+00:27:25,330 --> 00:27:35,460
+little car on the boot the blue car is booted oh he wants to keep it was it my really that kind of
+
+237
+00:27:35,460 --> 00:27:40,580
+car i see oh you gotta go hold up i need my glasses okay guys i'm getting the jeffrey
+
+238
+00:27:48,820 --> 00:27:53,700
+I'll be sure that I'm gonna Amazon is really good. I mean, I like these but they're like crooked
+
+239
+00:27:53,700 --> 00:27:57,820
+They look crooked on my head birthday face. First of all, I don't know if it's my nose or something
+
+240
+00:27:57,820 --> 00:28:02,100
+But they're already I've already sat on them at times. So they're crooked, right? And then second of all
+
+241
+00:28:03,070 --> 00:28:04,940
+You know
+
+242
+00:28:04,940 --> 00:28:06,500
+Okay, so last night
+
+243
+00:28:06,500 --> 00:28:09,320
+Okay, has everybody heard the famous page
+
+244
+00:28:10,100 --> 00:28:15,820
+And Alex song or is anybody heard that because I bet that was like, okay
+
+245
+00:28:15,820 --> 00:28:19,060
+I've been the service that was like, oh make a AI music video
+
+246
+00:28:20,050 --> 00:28:22,010
+And so it was like really like fancy.
+
+247
+00:28:22,010 --> 00:28:24,210
+I was like, oh my God, well, this looks really cool.
+
+248
+00:28:24,210 --> 00:28:27,330
+And so I like, it was like, it does automatically
+
+249
+00:28:27,330 --> 00:28:30,090
+it figures out like the exact like meaning of the song
+
+250
+00:28:30,090 --> 00:28:32,890
+story and a bit as a storyboard and it does as graphics.
+
+251
+00:28:32,890 --> 00:28:34,730
+And it's like, and then it started putting it together.
+
+252
+00:28:34,730 --> 00:28:38,490
+I got, I subscribed like $19 a month to get, you know,
+
+253
+00:28:38,490 --> 00:28:40,640
+just a subscription on it.
+
+254
+00:28:40,640 --> 00:28:43,080
+And then like halfway through, it looks like it started
+
+255
+00:28:43,080 --> 00:28:44,320
+looking so, it would look so cool.
+
+256
+00:28:44,320 --> 00:28:47,890
+You guys are going to love it, but like halfway through
+
+257
+00:28:47,890 --> 00:28:48,730
+in a
+
+258
+00:28:48,820 --> 00:28:53,540
+It like stops or like I started this and I went look and it said it ran out of credits
+
+259
+00:28:54,060 --> 00:28:59,110
+So I spent like $19 on all these credits and made like over half the video may probably three quarters of the video
+
+260
+00:28:59,110 --> 00:29:05,030
+Oh, Jamie. How are you? I'm sorry. I didn't see hey. I hope you yeah, Jamie. Jamie herself. Oh
+
+261
+00:29:05,910 --> 00:29:10,590
+You're really bad. You're alive and rusty in the house. Oh my god. I hope you're hope you're doing good. Jamie
+
+262
+00:29:11,790 --> 00:29:16,110
+Love you sweetie. Hi everybody. Oh
+
+263
+00:29:27,920 --> 00:29:34,040
+Yeah, I heard that she had some your teeth your teeth. Oh, I hope you're okay, Jamie. You're dental or
+
+264
+00:29:35,000 --> 00:29:39,790
+Needs some dental surgery. I hope you're okay. We're not in too much pain. You're in the hospital
+
+265
+00:29:47,770 --> 00:29:53,810
+Jamie's she's not okay. I think that RIP. I was like, oh my god. I'm sorry. See me. Oh
+
+266
+00:29:55,930 --> 00:29:57,050
+Wow
+
+267
+00:29:57,050 --> 00:30:06,920
+Oh collapse law. Oh my gosh, that sounds like it pain for them. So sorry, Jamie
+
+268
+00:30:07,320 --> 00:30:10,480
+Well, do you want to just do it and cheer up? I have something to cheer you up, Jamie
+
+269
+00:30:11,280 --> 00:30:15,400
+without further ado.
+
+270
+00:30:15,400 --> 00:30:18,990
+So this is the song that I will have this song,
+
+271
+00:30:18,990 --> 00:30:21,790
+this song put to a video.
+
+272
+00:30:21,790 --> 00:30:23,870
+But I spent all these credits and I have to,
+
+273
+00:30:23,870 --> 00:30:28,350
+so it's like, if I, if I want to finish out that video,
+
+274
+00:30:28,350 --> 00:30:30,350
+which I will do, I'll finish the video.
+
+275
+00:30:34,860 --> 00:30:36,980
+They're trying to charge me $15 of credits
+
+276
+00:30:36,980 --> 00:30:39,060
+to make, to like, to finish the video, I think.
+
+277
+00:30:39,060 --> 00:30:42,060
+So, or maybe, I think I'll have some leftover, but.
+
+278
+00:30:42,240 --> 00:30:48,000
+I'll play the Alex. Here's the Alex and Paige song going here guys. Alex and Paige. This is called
+
+279
+00:30:49,420 --> 00:30:51,420
+Paige
+
+280
+00:31:24,050 --> 00:31:28,770
+called a glimpse of her smile now he's doing the math from the Bronx to the bush oh he's thinking
+
+281
+00:31:28,770 --> 00:31:38,420
+real deep page are you the one i've been missing in my sleep page will you fall in love a fishing
+
+282
+00:31:38,420 --> 00:32:08,420
+rod for jokes he said she's gutting trout he's eating steaks a fishing pole chase her laughter
+
+283
+00:32:22,320 --> 00:32:52,320
+like it's his patrol got one hell of a say oh thank you let me have a look yeah i'm sorry it looks
+
+284
+00:34:47,700 --> 00:34:55,500
+and uh the hospital bed the cars are wrecked i mean it's so lucky you survived oh my order is being
+
+285
+00:34:55,500 --> 00:35:01,330
+delivered out for delivery i think i'm getting some new cards today guys it should be an exciting day
+
+286
+00:35:01,890 --> 00:35:07,170
+hey i'm glad you're okay jimmy so i got lunch today i got uh nova locks and i had a coupon for
+
+287
+00:35:07,170 --> 00:35:16,640
+three dollars off of nova locks and a coffee cold brew so oh are we still muted hold on hello do you
+
+288
+00:35:19,700 --> 00:35:38,900
+I'm not made of it anymore. How's everybody doing though? I mean, it's like, you know, just let's be happy Jamie's alive
+
+289
+00:35:38,900 --> 00:35:40,300
+We're all alive
+
+290
+00:35:40,300 --> 00:35:46,330
+The life can be fragile, right? Oh
+
+291
+00:35:47,170 --> 00:35:57,660
+My stomach just paced him by CB. Yeah, it's awful. The pictures looks just terrible. She's like looks like she's she's all
+
+292
+00:35:58,140 --> 00:35:59,520
+the bloody
+
+293
+00:35:59,520 --> 00:36:02,470
+Yikes out Jamie. I'm sorry
+
+294
+00:36:03,150 --> 00:36:07,640
+Who my stomach is growling? Yeah. Oh
+
+295
+00:36:31,920 --> 00:36:37,860
+Yeah, but you know, it's it was good about the panel too. It's like if you now people like this is monetize now the panel
+
+296
+00:36:43,080 --> 00:36:45,200
+First of all means I you know, I'll be okay
+
+297
+00:36:45,200 --> 00:36:51,120
+I think my show will always be okay because you know always people as long as I have you guys there my audience there
+
+298
+00:36:51,560 --> 00:36:56,020
+You know, I will I will be on YouTube because
+
+299
+00:36:57,320 --> 00:36:59,320
+Whether monetize or not
+
+300
+00:36:59,320 --> 00:37:02,240
+The monitor shows monetize. Okay. The second of all
+
+301
+00:37:02,660 --> 00:37:06,260
+some people like to still like me they want to you want to yell like gay people or get some steam
+
+302
+00:37:06,260 --> 00:37:11,120
+off and it's like and so you know or just be disrespectful to me and yeah you're gonna be
+
+303
+00:37:11,120 --> 00:37:16,000
+disrespectful to me just like when i forget my tts setup people can put very insulting comments in
+
+304
+00:37:16,000 --> 00:37:20,720
+it but i won't really care because i'll be kidding every comment you know i'll be getting a donation so
+
+305
+00:37:23,040 --> 00:37:31,360
+so yeah money helps sometimes so yeah oh i pulled them pulled in front of you oh my gosh who's driving
+
+306
+00:37:33,300 --> 00:37:39,990
+His mom, okay, I heard mom's knees, mom's knees a little, a little, hanged up.
+
+307
+00:37:41,880 --> 00:37:53,570
+Oh, my tummy is just going nuts.
+
+308
+00:37:55,480 --> 00:38:00,580
+So guys, yesterday I cleaned my house and it's like so
+
+309
+00:38:01,560 --> 00:38:06,780
+nice. It's like the, you know, the, the, the laundry's all done, the
+
+310
+00:38:07,820 --> 00:38:11,170
+dishes are all done.
+
+311
+00:38:12,110 --> 00:38:17,650
+The I have like scrubbed down all the surfaces. I went through all this cleaner. I cleaned my table up last night
+
+312
+00:38:17,650 --> 00:38:20,850
+I clean my that like the TV area. I clean every surface
+
+313
+00:38:21,810 --> 00:38:26,570
+I'm gonna get him back him soon. Don't drive you boat. You she voted last minute ouchy
+
+314
+00:38:27,090 --> 00:38:29,690
+Hi, hi. Hey, I see ya
+
+315
+00:38:33,000 --> 00:38:34,240
+Yeah
+
+316
+00:38:34,240 --> 00:38:40,780
+You know what else there? You know what else is a good song though guys
+
+317
+00:38:40,780 --> 00:38:46,340
+This is the the gaudy songs, but I'll tell me tell me when you went out here. They weren't heard the gaudy song
+
+318
+00:38:47,020 --> 00:38:50,580
+God he actually cried when I played it. He was like so touched
+
+319
+00:38:51,380 --> 00:38:53,380
+It is a cute song too
+
+320
+00:38:55,520 --> 00:38:57,680
+But I've never seen him seen him
+
+321
+00:38:59,350 --> 00:39:01,470
+Like that. That's it was really touching
+
+322
+00:39:03,140 --> 00:39:10,440
+Doing okay the page now. I'm gonna make that page in Alex. I'm gonna have that finished and that's guys that video is hilarious
+
+323
+00:39:10,990 --> 00:39:26,990
+It's just about, you know, it's Alex, I don't know how they figure out, like, what Paige and Alex might look like, but I think it looks like Paige and Alex, like, the cartoon, basically, of, like, you know, animating that video.
+
+324
+00:39:26,990 --> 00:39:33,890
+It's so funny.
+
+325
+00:39:33,890 --> 00:39:35,890
+Y'all, hey, Irby.
+
+326
+00:39:35,890 --> 00:39:37,890
+We're doing good today.
+
+327
+00:39:37,890 --> 00:39:48,950
+Look at my alien saying hello.
+
+328
+00:39:53,100 --> 00:40:00,650
+Yes. Hey, Irby.
+
+329
+00:40:00,650 --> 00:40:06,180
+I'm sorry, it's my sweet pea that I didn't see. Let me say Sweet Pea.
+
+330
+00:40:06,180 --> 00:40:13,720
+Hey, Jamie. Oh, hi, Jamie. Hi, Sweet Pea. I'm sorry. I was, I, I like, just get distracted and stuff.
+
+331
+00:40:13,720 --> 00:40:19,850
+I love you, Sweet Pea. You're sweet. You're a mod. Hey mods. Okay, Sweet Pea's a member. Jamie's Cowboys a member.
+
+332
+00:40:19,850 --> 00:40:24,390
+Reality Nancy is a mod.
+
+333
+00:40:24,390 --> 00:40:27,250
+Let me see.
+
+334
+00:40:27,250 --> 00:40:32,790
+Jamie's Cowboys, you got Nancy, Charisma Hernandez is a mod, He-Man is a mod, and a member.
+
+335
+00:40:34,480 --> 00:40:40,320
+Yep. Hey everybody. See you. Do shout outs for all the members. Yep. I think Jamie's...
+
+336
+00:40:40,880 --> 00:40:42,910
+Yeah, I think God Jamie's okay.
+
+337
+00:40:43,070 --> 00:40:46,290
+Well, we wait for people to get here. Also, I'll just play the Goddy song.
+
+338
+00:40:46,290 --> 00:40:49,750
+Do you guys want to hear the Goddy song or no? Hey Jenny girl, what's up?
+
+339
+00:40:50,750 --> 00:40:52,780
+Aww.
+
+340
+00:40:52,780 --> 00:40:58,780
+I'll play the Gaudi song. I want to animate the Gaudi song too. I just don't know how expensive it is, so I might...
+
+341
+00:40:58,780 --> 00:41:04,170
+I think I'll do it. Yeah. Yay, Jamie's here, guys.
+
+342
+00:41:04,170 --> 00:41:12,170
+I think I had, like, the video. I think I had, like, the lowest settings or whatever for it, but I can't believe I used all my credits for, like, almost three quarters of the video.
+
+343
+00:41:12,170 --> 00:41:18,170
+But anyway, here's the song. Hey, Jamie. Here's the Gaudi song. You guys like Gaudi? Here's Gaudi song.
+
+344
+00:41:20,400 --> 00:41:26,040
+Out of New York came a storm on wheels rolling in smooth with the mafia feels
+
+345
+00:41:26,360 --> 00:41:28,880
+Cuban cigar lit like it's temper
+
+346
+00:41:29,040 --> 00:41:33,840
+Pizza in one hand hot dog for dinner said psyche on board had to switch the scene
+
+347
+00:41:34,000 --> 00:41:36,680
+Left some poor woman screaming on live stream
+
+348
+00:41:37,080 --> 00:41:41,780
+Trolled her down to the void and back then crashed my show like a heart attack
+
+349
+00:41:49,280 --> 00:41:51,450
+Oh, they should tell you more than bland.
+
+350
+00:41:51,450 --> 00:41:55,290
+They dangerous, wild, but they still my friends.
+
+351
+00:41:55,290 --> 00:41:59,250
+Yeah, love you God, until the bitter end, we fight.
+
+352
+00:41:59,470 --> 00:42:03,910
+We troll, but we friends forever, my friend.
+
+353
+00:42:03,910 --> 00:42:15,000
+I think she's God.
+
+354
+00:42:15,150 --> 00:42:19,350
+With the lower case G in a wheelchair still stomping through the live feed
+
+355
+00:42:19,350 --> 00:42:22,150
+Bout of your king while smoking that leaf
+
+356
+00:42:22,150 --> 00:42:25,150
+Laughing at chaos like it's comic relief brought
+
+357
+00:42:25,150 --> 00:42:27,150
+Spunky too now that trolls a gem
+
+358
+00:42:27,150 --> 00:42:30,150
+Mean one sweet ones they all jumped in
+
+359
+00:42:30,150 --> 00:42:32,150
+Cameras glitchin chat on fire
+
+360
+00:42:32,150 --> 00:42:35,070
+Mods beggin me to cut the wire
+
+361
+00:42:35,070 --> 00:42:38,590
+But nah, I like my circus, I love this mess
+
+362
+00:42:38,590 --> 00:42:41,070
+Every troll's just a test of a mess
+
+363
+00:42:41,070 --> 00:42:43,310
+Got you rude, absurd, and free
+
+364
+00:42:43,310 --> 00:42:45,950
+But deep down you got loyalty
+
+365
+00:42:45,950 --> 00:42:52,080
+Got a made man, troll kids like he's in control
+
+366
+00:42:52,080 --> 00:42:56,740
+The honest Italian love, they dangerous wild
+
+367
+00:42:56,740 --> 00:43:03,490
+But they still not
+
+368
+00:43:03,490 --> 00:43:08,220
+We troll, we friends, forever my friend
+
+369
+00:43:08,220 --> 00:43:13,440
+You called me a fraud, then defended my clown
+
+370
+00:43:13,440 --> 00:43:15,040
+Spam my chat
+
+371
+00:43:15,150 --> 00:43:25,680
+then held it down out layers like a deep dish slice under all that shade a heart
+
+372
+00:43:25,680 --> 00:43:32,080
+made of ice and maybe rice so let's light that cigar raise the mic another night of
+
+373
+00:43:32,080 --> 00:43:38,720
+chaos welcome to psych you brought the drama the heat for fun and weirdly it feels like
+
+374
+00:43:38,720 --> 00:43:43,820
+you're the one got it crazy but your family now
+
+375
+00:44:23,790 --> 00:44:28,070
+If I have to say so myself that is a good song. Oh god, he's crying. I don't need to
+
+376
+00:44:29,270 --> 00:44:33,640
+Is that a sweet song? That is a sweet song. Yeah, Jamie's here. God if Jamie's in the chat
+
+377
+00:44:39,600 --> 00:45:00,600
+Okay, 11 hours long. No, they came in trying to bull you and attack you and you still survive. They didn't and we learned right. Yeah, a lot of people didn't let you into the sector that I found doing because we found each other in the beef sector. I didn't find you over here with beta and all that. You already were over there and I remember how the black
+
+378
+00:45:06,420 --> 00:45:08,340
+But in return, look what happened.
+
+379
+00:45:08,340 --> 00:45:09,900
+So all this has happened to you.
+
+380
+00:45:09,900 --> 00:45:11,180
+It's gross.
+
+381
+00:45:11,180 --> 00:45:12,500
+You have.
+
+382
+00:45:12,500 --> 00:45:13,340
+Because it's-
+
+383
+00:45:13,340 --> 00:45:14,180
+It's hazy, right?
+
+384
+00:45:14,180 --> 00:45:15,140
+It's hazy.
+
+385
+00:45:15,140 --> 00:45:16,380
+Yes, sir, right.
+
+386
+00:45:16,380 --> 00:45:18,140
+And even college, they do it, right?
+
+387
+00:45:18,140 --> 00:45:19,180
+High school, they did it.
+
+388
+00:45:19,180 --> 00:45:20,620
+Middle school, they did it.
+
+389
+00:45:20,620 --> 00:45:23,860
+But these people are actually tragically
+
+390
+00:45:23,860 --> 00:45:26,300
+projecting their life onto you.
+
+391
+00:45:26,300 --> 00:45:28,540
+So a lot of the stuff that they've said or done,
+
+392
+00:45:28,540 --> 00:45:32,100
+it's because you're very transparent on just being you.
+
+393
+00:45:32,220 --> 00:45:33,820
+You told us you were on drugs.
+
+394
+00:45:33,820 --> 00:45:34,940
+You told us you survived.
+
+395
+00:45:34,940 --> 00:45:36,860
+You told us you just survived stabbings
+
+396
+00:45:36,860 --> 00:45:38,780
+and all types of crazy stuff,
+
+397
+00:45:38,780 --> 00:45:40,940
+but you still want to help people.
+
+398
+00:45:40,940 --> 00:45:42,620
+That says a lot.
+
+399
+00:45:42,620 --> 00:45:44,460
+Because a lot of people that are hurt,
+
+400
+00:45:44,460 --> 00:45:46,140
+they hurt other people.
+
+401
+00:45:46,140 --> 00:45:46,980
+Right.
+
+402
+00:45:46,980 --> 00:45:49,340
+And yet you were hurt and still tried to help.
+
+403
+00:45:49,810 --> 00:45:56,270
+So people tried to hurt and lie on me. You didn't see me out here. I didn't make videos about you. We talked about this
+
+404
+00:45:57,270 --> 00:46:00,890
+Don't talk about me. I didn't let RG on my channel
+
+405
+00:46:00,890 --> 00:46:04,450
+I didn't stop man's ass that man gave Jimmy over
+
+406
+00:46:05,330 --> 00:46:07,650
+$600 that man supported him
+
+407
+00:46:07,690 --> 00:46:14,610
+But when he got exiled when you get removed when you tell people to go away and they have nothing
+
+408
+00:46:16,010 --> 00:46:18,010
+Rejection becomes obsession
+
+409
+00:46:19,470 --> 00:46:22,030
+See these people are in real time.
+
+410
+00:46:22,030 --> 00:46:24,810
+This is all they have.
+
+411
+00:46:24,810 --> 00:46:27,690
+So when you learn, then you move accordingly
+
+412
+00:46:27,690 --> 00:46:29,490
+because I wouldn't sit with them in real time.
+
+413
+00:46:29,490 --> 00:46:31,930
+They don't benefit, you can't benefit.
+
+414
+00:46:31,930 --> 00:46:36,290
+Me and you went out and the bill was $130.
+
+415
+00:46:36,290 --> 00:46:38,810
+I would grab that bill, you would grab that bill,
+
+416
+00:46:38,810 --> 00:46:41,780
+we'd be up there pulling that bill together, wouldn't we?
+
+417
+00:46:41,780 --> 00:46:46,820
+Yeah, for sure. Oh, here's the school bathroom. Have you had school bathrooms here? There we go
+
+418
+00:46:49,100 --> 00:46:54,980
+Nice to meet you too. I'm just keeping I'm listening to you. You speak well. I like the way you speak really well
+
+419
+00:46:55,760 --> 00:47:01,960
+You said absence becomes obsession or like rejection becomes obsession.
+
+420
+00:47:01,960 --> 00:47:02,960
+I like that.
+
+421
+00:47:02,960 --> 00:47:03,960
+That was good.
+
+422
+00:47:03,960 --> 00:47:04,960
+Well said.
+
+423
+00:47:04,960 --> 00:47:08,600
+Yes, because again, this is all you have in the real world.
+
+424
+00:47:08,600 --> 00:47:09,600
+No one likes you.
+
+425
+00:47:09,600 --> 00:47:10,600
+You don't go outside.
+
+426
+00:47:10,600 --> 00:47:11,600
+You don't engage.
+
+427
+00:47:11,600 --> 00:47:13,120
+You're locked in a box.
+
+428
+00:47:13,120 --> 00:47:17,600
+So when then you come out here and you think that we have to accept you, that we have to
+
+429
+00:47:17,600 --> 00:47:20,600
+tolerate you and put up with you, but we don't.
+
+430
+00:47:20,600 --> 00:47:24,080
+When we're in our own homes, we don't ask you to come knock on our door.
+
+431
+00:47:24,080 --> 00:47:28,480
+So when you come and knock on our door here, then know that you have to bring something
+
+432
+00:47:28,480 --> 00:47:38,160
+to the table. A lot of people don't have social character, personality. We can't walk in a room
+
+433
+00:47:38,160 --> 00:47:44,190
+and engage with everyone. Some people just don't understand that being socially awkward means that
+
+434
+00:47:44,190 --> 00:47:47,790
+you can't talk to everyone and you're jealous when others can.
+
+435
+00:47:49,230 --> 00:47:56,630
+Here here character of a person not the color of their skin and the character of a person means that if you greet me
+
+436
+00:47:56,630 --> 00:48:01,550
+I'll greet you that means if you say hello nice lady. I'll say hello gentlemen
+
+437
+00:48:02,550 --> 00:48:05,110
+You try to touch it you can get snack
+
+438
+00:48:08,710 --> 00:48:14,100
+Don't throw a rock to try to hide your hand if you stay behind the screen
+
+439
+00:48:16,260 --> 00:48:21,120
+Yeah, I'll wait because you want to argue with people but your life is the facts
+
+440
+00:48:21,620 --> 00:48:28,600
+You can run these people for the facts of their life. They're negative and nasty because that's yeah. Yeah. Yeah. Yeah. Yeah
+
+441
+00:48:28,600 --> 00:48:32,880
+I like how you said I'll wait to I'll wait, you know because
+
+442
+00:48:33,440 --> 00:48:37,880
+Waiting right and listening to somebody else. It's it's interesting. That's interesting
+
+443
+00:48:38,760 --> 00:48:44,280
+Yeah, they thought they were gonna wait and tell me I was ugly and tell me that I wasn't here to help site
+
+444
+00:48:44,900 --> 00:48:48,120
+I helped, I never asked him for nothing.
+
+445
+00:48:48,120 --> 00:48:48,960
+Still.
+
+446
+00:48:48,960 --> 00:48:51,080
+Yeah, that's the thing, because it helps him.
+
+447
+00:48:51,080 --> 00:48:52,320
+I left here.
+
+448
+00:48:52,320 --> 00:48:54,200
+I never used anything that we went through
+
+449
+00:48:54,200 --> 00:48:56,140
+against what I loved him for.
+
+450
+00:48:56,750 --> 00:49:01,310
+Yeah, because if we help him he doesn't owe us anything like are you are we helping
+
+451
+00:49:02,590 --> 00:49:07,070
+Help him or are we helping him because you know, we want to look good
+
+452
+00:49:08,510 --> 00:49:10,510
+You know
+
+453
+00:49:14,590 --> 00:49:18,830
+Thanks for the membership, bro, I love it when it goes to like one of my boys
+
+454
+00:49:26,350 --> 00:49:28,110
+And then he puts small members of my kid,
+
+455
+00:49:28,110 --> 00:49:29,610
+I can't watch that shit.
+
+456
+00:49:29,610 --> 00:49:31,690
+I was like, I bet, now I can watch it.
+
+457
+00:49:31,690 --> 00:49:32,530
+I appreciate that.
+
+458
+00:49:32,530 --> 00:49:36,930
+Somebody bought me one, I got it like last month
+
+459
+00:49:36,930 --> 00:49:39,170
+and it just ran out, so I paid it for it, you know?
+
+460
+00:49:39,170 --> 00:49:40,010
+I paid it for it.
+
+461
+00:49:40,010 --> 00:49:40,850
+I appreciate you, baby.
+
+462
+00:49:40,850 --> 00:49:41,690
+And that was nice, thank you guys so much.
+
+463
+00:49:41,690 --> 00:49:43,690
+That's what's going on in the community, guys.
+
+464
+00:49:43,710 --> 00:49:51,070
+some people don't even say thank you for the membership that was yeah yeah that's
+
+465
+00:49:51,070 --> 00:49:55,230
+Athens is a real one bro like yo appreciate it yeah no doubt bro no doubt
+
+466
+00:49:55,230 --> 00:49:59,190
+his emphasis is good too she's she's speaking truth you know you hear her
+
+467
+00:49:59,190 --> 00:50:07,790
+speaking unfortunately psych I'm gonna leave because that
+
+468
+00:50:07,790 --> 00:50:10,590
+That right there likes to be nice.
+
+469
+00:50:10,590 --> 00:50:12,950
+I think you might want to apologize.
+
+470
+00:50:12,950 --> 00:50:14,750
+Remember we were able to make some progress today.
+
+471
+00:50:14,750 --> 00:50:16,550
+Never apologize, Scythe.
+
+472
+00:50:16,550 --> 00:50:17,950
+Hey, my children.
+
+473
+00:50:17,950 --> 00:50:19,990
+You tried to sleep with a 27-year-old.
+
+474
+00:50:19,990 --> 00:50:20,990
+I did not.
+
+475
+00:50:20,990 --> 00:50:21,990
+I did not.
+
+476
+00:50:21,990 --> 00:50:22,990
+That's great.
+
+477
+00:50:22,990 --> 00:50:23,990
+I took them off.
+
+478
+00:50:23,990 --> 00:50:24,990
+I took them off.
+
+479
+00:50:24,990 --> 00:50:25,990
+I did not.
+
+480
+00:50:25,990 --> 00:50:26,990
+I took them off.
+
+481
+00:50:26,990 --> 00:50:27,990
+I took them off.
+
+482
+00:50:27,990 --> 00:50:28,990
+I did not.
+
+483
+00:50:28,990 --> 00:50:29,990
+I took them off.
+
+484
+00:50:29,990 --> 00:50:30,990
+I did not.
+
+485
+00:50:30,990 --> 00:50:31,990
+I took them off.
+
+486
+00:50:31,990 --> 00:50:32,990
+I did not.
+
+487
+00:50:32,990 --> 00:50:33,990
+I did not.
+
+488
+00:50:36,140 --> 00:50:37,660
+So I had no problem.
+
+489
+00:50:37,660 --> 00:50:38,500
+R.G. did that?
+
+490
+00:50:38,500 --> 00:50:39,340
+I didn't know R.G. did that.
+
+491
+00:50:39,340 --> 00:50:40,460
+Oh yeah, he did.
+
+492
+00:50:40,460 --> 00:50:41,860
+Okay, I'm sorry I didn't know.
+
+493
+00:50:41,860 --> 00:50:45,100
+My daughter's not only fast when she's a registered nurse.
+
+494
+00:50:45,100 --> 00:50:48,660
+So again, sir, I don't have no problem with this man,
+
+495
+00:50:48,660 --> 00:50:50,460
+but he don't talk about my family.
+
+496
+00:50:50,460 --> 00:50:53,860
+So if he wants to drag Empress or whatever he wants to say,
+
+497
+00:50:53,860 --> 00:50:55,740
+he is more than welcome to,
+
+498
+00:50:55,740 --> 00:50:57,740
+but you won't put my children in it.
+
+499
+00:50:57,740 --> 00:50:58,580
+You keep it on me.
+
+500
+00:50:58,900 --> 00:51:00,900
+I don't, I don't believe in putting kids on it.
+
+501
+00:51:00,900 --> 00:51:05,900
+Janet been talking shit about me about the dumbest shit in the world and I just ignore it, but I mean at the end of the day.
+
+502
+00:51:05,900 --> 00:51:09,900
+Well, I know you. Don't act like you don't come from where I come. Like, don't act like you weren't in any place.
+
+503
+00:51:09,900 --> 00:51:12,900
+I don't. You and the beef sector. I mean, I don't come from the beef sector.
+
+504
+00:51:12,900 --> 00:51:15,900
+Don't act like you weren't on the phone with Brittany. Like, stop.
+
+505
+00:51:15,900 --> 00:51:16,900
+What are you talking about?
+
+506
+00:51:16,900 --> 00:51:17,900
+Okay, what do you mean?
+
+507
+00:51:17,900 --> 00:51:20,900
+You used to talk to me on the phone back in the day when we were-
+
+508
+00:51:20,900 --> 00:51:22,900
+Bitch, we talked one time, bitch.
+
+509
+00:51:22,900 --> 00:51:24,900
+Okay, so that's how we know each other.
+
+510
+00:51:24,900 --> 00:51:26,900
+I don't know that other man.
+
+511
+00:51:28,340 --> 00:51:30,340
+I don't fucking hate anybody.
+
+512
+00:51:30,340 --> 00:51:32,340
+You're a goofy and a bozo.
+
+513
+00:51:32,340 --> 00:51:33,340
+Why are you so mad?
+
+514
+00:51:33,340 --> 00:51:34,340
+What the fuck are you talking about?
+
+515
+00:51:34,340 --> 00:51:35,340
+If you only talk to me one time.
+
+516
+00:51:35,340 --> 00:51:36,340
+Because I curse.
+
+517
+00:51:36,340 --> 00:51:37,340
+Nigga, what the fuck are you talking about?
+
+518
+00:51:37,340 --> 00:51:38,340
+I curse.
+
+519
+00:51:38,340 --> 00:51:39,340
+That's what I do.
+
+520
+00:51:39,340 --> 00:51:40,340
+I'm from New York.
+
+521
+00:51:40,340 --> 00:51:41,340
+I'm disrespectful.
+
+522
+00:51:41,340 --> 00:51:42,340
+The fuck are you talking about?
+
+523
+00:51:42,340 --> 00:51:43,340
+I ain't because I got him.
+
+524
+00:51:43,340 --> 00:51:44,340
+He talked to me more than one time.
+
+525
+00:51:44,340 --> 00:51:45,340
+No, I didn't.
+
+526
+00:51:45,340 --> 00:51:46,340
+No, I don't know.
+
+527
+00:51:46,340 --> 00:51:47,340
+You're a goofy bitch.
+
+528
+00:51:47,340 --> 00:51:48,340
+Rejection is a obsession.
+
+529
+00:51:48,340 --> 00:51:49,340
+Rejection, bitch.
+
+530
+00:51:49,340 --> 00:51:50,340
+I rejected you.
+
+531
+00:51:50,340 --> 00:51:51,340
+What the fuck are you talking about?
+
+532
+00:51:51,340 --> 00:51:52,340
+You're a goofy and a bozo.
+
+533
+00:51:52,340 --> 00:51:53,340
+Why are you so mad?
+
+534
+00:51:53,340 --> 00:51:54,340
+What the fuck are you talking about?
+
+535
+00:51:54,340 --> 00:51:55,340
+If you only talk to me one time.
+
+536
+00:51:57,550 --> 00:52:03,090
+You were the one that was crying I'm not the one that was crying when I came back on your stream Janet
+
+537
+00:52:03,170 --> 00:52:08,210
+Let's be real. I've never missed you. I didn't miss your eyes either. So it's 2 for 2
+
+538
+00:52:08,210 --> 00:52:15,550
+I've never asked you to come back. Wonderland is still going and we're still emphasizing and you're still irrelevant
+
+539
+00:52:15,670 --> 00:52:18,670
+How am I irrelevant you came on my stream Janet?
+
+540
+00:52:18,670 --> 00:52:23,670
+You were irrelevant. You came on my stream Janet. What the fuck are you talking about?
+
+541
+00:52:24,100 --> 00:52:25,820
+of you simping for the Empress.
+
+542
+00:52:25,820 --> 00:52:26,660
+You can't get out.
+
+543
+00:52:26,660 --> 00:52:27,500
+Simping for who, bitch?
+
+544
+00:52:27,500 --> 00:52:28,340
+For what?
+
+545
+00:52:28,340 --> 00:52:29,180
+I got to record it.
+
+546
+00:52:29,180 --> 00:52:30,620
+Bitch, you have a whole song dedicated to me,
+
+547
+00:52:30,620 --> 00:52:31,460
+you goofy bitch.
+
+548
+00:52:31,460 --> 00:52:32,300
+From my channel.
+
+549
+00:52:32,300 --> 00:52:34,300
+Remember you dedicated the Kendrick Lamar song to me?
+
+550
+00:52:34,300 --> 00:52:35,140
+We used to hate you.
+
+551
+00:52:35,140 --> 00:52:37,540
+Remember you dedicated the Kendrick Lamar song to me?
+
+552
+00:52:37,540 --> 00:52:38,380
+What song?
+
+553
+00:52:38,380 --> 00:52:39,220
+What song?
+
+554
+00:52:39,220 --> 00:52:40,060
+Loyalty.
+
+555
+00:52:40,060 --> 00:52:40,900
+Loyalty, Loyalty, Loyalty, Loyalty.
+
+556
+00:52:40,900 --> 00:52:41,740
+No, not the loyalty song.
+
+557
+00:52:41,740 --> 00:52:42,580
+It was another song.
+
+558
+00:52:42,580 --> 00:52:45,340
+There was some dude that was, what's his name?
+
+559
+00:52:45,340 --> 00:52:46,180
+Robert Wattney.
+
+560
+00:52:46,180 --> 00:52:47,020
+What's that song?
+
+561
+00:52:47,020 --> 00:52:48,340
+He convinced it.
+
+562
+00:52:48,340 --> 00:52:49,180
+DNA.
+
+563
+00:52:49,180 --> 00:52:50,380
+I got, I got, I got, I got.
+
+564
+00:52:50,380 --> 00:52:51,300
+You can't even argue.
+
+565
+00:52:51,300 --> 00:52:52,740
+I want to speak.
+
+566
+00:52:53,780 --> 00:53:01,410
+screen. I'm sorry. I'm sorry. He's a grown ass. If he only talked to me one time, why is he so angry?
+
+567
+00:53:02,050 --> 00:53:07,490
+He used to be in my community. It's like I can pull the clip where he's simped on my panel.
+
+568
+00:53:20,110 --> 00:53:29,600
+I just want to finish you guys are like you rule the world because again
+
+569
+00:53:30,770 --> 00:53:35,530
+at Bronzeberg. I just told you, Bronzeberg can invent all he wants about how he hates
+
+570
+00:53:35,530 --> 00:53:40,610
+Janet talking to me one time on the phone. He's mad that when he ran off with Mona from
+
+571
+00:53:40,610 --> 00:53:46,130
+the UK, because I took him over there, he's mad he picked the wrong bitch. Don't be mad
+
+572
+00:53:46,130 --> 00:53:52,090
+at me that you picked the wrong bitch and you lonely nigga. I got friends. I got a man.
+
+573
+00:54:01,420 --> 00:54:05,860
+I'm not gonna get jumped by no men. I got my fucking Mayweather hands
+
+574
+00:54:05,860 --> 00:54:10,500
+I'll throw punch the fuck out of these niggas in real-time Pat. Do you understand?
+
+575
+00:54:10,780 --> 00:54:13,070
+Got energy that
+
+576
+00:54:13,070 --> 00:54:16,150
+Masculates these gentlemen their dick gets inverted
+
+577
+00:54:16,670 --> 00:54:22,410
+So they're kind of respect the Empress if you don't fuck with me then why you got so much in energy for me
+
+578
+00:54:26,610 --> 00:54:36,610
+So you're fine. So literally made up alive about my deaf son mocking my deaf son who's 28 years old that has nothing to do with nothing.
+
+579
+00:54:36,610 --> 00:54:43,470
+My boyfriend and my friend boy that's a friend's calling right now. Give me one second. Yeah.
+
+580
+00:54:44,940 --> 00:54:50,380
+Hi, hi summer. Thank you so much. Yeah, I, you know, I ended a little early last night
+
+581
+00:54:50,380 --> 00:54:54,320
+So I'm carrying over over your your time today
+
+582
+00:54:55,100 --> 00:54:58,120
+Today, so no, I'll keep going for a
+
+583
+00:54:58,700 --> 00:55:04,460
+Let's pan off because we have Janet on so Janet, you know, if you don't know the history of Janet and I Janet was on
+
+584
+00:55:05,550 --> 00:55:08,990
+the show a few months ago when I was just, you know, really starting out the channel.
+
+585
+00:55:08,990 --> 00:55:12,670
+Okay, and Janet, is it okay? I mean, I don't, because I don't want Janet to leave,
+
+586
+00:55:12,670 --> 00:55:16,030
+because, you know, she's kind of fighting with you. Here's summer. Hold on one second.
+
+587
+00:55:18,610 --> 00:55:26,020
+Watch that some other time. Okay. You're gonna sleep. Good night.

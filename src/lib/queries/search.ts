@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import type { ContentStatus } from "@/generated/prisma/client";
+import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 // ── Result types ────────────────────────────────────────────────────
 
@@ -253,7 +254,7 @@ async function searchLore(query: string): Promise<SearchResultLore[]> {
   // Exact title matches first, then partial matches
   const [exact, partial] = await Promise.all([
     prisma.loreEntry.findMany({
-      where: { title: { equals: query, mode: "insensitive" } },
+      where: { ...NOT_REMOVED_LORE, title: { equals: query, mode: "insensitive" } },
       select: { id: true, title: true, slug: true, summary: true, category: true, canonStatus: true },
       take: 5,
     }),
@@ -371,6 +372,7 @@ function personWhere(query: string) {
 
 function loreWhere(query: string) {
   return {
+    ...NOT_REMOVED_LORE,
     OR: [
       { title: { contains: query, mode: "insensitive" as const } },
       { slug: { contains: query, mode: "insensitive" as const } },

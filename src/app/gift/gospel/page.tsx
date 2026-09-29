@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 
 const NEXT_STEPS: { href: string; glyph: string; title: string; body: string }[] = [
   { href: "/oracle", glyph: "◉", title: "Ask the Oracle", body: "Question the entire archive — your first 3 are free." },
-  { href: "/start-here", glyph: "✦", title: "Start Here", body: "Curated entry points, built by people who went deep first." },
-  { href: "/premium", glyph: "▲", title: "Go deeper — Initiate+", body: "Unlock the Oracle, Decode Mode, and the Psychenomicon." },
+  { href: "/start-here", glyph: "✦", title: "Start Here", body: "Starting points picked by people who have watched the most." },
+  { href: "/premium", glyph: "▲", title: "Go deeper — Initiate+", body: "Adds the Oracle, Decode Mode, and the Psychenomicon." },
 ];
 
 export default async function GiftGospelPage({

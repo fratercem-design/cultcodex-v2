@@ -45,7 +45,7 @@ export function EmailCapture({
       });
       if (res.ok) {
         setStatus("success");
-        setMessage("You're in. The archive will reach you.");
+        setMessage("Check your inbox and click the link to confirm.");
         setEmail("");
       } else {
         setStatus("error");
@@ -79,7 +79,7 @@ export function EmailCapture({
             disabled={status === "loading" || status === "success"}
             className="rounded-lg border border-accent-gold bg-accent-gold/15 px-5 py-2.5 font-mono text-sm font-bold text-accent-gold-text transition hover:bg-accent-gold/25 disabled:opacity-50 whitespace-nowrap"
           >
-            {status === "loading" ? "…" : status === "success" ? "✓ Subscribed" : "Get the signal"}
+            {status === "loading" ? "…" : status === "success" ? "✓ Check your inbox" : "Get the signal"}
           </button>
         </form>
         {message && (
@@ -117,7 +117,7 @@ export function EmailCapture({
           disabled={status === "loading" || status === "success"}
           className="rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-3 font-mono text-sm font-bold text-accent-gold-text transition hover:bg-accent-gold/25 disabled:opacity-50 whitespace-nowrap"
         >
-          {status === "loading" ? "…" : status === "success" ? "✓ Subscribed" : "Get the signal"}
+          {status === "loading" ? "…" : status === "success" ? "✓ Check your inbox" : "Get the signal"}
         </button>
       </form>
 

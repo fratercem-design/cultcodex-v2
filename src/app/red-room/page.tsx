@@ -278,7 +278,7 @@ function RedRoomGate({
           href={signedIn ? "/premium" : "/auth/signin?callbackUrl=/red-room"}
           className="inline-block rounded px-6 py-3 font-mono text-sm font-bold bg-accent-gold text-void hover:bg-accent-gold/80 transition-colors"
         >
-          {signedIn ? "Become an Oracle →" : "Sign in to unlock →"}
+          {signedIn ? "Become an Oracle →" : "Sign in to continue →"}
         </Link>
       </div>
     </div>

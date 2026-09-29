@@ -132,7 +132,7 @@ export function HomeOraclePreview() {
           {/* Paywall CTA */}
           <div className="rounded-xl border border-accent-gold/25 bg-gradient-to-b from-accent-gold/5 to-surface px-5 py-4 text-center space-y-2">
             <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
-              {"/// unlock full answer + citations"}
+              {"/// full answer + citations"}
             </p>
             <p className="font-serif text-sm text-text-muted italic">
               Initiate+ reveals complete Oracle responses with archive citations — up to {INITIATE_ORACLE_MONTHLY_LIMIT} questions each month.
@@ -141,7 +141,7 @@ export function HomeOraclePreview() {
               href="/premium"
               className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-5 py-2 font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25"
             >
-              Unlock Initiate+ — $10/mo →
+              Get Initiate+ — $10/mo →
             </Link>
           </div>
         </div>
@@ -152,7 +152,7 @@ export function HomeOraclePreview() {
         <div className="rounded-xl border border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-surface p-5 text-center space-y-2">
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">{"/// initiate_required"}</p>
           <p className="font-display text-sm font-bold text-text-primary">The Oracle speaks only to Initiates.</p>
-          <p className="font-mono text-xs text-text-muted">Unlock the full Oracle with unlimited questions and archive citations.</p>
+          <p className="font-mono text-xs text-text-muted">Initiate+ gets full Oracle answers with archive citations, {INITIATE_ORACLE_MONTHLY_LIMIT} questions a month.</p>
           <Link
             href="/premium"
             className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-5 py-2 font-mono text-xs font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25"
@@ -167,7 +167,7 @@ export function HomeOraclePreview() {
         <div className="rounded-xl border border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-surface p-5 text-center space-y-2">
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">{"/// preview_exhausted"}</p>
           <p className="font-display text-sm font-bold text-text-primary">Your free preview is complete.</p>
-          <p className="font-mono text-xs text-text-muted">Initiate+ unlocks {INITIATE_ORACLE_MONTHLY_LIMIT} cited Oracle questions each month.</p>
+          <p className="font-mono text-xs text-text-muted">Initiate+ includes {INITIATE_ORACLE_MONTHLY_LIMIT} cited Oracle questions a month.</p>
           <Link
             href="/premium"
             className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-5 py-2 font-mono text-xs font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25"

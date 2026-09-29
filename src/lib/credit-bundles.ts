@@ -32,7 +32,7 @@ export const CREDIT_BUNDLES: readonly CreditBundle[] = [
     credits: 300,
     priceCents: 299,
     priceEnvVar: "STRIPE_PRICE_CREDITS_SPARK_ID",
-    blurb: "Six Signal Archive packs, or one Nyx.",
+    blurb: "Three First Signal Boosters.",
   },
   {
     slug: "surge",
@@ -40,7 +40,7 @@ export const CREDIT_BUNDLES: readonly CreditBundle[] = [
     credits: 800,
     priceCents: 699,
     priceEnvVar: "STRIPE_PRICE_CREDITS_SURGE_ID",
-    blurb: "Two Oracle's Cache packs with change to spare.",
+    blurb: "Two Reliquary Boxes.",
   },
   {
     slug: "flood",
@@ -48,7 +48,7 @@ export const CREDIT_BUNDLES: readonly CreditBundle[] = [
     credits: 2000,
     priceCents: 1499,
     priceEnvVar: "STRIPE_PRICE_CREDITS_FLOOD_ID",
-    blurb: "Five Oracle's Cache packs. The vault, opened.",
+    blurb: "Five Reliquary Boxes.",
   },
 ] as const;
 

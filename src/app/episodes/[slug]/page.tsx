@@ -12,7 +12,7 @@ import { getEraForEpisode } from "@/lib/eras";
 import { EraNeighbors } from "@/components/episodes/era-neighbors";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
-import { buildMetadata, episodeJsonLd, jsonLdScript, detailBreadcrumbJsonLd } from "@/lib/seo";
+import { buildMetadata, episodeJsonLd, jsonLdScript, detailBreadcrumbJsonLd, episodeMetaDescription } from "@/lib/seo";
 import { AiNotice } from "@/components/ui/ai-notice";
 import { getConfidenceTier } from "@/lib/format/confidence-tier";
 import { trustedSummary } from "@/lib/format/speculative-summary";
@@ -28,6 +28,7 @@ import { MetaRow } from "@/components/ui/meta-row";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { YouTubeEmbed } from "@/components/media/youtube-embed";
+import { rumbleEmbedUrl } from "@/lib/format/moment";
 import { TranscriptViewer } from "@/components/media/transcript-viewer";
 import { groupSegments } from "@/lib/transcript/group-segments";
 import { isSubscribed } from "@/lib/subscription";
@@ -80,7 +81,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return buildMetadata({
     title: episode.title,
-    description: trustedSummary(episode.summaryShort) || episode.searchText || null,
+    // No searchText fallback: it is a keyword blob, not prose. Without a
+    // trusted summary the helper writes a plain description from the title.
+    description: episodeMetaDescription(episode.title, trustedSummary(episode.summaryShort)),
     path: `/episodes/${episode.slug}`,
     image: episode.thumbnailUrl ?? null,
   });
@@ -275,6 +278,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
             <YouTubeEmbed
               videoId={episode.youtubeVideoId}
               title={episode.title}
+              startSeconds={initialTimestamp}
             />
           )}
 
@@ -282,7 +286,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           {episode.rumbleVideoId && (!episode.youtubeVideoId || episode.status === "unavailable") && (
             <div className="relative w-full overflow-hidden rounded-lg border border-emerald-500/20 bg-void aspect-video">
               <iframe
-                src={`https://rumble.com/embed/${episode.rumbleVideoId}/`}
+                src={rumbleEmbedUrl(episode.rumbleEmbedId ?? episode.rumbleVideoId, initialTimestamp)}
                 title={episode.title}
                 allowFullScreen
                 className="absolute inset-0 h-full w-full"
@@ -539,7 +543,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                     <TerminalPanel header="TRANSCRIPT">
                       <TranscriptViewer
                         blocks={transcriptBlocks}
-                        hasVideoEmbed={!!episode.youtubeVideoId}
+                        hasVideoEmbed={!!episode.youtubeVideoId || !!episode.rumbleEmbedId}
                         initialTimestamp={initialTimestamp}
                         signalMap={signalMap}
                         episodeSlug={episode.slug}

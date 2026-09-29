@@ -88,7 +88,7 @@ export function SoftGate({
           {t.role}s see this. Observers don&rsquo;t.
         </h3>
         <p className="text-sm text-text-muted max-w-md mx-auto leading-relaxed">
-          <span className="text-text-primary font-medium">{feature}</span> unlocks on {t.name} — ${t.priceMonthly}/mo.
+          <span className="text-text-primary font-medium">{feature}</span> is included with {t.name} (${t.priceMonthly}/mo).
         </p>
         <div className="flex flex-wrap justify-center gap-3 pt-1">
           <Link

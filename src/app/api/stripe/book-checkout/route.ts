@@ -37,7 +37,9 @@ export async function POST(req: Request) {
 
     const priceId = process.env[book.priceEnvVar];
     if (!priceId) {
-      return NextResponse.json({ error: `Price not configured (${book.priceEnvVar})` }, { status: 500 });
+      // Name the variable in the server log, not in the response.
+      console.error(`[book-checkout] ${book.priceEnvVar} is not set`);
+      return NextResponse.json({ error: "This book isn't available for purchase yet." }, { status: 500 });
     }
 
     const codexUser = await prisma.codexUser.findUnique({

@@ -30,6 +30,16 @@ const AppearanceControls = dynamic(
   { ssr: false }
 );
 
+const EasterEggs = dynamic(
+  () => import("@/components/easter-eggs/easter-eggs").then((m) => m.EasterEggs),
+  { ssr: false }
+);
+
+const UnlockWatcher = dynamic(
+  () => import("@/components/cards/codex/unlock-watcher").then((m) => m.UnlockWatcher),
+  { ssr: false }
+);
+
 export function ClientOverlays() {
   return (
     <>
@@ -37,6 +47,8 @@ export function ClientOverlays() {
       <KonamiEasterEgg />
       <CommandPalette />
       <AppearanceControls />
+      <UnlockWatcher />
+      <EasterEggs />
     </>
   );
 }

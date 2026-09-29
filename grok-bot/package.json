@@ -1,0 +1,27 @@
+{
+  "name": "grok-bot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A Discord bot powered by xAI Grok: streaming chat, personas, channel summaries and image generation.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "register": "tsx scripts/register-commands.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "discord.js": "^14.27.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.4",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.1"
+  }
+}

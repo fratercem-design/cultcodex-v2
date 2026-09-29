@@ -1,0 +1,22 @@
+/* Metric-matched local fallbacks for the self-hosted site fonts (./index.ts).
+   Values are the ones next/font/google generated for these families, so text
+   drawn with the fallback — before the web font loads, and for glyphs the
+   subsets lack — keeps exactly the size and position it had before. */
+
+@font-face {
+  font-family: "Space Grotesk Fallback";
+  src: local("Arial");
+  ascent-override: 89.71%;
+  descent-override: 26.62%;
+  line-gap-override: 0%;
+  size-adjust: 109.69%;
+}
+
+@font-face {
+  font-family: "JetBrains Mono Fallback";
+  src: local("Arial");
+  ascent-override: 75.79%;
+  descent-override: 22.29%;
+  line-gap-override: 0%;
+  size-adjust: 134.59%;
+}

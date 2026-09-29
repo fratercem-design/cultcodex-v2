@@ -18,6 +18,7 @@ import { getYouTube, parseDuration } from "./scrape/lib";
 import { getPrisma, disconnect, slugify } from "./ingest/lib";
 import { ContentStatus, ContentType } from "../src/generated/prisma/enums";
 import { YoutubeTranscript } from "youtube-transcript";
+import { captionsToMs } from "../src/lib/transcript/caption-units";
 
 const CHANNELS = ["@CultofPsyche", "@PsychesNightmares"];
 const TRANSCRIPT_DELAY_MS = 1200;
@@ -203,7 +204,8 @@ async function syncTranscripts() {
     process.stdout.write(`\r  [${pct}%] ${i + 1}/${toProcess.length} — ${ep.slug.slice(0, 50)}`);
 
     try {
-      const raw = await YoutubeTranscript.fetchTranscript(ep.youtubeVideoId!, { lang: "en" });
+      // Milliseconds for srv3 captions but seconds for the classic format.
+      const raw = captionsToMs(await YoutubeTranscript.fetchTranscript(ep.youtubeVideoId!, { lang: "en" }));
 
       if (!raw || raw.length === 0) {
         noCaption++;

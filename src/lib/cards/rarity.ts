@@ -168,6 +168,37 @@ export function rollRarity(weights: {
   return "STATIC";
 }
 
+/**
+ * Roll a rarity no lower than `min` — used for a pack's guaranteed slot. Tiers
+ * below `min` drop out and the rest keep their relative weights, so a
+ * guaranteed Anomaly is still far more often an Anomaly than a Mythic.
+ */
+export function rollRarityAtLeast(
+  weights: Parameters<typeof rollRarity>[0],
+  min: Rarity,
+  rand: () => number = Math.random,
+): Rarity {
+  const tiers: [Rarity, number][] = [
+    ["STATIC",       weights.weightStatic],
+    ["SIGNAL",       weights.weightSignal],
+    ["TRANSMISSION", weights.weightTransmission],
+    ["ANOMALY",      weights.weightAnomaly],
+    ["ORACLE",       weights.weightOracle],
+    ["LEGENDARY",    weights.weightLegendary ?? 0],
+    ["MYTHIC",       weights.weightMythic ?? 0],
+    ["FORBIDDEN",    weights.weightForbidden ?? 0],
+  ];
+  const eligible = tiers.filter(([r, w]) => RARITY_ORDER[r] >= RARITY_ORDER[min] && w > 0);
+  const total = eligible.reduce((sum, [, w]) => sum + w, 0);
+  if (total <= 0) return min;
+  let roll = rand() * total;
+  for (const [r, w] of eligible) {
+    roll -= w;
+    if (roll < 0) return r;
+  }
+  return eligible[eligible.length - 1][0];
+}
+
 /** Foil chance scales with rarity */
 export function rollFoil(rarity: Rarity): boolean {
   const foilChance: Record<Rarity, number> = {

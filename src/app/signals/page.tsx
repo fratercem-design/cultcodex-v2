@@ -14,10 +14,12 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-async function getProposals() {
+async function getProposals(viewerId: string) {
   return prisma.signalProposal.findMany({
     select: {
       id: true,
+      userId: true,
+      voters: { where: { userId: viewerId }, select: { userId: true } },
       question: true,
       context: true,
       status: true,
@@ -70,7 +72,7 @@ export default async function SignalsPage() {
     );
   }
 
-  const proposals = await getProposals();
+  const proposals = await getProposals(user.id);
 
   return (
     <>
@@ -155,6 +157,7 @@ export default async function SignalsPage() {
             <div className="space-y-4">
               {proposals.map((proposal, i) => {
                 const statusInfo = STATUS_LABELS[proposal.status] ?? STATUS_LABELS.open;
+                const hasVoted = proposal.userId === user.id || proposal.voters.length > 0;
                 return (
                   <div
                     key={proposal.id}
@@ -165,8 +168,9 @@ export default async function SignalsPage() {
                       <form action={voteOnProposal.bind(null, proposal.id)} className="flex-shrink-0">
                         <button
                           type="submit"
-                          className="flex flex-col items-center gap-0.5 rounded-lg border border-border px-2.5 py-2 hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-all group"
-                          title="Upvote this proposal"
+                          disabled={hasVoted}
+                          className="flex flex-col items-center gap-0.5 rounded-lg border border-border px-2.5 py-2 hover:border-accent-gold/40 hover:bg-accent-gold/5 transition-all group disabled:opacity-60 disabled:hover:border-border disabled:hover:bg-transparent disabled:cursor-default"
+                          title={hasVoted ? "Your vote is counted" : "Upvote this proposal"}
                         >
                           <span className="text-accent-gold-text/80 group-hover:text-accent-gold-text text-xs">▲</span>
                           <span className="font-mono text-sm font-bold text-text-primary">{proposal.votes}</span>

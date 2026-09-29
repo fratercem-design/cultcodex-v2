@@ -36,6 +36,12 @@ const SUPPRESSED_FILES: { id: string; label: string; note: string; href?: string
     label: "Visitor Log, Sub-Level 3",
     note: "One signature, repeated 340 times, in improving handwriting.",
   },
+  {
+    id: "BSMT-006",
+    label: "The Stairwell",
+    note: "Maintenance swears the stairs stop here. They do not stop here.",
+    href: "/stairwell",
+  },
 ];
 
 export default function BasementPage() {

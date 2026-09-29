@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { requireAdmin } from "@/lib/auth";
+import { requireAdminPage } from "@/lib/auth";
 import { AdminStatCard } from "@/components/admin/admin-stat-card";
 import { SectionCard } from "@/components/ui/section-card";
 import {
@@ -16,7 +16,7 @@ import Image from "next/image";
 export const metadata = { title: "Analytics — CultCodex Admin" };
 
 export default async function AdminAnalyticsPage() {
-  await requireAdmin();
+  await requireAdminPage();
 
   const [overview, dailyActivity, topReacted, topDiscussed, activeUsers] =
     await Promise.all([

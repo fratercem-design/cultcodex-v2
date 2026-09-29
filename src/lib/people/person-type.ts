@@ -49,3 +49,19 @@ export const PERSON_TYPE_HEX: Record<PersonType, string> = {
   guest: "#62E4C8",
   mentioned: "#475569",
 };
+
+/** Left-edge accent for cards, so a card's role reads at a glance. */
+export const PERSON_TYPE_EDGE: Record<PersonType, string> = {
+  host: "border-l-accent-gold/70",
+  recurring: "border-l-accent-purple/70",
+  guest: "border-l-accent-cyan/50",
+  mentioned: "border-l-border",
+};
+
+/** Section heading and one-line description per role on /people. */
+export const PERSON_TYPE_SECTION: Record<PersonType, { title: string; blurb: string }> = {
+  host: { title: "Hosts", blurb: "The voices behind the show." },
+  recurring: { title: "Recurring Cast", blurb: "Regulars who keep coming back to the panel." },
+  guest: { title: "Guests", blurb: "Profiled guests, most appearances first." },
+  mentioned: { title: "Mentioned", blurb: "Talked about, never on the panel." },
+};

@@ -1,0 +1,14 @@
+/* Metric-matched local fallback for the self-hosted Bodoni Moda (../page.tsx).
+   next/font/local would derive these overrides from the font file, and they
+   differ from the precomputed values next/font/google used. The threshold's
+   ◣ sigil is not in the subset and is drawn with this face even after the web
+   font loads, so these pin the exact values the Google loader emitted. */
+
+@font-face {
+  font-family: "Bodoni Moda Fallback";
+  src: local("Times New Roman");
+  ascent-override: 98.5%;
+  descent-override: 35.02%;
+  line-gap-override: 0%;
+  size-adjust: 114.22%;
+}

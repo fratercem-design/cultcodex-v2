@@ -98,7 +98,7 @@ export function PaywallGate({
                 href="/auth/signin"
                 className="inline-flex items-center gap-2 rounded-lg border border-accent-gold bg-accent-gold/15 px-6 py-2.5 font-mono text-sm font-bold text-accent-gold-text transition-all hover:bg-accent-gold/25"
               >
-                Sign in to unlock →
+                Sign in to read →
               </Link>
               <Link
                 href="/premium"

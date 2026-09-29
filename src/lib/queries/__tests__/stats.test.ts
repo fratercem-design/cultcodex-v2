@@ -25,7 +25,8 @@ vi.mock("@/lib/db", () => ({
   },
 }));
 
-import { getCounts } from "../stats";
+import { prisma } from "@/lib/db";
+import { getCounts, getCountsOrNull } from "../stats";
 
 describe("getCounts (canonical archive stats)", () => {
   it("returns all required SiteCounts fields", async () => {
@@ -47,6 +48,26 @@ describe("getCounts (canonical archive stats)", () => {
       expect(counts).toHaveProperty(key);
       expect(typeof counts[key]).toBe("number");
     }
+  });
+});
+
+describe("getCountsOrNull (display guard)", () => {
+  it("returns the counts when the archive can be read", async () => {
+    const counts = await getCountsOrNull();
+    expect(counts?.episodes).toBe(100);
+  });
+
+  it("returns null when the count query fails", async () => {
+    vi.mocked(prisma.episode.count).mockRejectedValueOnce(new Error("connection refused"));
+    expect(await getCountsOrNull()).toBeNull();
+  });
+
+  it("returns null when the archive reports zero episodes", async () => {
+    // An empty archive means the app is reading the wrong database, not that
+    // the archive is empty: never surface it as "0 episodes".
+    vi.mocked(prisma.episode.count).mockResolvedValue(0);
+    expect(await getCountsOrNull()).toBeNull();
+    vi.mocked(prisma.episode.count).mockResolvedValue(100);
   });
 });
 

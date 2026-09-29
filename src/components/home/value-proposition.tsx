@@ -11,7 +11,17 @@ type Stat = { value: number; suffix?: string; label: string };
  * this reason. An archive's counts should be read, not performed, so the
  * numbers now render final on the server.
  */
-export function ArchiveStatsLine({ stats, asOf }: { stats: Stat[]; asOf: string }) {
+/** stats is null when the archive can't be read: say so instead of printing zeros. */
+export function ArchiveStatsLine({ stats, asOf }: { stats: Stat[] | null; asOf: string }) {
+  if (!stats) {
+    return (
+      <section aria-label="Archive scale" className="border-y border-line px-4 py-4">
+        <p role="status" className="mx-auto max-w-5xl text-center font-mono text-[15px] text-ink-2">
+          Archive counts are unavailable right now. Try again in a few minutes.
+        </p>
+      </section>
+    );
+  }
   return (
     <section
       aria-label="Archive scale"

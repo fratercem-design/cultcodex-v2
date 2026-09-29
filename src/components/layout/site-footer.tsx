@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import { SecretSigil } from "@/components/cards/codex/secret-sigil";
 
 /**
  * Global content footer. Lives at the bottom of `terminal-main`, above the
@@ -80,6 +82,13 @@ export function SiteFooter() {
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
           {/* Brand cell */}
           <div className="col-span-2 sm:col-span-3 lg:col-span-1">
+            <Image
+              src="/logo-neon-512.png"
+              alt="Cult of Psyche"
+              width={112}
+              height={112}
+              className="mb-3 rounded-lg"
+            />
             <span className="font-display text-lg font-black uppercase tracking-tight text-accent-gold-text">
               CULT CODEX
             </span>
@@ -121,6 +130,8 @@ export function SiteFooter() {
             >
               ψ
             </Link>
+            {/* Codex secret: "Every page ends somewhere. Look at the very bottom." */}
+            <SecretSigil code="footnote-ghost" glyph="☾" label="☾" className="ml-2 select-none" />
           </p>
           <nav aria-label="Channels" className="flex flex-wrap gap-x-4 gap-y-2">
             {CHANNELS.map((ch) => (

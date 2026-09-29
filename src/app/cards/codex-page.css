@@ -1,0 +1,127 @@
+/* Codex page layout. Card visuals live in components/cards/codex/codex.css. */
+.cxp {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 16px 64px;
+  font-family: var(--font-mono), monospace;
+  color: #e9e6df;
+}
+.cxp-kicker { margin: 0; font-size: 11px; letter-spacing: 0.2em; color: #f6c453; }
+
+.cxp-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 28px;
+  align-items: center;
+  padding: 28px;
+  border: 1px solid rgba(246, 196, 83, 0.3);
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 10% 20%, rgba(246, 196, 83, 0.14), transparent 60%),
+    radial-gradient(ellipse at 90% 100%, rgba(164, 91, 255, 0.12), transparent 60%),
+    #0b0a08;
+  overflow: hidden;
+}
+.cxp-seal {
+  width: 132px;
+  height: 132px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(246, 196, 83, 0.6);
+  box-shadow: 0 0 0 8px rgba(246, 196, 83, 0.06), 0 0 40px rgba(246, 196, 83, 0.25), inset 0 0 30px rgba(246, 196, 83, 0.2);
+  background: repeating-conic-gradient(from 0deg, rgba(246, 196, 83, 0.1) 0 2deg, transparent 2deg 12deg), #120d04;
+}
+.cxp-seal-btn {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  font-family: var(--font-display), serif !important;
+  font-size: 52px !important;
+  font-weight: 700 !important;
+  color: #ffe39a !important;
+  text-shadow: 0 0 20px rgba(246, 196, 83, 0.8);
+}
+.cxp-title { margin: 6px 0 4px; font-family: var(--font-display), sans-serif; font-size: clamp(28px, 5vw, 44px); line-height: 1; letter-spacing: -0.02em; color: #fff7e2; }
+.cxp-tagline { margin: 0 0 16px; font-size: 13px; color: rgba(255, 255, 255, 0.6); }
+.cxp-progress { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+.cxp-progress-bar { height: 100%; background: linear-gradient(90deg, #a45bff, #f6c453); box-shadow: 0 0 12px rgba(246, 196, 83, 0.6); transition: width 0.8s ease; }
+.cxp-tally { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 12px; color: rgba(255, 255, 255, 0.55); }
+.cxp-tally strong { color: #ffe39a; font-size: 15px; }
+.cxp-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+.cxp-initiation {
+  display: grid;
+  grid-template-columns: 150px 1fr 190px;
+  gap: 28px;
+  align-items: center;
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: 14px;
+  border: 1px solid #f6c453;
+  background: linear-gradient(120deg, #221806, #0c0903 55%, #1a1204);
+  box-shadow: 0 0 40px rgba(246, 196, 83, 0.15);
+}
+.cxp-initiation h2 { margin: 6px 0 8px; font-family: var(--font-display), sans-serif; font-size: 26px; color: #fff7e2; }
+.cxp-initiation p { margin: 0 0 16px; font-size: 13px; line-height: 1.6; color: rgba(255, 255, 255, 0.72); }
+.cxp-initiation strong { color: #ffe39a; }
+.cxp-initiation-pack { animation: cxp-float 4s ease-in-out infinite; }
+@keyframes cxp-float { 50% { transform: translateY(-8px) rotate(-1.5deg); } }
+
+.cxp-unsealed { margin-top: 20px; padding: 14px 18px; border-radius: 10px; border: 1px solid rgba(62, 232, 149, 0.4); background: rgba(62, 232, 149, 0.06); }
+.cxp-unsealed p:last-child { margin: 6px 0 0; font-size: 14px; }
+
+.cxp-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 18px; }
+.cxp-chip {
+  padding: 7px 14px;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.cxp-chip[data-active="true"] { color: #1a1204; background: #f6c453; border-color: #f6c453; }
+
+.cxp-grid { display: grid; gap: 22px 18px; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); }
+@media (max-width: 480px) { .cxp-grid { grid-template-columns: repeat(2, 1fr); gap: 14px 10px; } }
+.cxp-empty, .cxp-guest { margin-top: 24px; font-size: 13px; color: rgba(255, 255, 255, 0.55); text-align: center; }
+.cxp-guest a { color: #f6c453; }
+
+.cxp-archive { margin-top: 44px; }
+.cxp-archive-toggle { margin-bottom: 16px; padding: 0; font: inherit; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); background: none; border: 0; cursor: pointer; }
+
+.cxp-focus {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.86);
+  backdrop-filter: blur(6px);
+}
+.cxp-focus-inner { display: grid; grid-template-columns: minmax(220px, 340px) minmax(0, 360px); gap: 32px; align-items: center; }
+.cxp-focus-info { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.cxp-focus-info h2 { margin: 0; font-family: var(--font-display), sans-serif; font-size: 30px; color: #fff7e2; }
+.cxp-focus-flavour { margin: 0; font-style: italic; font-size: 14px; line-height: 1.6; color: rgba(255, 255, 255, 0.72); }
+.cxp-focus-clue { margin: 0; font-size: 15px; line-height: 1.6; color: #fff7e2; }
+.cxp-focus-meta { margin: 0; font-size: 12px; color: rgba(255, 255, 255, 0.55); }
+.cxp-focus-abilities { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.cxp-focus-abilities span { padding: 3px 10px; font-size: 11px; letter-spacing: 0.08em; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 999px; }
+
+@media (max-width: 760px) {
+  .cxp-hero { grid-template-columns: 1fr; justify-items: start; padding: 20px; }
+  .cxp-seal { width: 96px; height: 96px; }
+  .cxp-seal-btn { font-size: 38px !important; }
+  .cxp-initiation { grid-template-columns: 110px 1fr; padding: 18px; gap: 18px; }
+  .cxp-initiation-card { display: none; }
+  .cxp-focus-inner { grid-template-columns: 1fr; justify-items: center; }
+  .cxp-focus-card { width: min(78vw, 320px); }
+}
+@media (prefers-reduced-motion: reduce) { .cxp-initiation-pack { animation: none; } }

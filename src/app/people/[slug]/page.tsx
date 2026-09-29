@@ -399,7 +399,6 @@ export default async function PersonDetailPage({ params }: PageProps) {
           />
         }
         badges={[{ label: typeLabel, variant: typeVariant }]}
-        neonTitle={person.slug === "alexandra-mayers"}
         label="voice"
       />
       <Breadcrumbs items={[
@@ -620,7 +619,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
               />
             )}
 
-            <RelationshipDossier entries={relationshipDossier} personName={person.displayName} />
+            <RelationshipDossier entries={relationshipDossier} personName={person.displayName} personSlug={person.slug} />
 
             {coAppearances.length > 0 && (
               <SectionCard headingLevel={2} title="Frequently Appears With" accent="gold">
@@ -761,7 +760,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
               />
             </Suspense>
 
-          {/* Alexandra Mayers external content section */}
+          {/* External content section */}
           {hasPersonMedia && (
             <PersonMediaSection
               personName={person.displayName}

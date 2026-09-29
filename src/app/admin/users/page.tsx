@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/db";
-import { grantOracleAccess, setMemberTitle } from "@/app/admin/actions";
+import { deleteUserAccount, grantOracleAccess, revokeLifetimeAccess, setMemberTitle } from "@/app/admin/actions";
+import { DeleteUserButton } from "@/components/admin/delete-user-button";
+import { RevokeLifetimeButton } from "@/components/admin/revoke-lifetime-button";
 import type { Metadata } from "next";
+import { requireAdminPage } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +39,8 @@ async function getUsers() {
 type User = NonNullable<Awaited<ReturnType<typeof getUsers>>>[number];
 
 export default async function AdminUsersPage() {
+  await requireAdminPage();
+
   const users = await getUsers();
 
   const oracleUsers = users?.filter((u) => u.role === "admin" || u.subscriptionTier === "system" || u.isLifetimeMember) ?? [];
@@ -160,6 +165,12 @@ function UserTable({
                         lifetime
                       </span>
                     )}
+                    {user.isLifetimeMember && (
+                      <RevokeLifetimeButton
+                        label={user.email ?? user.displayName ?? "this user"}
+                        revoke={revokeLifetimeAccess.bind(null, user.id)}
+                      />
+                    )}
                     {user.subscriptionTier && (
                       <span className={`inline-block rounded px-1.5 py-0.5 text-[12px] ${
                         user.subscriptionTier === "system"
@@ -187,6 +198,11 @@ function UserTable({
                     month: "short",
                     year: "numeric",
                   })}
+                  {user.email && user.role !== "admin" && (
+                    <div className="mt-1">
+                      <DeleteUserButton email={user.email} remove={deleteUserAccount.bind(null, user.id)} />
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}

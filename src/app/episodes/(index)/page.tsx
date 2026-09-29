@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
+import { socialMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/page-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EpisodeCard } from "@/components/archive/episode-card";
@@ -30,10 +31,13 @@ export const revalidate = 3600;
 
 export async function generateMetadata() {
   const counts = await getCounts().catch(() => null);
+  const title = "Episodes — CULT CODEX";
+  const description = `Browse ${fmtEpisodeCount(counts?.episodes ?? 0)} searchable Cult of Psyche episodes with transcripts, topics, guests, and timestamps.`;
   return {
     alternates: { canonical: "/episodes" },
-    title: "Episodes — CULT CODEX",
-    description: `Browse ${fmtEpisodeCount(counts?.episodes ?? 0)} Cult of Psyche transmissions — sortable by era, type, topic, and guest. Full transcripts, AI breakdowns, and behavioral profiles for every session.`,
+    title,
+    description,
+    ...socialMetadata({ title, description, path: "/episodes" }),
   };
 }
 
@@ -95,8 +99,12 @@ export default async function EpisodesPage({
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
+  // The archive always has episodes. Zero means it couldn't be read (wrong or
+  // unreachable database) — never present that as the archive's size.
+  const archiveUnavailable = aggregates.total === 0;
+
   const glanceItems = [
-    { icon: "\uD83C\uDFAC", label: `${aggregates.total} episode${aggregates.total !== 1 ? "s" : ""}` },
+    ...(archiveUnavailable ? [] : [{ icon: "\uD83C\uDFAC", label: `${aggregates.total} episode${aggregates.total !== 1 ? "s" : ""}` }]),
     ...(aggregates.earliestDate && aggregates.latestDate
       ? [{ icon: "\uD83D\uDCC5", label: `${formatDate(aggregates.earliestDate)} — ${formatDate(aggregates.latestDate)}` }]
       : []),
@@ -112,7 +120,7 @@ export default async function EpisodesPage({
     <>
     <PageHero
       title="EPISODES"
-      subtitle={`${totalCount} transmissions in the archive`}
+      subtitle={archiveUnavailable ? "The archive can't be read right now" : `${totalCount} transmissions in the archive`}
       backgroundImage={SECTION_HEADERS.transmissions}
     
       label="archive"
@@ -191,10 +199,14 @@ export default async function EpisodesPage({
       </div>
 
       {cards.length === 0 ? (
-        <EmptyState
-          message="No episodes in the archive yet"
-          suggestion="Episodes will appear here once data is ingested"
-        />
+        archiveUnavailable ? (
+          <EmptyState
+            message="The archive can't be read right now"
+            suggestion="Episodes will be back shortly. Try again in a few minutes."
+          />
+        ) : (
+          <EmptyState message="No episodes match the current filters" />
+        )
       ) : (
         <>
           {currentView === "list" ? (

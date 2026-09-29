@@ -1,16 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Bodoni_Moda } from "next/font/google";
+import localFont from "next/font/local";
+import "./fonts/fallbacks.css";
 import { ThresholdHero } from "@/components/home/threshold-hero";
 import { OracleCathedral } from "@/components/home/oracle-cathedral";
 import { EpisodeCard } from "@/components/archive/episode-card";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { SearchInput } from "@/components/search/search-input";
 import { getEpisodeCards } from "@/lib/queries/episodes";
-import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
+import { getCounts, getCountsOrNull, fmtEpisodeCount } from "@/lib/queries/stats";
 import { getTopTopicsByEpisodes } from "@/lib/queries/analytics";
 import { getDailyTransmission } from "@/lib/queries/daily";
 import { DailyTransmission } from "@/components/home/daily-transmission";
+import { OnThisDayStrip } from "@/components/on-this-day/on-this-day-strip";
+import { getOnThisDay, todayMonthDay } from "@/lib/queries/on-this-day";
 import { getQuoteReactionCounts } from "@/lib/queries/quote-reactions";
 import { OnboardingGate } from "@/components/auth/onboarding-gate";
 import { prisma } from "@/lib/db";
@@ -38,28 +41,53 @@ export const revalidate = 60;
 // Threshold typography — Bodoni Moda italic is the ritual display face and is
 // used for exactly one moment: "the Codex." (Cinzel was dropped in the
 // 2026-09 redesign: a fifth typeface with no job.)
-const thresholdDisplay = Bodoni_Moda({
-  subsets: ["latin"],
-  style: ["italic", "normal"],
-  weight: ["400", "500"],
+//
+// Self-hosted rather than next/font/google: fetching Google Fonts at build time
+// made CI fail intermittently. The files are Google's latin-subset variable
+// woff2s. The upright face is kept too: the ◣ sigil is set in it, and although
+// that glyph comes from the fallback, this face's metrics size its line box.
+// Provenance and licenses
+// (SIL OFL 1.1) are in ./fonts; fallbacks.css explains the fallback face.
+const thresholdDisplay = localFont({
+  src: [
+    { path: "./fonts/BodoniModa-Italic-latin.woff2", weight: "400 500", style: "italic" },
+    { path: "./fonts/BodoniModa-latin.woff2", weight: "400 500", style: "normal" },
+  ],
   variable: "--threshold-font-display",
   display: "swap",
+  declarations: [
+    {
+      prop: "unicode-range",
+      value:
+        "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+    },
+  ],
+  adjustFontFallback: false,
+  fallback: ["Bodoni Moda Fallback"],
 });
 
 export async function generateMetadata() {
   const counts = await getCounts().catch(() => null);
-    return {
+  // One title and one description for search, Open Graph and Twitter, so every
+  // preview sets the same expectation (2026-09-25 audit). The social copy used
+  // to pitch "AI breakdowns" and "behavioral maps" while search described an
+  // archive; the page itself describes an archive.
+  const title = "CultCodex — The Searchable Archive of Cult of Psyche";
+  const description =
+    // Kept under ~160 characters so search results show it whole.
+    `Search ${fmtEpisodeCount(counts?.episodes ?? 0)} Cult of Psyche episodes, transcripts, guests, lore, and recurring patterns across tarot, consciousness, and open-panel debates.`;
+  return {
     robots: { index: true, follow: true },
     alternates: { canonical: "/" },
-    title: "CultCodex — The Archive of Cult of Psyche | Tarot, Consciousness & Open Panels",
-    description:
-      `Cult of Psyche is a live, unscripted internet show — tarot, consciousness, spirituality, open-panel debates, and the strange edges of human behavior. CultCodex is its complete searchable archive: ${fmtEpisodeCount(counts?.episodes ?? 0)} episodes with full transcripts, guest profiles, lore, and an AI Oracle.`,
+    title,
+    description,
     openGraph: {
-      title: "CultCodex — Decode Cult of Psyche",
-      description:
-        "Every Cult of Psyche transmission indexed. Psychological patterns, behavioral archetypes, guest profiles, and searchable transcripts — live since October 2024.",
+      title,
+      description,
       type: "website" as const,
       url: "/",
+      siteName: "CultCodex",
+      locale: "en_US",
       // Required explicitly. Next replaces the `openGraph` object wholesale
       // rather than deep-merging it, so declaring one here without `images`
       // dropped the root layout's og:image and the page shipped with none -
@@ -68,9 +96,8 @@ export async function generateMetadata() {
     },
     twitter: {
       card: "summary_large_image" as const,
-      title: "CultCodex — Decode Cult of Psyche",
-      description:
-        "AI breakdowns, guest profiles, behavioral maps, and full transcript coverage for every Cult of Psyche live stream.",
+      title,
+      description,
       // Same replacement rule as openGraph above - `summary_large_image` with
       // no image is the worst of both worlds.
       images: ["/images/site/og.jpg"],
@@ -79,12 +106,10 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [stats, recentEpisodes, liveStatus, popularTopics, dailyTransmission] = await Promise.all([
-    getCounts().catch(() => ({
-      episodes: 0, segments: 0, people: 0, topics: 0,
-      lore: 0, quotes: 0, totalHours: 0,
-      transcribedEpisodes: 0, transcribedPct: 0,
-    })),
+  const today = todayMonthDay();
+  const [stats, recentEpisodes, liveStatus, popularTopics, dailyTransmission, onThisDay] = await Promise.all([
+    // null when the archive can't be read; the page says so instead of 0.
+    getCountsOrNull(),
     // Decoded episodes only. The newest stream is usually still in the
     // transcription queue for a day or so, and a "No Transcript" card in the
     // most prominent slot on the site undercuts the whole archive pitch. It
@@ -99,6 +124,7 @@ export default async function HomePage() {
       spotlightEpisode: null,
       pulse: { newEpisodes: 0, newLoreEntries: 0, newQuotes: 0, activeThreads: 0 },
     })),
+    getOnThisDay(today).catch(() => ({ episodes: [], events: [] })),
   ]);
 
   // Reaction TOTALS are public and identical for every visitor, so they are
@@ -134,8 +160,8 @@ export default async function HomePage() {
       {/* ── 1 · THRESHOLD — the one ritual moment ─────────────────────── */}
       <ThresholdHero
         dateLabel={dateLabel}
-        episodeCount={stats.episodes}
-        transcribedPct={stats.transcribedPct}
+        episodeCount={stats?.episodes ?? null}
+        transcribedPct={stats?.transcribedPct ?? null}
         fontClass={thresholdDisplay.variable}
       />
 
@@ -200,7 +226,7 @@ export default async function HomePage() {
       {/* ── 3 · PROOF — one consistent line of scale ──────────────────── */}
       <ArchiveStatsLine
         asOf={asOf}
-        stats={[
+        stats={stats && [
           { value: stats.episodes, label: "episodes" },
           { value: stats.people, label: "people" },
           { value: stats.segments, label: "transcript moments" },
@@ -221,7 +247,7 @@ export default async function HomePage() {
                 Latest episodes
               </h2>
               <Link href="/episodes" className="text-[15px] text-ink underline underline-offset-4 hover:text-brand-ink">
-                All {fmtEpisodeCount(stats.episodes)} →
+                All {fmtEpisodeCount(stats?.episodes ?? 0)} →
               </Link>
             </div>
 
@@ -302,6 +328,9 @@ export default async function HomePage() {
           quoteReactions={dailyQuoteReactions}
         />
 
+        {/* ── 7b · ON THIS DAY — the archive's anniversaries ──────────── */}
+        <OnThisDayStrip day={today} episodes={onThisDay.episodes} />
+
         {/* ── 8 · HOW THIS ARCHIVE IS MADE — trust ────────────────────── */}
         <ArchiveDisclaimer variant="full" />
 
@@ -334,7 +363,7 @@ export default async function HomePage() {
 
       {/* WebSite + SearchAction JSON-LD is emitted once in the root layout —
           avoid a second, conflicting WebSite block here. */}
-      <JsonLd data={organizationJsonLd(stats.episodes)} />
+      <JsonLd data={organizationJsonLd(stats?.episodes)} />
     </>
   );
 }

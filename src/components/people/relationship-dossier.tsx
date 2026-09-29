@@ -3,6 +3,7 @@ import Image from "next/image";
 import { SectionCard } from "@/components/ui/section-card";
 import { AiNotice } from "@/components/ui/ai-notice";
 import { RELATION_LABELS } from "@/lib/relationships";
+import { HOSTILE, feudSlug } from "@/lib/feuds";
 import { formatDate } from "@/lib/format/date";
 import type { RelationshipDossierEntry } from "@/lib/queries/relationships";
 import type { ConfidenceLevel, RelationType } from "@/generated/prisma/client";
@@ -41,7 +42,7 @@ function StateBadge({ state }: { state: RelationType }) {
  * Book of Trolls: evolving relationship timelines for a person.
  * Renders nothing when the archive holds no relationship events for them.
  */
-export function RelationshipDossier({ entries, personName }: { entries: RelationshipDossierEntry[]; personName: string }) {
+export function RelationshipDossier({ entries, personName, personSlug }: { entries: RelationshipDossierEntry[]; personName: string; personSlug: string }) {
   if (entries.length === 0) return null;
 
   return (
@@ -113,6 +114,14 @@ export function RelationshipDossier({ entries, personName }: { entries: Relation
                 </li>
               ))}
             </ol>
+            {beats.some((beat) => HOSTILE.includes(beat.relationType)) && (
+              <Link
+                href={`/drama/feuds/${feudSlug(personSlug, counterpart.slug)}`}
+                className="mt-3 inline-block font-mono text-[12px] text-red-400/80 hover:text-red-300 transition-colors"
+              >
+                Full feud timeline, with the quotes →
+              </Link>
+            )}
           </div>
         ))}
       </div>
