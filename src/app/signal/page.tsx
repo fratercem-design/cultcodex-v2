@@ -5,7 +5,9 @@ import { cleanTranscriptText } from "@/lib/format/text";
 import { formatDate } from "@/lib/format/date";
 import { ShareSignalButton } from "@/components/home/share-signal-button";
 
-export const dynamic = "force-dynamic";
+// ISR, not force-dynamic: the same for every visitor. 60s because the root
+// layout's revalidate = 60 caps every page anyway.
+export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const { date, quote } = await getDailyTransmission().catch(() => ({

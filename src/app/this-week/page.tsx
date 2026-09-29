@@ -7,7 +7,9 @@ import { formatDate } from "@/lib/format/date";
 import { QuoteShareButton } from "@/components/quotes/share-button";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+// ISR, not force-dynamic: the same for every visitor. 60s because the root
+// layout's revalidate = 60 caps every page anyway.
+export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const digest = await getLatestDigest();
@@ -20,11 +22,15 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// null on a database error too, so the build (and CI, which has no database)
+// can prerender the page.
 async function getLatestDigest() {
-  return prisma.weeklyDigest.findFirst({
-    where: { published: true },
-    orderBy: { weekOf: "desc" },
-  });
+  return prisma.weeklyDigest
+    .findFirst({
+      where: { published: true },
+      orderBy: { weekOf: "desc" },
+    })
+    .catch(() => null);
 }
 
 export default async function ThisWeekPage() {
