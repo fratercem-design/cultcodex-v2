@@ -85,7 +85,7 @@ export default function DataOpsPage() {
           type="password"
           value={enrichSecret}
           onChange={(e) => setEnrichSecret(e.target.value)}
-          placeholder="ENRICH_SECRET value from Vercel"
+          placeholder="ENRICH_SECRET value from Fly"
           className="w-full rounded border border-border bg-void px-3 py-2 font-mono text-xs text-text-primary focus:outline-none focus:border-accent-gold/50"
         />
       </div>

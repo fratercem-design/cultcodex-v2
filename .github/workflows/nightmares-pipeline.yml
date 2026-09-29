@@ -56,14 +56,14 @@ jobs:
         if: ${{ github.event.inputs.step == 'episodes' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
         env:
           ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
-          VERCEL_URL: https://cultcodex.me
+          APP_URL: https://cultcodex.me
         run: npx tsx scripts/import-nightmares.ts --step episodes
 
       - name: Import transcripts
         if: ${{ github.event.inputs.step == 'transcripts' || github.event.inputs.step == 'all' || github.event.inputs.step == '' }}
         env:
           ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
-          VERCEL_URL: https://cultcodex.me
+          APP_URL: https://cultcodex.me
           YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
         run: |
           npx tsx scripts/import-nightmares-ytdlp.ts \
