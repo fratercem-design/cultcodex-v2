@@ -86,10 +86,17 @@ const OPENROUTER_MODELS = [
   "anthropic/claude-sonnet-4.5",
 ];
 
+/** The OpenRouter base URL, refusing anything that would send the key in cleartext. */
+export function openRouterBaseURL(value = process.env.OPENROUTER_BASE_URL): string {
+  const baseURL = value || "https://openrouter.ai/api/v1";
+  if (new URL(baseURL).protocol !== "https:") throw new Error("OPENROUTER_BASE_URL must use https");
+  return baseURL;
+}
+
 function openRouterClient(): OpenAI {
   return new OpenAI({
     apiKey: process.env.OPENROUTER_API_KEY,
-    baseURL: process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1",
+    baseURL: openRouterBaseURL(),
     defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" },
   });
 }
