@@ -25,6 +25,7 @@ import {
   buildPaginationMeta,
 } from "@/lib/pagination";
 import { formatDate, formatRelativeDate } from "@/lib/format/date";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 3600;
 
@@ -120,7 +121,7 @@ export default async function EpisodesPage({
     <PageHero
       title="EPISODES"
       subtitle={archiveUnavailable ? "The archive can't be read right now" : `${totalCount} transmissions in the archive`}
-      backgroundImage="/articles-bacgkground.jpg"
+      backgroundImage={SECTION_HEADERS.transmissions}
     
       label="archive"
     />

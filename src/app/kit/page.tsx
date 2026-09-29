@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 import { SampleKitTabs } from "@/components/kit/sample-kit-tabs";
 import { KitPricing } from "@/components/kit/kit-pricing";
 import { PilotForm } from "@/components/kit/pilot-form";
@@ -48,7 +49,7 @@ export default async function KitPage() {
       <PageHero
         title="TRANSMISSION KIT"
         subtitle="Your live ends. Your clips don't."
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.broadcast}
         label="for tarot + astrology streamers"
       />
 

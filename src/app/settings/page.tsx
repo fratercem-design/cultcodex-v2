@@ -8,6 +8,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import { ManageSubscription } from "@/components/subscription/manage-subscription";
 import type { Metadata } from "next";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   title: "Account Settings — CultCodex",
@@ -48,7 +49,7 @@ export default async function SettingsPage() {
       <PageHero
         title="ACCOUNT SETTINGS"
         subtitle="Profile, notifications and subscription"
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.sanctum}
         label="settings"
       />
       <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">

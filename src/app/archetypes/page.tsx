@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ARCHETYPES } from "@/lib/archetypes";
 import { PageHero } from "@/components/ui/page-hero";
 import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/archetypes" },
@@ -19,7 +20,7 @@ export default async function ArchetypesPage() {
       <PageHero
         title="Archetypes"
         subtitle={`Eight patterns the Oracle has identified across ${fmtEpisodeCount(counts?.episodes ?? 0)} transmissions`}
-        backgroundImage="/articles-bacgkground.jpg"
+        backgroundImage={SECTION_HEADERS.lore}
       />
 
       <div className="mx-auto max-w-5xl px-4 py-12">

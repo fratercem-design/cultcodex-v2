@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/page-hero";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { buildMetadata } from "@/lib/seo";
 
@@ -59,7 +60,7 @@ export default function YouTubeMembersPage() {
       <PageHero
         title="JOIN ON YOUTUBE"
         subtitle="Cult of Psyche channel memberships: $5 or $10 a month"
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.initiation}
         label="members"
       />
 

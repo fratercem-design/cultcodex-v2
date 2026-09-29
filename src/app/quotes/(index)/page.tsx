@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PaginationControls } from "@/components/ui/pagination-controls";
@@ -98,7 +99,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
       <PageHero
         title="QUOTES"
         subtitle={subtitle}
-        backgroundImage="/images/quotes/hero.webp"
+        backgroundImage={SECTION_HEADERS.codex}
       
       label="transmissions"
     />

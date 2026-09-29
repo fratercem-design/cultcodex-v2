@@ -9,6 +9,7 @@ import { isSubscribed } from "@/lib/subscription";
 import { getUserRank } from "@/lib/rankings/get-user-rank";
 import { RANKS } from "@/lib/rankings/ranks";
 import { buildMetadata } from "@/lib/seo";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const dynamic = "force-dynamic";
 
@@ -33,7 +34,7 @@ export default async function RankPage() {
       <PageHero
         title="THE RANKS"
         subtitle="Initiate · Adept · Oracle · Archivist"
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.trials}
         label="rank"
       />
 

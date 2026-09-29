@@ -29,6 +29,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { formatDate } from "@/lib/format/date";
 import { SavedSearchesBlock } from "@/components/codex/saved-searches-block";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/codex" },
@@ -59,7 +60,7 @@ export default async function CodexPage() {
             ? `${totalSaved} signal${totalSaved === 1 ? "" : "s"} in your personal archive`
             : "Your personal archive — still a blank page."
         }
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.codex}
       label="my_codex"
       />
 

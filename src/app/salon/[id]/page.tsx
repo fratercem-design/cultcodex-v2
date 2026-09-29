@@ -7,6 +7,7 @@ import { getSalonThread } from "@/lib/queries/salon";
 import { PageHero } from "@/components/ui/page-hero";
 import { buildMetadata } from "@/lib/seo";
 import { SalonThreadView } from "@/components/salon/salon-thread-view";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +33,7 @@ export default async function SalonThreadPage({ params }: PageProps) {
   if (!unlocked) {
     return (
       <>
-        <PageHero title="THE SALON" subtitle="Oracle members only." label="oracle_only" backgroundImage="/hero-bg.jpg" />
+        <PageHero title="THE SALON" subtitle="Oracle members only." label="oracle_only" backgroundImage={SECTION_HEADERS.salon} />
         <main id="main-content" className="mx-auto max-w-2xl px-4 py-16 text-center">
           <Link
             href="/premium#system"
@@ -50,7 +51,7 @@ export default async function SalonThreadPage({ params }: PageProps) {
 
   return (
     <>
-      <PageHero title="THE SALON" subtitle={thread.title} label="oracle_salon" backgroundImage="/hero-bg.jpg" />
+      <PageHero title="THE SALON" subtitle={thread.title} label="oracle_salon" backgroundImage={SECTION_HEADERS.salon} />
       <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
         <Link href="/salon" className="font-mono text-xs text-text-muted hover:text-accent-violet-text">
           ← All threads

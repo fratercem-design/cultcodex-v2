@@ -6,6 +6,7 @@ import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { CodexSigil } from "@/components/graphics/codex-sigil";
 import { getCounts } from "@/lib/queries/stats";
 import { buildMetadata } from "@/lib/seo";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
@@ -59,7 +60,7 @@ export default async function MediaKitPage() {
       <PageHero
         title="MEDIA KIT"
         subtitle="Everything you need to write about the Psycheverse."
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.broadcast}
         label="press"
       />
 

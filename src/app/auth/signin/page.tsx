@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/page-hero";
 import { GoogleSignInButton } from "@/components/auth/google-signin-button";
 import { safeRedirectPath } from "@/lib/safe-redirect";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +28,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
       <PageHero
         title="SIGN IN"
         subtitle="Join the Codex"
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.threshold}
         label="access"
       />
       <main className="mx-auto max-w-md px-4 py-12">
