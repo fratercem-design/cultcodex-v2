@@ -5,7 +5,6 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 import { EmptyState } from "@/components/ui/empty-state";
 import { buildMetadata } from "@/lib/seo";
 import { RECOMMENDATIONS } from "@/lib/recommendations";
-import { SECTION_HEADERS } from "@/lib/section-headers";
 
 const hasItems = RECOMMENDATIONS.length > 0;
 

@@ -37,7 +37,12 @@ export async function generateMetadata() {
     alternates: { canonical: "/episodes" },
     title,
     description,
-    ...socialMetadata({ title, description, path: "/episodes" }),
+    ...socialMetadata({
+      title,
+      description,
+      path: "/episodes",
+      image: { route: "/episodes", alt: "Episode Archive — CultCodex" },
+    }),
   };
 }
 

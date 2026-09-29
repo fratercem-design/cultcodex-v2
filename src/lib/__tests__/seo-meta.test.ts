@@ -33,10 +33,16 @@ describe("episodeMetaDescription", () => {
 });
 
 describe("socialMetadata", () => {
-  it("carries site name, locale and a default image", () => {
-    const m = socialMetadata({ title: "T", description: "D", path: "/people" });
-    expect(m.openGraph).toMatchObject({ siteName: "CultCodex", locale: "en_US", url: "/people", description: "D" });
-    expect(m.openGraph?.images).toBeTruthy();
-    expect(m.twitter).toMatchObject({ card: "summary_large_image", description: "D" });
+  it("carries site name, locale and the root generated image by default", () => {
+    const m = socialMetadata({ title: "T", description: "D", path: "/topics" });
+    expect(m.openGraph).toMatchObject({ siteName: "CultCodex", locale: "en_US", url: "/topics", description: "D" });
+    expect(m.openGraph?.images).toMatchObject([{ url: "/opengraph-image" }]);
+    expect(m.twitter).toMatchObject({ card: "summary_large_image", description: "D", images: [{ url: "/twitter-image" }] });
+  });
+
+  it("points at a route's own generated images when given one", () => {
+    const m = socialMetadata({ title: "T", description: "D", path: "/people", image: { route: "/people", alt: "Voices" } });
+    expect(m.openGraph?.images).toMatchObject([{ url: "/people/opengraph-image", alt: "Voices" }]);
+    expect(m.twitter?.images).toMatchObject([{ url: "/people/twitter-image" }]);
   });
 });
