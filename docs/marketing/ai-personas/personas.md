@@ -22,6 +22,11 @@ Workflow per persona (same as the video):
 
 ## 1. The Archivist
 
+![The Archivist reference](./archivist-reference.png)
+
+**Reference image:** `archivist-reference.png`, a Kling 3 frame. Attach it as the
+reference or start frame in Higgsfield or Kling so every video keeps this face and mask.
+
 **One-line:** The keeper of the Codex. They remember every word ever broadcast, and they bring receipts.
 
 **Backstory:** Nobody knows when the Archivist started taking notes. They say they
