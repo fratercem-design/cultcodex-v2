@@ -22,8 +22,8 @@ import {
   getCollectionBySlug,
 } from "@/lib/collections/themed-collections";
 import {
-  buildEpisodeInclude,
-  formatEpisodeForCard,
+  EPISODE_CARD_LIST_SELECT,
+  toEpisodeCard,
 } from "@/lib/queries/episodes";
 import { prisma } from "@/lib/db";
 import { buildMetadata } from "@/lib/seo";
@@ -91,14 +91,14 @@ async function findRelatedEpisodes(topicIds: string[], excludeSlugs: string[]) {
       slug: { notIn: excludeSlugs },
       topics: { some: { topicId: { in: topicIds } } },
     },
-    include: buildEpisodeInclude(),
+    select: EPISODE_CARD_LIST_SELECT,
     orderBy: [
       { airDate: { sort: "desc", nulls: "last" } },
       { episodeNumber: "desc" },
     ],
     take: 18,
   }).catch(() => []);
-  return rows.map(formatEpisodeForCard);
+  return rows.map(toEpisodeCard);
 }
 
 /** Fetch hand-picked pinned episodes in the order the config listed them. */
@@ -106,13 +106,13 @@ async function findPinnedEpisodes(slugs: string[]) {
   if (!slugs || slugs.length === 0) return [];
   const rows = await prisma.episode.findMany({
     where: { slug: { in: slugs } },
-    include: buildEpisodeInclude(),
+    select: EPISODE_CARD_LIST_SELECT,
   }).catch(() => []);
   const bySlug = new Map(rows.map((r) => [r.slug, r]));
   return slugs
     .map((s) => bySlug.get(s))
     .filter((r): r is NonNullable<typeof r> => Boolean(r))
-    .map(formatEpisodeForCard);
+    .map(toEpisodeCard);
 }
 
 export default async function ThemedCollectionPage({ params }: PageProps) {

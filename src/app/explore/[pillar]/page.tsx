@@ -12,7 +12,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 import { PILLARS, getPillarBySlug } from "@/lib/pillars/pillars";
-import { buildEpisodeInclude, formatEpisodeForCard } from "@/lib/queries/episodes";
+import { EPISODE_CARD_LIST_SELECT, toEpisodeCard } from "@/lib/queries/episodes";
 import { prisma } from "@/lib/db";
 import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
 
@@ -79,14 +79,14 @@ async function findRelatedEpisodes(topicIds: string[]) {
       status: "published",
       topics: { some: { topicId: { in: topicIds } } },
     },
-    include: buildEpisodeInclude(),
+    select: EPISODE_CARD_LIST_SELECT,
     orderBy: [
       { airDate: { sort: "desc", nulls: "last" } },
       { episodeNumber: "desc" },
     ],
     take: 24,
   }).catch(() => []);
-  return rows.map(formatEpisodeForCard);
+  return rows.map(toEpisodeCard);
 }
 
 export default async function PillarPage({ params }: PageProps) {

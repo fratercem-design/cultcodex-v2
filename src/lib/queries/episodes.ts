@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { prisma } from "@/lib/db";
 import { cleanTitle } from "@/lib/format/text";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
@@ -93,7 +94,7 @@ export type EpisodeCardWithGuests = EpisodeCardData & { guests: EpisodeCardGuest
 // loads every transcript segment (~1.7k rows/episode), plus quotes, lore and
 // mentions per row, so a 20-episode list pulled ~30k+ rows (profiled: 2s+ vs the
 // ~90ms DB round-trip baseline). This select fetches counts and names instead.
-const EPISODE_CARD_LIST_SELECT = {
+export const EPISODE_CARD_LIST_SELECT = {
   id: true,
   title: true,
   slug: true,
@@ -139,6 +140,41 @@ function buildPersonWhere(personSlug?: string): Prisma.EpisodeWhereInput {
       { guests: { some: { person: { slug: personSlug } } } },
       { mentionedPeople: { some: { person: { slug: personSlug } } } },
     ],
+  };
+}
+
+/** Card data from an EPISODE_CARD_LIST_SELECT row: counts and names instead of
+ *  the full relations formatEpisodeForCard needs. */
+export function toEpisodeCard(
+  episode: Prisma.EpisodeGetPayload<{ select: typeof EPISODE_CARD_LIST_SELECT }>,
+): EpisodeCardWithGuests {
+  return {
+    id: episode.id,
+    title: cleanTitle(episode.title),
+    slug: episode.slug,
+    episodeNumber: episode.episodeNumber,
+    airDate: episode.airDate,
+    summaryShort: episode.summaryShort,
+    thumbnailUrl: fixThumbnailUrl(episode.thumbnailUrl),
+    status: episode.status,
+    hasVideo: !!(episode.youtubeVideoId || episode.rumbleVideoId),
+    segmentCount: episode._count.segments,
+    hasSummary: !!(
+      (episode.summaryFacts && episode.summaryFacts.length > 0) ||
+      (episode.summaryLong && episode.summaryLong.length > 0)
+    ),
+    isHumanReviewed: episode.isHumanReviewed,
+    humanReviewedAt: episode.humanReviewedAt,
+    guestNames: episode.guests
+      .filter((g) => g.person.personType !== "host")
+      .map((g) => g.person.displayName),
+    topicNames: episode.topics.map((t) => t.topic.title),
+    guests: episode.guests.map((g) => ({
+      displayName: g.person.displayName,
+      slug: g.person.slug,
+      avatarUrl: g.person.avatarUrl,
+      personType: g.person.personType,
+    })),
   };
 }
 
@@ -189,34 +225,7 @@ export async function getEpisodeCards(options?: {
     skip,
   });
 
-  return rows.map((episode) => ({
-    id: episode.id,
-    title: cleanTitle(episode.title),
-    slug: episode.slug,
-    episodeNumber: episode.episodeNumber,
-    airDate: episode.airDate,
-    summaryShort: episode.summaryShort,
-    thumbnailUrl: fixThumbnailUrl(episode.thumbnailUrl),
-    status: episode.status,
-    hasVideo: !!(episode.youtubeVideoId || episode.rumbleVideoId),
-    segmentCount: episode._count.segments,
-    hasSummary: !!(
-      (episode.summaryFacts && episode.summaryFacts.length > 0) ||
-      (episode.summaryLong && episode.summaryLong.length > 0)
-    ),
-    isHumanReviewed: episode.isHumanReviewed,
-    humanReviewedAt: episode.humanReviewedAt,
-    guestNames: episode.guests
-      .filter((g) => g.person.personType !== "host")
-      .map((g) => g.person.displayName),
-    topicNames: episode.topics.map((t) => t.topic.title),
-    guests: episode.guests.map((g) => ({
-      displayName: g.person.displayName,
-      slug: g.person.slug,
-      avatarUrl: g.person.avatarUrl,
-      personType: g.person.personType,
-    })),
-  }));
+  return rows.map(toEpisodeCard);
 }
 
 export async function getEpisodes(options?: {
@@ -265,12 +274,15 @@ export async function getEpisodes(options?: {
   });
 }
 
-export async function getEpisodeBySlug(slug: string) {
-  return prisma.episode.findUnique({
+// cache(): generateMetadata and the page both call this for the same slug in
+// one request. It loads every transcript segment, so without per-request
+// deduplication each episode view read the full transcript twice.
+export const getEpisodeBySlug = cache(async (slug: string) =>
+  prisma.episode.findUnique({
     where: { slug },
     include: buildEpisodeInclude(),
-  });
-}
+  }),
+);
 
 export async function getEpisodeCount(
   status?: ContentStatus,
