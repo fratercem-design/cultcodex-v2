@@ -7,9 +7,11 @@ export const OPENROUTER_DEFAULT_BASE_URL = "https://openrouter.ai/api/v1";
  * request and an http:// override would put it on the wire in cleartext.
  */
 export function openRouterBaseURL(override: string | undefined): string {
-  const baseURL = override || OPENROUTER_DEFAULT_BASE_URL;
-  if (new URL(baseURL).protocol !== "https:") {
-    throw new Error("OPENROUTER_BASE_URL must use https");
-  }
-  return baseURL;
+  return requireHttps(override || OPENROUTER_DEFAULT_BASE_URL, "OPENROUTER_BASE_URL");
+}
+
+/** Returns `url` unchanged, or throws when it isn't https: an API key must never go out in cleartext. */
+export function requireHttps(url: string, label: string): string {
+  if (new URL(url).protocol !== "https:") throw new Error(`${label} must use https`);
+  return url;
 }

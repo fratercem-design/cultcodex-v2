@@ -8,6 +8,7 @@ import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
 import OpenAI from "openai";
+import { requireHttps } from "../../src/lib/openrouter-url";
 
 import { getPrisma, disconnect } from "../ingest/lib";
 import { analyzeChapter } from "./analyze";
@@ -207,11 +208,13 @@ async function main() {
     "upload-only";
   const client = new OpenAI({
     apiKey,
-    baseURL:
+    baseURL: requireHttps(
       process.env.ART_API_BASE_URL ??
-      (process.env.HCNSEC_API_KEY || process.env.ART_API_KEY
-        ? "https://api.hcnsec.cn/v1"
-        : process.env.OPENROUTER_BASE_URL ?? "https://api.bluesminds.com/v1"),
+        (process.env.HCNSEC_API_KEY || process.env.ART_API_KEY
+          ? "https://api.hcnsec.cn/v1"
+          : process.env.OPENROUTER_BASE_URL ?? "https://api.bluesminds.com/v1"),
+      "ART_API_BASE_URL / OPENROUTER_BASE_URL",
+    ),
     defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" },
   });
 
