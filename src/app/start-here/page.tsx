@@ -1,5 +1,6 @@
-// ISR: the same for every visitor; the only data is the archive counts.
-export const revalidate = 600;
+// ISR, not force-dynamic: the same for every visitor. 60s because the root
+// layout's revalidate = 60 caps every page anyway.
+export const revalidate = 60;
 
 import Link from "next/link";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
@@ -132,7 +133,12 @@ const colorMapFull = {
 };
 
 export default async function StartHerePage() {
-  const stats = await getCounts();
+  // Falls back to zeros so the build (and CI, which has no database) can prerender it.
+  const stats = await getCounts().catch(() => ({
+    episodes: 0, segments: 0, people: 0, topics: 0,
+    lore: 0, quotes: 0, totalHours: 0,
+    transcribedEpisodes: 0, transcribedPct: 0,
+  }));
 
   return (
     <main id="main-content" className="mx-auto max-w-5xl px-4 py-12 space-y-20">

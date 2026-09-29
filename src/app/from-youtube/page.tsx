@@ -8,8 +8,9 @@ import { getTier, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers
 
 const initiateTier = getTier("access");
 
-// ISR: the same for every visitor; the only data is the archive counts.
-export const revalidate = 600;
+// ISR, not force-dynamic: the same for every visitor. 60s because the root
+// layout's revalidate = 60 caps every page anyway.
+export const revalidate = 60;
 
 export const metadata = {
   alternates: { canonical: "/from-youtube" },

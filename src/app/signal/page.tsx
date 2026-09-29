@@ -5,8 +5,8 @@ import { cleanTranscriptText } from "@/lib/format/text";
 import { formatDate } from "@/lib/format/date";
 import { ShareSignalButton } from "@/components/home/share-signal-button";
 
-// ISR: the same for every visitor. 60s matches the homepage, which shows the
-// same daily transmission, so both roll over to the new day together.
+// ISR, not force-dynamic: the same for every visitor. 60s because the root
+// layout's revalidate = 60 caps every page anyway.
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
