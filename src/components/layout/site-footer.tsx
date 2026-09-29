@@ -24,6 +24,7 @@ const COLUMNS: { heading: string; links: { label: string; href: string }[] }[] =
       { label: "Lore", href: "/lore" },
       { label: "Series", href: "/series" },
       { label: "Psychenomicon", href: "/psychenomicon" },
+      { label: "The Book of the 2 Psyches", href: "/book-of-the-2-psyches.html" },
     ],
   },
   {
@@ -104,16 +105,24 @@ export function SiteFooter() {
                 {col.heading}
               </p>
               <ul className="space-y-2">
-                {col.links.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="inline-flex min-h-6 items-center font-mono text-xs text-text-primary transition-colors hover:text-accent-gold-text"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
+                {col.links.map((link) => {
+                  const className =
+                    "inline-flex min-h-6 items-center font-mono text-xs text-text-primary transition-colors hover:text-accent-gold-text";
+                  return (
+                    <li key={link.href}>
+                      {/* Static files in public/ are not app routes; <Link> would prefetch the whole file. */}
+                      {link.href.endsWith(".html") ? (
+                        <a href={link.href} className={className}>
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link href={link.href} className={className}>
+                          {link.label}
+                        </Link>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </nav>
           ))}
