@@ -267,25 +267,31 @@ export function collectionPageJsonLd(opts: {
   };
 }
 
-/** Site-wide share image, used wherever a route has no image of its own. */
-export const DEFAULT_OG_IMAGE = "/images/site/og.jpg";
 export const OG_LOCALE = "en_US";
 
 /**
  * Open Graph and Twitter tags for a page whose social copy differs from the
  * site default. Next replaces a parent's `openGraph` object wholesale instead
  * of merging it, so a page that sets only a description would lose the site
- * name, locale and image. This fills them in. A route's `opengraph-image`
- * file still takes precedence over the image given here.
+ * name, locale and image. This fills them in.
+ *
+ * The image must be named explicitly. A generated `opengraph-image` file only
+ * beats config in its own segment, and the listing pages live one segment
+ * down in `(index)/`, so any image given here replaces the parent's. `route`
+ * is the segment whose opengraph-image and twitter-image files to use; the
+ * default is the root pair, which these pages used before they set their own
+ * social tags.
  */
 export function socialMetadata({
   title,
   description,
   path,
+  image = { route: "", alt: "CultCodex — The Cult of Psyche Archive" },
 }: {
   title: string;
   description: string;
   path: string;
+  image?: { route: string; alt: string };
 }): Pick<Metadata, "openGraph" | "twitter"> {
   return {
     openGraph: {
@@ -295,13 +301,13 @@ export function socialMetadata({
       siteName: SITE_NAME,
       locale: OG_LOCALE,
       type: "website",
-      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630, alt: "CultCodex - the Cult of Psyche archive" }],
+      images: [{ url: `${image.route}/opengraph-image`, width: 1200, height: 630, alt: image.alt }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [DEFAULT_OG_IMAGE],
+      images: [{ url: `${image.route}/twitter-image`, alt: image.alt }],
     },
   };
 }

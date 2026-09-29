@@ -31,6 +31,7 @@ export const metadata = {
     title: "People — CULT CODEX",
     description: "Explore recurring guests, hosts, and profiled voices across the Cult of Psyche archive.",
     path: "/people",
+    image: { route: "/people", alt: "Voices — Every recurring figure in the Cult of Psyche archive" },
   }),
 };
 

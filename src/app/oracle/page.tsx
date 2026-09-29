@@ -26,6 +26,7 @@ export async function generateMetadata() {
       title: "Ask the Oracle — AI Search — CULT CODEX",
       description: "Ask questions about the Cult of Psyche archive and receive answers cited to episodes and timestamps.",
       path: "/oracle",
+      image: { route: "/oracle", alt: "Ask the Oracle — AI search across the Cult of Psyche archive" },
     }),
   };
 }
