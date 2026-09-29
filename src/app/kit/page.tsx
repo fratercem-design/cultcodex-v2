@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 import { SampleKitTabs } from "@/components/kit/sample-kit-tabs";
 import { KitPricing } from "@/components/kit/kit-pricing";
 import { PilotForm } from "@/components/kit/pilot-form";

@@ -1,5 +1,6 @@
 
 import { PageHero } from "@/components/ui/page-hero";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { PersonCard } from "@/components/archive/person-card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -160,7 +161,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
     <PageHero
       title="PEOPLE"
       subtitle="Guests, hosts, and figures of the archive"
-      backgroundImage="/images/people/hero.webp"
+      backgroundImage={SECTION_HEADERS.voices}
       label="voices"
     />
     <EntityGlanceBar items={glanceItems} />

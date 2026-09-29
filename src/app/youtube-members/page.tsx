@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/page-hero";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { buildMetadata } from "@/lib/seo";
 import { SECTION_HEADERS } from "@/lib/section-headers";
