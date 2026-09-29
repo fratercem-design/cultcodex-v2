@@ -5,7 +5,6 @@ import { PageHero } from "@/components/ui/page-hero";
 import { SECTION_HEADERS } from "@/lib/section-headers";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";
 import { buildMetadata } from "@/lib/seo";
-import { SECTION_HEADERS } from "@/lib/section-headers";
 
 // YouTube channel memberships on @cultofpsyche. Separate from Initiate+ / Oracle
 // (CultCodex's own Stripe tiers, /premium): these are billed and delivered by
