@@ -14,6 +14,7 @@
  * after PASS_STARTED are left out, so a chapter still at MIN_HITS after its
  * edit is not edited again on the next run. Pages revalidate within 5 minutes.
  */
+import OpenAI from "openai";
 import { getPrisma, disconnect } from "../ingest/lib";
 import { enrichComplete } from "../../src/lib/enrichment-llm";
 import {
@@ -62,11 +63,10 @@ async function rewrite(c: ChapterRow): Promise<Outcome> {
     mythicText: c.mythicText,
     emergingSignals: c.emergingSignals,
   };
-  const raw = await enrichComplete({
-    system: DESLOP_SYSTEM_PROMPT,
-    user: `Chapter ${c.chapterNumber}: "${c.title}"\n\n${JSON.stringify(before)}`,
-    maxTokens: 8000,
-  });
+  const raw = await complete(
+    DESLOP_SYSTEM_PROMPT,
+    `Chapter ${c.chapterNumber}: "${c.title}"\n\n${JSON.stringify(before)}`,
+  );
   const parsed = parseRewrite(raw);
   if (!parsed) return { ok: false, problems: ["model returned invalid JSON"] };
   const problems = checkRewrite(before, parsed);
@@ -75,11 +75,77 @@ async function rewrite(c: ChapterRow): Promise<Outcome> {
   return { ok: true, after, hitsAfter: findSlop(allText(after)).length };
 }
 
+// OpenRouter names Claude models differently from Anthropic's API, and the
+// newest names can't be checked from here, so try them in order and keep
+// the first that answers. Opus 5 first, to match the chapters already edited
+// through Anthropic directly.
+const OPENROUTER_MODELS = [
+  "anthropic/claude-opus-5",
+  "anthropic/claude-sonnet-5",
+  "anthropic/claude-opus-4.1",
+  "anthropic/claude-sonnet-4.5",
+];
+
+function openRouterClient(): OpenAI {
+  return new OpenAI({
+    apiKey: process.env.OPENROUTER_API_KEY,
+    baseURL: process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1",
+    defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" },
+  });
+}
+
+async function pickOpenRouterModel(client: OpenAI): Promise<string> {
+  const failures: string[] = [];
+  for (const model of OPENROUTER_MODELS) {
+    try {
+      await client.chat.completions.create({ model, max_tokens: 5, messages: [{ role: "user", content: "ok" }] });
+      return model;
+    } catch (e) {
+      failures.push(`${model}: ${e instanceof Error ? e.message.slice(0, 120) : String(e)}`);
+    }
+  }
+  throw new Error(`no OpenRouter Claude model answered:\n  ${failures.join("\n  ")}`);
+}
+
+type Complete = (system: string, user: string) => Promise<string>;
+let complete: Complete = (system, user) => enrichComplete({ system, user, maxTokens: 8000 });
+
+/**
+ * OpenRouter when its key is present (the Anthropic balance ran out), else
+ * Anthropic. OpenRouter is called directly: enrichComplete's ladder has no
+ * OpenRouter-only mode and would try the empty Anthropic account first.
+ */
+async function chooseProvider(): Promise<string> {
+  if (process.env.OPENROUTER_API_KEY) {
+    const client = openRouterClient();
+    const model = process.env.OPENROUTER_MODEL ?? (await pickOpenRouterModel(client));
+    complete = async (system, user) => {
+      const c = await client.chat.completions.create({
+        model,
+        max_tokens: 8000,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: user },
+        ],
+      });
+      return c.choices[0]?.message?.content ?? "";
+    };
+    return `openrouter · ${model}`;
+  }
+  process.env.ENRICHMENT_PROVIDER ??= "anthropic";
+  return process.env.ENRICHMENT_PROVIDER;
+}
+
+/** Anthropic's and OpenRouter's out-of-credit errors; either means every later call fails too. */
+export function isOutOfCredit(message: string): boolean {
+  return /credit balance is too low|insufficient credits|\b402\b/i.test(message);
+}
+
 const label = (c: { chapterNumber: number; title: string }) =>
   `CH.${String(c.chapterNumber).padStart(4, "0")} ${c.title}`;
 
 export async function run(apply: boolean) {
-  process.env.ENRICHMENT_PROVIDER ??= "anthropic";
+  const provider = await chooseProvider();
 
   const prisma = getPrisma();
   const rows: ChapterRow[] = await prisma.psychenomiconChapter.findMany({
@@ -93,7 +159,7 @@ export async function run(apply: boolean) {
 
   console.log(
     `${apply ? "APPLY" : "DRY RUN (read-only)"}: ${todo.length} chapters with ${MIN_HITS}+ hits; ` +
-      `${apply ? "rewriting all of them" : `rewriting the ${batch.length} worst as samples`}\n`,
+      `${apply ? "rewriting all of them" : `rewriting the ${batch.length} worst as samples`} · model: ${provider}\n`,
   );
 
   const started = Date.now();
@@ -140,7 +206,7 @@ export async function run(apply: boolean) {
         const message = err instanceof Error ? err.message : String(err);
         tally.failed++;
         console.log(`  ✗ ${label(c)}: ${message.slice(0, 200)}`);
-        if (message.includes("credit balance is too low")) outOfCredit = true;
+        if (isOutOfCredit(message)) outOfCredit = true;
       }
     }
   };
@@ -150,7 +216,7 @@ export async function run(apply: boolean) {
   console.log(
     `\nSummary: ${apply ? "saved" : "rewrote"} ${tally.saved} (hits ${tally.hitsBefore} → ${tally.hitsAfter}) · ` +
       `rejected by guards ${tally.rejected} · ${apply ? `changed since read ${tally.stale} · ` : ""}failed ${tally.failed} · ` +
-      `not reached ${left}${outOfCredit ? " (stopped: Anthropic credit balance is empty)" : left ? " (run again to continue)" : ""}`,
+      `not reached ${left}${outOfCredit ? " (stopped: out of credit)" : left ? " (run again to continue)" : ""}`,
   );
   await disconnect();
 }
