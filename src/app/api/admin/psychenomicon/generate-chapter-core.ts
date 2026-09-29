@@ -9,11 +9,12 @@ import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { bedrockModelId } from "@/lib/anthropic";
 import { CHAPTER_STYLE_RULES } from "@/lib/psychenomicon-slop";
 import { viaAnthropic } from "@/lib/enrichment-llm";
+import { openRouterBaseURL } from "@/lib/openrouter-url";
 
 function getOpenRouterClient(): OpenAI {
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) throw new Error("OPENROUTER_API_KEY not set");
-  const baseURL = process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
+  const baseURL = openRouterBaseURL(process.env.OPENROUTER_BASE_URL);
   return new OpenAI({ apiKey, baseURL, defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" } });
 }
 

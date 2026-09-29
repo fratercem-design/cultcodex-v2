@@ -9,6 +9,7 @@ import * as fs from "fs";
 import * as path from "path";
 import Anthropic from "@anthropic-ai/sdk";
 import OpenAI from "openai";
+import { openRouterBaseURL } from "../../src/lib/openrouter-url";
 import { getPrisma, disconnect } from "../ingest/lib";
 
 const LOG_PATH = path.join(__dirname, "enrich-people.log");
@@ -94,7 +95,7 @@ async function main() {
   function buildOpenRouterClient(): OpenAI {
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) throw new Error("OPENROUTER_API_KEY not set");
-    const baseURL = process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
+    const baseURL = openRouterBaseURL(process.env.OPENROUTER_BASE_URL);
     return new OpenAI({ apiKey, baseURL, defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" } });
   }
 

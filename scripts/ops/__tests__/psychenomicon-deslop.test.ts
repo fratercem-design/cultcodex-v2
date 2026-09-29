@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { isOutOfCredit, openRouterBaseURL, pickChapters } from "../psychenomicon-deslop";
+import { isOutOfCredit, pickChapters } from "../psychenomicon-deslop";
 
 const chapter = (n: number, canonText: string) => ({
   n,
@@ -35,16 +35,5 @@ describe("isOutOfCredit", () => {
   it("does not stop the run for a single chapter's error", () => {
     expect(isOutOfCredit("400 Provider returned error: input rejected")).toBe(false);
     expect(isOutOfCredit("model returned invalid JSON")).toBe(false);
-  });
-});
-
-describe("openRouterBaseURL", () => {
-  it("defaults to OpenRouter over https and keeps an https override", () => {
-    expect(openRouterBaseURL(undefined)).toBe("https://openrouter.ai/api/v1");
-    expect(openRouterBaseURL("https://proxy.example/v1")).toBe("https://proxy.example/v1");
-  });
-
-  it("refuses a cleartext override so the key is never sent over http", () => {
-    expect(() => openRouterBaseURL("http://proxy.example/v1")).toThrow(/https/);
   });
 });
