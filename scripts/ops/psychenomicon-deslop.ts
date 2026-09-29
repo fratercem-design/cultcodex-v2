@@ -14,6 +14,7 @@
  * after PASS_STARTED are left out, so a chapter still at MIN_HITS after its
  * edit is not edited again on the next run. Pages revalidate within 5 minutes.
  */
+import OpenAI from "openai";
 import { getPrisma, disconnect } from "../ingest/lib";
 import { enrichComplete } from "../../src/lib/enrichment-llm";
 import {
@@ -75,11 +76,52 @@ async function rewrite(c: ChapterRow): Promise<Outcome> {
   return { ok: true, after, hitsAfter: findSlop(allText(after)).length };
 }
 
+// OpenRouter names Claude models differently from Anthropic's API, and the
+// newest names can't be checked from here, so try them in order and keep
+// the first that answers. Opus 5 first, to match the chapters already edited
+// through Anthropic directly.
+const OPENROUTER_MODELS = [
+  "anthropic/claude-opus-5",
+  "anthropic/claude-sonnet-5",
+  "anthropic/claude-opus-4.1",
+  "anthropic/claude-sonnet-4.5",
+];
+
+async function pickOpenRouterModel(): Promise<string> {
+  const client = new OpenAI({
+    apiKey: process.env.OPENROUTER_API_KEY,
+    baseURL: process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1",
+    defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" },
+  });
+  const failures: string[] = [];
+  for (const model of OPENROUTER_MODELS) {
+    try {
+      await client.chat.completions.create({ model, max_tokens: 5, messages: [{ role: "user", content: "ok" }] });
+      return model;
+    } catch (e) {
+      failures.push(`${model}: ${e instanceof Error ? e.message.slice(0, 120) : String(e)}`);
+    }
+  }
+  throw new Error(`no OpenRouter Claude model answered:\n  ${failures.join("\n  ")}`);
+}
+
+/** OpenRouter when its key is present (the Anthropic balance ran out), else Anthropic. */
+async function chooseProvider(): Promise<string> {
+  if (process.env.ENRICHMENT_PROVIDER) return `${process.env.ENRICHMENT_PROVIDER} (preset)`;
+  if (process.env.OPENROUTER_API_KEY) {
+    process.env.ENRICHMENT_PROVIDER = "openrouter";
+    process.env.ENRICHMENT_MODEL ??= await pickOpenRouterModel();
+    return `openrouter · ${process.env.ENRICHMENT_MODEL}`;
+  }
+  process.env.ENRICHMENT_PROVIDER = "anthropic";
+  return "anthropic";
+}
+
 const label = (c: { chapterNumber: number; title: string }) =>
   `CH.${String(c.chapterNumber).padStart(4, "0")} ${c.title}`;
 
 export async function run(apply: boolean) {
-  process.env.ENRICHMENT_PROVIDER ??= "anthropic";
+  const provider = await chooseProvider();
 
   const prisma = getPrisma();
   const rows: ChapterRow[] = await prisma.psychenomiconChapter.findMany({
@@ -93,7 +135,7 @@ export async function run(apply: boolean) {
 
   console.log(
     `${apply ? "APPLY" : "DRY RUN (read-only)"}: ${todo.length} chapters with ${MIN_HITS}+ hits; ` +
-      `${apply ? "rewriting all of them" : `rewriting the ${batch.length} worst as samples`}\n`,
+      `${apply ? "rewriting all of them" : `rewriting the ${batch.length} worst as samples`} · model: ${provider}\n`,
   );
 
   const started = Date.now();

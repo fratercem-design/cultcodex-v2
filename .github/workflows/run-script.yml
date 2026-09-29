@@ -80,6 +80,9 @@ jobs:
           # Only the transcript repair and re-fetch scripts fetch captions;
           # YouTube often refuses runner IPs, so they fall back to Supadata.
           SUPADATA_API_KEY: ${{ (github.event.inputs.script == 'ops/squashed-transcripts-apply.ts' || github.event.inputs.script == 'ops/refetch-transcript.ts' || github.event.inputs.script == 'ops/refetch-transcript-apply.ts') && secrets.SUPADATA_API_KEY || '' }}
+          # The Psychenomicon de-slop pair edits chapters through OpenRouter
+          # when the Anthropic balance is empty; nothing else gets this key.
+          OPENROUTER_API_KEY: ${{ (github.event.inputs.script == 'ops/psychenomicon-deslop.ts' || github.event.inputs.script == 'ops/psychenomicon-deslop-apply.ts') && secrets.OPENROUTER_API_KEY || '' }}
           # Passed through env, never interpolated into the shell source.
           SCRIPT: ${{ github.event.inputs.script }}
         run: |
