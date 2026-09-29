@@ -9,7 +9,7 @@ The PDF itself is `src/assets/workbook/the-30-day-initiation.pdf` and is never p
 
 | Pages | What |
 |---|---|
-| 1 | Cover (glyph ring; add Madame's portrait as `cover.jpg` and rebuild) |
+| 1 | Cover: Madame Sulphur's portrait (`cover.jpg`, a square crop) inside the archetype glyph ring |
 | 2–4 | Welcome letter + disclaimer, map of the five gates, fridge tracker |
 | 5–39 | Five gate dividers + 30 daily pages (rule, Madame's note, rite, optional Codex task, writing lines) |
 | 40 | Seal of Initiation certificate |
