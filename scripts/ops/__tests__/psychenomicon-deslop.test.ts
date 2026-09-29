@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { pickChapters } from "../psychenomicon-deslop";
+import { isOutOfCredit, pickChapters } from "../psychenomicon-deslop";
 
 const chapter = (n: number, canonText: string) => ({
   n,
@@ -23,5 +23,17 @@ describe("pickChapters", () => {
 
   it("does not count in-world words", () => {
     expect(pickChapters([chapter(1, "The labyrinth and the crucible.")], 1)).toEqual([]);
+  });
+});
+
+describe("isOutOfCredit", () => {
+  it("recognises Anthropic's and OpenRouter's out-of-credit errors", () => {
+    expect(isOutOfCredit("anthropic: 400 Your credit balance is too low to access the Anthropic API")).toBe(true);
+    expect(isOutOfCredit("402 Insufficient credits. Add more using https://openrouter.ai/settings/credits")).toBe(true);
+  });
+
+  it("does not stop the run for a single chapter's error", () => {
+    expect(isOutOfCredit("400 Provider returned error: input rejected")).toBe(false);
+    expect(isOutOfCredit("model returned invalid JSON")).toBe(false);
   });
 });
