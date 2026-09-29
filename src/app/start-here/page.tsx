@@ -1,4 +1,5 @@
-export const dynamic = "force-dynamic";
+// ISR: the same for every visitor; the only data is the archive counts.
+export const revalidate = 600;
 
 import Link from "next/link";
 import { MysticalDivider } from "@/components/graphics/mystical-divider";

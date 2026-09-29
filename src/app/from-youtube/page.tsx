@@ -8,7 +8,8 @@ import { getTier, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers
 
 const initiateTier = getTier("access");
 
-export const dynamic = "force-dynamic";
+// ISR: the same for every visitor; the only data is the archive counts.
+export const revalidate = 600;
 
 export const metadata = {
   alternates: { canonical: "/from-youtube" },

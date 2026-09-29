@@ -5,7 +5,9 @@ import { cleanTranscriptText } from "@/lib/format/text";
 import { formatDate } from "@/lib/format/date";
 import { ShareSignalButton } from "@/components/home/share-signal-button";
 
-export const dynamic = "force-dynamic";
+// ISR: the same for every visitor. 60s matches the homepage, which shows the
+// same daily transmission, so both roll over to the new day together.
+export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const { date, quote } = await getDailyTransmission().catch(() => ({

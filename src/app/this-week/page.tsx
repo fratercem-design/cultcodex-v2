@@ -7,7 +7,9 @@ import { formatDate } from "@/lib/format/date";
 import { QuoteShareButton } from "@/components/quotes/share-button";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+// ISR: the same for every visitor. Publishing or editing a digest in /admin/digest
+// calls revalidatePath("/this-week"), so the hour is only a fallback.
+export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const digest = await getLatestDigest();
