@@ -9,7 +9,6 @@ import { KIT_FAQ } from "@/lib/kit/sample-kit";
 import { KIT_FOUNDER_CODE } from "@/lib/kit/checkout";
 import { getCountsOrNull } from "@/lib/queries/stats";
 import { buildMetadata } from "@/lib/seo";
-import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
