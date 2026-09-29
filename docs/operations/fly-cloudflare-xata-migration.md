@@ -5,6 +5,13 @@ Xata PostgreSQL database unchanged. It does not introduce Neon or another
 database provider. Avoiding a simultaneous data migration keeps the existing
 Vercel deployment usable as a compute rollback target.
 
+> **Status, 2026-09-29: there is no fallback host.** The cutover is done and
+> Fly is the only place the app runs. The Vercel account is blocked, the Vercel
+> GitHub app has been disconnected from this repository, and `vercel.json` was
+> removed in PR #286. Sections below that describe rolling back to Vercel are
+> kept as a record of the migration; they no longer describe an option. See
+> [Rollback triggers](#rollback-triggers) for what to do instead.
+
 ## Target architecture
 
 ```text
@@ -471,7 +478,24 @@ affects a critical flow:
 - SSE connections cannot remain open through Cloudflare and Fly.
 - A scheduled job duplicates writes/emails or repeatedly fails.
 
-Rollback procedure:
+**There is no fallback host.** Vercel has been decommissioned (see the status
+note at the top), so the DNS-revert procedure that used to be here is gone.
+Recovery now happens on Fly:
+
+1. Redeploy the last good Fly release. List previous images with
+   `fly releases --image -a cultcodex-v2`, then deploy the good one with
+   `fly deploy -a cultcodex-v2 --image <image>`. If the bad change is already
+   on `master`, revert it there too so the next deploy doesn't bring it back.
+2. If a scheduled job is the cause, disable the GitHub scheduled-jobs workflow
+   until it is fixed.
+3. Keep the failed Fly release and its logs for diagnosis.
+4. Do not reverse an applied database migration without a separately reviewed
+   down procedure.
+
+If Fly itself is down, the site stays down until Fly recovers. Standing up
+another host would take the same work as this migration.
+
+The original Vercel rollback procedure, for the record:
 
 1. Restore Cloudflare's previous Vercel DNS target.
 2. Disable the GitHub scheduled-jobs workflow.
@@ -481,6 +505,10 @@ Rollback procedure:
    down procedure. In the compute-only cutover, Xata remains unchanged.
 
 ### The rollback target was frozen — keep it unfrozen
+
+> **Superseded, 2026-09-29.** The Vercel rollback target no longer exists, so
+> none of this needs doing. The `vercel.json` mentioned below was removed in
+> PR #286. Kept as history.
 
 Rollback assumes Vercel can still serve. Between 2026-09-16 and 2026-09-18 it
 could, but only from the build it already had.
@@ -560,6 +588,10 @@ Two loose ends this does not close, neither of them blocking:
       unnecessary.
 
 ## Vercel decommission
+
+As of 2026-09-29 the Vercel account is blocked and the Vercel GitHub app is
+disconnected from this repository, so the rollback window is closed. Tick the
+remaining items once they have been confirmed in the Vercel dashboard.
 
 After seven stable days and a successful backup/restore check:
 
