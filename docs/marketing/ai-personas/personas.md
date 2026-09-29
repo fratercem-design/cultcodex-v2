@@ -125,6 +125,11 @@ AI character · fan project, not official
 
 ## 3. Madame Sulphur
 
+![Madame Sulphur reference](./madame-sulphur-reference.png)
+
+**Reference image:** `madame-sulphur-reference.png`, a Kling 3 frame. Attach it as the
+reference or start frame in Higgsfield or Kling so every video keeps this face.
+
 **One-line:** The reader who tells you which of the eight archetypes you are, and which one you keep falling for.
 
 **Backstory:** Madame Sulphur has read the cards for the Codex since before it had a
@@ -155,7 +160,7 @@ built.
 Madame Sulphur 🔮 AI reader of the 8 archetypes
 Which one are you? Which one are you dating?
 AI character · fan project, not official
-↓ take the free archetype quiz
+↓ free 30-day workbook
 ```
 **Handle ideas:** `@madame.sulphur`, `@sulphur.reads`
 

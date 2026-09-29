@@ -472,6 +472,46 @@ export async function sendGospelDeliveryEmail({
   });
 }
 
+/**
+ * The 30-Day Initiation workbook. The link is the only way to the PDF and
+ * opening it confirms the address, so this is the double opt-in email too.
+ */
+export async function sendWorkbookEmail(email: string, downloadUrl: string, unsubscribeUrl: string) {
+  const resend = getResend();
+  if (!resend) throw new Error("RESEND_API_KEY not configured");
+  const { error } = await resend.emails.send({
+    from: "Madame Sulphur — CultCodex <notifications@cultcodex.me>",
+    to: email,
+    subject: "Your 30-Day Initiation workbook",
+    headers: {
+      "List-Unsubscribe": `<${unsubscribeUrl}>`,
+      "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+    },
+    html: buildGospelEmailHtml({
+      name: "",
+      kicker: "A free workbook · The 30-Day Initiation",
+      heading: "Sit down, darling.",
+      accent: "Your workbook is ready.",
+      paras: [
+        "Thirty rites, one a day, ten minutes each. Five gates, eight archetypes and a seal at the end. Print it or fill it in on a tablet.",
+        "Open the link below to download it. You'll also get occasional CultCodex updates, and every email has a way out.",
+      ],
+      ctaHref: downloadUrl,
+      ctaLabel: "Get the workbook",
+      note: `Didn't ask for this? Ignore it and you won't hear from us, or <a href="${unsubscribeUrl}" style="color:rgba(200, 57, 46,0.5);text-decoration:none;">remove this address now</a>. Madame Sulphur is an AI character.`,
+    }),
+    text: [
+      "Your 30-Day Initiation workbook is ready.",
+      "",
+      `Download it here: ${downloadUrl}`,
+      "",
+      "You'll also get occasional CultCodex updates.",
+      `Didn't ask for this? Ignore it, or remove this address: ${unsubscribeUrl}`,
+    ].join("\n"),
+  });
+  if (error) throw new Error(error.message);
+}
+
 /** Sequence email 2 — sent a few days later: pulls the Initiate deeper into the archive. */
 export async function sendGospelDeeperEmail({
   recipientEmail,

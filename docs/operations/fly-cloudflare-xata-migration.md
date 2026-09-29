@@ -98,10 +98,12 @@ Two things about the secret itself:
 
 - `AUTH_SECRET` is a distinct, load-bearing variable, not an alias. Auth.js
   signs sessions with `AUTH_SECRET ?? NEXTAUTH_SECRET`, so either name keeps
-  sign-in working — but four routes read `AUTH_SECRET` alone with no fallback
+  sign-in working — but several routes read `AUTH_SECRET` alone with no fallback
   and 500 without it: `/api/admin/db-size`, `/api/admin/build-book`,
-  `/api/admin/migrate-art-r2` and `/api/psychenomicon/book/[sku]` (the
-  HMAC-signed gift-link path). Set both names to the same value.
+  `/api/admin/migrate-art-r2`, `/api/psychenomicon/book/[sku]` (the
+  HMAC-signed gift-link path), and every signed email-list link in
+  `src/lib/subscriber-links.ts`: `/api/subscribe` confirm and unsubscribe, and
+  the `/api/workbook` download. Set both names to the same value.
 - Whatever value Vercel holds must be carried over **unchanged**. The session
   cookie is a JWT signed with it, so a fresh value silently signs out every
   logged-in member the moment DNS moves. This is the one secret where "generate
