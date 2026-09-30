@@ -13,7 +13,9 @@ function client(): OpenAI {
   }
   return _client;
 }
-const DIMENSIONS = 1536;
+// Shortened text-embedding-3-small vectors: a third of the storage of the full
+// 1536 across 4.86M transcript segments. Must match TranscriptSegment.embedding.
+const DIMENSIONS = 512;
 const BATCH_SIZE = 2048;
 
 /** Process-local LRU so repeat concepts on the same instance do not bill twice. */
