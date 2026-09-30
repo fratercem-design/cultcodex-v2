@@ -4,16 +4,16 @@
  * maxSupply SPECIAL_EDITION_MAX_SUPPLY and obtainMethod "secret" (never in packs).
  *   npx tsx scripts/cards/seed-special-editions.ts [--dry-run]
  */
-import "dotenv/config";
-import { prisma } from "../../src/lib/db";
+import { getPrisma, disconnect } from "../ingest/lib";
 import { SPECIAL_EDITIONS, SPECIAL_EDITION_MAX_SUPPLY } from "../../src/lib/cards/special-editions";
 
 async function main() {
+  const prisma = getPrisma();
   const dryRun = process.argv.includes("--dry-run");
   console.log(`${SPECIAL_EDITIONS.length} special editions${dryRun ? " (dry run)" : ""}`);
   if (dryRun) {
     for (const s of SPECIAL_EDITIONS) console.log(`  ${s.slug} · ${s.title} · ${s.rarity}`);
-    await prisma.$disconnect();
+    await disconnect();
     return;
   }
 
@@ -48,6 +48,6 @@ async function main() {
   }
 
   console.log(`Special Editions set ready · created ${created}, updated ${updated} cards`);
-  await prisma.$disconnect();
+  await disconnect();
 }
 main().catch((e) => { console.error(String(e).slice(0, 300)); process.exit(1); });
