@@ -331,7 +331,7 @@ async function PsychenomiconContent({
             name="Emma Leviathan"
             title="Satan's Ex-Wife"
             slug="emma-leviathan"
-            description="That is not a nickname. That is what she calls herself, and nobody has felt confident enough to dispute it. A fellow tarot streamer with 16,000 YouTube subscribers and the energy of someone who divorced the Prince of Darkness and got the better end of the settlement. Emma and Psyche orbit each other like binary stars, two tarot readers trading prophecies across the void."
+            description="That is not a nickname. That is what she calls herself, and nobody has felt confident enough to dispute it. A fellow tarot streamer with 25,000 YouTube subscribers and the energy of someone who divorced the Prince of Darkness and got the better end of the settlement. Emma and Psyche orbit each other like binary stars, two tarot readers trading prophecies across the void."
             quoteCount={5}
             archetype="The Empress (Inverted)"
           />
