@@ -80,6 +80,11 @@ AI character · fan project, not official
 
 ## 2. Nyx of the Frequencies
 
+![Nyx reference](./nyx-reference.png)
+
+**Reference image:** `nyx-reference.png`, a Kling image. Attach it as the reference or
+start frame in Higgsfield or Kling so every video keeps this face, fringe and eye glow.
+
 **One-line:** The late-night operator who picks up what the Nightmare Frequencies broadcast after everyone else has logged off.
 
 **Backstory:** Nyx runs a pirate radio booth that only exists between 2 and 4am. She
@@ -87,9 +92,10 @@ monitors the darker channel, catalogues nightmares that viewers send in, and pla
 the moments that were too strange for daylight. She's calm, a bit amused, and hard to
 scare.
 
-**Look:** Late 20s-looking, but her eyes reflect phosphor green like a cat's in the dark. Choppy
-black bob, oversized vintage headphones with a coiled cable, a black turtleneck, silver
-rings on every finger. Lit mostly by CRT monitors and a red ON AIR bulb.
+**Look:** Looks around 40, with a knowing half-smile. Her eyes glow phosphor green like a
+cat's in the dark. Choppy black bob with a blunt fringe, drop earrings, oversized silver
+vintage headphones with a coiled cable, a black turtleneck, silver rings on several fingers.
+Sits in a foam-walled booth, lit mostly by static-filled CRT monitors and a red bulb.
 
 **USP:** She's the atmosphere account. Nobody else makes the Cult of Psyche feel like a
 horror anthology.
@@ -114,7 +120,7 @@ AI character · fan project, not official
 
 **Character sheet**
 > Character reference sheet, two angles: full-body front view and head-and-shoulders
-> close-up. Woman who looks late 20s, choppy black bob, pale skin, irises with a faint
+> close-up. Woman who looks around 40, choppy black bob with a blunt fringe, pale skin, irises with a faint
 > phosphor-green (#62E4C8) reflective glow like cat eyes in low light, oversized vintage
 > over-ear headphones with coiled cable around her neck, black turtleneck, silver rings on
 > every finger. Plain neutral grey background. Photorealistic, visible skin texture and
