@@ -11,9 +11,9 @@ CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA public;
 -- PostgreSQL database dump
 --
 
-\restrict 5O8cSl6wjbMpdsuetJ00ccIiLZsstkrLwrJmAubDMKtMtstxs8ZPQALX1Hn5qvK
+\restrict inoWM6jFjkF4gBAFbPfdSZWNG3kTwDPV3yEcbZOGjg7TxZ7FWFygCfj67h69xv3
 
--- Dumped from database version 18.6 (Debian 18.6-1.pgdg12+2)
+-- Dumped from database version 18.4 (Debian 18.4-1.pgdg12+1)
 -- Dumped by pg_dump version 18.6 (Debian 18.6-1.pgdg13+2)
 
 SET statement_timeout = 0;
@@ -31,13 +31,6 @@ SET row_security = off;
 -- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
 
-
-
---
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 --
@@ -405,7 +398,10 @@ CREATE TABLE public."Card" (
     "shadowAspect" text,
     "sourceRefId" text,
     "sourceType" text,
-    "uprightMeaning" text
+    "uprightMeaning" text,
+    season integer DEFAULT 0 NOT NULL,
+    "collectorNo" integer,
+    "obtainMethod" text DEFAULT 'pack'::text NOT NULL
 );
 
 
@@ -472,7 +468,9 @@ CREATE TABLE public."CardPack" (
     "weightLegendary" double precision DEFAULT 0.5 NOT NULL,
     "weightMythic" double precision DEFAULT 0.1 NOT NULL,
     "weightForbidden" double precision DEFAULT 0.0 NOT NULL,
-    "artTheme" text
+    "artTheme" text,
+    season integer DEFAULT 0 NOT NULL,
+    "guaranteeRarity" public."Rarity"
 );
 
 
@@ -742,7 +740,8 @@ CREATE TABLE public."Episode" (
     "humanReviewedAt" timestamp(3) without time zone,
     "summaryFacts" text,
     "summaryThemes" text,
-    "enrichmentQueued" boolean DEFAULT false NOT NULL
+    "enrichmentQueued" boolean DEFAULT false NOT NULL,
+    "rumbleEmbedId" text
 );
 
 
@@ -1458,6 +1457,17 @@ CREATE TABLE public."SignalProposal" (
 
 
 --
+-- Name: SignalProposalVote; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."SignalProposalVote" (
+    "proposalId" text NOT NULL,
+    "userId" text NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+--
 -- Name: Spread; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1613,7 +1623,8 @@ CREATE TABLE public."UserWallet" (
     signal integer DEFAULT 0 NOT NULL,
     "signalResetAt" timestamp(3) without time zone,
     xp integer DEFAULT 0 NOT NULL,
-    "dailyStreak" integer DEFAULT 0 NOT NULL
+    "dailyStreak" integer DEFAULT 0 NOT NULL,
+    "initiationClaimedAt" timestamp(3) without time zone
 );
 
 
@@ -2215,6 +2226,14 @@ ALTER TABLE ONLY public."Series"
 
 
 --
+-- Name: SignalProposalVote SignalProposalVote_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."SignalProposalVote"
+    ADD CONSTRAINT "SignalProposalVote_pkey" PRIMARY KEY ("proposalId", "userId");
+
+
+--
 -- Name: SignalProposal SignalProposal_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2494,6 +2513,13 @@ CREATE INDEX "Card_rarity_idx" ON public."Card" USING btree (rarity);
 
 
 --
+-- Name: Card_season_obtainMethod_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "Card_season_obtainMethod_idx" ON public."Card" USING btree (season, "obtainMethod");
+
+
+--
 -- Name: Card_slug_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2659,6 +2685,13 @@ CREATE UNIQUE INDEX "CommunityPost_youtubePostId_key" ON public."CommunityPost" 
 --
 
 CREATE INDEX "CreditTransaction_createdAt_idx" ON public."CreditTransaction" USING btree ("createdAt");
+
+
+--
+-- Name: CreditTransaction_purchase_referenceId_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "CreditTransaction_purchase_referenceId_key" ON public."CreditTransaction" USING btree ("referenceId") WHERE (reason = 'purchase'::text);
 
 
 --
@@ -3296,6 +3329,13 @@ CREATE UNIQUE INDEX "SeasonalEvent_slug_key" ON public."SeasonalEvent" USING btr
 --
 
 CREATE UNIQUE INDEX "Series_slug_key" ON public."Series" USING btree (slug);
+
+
+--
+-- Name: SignalProposalVote_userId_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "SignalProposalVote_userId_idx" ON public."SignalProposalVote" USING btree ("userId");
 
 
 --
@@ -4111,6 +4151,22 @@ ALTER TABLE ONLY public."SavedTopic"
 
 
 --
+-- Name: SignalProposalVote SignalProposalVote_proposalId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."SignalProposalVote"
+    ADD CONSTRAINT "SignalProposalVote_proposalId_fkey" FOREIGN KEY ("proposalId") REFERENCES public."SignalProposal"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: SignalProposalVote SignalProposalVote_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."SignalProposalVote"
+    ADD CONSTRAINT "SignalProposalVote_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."CodexUser"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
 -- Name: SignalProposal SignalProposal_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4178,7 +4234,7 @@ ALTER TABLE ONLY public."UserWallet"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 5O8cSl6wjbMpdsuetJ00ccIiLZsstkrLwrJmAubDMKtMtstxs8ZPQALX1Hn5qvK
+\unrestrict inoWM6jFjkF4gBAFbPfdSZWNG3kTwDPV3yEcbZOGjg7TxZ7FWFygCfj67h69xv3
 
 
 -- Successful Prisma migration metadata (no application data)
@@ -4359,3 +4415,18 @@ INSERT INTO public."_prisma_migrations"
 INSERT INTO public."_prisma_migrations"
         (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count)
         VALUES ('fe299d93-1a26-4e79-b993-a709f4c69446', 'e0ea1dfd39d4c4a9d6d0dc1a55f39225d72eae3be8b53582723dbc0a3e8e2c0e', '2026-09-13 12:45:08.234304+00', '20260913000000_add_shared_rate_limit', NULL, NULL, '2026-09-13 12:45:08.10807+00', '1');
+INSERT INTO public."_prisma_migrations"
+        (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count)
+        VALUES ('6742420b-9e29-4a06-98ad-26d6c4ec691b', '58d289c0f81056eafb36728d7462a9a5496000d6364b1e1d23e3ec8a7494f936', '2026-09-25 08:37:09.755877+00', '20260924000000_unique_credit_purchase', NULL, NULL, '2026-09-25 08:37:09.36663+00', '1');
+INSERT INTO public."_prisma_migrations"
+        (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count)
+        VALUES ('f928a1cd-be38-4449-8008-eb757bd17c0a', '522531299bbb6d43ba5374adf1c22ff387b26e220f32ec98cfb67cf017c9164f', '2026-09-25 08:37:10.549401+00', '20260924000001_signal_proposal_votes', NULL, NULL, '2026-09-25 08:37:09.926211+00', '1');
+INSERT INTO public."_prisma_migrations"
+        (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count)
+        VALUES ('744e0766-60e8-4dbd-ac17-93d2007c692c', 'eb6472a6560f227366c104ac29c73d9e9c157763d004a2e4de2d7b00f025a51f', '2026-09-25 08:37:11.504622+00', '20260925000000_codex_seasons', NULL, NULL, '2026-09-25 08:37:10.690563+00', '1');
+INSERT INTO public."_prisma_migrations"
+        (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count)
+        VALUES ('158e365f-ca29-494e-b2c3-b7d0b9d7cd7f', 'a52eb6126ef7f9eb6846c6fc78a8fef88f61ce570546dad7deb593ebe183e6bd', '2026-09-25 08:37:11.999822+00', '20260925010000_rumble_embed_id', NULL, NULL, '2026-09-25 08:37:11.645441+00', '1');
+INSERT INTO public."_prisma_migrations"
+        (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count)
+        VALUES ('fc66f872-04c0-4aee-939e-54cd9d557581', '086cb5ca8f49b2132b38eb4709fa15cfef29055542d156129c4ba8d4d64aef31', '2026-09-30 02:32:31.751293+00', '0_baseline', NULL, NULL, '2026-09-30 02:32:31.751293+00', '0');
