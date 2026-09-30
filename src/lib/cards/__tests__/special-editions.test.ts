@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { describe, expect, it } from "vitest";
 import {
-  CARD_BACKS, SPECIAL_EDITIONS, specialEditionAnimationUrl, specialEditionFoilUrl,
+  CARD_BACKS, isSpecialEdition, SPECIAL_EDITIONS, specialEditionAnimationUrl, specialEditionFoilUrl,
 } from "../special-editions";
 
 const onDisk = (url: string) => fs.existsSync(path.join(process.cwd(), "public", url));
@@ -24,6 +24,11 @@ describe("SPECIAL_EDITIONS", () => {
 
   it("has both card backs on disk", () => {
     for (const url of Object.values(CARD_BACKS)) expect(onDisk(url), url).toBe(true);
+  });
+
+  it("recognises special-edition slugs only", () => {
+    expect(isSpecialEdition("se-10-codex-seal")).toBe(true);
+    expect(isSpecialEdition("cop-00-the-fool")).toBe(false);
   });
 
   it("uses unique slugs", () => {

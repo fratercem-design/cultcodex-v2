@@ -9,6 +9,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import type { Rarity } from "@/generated/prisma/client";
 import { RARITY_ORDER } from "@/lib/cards/rarity";
+import { isSpecialEdition } from "@/lib/cards/special-editions";
 import type { Palette } from "@/lib/cards/codex/types";
 import { getAudioPref } from "@/lib/appearance";
 import { playBell, playChime } from "@/lib/audio/ambient-engine";
@@ -108,7 +109,7 @@ export function PackRitual({
                 data-rarity={c.rarity}
               >
                 <div className="cx-flip-inner">
-                  <div className="cx-flip-back"><CodexCardBack glow={RARITY_COLOR[c.rarity]} onClick={() => flip(i)} /></div>
+                  <div className="cx-flip-back"><CodexCardBack glow={RARITY_COLOR[c.rarity]} special={isSpecialEdition(c.slug)} onClick={() => flip(i)} /></div>
                   <div className="cx-flip-front"><CodexCard card={c} isFoil={c.isFoil} interactive={revealed.has(i)} /></div>
                 </div>
               </div>

@@ -282,7 +282,7 @@
 
 /* Card back */
 .cx-back .cx-back-face { padding: 3.2cqw; }
-.cx-back-art { width: 100%; height: 100%; border-radius: 2.4cqw; display: block; }
+.cx-back-art { width: 100%; height: 100%; border-radius: 2.4cqw; display: block; object-fit: cover; }
 
 /* Legendary+ spin layer inside the art */
 .cx-spin { animation: cx-spin 40s linear infinite; }

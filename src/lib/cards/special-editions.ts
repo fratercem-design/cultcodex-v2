@@ -64,3 +64,6 @@ export const SPECIAL_EDITIONS: SpecialEdition[] = [
     cardType: "CIPHER", rarity: "FORBIDDEN", abilities: ["Living Page", "Master Key"],
     flavourText: "Keeper of the codex. You shape the mythology you study." },
 ];
+
+const SPECIAL_EDITION_SLUGS = new Set(SPECIAL_EDITIONS.map((s) => s.slug));
+export const isSpecialEdition = (slug: string) => SPECIAL_EDITION_SLUGS.has(slug);
