@@ -15,6 +15,7 @@ import { oracleCacheKey, oracleCacheGet, oracleCacheSet } from "@/lib/oracle-cac
 import { groqChat, groqConfigured } from "@/lib/free-llm";
 import { hasPaidFallback, paidFallbackComplete } from "@/lib/enrichment-llm";
 import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
+import { webSearch, webSearchConfigured } from "@/lib/web-search";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,6 +36,8 @@ TOOLS:
 - search_archive: The archive has been pre-searched automatically. Only call this again to refine with a different query, focus on a specific source type, or investigate a sub-topic the question raised.
 - get_person_dossier: Call when a specific individual is the primary focus. Returns bio, quotes, appearances, Psychenomicon entity record. Call twice to compare two people.
 - get_psychenomicon: Call when the user references a chapter number, thread by name, or entity slug — or when archetypal structure analysis requires the canon text directly.
+
+- search_web (only when offered): Call only for current events or outside facts the archive cannot hold. Treat results as unverified outside information, never as something said on the show.
 
 NEVER mention the tools, searching, or that you are gathering data. The Oracle speaks, never explains how it speaks.
 
@@ -150,6 +153,28 @@ const ORACLE_TOOLS: Tool[] = [
     },
   },
 ];
+
+const WEB_SEARCH_TOOL: Tool = {
+  name: "search_web",
+  description:
+    "Search the live web for current events or facts outside the archive (news, recent releases, external people or companies). Do not use for anything the archive can answer. Results are external and unverified; attribute nothing to the show from them.",
+  input_schema: {
+    type: "object",
+    properties: { query: { type: "string", description: "Web search query" } },
+    required: ["query"],
+  },
+};
+
+function oracleTools(): Tool[] {
+  return webSearchConfigured() ? [...ORACLE_TOOLS, WEB_SEARCH_TOOL] : ORACLE_TOOLS;
+}
+
+async function handleSearchWeb(input: { query: string }): Promise<ToolResult> {
+  const results = await webSearch(String(input.query ?? "").slice(0, 300));
+  if (results.length === 0) return { text: "No web results found.", citations: [] };
+  const text = results.map((r, i) => `[${i + 1}] ${r.title} (${r.url})\n${r.content}`).join("\n\n");
+  return { text: `Live web results (external, unverified):\n\n${text}`, citations: [] };
+}
 
 // ─── Term extraction ─────────────────────────────────────────────────────────
 
@@ -793,6 +818,9 @@ async function executeTool(name: string, input: Record<string, unknown>): Promis
     if (name === "get_psychenomicon") {
       return handleGetPsychenomicon(input as Parameters<typeof handleGetPsychenomicon>[0]);
     }
+    if (name === "search_web" && webSearchConfigured()) {
+      return handleSearchWeb(input as Parameters<typeof handleSearchWeb>[0]);
+    }
     return { text: `Unknown tool: ${name}`, citations: [] };
   } catch (err) {
     console.error(`[oracle] tool ${name} error:`, err);
@@ -829,7 +857,7 @@ async function runOracleAgent(
       model,
       max_tokens: maxTokens,
       system,
-      tools: ORACLE_TOOLS,
+      tools: oracleTools(),
       messages,
     });
 
