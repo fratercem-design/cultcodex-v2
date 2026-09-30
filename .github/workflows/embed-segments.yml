@@ -25,6 +25,9 @@ on:
         required: true
         default: '330'
 
+# The job only calls the app over HTTPS; it needs no GITHUB_TOKEN access.
+permissions: {}
+
 # Two runs would embed the same NULL rows twice and pay for both.
 concurrency:
   group: embed-segments
