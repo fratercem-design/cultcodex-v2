@@ -1,0 +1,73 @@
+name: Backfill Segment Embeddings
+
+# Fills TranscriptSegment.embedding by calling POST /api/admin/embed on the
+# production app in a loop. The app holds OPENAI_API_KEY; this job only needs
+# ENRICH_SECRET. Each call embeds the next `batch` rows that are still NULL,
+# so a run can stop at any point and the next run carries on where it left off.
+#
+# The full backfill is ~4.86M rows, about 9,700 calls at batch=500, longer
+# than one 6-hour job. Re-run until a run ends with "Backfill complete".
+# Start with a small max_segments to check one run end to end.
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch:
+        description: Segments per call (max 500)
+        required: true
+        default: '500'
+      max_segments:
+        description: Stop after about this many segments (0 = no limit)
+        required: true
+        default: '0'
+      max_minutes:
+        description: Stop starting new calls after this many minutes
+        required: true
+        default: '330'
+
+# Two runs would embed the same NULL rows twice and pay for both.
+concurrency:
+  group: embed-segments
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    name: Embed transcript segments
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+
+    steps:
+      - name: Backfill
+        env:
+          ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
+          APP_URL: https://cultcodex.me
+          BATCH: ${{ inputs.batch }}
+          MAX_SEGMENTS: ${{ inputs.max_segments }}
+          MAX_MINUTES: ${{ inputs.max_minutes }}
+        run: |
+          [ -n "$ENRICH_SECRET" ] || { echo "::error::ENRICH_SECRET secret is not set"; exit 1; }
+          deadline=$(( $(date +%s) + MAX_MINUTES * 60 ))
+          total=0
+          calls=0
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            body=$(curl --fail-with-body --show-error --silent \
+              --retry 3 --retry-all-errors --retry-delay 10 --max-time 290 \
+              -X POST "$APP_URL/api/admin/embed" \
+              -H "X-Enrich-Secret: $ENRICH_SECRET" \
+              -H "Content-Type: application/json" \
+              -d "{\"batch\": $BATCH}") || { echo "::error::Call failed: $body"; exit 1; }
+            processed=$(jq -r '.processed' <<<"$body")
+            done_flag=$(jq -r '.done' <<<"$body")
+            total=$(( total + processed ))
+            calls=$(( calls + 1 ))
+            [ $(( calls % 20 )) -eq 0 ] && echo "$calls calls, $total segments embedded this run"
+            if [ "$done_flag" = "true" ]; then
+              echo "::notice title=Embeddings::Backfill complete. $total segments embedded this run."
+              exit 0
+            fi
+            if [ "$MAX_SEGMENTS" -gt 0 ] && [ "$total" -ge "$MAX_SEGMENTS" ]; then
+              echo "::notice title=Embeddings::Stopped at max_segments. $total segments embedded this run; re-run to continue."
+              exit 0
+            fi
+          done
+          echo "::notice title=Embeddings::Time limit reached. $total segments embedded this run; re-run to continue."

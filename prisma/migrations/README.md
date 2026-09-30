@@ -46,8 +46,9 @@ The database and `schema.prisma` differ. The baseline follows the database, so
 
 - `Card` and `CardPack` have 16 columns the schema no longer declares
   (`imageUrl`, `weight*`, `statLabel*`, …), plus 10 indexes the schema doesn't list.
-- `TranscriptSegment.embedding` is in the schema but not in the database, so
-  the segment search in `src/lib/queries/semantic.ts` has no column to query.
+- (Resolved by `20260930000000_restore_segment_embedding`.) `TranscriptSegment.embedding`
+  was in the schema but not in the database. It is back at 512 dims and filled by
+  the Backfill Segment Embeddings workflow.
 - Defaults differ on `PackPurchase`, `RateLimitBucket` and `WeeklyDigest`.
 
 Review any generated migration before applying it: it will contain `DROP

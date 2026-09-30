@@ -10,7 +10,7 @@
  *   batch   number of segments per call (default 100, max 500)
  *
  * Returns:
- *   { processed, remaining, done }
+ *   { processed, done }
  *
  * The route queries WHERE embedding IS NULL directly, so it always
  * finds the next unembedded rows. No cursor needed — just call in a
@@ -44,15 +44,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   const batchSize = Math.min(body.batch ?? DEFAULT_BATCH, MAX_BATCH);
 
-  // Find the next N segment ids that still need embedding.
-  // Index-scans the HNSW partial NULL set on TranscriptSegment.embedding.
+  // Find the next N segment ids that still need embedding. Served by the partial
+  // index TranscriptSegment_embedding_null_idx, so this stays cheap on 4.86M rows.
   const needsEmbedRaw: Array<{ id: string }> = await prisma.$queryRawUnsafe(
     `SELECT id FROM "TranscriptSegment" WHERE embedding IS NULL ORDER BY id LIMIT ${batchSize}`
   );
   const toEmbedIds = needsEmbedRaw.map((r) => r.id);
 
   if (toEmbedIds.length === 0) {
-    return NextResponse.json({ processed: 0, remaining: 0, done: true });
+    return NextResponse.json({ processed: 0, done: true });
   }
 
   // Fetch the speaker label + text for those ids via Prisma
@@ -71,29 +71,17 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     allVectors = allVectors.concat(vecs);
   }
 
-  // Write embeddings back — one raw UPDATE per segment
-  // Using a single unnest UPDATE would be cleaner but requires pg-specific syntax
-  // that's harder to compose safely. Row-by-row is fine at batch=100.
-  let processed = 0;
-  for (let i = 0; i < toProcess.length; i++) {
-    const seg = toProcess[i];
-    const vec = allVectors[i];
-    await prisma.$executeRawUnsafe(
-      `UPDATE "TranscriptSegment" SET embedding = $1::vector WHERE id = $2`,
-      vectorLiteral(vec),
-      seg.id
-    );
-    processed++;
-  }
-
-  const remaining = await countUnembedded();
-
-  return NextResponse.json({ processed, remaining, done: remaining === 0 });
-}
-
-async function countUnembedded(): Promise<number> {
-  const result: Array<{ count: string }> = await prisma.$queryRawUnsafe(
-    `SELECT COUNT(*)::text AS count FROM "TranscriptSegment" WHERE embedding IS NULL`
+  // Write the whole batch in one UPDATE: the backfill is ~10k calls, and one
+  // round trip per row would be millions.
+  const processed = await prisma.$executeRawUnsafe(
+    `UPDATE "TranscriptSegment" AS s SET embedding = v.embedding::vector
+     FROM unnest($1::text[], $2::text[]) AS v(id, embedding)
+     WHERE s.id = v.id`,
+    toProcess.map((s) => s.id),
+    allVectors.map(vectorLiteral)
   );
-  return parseInt(result[0]?.count ?? "0", 10);
+
+  // No COUNT(*) of the rest: on 4.86M rows it cost more than the batch itself.
+  // A short batch means the NULL set ran out.
+  return NextResponse.json({ processed, done: toEmbedIds.length < batchSize });
 }
