@@ -1,6 +1,7 @@
 /**
  * Special-edition gold-foil collectibles — 12 limited cards with painted art in
- * public/cards/art/{slug}.webp. Seeded by scripts/cards/seed-special-editions.ts.
+ * public/cards/art/{slug}.webp, a prismatic foil variant at {slug}-foil.webp and a
+ * 5s loop at public/cards/anim/{slug}.mp4. Seeded by scripts/cards/seed-special-editions.ts.
  * obtainMethod "secret" keeps them out of random packs.
  */
 import type { CardType, Rarity } from "@/generated/prisma/client";
@@ -16,6 +17,14 @@ export interface SpecialEdition {
 }
 
 export const SPECIAL_EDITION_MAX_SUPPLY = 100;
+
+export const CARD_BACKS = {
+  tarot: "/cards/backs/tarot.webp",
+  specialEdition: "/cards/backs/special-edition.webp",
+} as const;
+
+export const specialEditionFoilUrl = (slug: string) => `/cards/art/${slug}-foil.webp`;
+export const specialEditionAnimationUrl = (slug: string) => `/cards/anim/${slug}.mp4`;
 
 export const SPECIAL_EDITIONS: SpecialEdition[] = [
   { slug: "se-01-nyx-high-priestess", title: "Nyx", subtitle: "The High Priestess",
