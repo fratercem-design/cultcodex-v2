@@ -3,6 +3,7 @@ import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import { InitiateSignup } from "@/components/marketing/initiate-signup";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
@@ -37,7 +38,7 @@ export default function InitiatePage() {
       <PageHero
         title="BECOME AN INITIATE"
         subtitle="Two fields. The gate was never locked."
-        backgroundImage="/lore-header.jpg"
+        backgroundImage={SECTION_HEADERS.initiation}
         label="first gate"
       />
 

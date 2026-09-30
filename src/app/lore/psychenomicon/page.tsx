@@ -9,15 +9,20 @@ import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { SubscriptionCTA } from "@/components/subscription/subscription-cta";
+import { SECTION_HEADERS } from "@/lib/section-headers";
+import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/lore/psychenomicon" },
-  title: "The Psychenomicon — CULT CODEX",
-  description:
-    "The forbidden chronicle of the Cult of Psyche. A living grimoire of every soul, saga, and spectacle from over 1,400 live transmissions.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // Live count: the hard-coded "over 1,400" sat here while the archive passed 3,300.
+  const counts = await getCounts().catch(() => null);
+  return {
+    alternates: { canonical: "/lore/psychenomicon" },
+    title: "The Psychenomicon — CULT CODEX",
+    description: `The forbidden chronicle of the Cult of Psyche. A living grimoire of every soul, saga, and spectacle from ${fmtEpisodeCount(counts?.episodes ?? 0)} live transmissions.`,
+  };
+}
 
 // ── Data fetchers ─────────────────────────────────────────────────
 async function getStats() {
@@ -133,7 +138,7 @@ export default async function PsychenomiconPage() {
       <PageHero
         title="THE PSYCHENOMICON"
         subtitle="The Forbidden Chronicle of the Cult of Psyche"
-        backgroundImage="/search-database-background.jpg"
+        backgroundImage={SECTION_HEADERS.lore}
       label="psychenomicon"
       />
 
@@ -326,7 +331,7 @@ async function PsychenomiconContent({
             name="Emma Leviathan"
             title="Satan's Ex-Wife"
             slug="emma-leviathan"
-            description="That is not a nickname. That is what she calls herself, and nobody has felt confident enough to dispute it. A fellow tarot streamer with 16,000 YouTube subscribers and the energy of someone who divorced the Prince of Darkness and got the better end of the settlement. Emma and Psyche orbit each other like binary stars, two tarot readers trading prophecies across the void."
+            description="That is not a nickname. That is what she calls herself, and nobody has felt confident enough to dispute it. A fellow tarot streamer with 25,000 YouTube subscribers and the energy of someone who divorced the Prince of Darkness and got the better end of the settlement. Emma and Psyche orbit each other like binary stars, two tarot readers trading prophecies across the void."
             quoteCount={5}
             archetype="The Empress (Inverted)"
           />

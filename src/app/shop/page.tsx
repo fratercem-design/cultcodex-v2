@@ -13,6 +13,7 @@ import {
   type House,
   type MerchItem,
 } from "@/lib/merch";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = buildMetadata({
   title: "Vestments of the Cult — CultCodex Shop",
@@ -71,7 +72,7 @@ export default function ShopPage() {
       <PageHero
         title="VESTMENTS OF THE CULT"
         subtitle="Ten designs, three houses, and the editions that cannot be reprinted"
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.initiation}
         label="the shop"
       />
 

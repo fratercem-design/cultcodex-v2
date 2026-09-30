@@ -7,6 +7,7 @@ import { TimelineExplorer, type TimelineItem } from "@/components/timeline/timel
 import { cleanTitle } from "@/lib/format/text";
 import { ERAS } from "@/lib/eras";
 import { buildMetadata } from "@/lib/seo";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 export const maxDuration = 30;
@@ -41,7 +42,7 @@ export default async function TimelineExplorePage() {
       <PageHero
         title="TIMELINE EXPLORER"
         subtitle="Browse the archive by date and era."
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.transmissions}
         label="timeline"
       />
 

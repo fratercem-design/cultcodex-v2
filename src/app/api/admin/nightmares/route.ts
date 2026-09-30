@@ -22,6 +22,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { YoutubeTranscript } from "youtube-transcript";
+import { captionsToMs } from "@/lib/transcript/caption-units";
 import { prisma } from "@/lib/db";
 import { ContentStatus } from "@/generated/prisma/client";
 import { enrichSecretMatches } from "@/lib/admin-guard";
@@ -132,7 +133,8 @@ async function fetchTranscriptForVideo(videoId: string) {
   if (existing > 0) return { ok: true, skipped: true, segments: existing };
 
   // Fetch from YouTube
-  const raw = await YoutubeTranscript.fetchTranscript(videoId);
+  // Milliseconds for srv3 captions but seconds for the classic format.
+  const raw = captionsToMs(await YoutubeTranscript.fetchTranscript(videoId));
   if (!raw || raw.length === 0) return { ok: false, error: "empty_transcript" };
 
   // Batch insert segments

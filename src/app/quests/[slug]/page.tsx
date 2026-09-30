@@ -9,6 +9,7 @@ import { isSubscribed } from "@/lib/subscription";
 import { getSingleQuestProgress } from "@/lib/quests/get-quest-progress";
 import { getQuestBySlug, QUESTS } from "@/lib/quests/quests";
 import { buildMetadata } from "@/lib/seo";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const dynamic = "force-dynamic";
 
@@ -48,7 +49,7 @@ export default async function QuestRewardPage({ params }: Props) {
       <PageHero
         title={quest.title.toUpperCase()}
         subtitle={unlocked ? "Fragment unlocked." : "Sealed — complete the trial to unlock."}
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.trials}
         label="trial"
       />
 

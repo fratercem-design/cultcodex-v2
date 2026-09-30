@@ -3,6 +3,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { prisma } from "@/lib/db";
 import { buildMetadata } from "@/lib/seo";
 import { ClapPurchase } from "@/components/claps/clap-purchase";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 // Live board — always render fresh so new purchases and spotlights appear
 // immediately (also keeps the build from querying the DB for this page).
@@ -50,7 +51,7 @@ export default async function ClapsPage() {
       <PageHero
         title="CLAP TOKENS"
         subtitle="#cultofpsyche — put your hands together, permanently."
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.broadcast}
         label="claps"
       />
 

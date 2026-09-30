@@ -12,7 +12,7 @@ import { getEraForEpisode } from "@/lib/eras";
 import { EraNeighbors } from "@/components/episodes/era-neighbors";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
 import { CommentSection } from "@/components/episodes/comment-section";
-import { buildMetadata, episodeJsonLd, jsonLdScript, detailBreadcrumbJsonLd } from "@/lib/seo";
+import { buildMetadata, episodeJsonLd, jsonLdScript, detailBreadcrumbJsonLd, episodeMetaDescription } from "@/lib/seo";
 import { AiNotice } from "@/components/ui/ai-notice";
 import { getConfidenceTier } from "@/lib/format/confidence-tier";
 import { trustedSummary } from "@/lib/format/speculative-summary";
@@ -81,7 +81,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return buildMetadata({
     title: episode.title,
-    description: trustedSummary(episode.summaryShort) || episode.searchText || null,
+    // No searchText fallback: it is a keyword blob, not prose. Without a
+    // trusted summary the helper writes a plain description from the title.
+    description: episodeMetaDescription(episode.title, trustedSummary(episode.summaryShort)),
     path: `/episodes/${episode.slug}`,
     image: episode.thumbnailUrl ?? null,
   });

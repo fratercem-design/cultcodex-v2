@@ -6,6 +6,7 @@ import { isSubscribed } from "@/lib/subscription";
 import { getQuestProgress } from "@/lib/quests/get-quest-progress";
 import { QUESTS, type QuestAccent } from "@/lib/quests/quests";
 import { buildMetadata } from "@/lib/seo";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +37,7 @@ export default async function QuestsPage() {
       <PageHero
         title="THE TRIALS"
         subtitle="Complete the rites. Unlock what's hidden."
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.trials}
         label="trials"
       />
 

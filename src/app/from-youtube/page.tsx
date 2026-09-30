@@ -1,13 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getCounts } from "@/lib/queries/stats";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 import { SacredGeometryOverlay, FloatingParticles } from "@/components/graphics/sacred-geometry";
 import { EmailCapture } from "@/components/marketing/email-capture";
 import { getTier, INITIATE_ORACLE_MONTHLY_LIMIT } from "@/lib/subscription-tiers";
 
 const initiateTier = getTier("access");
 
-export const dynamic = "force-dynamic";
+// ISR, not force-dynamic: the same for every visitor. 60s because the root
+// layout's revalidate = 60 caps every page anyway.
+export const revalidate = 60;
 
 export const metadata = {
   alternates: { canonical: "/from-youtube" },
@@ -39,7 +42,7 @@ export default async function FromYouTubePage() {
     <>
       {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section className="relative flex min-h-[560px] sm:min-h-[640px] items-center justify-center overflow-hidden">
-        <Image src="/hero-bg.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
+        <Image src={SECTION_HEADERS.broadcast} alt="" fill priority sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/65 to-void" />
         <SacredGeometryOverlay />
         <FloatingParticles count={20} />

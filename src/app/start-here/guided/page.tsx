@@ -16,6 +16,7 @@ import {
   IconMicrophone,
 } from "@/components/graphics/codex-icons";
 import type { Metadata } from "next";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/start-here/guided" },
@@ -139,7 +140,7 @@ export default function GuidedPathPage() {
       <PageHero
         title="THE GUIDED PATH"
         subtitle="Five doorways. Pick what's pulling you."
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.threshold}
       label="guided_path"
       />
 

@@ -14,6 +14,7 @@ import { SearchInput } from "@/components/search/search-input";
 import { QuoteShareButton } from "@/components/quotes/share-button";
 import { PaginationControls } from "@/components/ui/pagination-controls";
 import type { Metadata } from "next";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   title: "Search — CULT CODEX",
@@ -70,7 +71,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     <PageHero
       title="SEARCH"
       subtitle="Query the archive"
-      backgroundImage="/search-database-background.jpg"
+      backgroundImage={SECTION_HEADERS.search}
     
       label="search"
     />

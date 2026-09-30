@@ -98,7 +98,7 @@ scripts/psychenomicon-art/output/STOP
 .vercel
 .env*
 
-# cron/sync logs — committed once by mistake, ignored since
+# cron/sync logs ï¿½ committed once by mistake, ignored since
 logs/
 modify_schema.py
 prisma/*.bak
@@ -111,3 +111,11 @@ deslop-proposals*.md
 # Generated Obsidian transcript vault (npm run brain:export). Large; export to
 # its own repo with --out if you want it versioned.
 /second-brain/transcripts-vault/
+
+# Transmission Kit drafts hold buyers' stream content
+/kit-drafts/
+
+# Generated art: keep full-size images out of git
+/art/**/*.png
+/art/**/rejected/
+/art/**/alternates/

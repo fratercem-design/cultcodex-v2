@@ -23,7 +23,7 @@ function toSeconds(h?: string, m?: string, s?: string, ms?: string): number {
 }
 
 /** Remove VTT inline tags, repeating so nested ones ("<<b>script>") can't reassemble. */
-function stripTags(text: string): string {
+export function stripTags(text: string): string {
   let prev: string;
   let out = text;
   do {

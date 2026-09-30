@@ -41,6 +41,7 @@ import {
 } from "@/lib/people/person-type";
 import type { Metadata } from "next";
 import { isIndexablePerson } from "@/lib/people/noise-slugs";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 // ── Lore Summary renderer ─────────────────────────────────────────────────────
 // Handles two formats:
@@ -385,7 +386,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
       <EntityHero
         title={person.displayName}
         subtitle={person.shortBio ?? undefined}
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.voices}
         avatarUrl={person.avatarUrl}
         fallbackAvatar={
           <PersonSigil

@@ -74,7 +74,8 @@ export async function generateMetadata() {
   // archive; the page itself describes an archive.
   const title = "CultCodex — The Searchable Archive of Cult of Psyche";
   const description =
-    `Search every Cult of Psyche episode: ${fmtEpisodeCount(counts?.episodes ?? 0)} episodes of the live show on tarot, consciousness and open-panel debate, with full transcripts, guest profiles and an AI Oracle that cites its sources.`;
+    // Kept under ~160 characters so search results show it whole.
+    `Search ${fmtEpisodeCount(counts?.episodes ?? 0)} Cult of Psyche episodes, transcripts, guests, lore, and recurring patterns across tarot, consciousness, and open-panel debates.`;
   return {
     robots: { index: true, follow: true },
     alternates: { canonical: "/" },
@@ -85,6 +86,8 @@ export async function generateMetadata() {
       description,
       type: "website" as const,
       url: "/",
+      siteName: "CultCodex",
+      locale: "en_US",
       // Required explicitly. Next replaces the `openGraph` object wholesale
       // rather than deep-merging it, so declaring one here without `images`
       // dropped the root layout's og:image and the page shipped with none -

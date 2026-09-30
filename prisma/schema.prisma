@@ -290,11 +290,11 @@ model TranscriptSegment {
   speakerLabel String?
   text         String
   searchText   String?
-  // pgvector embedding column — exists in the DB via the 20260517000000_add_pgvector
-  // raw migration; declared here so Prisma's schema matches the live database and
-  // `prisma migrate diff` stops wanting to drop it. Written/queried only through
-  // raw SQL in src/lib/queries/semantic.ts and src/app/api/admin/embed/route.ts.
-  embedding    Unsupported("vector(1536)")?
+  // pgvector embedding column, created by the raw 20260930000000_restore_segment_embedding
+  // migration; declared here so Prisma's schema matches the live database. 512 dims
+  // must match DIMENSIONS in src/lib/embeddings.ts. Written/queried only through raw
+  // SQL in src/lib/queries/semantic.ts and src/app/api/admin/embed/route.ts.
+  embedding    Unsupported("vector(512)")?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

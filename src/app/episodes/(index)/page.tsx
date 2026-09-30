@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCounts, fmtEpisodeCount } from "@/lib/queries/stats";
+import { socialMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/ui/page-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EpisodeCard } from "@/components/archive/episode-card";
@@ -24,15 +25,24 @@ import {
   buildPaginationMeta,
 } from "@/lib/pagination";
 import { formatDate, formatRelativeDate } from "@/lib/format/date";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 3600;
 
 export async function generateMetadata() {
   const counts = await getCounts().catch(() => null);
+  const title = "Episodes — CULT CODEX";
+  const description = `Browse ${fmtEpisodeCount(counts?.episodes ?? 0)} searchable Cult of Psyche episodes with transcripts, topics, guests, and timestamps.`;
   return {
     alternates: { canonical: "/episodes" },
-    title: "Episodes — CULT CODEX",
-    description: `Browse ${fmtEpisodeCount(counts?.episodes ?? 0)} Cult of Psyche transmissions — sortable by era, type, topic, and guest. Full transcripts, AI breakdowns, and behavioral profiles for every session.`,
+    title,
+    description,
+    ...socialMetadata({
+      title,
+      description,
+      path: "/episodes",
+      image: { route: "/episodes", alt: "Episode Archive — CultCodex" },
+    }),
   };
 }
 
@@ -116,7 +126,7 @@ export default async function EpisodesPage({
     <PageHero
       title="EPISODES"
       subtitle={archiveUnavailable ? "The archive can't be read right now" : `${totalCount} transmissions in the archive`}
-      backgroundImage="/articles-bacgkground.jpg"
+      backgroundImage={SECTION_HEADERS.transmissions}
     
       label="archive"
     />

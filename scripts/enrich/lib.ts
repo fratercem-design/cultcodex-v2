@@ -4,6 +4,7 @@ config({ override: true });
 import Anthropic from "@anthropic-ai/sdk";
 import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import OpenAI from "openai";
+import { openRouterBaseURL } from "../../src/lib/openrouter-url";
 import { EnrichmentResultSchema, type EnrichmentResult } from "./schemas";
 
 interface RawSegment {
@@ -140,7 +141,7 @@ function buildOpenRouterClient(): OpenAI {
   if (_openrouterClient) return _openrouterClient;
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) throw new Error("OPENROUTER_API_KEY not set");
-  const baseURL = process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1";
+  const baseURL = openRouterBaseURL(process.env.OPENROUTER_BASE_URL);
   _openrouterClient = new OpenAI({
     apiKey,
     baseURL,

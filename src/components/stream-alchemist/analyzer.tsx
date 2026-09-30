@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { Download, FileText, FileUp, Loader2, Sparkles, Wand2 } from "lucide-react";
+import { Download, FileText, FileUp, Link2, Loader2, Sparkles, Wand2 } from "lucide-react";
 import { track } from "@/lib/stream-alchemist/analytics";
 import { DEMO_TRANSCRIPT } from "@/lib/stream-alchemist/demo-transcript";
 import { toCsv, toMarkdown } from "@/lib/stream-alchemist/export";
 import { parseTranscript } from "@/lib/stream-alchemist/transcript";
 import type { AnalysisResult } from "@/lib/stream-alchemist/types";
+import { parseYouTubeId } from "@/lib/stream-alchemist/youtube";
 import { ClipCard, LockedClipCard } from "./clip-card";
 
 type Status = "idle" | "loading" | "done" | "error";
@@ -34,8 +35,40 @@ export function Analyzer({ upsell }: { upsell: React.ReactNode }) {
   const [error, setError] = useState("");
   const [usedDemo, setUsedDemo] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [dragging, setDragging] = useState(false);
+  const [ytUrl, setYtUrl] = useState("");
+  const [ytLoading, setYtLoading] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const importYouTube = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!parseYouTubeId(ytUrl)) {
+      setError("That doesn't look like a YouTube video link.");
+      setStatus("error");
+      return;
+    }
+    setYtLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/stream-alchemist/youtube", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: ytUrl }),
+      });
+      const data = await res.json().catch(() => ({ error: "The server sent back something unreadable." }));
+      if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
+      setTranscript(data.transcript);
+      setFileName(`YouTube ${data.videoId}`);
+      setUsedDemo(false);
+      setStatus("idle");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't import that video.");
+      setStatus("error");
+    } finally {
+      setYtLoading(false);
+    }
+  };
 
   const pasteDemo = () => {
     setTranscript(DEMO_TRANSCRIPT);
@@ -137,18 +170,69 @@ export function Analyzer({ upsell }: { upsell: React.ReactNode }) {
             </button>
           </div>
         </div>
-        <textarea
-          id="sa-transcript"
-          value={transcript}
-          onChange={(e) => {
-            setTranscript(e.target.value);
-            if (!e.target.value) setFileName("");
-          }}
-          rows={12}
-          spellCheck={false}
-          placeholder={"Paste a transcript. Timestamps like [01:23], 00:01:23, or SRT/VTT captions give you exact clip times.\n\n[00:00] Okay we are live…\n[00:07] Welcome back to the show…"}
-          className="w-full resize-y rounded-xl border border-line bg-void p-4 font-mono text-[13px] leading-relaxed text-ink placeholder:text-ink-3/70 focus:border-line-strong focus:outline-none"
-        />
+        <form onSubmit={importYouTube} className="flex flex-col gap-2 sm:flex-row">
+          <label htmlFor="sa-youtube" className="sr-only">
+            YouTube link
+          </label>
+          <div className="relative flex-1">
+            <Link2 className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-3" aria-hidden />
+            <input
+              id="sa-youtube"
+              type="url"
+              inputMode="url"
+              value={ytUrl}
+              onChange={(e) => setYtUrl(e.target.value)}
+              placeholder="Paste a YouTube link (video or past live stream)"
+              className="w-full rounded-lg border border-line bg-void py-2.5 pl-9 pr-3 text-sm text-ink placeholder:text-ink-3/70 focus:border-line-strong focus:outline-none"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={!ytUrl.trim() || ytLoading}
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-line-strong px-4 py-2.5 font-mono text-[12px] uppercase tracking-wider text-ink transition hover:bg-elevated disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {ytLoading ? <Loader2 className="size-3.5 animate-spin" aria-hidden /> : null}
+            {ytLoading ? "Getting transcript…" : "Get transcript"}
+          </button>
+        </form>
+        <div className="relative">
+          <textarea
+            id="sa-transcript"
+            value={transcript}
+            onChange={(e) => {
+              setTranscript(e.target.value);
+              if (!e.target.value) setFileName("");
+            }}
+            // Only file drags are intercepted; dragging text inside the box behaves as usual.
+            onDragOver={(e) => {
+              if (!e.dataTransfer.types.includes("Files")) return;
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "copy";
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              if (!e.dataTransfer.files.length) return;
+              e.preventDefault();
+              setDragging(false);
+              void openFile(e.dataTransfer.files[0]);
+            }}
+            rows={12}
+            spellCheck={false}
+            placeholder={"Paste a transcript or drop a .srt / .txt file here. Timestamps like [01:23], 00:01:23, or SRT/VTT captions give you exact clip times.\n\n[00:00] Okay we are live…\n[00:07] Welcome back to the show…"}
+            className={`w-full resize-y rounded-xl border bg-void p-4 font-mono text-[13px] leading-relaxed text-ink placeholder:text-ink-3/70 focus:border-line-strong focus:outline-none ${
+              dragging ? "border-dashed border-oracle" : "border-line"
+            }`}
+          />
+          {dragging && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-xl bg-oracle/10 font-mono text-[13px] uppercase tracking-wider text-oracle"
+            >
+              Drop your .srt, .vtt or .txt
+            </div>
+          )}
+        </div>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="font-mono text-[12px] text-ink-3">
             {fileName && <span className="text-ink-2">{fileName} · </span>}

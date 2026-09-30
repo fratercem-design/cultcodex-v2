@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ChapterCover } from "@/components/psychenomicon/chapter-cover";
+import { PsychenomiconChronicleShell } from "./psychenomicon-chronicle-shell";
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 function mLong(d: string | number | Date | null | undefined) { if (!d) return "Undated"; const dt = new Date(d); const ML="January,February,March,April,May,June,July,August,September,October,November,December".split(",");return ML[dt.getMonth()] + " " + dt.getFullYear(); }
@@ -45,8 +46,7 @@ export default function PsychenomiconChronicle() {
     fetch("/api/psychenomicon/chronicle").then(r => r.json()).then(d => { setData(d); setLoading(false); }).catch(() => setLoading(false));
   }, []);
 
-  if (loading) return null;
-  if (!data) return null;
+  if (loading || !data) return <PsychenomiconChronicleShell />;
   if (!data.canRead) return (
     <main className="min-h-screen bg-void">
       <div className="mx-auto max-w-2xl space-y-8 px-4 py-24">

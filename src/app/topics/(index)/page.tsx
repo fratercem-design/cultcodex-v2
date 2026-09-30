@@ -14,7 +14,8 @@ import {
   paginationArgs,
   buildPaginationMeta,
 } from "@/lib/pagination";
-import { collectionPageJsonLd, jsonLdScript } from "@/lib/seo";
+import { collectionPageJsonLd, jsonLdScript, socialMetadata } from "@/lib/seo";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
@@ -22,6 +23,11 @@ export const metadata = {
   alternates: { canonical: "/topics" },
   title: "Topics — CULT CODEX",
   description: "Browse the recurring themes, behavioral patterns, and obsessions that run through the Cult of Psyche archive — each one mapped to the episodes and moments where it emerged.",
+  ...socialMetadata({
+    title: "Topics — CULT CODEX",
+    description: "Trace recurring themes and behavioral patterns across thousands of Cult of Psyche episodes.",
+    path: "/topics",
+  }),
 };
 
 const SORT_OPTIONS = [
@@ -81,7 +87,7 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
     <PageHero
       title="TOPICS"
       subtitle="Key themes and recurring subjects"
-      backgroundImage="/long-form-background.jpg"
+      backgroundImage={SECTION_HEADERS.constellation}
     
       label="signals"
     />

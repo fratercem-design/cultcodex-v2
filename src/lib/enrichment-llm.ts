@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import Anthropic from "@anthropic-ai/sdk";
 import AnthropicBedrock from "@anthropic-ai/bedrock-sdk";
 import { bedrockModelId } from "@/lib/anthropic";
+import { openRouterBaseURL } from "@/lib/openrouter-url";
 
 // Single entry point for enrichment LLM calls. Honors ENRICHMENT_PROVIDER:
 // "openrouter" → Bluesminds/OpenRouter (cheap gpt-4o via prepaid credits), with
@@ -24,7 +25,7 @@ async function viaOpenRouter({ system, user, maxTokens }: EnrichArgs): Promise<s
   if (!apiKey) throw new Error("OPENROUTER_API_KEY not set");
   const client = new OpenAI({
     apiKey,
-    baseURL: process.env.OPENROUTER_BASE_URL ?? "https://openrouter.ai/api/v1",
+    baseURL: openRouterBaseURL(process.env.OPENROUTER_BASE_URL),
     defaultHeaders: { "HTTP-Referer": "https://cultcodex.me" },
   });
   const model = process.env.ENRICHMENT_MODEL ?? "gpt-4o";

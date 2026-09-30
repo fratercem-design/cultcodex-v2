@@ -1,5 +1,6 @@
 
 import { PageHero } from "@/components/ui/page-hero";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { PersonCard } from "@/components/archive/person-card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -18,7 +19,7 @@ import {
 } from "@/lib/pagination";
 import { PERSON_TYPE_DOT, PERSON_TYPE_EDGE, PERSON_TYPE_SECTION, PERSON_TYPE_TINT } from "@/lib/people/person-type";
 import type { PersonType } from "@/generated/prisma/client";
-import { collectionPageJsonLd, jsonLdScript } from "@/lib/seo";
+import { collectionPageJsonLd, jsonLdScript, socialMetadata } from "@/lib/seo";
 
 export const revalidate = 3600;
 
@@ -26,6 +27,12 @@ export const metadata = {
   alternates: { canonical: "/people" },
   title: "People — CULT CODEX",
   description: "Hosts, recurring figures, and profiled guests from the Cult of Psyche archive. One-time appearances and unknowns are compiled at /people/the-rest.",
+  ...socialMetadata({
+    title: "People — CULT CODEX",
+    description: "Explore recurring guests, hosts, and profiled voices across the Cult of Psyche archive.",
+    path: "/people",
+    image: { route: "/people", alt: "Voices — Every recurring figure in the Cult of Psyche archive" },
+  }),
 };
 
 const SORT_OPTIONS = [
@@ -155,7 +162,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
     <PageHero
       title="PEOPLE"
       subtitle="Guests, hosts, and figures of the archive"
-      backgroundImage="/images/people/hero.webp"
+      backgroundImage={SECTION_HEADERS.voices}
       label="voices"
     />
     <EntityGlanceBar items={glanceItems} />

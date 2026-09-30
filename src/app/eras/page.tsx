@@ -4,6 +4,7 @@ import { ERAS, getEraForEpisode } from "@/lib/eras";
 import { PageHero } from "@/components/ui/page-hero";
 import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 3600;
 
@@ -71,7 +72,7 @@ export default async function ErasPage() {
       <PageHero
         title="ERAS"
         subtitle="Five chapters. One archive."
-        backgroundImage="/articles-bacgkground.jpg"
+        backgroundImage={SECTION_HEADERS.transmissions}
       />
 
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-12 space-y-4">

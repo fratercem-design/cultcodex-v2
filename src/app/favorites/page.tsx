@@ -10,6 +10,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatDate } from "@/lib/format/date";
 import Link from "next/link";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata = {
   title: "My Favorites — CultCodex",
@@ -46,7 +47,7 @@ export default async function FavoritesPage() {
       <PageHero
         title="MY FAVORITES"
         subtitle={`${publishedFavorites.length} saved episode${publishedFavorites.length !== 1 ? "s" : ""}`}
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.sanctum}
       label="saved"
       />
       <div className="mx-auto max-w-7xl px-4 py-8">

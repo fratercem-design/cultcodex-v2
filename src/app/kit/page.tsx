@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 import { SampleKitTabs } from "@/components/kit/sample-kit-tabs";
 import { KitPricing } from "@/components/kit/kit-pricing";
+import { PilotForm } from "@/components/kit/pilot-form";
 import { KIT_FAQ } from "@/lib/kit/sample-kit";
 import { KIT_FOUNDER_CODE } from "@/lib/kit/checkout";
 import { getCountsOrNull } from "@/lib/queries/stats";
@@ -16,12 +18,6 @@ export const metadata: Metadata = buildMetadata({
     "Send your tarot or astrology live replay. Within 48 hours you get YouTube chapters, your 10 best clip moments, a searchable description and 5 Shorts hooks.",
   path: "/kit",
 });
-
-const CONTACT_EMAIL = "psychetarotchannel@gmail.com";
-
-function mailto(subject: string) {
-  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}`;
-}
 
 const PAINS = [
   {
@@ -53,7 +49,7 @@ export default async function KitPage() {
       <PageHero
         title="TRANSMISSION KIT"
         subtitle="Your live ends. Your clips don't."
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.broadcast}
         label="for tarot + astrology streamers"
       />
 
@@ -183,15 +179,10 @@ export default async function KitPage() {
           </p>
           <h2 className="font-serif text-2xl font-black text-text-primary">Try one free</h2>
           <p className="text-text-primary">
-            We&rsquo;re doing 5 free kits for streamers who&rsquo;ll tell us honestly what they think. Send your channel
-            link and your latest live replay.
+            We&rsquo;re doing 5 free kits for streamers who&rsquo;ll tell us honestly what they think. Tell us about
+            your channel and we&rsquo;ll reply by email.
           </p>
-          <a
-            href={mailto("Transmission Kit: free pilot")}
-            className="inline-block rounded-md bg-accent-gold px-5 py-3 font-display font-bold text-white transition-opacity hover:opacity-90"
-          >
-            Email us your replay
-          </a>
+          <PilotForm />
         </section>
       </main>
     </>

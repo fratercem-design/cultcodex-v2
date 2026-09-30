@@ -12,7 +12,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 import { PILLARS, getPillarBySlug } from "@/lib/pillars/pillars";
-import { buildEpisodeInclude, formatEpisodeForCard } from "@/lib/queries/episodes";
+import { EPISODE_CARD_LIST_SELECT, toEpisodeCard } from "@/lib/queries/episodes";
 import { prisma } from "@/lib/db";
 import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
 
@@ -22,6 +22,7 @@ import { CodexSigil } from "@/components/graphics/codex-sigil";
 import { SignalGrid } from "@/components/collections/signal-grid";
 import { CollectionEpisodeCard } from "@/components/collections/collection-episode-card";
 import { accentFor } from "@/components/collections/collection-accents";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
@@ -78,14 +79,14 @@ async function findRelatedEpisodes(topicIds: string[]) {
       status: "published",
       topics: { some: { topicId: { in: topicIds } } },
     },
-    include: buildEpisodeInclude(),
+    select: EPISODE_CARD_LIST_SELECT,
     orderBy: [
       { airDate: { sort: "desc", nulls: "last" } },
       { episodeNumber: "desc" },
     ],
     take: 24,
   }).catch(() => []);
-  return rows.map(formatEpisodeForCard);
+  return rows.map(toEpisodeCard);
 }
 
 export default async function PillarPage({ params }: PageProps) {
@@ -107,7 +108,7 @@ export default async function PillarPage({ params }: PageProps) {
       <PageHero
         title={p.title.toUpperCase()}
         subtitle={p.tagline}
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.constellation}
         label="explore"
       />
 

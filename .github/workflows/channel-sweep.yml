@@ -83,7 +83,7 @@ jobs:
       - name: Import transcripts — original
         env:
           ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
-          VERCEL_URL: https://cultcodex.me
+          APP_URL: https://cultcodex.me
           YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
         run: |
           npx tsx scripts/import-episodes-ytdlp.ts \
@@ -130,7 +130,7 @@ jobs:
       - name: Import transcripts — short
         env:
           ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
-          VERCEL_URL: https://cultcodex.me
+          APP_URL: https://cultcodex.me
           YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
         run: |
           npx tsx scripts/import-episodes-ytdlp.ts \

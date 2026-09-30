@@ -267,6 +267,85 @@ export function collectionPageJsonLd(opts: {
   };
 }
 
+export const OG_LOCALE = "en_US";
+
+/**
+ * Open Graph and Twitter tags for a page whose social copy differs from the
+ * site default. Next replaces a parent's `openGraph` object wholesale instead
+ * of merging it, so a page that sets only a description would lose the site
+ * name, locale and image. This fills them in.
+ *
+ * The image must be named explicitly. A generated `opengraph-image` file only
+ * beats config in its own segment, and the listing pages live one segment
+ * down in `(index)/`, so any image given here replaces the parent's. `route`
+ * is the segment whose opengraph-image and twitter-image files to use; the
+ * default is the root pair, which these pages used before they set their own
+ * social tags.
+ */
+export function socialMetadata({
+  title,
+  description,
+  path,
+  image = { route: "", alt: "CultCodex — The Cult of Psyche Archive" },
+}: {
+  title: string;
+  description: string;
+  path: string;
+  image?: { route: string; alt: string };
+}): Pick<Metadata, "openGraph" | "twitter"> {
+  return {
+    openGraph: {
+      title,
+      description,
+      url: path,
+      siteName: SITE_NAME,
+      locale: OG_LOCALE,
+      type: "website",
+      images: [{ url: `${image.route}/opengraph-image`, width: 1200, height: 630, alt: image.alt }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [{ url: `${image.route}/twitter-image`, alt: image.alt }],
+    },
+  };
+}
+
+const META_DESCRIPTION_MAX = 155;
+const EPISODE_META_SUFFIX = " Transcript and timestamps on CultCodex.";
+
+/** Cut at the last sentence end, else the last word, that fits in `max`. */
+function clipAtBoundary(text: string, max: number): string {
+  if (text.length <= max) return text;
+  const head = text.slice(0, max + 1);
+  const sentenceEnd = Math.max(head.lastIndexOf(". "), head.lastIndexOf("! "), head.lastIndexOf("? "));
+  // Only keep a whole sentence if it carries most of the budget; a short first
+  // sentence followed by a clipped second one reads better than a stub.
+  if (sentenceEnd >= max * 0.6) return head.slice(0, sentenceEnd + 1);
+  const space = head.lastIndexOf(" ", max - 1);
+  return `${head.slice(0, space > 0 ? space : max - 1).replace(/[\s,;:—-]+$/, "")}…`;
+}
+
+/**
+ * Search-result description for an episode page. Summaries run to ~250
+ * characters and get truncated or rewritten by Google, so keep the summary's
+ * opening, which names the episode's specific subject, within ~155
+ * characters. The transcript note is appended only when there is room.
+ */
+export function episodeMetaDescription(title: string, summary: string | null | undefined): string {
+  const text = summary?.replace(/\s+/g, " ").trim();
+  if (!text) {
+    return clipAtBoundary(
+      `Watch ${title} from Cult of Psyche. Browse the transcript, timestamps, guests and related archive entries.`,
+      META_DESCRIPTION_MAX,
+    );
+  }
+  const clipped = clipAtBoundary(text, META_DESCRIPTION_MAX);
+  const withSuffix = /[.!?]$/.test(clipped) ? clipped + EPISODE_META_SUFFIX : null;
+  return withSuffix && withSuffix.length <= META_DESCRIPTION_MAX ? withSuffix : clipped;
+}
+
 export function buildMetadata({
   title,
   description,
@@ -298,6 +377,7 @@ export function buildMetadata({
       description: cleanDescription,
       url,
       siteName: SITE_NAME,
+      locale: OG_LOCALE,
       type: "article",
       ...(images ? { images } : {}),
     },

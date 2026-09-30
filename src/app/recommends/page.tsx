@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { PageHero } from "@/components/ui/page-hero";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 import { EmptyState } from "@/components/ui/empty-state";
 import { buildMetadata } from "@/lib/seo";
 import { RECOMMENDATIONS } from "@/lib/recommendations";
@@ -26,7 +27,7 @@ export default function RecommendsPage() {
       <PageHero
         title="PSYCHE RECOMMENDS"
         subtitle="What Psyche actually uses — and links that support the show"
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.initiation}
         label="recommends"
       />
 

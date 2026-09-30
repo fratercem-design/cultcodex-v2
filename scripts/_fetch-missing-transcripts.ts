@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { fetchTranscript } from "youtube-transcript";
+import { captionsToMs } from "../src/lib/transcript/caption-units";
 import { getPrisma, disconnect } from "./ingest/lib";
 
 const DELAY_MS = 1500;
@@ -36,7 +37,8 @@ async function main() {
     process.stdout.write(`[${i + 1}/${episodes.length}] ${label} ... `);
 
     try {
-      const segments = await fetchTranscript(ep.youtubeVideoId!);
+      // Milliseconds for srv3 captions but seconds for the classic format.
+      const segments = captionsToMs(await fetchTranscript(ep.youtubeVideoId!));
 
       if (segments.length === 0) {
         console.log("no captions");

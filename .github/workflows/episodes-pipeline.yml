@@ -85,7 +85,7 @@ jobs:
       - name: Import transcripts
         env:
           ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
-          VERCEL_URL: https://cultcodex.me
+          APP_URL: https://cultcodex.me
           YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
         run: |
           # Without pipefail, tee's exit code masks the script's, so a FATAL

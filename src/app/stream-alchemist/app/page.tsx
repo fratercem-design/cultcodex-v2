@@ -25,7 +25,7 @@ export default function StreamAlchemistApp() {
         </Link>
         <h1 className="font-display text-3xl font-bold text-ink sm:text-4xl">Find the clips in your stream</h1>
         <p className="max-w-2xl text-sm leading-relaxed text-ink-2">
-          Paste a transcript, with or without timestamps. You&apos;ll get ranked clip ideas with a title, a hook,
+          Paste a transcript or a YouTube link, with or without timestamps. You&apos;ll get ranked clip ideas with a title, a hook,
           captions, thumbnail text and hashtags for each. Free shows the top 3.
         </p>
       </header>

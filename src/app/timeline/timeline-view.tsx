@@ -3,6 +3,7 @@ import { PageHero } from "@/components/ui/page-hero";
 import { cleanTitle } from "@/lib/format/text";
 import { formatDate } from "@/lib/format/date";
 import Link from "next/link";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 interface TimelineEpisode {
   id: string;
@@ -107,7 +108,7 @@ export async function TimelineView({ requestedYear }: { requestedYear?: number }
       <PageHero
         title="TIMELINE"
         subtitle={`${episodes.length} episodes in ${activeYear} · ${years.length} years archived`}
-        backgroundImage="/articles-bacgkground.jpg"
+        backgroundImage={SECTION_HEADERS.transmissions}
 
       label="timeline"
     />

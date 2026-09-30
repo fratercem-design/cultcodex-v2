@@ -6,6 +6,7 @@ import { getSalonThreads } from "@/lib/queries/salon";
 import { PageHero } from "@/components/ui/page-hero";
 import { buildMetadata } from "@/lib/seo";
 import { relativeTime } from "@/lib/format/relative-time";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,7 @@ export default async function SalonPage() {
   if (!unlocked) {
     return (
       <>
-        <PageHero title="THE SALON" subtitle="The room behind the room." label="oracle_only" backgroundImage="/hero-bg.jpg" />
+        <PageHero title="THE SALON" subtitle="The room behind the room." label="oracle_only" backgroundImage={SECTION_HEADERS.salon} />
         <main id="main-content" className="mx-auto max-w-2xl px-4 py-16">
           <div className="rounded-2xl border border-accent-violet/40 bg-gradient-to-b from-accent-violet/10 to-surface p-8 text-center space-y-4">
             <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
@@ -58,7 +59,7 @@ export default async function SalonPage() {
         title="THE SALON"
         subtitle="The room behind the room. Speak freely."
         label="oracle_salon"
-        backgroundImage="/hero-bg.jpg"
+        backgroundImage={SECTION_HEADERS.salon}
       />
       <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-4">
         {threads.length === 0 && (

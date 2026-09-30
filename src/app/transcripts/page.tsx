@@ -21,6 +21,7 @@ import {
 import { formatDate } from "@/lib/format/date";
 import { formatDuration } from "@/lib/format/duration";
 import { formatSeconds } from "@/lib/format/duration";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const revalidate = 600;
 
@@ -58,7 +59,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
         <PageHero
           title="TRANSCRIPTS"
           subtitle={`${results.totalCount.toLocaleString("en-US")} result${results.totalCount !== 1 ? "s" : ""} for "${query}"`}
-          backgroundImage="/search-database-background.jpg"
+          backgroundImage={SECTION_HEADERS.search}
         label="transcripts"
         />
         <EntityGlanceBar items={glanceItems} />
@@ -132,7 +133,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
       <PageHero
         title="TRANSCRIPTS"
         subtitle="Search every word spoken across the archive"
-        backgroundImage="/search-database-background.jpg"
+        backgroundImage={SECTION_HEADERS.search}
       label="transcripts"
       />
       <EntityGlanceBar items={glanceItems} />

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/ui/page-hero";
+import { SECTION_HEADERS } from "@/lib/section-headers";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://cultcodex.me";
 
@@ -49,7 +50,7 @@ export default async function OracleSharePage({ searchParams }: PageProps) {
       <PageHero
         title="THE ORACLE"
         subtitle="A transmission from the archive"
-        backgroundImage="/wiki-page-header.jpg"
+        backgroundImage={SECTION_HEADERS.oracle}
         label="oracle"
       />
       <main className="mx-auto max-w-2xl px-4 py-12 space-y-6">

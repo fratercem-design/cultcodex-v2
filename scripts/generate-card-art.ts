@@ -1,7 +1,7 @@
 /**
  * Generate unique illustrative images for trading cards via Kling (or OpenAI).
  *
- * Images are saved to public/cards/art/[slug].png and artUrl is updated in DB.
+ * Images are saved to public/cards/art/[slug].webp and artUrl is updated in DB.
  * Portraits are 1024×1792 (DALL-E 3 portrait size) — ~52% art area fill on card.
  *
  * Usage:
@@ -21,6 +21,8 @@ import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import OpenAI from "openai";
+// sharp comes with Next (its optional dependency for image optimisation).
+import sharp from "sharp";
 import { getPrisma, disconnect } from "./ingest/lib";
 
 const prisma = getPrisma();
@@ -30,7 +32,7 @@ const RATE_LIMIT_MS = 13_000; // 13s between requests → ~4.6/min (safe under 5
 
 // Filenames of already-passed Chinnamastā art, in preference order. Any
 // Chinnamastā-variant card reuses the first one that exists on disk.
-const CHINNAMASTA_ART_SOURCES = ["chhinnamasta.png", "chinnamasta-the-severed.png", "chinnamasta-severed.png"];
+const CHINNAMASTA_ART_SOURCES = ["chhinnamasta.webp", "chinnamasta-the-severed.webp", "chinnamasta-severed.webp"];
 
 // ── All 10 Mahavidyas — ensures complete set exists in DB ────────────────────
 
@@ -384,8 +386,8 @@ async function main() {
       failed++;
       continue;
     }
-    const outputPath = path.join(OUTPUT_DIR, `${safeSlug}.png`);
-    const artUrl = `/cards/art/${safeSlug}.png`;
+    const outputPath = path.join(OUTPUT_DIR, `${safeSlug}.webp`);
+    const artUrl = `/cards/art/${safeSlug}.webp`;
 
     console.log(`[${i + 1}/${cards.length}] ${card.slug}`);
     console.log(`  Type: ${card.cardType} | Rarity: ${card.rarity}`);
@@ -418,7 +420,7 @@ async function main() {
       if (source) {
         fs.copyFileSync(source, outputPath);
         await prisma.card.update({ where: { id: card.id }, data: { artUrl } });
-        console.log(`  ⟳ Reused ${path.basename(source)} → ${card.slug}.png (filter-safe)`);
+        console.log(`  ⟳ Reused ${path.basename(source)} → ${card.slug}.webp (filter-safe)`);
         generated++;
         continue;
         if (i < cards.length - 1) continue;
@@ -447,9 +449,10 @@ async function main() {
 
     try {
       const image = openai ? await openaiGenerate(openai, prompt) : await klingGenerate(prompt);
-      fs.writeFileSync(outputPath, image);
+      // WebP at q82 is ~10% of the PNG size with no visible loss at card size.
+      await sharp(image).webp({ quality: 82 }).toFile(outputPath);
       await prisma.card.update({ where: { id: card.id }, data: { artUrl } });
-      console.log(`  ✓ Saved → public/cards/art/${card.slug}.png`);
+      console.log(`  ✓ Saved → public/cards/art/${card.slug}.webp`);
       generated++;
       lastApiCallAt = Date.now();
     } catch (err) {
