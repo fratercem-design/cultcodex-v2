@@ -11,7 +11,7 @@ CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA public;
 -- PostgreSQL database dump
 --
 
-\restrict inoWM6jFjkF4gBAFbPfdSZWNG3kTwDPV3yEcbZOGjg7TxZ7FWFygCfj67h69xv3
+\restrict WPSzgbeFLJlhIrsYQHOWLfiCTFvOuivwEGkPeOLb0okapc4s3A9wCuIUvFX2x4n
 
 -- Dumped from database version 18.4 (Debian 18.4-1.pgdg12+1)
 -- Dumped by pg_dump version 18.6 (Debian 18.6-1.pgdg13+2)
@@ -1585,7 +1585,8 @@ CREATE TABLE public."TranscriptSegment" (
     text text NOT NULL,
     "searchText" text,
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    embedding public.vector(512)
 );
 
 
@@ -3465,6 +3466,20 @@ CREATE INDEX "TranscriptRequest_episodeId_idx" ON public."TranscriptRequest" USI
 
 
 --
+-- Name: TranscriptSegment_embedding_hnsw_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "TranscriptSegment_embedding_hnsw_idx" ON public."TranscriptSegment" USING hnsw (embedding public.vector_cosine_ops) WITH (m='16', ef_construction='64');
+
+
+--
+-- Name: TranscriptSegment_embedding_null_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "TranscriptSegment_embedding_null_idx" ON public."TranscriptSegment" USING btree (id) WHERE (embedding IS NULL);
+
+
+--
 -- Name: TranscriptSegment_episodeId_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4234,7 +4249,7 @@ ALTER TABLE ONLY public."UserWallet"
 -- PostgreSQL database dump complete
 --
 
-\unrestrict inoWM6jFjkF4gBAFbPfdSZWNG3kTwDPV3yEcbZOGjg7TxZ7FWFygCfj67h69xv3
+\unrestrict WPSzgbeFLJlhIrsYQHOWLfiCTFvOuivwEGkPeOLb0okapc4s3A9wCuIUvFX2x4n
 
 
 -- Successful Prisma migration metadata (no application data)
@@ -4430,3 +4445,12 @@ INSERT INTO public."_prisma_migrations"
 INSERT INTO public."_prisma_migrations"
         (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count)
         VALUES ('fc66f872-04c0-4aee-939e-54cd9d557581', '086cb5ca8f49b2132b38eb4709fa15cfef29055542d156129c4ba8d4d64aef31', '2026-09-30 02:32:31.751293+00', '0_baseline', NULL, NULL, '2026-09-30 02:32:31.751293+00', '0');
+INSERT INTO public."_prisma_migrations"
+        (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count)
+        VALUES ('e8848bc1-234a-4117-a75f-0d0d0bd20821', '3b45517b210f416a57cb32d502596107e6f1bc933d524a932e211e6457e3c2cf', '2026-09-30 02:42:49.998457+00', '20260930000000_restore_segment_embedding', NULL, NULL, '2026-09-30 02:42:44.129394+00', '1');
+INSERT INTO public."_prisma_migrations"
+        (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count)
+        VALUES ('69809044-cddc-49fe-9c87-84cc8f2de539', 'f0bc22be9120c63095261442bce47557f033b14a89c41cf58c8e85c03336baf0', '2026-09-30 02:47:07.335601+00', '20260930000001_segment_embedding_null_idx', NULL, NULL, '2026-09-30 02:42:50.076893+00', '1');
+INSERT INTO public."_prisma_migrations"
+        (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count)
+        VALUES ('d9aa09be-0278-4937-a751-3274bb670c05', '787aaa59f1846413d22c4211d666593eb571cf776f34051515a5454c0deeac0a', '2026-09-30 02:48:51.834817+00', '20260930000002_segment_embedding_hnsw', NULL, NULL, '2026-09-30 02:47:07.413069+00', '1');
