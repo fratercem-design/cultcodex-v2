@@ -69,7 +69,7 @@ ENRICH_SECRET         # protects all /api/admin/* routes
 
 ## Schema notes
 
-- Migrations live in `prisma/migrations/`. Run the existing `Run DB Migrations` GitHub Action as an explicit pre-deploy gate whenever a release contains migrations. The Fly runtime image is intentionally lean and does not contain Prisma's development CLI.
+- Migrations live in `prisma/migrations/`: `0_baseline` (the full production schema, 2026-09-30) plus anything after it. See `prisma/migrations/README.md` for the one-time production step and known schema drift. Run the existing `Run DB Migrations` GitHub Action as an explicit pre-deploy gate whenever a release contains migrations. The Fly runtime image is intentionally lean and does not contain Prisma's development CLI.
 - The two daily jobs live in `.github/workflows/scheduled-jobs.yml`. They call the bearer-protected production routes at 15:00 and 17:00 UTC. See `docs/operations/fly-cloudflare-xata-migration.md` for service settings, cutover order, and rollback triggers.
 - `prisma.config.ts` uses `DIRECT_URL` (non-pooled) for migrations, falls back to `DATABASE_URL`.
 - If a migration fails, clear it with: `npx prisma migrate resolve --rolled-back <migration_name>`

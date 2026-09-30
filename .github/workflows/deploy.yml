@@ -13,6 +13,12 @@ name: Deploy to Fly
 #   DATABASE_URL  — already set; passed as a BuildKit secret because the
 #                   build prerenders database-backed pages.
 #
+# Optional repository variable (Settings → Variables, not a secret: the DSN
+# ships in the browser bundle anyway):
+#   NEXT_PUBLIC_SENTRY_DSN — Sentry project DSN. Next inlines it at build time
+#                   into both the browser and server bundles, so setting it
+#                   here turns on error reporting everywhere. Unset = Sentry off.
+#
 # Run migrations first (Run DB Migrations workflow) when a release has any.
 
 on:
@@ -38,6 +44,7 @@ jobs:
         run: |
           [ -n "$FLY_API_TOKEN" ] || { echo "::error::FLY_API_TOKEN secret is not set (fly tokens create deploy -a cultcodex-v2)"; exit 1; }
           [ -n "$DATABASE_URL" ] || { echo "::error::DATABASE_URL secret is not set"; exit 1; }
+          [ -n "${{ vars.NEXT_PUBLIC_SENTRY_DSN }}" ] || echo "::warning::NEXT_PUBLIC_SENTRY_DSN variable is not set; this deploy will not report errors to Sentry"
 
       - name: Install flyctl
         run: |
@@ -51,7 +58,8 @@ jobs:
         run: |
           flyctl deploy -a cultcodex-v2 --local-only \
             --build-secret "DATABASE_URL=$DATABASE_URL" \
-            --build-arg "SOURCE_COMMIT=$GITHUB_SHA"
+            --build-arg "SOURCE_COMMIT=$GITHUB_SHA" \
+            --build-arg "NEXT_PUBLIC_SENTRY_DSN=${{ vars.NEXT_PUBLIC_SENTRY_DSN }}"
 
       - name: Health check
         run: |
