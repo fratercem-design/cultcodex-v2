@@ -127,6 +127,8 @@ const nextConfig: NextConfig = {
     { source: "/pricing", destination: "/premium", permanent: true },
     { source: "/subscribe", destination: "/premium", permanent: true },
     { source: "/methodology", destination: "/about/methodology", permanent: true },
+    // Card art was converted from PNG to WebP; Card.artUrl rows still say .png.
+    { source: "/cards/art/:slug([a-z0-9-]+).png", destination: "/cards/art/:slug.webp", permanent: true },
   ],
 };
 
