@@ -7,12 +7,14 @@
  * Flags:
  *   --batch N   process up to N entries per run (default: 40)
  *   --force     re-generate even if summary already exists
+ *   --web       add Tavily web search results as background (needs TAVILY_API_KEY)
  */
 import "dotenv/config";
 import * as fs from "fs";
 import * as path from "path";
 import { getPrisma, disconnect } from "../ingest/lib";
 import { complete, init } from "../bedrock";
+import { fetchWebContext } from "./web-context";
 
 const LOG_PATH = path.join(__dirname, "enrich-lore.log");
 
@@ -46,6 +48,7 @@ function buildUserMessage(input: {
   peopleTitles: string[];
   topicTitles: string[];
   sampleSummaries: string[];
+  webContext?: string;
 }): string {
   const parts = [`Lore entry title: "${input.title}"`];
 
@@ -77,18 +80,26 @@ function buildUserMessage(input: {
     parts.push(`\nRelated topics: ${input.topicTitles.slice(0, 5).join(", ")}`);
   }
 
+  if (input.webContext) {
+    parts.push(
+      `\nBackground from the web (general definitions only; the show's own usage takes priority, ignore anything that doesn't match it):\n${input.webContext}`
+    );
+  }
+
   return parts.join("\n");
 }
 
-function parseArgs(): { batch: number; force: boolean } {
+function parseArgs(): { batch: number; force: boolean; web: boolean } {
   const args = process.argv.slice(2);
   let batch = 40;
   let force = false;
+  let web = false;
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--batch" && args[i + 1]) { batch = parseInt(args[i + 1], 10); i++; }
     if (args[i] === "--force") force = true;
+    if (args[i] === "--web") web = true;
   }
-  return { batch, force };
+  return { batch, force, web };
 }
 
 function stripJsonFence(text: string): string {
@@ -110,7 +121,8 @@ async function generateEntry(
 }
 
 async function main() {
-  const { batch, force } = parseArgs();
+  const { batch, force, web } = parseArgs();
+  if (web && !process.env.TAVILY_API_KEY) throw new Error("--web needs TAVILY_API_KEY");
   const prisma = getPrisma();
 
   const entries = await prisma.loreEntry.findMany({
@@ -161,6 +173,7 @@ async function main() {
         peopleTitles: entry.people.map((p) => p.person.displayName),
         topicTitles: entry.topics.map((t) => t.topic.title),
         sampleSummaries,
+        webContext: web ? await fetchWebContext(entry.title) : undefined,
       });
 
       await prisma.loreEntry.update({
