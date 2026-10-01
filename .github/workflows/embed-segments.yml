@@ -53,12 +53,23 @@ jobs:
           total=0
           calls=0
           while [ "$(date +%s)" -lt "$deadline" ]; do
-            body=$(curl --fail-with-body --show-error --silent \
-              --retry 3 --retry-all-errors --retry-delay 10 --max-time 290 \
-              -X POST "$APP_URL/api/admin/embed" \
-              -H "X-Enrich-Secret: $ENRICH_SECRET" \
-              -H "Content-Type: application/json" \
-              -d "{\"batch\": $BATCH}") || { echo "::error::Call failed: $body"; exit 1; }
+            # Retry here rather than with curl --retry: curl concatenates the
+            # body of every attempt, which mixed error JSON into the success
+            # body and hid the route's error message.
+            for attempt in 1 2 3 4; do
+              started=$(date +%s)
+              resp=$(curl --show-error --silent --max-time 290 -w '\n%{http_code}' \
+                -X POST "$APP_URL/api/admin/embed" \
+                -H "X-Enrich-Secret: $ENRICH_SECRET" \
+                -H "Content-Type: application/json" \
+                -d "{\"batch\": $BATCH}") || resp=$'\n000'
+              code=${resp##*$'\n'}
+              body=${resp%$'\n'*}
+              [ "$code" = "200" ] && break
+              echo "::warning::Attempt $attempt: HTTP $code after $(( $(date +%s) - started ))s: $body"
+              sleep 10
+            done
+            [ "$code" = "200" ] || { echo "::error::Call failed after 4 attempts: HTTP $code: $body"; exit 1; }
             processed=$(jq -r '.processed' <<<"$body")
             done_flag=$(jq -r '.done' <<<"$body")
             total=$(( total + processed ))
