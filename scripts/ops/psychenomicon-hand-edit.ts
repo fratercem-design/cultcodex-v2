@@ -60,7 +60,44 @@ export const EDITS: Record<number, Edit[]> = {
       replace: "in self-disclosure and also shows his ongoing need to recalibrate relational boundaries to minimize harm and keep mutual respect.",
     },
   ],
-  2464: [],
+  // Rambha is the only "her" here; no edit adds she/her to a section.
+  2464: [
+    {
+      field: "canonText",
+      find: "The core refrain — 'I burn, I rise, I don't retire' — is explicitly voiced in the first person,",
+      replace: "The core refrain, 'I burn, I rise, I don't retire', is voiced in the first person,",
+    },
+    {
+      field: "canonText",
+      find: "This is not a third-person celebration of a mythological figure; it is an act of invocation-as-absorption, where Rambha's attributes are drawn into Psyche's own body and voice.",
+      replace: "Rather than celebrating a mythological figure in the third person, the song performs invocation-as-absorption: Rambha's attributes are drawn into Psyche's own body and voice.",
+    },
+    {
+      field: "canonText",
+      find: "The repeated address of 'Grandpa' — rendered in the lyrics as an intimate title for Rambha, repositioning divine power within familial-intimate register — marks a distinct theological move,",
+      replace: "The repeated address of 'Grandpa', rendered in the lyrics as an intimate title for Rambha, places divine power in a familial, intimate register and marks a distinct theological move,",
+    },
+    {
+      field: "canonText",
+      find: "The petition embedded in the final verses is explicit — 'Teach me how to blaze and shine,' 'Crown my spirit, set me free,' 'Your beauty is my igniter' — framing the song not merely as tribute but as a request for transmission of divine qualities into Psyche himself.",
+      replace: "The petition in the final verses is explicit: 'Teach me how to blaze and shine,' 'Crown my spirit, set me free,' 'Your beauty is my igniter.' The song is a tribute and also a request for transmission of divine qualities into Psyche himself.",
+    },
+    {
+      field: "canonText",
+      find: "an accumulation of invocatory fragments — 'Rise in me, through me' — completing the arc",
+      replace: "an accumulation of invocatory fragments, among them 'Rise in me, through me', completing the arc",
+    },
+    {
+      field: "interpretationText",
+      find: "The attributes Psyche selects — liberation over temptation, recreation over destruction, beauty as ignition rather than seduction — are consistent with",
+      replace: "The attributes Psyche selects (liberation over temptation, recreation over destruction, beauty as ignition rather than seduction) are consistent with",
+    },
+    {
+      field: "mythicText",
+      find: "The milk ocean churning is a myth of extraction through ordeal — gods and demons laboring together to produce both poison and nectar — and it resonates with the Psychenomicon's",
+      replace: "The churning of the milk ocean is a myth of extraction through ordeal, in which gods and demons labor together to produce both poison and nectar, and it matches the Psychenomicon's",
+    },
+  ],
 };
 
 /** Applies every edit, or returns why the chapter must be skipped. */
