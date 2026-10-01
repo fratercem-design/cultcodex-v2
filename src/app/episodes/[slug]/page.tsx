@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { Suspense, cache } from "react";
 import { notFound } from "next/navigation";
 import {
   getEpisodeBySlug,
@@ -62,6 +62,10 @@ export async function generateStaticParams() {
   return [];
 }
 
+// generateMetadata and the page both need the episode; cache() makes them
+// share one query per request instead of running the large include twice.
+const loadEpisode = cache(getEpisodeBySlug);
+
 interface PageProps {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ tab?: string; t?: string }>;
@@ -69,7 +73,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const episode = await getEpisodeBySlug(slug);
+  const episode = await loadEpisode(slug);
 
   if (!episode) {
     return buildMetadata({
@@ -93,7 +97,10 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
   const { slug } = await params;
   const sp = await searchParams;
   const initialTimestamp = sp.t ? parseInt(sp.t, 10) : undefined;
-  const episode = await getEpisodeBySlug(slug).catch(() => null);
+  // Only a null result means "no such episode". A failed query must throw so
+  // the visitor gets a retryable 5xx; swallowing it here served real episodes
+  // as 404s whenever the DB pool timed out.
+  const episode = await loadEpisode(slug);
 
   if (!episode) notFound();
 
