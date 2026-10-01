@@ -95,8 +95,9 @@ export default function PrivacyPage() {
         <SectionCard title="Data Retention">
           <div className="space-y-3 text-sm text-text-muted leading-relaxed">
             <p>
-              Account data is retained as long as your account exists. You may request deletion of
-              your account and associated personal data by emailing us at the address below.
+              Account data is retained as long as your account exists. You can delete your account
+              and associated personal data yourself at any time from Account Settings
+              (Settings → Delete Account), or by emailing us at the address below.
               Stripe subscription records are governed by Stripe&apos;s retention policies.
             </p>
           </div>
@@ -118,6 +119,7 @@ export default function PrivacyPage() {
               <li><span className="text-text-primary font-medium">Google OAuth</span> — sign-in authentication</li>
               <li><span className="text-text-primary font-medium">Stripe</span> — payment processing</li>
               <li><span className="text-text-primary font-medium">Google Analytics</span> — consent-based site usage measurement</li>
+              <li><span className="text-text-primary font-medium">Sentry</span> — error monitoring. When something breaks, it receives the error message, the page URL, and browser and device details. Browser reports are relayed through our own domain, and we configure it not to collect personal data such as your IP address or email, or to record sessions.</li>
               <li><span className="text-text-primary font-medium">Fly.io</span> — application hosting</li>
               <li><span className="text-text-primary font-medium">Cloudflare</span> — DNS, CDN and TLS</li>
               <li><span className="text-text-primary font-medium">Xata</span> — database hosting (PostgreSQL)</li>
