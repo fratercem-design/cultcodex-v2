@@ -21,4 +21,23 @@ describe("canonical host proxy", () => {
 
     expect(response.headers.get("x-middleware-next")).toBe("1");
   });
+
+  it("sends a nonce-based report-only CSP with a fresh nonce per request", () => {
+    const first = proxy(new NextRequest("https://cultcodex.me/episodes/example"));
+    const second = proxy(new NextRequest("https://cultcodex.me/episodes/example"));
+    const a = first.headers.get("content-security-policy-report-only") ?? "";
+    const b = second.headers.get("content-security-policy-report-only") ?? "";
+
+    expect(a).toMatch(/script-src [^;]*'nonce-[A-Za-z0-9+/=]+' 'strict-dynamic'/);
+    expect(a).not.toMatch(/script-src [^;]*'unsafe-inline'/);
+    expect(a).toContain("report-uri /api/csp-report");
+    expect(a).not.toBe(b);
+    // The enforced policy stays in next.config.ts; this must not replace it.
+    expect(first.headers.get("content-security-policy")).toBeNull();
+  });
+
+  it("does not add the CSP to redirects", () => {
+    const response = proxy(new NextRequest("https://www.cultcodex.me/"));
+    expect(response.headers.get("content-security-policy-report-only")).toBeNull();
+  });
 });
