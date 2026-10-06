@@ -119,6 +119,29 @@ export async function bulkQueueForEnrichment(ids: string[]) {
   revalidatePath("/admin/sync");
 }
 
+/**
+ * Queue every episode stuck on the "—" summaryFacts placeholder for
+ * re-enrichment. The sync page counts them as unenriched, but the enrich route
+ * skips them unless enrichmentQueued is set (to avoid looping on episodes that
+ * return no content), so no other button can clear them.
+ * Returns how many episodes were queued.
+ */
+export async function queuePlaceholderEpisodes(): Promise<number> {
+  await requireAdmin();
+  const { count } = await prisma.episode.updateMany({
+    where: {
+      summaryFacts: "—",
+      OR: [{ summaryShort: null }, { summaryShort: "" }],
+      AND: [{ OR: [{ summaryLong: null }, { summaryLong: "" }] }],
+      enrichmentQueued: false,
+    },
+    data: { enrichmentQueued: true },
+  });
+  revalidatePath("/admin/episodes");
+  revalidatePath("/admin/sync");
+  return count;
+}
+
 export async function bulkUpdateEpisodeStatus(
   ids: string[],
   status: ContentStatus,

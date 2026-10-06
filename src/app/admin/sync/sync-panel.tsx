@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { queuePlaceholderEpisodes } from "../actions";
 
 interface TranscriptResult {
   episodeId: string;
@@ -91,6 +92,10 @@ export function SyncPanel({
     results?: EnrichEpisodeResult[];
     error?: string;
   } | null>(null);
+
+  // ── Queue placeholder episodes ──
+  const [queueLoading, setQueueLoading] = useState(false);
+  const [queueMessage, setQueueMessage] = useState<string | null>(null);
 
   // ── People enrichment ──
   const [enrichPeopleBatch, setEnrichPeopleBatch] = useState(5);
@@ -216,6 +221,24 @@ export function SyncPanel({
     } finally {
       setEnrichEpLoading(false);
       setEnrichEpProgress(null);
+    }
+  }
+
+  async function handleQueuePlaceholders() {
+    setQueueLoading(true);
+    setQueueMessage(null);
+    try {
+      const count = await queuePlaceholderEpisodes();
+      setQueueMessage(
+        count === 0
+          ? "No placeholder episodes to queue."
+          : `Queued ${count} episode${count !== 1 ? "s" : ""} — now click "Run enrichment queue".`,
+      );
+      router.refresh();
+    } catch (err) {
+      setQueueMessage(`Failed to queue: ${err instanceof Error ? err.message : String(err)}`);
+    } finally {
+      setQueueLoading(false);
     }
   }
 
@@ -489,6 +512,15 @@ export function SyncPanel({
           >
             ↻ Enrich no-transcript episodes (title only)
           </button>
+          <button
+            onClick={handleQueuePlaceholders}
+            disabled={queueLoading || unenrichedEpisodes === 0}
+            className="w-full flex items-center justify-center gap-2 rounded border border-text-muted/30 bg-transparent hover:bg-elevated px-4 py-2 font-mono text-[12px] uppercase tracking-widest text-text-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Episodes already enriched with no content (summary '—') are counted as unenriched but skipped by every run button. This flags them so 'Run enrichment queue' re-enriches them."
+          >
+            {queueLoading ? <><Spinner /> Queuing…</> : "＋ Queue placeholder episodes"}
+          </button>
+          {queueMessage && <p className="font-mono text-[12px] text-text-muted">{queueMessage}</p>}
           <button
             onClick={() => handleEnrichEpisodes(true, false, true)}
             disabled={enrichEpLoading || enrichmentQueued === 0}
