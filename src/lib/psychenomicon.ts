@@ -10,9 +10,9 @@ import { prisma } from "@/lib/db";
  * id, not a rank, so "1,2,3" would match nothing.
  */
 
-const DEFAULT_FREE_COUNT = 3;
+export const DEFAULT_FREE_COUNT = 3;
 
-function envFreeChapterNumbers(): number[] | null {
+export function envFreeChapterNumbers(): number[] | null {
   const raw = process.env.PSYCHENOMICON_FREE_CHAPTERS;
   if (!raw) return null;
   const parsed = raw

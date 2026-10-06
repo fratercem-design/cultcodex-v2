@@ -6,7 +6,7 @@ import { isSubscribed } from "@/lib/subscription";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ChapterCover } from "@/components/psychenomicon/chapter-cover";
-import { getFreePreviewChapterNumbers } from "@/lib/psychenomicon";
+import { DEFAULT_FREE_COUNT, envFreeChapterNumbers } from "@/lib/psychenomicon";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/psychenomicon/chapters" },
@@ -50,7 +50,6 @@ export default async function ChaptersIndexPage({
   const canRead = !!user && (user.role === "admin" || (await isSubscribed(user.id).catch(() => false)));
 
   const sp = await searchParams;
-  const freeChapterNumbers = await getFreePreviewChapterNumbers();
   const total = await prisma.psychenomiconChapter.count().catch(() => 0);
   const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
   const page = Math.min(totalPages, Math.max(1, parseInt(sp.page ?? "1", 10) || 1));
@@ -66,6 +65,12 @@ export default async function ChaptersIndexPage({
       },
     })
     .catch(() => []);
+
+  // Same rule as getFreePreviewChapterNumbers, minus its second airDate-sorted
+  // query: the earliest chapters are exactly the head of page 1 of this list.
+  const freeChapterNumbers =
+    envFreeChapterNumbers() ??
+    (page === 1 ? chapters.slice(0, DEFAULT_FREE_COUNT).map((c) => c.chapterNumber) : []);
 
   // Group the page's chapters under month headers (chronological).
   const groups: { label: string; rows: ChapterRow[] }[] = [];
