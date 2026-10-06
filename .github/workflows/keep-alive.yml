@@ -1,18 +1,19 @@
 name: keep-alive
 
-# Pings /api/keep-alive so the Xata Postgres branch never hibernates from
-# inactivity. A sleeping branch fails production builds ("branch is hibernated,
-# reactivate it to continue") because the build prerenders thousands of static
-# pages against the DB. Vercel Hobby crons only run daily — too infrequent — so
-# the warm-keeping lives here on GitHub Actions at the 5-minute floor instead.
+# Pings /api/keep-alive so the Xata Postgres branch is awake for deploys. A
+# sleeping branch fails production builds ("branch is hibernated, reactivate it
+# to continue") because the build prerenders thousands of static pages against
+# the DB.
 #
-# Note: GitHub often delays scheduled runs by several minutes under load, so the
-# effective interval can drift to ~10-20 min. If the branch still hibernates,
-# the durable fix is disabling hibernation on the Xata side.
+# Demoted to hourly: on Fly this is no longer what keeps the app's DB warm
+# (real traffic does). GitHub also throttled the
+# old */5 schedule to one run every ~7 hours in practice, so the tighter cron
+# never delivered. If the branch still hibernates before deploys, the durable
+# fix is disabling hibernation on the Xata side.
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "17 * * * *"
   workflow_dispatch: {}
 
 # Never let overlapping runs pile up.

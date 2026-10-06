@@ -98,13 +98,18 @@ function createPrismaClient(): PrismaClient {
   // Xata branches hibernate when idle: the first query after a sleep has to
   // wait for the branch to reactivate. Allow generous time during builds (which
   // prerender thousands of pages) and a shorter, user-facing budget at runtime.
-  const connectionTimeoutMillis = isBuild ? 30000 : 5000;
+  // 5s was tripping whenever Xata's connect + TLS handshake ran slow (a bare
+  // SELECT 1 on a cold connection measured ~1.5s), failing every DB-backed page
+  // at once.
+  const connectionTimeoutMillis = isBuild ? 30000 : 15000;
 
   const adapter = new PrismaPg({
     connectionString,
     connectionTimeoutMillis,
-    // Release idle connections promptly when Fly replaces or stops a Machine.
-    idleTimeoutMillis: 10000,
+    // Keep connections warm between requests so low-traffic periods reuse a
+    // socket instead of paying a fresh handshake. A stopping Machine closes its
+    // sockets with the process, so a long idle window doesn't leak anything.
+    idleTimeoutMillis: 60000,
     max,
   });
 
