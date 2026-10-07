@@ -3,10 +3,13 @@ export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/auth";
+import { prisma } from "@/lib/db";
 import { getSubscriptionStatus } from "@/lib/subscription";
 import { PageHero } from "@/components/ui/page-hero";
 import { SectionCard } from "@/components/ui/section-card";
 import { ManageSubscription } from "@/components/subscription/manage-subscription";
+import { DeleteAccount } from "@/components/settings/delete-account";
+import { deleteOwnAccount } from "./actions";
 import type { Metadata } from "next";
 import { SECTION_HEADERS } from "@/lib/section-headers";
 
@@ -39,6 +42,7 @@ export default async function SettingsPage() {
   if (!user) redirect("/auth/signin");
 
   const subscription = await getSubscriptionStatus(user.id).catch(() => null);
+  const account = await prisma.codexUser.findUnique({ where: { id: user.id }, select: { email: true } });
   const allowAdminPortalTest =
     process.env.FLY_APP_NAME?.endsWith("-staging") === true &&
     subscription?.isAdmin === true &&
@@ -98,6 +102,14 @@ export default async function SettingsPage() {
             )}
           </div>
         </SectionCard>
+
+        {account && !subscription?.isAdmin && (
+          <SectionCard title="Delete Account">
+            <div className="py-2">
+              <DeleteAccount email={account.email} remove={deleteOwnAccount} />
+            </div>
+          </SectionCard>
+        )}
 
         <p className="text-center font-mono text-[12px] text-text-muted">
           Need help?{" "}

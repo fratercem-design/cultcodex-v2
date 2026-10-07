@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { buildReportOnlyCsp, generateNonce } from "@/lib/csp";
 
 const CANONICAL_HOSTS: Record<string, string> = {
   "www.cultcodex.me": "cultcodex.me",
@@ -31,7 +32,16 @@ export function proxy(request: NextRequest) {
       url.searchParams.set("callbackUrl", path);
       return NextResponse.redirect(url, { status: 307 });
     }
-    return NextResponse.next();
+
+    // Report-only for now (see src/lib/csp.ts). Next reads the nonce from the
+    // request's CSP header, so pages rendered per request get it on their
+    // scripts; prerendered pages cannot, and will show up in the reports.
+    const csp = buildReportOnlyCsp(generateNonce());
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("Content-Security-Policy-Report-Only", csp);
+    const response = NextResponse.next({ request: { headers: requestHeaders } });
+    response.headers.set("Content-Security-Policy-Report-Only", csp);
+    return response;
   }
 
   const url = request.nextUrl.clone();

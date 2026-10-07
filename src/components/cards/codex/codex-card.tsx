@@ -7,10 +7,11 @@
  * Sizing comes from the parent: the card fills its container's width at a
  * 5:7 ratio and all type is in container units, so it scales cleanly.
  */
-import { useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { useRef, useState, useSyncExternalStore, type CSSProperties, type PointerEvent } from "react";
 import type { CardType, Rarity } from "@/generated/prisma/client";
 import { CARD_TYPE_GLYPH, STAT_LABELS } from "@/lib/cards/rarity";
 import { catalogEntry, getSeason, OBTAIN_LABEL } from "@/lib/cards/codex/catalog";
+import { CARD_BACKS, isSpecialEdition, specialEditionAnimationUrl, specialEditionFoilUrl } from "@/lib/cards/special-editions";
 import type { Motif, ObtainMethod, Palette } from "@/lib/cards/codex/types";
 import { ArtScene } from "@/components/cards/vault/art";
 import type { VaultCard } from "@/components/cards/vault/constants";
@@ -52,6 +53,8 @@ export interface CodexCardProps {
   state?: "owned" | "sealed";
   isFoil?: boolean;
   isNew?: boolean;
+  /** Play the card's animated loop where one exists (special editions). */
+  animated?: boolean;
   quantity?: number;
   clue?: string;
   progress?: { current: number; target: number } | null;
@@ -72,11 +75,30 @@ const RARITY_PALETTE: Record<Rarity, Palette> = {
   ORACLE: "abyss", LEGENDARY: "gold", MYTHIC: "violet", FORBIDDEN: "blood",
 };
 
-function CardArt({ card, sealed }: { card: CodexCardData; sealed: boolean }) {
+const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
+function useReducedMotion() {
+  return useSyncExternalStore(
+    (onChange) => {
+      const mq = window.matchMedia(REDUCED_MOTION);
+      mq.addEventListener("change", onChange);
+      return () => mq.removeEventListener("change", onChange);
+    },
+    () => window.matchMedia(REDUCED_MOTION).matches,
+    () => true,
+  );
+}
+
+function CardArt({ card, sealed, isFoil, animated }: { card: CodexCardData; sealed: boolean; isFoil: boolean; animated: boolean }) {
   const entry = catalogEntry(card.slug);
+  const special = isSpecialEdition(card.slug);
+  const reducedMotion = useReducedMotion();
   if (card.artUrl && !sealed) {
+    const src = special && isFoil ? specialEditionFoilUrl(card.slug) : card.artUrl;
+    if (special && animated && !reducedMotion) {
+      return <video src={specialEditionAnimationUrl(card.slug)} poster={src} className="cx-art-img" autoPlay muted loop playsInline aria-hidden="true" />;
+    }
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={card.artUrl} alt="" className="cx-art-img" loading="lazy" />;
+    return <img src={src} alt="" className="cx-art-img" loading="lazy" />;
   }
   if (entry) {
     return <CodexArt slug={card.slug} motif={entry.def.art.motif} palette={entry.def.art.palette} rarity={card.rarity} silhouette={sealed} />;
@@ -104,6 +126,7 @@ export function CodexCard({
   state = "owned",
   isFoil = false,
   isNew = false,
+  animated = false,
   quantity,
   clue,
   progress,
@@ -163,7 +186,7 @@ export function CodexCard({
           </header>
 
           <div className="cx-art">
-            <CardArt card={card} sealed={sealed} />
+            <CardArt card={card} sealed={sealed} isFoil={isFoil} animated={animated} />
             {sealed && <div className="cx-seal" aria-hidden="true">✶</div>}
             <span className="cx-obtain" data-obtain={obtain}>{OBTAIN_LABEL[obtain]}</span>
             {card.maxSupply && !sealed ? <span className="cx-supply">/{card.maxSupply}</span> : null}
@@ -217,7 +240,7 @@ export function CodexCard({
 }
 
 /** Card back — used face-down in pack openings. Same frame, same proportions. */
-export function CodexCardBack({ glow, onClick }: { glow?: string; onClick?: () => void }) {
+export function CodexCardBack({ glow, special, onClick }: { glow?: string; special?: boolean; onClick?: () => void }) {
   return (
     <div
       className="cx-card cx-back"
@@ -230,27 +253,8 @@ export function CodexCardBack({ glow, onClick }: { glow?: string; onClick?: () =
     >
       <div className="cx-inner">
         <div className="cx-bezel cx-back-face">
-          <svg viewBox="0 0 100 140" className="cx-back-art" aria-hidden="true">
-            <defs>
-              <radialGradient id="cxBackGlow">
-                <stop offset="0%" stopColor="var(--cx-accent)" stopOpacity="0.55" />
-                <stop offset="100%" stopColor="var(--cx-accent)" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-            <rect width="100" height="140" fill="#08080b" />
-            <circle cx="50" cy="70" r="46" fill="url(#cxBackGlow)" />
-            <g fill="none" stroke="var(--cx-accent)" strokeWidth="0.6" opacity="0.8">
-              <circle cx="50" cy="70" r="34" />
-              <circle cx="50" cy="70" r="30" strokeDasharray="1 2" />
-              <path d="M50 36 L79 87 L21 87 Z" />
-              <path d="M50 104 L21 53 L79 53 Z" />
-              <circle cx="50" cy="70" r="9" />
-            </g>
-            <path d="M42 70 Q50 62 58 70 Q50 78 42 70 Z" fill="var(--cx-accent)" />
-            <circle cx="50" cy="70" r="2.2" fill="#000" />
-            <text x="50" y="126" textAnchor="middle" fontSize="6" letterSpacing="2.4" fill="var(--cx-accent)" fontFamily="monospace">CULTCODEX</text>
-            <text x="50" y="18" textAnchor="middle" fontSize="4" letterSpacing="2" fill="var(--cx-accent)" opacity="0.7" fontFamily="monospace">✶ THE SIGNAL ARCHIVE ✶</text>
-          </svg>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={special ? CARD_BACKS.specialEdition : CARD_BACKS.tarot} alt="" className="cx-back-art" draggable={false} />
         </div>
       </div>
     </div>

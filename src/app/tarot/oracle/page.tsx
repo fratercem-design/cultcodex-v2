@@ -14,6 +14,7 @@ interface DrawnCard {
   cardType: string;
   rarity: Rarity;
   abilities: string[];
+  artUrl: string | null;
   artSvg: string;
 }
 
@@ -300,7 +301,7 @@ function CardDisplay({
       }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(card.artSvg)}`}
+          src={card.artUrl ?? `data:image/svg+xml;charset=utf-8,${encodeURIComponent(card.artSvg)}`}
           alt={card.title}
           width={196}
           height={274}

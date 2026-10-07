@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { Rarity } from "@/generated/prisma/client";
 import { RARITY_ORDER } from "@/lib/cards/rarity";
 import { OBTAIN_LABEL } from "@/lib/cards/codex/catalog";
+import { isSpecialEdition } from "@/lib/cards/special-editions";
 import type { ObtainMethod, Palette } from "@/lib/cards/codex/types";
 import { CodexCard, RARITY_COLOR, type CodexCardData } from "@/components/cards/codex/codex-card";
 import { PackArt } from "@/components/cards/codex/pack-art";
@@ -195,7 +196,13 @@ export function CodexApp({
               {[...legacy]
                 .sort((a, b) => RARITY_ORDER[b.card.rarity as Rarity] - RARITY_ORDER[a.card.rarity as Rarity])
                 .map((l) => (
-                  <CodexCard key={l.card.slug} card={l.card} isFoil={l.owned.isFoil} quantity={l.owned.quantity} />
+                  <CodexCard
+                    key={l.card.slug}
+                    card={l.card}
+                    isFoil={l.owned.isFoil}
+                    quantity={l.owned.quantity}
+                    onClick={() => setFocus({ card: l.card, owned: l.owned, obtain: isSpecialEdition(l.card.slug) ? "secret" : "pack", clue: "", progress: null })}
+                  />
                 ))}
             </div>
           )}
@@ -211,6 +218,7 @@ export function CodexApp({
                 card={focus.card}
                 state={focus.owned ? "owned" : "sealed"}
                 isFoil={focus.owned?.isFoil}
+                animated={!!focus.owned}
                 clue={focus.clue}
                 progress={focus.progress}
               />
