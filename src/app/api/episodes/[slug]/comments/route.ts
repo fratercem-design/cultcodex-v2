@@ -6,6 +6,7 @@ import { getCommentsForEpisode, createComment } from "@/lib/queries/comments";
 import { moderateComment } from "@/lib/moderation";
 import { eventBus } from "@/lib/sse/event-bus";
 import { rateLimit, clientKey } from "@/lib/rate-limit";
+import { parseBoundedInteger } from "@/lib/pagination";
 
 export async function GET(
   req: NextRequest,
@@ -21,8 +22,12 @@ export async function GET(
     return NextResponse.json({ error: "Episode not found" }, { status: 404 });
   }
 
-  const take = Math.min(parseInt(req.nextUrl.searchParams.get("take") ?? "20", 10), 50);
-  const skip = parseInt(req.nextUrl.searchParams.get("skip") ?? "0", 10);
+  const take = parseBoundedInteger(req.nextUrl.searchParams.get("take"), {
+    fallback: 20, min: 1, max: 50,
+  });
+  const skip = parseBoundedInteger(req.nextUrl.searchParams.get("skip"), {
+    fallback: 0, min: 0, max: 100_000,
+  });
 
   const result = await getCommentsForEpisode(episode.id, { take, skip });
   return NextResponse.json(result);
