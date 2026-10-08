@@ -26,6 +26,14 @@ export interface Recommendation {
 }
 
 export const RECOMMENDATIONS: Recommendation[] = [
+  {
+    slug: "kling",
+    name: "Kling AI",
+    category: "AI video",
+    blurb: "The AI video generator Psyche uses for music videos and visuals.",
+    url: "https://pro.klingai.com/h5-app/invitation?code=7BMGBHGQXPHQ",
+    code: "7BMGBHGQXPHQ",
+  },
   // {
   //   slug: "example",
   //   name: "Example Tarot Deck",
