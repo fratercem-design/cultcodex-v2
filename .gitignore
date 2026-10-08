@@ -119,3 +119,7 @@ deslop-proposals*.md
 /art/**/*.png
 /art/**/rejected/
 /art/**/alternates/
+
+# Other agent tooling installed per-machine
+/.agents/
+/.codex/
