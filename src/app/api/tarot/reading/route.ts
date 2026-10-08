@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
 import { generateCardArtSvg } from "@/lib/cards/card-art";
 import { ALL_TAROT_CARDS } from "@/lib/cards/tarot-data";
-import { tarotArtUrl } from "@/lib/cards/tarot-art";
+import { parseBoundedInteger } from "@/lib/pagination";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const count = Math.min(5, Math.max(1, parseInt(searchParams.get("count") ?? "3", 10)));
+    const count = parseBoundedInteger(searchParams.get("count"), {
+      fallback: 3, min: 1, max: 5,
+    });
 
     // Fisher-Yates shuffle over the static 80-card Cult of Psyche deck
     const deck = [...ALL_TAROT_CARDS];
@@ -25,7 +27,6 @@ export async function GET(request: Request) {
       cardType:    card.cardType,
       rarity:      card.rarity,
       abilities:   card.abilities,
-      artUrl:      tarotArtUrl(card.slug),
       artSvg: generateCardArtSvg({
         slug:     card.slug,
         cardType: card.cardType,
