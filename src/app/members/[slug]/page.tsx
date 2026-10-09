@@ -98,9 +98,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const member = await getMember(slug);
   if (!member || (!member.codexPagePublic && member.role !== "admin")) {
-    return { title: "Member — CultCodex" };
+    return { title: "Member — CultCodex", robots: { index: false, follow: false } };
   }
   return {
+    robots: { index: false, follow: true },
     title: `${member.displayName} — CultCodex`,
     description: member.bio ?? `${member.displayName}'s codex in the Psycheverse.`,
     openGraph: {

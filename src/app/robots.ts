@@ -8,7 +8,8 @@ export default function robots(): MetadataRoute.Robots {
     "/auth/",
     "/admin/",
     "/settings/",
-    "/members/",
+    // /members is intentionally not listed: crawlers must be able to fetch the
+    // pages to see their `noindex` meta tag (a robots.txt block hides it).
     "/red-room/",
     "/stairwell/",
     "/salon/",

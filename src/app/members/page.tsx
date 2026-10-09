@@ -8,6 +8,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/members" },
+  robots: { index: false, follow: true },
   title: "Member Roll — CultCodex",
   description:
     "The official roll of initiated CultCodex premium members. These souls have opened the archive.",
