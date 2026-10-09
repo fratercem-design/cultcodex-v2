@@ -74,7 +74,7 @@ ENRICH_SECRET         # protects all /api/admin/* routes
 - `prisma.config.ts` uses `DIRECT_URL` (non-pooled) for migrations, falls back to `DATABASE_URL`.
 - If a migration fails, clear it with: `npx prisma migrate resolve --rolled-back <migration_name>`
 - The Xata branch hibernates when idle; `.github/workflows/keep-alive.yml` pings `/api/keep-alive` so builds (which prerender thousands of DB-backed pages) don't hit a sleeping branch.
-- Local env: put real `DATABASE_URL` / `DIRECT_URL` in `.env.local`. `vercel env pull` writes `[SENSITIVE]` placeholders for Sensitive vars, so `.env` cannot supply them.
+- Local env: put real `DATABASE_URL` / `DIRECT_URL` in `.env.local`. production secrets live in Fly (`flyctl secrets list -a cultcodex-v2` shows names only), so copy real values into `.env.local` by hand; a `.env` pulled from the old Vercel project holds `[SENSITIVE]` placeholders.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

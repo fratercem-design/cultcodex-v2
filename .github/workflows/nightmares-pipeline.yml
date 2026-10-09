@@ -23,7 +23,7 @@ on:
 
 jobs:
   import:
-    name: Import via Vercel endpoint
+    name: Import via app endpoint
     runs-on: ubuntu-latest
     timeout-minutes: 120
 

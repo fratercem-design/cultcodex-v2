@@ -1,7 +1,7 @@
 name: CultofPsyche Transcript Import
 
 on:
-  # Nothing was fetching transcripts automatically. The daily Vercel cron
+  # Nothing was fetching transcripts automatically. The daily cron
   # (/api/cron/ingest-latest, 15:00 UTC) creates Episode rows from YouTube
   # metadata but touches no transcripts, and this workflow was dispatch-only —
   # so every new episode sat transcript-less, and therefore un-enriched and
@@ -35,7 +35,7 @@ on:
 
 jobs:
   import:
-    name: Import via Vercel endpoint
+    name: Import via app endpoint
     runs-on: ubuntu-latest
     timeout-minutes: 120
 
