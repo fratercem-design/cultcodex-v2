@@ -1,19 +1,22 @@
 name: Backfill Segment Embeddings
 
-# Fills TranscriptSegment.embedding by calling POST /api/admin/embed on the
-# production app in a loop. The app holds OPENAI_API_KEY; this job only needs
-# ENRICH_SECRET. Each call embeds the next `batch` rows that are still NULL,
-# so a run can stop at any point and the next run carries on where it left off.
+# Fills TranscriptSegment.embedding by running scripts/embed-segments.ts on the
+# runner, connected straight to the database. It used to call
+# POST /api/admin/embed in a loop, but that shared the site's connection pool
+# and kept failing with "timeout exceeded when trying to connect".
 #
-# The full backfill is ~4.86M rows, about 9,700 calls at batch=500, longer
-# than one 6-hour job. Re-run until a run ends with "Backfill complete".
-# Start with a small max_segments to check one run end to end.
+# Each batch embeds the next NULL rows by id, so a run can stop at any point and
+# the next run carries on. The full backfill is ~4.86M rows, longer than one
+# 6-hour job: re-run until a run ends with "Backfill complete". Start with a
+# small max_segments to check one run end to end.
+#
+# Needs repository secrets: DATABASE_URL and OPENAI_API_KEY.
 
 on:
   workflow_dispatch:
     inputs:
       batch:
-        description: Segments per call (max 500)
+        description: Segments per batch (max 500)
         required: true
         default: '500'
       max_segments:
@@ -21,12 +24,16 @@ on:
         required: true
         default: '0'
       max_minutes:
-        description: Stop starting new calls after this many minutes
+        description: Stop starting new batches after this many minutes
         required: true
         default: '330'
+      pause_ms:
+        description: Pause between batches, to keep write load on the database down
+        required: true
+        default: '250'
 
-# The job only calls the app over HTTPS; it needs no GITHUB_TOKEN access.
-permissions: {}
+permissions:
+  contents: read
 
 # Two runs would embed the same NULL rows twice and pay for both.
 concurrency:
@@ -40,48 +47,33 @@ jobs:
     timeout-minutes: 350
 
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Check secrets
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          [ -n "$DATABASE_URL" ] || { echo "::error::DATABASE_URL secret is not set"; exit 1; }
+          [ -n "$OPENAI_API_KEY" ] || { echo "::error::OPENAI_API_KEY secret is not set (Settings → Secrets and variables → Actions)"; exit 1; }
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
       - name: Backfill
         env:
-          ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
-          APP_URL: https://cultcodex.me
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           BATCH: ${{ inputs.batch }}
           MAX_SEGMENTS: ${{ inputs.max_segments }}
           MAX_MINUTES: ${{ inputs.max_minutes }}
-        run: |
-          [ -n "$ENRICH_SECRET" ] || { echo "::error::ENRICH_SECRET secret is not set"; exit 1; }
-          deadline=$(( $(date +%s) + MAX_MINUTES * 60 ))
-          total=0
-          calls=0
-          while [ "$(date +%s)" -lt "$deadline" ]; do
-            # Retry here rather than with curl --retry: curl concatenates the
-            # body of every attempt, which mixed error JSON into the success
-            # body and hid the route's error message.
-            for attempt in 1 2 3 4; do
-              started=$(date +%s)
-              resp=$(curl --show-error --silent --max-time 290 -w '\n%{http_code}' \
-                -X POST "$APP_URL/api/admin/embed" \
-                -H "X-Enrich-Secret: $ENRICH_SECRET" \
-                -H "Content-Type: application/json" \
-                -d "{\"batch\": $BATCH}") || resp=$'\n000'
-              code=${resp##*$'\n'}
-              body=${resp%$'\n'*}
-              [ "$code" = "200" ] && break
-              echo "::warning::Attempt $attempt: HTTP $code after $(( $(date +%s) - started ))s: $body"
-              sleep 10
-            done
-            [ "$code" = "200" ] || { echo "::error::Call failed after 4 attempts: HTTP $code: $body"; exit 1; }
-            processed=$(jq -r '.processed' <<<"$body")
-            done_flag=$(jq -r '.done' <<<"$body")
-            total=$(( total + processed ))
-            calls=$(( calls + 1 ))
-            [ $(( calls % 20 )) -eq 0 ] && echo "$calls calls, $total segments embedded this run"
-            if [ "$done_flag" = "true" ]; then
-              echo "::notice title=Embeddings::Backfill complete. $total segments embedded this run."
-              exit 0
-            fi
-            if [ "$MAX_SEGMENTS" -gt 0 ] && [ "$total" -ge "$MAX_SEGMENTS" ]; then
-              echo "::notice title=Embeddings::Stopped at max_segments. $total segments embedded this run; re-run to continue."
-              exit 0
-            fi
-          done
-          echo "::notice title=Embeddings::Time limit reached. $total segments embedded this run; re-run to continue."
+          PAUSE_MS: ${{ inputs.pause_ms }}
+        run: npx tsx scripts/embed-segments.ts
