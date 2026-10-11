@@ -10,6 +10,7 @@ Oracle Tier ($25/mo).
 |---|---|
 | [`personas.md`](./personas.md) | Character bibles, Higgsfield image/scene/voice prompts, bios |
 | [`scripts.md`](./scripts.md) | First 18 scripts (6 per persona), ready to generate |
+| [`captions-week-1.md`](./captions-week-1.md) | Week 1 posting calendar, captions and hashtags (21 posts) |
 | [`workbook/`](./workbook/) | **The 30-Day Initiation**: a 44-page printable workbook hosted by Madame Sulphur |
 
 ## The three characters
