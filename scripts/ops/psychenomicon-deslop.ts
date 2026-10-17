@@ -1,8 +1,8 @@
 /**
  * Line-edit AI writing tics out of the worst Psychenomicon chapters.
  *
- * Scope: chapters with at least MIN_HITS findSlop() hits (the audit's 10+
- * bucket), worst first. Each chapter gets the same rewrite prompt and guards as
+ * Scope: chapters with at least MIN_HITS findSlop() hits (the audit's 6-9 and 10+
+ * buckets), worst first. Each chapter gets the same rewrite prompt and guards as
  * /api/admin/psychenomicon/deslop (src/lib/psychenomicon-slop.ts).
  *
  * Read-only by default: rewrites the SAMPLE worst chapters and prints them
@@ -26,7 +26,7 @@ import {
   type ChapterProse,
 } from "../../src/lib/psychenomicon-slop";
 
-const MIN_HITS = 10;
+const MIN_HITS = 6;
 const SAMPLE = 10;
 const CONCURRENCY = 5;
 const TIME_BUDGET_MS = 24 * 60_000;
