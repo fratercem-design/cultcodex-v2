@@ -75,7 +75,7 @@ jobs:
             -c 'SELECT count(*) FROM information_schema.tables WHERE table_schema = $$public$$;' \
             | awk '$1 > 1 { ok=1 } END { exit !ok }'
 
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@v7.1.0
         with:
           node-version: "22"
           cache: npm
