@@ -27,6 +27,11 @@ Usage:
   # audio - they go straight to `npm run asr:import`, no Whisper needed:
   python scripts/asr-download-rumble.py --captions --dry-run   # report only
   python scripts/asr-download-rumble.py --captions             # save transcripts
+
+  # @cueisme syndicates the YouTube episodes. When yt-dlp lists no subtitles,
+  # --captions also digs for unadvertised ones (player "cc" block, HLS
+  # SUBTITLES rendition, text streams muxed into the video files):
+  python scripts/asr-download-rumble.py --channel https://rumble.com/user/cueisme/videos --captions
 """
 import argparse
 import datetime
@@ -52,10 +57,17 @@ CAPTION_TMP = os.path.join(HERE, "scrape", "data", "rumble-vtt")
 MATCHES_OUT = os.path.join(HERE, "asr-rumble-matches.json")
 # Listing the channel takes ~70 page fetches and trips Rumble's 429 limit, so
 # the result is cached and reused for a day (--refresh re-lists).
-VIDEOS_CACHE = os.path.join(HERE, "scrape", "data", "rumble-videos.json")
+VIDEOS_CACHE_DIR = os.path.join(HERE, "scrape", "data")
 CACHE_MAX_AGE_S = 24 * 3600
 LOG_FILE = os.path.join(HERE, "asr-rumble.log")
 DEFAULT_CHANNEL = "https://rumble.com/user/PanelverseVODs/videos"
+
+
+def videos_cache_path(channel_url: str) -> str:
+    """One cache file per channel, so switching --channel never reuses another's list."""
+    m = re.search(r"rumble\.com/(?:c|user)/([^/?#]+)", channel_url)
+    slug = re.sub(r"[^a-z0-9_-]+", "-", (m.group(1) if m else channel_url).lower()).strip("-")
+    return os.path.join(VIDEOS_CACHE_DIR, f"rumble-videos-{slug}.json")
 
 
 def log(msg: str) -> None:
@@ -268,6 +280,105 @@ def parse_vtt(vtt: str) -> list:
     return segs
 
 
+def hls_subtitle_vtt(session, master_url: str):
+    """Return WebVTT text from an HLS master's SUBTITLES rendition, or None."""
+    resp = fetch_page(session, master_url, None, "hls master")
+    if resp is None:
+        return None
+    m = re.search(r'#EXT-X-MEDIA:[^\n]*TYPE=SUBTITLES[^\n]*URI="([^"]+)"', resp.text)
+    if not m:
+        return None
+    media_url = requests_urljoin(master_url, m.group(1))
+    media = fetch_page(session, media_url, None, "hls subtitles")
+    if media is None:
+        return None
+    chunks = []
+    for line in media.text.splitlines():
+        if line and not line.startswith("#"):
+            seg = fetch_page(session, requests_urljoin(media_url, line), None, "vtt segment")
+            if seg is not None:
+                chunks.append(re.sub(r"^WEBVTT[^\n]*\n", "", seg.text))
+    return "WEBVTT\n\n" + "\n\n".join(chunks) if chunks else None
+
+
+def muxed_subtitle_vtt(media_url: str):
+    """Extract the first text stream muxed into a rendition, as WebVTT, or None."""
+    import shutil
+    if not (shutil.which("ffprobe") and shutil.which("ffmpeg")):
+        return None
+    probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "s",
+                            "-show_entries", "stream=index", "-of", "csv=p=0", media_url],
+                           capture_output=True, text=True, timeout=120)
+    if probe.returncode != 0 or not probe.stdout.strip():
+        return None
+    out = subprocess.run(["ffmpeg", "-v", "error", "-i", media_url, "-map", "0:s:0",
+                          "-f", "webvtt", "-"], capture_output=True, text=True, timeout=600)
+    return out.stdout if out.returncode == 0 and "-->" in out.stdout else None
+
+
+def requests_urljoin(base: str, ref: str) -> str:
+    from urllib.parse import urljoin
+    return urljoin(base, ref)
+
+
+def find_hidden_captions(embed_id: str):
+    """Look past yt-dlp's subtitle list for a transcript Rumble didn't advertise.
+
+    Checks, in order: the raw player JSON's "cc" block (yt-dlp only reads the
+    shapes it knows), a SUBTITLES rendition in the HLS master playlist, and a
+    text stream muxed into the mp4/tar/timeline renditions.
+    Returns (source, vtt_text) or (None, None).
+    """
+    try:
+        from curl_cffi import requests as cffi_requests
+    except ImportError:
+        return None, None
+    session = cffi_requests.Session(impersonate="chrome")
+    resp = fetch_page(session, "https://rumble.com/embedJS/u3/",
+                      {"request": "video", "ver": "2", "v": embed_id}, "embed json")
+    if resp is None:
+        return None, None
+    try:
+        player = resp.json()
+    except ValueError:
+        return None, None
+
+    cc = player.get("cc") or {}
+    tracks = cc.values() if isinstance(cc, dict) else cc
+    for track in tracks:
+        url = isinstance(track, dict) and (track.get("path") or track.get("url"))
+        if url:
+            got = fetch_page(session, requests_urljoin("https://rumble.com/", url), None, "cc track")
+            if got is not None and "-->" in got.text:
+                return "player cc", got.text
+
+    renditions = player.get("ua") or {}
+    for variant in (renditions.get("hls") or {}).values():
+        if isinstance(variant, dict) and variant.get("url"):
+            vtt = hls_subtitle_vtt(session, variant["url"])
+            if vtt:
+                return "hls subtitles", vtt
+
+    for kind in ("mp4", "tar", "timeline"):
+        for variant in (renditions.get(kind) or {}).values():
+            if isinstance(variant, dict) and variant.get("url"):
+                vtt = muxed_subtitle_vtt(variant["url"])
+                if vtt:
+                    return f"muxed {kind}", vtt
+                break  # every rendition of a kind is cut from the same source
+    return None, None
+
+
+def save_transcript(ytid: str, vtt: str) -> int:
+    segs = parse_vtt(vtt)
+    if not segs:
+        return 0
+    os.makedirs(TRANSCRIPT_DIR, exist_ok=True)
+    with open(os.path.join(TRANSCRIPT_DIR, f"{ytid}.json"), "w", encoding="utf-8") as f:
+        json.dump(segs, f, ensure_ascii=False)
+    return len(segs)
+
+
 def fetch_captions(url: str, ytid: str, save: bool):
     """Check a Rumble video for a caption track.
 
@@ -286,7 +397,16 @@ def fetch_captions(url: str, ytid: str, save: bool):
     except (json.JSONDecodeError, IndexError):
         return [], 0, "unreadable yt-dlp output"
     langs = sorted((info.get("subtitles") or {}).keys())
-    if not langs or not save:
+    if not langs:
+        source, vtt = find_hidden_captions(info.get("id") or "")
+        if not vtt:
+            return [], 0, None
+        langs = [f"hidden:{source}"]
+        if not save:
+            return langs, 0, None
+        nsegs = save_transcript(ytid, vtt)
+        return langs, nsegs, (None if nsegs else "hidden caption track was empty")
+    if not save:
         return langs, 0, None
 
     lang = next((l for l in langs if l.lower().startswith("en")), langs[0])
@@ -304,13 +424,8 @@ def fetch_captions(url: str, ytid: str, save: bool):
         err = (r.stderr or "").strip().splitlines()
         return langs, 0, "caption download failed" + (": " + err[-1][:160] if err else "")
     with open(os.path.join(CAPTION_TMP, produced[0]), "r", encoding="utf-8", errors="replace") as f:
-        segs = parse_vtt(f.read())
-    if not segs:
-        return langs, 0, "caption track was empty"
-    os.makedirs(TRANSCRIPT_DIR, exist_ok=True)
-    with open(os.path.join(TRANSCRIPT_DIR, f"{ytid}.json"), "w", encoding="utf-8") as f:
-        json.dump(segs, f, ensure_ascii=False)
-    return langs, len(segs), None
+        nsegs = save_transcript(ytid, f.read())
+    return langs, nsegs, (None if nsegs else "caption track was empty")
 
 
 def slug_date(title: str):
@@ -423,6 +538,7 @@ def main() -> int:
 
     searches = [q for q in (args.search if args.search is not None else DEFAULT_SEARCH) if q]
     videos = None
+    VIDEOS_CACHE = videos_cache_path(args.channel)
     if not args.refresh and os.path.exists(VIDEOS_CACHE):
         age = time.time() - os.path.getmtime(VIDEOS_CACHE)
         if age < CACHE_MAX_AGE_S:
