@@ -174,6 +174,11 @@ def main() -> int:
             f.write("\n".join(failures))
         log(f"Failures logged to {fail_log}")
 
+    # Every attempt failed (stale cookies, bot wall): exit non-zero so CI shows it.
+    # Nothing to download (all present or covered by Rumble transcripts) is still success.
+    if failed > 0 and downloaded == 0:
+        log("ERROR: every download failed")
+        return 2
     return 0
 
 
