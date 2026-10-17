@@ -19,15 +19,11 @@ import { requireAdminOrEnrichSecret } from "@/lib/admin-guard";
 import { enrichComplete, hasEnrichmentProvider, NO_ENRICHMENT_PROVIDER_ERROR } from "@/lib/enrichment-llm";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
+import { SUMMARY_FACTS_PLACEHOLDER, unenrichedEpisodeWhere } from "@/lib/episode-enrichment";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
-
-// Sentinel written when AI returns no summaryFacts (e.g. title-only clips).
-// The re-enrichment where clause only re-queues these when enrichmentQueued=true
-// so transcript-less episodes don't loop indefinitely.
-const SUMMARY_FACTS_PLACEHOLDER = "—";
 
 // ── Zod schemas (mirror of scripts/enrich/schemas.ts) ────────────────────────
 
@@ -288,28 +284,13 @@ export async function POST(req: NextRequest) {
 
   // Find episodes to enrich.
   // queuedOnly=true: process ONLY enrichmentQueued=true episodes (regardless of existing summaries — for re-enrichment)
-  // default: unenriched episodes (no summaryShort, summaryFacts, OR summaryLong)
-  // Note: summaryFacts="—" is the placeholder written when a prior enrichment produced no content;
-  // these episodes are still shown as needing enrichment in the admin UI, so include them here.
+  // default: unenriched episodes — same predicate as the /admin/sync card
   const whereClause = queuedOnly
     ? {
         enrichmentQueued: true,
         ...(withTranscriptOnly ? { segments: { some: {} } } : {}),
       }
-    : {
-        AND: [
-          { OR: [{ summaryShort: null }, { summaryShort: "" }] },
-          { OR: [
-            { summaryFacts: null },
-            { summaryFacts: "" },
-            // Placeholder re-queues only when manually flagged — prevents infinite
-            // loop for transcript-less episodes that will always get no AI content.
-            { AND: [{ summaryFacts: SUMMARY_FACTS_PLACEHOLDER }, { enrichmentQueued: { not: false } }] },
-          ] },
-          { OR: [{ summaryLong: null }, { summaryLong: "" }] },
-        ],
-        ...(withTranscriptOnly ? { segments: { some: {} } } : {}),
-      };
+    : unenrichedEpisodeWhere({ withTranscriptOnly });
 
   const totalRemaining = await prisma.episode.count({ where: whereClause });
 
