@@ -26,6 +26,7 @@ except Exception:
 HERE = os.path.dirname(os.path.abspath(__file__))
 PENDING = os.path.join(HERE, "asr-pending.json")
 AUDIO_DIR = os.path.join(HERE, "scrape", "data", "audio")
+TRANSCRIPT_DIR = os.path.join(HERE, "scrape", "data", "transcripts")
 LOG_FILE = os.path.join(HERE, "asr-download.log")
 COOKIES = os.path.join(HERE, "cookies.txt")
 
@@ -114,6 +115,10 @@ def main() -> int:
         mp3_path = os.path.join(AUDIO_DIR, f"{ytid}.mp3")
 
         if os.path.exists(mp3_path) and os.path.getsize(mp3_path) > 1000:
+            skipped += 1
+            continue
+        # A transcript already exists (e.g. Rumble captions), so no audio is needed.
+        if os.path.exists(os.path.join(TRANSCRIPT_DIR, f"{ytid}.json")):
             skipped += 1
             continue
 

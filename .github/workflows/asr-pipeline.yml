@@ -19,6 +19,10 @@ on:
         description: 'Run Claude enrichment after import'
         type: boolean
         default: true
+      rumble_captions:
+        description: 'Try @cueisme Rumble captions (incl. hidden tracks) before downloading audio'
+        type: boolean
+        default: true
 
 jobs:
   asr:
@@ -72,6 +76,16 @@ jobs:
           fi
         env:
           YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
+
+      # @cueisme syndicates the YouTube episodes. Any caption track found there
+      # (advertised, or hidden in the player JSON / HLS / muxed streams) is saved
+      # as transcripts/<ytId>.json, which the audio and transcribe steps skip.
+      # Rumble rate-limits hard, so a failure here falls through to audio.
+      - name: Fetch Rumble captions (@cueisme)
+        if: ${{ inputs.rumble_captions }}
+        continue-on-error: true
+        timeout-minutes: 45
+        run: python scripts/asr-download-rumble.py --channel https://rumble.com/user/cueisme/videos --captions
 
       - name: Download audio
         run: python scripts/asr-download-audio.py --batch ${{ inputs.batch }}
