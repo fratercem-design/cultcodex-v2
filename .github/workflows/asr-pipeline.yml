@@ -87,7 +87,12 @@ jobs:
         timeout-minutes: 45
         run: python scripts/asr-download-rumble.py --channel https://rumble.com/user/cueisme/videos --captions
 
+      # Exits non-zero when every download fails. Keep going so transcripts the
+      # Rumble step saved still import; "Fail if every download failed" below
+      # turns the run red afterwards.
       - name: Download audio
+        id: download
+        continue-on-error: true
         run: python scripts/asr-download-audio.py --batch ${{ inputs.batch }}
 
       - name: Transcribe audio
@@ -114,6 +119,18 @@ jobs:
         run: |
           npx tsx scripts/enrich/enrich-from-db.ts
           npx tsx scripts/enrich/import-enriched.ts
+        env:
+          # scripts/enrich/lib.ts defaults to Bedrock.
+          ENRICHMENT_PROVIDER: bedrock
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-1' }}
 
       - name: Rebuild search text
         run: npx tsx scripts/_rebuild-search-text.ts
+
+      - name: Fail if every download failed
+        if: ${{ steps.download.outcome == 'failure' }}
+        run: |
+          echo "::error title=Audio downloads failed::Every YouTube audio download failed - refresh the YOUTUBE_COOKIES secret. See the Download audio step."
+          exit 1
