@@ -62,6 +62,7 @@ export default function PackStorePage() {
 
   useEffect(() => {
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setStoreState("loading");
 
     const load = async (): Promise<void> => {

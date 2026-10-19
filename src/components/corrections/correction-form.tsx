@@ -32,6 +32,7 @@ export function CorrectionForm({
     try {
       const ref = document.referrer ? new URL(document.referrer) : null;
       if (ref && ref.origin === window.location.origin && ref.pathname !== "/corrections") {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPageUrl(ref.href);
       }
     } catch {

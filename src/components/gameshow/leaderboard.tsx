@@ -18,6 +18,7 @@ export function Leaderboard({ sessionCorrect, sessionTotal }: { sessionCorrect: 
   const [handle, setHandle] = useState("");
   const [submitState, setSubmitState] = useState<"idle" | "sending" | "done" | "error">("idle");
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { try { setHandle(localStorage.getItem(HANDLE_KEY) ?? ""); } catch { /* ignore */ } }, []);
 
   const fetchBoard = useCallback(async (r: Range) => {
@@ -30,6 +31,7 @@ export function Leaderboard({ sessionCorrect, sessionTotal }: { sessionCorrect: 
     setLoading(false);
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchBoard(range); }, [range, fetchBoard]);
 
   const submit = useCallback(async () => {
