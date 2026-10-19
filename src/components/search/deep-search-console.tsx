@@ -51,6 +51,7 @@ export function DeepSearchConsole() {
   useEffect(() => {
     const concepts = searchParams.getAll("concept");
     if (concepts.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setChips(concepts.slice(0, 5));
     }
     const era = searchParams.get("era");

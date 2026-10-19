@@ -116,6 +116,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
   // re-apply the same text (a plain string change wouldn't re-trigger).
   useEffect(() => {
     if (!prefillQuestion) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuestion(prefillQuestion);
     textareaRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -149,6 +150,7 @@ export function OracleConsole({ prefillQuestion, prefillNonce }: OracleConsolePr
 
   useEffect(() => {
     if (state === "answered") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTypewriterActive(true);
       answerRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
