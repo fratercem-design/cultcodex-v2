@@ -14,7 +14,7 @@ export const revalidate = 60;
 export async function generateMetadata(): Promise<Metadata> {
   const digest = await getLatestDigest();
   return {
-    title: digest ? `${digest.title} — CULT CODEX` : "This Week in the Archive — CULT CODEX",
+    title: digest ? `${digest.title} — CultCodex` : "This Week in the Archive — CultCodex",
     description:
       digest?.blurb ??
       "Five moments from the Cult of Psyche archive, picked each week.",

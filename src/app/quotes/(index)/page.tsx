@@ -26,7 +26,7 @@ export const revalidate = 300;
 
 export const metadata = {
   alternates: { canonical: "/quotes" },
-  title: "Quotes — CULT CODEX",
+  title: "Quotes — CultCodex",
   description: "Notable quotes from Cult of Psyche episodes",
 };
 

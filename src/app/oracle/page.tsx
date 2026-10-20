@@ -20,10 +20,10 @@ export async function generateMetadata() {
   const counts = await getCounts().catch(() => null);
   return {
     alternates: { canonical: "/oracle" },
-    title: "Ask the Oracle — AI Search — CULT CODEX",
+    title: "Ask the Oracle — AI Search — CultCodex",
     description: `Ask the archive anything. The Oracle answers from ${fmtEpisodeCount(counts?.episodes ?? 0)} episodes and cites each answer back to its source. Included with Initiate+.`,
     ...socialMetadata({
-      title: "Ask the Oracle — AI Search — CULT CODEX",
+      title: "Ask the Oracle — AI Search — CultCodex",
       description: "Ask questions about the Cult of Psyche archive and receive answers cited to episodes and timestamps.",
       path: "/oracle",
       image: { route: "/oracle", alt: "Ask the Oracle — AI search across the Cult of Psyche archive" },

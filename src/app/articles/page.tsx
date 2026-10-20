@@ -6,7 +6,7 @@ export const revalidate = 600;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/articles" },
-  title: "Articles — CULT CODEX",
+  title: "Articles — CultCodex",
   description:
     "Long-form writing drawn from the show — essays, deep dives, and field reports from inside the Cult of Psyche.",
 };

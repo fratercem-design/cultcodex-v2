@@ -17,7 +17,7 @@ import type { Metadata } from "next";
 import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
-  title: "Search — CULT CODEX",
+  title: "Search — CultCodex",
   description: "Search the Cult of Psyche archive for episodes, people, and lore.",
   alternates: { canonical: "/search" },
 };

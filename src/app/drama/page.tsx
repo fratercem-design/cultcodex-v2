@@ -7,7 +7,7 @@ export const revalidate = 600;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/drama" },
-  title: "The Drama Files — CULT CODEX",
+  title: "The Drama Files — CultCodex",
   description:
     "Official case files on the least dignified moments in Cult of Psyche history. Every feud, meltdown, and chat catastrophe — catalogued with the seriousness it does not deserve.",
 };

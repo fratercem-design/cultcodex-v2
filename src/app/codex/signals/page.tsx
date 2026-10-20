@@ -18,7 +18,7 @@ import { formatDate } from "@/lib/format/date";
 import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
-  title: "Saved Signals — CULT CODEX",
+  title: "Saved Signals — CultCodex",
   description: "The themes and concepts you're tracking.",
 };
 

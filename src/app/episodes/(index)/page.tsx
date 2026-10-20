@@ -31,7 +31,7 @@ export const revalidate = 3600;
 
 export async function generateMetadata() {
   const counts = await getCounts().catch(() => null);
-  const title = "Episodes — CULT CODEX";
+  const title = "Cult of Psyche Episodes & Transcripts — CultCodex";
   const description = `Browse ${fmtEpisodeCount(counts?.episodes ?? 0)} searchable Cult of Psyche episodes with transcripts, topics, guests, and timestamps.`;
   return {
     alternates: { canonical: "/episodes" },

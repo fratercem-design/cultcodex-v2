@@ -19,7 +19,7 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/codex/quotes" },
-  title: "Saved Quotes — CULT CODEX",
+  title: "Saved Quotes — CultCodex",
   description: "The lines that stayed with you.",
 };
 

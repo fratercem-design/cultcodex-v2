@@ -15,8 +15,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const answer = (a ?? "").slice(0, 240);
 
   const title = question
-    ? `The Oracle on: "${question.slice(0, 60)}${question.length > 60 ? "…" : ""}" — CULT CODEX`
-    : "The Oracle Speaks — CULT CODEX";
+    ? `The Oracle on: "${question.slice(0, 60)}${question.length > 60 ? "…" : ""}" — CultCodex`
+    : "The Oracle Speaks — CultCodex";
   const description = answer || "The Oracle has answered. Read the transmission at CultCodex.";
 
   const ogImageUrl = `${SITE_URL}/api/oracle/og?q=${encodeURIComponent(question)}&a=${encodeURIComponent(answer)}`;

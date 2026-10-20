@@ -22,11 +22,11 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 export const revalidate = 600;
 
 export const metadata = {
-  title: "Lore — CULT CODEX",
-  description: "The concepts, doctrines, myths, and memes of the Cult of Psyche — every recurring idea, belief system, and inside reference catalogued and connected to the archive.",
+  title: "Cult of Psyche Lore, Myths & Inside Jokes — CultCodex",
+  description: "The concepts, doctrines, myths and memes of Cult of Psyche: every recurring idea and inside reference, catalogued and linked to its episodes.",
   alternates: { canonical: "/lore" },
   ...socialMetadata({
-    title: "Lore — CULT CODEX",
+    title: "Cult of Psyche Lore, Myths & Inside Jokes — CultCodex",
     description: "The concepts, doctrines, myths, and inside references of the Cult of Psyche, each linked to the episodes where it comes up.",
     path: "/lore",
   }),

@@ -7,7 +7,7 @@ export const revalidate = 600;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/bestiary" },
-  title: "The Bestiary — CULT CODEX",
+  title: "The Bestiary — CultCodex",
   description:
     "A field guide to the creatures, characters, and cosmic entities the Cult of Psyche has summoned into being — from Satan's ex-wife to the Conspiring Goats.",
 };

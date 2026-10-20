@@ -25,10 +25,10 @@ export const revalidate = 3600;
 
 export const metadata = {
   alternates: { canonical: "/people" },
-  title: "People — CULT CODEX",
-  description: "Hosts, recurring figures, and profiled guests from the Cult of Psyche archive. One-time appearances and unknowns are compiled at /people/the-rest.",
+  title: "Cult of Psyche Guests & Panelists — CultCodex",
+  description: "Profiles of the hosts, recurring figures and guests of Cult of Psyche, each linked to their episodes, quotes and connections across the archive.",
   ...socialMetadata({
-    title: "People — CULT CODEX",
+    title: "Cult of Psyche Guests & Panelists — CultCodex",
     description: "Explore recurring guests, hosts, and profiled voices across the Cult of Psyche archive.",
     path: "/people",
     image: { route: "/people", alt: "Voices — Every recurring figure in the Cult of Psyche archive" },

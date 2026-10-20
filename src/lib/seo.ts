@@ -346,6 +346,49 @@ export function episodeMetaDescription(title: string, summary: string | null | u
   return withSuffix && withSuffix.length <= META_DESCRIPTION_MAX ? withSuffix : clipped;
 }
 
+/** Clip any meta description to the length Google shows, at a boundary. */
+export function clipMetaDescription(text: string): string {
+  return clipAtBoundary(text.replace(/\s+/g, " ").trim(), META_DESCRIPTION_MAX);
+}
+
+/**
+ * Title for a person page, before buildMetadata adds the site suffix. Names
+ * the show so a search for a guest's name plus "Cult of Psyche" matches, and
+ * the episode count tells the searcher the page has substance.
+ */
+export function personMetaTitle(name: string, appearanceCount: number): string {
+  if (appearanceCount <= 0) return `${name} on Cult of Psyche`;
+  const n = appearanceCount.toLocaleString("en-US");
+  return `${name} on Cult of Psyche — ${n} Episode${appearanceCount === 1 ? "" : "s"}`;
+}
+
+/**
+ * Description for a person page. Leads with the bio, which is what a searcher
+ * wants to read, and keeps the appearance count after it, within ~155 chars.
+ */
+export function personMetaDescription({
+  name,
+  typeLabel,
+  appearanceCount,
+  bio,
+}: {
+  name: string;
+  typeLabel: string;
+  appearanceCount: number;
+  bio: string | null | undefined;
+}): string {
+  const count = appearanceCount > 0
+    ? `${appearanceCount.toLocaleString("en-US")} appearance${appearanceCount === 1 ? "" : "s"} in the Cult of Psyche archive`
+    : "Featured in the Cult of Psyche archive";
+  const text = bio?.replace(/\s+/g, " ").trim();
+  if (!text) {
+    return clipMetaDescription(`${name}, ${typeLabel}: ${count}. Profile, quotes and episodes on CultCodex.`);
+  }
+  const lead = /[.!?]$/.test(text) ? text : `${text}.`;
+  const withCount = `${lead} ${count}.`;
+  return withCount.length <= META_DESCRIPTION_MAX ? withCount : clipMetaDescription(lead);
+}
+
 export function buildMetadata({
   title,
   description,

@@ -7,7 +7,7 @@ export const revalidate = 600;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/trollopedia" },
-  title: "The Trollopedia — CULT CODEX",
+  title: "The Trollopedia — CultCodex",
   description:
     "The field guide to the trolls of the Cult of Psyche — every raider, sock puppet, and bridge-dweller the archive has catalogued.",
 };

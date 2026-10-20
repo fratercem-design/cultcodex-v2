@@ -6,7 +6,7 @@ import Link from "next/link";
 import { getPersonBySlug, getCoAppearances, getPersonEpisodeDates } from "@/lib/queries/people";
 import { prisma } from "@/lib/db";
 import { Prisma } from "@/generated/prisma/client";
-import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
+import { buildMetadata, jsonLdScript, breadcrumbListJsonLd, personMetaDescription, personMetaTitle } from "@/lib/seo";
 import { AiNotice } from "@/components/ui/ai-notice";
 import { ERAS, getEraForEpisode } from "@/lib/eras";
 import { archetypeToSlug, splitArchetypes } from "@/lib/queries/archetypes";
@@ -173,17 +173,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const typeLabel =
     person.personType === "host" ? "host" :
     person.personType === "recurring" ? "recurring figure" : "guest";
-  const countPhrase = appearanceCount > 0
-    ? `${appearanceCount} appearance${appearanceCount !== 1 ? "s" : ""} in the Cult of Psyche archive`
-    : "Featured in the Cult of Psyche archive";
-  const bioSnippet = person.shortBio
-    ? ` · ${person.shortBio.slice(0, 120)}${person.shortBio.length > 120 ? "…" : ""}`
-    : "";
-  const description = `${countPhrase} · ${typeLabel}${bioSnippet}`;
+  const description = personMetaDescription({
+    name: person.displayName,
+    typeLabel,
+    appearanceCount,
+    bio: person.shortBio,
+  });
 
   return {
     ...buildMetadata({
-      title: person.displayName,
+      title: personMetaTitle(person.displayName, appearanceCount),
       description,
       path: `/people/${person.slug}`,
       image: person.avatarUrl ?? null,

@@ -6,7 +6,7 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/refund" },
-  title: "Refund Policy — CULT CODEX",
+  title: "Refund Policy — CultCodex",
   description: "How refunds and cancellations work for CultCodex subscriptions and the Psychenomicon book.",
 };
 
