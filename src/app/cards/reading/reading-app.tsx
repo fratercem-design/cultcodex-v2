@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useCallback, useEffect, type CSSProperties } from "react";
+import { CARD_BACKS } from "@/lib/cards/special-editions";
+import { CodexCard, type CodexCardData } from "@/components/cards/codex/codex-card";
+import "./reading.css";
 
 type Mode = "hybrid" | "archive" | "arcana";
 type SpreadSlug = "single" | "three";
@@ -18,6 +21,7 @@ interface ReadingCard {
   element: string | null;
   archetype: string | null;
   keywords: string[];
+  face: CodexCardData | null;
 }
 interface Reading {
   id: string;
@@ -31,9 +35,9 @@ const MODES: { key: Mode; label: string; blurb: string }[] = [
   { key: "archive", label: "ARCHIVE", blurb: "The CultCodex deck only" },
   { key: "arcana", label: "ARCANA", blurb: "The 80-card Tarot only" },
 ];
-const SPREADS: { key: SpreadSlug; label: string; count: string; cost: number }[] = [
-  { key: "single", label: "SINGLE SIGNAL", count: "1 card", cost: 1 },
-  { key: "three", label: "TRANSMISSION", count: "3 cards", cost: 3 },
+const SPREADS: { key: SpreadSlug; label: string; count: string; cards: number; cost: number }[] = [
+  { key: "single", label: "SINGLE SIGNAL", count: "1 card", cards: 1, cost: 1 },
+  { key: "three", label: "TRANSMISSION", count: "3 cards", cards: 3, cost: 3 },
 ];
 
 const panel: CSSProperties = {
@@ -91,7 +95,8 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
     }
   }, [mode, spread, question, loading, refreshSignal]);
 
-  const selectedCost = SPREADS.find((s) => s.key === spread)?.cost ?? 1;
+  const selected = SPREADS.find((s) => s.key === spread) ?? SPREADS[0];
+  const selectedCost = selected.cost;
   const insufficient = signedIn && signal !== null && signal < selectedCost;
 
   return (
@@ -167,6 +172,16 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
           }}
         />
       </section>
+
+      {/* The spread: face down until the draw lands, then each card turns over */}
+      <div className="rd-spread" data-drawing={loading ? "true" : undefined} aria-hidden={reading ? undefined : "true"}>
+        {reading
+          ? reading.cards.map((c, i) => <TurnedCard key={c.id} card={c} index={i} />)
+          : Array.from({ length: selected.cards }, (_, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={i} src={CARD_BACKS.tarot} alt="" className="rd-back" style={{ animationDelay: `${i * 180}ms` }} draggable={false} />
+            ))}
+      </div>
 
       <button onClick={draw} disabled={loading || !signedIn || insufficient} style={drawBtn(loading || !signedIn || insufficient)}>
         {loading ? "CONSULTING THE ARCHIVE…" : !signedIn ? "SIGN IN TO DRAW" : insufficient ? `NOT ENOUGH SIGNAL — NEED ${selectedCost} ◈` : `◈ DRAW · ${selectedCost} SIGNAL`}
@@ -246,6 +261,38 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
         </section>
       )}
     </main>
+  );
+}
+
+/** One drawn card: lands face down, then turns over. Reversed cards land upside down. */
+function TurnedCard({ card, index }: { card: ReadingCard; index: number }) {
+  const [turned, setTurned] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setTurned(true), 250 + index * 450);
+    return () => clearTimeout(t);
+  }, [index]);
+  const face = card.face;
+  const name = face?.title ?? card.titleSnapshot ?? "Card";
+  return (
+    <div
+      className={`rd-flip${turned ? " is-turned" : ""}`}
+      data-reversed={card.orientation === "reversed" ? "true" : undefined}
+      role="img"
+      aria-label={`${name}${card.orientation === "reversed" ? ", reversed" : ""}`}
+    >
+      <div className="rd-flip-inner">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={CARD_BACKS.tarot} alt="" className="rd-face rd-face-back" draggable={false} />
+        <div className="rd-face rd-face-front">
+          {face?.artUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={face.artUrl} alt="" className="rd-art" draggable={false} />
+          ) : face ? (
+            <div className="rd-codex"><CodexCard card={face} interactive={false} /></div>
+          ) : null}
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -52,6 +52,13 @@ function weightedSampleWithoutReplacement<T>(
   return chosen;
 }
 
+// What the reading app needs to draw a card's face (see CodexCardData).
+const FACE_SELECT = {
+  slug: true, subtitle: true, cardType: true, rarity: true, flavourText: true,
+  statA: true, statB: true, statC: true, abilities: true, artUrl: true,
+  season: true, collectorNo: true, maxSupply: true, obtainMethod: true,
+} as const;
+
 export interface DrawOptions {
   userId: string;
   mode?: ReadingMode;        // default hybrid
@@ -84,6 +91,7 @@ export async function drawReading(opts: DrawOptions) {
       id: true, title: true, divinationStrength: true, meaningVersion: true,
       uprightMeaning: true, reversedMeaning: true, advice: true, oraclePrompt: true,
       divinationKeywords: true, element: true, archetype: true,
+      ...FACE_SELECT,
     },
   });
   if (pool.length === 0) throw new Error(`No divination-eligible cards for mode "${mode}"`);
@@ -108,8 +116,19 @@ export async function drawReading(opts: DrawOptions) {
     archetype: c.archetype,
   }));
 
-  const createReading = (client: Prisma.TransactionClient | typeof prisma) =>
-    client.reading.create({
+  // ReadingCard has no relation to Card, so attach each drawn card's face here.
+  const faceById = new Map(drawn.map((c) => [c.id, {
+    slug: c.slug, title: c.title, subtitle: c.subtitle, cardType: c.cardType, rarity: c.rarity,
+    flavourText: c.flavourText, statA: c.statA, statB: c.statB, statC: c.statC, abilities: c.abilities,
+    artUrl: c.artUrl, season: c.season, collectorNo: c.collectorNo, maxSupply: c.maxSupply, obtainMethod: c.obtainMethod,
+  }]));
+  const withFaces = <R extends { cards: { cardId: string }[] }>(reading: R) => ({
+    ...reading,
+    cards: reading.cards.map((rc) => ({ ...rc, face: faceById.get(rc.cardId) ?? null })),
+  });
+
+  const createReading = async (client: Prisma.TransactionClient | typeof prisma) =>
+    withFaces(await client.reading.create({
       data: {
         userId: opts.userId,
         spreadId: spread?.id ?? null,
@@ -118,7 +137,7 @@ export async function drawReading(opts: DrawOptions) {
         cards: { create: cardsData },
       },
       include: { cards: { orderBy: { position: "asc" } }, spread: true },
-    });
+    }));
 
   const cost = spread?.signalCost ?? 1;
   if (opts.charge === false || cost <= 0) {
