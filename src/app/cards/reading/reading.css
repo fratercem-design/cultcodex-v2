@@ -1,0 +1,23 @@
+/* Face-down tarot backs for the chosen spread, above the draw button. */
+.rd-spread {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin: 4px 0 22px;
+}
+.rd-back {
+  width: min(150px, 28vw);
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--term-line);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+}
+.rd-spread[data-drawing] .rd-back { animation: rd-breathe 1.2s ease-in-out infinite alternate; }
+@keyframes rd-breathe {
+  from { transform: translateY(0); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45); }
+  to { transform: translateY(-6px); box-shadow: 0 0 26px color-mix(in srgb, var(--accent-gold) 45%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rd-spread[data-drawing] .rd-back { animation: none; }
+}

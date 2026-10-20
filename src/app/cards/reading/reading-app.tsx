@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useCallback, useEffect, type CSSProperties } from "react";
+import { CARD_BACKS } from "@/lib/cards/special-editions";
+import "./reading.css";
 
 type Mode = "hybrid" | "archive" | "arcana";
 type SpreadSlug = "single" | "three";
@@ -31,9 +33,9 @@ const MODES: { key: Mode; label: string; blurb: string }[] = [
   { key: "archive", label: "ARCHIVE", blurb: "The CultCodex deck only" },
   { key: "arcana", label: "ARCANA", blurb: "The 80-card Tarot only" },
 ];
-const SPREADS: { key: SpreadSlug; label: string; count: string; cost: number }[] = [
-  { key: "single", label: "SINGLE SIGNAL", count: "1 card", cost: 1 },
-  { key: "three", label: "TRANSMISSION", count: "3 cards", cost: 3 },
+const SPREADS: { key: SpreadSlug; label: string; count: string; cards: number; cost: number }[] = [
+  { key: "single", label: "SINGLE SIGNAL", count: "1 card", cards: 1, cost: 1 },
+  { key: "three", label: "TRANSMISSION", count: "3 cards", cards: 3, cost: 3 },
 ];
 
 const panel: CSSProperties = {
@@ -91,7 +93,8 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
     }
   }, [mode, spread, question, loading, refreshSignal]);
 
-  const selectedCost = SPREADS.find((s) => s.key === spread)?.cost ?? 1;
+  const selected = SPREADS.find((s) => s.key === spread) ?? SPREADS[0];
+  const selectedCost = selected.cost;
   const insufficient = signedIn && signal !== null && signal < selectedCost;
 
   return (
@@ -167,6 +170,16 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
           }}
         />
       </section>
+
+      {/* The spread, face down until the draw lands */}
+      {!reading && (
+        <div className="rd-spread" data-drawing={loading ? "true" : undefined} aria-hidden="true">
+          {Array.from({ length: selected.cards }, (_, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={i} src={CARD_BACKS.tarot} alt="" className="rd-back" style={{ animationDelay: `${i * 180}ms` }} draggable={false} />
+          ))}
+        </div>
+      )}
 
       <button onClick={draw} disabled={loading || !signedIn || insufficient} style={drawBtn(loading || !signedIn || insufficient)}>
         {loading ? "CONSULTING THE ARCHIVE…" : !signedIn ? "SIGN IN TO DRAW" : insufficient ? `NOT ENOUGH SIGNAL — NEED ${selectedCost} ◈` : `◈ DRAW · ${selectedCost} SIGNAL`}
