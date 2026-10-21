@@ -38,3 +38,33 @@ describe("GrimoireApp card faces", () => {
     vi.unstubAllGlobals();
   });
 });
+
+describe("GrimoireApp special editions", () => {
+  const nyx = { slug: "se-01-nyx-high-priestess", title: "Nyx", cardType: "ORACLE", rarity: "FORBIDDEN", statA: 1, statB: 1, statC: 1, artUrl: "/cards/art/se-01-nyx-high-priestess.webp" } as const;
+  const renderNyx = (reduce: boolean) => {
+    vi.stubGlobal("matchMedia", (query: string) => ({ matches: reduce, media: query, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
+    render(
+      <GrimoireApp
+        signedIn affinity={null} threshold={5}
+        readings={[{ id: "r1", createdAt: "2026-10-01T00:00:00.000Z", question: null, spreadName: null, reflection: null, cards: [card(0, "reversed", nyx)] }]}
+      />,
+    );
+    return screen.getByRole("img", { name: "Nyx, reversed" });
+  };
+
+  it("plays the special edition's loop, with its art as the poster", () => {
+    const face = renderNyx(false);
+    const video = face.querySelector("video");
+    expect(video?.getAttribute("src")).toBe("/cards/anim/se-01-nyx-high-priestess.mp4");
+    expect(video?.getAttribute("poster")).toBe("/cards/art/se-01-nyx-high-priestess.webp");
+    expect(face.style.transform).toBe("rotate(180deg)");
+    vi.unstubAllGlobals();
+  });
+
+  it("keeps the still art under reduced motion", () => {
+    const face = renderNyx(true);
+    expect(face.querySelector("video")).toBeNull();
+    expect(face.querySelector("img")?.getAttribute("src")).toBe("/cards/art/se-01-nyx-high-priestess.webp");
+    vi.unstubAllGlobals();
+  });
+});
