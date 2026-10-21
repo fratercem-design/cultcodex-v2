@@ -22,6 +22,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
+import { adminDeniedResponse } from "@/lib/admin-api";
 import { enrichSecretMatches } from "@/lib/admin-guard";
 import { enrichComplete, hasEnrichmentProvider, NO_ENRICHMENT_PROVIDER_ERROR } from "@/lib/enrichment-llm";
 import {
@@ -52,8 +53,8 @@ export async function POST(req: NextRequest) {
   if (!enrichSecretMatches(req)) {
     try {
       await requireAdmin();
-    } catch {
-      return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+    } catch (err) {
+      return adminDeniedResponse(err);
     }
   }
 

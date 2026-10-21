@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
+import { adminDeniedResponse } from "@/lib/admin-api";
 import { anthropic, bedrockModelId } from "@/lib/anthropic";
 
 const BATCH_SIZE = 40;
@@ -47,8 +48,8 @@ export async function POST(
 ) {
   try {
     await requireAdmin();
-  } catch {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  } catch (err) {
+    return adminDeniedResponse(err);
   }
 
   const { episodeId } = await params;

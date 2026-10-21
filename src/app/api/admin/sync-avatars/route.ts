@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { google } from "googleapis";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
+import { adminDeniedResponse } from "@/lib/admin-api";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -45,8 +46,8 @@ interface AvatarResult {
 export async function POST(req: NextRequest) {
   try {
     await requireAdmin();
-  } catch {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  } catch (err) {
+    return adminDeniedResponse(err);
   }
 
   const apiKey = process.env.YOUTUBE_API_KEY;

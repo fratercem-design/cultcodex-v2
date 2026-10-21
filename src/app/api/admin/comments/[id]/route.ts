@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
+import { adminDeniedResponse } from "@/lib/admin-api";
 
 export async function PATCH(
   req: NextRequest,
@@ -8,8 +9,8 @@ export async function PATCH(
 ) {
   try {
     await requireAdmin();
-  } catch {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  } catch (err) {
+    return adminDeniedResponse(err);
   }
 
   const { id } = await params;
