@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { getTopicBySlug, getRelatedTopics } from "@/lib/queries/topics";
 import { prisma } from "@/lib/db";
 import { buildMetadata, jsonLdScript, breadcrumbListJsonLd, thinPageRobots } from "@/lib/seo";
-import { getCurrentUser } from "@/lib/auth";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
@@ -17,7 +16,10 @@ import { SaveSignalButton } from "@/components/codex/save-signal-button";
 import type { Metadata } from "next";
 import { SECTION_HEADERS } from "@/lib/section-headers";
 
-export const dynamic = "force-dynamic";
+// ISR: rendered on first visit, then served from cache (refreshed at most
+// every 10 minutes). Nothing here may read cookies/headers or the route goes
+// dynamic again; the per-user saved state loads client-side in SaveSignalButton.
+export const revalidate = 600;
 
 export async function generateStaticParams() {
   return [];
@@ -89,16 +91,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
   const topic = await getTopicBySlug(slug).catch(() => null);
   if (!topic) notFound();
 
-  const user = await getCurrentUser();
-  const [initialSaved, savedCount, relatedTopics] = await Promise.all([
-    user
-      ? prisma.savedTopic
-          .findUnique({
-            where: { userId_topicId: { userId: user.id, topicId: topic.id } },
-          })
-          .then((row) => !!row)
-          .catch(() => false)
-      : Promise.resolve(false),
+  const [savedCount, relatedTopics] = await Promise.all([
     prisma.savedTopic.count({ where: { topicId: topic.id } }).catch(() => 0),
     getRelatedTopics(topic.id, 8).catch(() => []),
   ]);
@@ -144,9 +137,7 @@ export default async function TopicDetailPage({ params }: PageProps) {
       <div className="mx-auto max-w-7xl px-4 pt-3 flex justify-end">
         <SaveSignalButton
           slug={topic.slug}
-          initialSaved={initialSaved}
           initialCount={savedCount}
-          isAuthenticated={!!user}
           size="md"
         />
       </div>

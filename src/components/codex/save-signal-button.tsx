@@ -1,20 +1,21 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { useSession } from "next-auth/react";
 
 interface SaveSignalButtonProps {
   /** Topic slug — used as the API path key. */
   slug: string;
-  initialSaved: boolean;
   /** Total users who have saved this signal (optional; hidden when 0). */
   initialCount?: number;
-  isAuthenticated: boolean;
   size?: "sm" | "md";
 }
 
 /**
  * SaveSignalButton — the save/pin affordance for a /topics entry.
  *
+ * Rendered on cached pages, so the viewer's own saved state is fetched
+ * client-side (GET, signed-in viewers only) rather than passed in.
  * Signed-out users bounce to /auth/signin with a return URL.
  * Signed-in users POST to /api/codex/topics/[slug]/save, which toggles
  * the row in SavedTopic. Uses an optimistic update with a revert-on-error
@@ -22,16 +23,33 @@ interface SaveSignalButtonProps {
  */
 export function SaveSignalButton({
   slug,
-  initialSaved,
   initialCount = 0,
-  isAuthenticated,
   size = "md",
 }: SaveSignalButtonProps) {
-  const [saved, setSaved] = useState(initialSaved);
+  const { status } = useSession();
+  const isAuthenticated = status === "authenticated";
+  const [saved, setSaved] = useState(false);
   const [count, setCount] = useState(initialCount);
   const [isPending, startTransition] = useTransition();
 
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    let cancelled = false;
+    fetch(`/api/codex/topics/${slug}/save`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (cancelled || !data) return;
+        setSaved(data.saved);
+        setCount(data.count);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, slug]);
+
   function handleToggle() {
+    if (status === "loading") return;
     if (!isAuthenticated) {
       const here = encodeURIComponent(
         typeof window !== "undefined" ? window.location.pathname : "/codex"
