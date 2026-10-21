@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ComponentProps, type ReactNode } from "react";
-import { useSession } from "next-auth/react";
+import { useSessionLite } from "@/lib/session-lite";
 import { ReactionBar } from "@/components/episodes/reaction-bar";
 import { FavoriteButton } from "@/components/ui/favorite-button";
 import { WhatYouMissed } from "@/components/episodes/what-you-missed";
@@ -53,8 +53,10 @@ const ViewerContext = createContext<ViewerState>({
 });
 
 export function EpisodeViewerProvider({ slug, children }: { slug: string; children: ReactNode }) {
-  const { status } = useSession();
-  const isAuthenticated = status === "authenticated";
+  // useSessionLite, not next-auth's useSession: there is no SessionProvider in
+  // the tree, and useSession throws without one (which 500s the page).
+  const { user } = useSessionLite();
+  const isAuthenticated = !!user;
   const [viewer, setViewer] = useState<ViewerData | null>(null);
   const [timestamp, setTimestamp] = useState<number | undefined>(undefined);
 

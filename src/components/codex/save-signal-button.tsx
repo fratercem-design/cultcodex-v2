@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { useSession } from "next-auth/react";
+import { useSessionLite } from "@/lib/session-lite";
 
 interface SaveSignalButtonProps {
   /** Topic slug — used as the API path key. */
@@ -26,8 +26,8 @@ export function SaveSignalButton({
   initialCount = 0,
   size = "md",
 }: SaveSignalButtonProps) {
-  const { status } = useSession();
-  const isAuthenticated = status === "authenticated";
+  const { user, loaded } = useSessionLite();
+  const isAuthenticated = !!user;
   const [saved, setSaved] = useState(false);
   const [count, setCount] = useState(initialCount);
   const [isPending, startTransition] = useTransition();
@@ -49,7 +49,7 @@ export function SaveSignalButton({
   }, [isAuthenticated, slug]);
 
   function handleToggle() {
-    if (status === "loading") return;
+    if (!loaded) return;
     if (!isAuthenticated) {
       const here = encodeURIComponent(
         typeof window !== "undefined" ? window.location.pathname : "/codex"
