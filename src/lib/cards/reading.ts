@@ -59,6 +59,21 @@ const FACE_SELECT = {
   season: true, collectorNo: true, maxSupply: true, obtainMethod: true,
 } as const;
 
+type FaceRow = Prisma.CardGetPayload<{ select: typeof FACE_SELECT & { id: true; title: true } }>;
+const toFace = (c: FaceRow) => ({
+  slug: c.slug, title: c.title, subtitle: c.subtitle, cardType: c.cardType, rarity: c.rarity,
+  flavourText: c.flavourText, statA: c.statA, statB: c.statB, statC: c.statC, abilities: c.abilities,
+  artUrl: c.artUrl, season: c.season, collectorNo: c.collectorNo, maxSupply: c.maxSupply, obtainMethod: c.obtainMethod,
+});
+
+// ReadingCard has no relation to Card, so faces are looked up by cardId and attached.
+type Face = ReturnType<typeof toFace>;
+function withFaces<R extends { cards: { cardId: string }[] }>(
+  reading: R, faceById: Map<string, Face>,
+): Omit<R, "cards"> & { cards: (R["cards"][number] & { face: Face | null })[] } {
+  return { ...reading, cards: reading.cards.map((rc) => ({ ...rc, face: faceById.get(rc.cardId) ?? null })) };
+}
+
 export interface DrawOptions {
   userId: string;
   mode?: ReadingMode;        // default hybrid
@@ -116,16 +131,7 @@ export async function drawReading(opts: DrawOptions) {
     archetype: c.archetype,
   }));
 
-  // ReadingCard has no relation to Card, so attach each drawn card's face here.
-  const faceById = new Map(drawn.map((c) => [c.id, {
-    slug: c.slug, title: c.title, subtitle: c.subtitle, cardType: c.cardType, rarity: c.rarity,
-    flavourText: c.flavourText, statA: c.statA, statB: c.statB, statC: c.statC, abilities: c.abilities,
-    artUrl: c.artUrl, season: c.season, collectorNo: c.collectorNo, maxSupply: c.maxSupply, obtainMethod: c.obtainMethod,
-  }]));
-  const withFaces = <R extends { cards: { cardId: string }[] }>(reading: R) => ({
-    ...reading,
-    cards: reading.cards.map((rc) => ({ ...rc, face: faceById.get(rc.cardId) ?? null })),
-  });
+  const faceById = new Map(drawn.map((c) => [c.id, toFace(c)]));
 
   const createReading = async (client: Prisma.TransactionClient | typeof prisma) =>
     withFaces(await client.reading.create({
@@ -137,7 +143,7 @@ export async function drawReading(opts: DrawOptions) {
         cards: { create: cardsData },
       },
       include: { cards: { orderBy: { position: "asc" } }, spread: true },
-    }));
+    }), faceById);
 
   const cost = spread?.signalCost ?? 1;
   if (opts.charge === false || cost <= 0) {
@@ -160,9 +166,9 @@ export async function drawReading(opts: DrawOptions) {
   );
 }
 
-/** A user's reading history, newest first — the personal grimoire. */
+/** A user's reading history, newest first — the personal grimoire. Each card carries its face. */
 export async function getUserReadings(userId: string, limit = 60) {
-  return prisma.reading.findMany({
+  const readings = await prisma.reading.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
     take: limit,
@@ -171,4 +177,10 @@ export async function getUserReadings(userId: string, limit = 60) {
       cards: { orderBy: { position: "asc" } },
     },
   });
+  const ids = [...new Set(readings.flatMap((r) => r.cards.map((c) => c.cardId)))];
+  const cards = ids.length
+    ? await prisma.card.findMany({ where: { id: { in: ids } }, select: { id: true, title: true, ...FACE_SELECT } })
+    : [];
+  const faceById = new Map(cards.map((c) => [c.id, toFace(c)]));
+  return readings.map((r) => withFaces(r, faceById));
 }

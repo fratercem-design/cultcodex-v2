@@ -10,13 +10,14 @@ const db = vi.hoisted(() => ({
         id: "r1", seed: "s", question: null, spread: null,
         cards: data.cards.create.map((c, i) => ({ id: `rc${i}`, ...c })),
       })),
+      findMany: vi.fn(),
     },
   },
 }));
 vi.mock("@/lib/db", () => ({ prisma: db.prisma }));
 vi.mock("../signal", () => ({ dailyGrant: vi.fn(), spendSignalTx: vi.fn() }));
 
-import { drawReading } from "../reading";
+import { drawReading, getUserReadings } from "../reading";
 
 const FOOL = {
   id: "c-fool", slug: "cop-maj-00", title: "The Fool", subtitle: null, cardType: "ORACLE", rarity: "SIGNAL",
@@ -34,5 +35,30 @@ describe("drawReading", () => {
     expect(reading.cards[0].face).toMatchObject({
       slug: "cop-maj-00", title: "The Fool", artUrl: "/cards/art/cop-maj-00.webp", rarity: "SIGNAL",
     });
+  });
+});
+
+describe("getUserReadings", () => {
+  it("attaches each saved card's face, looking each card up once", async () => {
+    db.prisma.reading.findMany.mockResolvedValueOnce([
+      { id: "r1", spread: null, cards: [{ id: "a", cardId: "c-fool", position: 0 }, { id: "b", cardId: "c-gone", position: 1 }] },
+      { id: "r2", spread: null, cards: [{ id: "c", cardId: "c-fool", position: 0 }] },
+    ]);
+    db.prisma.card.findMany.mockResolvedValueOnce([FOOL]);
+    const readings = await getUserReadings("u1");
+
+    expect(db.prisma.card.findMany).toHaveBeenLastCalledWith(
+      expect.objectContaining({ where: { id: { in: ["c-fool", "c-gone"] } } }),
+    );
+    expect(readings[0].cards[0].face?.title).toBe("The Fool");
+    expect(readings[0].cards[1].face).toBeNull(); // card since deleted: no face, entry still shown
+    expect(readings[1].cards[0].face?.artUrl).toBe("/cards/art/cop-maj-00.webp");
+  });
+
+  it("skips the card lookup when there are no readings", async () => {
+    db.prisma.reading.findMany.mockResolvedValueOnce([]);
+    db.prisma.card.findMany.mockClear();
+    expect(await getUserReadings("u1")).toEqual([]);
+    expect(db.prisma.card.findMany).not.toHaveBeenCalled();
   });
 });
