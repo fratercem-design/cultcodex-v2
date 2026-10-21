@@ -5,13 +5,11 @@ import {
   getRelatedEpisodes,
   getEpisodeNeighborsInEra,
 } from "@/lib/queries/episodes";
-import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getReactionCounts } from "@/lib/queries/reactions";
 import { getEraForEpisode } from "@/lib/eras";
 import { EraNeighbors } from "@/components/episodes/era-neighbors";
 import { getCommentsForEpisode } from "@/lib/queries/comments";
-import { CommentSection } from "@/components/episodes/comment-section";
 import { buildMetadata, episodeJsonLd, jsonLdScript, detailBreadcrumbJsonLd, episodeMetaDescription } from "@/lib/seo";
 import { AiNotice } from "@/components/ui/ai-notice";
 import { getConfidenceTier } from "@/lib/format/confidence-tier";
@@ -27,23 +25,27 @@ import { TerminalPanel } from "@/components/ui/terminal-panel";
 import { MetaRow } from "@/components/ui/meta-row";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
-import { YouTubeEmbed } from "@/components/media/youtube-embed";
-import { rumbleEmbedUrl } from "@/lib/format/moment";
-import { TranscriptViewer } from "@/components/media/transcript-viewer";
 import { groupSegments } from "@/lib/transcript/group-segments";
-import { isSubscribed } from "@/lib/subscription";
 import { GuestGrid } from "@/components/episodes/guest-grid";
-import { ReactionBar } from "@/components/episodes/reaction-bar";
 import { ShareButtons } from "@/components/ui/share-buttons";
-import { FavoriteButton } from "@/components/ui/favorite-button";
 import { EpisodeStatsPanel } from "@/components/episodes/episode-stats-panel";
-import { EpisodeTabLayout } from "@/components/episodes/episode-tab-layout";
+import {
+  EpisodeViewerProvider,
+  ViewerReactionBar,
+  ViewerFavoriteButton,
+  ViewerWhatYouMissed,
+  ViewerDecodePanel,
+  ViewerTranscript,
+  ViewerComments,
+  ViewerYouTubeEmbed,
+  ViewerRumbleEmbed,
+  ViewerTabLayout,
+  HideForMembers,
+} from "@/components/episodes/episode-viewer";
 import { formatDate } from "@/lib/format/date";
 import { cleanTitle } from "@/lib/format/text";
 import { formatDuration } from "@/lib/format/duration";
 import { QuoteHighlightCard } from "@/components/episodes/quote-highlight-card";
-import { DecodeModePanel } from "@/components/episodes/decode-mode-panel";
-import { WhatYouMissed } from "@/components/episodes/what-you-missed";
 import { TranscriptNotify } from "@/components/episodes/transcript-notify";
 import { EpisodeCrossRef } from "@/components/episodes/episode-cross-ref";
 import { EpisodeListItem } from "@/components/archive/episode-list-item";
@@ -56,7 +58,12 @@ import { ColorLegend } from "@/components/ui/color-legend";
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const dynamic = "force-dynamic";
+// ISR: rendered on first visit as a signed-out visitor with no query string,
+// then served from cache (refreshed at most every 10 minutes). Nothing here
+// may read cookies, headers or searchParams, or the route goes dynamic again.
+// Per-viewer state and member-only Decode data load client-side through
+// components/episodes/episode-viewer.
+export const revalidate = 600;
 
 export async function generateStaticParams() {
   return [];
@@ -68,7 +75,6 @@ const loadEpisode = cache(getEpisodeBySlug);
 
 interface PageProps {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string; t?: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -93,10 +99,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 }
 
-export default async function EpisodeDetailPage({ params, searchParams }: PageProps) {
+export default async function EpisodeDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const sp = await searchParams;
-  const initialTimestamp = sp.t ? parseInt(sp.t, 10) : undefined;
   // Only a null result means "no such episode". A failed query must throw so
   // the visitor gets a retryable 5xx; swallowing it here served real episodes
   // as 404s whenever the DB pool timed out.
@@ -113,22 +117,14 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
   const summaryFacts = trustedSummary(episode.summaryFacts);
   const summaryThemes = summaryFacts ? trustedSummary(episode.summaryThemes) : null;
 
-  const [relatedEpisodes, user] = await Promise.all([
-    getRelatedEpisodes(episode.id, { limit: 6 }).catch(() => []),
-    getCurrentUser(),
-  ]);
+  const relatedEpisodes = await getRelatedEpisodes(episode.id, { limit: 6 }).catch(() => []);
 
-  const favoriteData = user
-    ? await prisma.favorite.findUnique({
-        where: { userId_episodeId: { userId: user.id, episodeId: episode.id } },
-      }).catch(() => null)
-    : null;
   const favoriteCount = await prisma.favorite.count({
     where: { episodeId: episode.id },
   }).catch(() => 0);
 
   const [reactionCounts, commentsData] = await Promise.all([
-    getReactionCounts(episode.id, user?.id).catch(() => ({ fire: 0, eye: 0, moon: 0, skull: 0, wildcard: 0, userReactions: [] as string[] })),
+    getReactionCounts(episode.id).catch(() => ({ fire: 0, eye: 0, moon: 0, skull: 0, wildcard: 0, userReactions: [] as string[] })),
     getCommentsForEpisode(episode.id, { take: 20 }).catch(() => ({ comments: [], totalCount: 0 })),
   ]);
 
@@ -142,15 +138,21 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
   // a long episode renders ~1.2k rows instead of ~12k.
   const transcriptBlocks = hasTranscript ? groupSegments(episode.segments) : [];
   const confidenceTier = getConfidenceTier(episode.segments.length, !!summaryLong);
-  const hasTranscriptAccess = user ? await isSubscribed(user.id).catch(() => false) : false;
-  const hasDecodeAccess = hasTranscriptAccess; // same tier — Initiate+
-  const hasDecodeData = !!episode.decodeData;
-
-  // Signal/Noise map — only exposed to subscribers
-  const signalMap =
-    hasTranscriptAccess && episode.decodeData
-      ? ((episode.decodeData as Record<string, unknown>).signal_noise as Record<string, "signal" | "noise" | "neutral"> | undefined)
-      : undefined;
+  // Decode data is member-only, so the cached page carries just the item
+  // counts the locked "What You Missed" teaser shows (content blanked).
+  // Members fetch the real data from /api/episodes/[slug]/viewer.
+  const decode = episode.decodeData as {
+    manipulation_signals?: unknown[];
+    power_dynamics?: { shifts?: unknown[] };
+    key_patterns?: unknown[];
+  } | null;
+  const decodeTeaser = decode
+    ? {
+        manipulation_signals: (decode.manipulation_signals ?? []).map(() => ({ tactic: "", who: "", evidence: "" })),
+        power_dynamics: { shifts: (decode.power_dynamics?.shifts ?? []).map(() => "") },
+        key_patterns: (decode.key_patterns ?? []).map(() => ""),
+      }
+    : null;
 
   // Separate hosts from actual guests — hosts should not appear in the guest list
   const actualGuests = episode.guests.filter(
@@ -198,16 +200,13 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
     ...(hasTranscript
       ? [{ id: "transcript", label: "Transcript", count: episode.segments.length }]
       : []),
-    { id: "decode", label: "Decode", locked: !hasDecodeAccess },
+    { id: "decode", label: "Decode", locked: true },
     { id: "quotes", label: "Quotes", count: episode.quotes.length },
-    // Only show Discussion tab if there are comments or user is logged in
-    ...(commentsData.totalCount > 0 || user
-      ? [{ id: "discussion", label: "Discussion", count: commentsData.totalCount }]
-      : []),
+    { id: "discussion", label: "Discussion", count: commentsData.totalCount },
   ];
 
   return (
-    <>
+    <EpisodeViewerProvider slug={episode.slug}>
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
@@ -282,21 +281,18 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
         <div className="lg:col-span-2 space-y-6">
           {/* Video embed */}
           {episode.youtubeVideoId && episode.status !== "unavailable" && (
-            <YouTubeEmbed
+            <ViewerYouTubeEmbed
               videoId={episode.youtubeVideoId}
               title={episode.title}
-              startSeconds={initialTimestamp}
             />
           )}
 
           {/* Rumble embed — show when no YouTube available */}
           {episode.rumbleVideoId && (!episode.youtubeVideoId || episode.status === "unavailable") && (
             <div className="relative w-full overflow-hidden rounded-lg border border-emerald-500/20 bg-void aspect-video">
-              <iframe
-                src={rumbleEmbedUrl(episode.rumbleEmbedId ?? episode.rumbleVideoId, initialTimestamp)}
+              <ViewerRumbleEmbed
+                embedId={episode.rumbleEmbedId ?? episode.rumbleVideoId}
                 title={episode.title}
-                allowFullScreen
-                className="absolute inset-0 h-full w-full"
               />
             </div>
           )}
@@ -351,16 +347,13 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
 
           {/* Reactions & Social */}
           <div className="flex items-center gap-2 flex-wrap">
-            <ReactionBar
+            <ViewerReactionBar
               slug={episode.slug}
               initialCounts={reactionCounts}
-              isAuthenticated={!!user}
             />
-            <FavoriteButton
+            <ViewerFavoriteButton
               slug={episode.slug}
-              initialFavorited={!!favoriteData}
               initialCount={favoriteCount}
-              isAuthenticated={!!user}
             />
             <ShareButtons
               url={`/episodes/${episode.slug}`}
@@ -374,16 +367,11 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           </div>
 
           {/* What You Missed */}
-          <WhatYouMissed
-            decodeData={hasDecodeData ? (episode.decodeData as Parameters<typeof WhatYouMissed>[0]["decodeData"]) : null}
-            isUnlocked={hasDecodeAccess}
-            isAuthenticated={!!user}
-            episodeSlug={episode.slug}
-          />
+          <ViewerWhatYouMissed slug={episode.slug} teaser={decodeTeaser} />
 
           {/* Tab layout */}
           <Suspense fallback={<div className="h-40" />}>
-            <EpisodeTabLayout tabs={tabs} prerender={["transcript"]}>
+            <ViewerTabLayout tabs={tabs} prerender={["transcript"]}>
               {{
                 overview: (
                   <div className="space-y-6">
@@ -548,22 +536,16 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   // RSC <script> payloads, which are not page text to Google).
                   transcript: (
                     <TerminalPanel header="TRANSCRIPT">
-                      <TranscriptViewer
+                      <ViewerTranscript
                         blocks={transcriptBlocks}
                         hasVideoEmbed={!!episode.youtubeVideoId || !!episode.rumbleEmbedId}
-                        initialTimestamp={initialTimestamp}
-                        signalMap={signalMap}
                         episodeSlug={episode.slug}
                       />
                     </TerminalPanel>
                   ),
                 } : {}),
                 decode: (
-                  <DecodeModePanel
-                    decodeData={hasDecodeData ? (episode.decodeData as Parameters<typeof DecodeModePanel>[0]["decodeData"]) : null}
-                    isUnlocked={hasDecodeAccess}
-                    isAuthenticated={!!user}
-                  />
+                  <ViewerDecodePanel />
                 ),
                 quotes: (
                   <div className="space-y-4">
@@ -590,12 +572,10 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 discussion: (
                   <div className="space-y-6">
                     <SectionCard headingLevel={2} title={`Comments (${commentsData.totalCount})`}>
-                      <CommentSection
+                      <ViewerComments
                         slug={episode.slug}
                         initialComments={JSON.parse(JSON.stringify(commentsData.comments))}
                         initialTotalCount={commentsData.totalCount}
-                        isAuthenticated={!!user}
-                        currentUserId={user?.id}
                       />
                     </SectionCard>
                     <SectionCard headingLevel={2} title="Community Annotations">
@@ -609,7 +589,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                   </div>
                 ),
               }}
-            </EpisodeTabLayout>
+            </ViewerTabLayout>
           </Suspense>
         </div>
 
@@ -673,8 +653,8 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
           {/* Color legend */}
           <ColorLegend />
 
-          {/* Upgrade CTA — only for non-subscribers */}
-          {!hasTranscriptAccess && (
+          {/* Upgrade CTA — hidden client-side once the viewer is a member */}
+          <HideForMembers>
             <div className="rounded-lg border border-accent-gold/30 bg-gradient-to-b from-accent-gold/5 to-surface p-5 space-y-3">
               <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text">{"/// initiate_layer"}</p>
               <p className="font-mono text-xs font-bold text-accent-gold-text">Observers see the surface.</p>
@@ -698,7 +678,7 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
                 Become Initiate+ — $10/mo
               </Link>
             </div>
-          )}
+          </HideForMembers>
 
           {/* Guests — hosts filtered out */}
           <GuestGrid
@@ -765,6 +745,6 @@ export default async function EpisodeDetailPage({ params, searchParams }: PagePr
         </div>
       </div>
     </main>
-    </>
+    </EpisodeViewerProvider>
   );
 }

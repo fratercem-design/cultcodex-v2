@@ -1,7 +1,6 @@
 "use client";
 
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useCallback, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 interface Tab {
   id: string;
@@ -24,18 +23,28 @@ interface EpisodeTabLayoutProps {
 }
 
 export function EpisodeTabLayout({ tabs, children, prerender = [] }: EpisodeTabLayoutProps) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
+  const defaultTab = tabs[0]?.id ?? "overview";
+  // The page is cached (ISR), so the server always renders the default tab;
+  // ?tab= / ?t= are read from the URL after mount. useSearchParams would make
+  // this whole subtree client-only and drop the transcript from the HTML.
+  const [activeTab, setActiveTab] = useState(defaultTab);
 
-  // A shared moment link (?t=) lands on the transcript, where that line is.
-  const momentTab = searchParams.has("t") && tabs.some((t) => t.id === "transcript") ? "transcript" : undefined;
-  const activeTab = searchParams.get("tab") ?? momentTab ?? tabs[0]?.id ?? "overview";
+  useEffect(() => {
+    const sync = () => {
+      const params = new URLSearchParams(window.location.search);
+      // A shared moment link (?t=) lands on the transcript, where that line is.
+      const momentTab = params.has("t") && tabs.some((t) => t.id === "transcript") ? "transcript" : undefined;
+      setActiveTab(params.get("tab") ?? momentTab ?? defaultTab);
+    };
+    sync();
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, [tabs, defaultTab]);
 
   const setTab = useCallback(
     (tabId: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (tabId === tabs[0]?.id) {
+      const params = new URLSearchParams(window.location.search);
+      if (tabId === defaultTab) {
         params.delete("tab");
       } else {
         params.set("tab", tabId);
@@ -44,9 +53,10 @@ export function EpisodeTabLayout({ tabs, children, prerender = [] }: EpisodeTabL
         params.delete("t");
       }
       const qs = params.toString();
-      router.push(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
+      window.history.pushState(null, "", `${window.location.pathname}${qs ? `?${qs}` : ""}`);
+      setActiveTab(tabId);
     },
-    [searchParams, router, pathname, tabs]
+    [defaultTab]
   );
 
   return (
