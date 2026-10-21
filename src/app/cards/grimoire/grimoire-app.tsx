@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useCallback, type CSSProperties } from "react";
-import { CodexCard, type CodexCardData } from "@/components/cards/codex/codex-card";
+import { CodexCard, useReducedMotion, type CodexCardData } from "@/components/cards/codex/codex-card";
+import { isSpecialEdition, specialEditionAnimationUrl } from "@/lib/cards/special-editions";
 
 export interface GrimoireCard {
   position: number;
@@ -247,8 +248,10 @@ function ReadingEntry({ reading }: { reading: GrimoireReading }) {
   );
 }
 
-/** A small face for a saved card; reversed draws are kept upside down. */
+/** A small face for a saved card; reversed draws are kept upside down. Special editions play their loop. */
 function CardFace({ face, reversed }: { face: CodexCardData; reversed: boolean }) {
+  const reducedMotion = useReducedMotion();
+  const fill: CSSProperties = { width: "100%", height: "100%", objectFit: "cover", display: "block" };
   return (
     <div
       role="img"
@@ -259,9 +262,11 @@ function CardFace({ face, reversed }: { face: CodexCardData; reversed: boolean }
         display: "flex", alignItems: "center", transform: reversed ? "rotate(180deg)" : undefined,
       }}
     >
-      {face.artUrl ? (
+      {face.artUrl && isSpecialEdition(face.slug) && !reducedMotion ? (
+        <video src={specialEditionAnimationUrl(face.slug)} poster={face.artUrl} autoPlay muted loop playsInline aria-hidden="true" style={fill} />
+      ) : face.artUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={face.artUrl} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        <img src={face.artUrl} alt="" loading="lazy" style={fill} />
       ) : (
         <div style={{ width: "100%" }}><CodexCard card={face} interactive={false} /></div>
       )}
