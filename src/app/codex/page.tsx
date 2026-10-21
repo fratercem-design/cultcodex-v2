@@ -33,7 +33,7 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/codex" },
-  title: "My Codex — CULT CODEX",
+  title: "My Codex — CultCodex",
   description:
     "Your personal map of the Cult of Psyche — saved signals, transmissions, and moments.",
 };

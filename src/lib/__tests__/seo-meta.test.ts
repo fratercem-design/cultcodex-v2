@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { episodeMetaDescription, socialMetadata } from "@/lib/seo";
+import { clipMetaDescription, episodeMetaDescription, personMetaDescription, personMetaTitle, socialMetadata } from "@/lib/seo";
 
 describe("episodeMetaDescription", () => {
   it("keeps a short summary and adds the transcript note when it fits", () => {
@@ -44,5 +44,47 @@ describe("socialMetadata", () => {
     const m = socialMetadata({ title: "T", description: "D", path: "/people", image: { route: "/people", alt: "Voices" } });
     expect(m.openGraph?.images).toMatchObject([{ url: "/people/opengraph-image", alt: "Voices" }]);
     expect(m.twitter?.images).toMatchObject([{ url: "/people/twitter-image" }]);
+  });
+});
+
+describe("personMetaTitle", () => {
+  it("names the show and the episode count", () => {
+    expect(personMetaTitle("Ziggy", 11)).toBe("Ziggy on Cult of Psyche — 11 Episodes");
+    expect(personMetaTitle("Otto", 1)).toBe("Otto on Cult of Psyche — 1 Episode");
+    expect(personMetaTitle("Psyche", 1999)).toBe("Psyche on Cult of Psyche — 1,999 Episodes");
+  });
+
+  it("drops the count when there are no appearances", () => {
+    expect(personMetaTitle("Mary", 0)).toBe("Mary on Cult of Psyche");
+  });
+});
+
+describe("personMetaDescription", () => {
+  it("leads with the bio and appends the count when it fits", () => {
+    expect(
+      personMetaDescription({ name: "Ziggy", typeLabel: "guest", appearanceCount: 11, bio: "Panelist known for banter" }),
+    ).toBe("Panelist known for banter. 11 appearances in the Cult of Psyche archive.");
+  });
+
+  it("keeps a long bio within 155 characters and drops the count", () => {
+    const bio = "Host of Cult of Psyche, also known as Trix. Leads tarot readings, panel discussions, and explorations of consciousness, spirituality and the strange edges of human behavior.";
+    const out = personMetaDescription({ name: "Psyche", typeLabel: "host", appearanceCount: 1999, bio });
+    expect(out.length).toBeLessThanOrEqual(155);
+    expect(out.startsWith("Host of Cult of Psyche")).toBe(true);
+    expect(out).not.toContain("appearances");
+  });
+
+  it("falls back to name, role and count without a bio", () => {
+    expect(personMetaDescription({ name: "Mary", typeLabel: "guest", appearanceCount: 3, bio: null })).toBe(
+      "Mary, guest: 3 appearances in the Cult of Psyche archive. Profile, quotes and episodes on CultCodex.",
+    );
+  });
+});
+
+describe("clipMetaDescription", () => {
+  it("collapses whitespace and clips to 155 characters", () => {
+    const out = clipMetaDescription(`The serpent   that devours its own tail. ${"word ".repeat(60)}`);
+    expect(out.length).toBeLessThanOrEqual(155);
+    expect(out).not.toMatch(/\s{2}/);
   });
 });

@@ -8,7 +8,7 @@ import { defaultCorrectionType } from "@/lib/corrections";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/corrections" },
-  title: "Corrections — CULT CODEX",
+  title: "Corrections — CultCodex",
   description: "How to report errors or request changes in the Cult Codex archive",
 };
 

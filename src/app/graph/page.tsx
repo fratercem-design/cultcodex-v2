@@ -9,7 +9,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/graph" },
-  title: "Relationship Map — CULT CODEX",
+  title: "Relationship Map — CultCodex",
   description:
     "Dynamic map of every recurring Cult of Psyche figure — who appeared with whom, how often, and what orbits formed. Click any node to focus their connections.",
 };

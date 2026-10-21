@@ -51,7 +51,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const interest = p.interest as Interest | undefined;
   const label = interest && INTEREST_LABELS[interest] ? INTEREST_LABELS[interest] : "the archive";
   return {
-    title: `Your Path Into ${label} — CULT CODEX`,
+    title: `Your Path Into ${label} — CultCodex`,
     description: `A personalized entry point into the Cult of Psyche archive, calibrated for ${label}.`,
     // Consolidate all ?interest/?depth/?intent permutations to one canonical.
     alternates: { canonical: "/start-here/results" },

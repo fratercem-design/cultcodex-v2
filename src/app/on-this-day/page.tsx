@@ -24,7 +24,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const day = parseMonthDay(date) ?? todayMonthDay();
   return {
     alternates: { canonical: date ? `/on-this-day?date=${formatMonthDay(day)}` : "/on-this-day" },
-    title: `On This Day: ${monthDayLabel(day)} — CULT CODEX`,
+    title: `On This Day: ${monthDayLabel(day)} — CultCodex`,
     description: `Streams, quotes and feuds from ${monthDayLabel(day)} in Cult of Psyche history.`,
   };
 }

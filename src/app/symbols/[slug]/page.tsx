@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { SYMBOLS } from "@/lib/symbols/data";
 import type { SymbolEntry } from "@/lib/symbols/data";
 import { SymbolGlyph } from "@/components/symbols/symbol-glyph";
-import { jsonLdScript } from "@/lib/seo";
+import { clipMetaDescription, jsonLdScript } from "@/lib/seo";
 
 export const dynamic = "force-static";
 
@@ -32,8 +32,9 @@ export async function generateMetadata({
 
   return {
     title: `${symbol.name} — Symbol Encyclopedia — CultCodex`,
-    description: `${symbol.tagline} ${symbol.history.slice(0, 120)}…`,
+    description: clipMetaDescription(`${symbol.tagline} ${symbol.history}`),
     keywords: symbol.keywords,
+    alternates: { canonical: `/symbols/${symbol.slug}` },
     openGraph: {
       title: `${symbol.name} — CultCodex Symbol Encyclopedia`,
       description: symbol.tagline,

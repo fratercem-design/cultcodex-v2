@@ -8,7 +8,7 @@ export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/gameshow" },
-  title: "The Panelverse Game Show — CULT CODEX",
+  title: "The Panelverse Game Show — CultCodex",
   description:
     "How well do you really know the Cult? 1,000 questions across 11 rounds, every answer hidden inside thousands of hours of real livestream archive. Play now.",
   robots: { index: true, follow: true },

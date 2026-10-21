@@ -3,7 +3,7 @@ import { StairPage } from "@/components/easter-eggs/stair-page";
 import { WellClaim } from "@/components/easter-eggs/well-claim";
 
 export const metadata: Metadata = {
-  title: "▼ — CULT CODEX",
+  title: "▼ — CultCodex",
   description: "There is no page here.",
   robots: { index: false, follow: false },
 };

@@ -8,7 +8,7 @@ import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = buildMetadata({
-  title: "The Archive Has Been Waiting — CULT CODEX",
+  title: "The Archive Has Been Waiting — CultCodex",
   description: "You are inside the system now.",
   path: "/welcome/oracle",
 });

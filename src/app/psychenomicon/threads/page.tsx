@@ -10,7 +10,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/psychenomicon/threads" },
-  title: "Threads — Psychenomicon — CULT CODEX",
+  title: "Threads — Psychenomicon — CultCodex",
   description: "All narrative threads tracked in the Psychenomicon — active, emerging, and resolved.",
 };
 
