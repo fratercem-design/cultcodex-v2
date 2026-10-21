@@ -46,7 +46,7 @@ export function EpisodeListItem({
         {thumbnailUrl && (
           <Image
             src={thumbnailUrl}
-            alt={`Thumbnail for ${title}`}
+            alt=""
             fill
             unoptimized
             sizes="84px"

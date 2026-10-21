@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return buildMetadata({
     title: series.title,
     description: clipMetaDescription(
-      `${lead ? `${lead} ` : ""}${n.toLocaleString("en-US")} Cult of Psyche episode${n === 1 ? "" : "s"} in this series, each with a full transcript and timestamps.`,
+      `${lead ? `${lead} ` : ""}${n.toLocaleString("en-US")} Cult of Psyche episode${n === 1 ? "" : "s"} in this series, with guests, topics and transcripts where available.`,
     ),
     path: `/series/${series.slug}`,
   });
