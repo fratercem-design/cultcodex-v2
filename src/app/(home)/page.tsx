@@ -72,10 +72,13 @@ export async function generateMetadata() {
   // preview sets the same expectation (2026-09-25 audit). The social copy used
   // to pitch "AI breakdowns" and "behavioral maps" while search described an
   // archive; the page itself describes an archive.
-  const title = "CultCodex — The Searchable Archive of Cult of Psyche";
+  // "Cult of Psyche" alone is read by search engines as Greek mythology (Rohde's
+  // *Psyche: The Cult of Souls*), so the copy says what the show is: a live
+  // YouTube stream (2026-10-19 audit).
+  const title = "CultCodex — Cult of Psyche Livestream Archive & Transcripts";
   const description =
     // Kept under ~160 characters so search results show it whole.
-    `Search ${fmtEpisodeCount(counts?.episodes ?? 0)} Cult of Psyche episodes, transcripts, guests, lore, and recurring patterns across tarot, consciousness, and open-panel debates.`;
+    `Search ${fmtEpisodeCount(counts?.episodes ?? 0)} episodes of Cult of Psyche, the live tarot and open-panel YouTube show: full transcripts, guests, lore and recurring patterns.`;
   return {
     robots: { index: true, follow: true },
     alternates: { canonical: "/" },

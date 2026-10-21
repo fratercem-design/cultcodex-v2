@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
-import { buildMetadata, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
+import { buildMetadata, clipMetaDescription, jsonLdScript, breadcrumbListJsonLd } from "@/lib/seo";
 import { EntityHero } from "@/components/ui/entity-hero";
 import { EntityGlanceBar } from "@/components/ui/entity-glance-bar";
 import { EntityStatsPanel } from "@/components/ui/entity-stats-panel";
@@ -59,9 +59,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
 
+  // Series descriptions are often a few words ("Quick clips and short-form
+  // content"), so add the episode count to give search a usable snippet.
+  const lead = series.description?.trim().replace(/([^.!?])$/, "$1.");
+  const n = series._count.episodes;
   return buildMetadata({
     title: series.title,
-    description: series.description || null,
+    description: clipMetaDescription(
+      `${lead ? `${lead} ` : ""}${n.toLocaleString("en-US")} Cult of Psyche episode${n === 1 ? "" : "s"} in this series, each with a full transcript and timestamps.`,
+    ),
     path: `/series/${series.slug}`,
   });
 }

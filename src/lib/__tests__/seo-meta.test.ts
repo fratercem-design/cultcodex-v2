@@ -25,6 +25,15 @@ describe("episodeMetaDescription", () => {
     expect(out).toBe(first);
   });
 
+  it("drops an \"In this episode,\" opening so the subject leads", () => {
+    expect(episodeMetaDescription("Ep 4", "In this episode, Psyche discusses food-ordering arguments with partners.")).toBe(
+      "Psyche discusses food-ordering arguments with partners. Transcript and timestamps on CultCodex.",
+    );
+    expect(episodeMetaDescription("Ep 5", "in this stream the panel reads tarot.")).toBe(
+      "The panel reads tarot. Transcript and timestamps on CultCodex.",
+    );
+  });
+
   it("falls back to the title when there is no summary", () => {
     expect(episodeMetaDescription("Night of Knives", null)).toBe(
       "Watch Night of Knives from Cult of Psyche. Browse the transcript, timestamps, guests and related archive entries.",
