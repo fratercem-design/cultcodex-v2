@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
+import { adminDeniedResponse } from "@/lib/admin-api";
 import { sweepSecretMatches } from "@/lib/admin-guard";
 import { notifyTranscriptReady } from "@/lib/notifications";
 import { YoutubeTranscript } from "youtube-transcript";
@@ -162,8 +163,8 @@ export async function POST(req: NextRequest) {
   if (!sweepSecretMatches(req)) {
     try {
       await requireAdmin();
-    } catch {
-      return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+    } catch (err) {
+      return adminDeniedResponse(err);
     }
   }
 

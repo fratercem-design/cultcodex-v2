@@ -128,7 +128,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               };
             }
           } catch {
-            // DB completely unavailable — return session without codexUser
+            // DB completely unavailable — return session without codexUser,
+            // flagged so admin routes can say "try again" instead of "not admin".
+            (session as SessionWithCodex).accountLookupFailed = true;
           }
         }
       }
@@ -158,6 +160,8 @@ export interface SessionWithCodex {
     image?: string | null;
   };
   codexUser?: CodexSessionUser;
+  /** Signed in, but the CodexUser lookup failed (database unreachable). */
+  accountLookupFailed?: boolean;
   expires: string;
 }
 
@@ -177,9 +181,28 @@ export async function requireAuth(): Promise<CodexSessionUser> {
   return user;
 }
 
+/** Why requireAdmin() refused, so API routes can answer each case honestly. */
+export type AdminDenialReason = "signed-out" | "account-unavailable" | "not-admin";
+
+export class AdminAccessError extends Error {
+  constructor(readonly reason: AdminDenialReason) {
+    super(reason === "not-admin" ? "Admin access required" : "Authentication required");
+    this.name = "AdminAccessError";
+  }
+}
+
 export async function requireAdmin(): Promise<CodexSessionUser> {
-  const user = await requireAuth();
-  if (user.role !== "admin") throw new Error("Admin access required");
+  let session: SessionWithCodex | null = null;
+  try {
+    session = (await auth()) as SessionWithCodex | null;
+  } catch {
+    // JWTSessionError or other auth failures — treat as unauthenticated
+  }
+  const user = session?.codexUser;
+  if (!user) {
+    throw new AdminAccessError(session?.accountLookupFailed ? "account-unavailable" : "signed-out");
+  }
+  if (user.role !== "admin") throw new AdminAccessError("not-admin");
   return user;
 }
 

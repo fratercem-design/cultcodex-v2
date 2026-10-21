@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
+import { adminDeniedResponse } from "@/lib/admin-api";
 import { generateChapterForEpisode } from "../generate-chapter-core";
 
 export const runtime = "nodejs";
@@ -15,8 +16,8 @@ export const maxDuration = 300;
 export async function POST(req: NextRequest) {
   try {
     await requireAdmin();
-  } catch {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  } catch (err) {
+    return adminDeniedResponse(err);
   }
 
   const body = await req.json() as { episodeIds?: string[] };

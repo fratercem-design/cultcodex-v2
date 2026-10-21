@@ -15,6 +15,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { google } from "googleapis";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
+import { adminDeniedResponse } from "@/lib/admin-api";
 import { ContentStatus, ContentType } from "@/generated/prisma/client";
 import { cleanSummary, isJunkSummary, isTemplateJunk } from "@/lib/content-hygiene";
 
@@ -137,8 +138,8 @@ async function fetchVideoDetails(
 export async function POST(req: NextRequest) {
   try {
     await requireAdmin();
-  } catch {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  } catch (err) {
+    return adminDeniedResponse(err);
   }
 
   const apiKey = process.env.YOUTUBE_API_KEY;
