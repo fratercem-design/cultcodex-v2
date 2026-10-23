@@ -18,7 +18,7 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   title: "Search — CultCodex",
-  description: "Search the Cult of Psyche archive for episodes, people, and lore.",
+  description: "Search every Cult of Psyche episode transcript by word, guest, topic or exact phrase, then jump straight to the timestamp where it was said.",
   alternates: { canonical: "/search" },
 };
 

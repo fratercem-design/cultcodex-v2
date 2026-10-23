@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/start-here" },
   title: "Start Here — CultCodex",
   description:
-    "Cult of Psyche is a live streaming show — back since October 2024 after years away. CultCodex is the structured archive of every transmission: every word indexed, every pattern extracted, every figure profiled.",
+    "New to Cult of Psyche, the live tarot and open-panel YouTube show? Six doorways into the archive: pick a theme and start with the episodes that define it.",
 };
 
 const DOORWAYS = [

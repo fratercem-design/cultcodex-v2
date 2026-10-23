@@ -166,7 +166,11 @@ export function organizationJsonLd(episodeCount?: number): Record<string, unknow
     logo: `${SITE_URL}/logo-512.jpg`,
     description:
       `The definitive intelligence archive for the Cult of Psyche. ${fmtEpisodeCount(episodeCount ?? 0)} episodes indexed with full transcripts, AI psychological breakdowns, guest profiles, and behavioral pattern maps.`,
-    sameAs: ["https://www.youtube.com/@CultofPsyche"],
+    sameAs: [
+      "https://www.youtube.com/@CultofPsyche",
+      "https://www.youtube.com/@psychesnightmares",
+      "https://www.youtube.com/@nightmarefrequenciestv",
+    ],
   };
 }
 
@@ -334,7 +338,13 @@ function clipAtBoundary(text: string, max: number): string {
  * characters. The transcript note is appended only when there is room.
  */
 export function episodeMetaDescription(title: string, summary: string | null | undefined): string {
-  const text = summary?.replace(/\s+/g, " ").trim();
+  // Many AI summaries open with "In this episode, …", which spends the start
+  // of the snippet on filler; drop it so the subject leads.
+  const text = summary
+    ?.replace(/\s+/g, " ")
+    .trim()
+    .replace(/^in this (episode|stream),?\s+/i, "")
+    .replace(/^./, (c) => c.toUpperCase());
   if (!text) {
     return clipAtBoundary(
       `Watch ${title} from Cult of Psyche. Browse the transcript, timestamps, guests and related archive entries.`,

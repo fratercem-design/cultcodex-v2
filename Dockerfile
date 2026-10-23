@@ -35,6 +35,10 @@ FROM node:22-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+# Pages rendered or revalidated at runtime read this for the build-commit
+# meta tag; set only in the builder stage, they reported "dev".
+ARG SOURCE_COMMIT=unknown
+ENV SOURCE_COMMIT=$SOURCE_COMMIT
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
 
