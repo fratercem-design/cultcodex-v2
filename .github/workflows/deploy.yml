@@ -18,6 +18,10 @@ name: Deploy to Fly
 #   NEXT_PUBLIC_SENTRY_DSN — Sentry project DSN. Next inlines it at build time
 #                   into both the browser and server bundles, so setting it
 #                   here turns on error reporting everywhere. Unset = Sentry off.
+#   NEXT_PUBLIC_STREAM_ALCHEMIST_CREATOR_URL / _LIFETIME_URL / _DFY_URL —
+#                   Stripe Payment Links for the Stream Alchemist pricing
+#                   buttons. Also inlined at build time, so `fly secrets set`
+#                   can't change them. Unset = the buttons fall back to email.
 #
 # Run migrations first (Run DB Migrations workflow) when a release has any.
 
@@ -59,7 +63,10 @@ jobs:
           flyctl deploy -a cultcodex-v2 --local-only \
             --build-secret "DATABASE_URL=$DATABASE_URL" \
             --build-arg "SOURCE_COMMIT=$GITHUB_SHA" \
-            --build-arg "NEXT_PUBLIC_SENTRY_DSN=${{ vars.NEXT_PUBLIC_SENTRY_DSN }}"
+            --build-arg "NEXT_PUBLIC_SENTRY_DSN=${{ vars.NEXT_PUBLIC_SENTRY_DSN }}" \
+            --build-arg "NEXT_PUBLIC_STREAM_ALCHEMIST_CREATOR_URL=${{ vars.NEXT_PUBLIC_STREAM_ALCHEMIST_CREATOR_URL }}" \
+            --build-arg "NEXT_PUBLIC_STREAM_ALCHEMIST_LIFETIME_URL=${{ vars.NEXT_PUBLIC_STREAM_ALCHEMIST_LIFETIME_URL }}" \
+            --build-arg "NEXT_PUBLIC_STREAM_ALCHEMIST_DFY_URL=${{ vars.NEXT_PUBLIC_STREAM_ALCHEMIST_DFY_URL }}"
 
       - name: Health check
         run: |

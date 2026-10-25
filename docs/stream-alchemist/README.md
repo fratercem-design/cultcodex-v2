@@ -108,14 +108,14 @@ Use **Stripe Payment Links** while validating. They need no webhook, no secret k
    - "Stream Alchemist Founding Lifetime", one-time $49
    - "Stream Alchemist Done-for-you clips", one-time $99
 3. On each product, **Create payment link**. Under *After payment*, pick "Don't show confirmation page" and redirect to `https://cultcodex.me/stream-alchemist/app?purchased=<plan>`. Nothing reads that parameter yet, but it shows up in analytics. For done-for-you, add a custom field asking for the stream URL.
-4. Put the links in the env:
+4. Add the links as GitHub repository **variables** (Settings → Secrets and variables → Actions → Variables), then run the **Deploy to Fly** workflow. Next.js bakes `NEXT_PUBLIC_*` values into the build, so `fly secrets set` won't change them. For local dev, put them in `.env.local`:
    ```
    NEXT_PUBLIC_STREAM_ALCHEMIST_CREATOR_URL=https://buy.stripe.com/test_...
    NEXT_PUBLIC_STREAM_ALCHEMIST_LIFETIME_URL=https://buy.stripe.com/test_...
    NEXT_PUBLIC_STREAM_ALCHEMIST_DFY_URL=https://buy.stripe.com/test_...
    ```
    The buttons switch from "Reserve…" to "Start Creator" / "Get lifetime access" automatically.
-5. Buy each one with card `4242 4242 4242 4242` and check the redirect. Then recreate the links in **live mode** and swap the env values.
+5. Buy each one with card `4242 4242 4242 4242` and check the redirect. Then recreate the links in **live mode**, update the variables, and deploy again.
 
 **Fulfillment during validation is manual.** A purchase doesn't unlock anything in the app yet, so email buyers and run their transcripts for them. That's a feature at this stage: every buyer is a conversation. When enough people pay (see below), build accounts plus a Stripe webhook that sets the plan and usage count. Reuse the CultCodex patterns in `src/lib/stripe.ts` and `src/lib/subscription.ts` rather than starting fresh.
 
