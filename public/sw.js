@@ -7,7 +7,7 @@
 //
 // Version bump this string whenever the cached asset list changes so
 // the old cache is purged on activation.
-const CACHE_VERSION = "v3";
+const CACHE_VERSION = "v4";
 const STATIC_CACHE = `cultcodex-static-${CACHE_VERSION}`;
 const IMAGE_CACHE = `cultcodex-images-${CACHE_VERSION}`;
 const PAGE_CACHE = `cultcodex-pages-${CACHE_VERSION}`;
@@ -70,7 +70,7 @@ self.addEventListener("fetch", (event) => {
     url.pathname.startsWith("/_next/image") ||
     /\.(jpg|jpeg|png|webp|avif|gif|svg|ico)$/i.test(url.pathname)
   ) {
-    event.respondWith(staleWhileRevalidate(request, IMAGE_CACHE, 7 * 86400));
+    event.respondWith(staleWhileRevalidate(event, request, IMAGE_CACHE, 7 * 86400));
     return;
   }
 
@@ -95,7 +95,7 @@ async function cacheFirst(request, cacheName) {
  * a fresh copy in the background.  Respects a maxAge (seconds) to force
  * revalidation once the cached entry is too old.
  */
-async function staleWhileRevalidate(request, cacheName, maxAge) {
+async function staleWhileRevalidate(event, request, cacheName, maxAge) {
   const cache = await caches.open(cacheName);
   const cached = await cache.match(request);
 
