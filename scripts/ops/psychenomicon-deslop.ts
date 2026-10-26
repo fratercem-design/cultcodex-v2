@@ -78,12 +78,12 @@ async function rewrite(c: ChapterRow): Promise<Outcome> {
 
 // OpenRouter names Claude models differently from Anthropic's API, and the
 // newest names can't be checked from here, so try them in order and keep
-// the first that answers. Opus 5 first, to match the chapters already edited
-// through Anthropic directly.
+// the first that answers. Sonnet only: the 10+ pass ran on Opus 5, but for the
+// milder 6-9 chapters a line edit doesn't need it, and Sonnet 5.5 costs 2.5x
+// less ($2/$10 vs $5/$25 per MTok).
 const OPENROUTER_MODELS = [
-  "anthropic/claude-opus-5",
+  "anthropic/claude-sonnet-5.5",
   "anthropic/claude-sonnet-5",
-  "anthropic/claude-opus-4.1",
   "anthropic/claude-sonnet-4.5",
 ];
 
