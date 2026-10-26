@@ -23,6 +23,14 @@ on:
         description: 'Try @cueisme Rumble captions (incl. hidden tracks) before downloading audio'
         type: boolean
         default: true
+      enrich_provider:
+        description: 'Enrichment LLM (openrouter = free, anthropic = paid Haiku, bedrock = needs AWS_* secrets)'
+        type: choice
+        options:
+          - openrouter
+          - anthropic
+          - bedrock
+        default: openrouter
 
 jobs:
   asr:
@@ -120,8 +128,14 @@ jobs:
           npx tsx scripts/enrich/enrich-from-db.ts
           npx tsx scripts/enrich/import-enriched.ts
         env:
-          # scripts/enrich/lib.ts defaults to Bedrock.
-          ENRICHMENT_PROVIDER: bedrock
+          # Same provider/model pairing as enrich-episodes.yml. The openrouter
+          # model is free with a 1M context, which matters because untruncated
+          # multi-hour transcripts make enormous prompts.
+          ENRICHMENT_PROVIDER: ${{ inputs.enrich_provider || 'openrouter' }}
+          # bedrock keeps lib.ts's default (claude-sonnet-4-6, mapped to a Bedrock id).
+          # It is spelled out because an empty ENRICHMENT_MODEL is not nullish.
+          ENRICHMENT_MODEL: ${{ (inputs.enrich_provider == 'anthropic') && 'claude-haiku-4-5-20251001' || (inputs.enrich_provider == 'bedrock') && 'claude-sonnet-4-6' || 'nvidia/nemotron-3-ultra-550b-a55b:free' }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-1' }}
