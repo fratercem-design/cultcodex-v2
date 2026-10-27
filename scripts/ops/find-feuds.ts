@@ -7,8 +7,9 @@
  * Scope: published episodes whose summaries read like drama (see DRAMA) and
  * that name at least two people, skipping episodes that already have events,
  * so a rerun picks up where the last one stopped. People removed at their
- * request and catch-all labels ("Unknown", "Caller") are never offered to
- * the model, so no event can name them.
+ * request, catch-all labels ("Unknown", "Caller") and placeholder names
+ * ("Speaker 3", "The host", "Moderators and panel participants") are never
+ * offered to the model, so no event can name them.
  *
  * The model picks people by number from the episode's own cast list, so every
  * event resolves to an existing Person without name matching.
@@ -32,6 +33,10 @@ const MAX_SUMMARY_CHARS = 12_000;
 // Stems, so "debat" matches debate/debating and "accus" accused/accusation.
 export const DRAMA =
   /\b(?:feud|beef|drama|call(?:ed|s|ing)?[- ]out|diss|expos|accus|rival|debat|clash|argu|conflict|betray|fell out|falling[- ]out|fallout|ban(?:ned)?\b|blocked|troll|hater|slander|cancel|smear|attack|grudge|insult|mock|roast|reconcil|made up|burying the hatchet|vs\.?\s|versus)/i;
+
+// Cast entries that label a role or a crowd rather than name one person.
+export const PLACEHOLDER =
+  /\b(?:speaker|host|participants?|moderators?|chat|user|caller|guest|panelist|narrator|unknown|unidentified|unnamed)\b/i;
 
 const RELATION_TYPES = [
   "friend", "former_friend", "ally", "frequent_collaborator", "debate_rival", "enemy",
@@ -57,7 +62,9 @@ You get one stream's summaries and a numbered cast list. Report each moment the 
 Rules:
 - Use only what the summaries state. Do not infer, guess motives, or add outside knowledge.
 - Both people must be on the cast list; refer to them only by their numbers. Never pair a person with themselves.
-- Skip friendly banter, jokes and bits unless the summary presents them as a real conflict or a real turn.
+- Skip friendly banter, teasing, jokes and bits unless the summary presents them as a real conflict or a real turn.
+- Two people appearing in the same stream, or being named together, is not a beat. The summary must describe one acting toward, or speaking about, the other.
+- One event per pair per stream, unless the summary describes the relationship changing during it.
 - Write attributed, neutral prose ("Psyche criticised X on stream for ...", "X and Y argued over ..."). Never state an accusation of wrongdoing as fact; say who made it.
 - relationType is the state after the beat: enemy, debate_rival, critic or former_friend for hostile beats; friend, ally, supporter, frequent_collaborator, mentor or student for warm ones.
 - At most five events. Return an empty list when the summaries describe no such moment; that is the usual answer.`;
@@ -95,7 +102,8 @@ export async function run(apply: boolean) {
     if (!DRAMA.test(text)) return [];
     const byId = new Map<string, Cast[number]>();
     for (const { person } of [...ep.guests, ...ep.mentionedPeople]) {
-      if (!excluded.has(person.slug) && !person.displayName.startsWith("[merged]")) byId.set(person.id, person);
+      if (excluded.has(person.slug) || person.displayName.startsWith("[merged]") || PLACEHOLDER.test(person.displayName)) continue;
+      byId.set(person.id, person);
     }
     const cast = [...byId.values()];
     return cast.length >= 2 ? [{ ...ep, text, cast }] : [];
@@ -108,7 +116,7 @@ export async function run(apply: boolean) {
 
   const todo = apply ? candidates : candidates.slice(0, PREVIEW);
   const started = Date.now();
-  let done = 0, written = 0, refused = 0, failed = 0, outOfCredit = false;
+  let done = 0, found = 0, written = 0, refused = 0, failed = 0, outOfCredit = false;
 
   async function one(ep: (typeof candidates)[number]) {
     const res = await client.messages.parse({
@@ -130,6 +138,7 @@ export async function run(apply: boolean) {
       const [pa, pb] = [ep.cast[e.a - 1], ep.cast[e.b - 1]];
       console.log(`  ${date} ${pa.displayName} × ${pb.displayName} → ${e.relationType}: ${e.headline}`);
     }
+    found += events.length;
     if (!apply || !events.length) return;
     await prisma.relationshipEvent.createMany({
       data: events.map((e) => ({
@@ -165,7 +174,7 @@ export async function run(apply: boolean) {
 
   const left = todo.length - done;
   console.log(
-    `\nSummary: ${done} episodes read · ${written} events ${apply ? "written" : "found (not written)"} · ` +
+    `\nSummary: ${done} episodes read · ${found} events found · ${apply ? `${written} written` : "none written"} · ` +
       `${refused} refused · ${failed} failed${left ? ` · ${left} left for the next run` : ""}` +
       (outOfCredit ? " · stopped: Anthropic credit balance too low" : ""),
   );
