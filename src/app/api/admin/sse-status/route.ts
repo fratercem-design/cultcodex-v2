@@ -5,8 +5,8 @@
  * connection status, active channels with listener counts, and the most
  * recent log events from the in-memory ring buffer.
  *
- * Per-instance caveat: Vercel Fluid Compute runs multiple Node instances
- * per region. This endpoint reflects only the bus state of whichever
+ * Per-instance caveat: Fly can run several machines, each its own Node
+ * instance. This endpoint reflects only the bus state of whichever
  * instance handled this request — there is no global view. That matches
  * the bus's actual scope (one bus per Node instance).
  *
