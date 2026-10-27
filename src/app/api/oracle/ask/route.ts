@@ -839,7 +839,8 @@ async function runOracleAgent(
   contextPreamble: string,
   system: string = ORACLE_SYSTEM,
   maxTokens = 1024,
-): Promise<{ answer: string; citations: OracleCitation[] }> {
+): Promise<{ answer: string; citations: OracleCitation[]; usedWeb: boolean }> {
+  let usedWeb = false;
   const allCitations: OracleCitation[] = [...preFlightCitations];
   const seenCitationHrefs = new Set(preFlightCitations.map((c) => c.href));
 
@@ -864,9 +865,9 @@ async function runOracleAgent(
     if (response.stop_reason === "end_turn") {
       const textBlock = response.content.find((b) => b.type === "text");
       if (!textBlock || textBlock.type !== "text") {
-        return { answer: "", citations: allCitations };
+        return { answer: "", citations: allCitations, usedWeb };
       }
-      return { answer: textBlock.text.trim(), citations: allCitations };
+      return { answer: textBlock.text.trim(), citations: allCitations, usedWeb };
     }
 
     if (response.stop_reason === "tool_use") {
@@ -877,6 +878,7 @@ async function runOracleAgent(
 
       for (const block of toolUseBlocks) {
         if (block.type !== "tool_use") continue;
+        if (block.name === "search_web") usedWeb = true;
         const result = await executeTool(block.name, block.input as Record<string, unknown>);
 
         // Merge new citations
@@ -901,12 +903,12 @@ async function runOracleAgent(
     // Unexpected stop reason — extract text if present and break
     const textBlock = response.content.find((b) => b.type === "text");
     if (textBlock && textBlock.type === "text") {
-      return { answer: textBlock.text.trim(), citations: allCitations };
+      return { answer: textBlock.text.trim(), citations: allCitations, usedWeb };
     }
     break;
   }
 
-  return { answer: "", citations: allCitations };
+  return { answer: "", citations: allCitations, usedWeb };
 }
 
 // ─── Trial cookie helpers ────────────────────────────────────────────────────
@@ -1181,6 +1183,7 @@ export async function POST(req: NextRequest) {
 
   let answer: string | null = null;
   let citations: OracleCitation[] = preFlightCitations;
+  let usedWeb = false;
 
   // FREE-FIRST: answer from the pre-gathered archive context via the free Groq
   // tier (gpt-oss-120b by default). This keeps the Oracle's LLM bill at ~$0.
@@ -1205,6 +1208,7 @@ export async function POST(req: NextRequest) {
       const result = await runOracleAgent(client, model, contextText, question, preFlightCitations, contextPreamble, system, maxTokens);
       answer = result.answer;
       citations = result.citations;
+      usedWeb = result.usedWeb;
     } catch (err) {
       console.error("[oracle] bedrock fallback error:", err instanceof Error ? err.message : err);
     }
@@ -1232,7 +1236,8 @@ export async function POST(req: NextRequest) {
 
   const audioBase64 = await synthesizeVoice(draw ? spokenPartOfReading(answer) : answer);
 
-  if (!draw) oracleCacheSet(cacheKey, { answer, citations });
+  // Web-informed answers go stale, so they are never cached.
+  if (!draw && !usedWeb) oracleCacheSet(cacheKey, { answer, citations });
 
   const finalRes = NextResponse.json({
     ok: true,

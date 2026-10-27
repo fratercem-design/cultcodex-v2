@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { unenrichedEpisodeWhere } from "@/lib/episode-enrichment";
 import { requireAdminPage } from "@/lib/auth";
 import { SyncPanel } from "./sync-panel";
 import type { Metadata } from "next";
@@ -18,6 +19,7 @@ export default async function SyncPage() {
     withoutTranscript,
     withYoutubeId,
     unenrichedEpisodes,
+    unenrichedWithTranscript,
     enrichmentQueued,
     unenrichedPeople,
     totalPeople,
@@ -30,15 +32,8 @@ export default async function SyncPage() {
       where: { status: "published", youtubeVideoId: { not: null }, segments: { none: {} } },
     }),
     prisma.episode.count({ where: { youtubeVideoId: { not: null } } }),
-    prisma.episode.count({
-      where: {
-        AND: [
-          { OR: [{ summaryShort: null }, { summaryShort: "" }] },
-          { OR: [{ summaryFacts: null }, { summaryFacts: "" }, { summaryFacts: "—" }] },
-          { OR: [{ summaryLong: null }, { summaryLong: "" }] },
-        ],
-      },
-    }),
+    prisma.episode.count({ where: unenrichedEpisodeWhere() }),
+    prisma.episode.count({ where: unenrichedEpisodeWhere({ withTranscriptOnly: true }) }),
     prisma.episode.count({ where: { enrichmentQueued: true } }),
     prisma.person.count({
       where: {
@@ -85,6 +80,7 @@ export default async function SyncPage() {
       <SyncPanel
         withoutTranscript={withoutTranscript}
         unenrichedEpisodes={unenrichedEpisodes}
+        unenrichedWithTranscript={unenrichedWithTranscript}
         enrichmentQueued={enrichmentQueued}
         unenrichedPeople={unenrichedPeople}
       />

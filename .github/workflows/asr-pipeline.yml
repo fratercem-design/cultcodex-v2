@@ -19,6 +19,18 @@ on:
         description: 'Run Claude enrichment after import'
         type: boolean
         default: true
+      rumble_captions:
+        description: 'Try @cueisme Rumble captions (incl. hidden tracks) before downloading audio'
+        type: boolean
+        default: true
+      enrich_provider:
+        description: 'Enrichment LLM (openrouter = free, anthropic = paid Haiku, bedrock = needs AWS_* secrets)'
+        type: choice
+        options:
+          - openrouter
+          - anthropic
+          - bedrock
+        default: openrouter
 
 jobs:
   asr:
@@ -73,7 +85,22 @@ jobs:
         env:
           YOUTUBE_COOKIES: ${{ secrets.YOUTUBE_COOKIES }}
 
+      # @cueisme syndicates the YouTube episodes. Any caption track found there
+      # (advertised, or hidden in the player JSON / HLS / muxed streams) is saved
+      # as transcripts/<ytId>.json, which the audio and transcribe steps skip.
+      # Rumble rate-limits hard, so a failure here falls through to audio.
+      - name: Fetch Rumble captions (@cueisme)
+        if: ${{ inputs.rumble_captions }}
+        continue-on-error: true
+        timeout-minutes: 45
+        run: python scripts/asr-download-rumble.py --channel https://rumble.com/user/cueisme/videos --captions
+
+      # Exits non-zero when every download fails. Keep going so transcripts the
+      # Rumble step saved still import; "Fail if every download failed" below
+      # turns the run red afterwards.
       - name: Download audio
+        id: download
+        continue-on-error: true
         run: python scripts/asr-download-audio.py --batch ${{ inputs.batch }}
 
       - name: Transcribe audio
@@ -100,6 +127,24 @@ jobs:
         run: |
           npx tsx scripts/enrich/enrich-from-db.ts
           npx tsx scripts/enrich/import-enriched.ts
+        env:
+          # Same provider/model pairing as enrich-episodes.yml. The openrouter
+          # model is free with a 1M context, which matters because untruncated
+          # multi-hour transcripts make enormous prompts.
+          ENRICHMENT_PROVIDER: ${{ inputs.enrich_provider || 'openrouter' }}
+          # bedrock keeps lib.ts's default (claude-sonnet-4-6, mapped to a Bedrock id).
+          # It is spelled out because an empty ENRICHMENT_MODEL is not nullish.
+          ENRICHMENT_MODEL: ${{ (inputs.enrich_provider == 'anthropic') && 'claude-haiku-4-5-20251001' || (inputs.enrich_provider == 'bedrock') && 'claude-sonnet-4-6' || 'nvidia/nemotron-3-ultra-550b-a55b:free' }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-1' }}
 
       - name: Rebuild search text
         run: npx tsx scripts/_rebuild-search-text.ts
+
+      - name: Fail if every download failed
+        if: ${{ steps.download.outcome == 'failure' }}
+        run: |
+          echo "::error title=Audio downloads failed::Every YouTube audio download failed - refresh the YOUTUBE_COOKIES secret. See the Download audio step."
+          exit 1
