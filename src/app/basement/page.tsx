@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/basement" },
-  title: "░░░░░░ — CULT CODEX",
+  title: "░░░░░░ — CultCodex",
   description: "This page does not exist. You are not reading this.",
   robots: { index: false, follow: false },
 };

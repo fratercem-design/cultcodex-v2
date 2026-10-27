@@ -7,7 +7,7 @@ export const revalidate = 600;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/prophecies" },
-  title: "The Prophecy Ledger — CULT CODEX",
+  title: "The Prophecy Ledger — CultCodex",
   description:
     "Every prophecy the archive has recorded — fulfilled, pending, and disputed. The Codex makes no promises about timelines.",
 };

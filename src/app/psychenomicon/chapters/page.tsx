@@ -10,7 +10,7 @@ import { getFreePreviewChapterNumbers } from "@/lib/psychenomicon";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/psychenomicon/chapters" },
-  title: "The Chronicle — All Chapters — CULT CODEX",
+  title: "The Chronicle — All Chapters — CultCodex",
   description: "Every chapter of the Psychenomicon, in order — the complete chronicle of the Cult of Psyche, drawn from real transcripts.",
 };
 

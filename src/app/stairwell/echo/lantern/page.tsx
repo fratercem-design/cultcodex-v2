@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { StairPage } from "@/components/easter-eggs/stair-page";
 
 export const metadata: Metadata = {
-  title: "▼ — CULT CODEX",
+  title: "▼ — CultCodex",
   description: "There is no page here.",
   robots: { index: false, follow: false },
 };

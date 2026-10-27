@@ -8,7 +8,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/drama/feuds" },
-  title: "Feuds — The Drama Files — CULT CODEX",
+  title: "Feuds — The Drama Files — CultCodex",
   description: "Every feud in the Cult of Psyche archive as a dated, cited timeline: the turns, the receipts, and the exact moments on stream.",
 };
 

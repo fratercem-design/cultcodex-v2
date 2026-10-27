@@ -6,7 +6,7 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/terms" },
-  title: "Terms of Service — CULT CODEX",
+  title: "Terms of Service — CultCodex",
   description: "Terms governing use of the CultCodex archive and subscription services.",
 };
 

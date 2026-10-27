@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "\ud83d\udc31 \u2014 CULT CODEX",
+  title: "\ud83d\udc31 \u2014 CultCodex",
   description: "You weren\u2019t supposed to find this.",
   alternates: { canonical: "/meow" },
 };

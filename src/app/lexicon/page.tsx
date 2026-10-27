@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
-  title: "Panelverse Lexicon — CULT CODEX",
+  title: "Panelverse Lexicon — CultCodex",
   description:
     "A glossary of slang, jargon, and specialized terms from the Cult of Psyche and the wider Panelverse streaming community.",
   alternates: { canonical: "/lexicon" },

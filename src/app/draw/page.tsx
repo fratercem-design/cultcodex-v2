@@ -7,7 +7,7 @@ import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/draw" },
-  title: "Draw from the Deck — CULT CODEX",
+  title: "Draw from the Deck — CultCodex",
   description:
     "Pull three cards from the archive at random — a piece of lore, a real quote, and a prophecy. Reload to draw again. The Codex decides what you needed to see.",
 };

@@ -6,7 +6,7 @@ export const maxDuration = 30;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/timeline" },
-  title: "Timeline — CULT CODEX",
+  title: "Timeline — CultCodex",
   description: "Every Cult of Psyche episode in chronological order",
 };
 

@@ -19,9 +19,9 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { archetype } = await params;
   const detail = await getArchetypeDetail(archetype);
-  if (!detail) return { title: "Archetype Not Found — CULT CODEX" };
+  if (!detail) return { title: "Archetype Not Found — CultCodex" };
   return {
-    title: `${detail.name} — Archetype — Psychenomicon — CULT CODEX`,
+    title: `${detail.name} — Archetype — Psychenomicon — CultCodex`,
     description: `Every entity carrying the ${detail.name} archetype across the Cult of Psyche archive.`,
   };
 }

@@ -4,7 +4,7 @@ import { OrnamentalBreak } from "@/components/graphics/mystical-divider";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Stormborn \u2014 CULT CODEX",
+  title: "Stormborn \u2014 CultCodex",
   description: "You are the stormborn architect.",
   alternates: { canonical: "/stormborn" },
 };

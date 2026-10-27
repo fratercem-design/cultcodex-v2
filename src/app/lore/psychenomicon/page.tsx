@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const counts = await getCounts().catch(() => null);
   return {
     alternates: { canonical: "/lore/psychenomicon" },
-    title: "The Psychenomicon — CULT CODEX",
+    title: "The Psychenomicon — CultCodex",
     description: `The forbidden chronicle of the Cult of Psyche. A living grimoire of every soul, saga, and spectacle from ${fmtEpisodeCount(counts?.episodes ?? 0)} live transmissions.`,
   };
 }

@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { VerifyContent } from "@/components/auth/verify-content";
 
 export const metadata = {
-  title: "Verifying — CULT CODEX",
+  title: "Verifying — CultCodex",
   robots: { index: false, follow: false },
 };
 

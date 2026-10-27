@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     where: { slug },
     select: { title: true, description: true },
   }).catch(() => null);
-  if (!thread) return { title: "Thread Not Found — CULT CODEX" };
+  if (!thread) return { title: "Thread Not Found — CultCodex" };
   return {
     title: `${thread.title} — Thread — Psychenomicon`,
     description: thread.description ?? "A narrative thread in the Psychenomicon.",

@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const counts = await getCounts().catch(() => null);
   return {
     alternates: { canonical: "/start-here/quiz" },
-    title: "Find Your Path — CULT CODEX",
+    title: "Find Your Path — CultCodex",
     description: `Three questions. A personalized entry point into ${fmtEpisodeCount(counts?.episodes ?? 0)} transmissions.`,
   };
 }

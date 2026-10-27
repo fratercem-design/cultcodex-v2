@@ -20,7 +20,7 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/start-here/guided" },
-  title: "The Guided Path — CULT CODEX",
+  title: "The Guided Path — CultCodex",
   description:
     "Five emotional doorways into the Cult of Psyche archive. Pick what's pulling you.",
 };
