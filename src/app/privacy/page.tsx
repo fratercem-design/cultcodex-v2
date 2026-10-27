@@ -6,7 +6,7 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/privacy" },
-  title: "Privacy Policy — CULT CODEX",
+  title: "Privacy Policy — CultCodex",
   description: "How CultCodex collects, uses, and protects your personal information.",
 };
 

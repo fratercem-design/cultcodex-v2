@@ -21,7 +21,7 @@ const initiateTier = getTier("access");
 
 export const metadata: Metadata = {
   alternates: { canonical: "/start-here" },
-  title: "Start Here — CULT CODEX",
+  title: "Start Here — CultCodex",
   description:
     "Cult of Psyche is a live streaming show — back since October 2024 after years away. CultCodex is the structured archive of every transmission: every word indexed, every pattern extracted, every figure profiled.",
 };

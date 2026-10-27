@@ -7,7 +7,7 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/archetypes" },
-  title: "Archetypes — CULT CODEX",
+  title: "Archetypes — CultCodex",
   description:
     "Eight recurring patterns the Oracle has identified across the archive. Which one are you?",
 };

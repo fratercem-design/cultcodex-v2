@@ -6,7 +6,7 @@ export const revalidate = 600;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/fun" },
-  title: "The Fun Wing — CULT CODEX",
+  title: "The Fun Wing — CultCodex",
   description:
     "The unserious wing of the archive — humorous lore, the Drama Files, quizzes, oracles, and at least one door that isn't on the map.",
 };

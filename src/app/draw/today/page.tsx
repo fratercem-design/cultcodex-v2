@@ -10,7 +10,7 @@ export const revalidate = 1800;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/draw/today" },
-  title: "Today's Draw — CULT CODEX",
+  title: "Today's Draw — CultCodex",
   description:
     "The Codex draws three cards for everyone, once a day — a piece of lore, a real quote, and a prophecy. The same for all who look, until midnight.",
 };

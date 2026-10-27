@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ogImage = `${siteUrl}/api/archetype/${archetype.slug}/og`;
 
   return {
-    title: `${archetype.name} — Archetypes — CULT CODEX`,
+    title: `${archetype.name} — Archetypes — CultCodex`,
     description: archetype.summary,
     openGraph: {
       title: archetype.name,

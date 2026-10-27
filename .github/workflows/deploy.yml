@@ -70,3 +70,24 @@ jobs:
           done
           echo "::error::https://cultcodex.me/api/health did not return 200 after deploy"
           exit 1
+
+      - name: Verify deployed commit
+        run: |
+          # The homepage carries <meta name="build-commit">. "dev" or "unknown"
+          # means the running image was not built with --build-arg SOURCE_COMMIT,
+          # i.e. someone deployed by hand. Fail loudly instead of drifting.
+          for i in $(seq 1 6); do
+            live=$(curl -s https://cultcodex.me/ | grep -o 'name="build-commit" content="[^"]*"' | head -1 | sed 's/.*content="//;s/"$//')
+            [ "$live" = "$GITHUB_SHA" ] && { echo "Live build-commit matches $GITHUB_SHA"; exit 0; }
+            sleep 10
+          done
+          echo "::error::live build-commit is '${live:-missing}', expected $GITHUB_SHA"
+          exit 1
+
+      - name: Warm slow pages
+        run: |
+          # /episodes reads searchParams, so it renders per request and the first
+          # hit after a deploy can take several seconds. Warm the common entries.
+          for path in / /episodes "/episodes?page=2" /people /lore /topics /series /start-here; do
+            curl -s -o /dev/null -m 60 -w "%{http_code} %{time_total}s $path\n" "https://cultcodex.me$path" || true
+          done

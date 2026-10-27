@@ -37,7 +37,7 @@ export async function generateMetadata({
   const { year } = await params;
   return {
     alternates: { canonical: `/timeline/${year}` },
-    title: `Timeline ${year} — CULT CODEX`,
+    title: `Timeline ${year} — CultCodex`,
     description: `Every Cult of Psyche episode from ${year}, in order.`,
   };
 }

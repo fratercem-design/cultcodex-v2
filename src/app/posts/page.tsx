@@ -11,7 +11,7 @@ export const revalidate = 300;
 
 export const metadata = {
   alternates: { canonical: "/posts" },
-  title: "Community Posts — CULT CODEX",
+  title: "Community Posts — CultCodex",
   description: "YouTube community posts from Cult of Psyche",
 };
 

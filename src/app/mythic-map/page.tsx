@@ -9,7 +9,7 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/mythic-map" },
-  title: "The Mythic Map — CULT CODEX",
+  title: "The Mythic Map — CultCodex",
   description:
     "Archetypes, symbols, and recurring themes of the Cult of Psyche archive. A narrative map of the mythic system.",
 };

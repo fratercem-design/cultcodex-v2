@@ -6,7 +6,7 @@ import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 export const revalidate = 86400;
 
 export const metadata: Metadata = buildMetadata({
-  title: "How CultCodex Works — Methodology & Transparency",
+  title: "How CultCodex Works — Methodology",
   description:
     "How CultCodex builds the archive: where transcripts come from, what AI generates, the editorial standards, the known limitations, and how to report inaccuracies.",
   path: "/about/methodology",

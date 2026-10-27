@@ -11,7 +11,7 @@ export const revalidate = 600;
 
 export const metadata = {
   alternates: { canonical: "/series" },
-  title: "Series — CULT CODEX",
+  title: "Series — CultCodex",
   description: "Browse Cult of Psyche series and collections",
 };
 

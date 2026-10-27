@@ -23,11 +23,11 @@ async function load(pair: string) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { pair } = await params;
   const feud = await load(pair);
-  if (!feud) return { title: "Feud not found — CULT CODEX" };
+  if (!feud) return { title: "Feud not found — CultCodex" };
   const [a, b] = feud.people;
   return {
     alternates: { canonical: `/drama/feuds/${feud.slug}` },
-    title: `${a.displayName} vs ${b.displayName} — Feuds — CULT CODEX`,
+    title: `${a.displayName} vs ${b.displayName} — Feuds — CultCodex`,
     description: `The ${a.displayName} and ${b.displayName} feud as a dated timeline: ${feud.counts.events} recorded turns and ${feud.counts.quotes} on-stream quotes, each linked to its moment.`,
   };
 }

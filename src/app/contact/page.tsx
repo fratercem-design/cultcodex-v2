@@ -6,7 +6,7 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
-  title: "Contact — CULT CODEX",
+  title: "Contact — CultCodex",
   description: "How to reach the CultCodex archive maintainers — corrections, billing questions, and general inquiries.",
 };
 

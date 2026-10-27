@@ -25,10 +25,10 @@ export const revalidate = 3600;
 
 export const metadata = {
   alternates: { canonical: "/people" },
-  title: "People — CULT CODEX",
+  title: "People — CultCodex",
   description: "Hosts, recurring figures, and profiled guests from the Cult of Psyche archive. One-time appearances and unknowns are compiled at /people/the-rest.",
   ...socialMetadata({
-    title: "People — CULT CODEX",
+    title: "People — CultCodex",
     description: "Explore recurring guests, hosts, and profiled voices across the Cult of Psyche archive.",
     path: "/people",
     image: { route: "/people", alt: "Voices — Every recurring figure in the Cult of Psyche archive" },

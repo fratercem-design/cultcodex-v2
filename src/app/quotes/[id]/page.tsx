@@ -53,7 +53,7 @@ export async function generateMetadata({
     : quote.text;
 
   return buildMetadata({
-    title: `"${shortText}" — ${speaker} — CULT CODEX`,
+    title: `"${shortText}" — ${speaker} — CultCodex`,
     description: `${speaker} on ${epLabel}${quote.episode?.title ? ` · ${quote.episode.title}` : ""}`,
     path: `/quotes/${id}`,
     image: `/quotes/${id}/og`,

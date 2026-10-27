@@ -22,7 +22,7 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/codex/transmissions" },
-  title: "Saved Transmissions — CULT CODEX",
+  title: "Saved Transmissions — CultCodex",
   description: "Episodes you've saved for the return trip.",
 };
 
