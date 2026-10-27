@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useCallback, type CSSProperties } from "react";
+import { CodexCard, useReducedMotion, type CodexCardData } from "@/components/cards/codex/codex-card";
+import { isSpecialEdition, specialEditionAnimationUrl } from "@/lib/cards/special-editions";
 
 export interface GrimoireCard {
   position: number;
@@ -12,6 +14,7 @@ export interface GrimoireCard {
   oraclePrompt: string | null;
   element: string | null;
   archetype: string | null;
+  face: CodexCardData | null;
 }
 export interface GrimoireReading {
   id: string;
@@ -184,7 +187,9 @@ function ReadingEntry({ reading }: { reading: GrimoireReading }) {
           const meaning = reversed ? c.reversedMeaning : c.uprightMeaning;
           const accent = reversed ? "var(--neon-5)" : "var(--neon)";
           return (
-            <div key={c.position} style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 12 }}>
+            <div key={c.position} style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 12, display: "flex", gap: 12, alignItems: "flex-start" }}>
+              {c.face && <CardFace face={c.face} reversed={reversed} />}
+              <div style={{ minWidth: 0 }}>
               <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}>
                 {c.positionName && (
                   <span style={{ fontFamily: "var(--font-mono)", fontSize: 9.5, letterSpacing: "0.2em", color: "var(--term-fg-mute)" }}>
@@ -201,6 +206,7 @@ function ReadingEntry({ reading }: { reading: GrimoireReading }) {
                   {meaning}
                 </p>
               )}
+              </div>
             </div>
           );
         })}
@@ -239,5 +245,31 @@ function ReadingEntry({ reading }: { reading: GrimoireReading }) {
         </div>
       </div>
     </article>
+  );
+}
+
+/** A small face for a saved card; reversed draws are kept upside down. Special editions play their loop. */
+function CardFace({ face, reversed }: { face: CodexCardData; reversed: boolean }) {
+  const reducedMotion = useReducedMotion();
+  const fill: CSSProperties = { width: "100%", height: "100%", objectFit: "cover", display: "block" };
+  return (
+    <div
+      role="img"
+      aria-label={`${face.title}${reversed ? ", reversed" : ""}`}
+      style={{
+        flex: "0 0 auto", width: 64, aspectRatio: "2 / 3", borderRadius: 4, overflow: "hidden",
+        border: "1px solid var(--term-line)", background: "#05070b",
+        display: "flex", alignItems: "center", transform: reversed ? "rotate(180deg)" : undefined,
+      }}
+    >
+      {face.artUrl && isSpecialEdition(face.slug) && !reducedMotion ? (
+        <video src={specialEditionAnimationUrl(face.slug)} poster={face.artUrl} autoPlay muted loop playsInline aria-hidden="true" style={fill} />
+      ) : face.artUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={face.artUrl} alt="" loading="lazy" style={fill} />
+      ) : (
+        <div style={{ width: "100%" }}><CodexCard card={face} interactive={false} /></div>
+      )}
+    </div>
   );
 }

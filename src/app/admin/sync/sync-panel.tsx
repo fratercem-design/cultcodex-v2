@@ -43,11 +43,13 @@ function Spinner() {
 export function SyncPanel({
   withoutTranscript,
   unenrichedEpisodes,
+  unenrichedWithTranscript,
   enrichmentQueued,
   unenrichedPeople,
 }: {
   withoutTranscript: number;
   unenrichedEpisodes: number;
+  unenrichedWithTranscript: number;
   enrichmentQueued: number;
   unenrichedPeople: number;
 }) {
@@ -466,7 +468,9 @@ export function SyncPanel({
               lore, and topics. Only processes episodes with transcripts that haven&apos;t been enriched yet.
             </p>
             <p className="font-mono text-[12px] text-text-muted">
-              {unenrichedEpisodes.toLocaleString("en-US")} episodes need enrichment. Requires <code>ENRICH_SECRET</code> + an enrichment provider key (Anthropic, OpenRouter, Groq, Mistral or Bedrock).
+              {unenrichedEpisodes.toLocaleString("en-US")} episodes need enrichment
+              {" "}({unenrichedWithTranscript.toLocaleString("en-US")} with transcripts,{" "}
+              {(unenrichedEpisodes - unenrichedWithTranscript).toLocaleString("en-US")} title-only). Requires <code>ENRICH_SECRET</code> + an enrichment provider key (Anthropic, OpenRouter, Groq, Mistral or Bedrock).
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -485,18 +489,18 @@ export function SyncPanel({
           <div className="flex gap-2">
             <button
               onClick={() => handleEnrichEpisodes(false)}
-              disabled={enrichEpLoading || unenrichedEpisodes === 0}
+              disabled={enrichEpLoading || unenrichedWithTranscript === 0}
               className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-gold/50 bg-accent-gold/10 hover:bg-accent-gold/20 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {enrichEpLoading && !enrichEpProgress
                 ? <><Spinner /> Enriching…</>
-                : unenrichedEpisodes === 0
+                : unenrichedWithTranscript === 0
                 ? "All enriched ✓"
                 : `Enrich Next ${enrichEpBatch} →`}
             </button>
             <button
               onClick={() => handleEnrichEpisodes(true)}
-              disabled={enrichEpLoading || unenrichedEpisodes === 0}
+              disabled={enrichEpLoading || unenrichedWithTranscript === 0}
               className="flex-1 flex items-center justify-center gap-2 rounded border border-accent-gold bg-accent-gold/20 hover:bg-accent-gold/30 px-4 py-2.5 font-mono text-xs font-bold text-accent-gold-text transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {enrichEpLoading && enrichEpProgress

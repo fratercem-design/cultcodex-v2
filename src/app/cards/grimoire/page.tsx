@@ -49,6 +49,7 @@ export default async function GrimoirePage() {
       oraclePrompt: c.oraclePrompt,
       element: c.element,
       archetype: c.archetype,
+      face: c.face,
     })),
   }));
 

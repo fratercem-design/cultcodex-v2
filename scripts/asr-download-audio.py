@@ -26,6 +26,7 @@ except Exception:
 HERE = os.path.dirname(os.path.abspath(__file__))
 PENDING = os.path.join(HERE, "asr-pending.json")
 AUDIO_DIR = os.path.join(HERE, "scrape", "data", "audio")
+TRANSCRIPT_DIR = os.path.join(HERE, "scrape", "data", "transcripts")
 LOG_FILE = os.path.join(HERE, "asr-download.log")
 COOKIES = os.path.join(HERE, "cookies.txt")
 
@@ -116,6 +117,10 @@ def main() -> int:
         if os.path.exists(mp3_path) and os.path.getsize(mp3_path) > 1000:
             skipped += 1
             continue
+        # A transcript already exists (e.g. Rumble captions), so no audio is needed.
+        if os.path.exists(os.path.join(TRANSCRIPT_DIR, f"{ytid}.json")):
+            skipped += 1
+            continue
 
         log(f"[{i + 1}/{len(episodes)}] EP.{ep['ep']} ({ytid}) {ep['title'][:55]}")
 
@@ -169,6 +174,11 @@ def main() -> int:
             f.write("\n".join(failures))
         log(f"Failures logged to {fail_log}")
 
+    # Every attempt failed (stale cookies, bot wall): exit non-zero so CI shows it.
+    # Nothing to download (all present or covered by Rumble transcripts) is still success.
+    if failed > 0 and downloaded == 0:
+        log("ERROR: every download failed")
+        return 2
     return 0
 
 

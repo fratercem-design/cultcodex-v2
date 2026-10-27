@@ -76,7 +76,7 @@ const RARITY_PALETTE: Record<Rarity, Palette> = {
 };
 
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
-function useReducedMotion() {
+export function useReducedMotion() {
   return useSyncExternalStore(
     (onChange) => {
       const mq = window.matchMedia(REDUCED_MOTION);
