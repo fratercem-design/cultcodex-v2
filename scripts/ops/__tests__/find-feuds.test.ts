@@ -26,6 +26,7 @@ describe("PLACEHOLDER", () => {
       "Psyche (community user)",
       "Moderators and panel participants",
       "Beta's Kitties participants",
+      "Deceased community member",
     ]) expect(PLACEHOLDER.test(s), s).toBe(true);
   });
 
