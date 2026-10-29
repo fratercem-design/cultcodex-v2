@@ -36,7 +36,7 @@ export const DRAMA =
 
 // Cast entries that label a role or a crowd rather than name one person.
 export const PLACEHOLDER =
-  /\b(?:speaker|host|participants?|moderators?|chat|user|caller|guest|panelist|narrator|unknown|unidentified|unnamed)\b/i;
+  /\b(?:speaker|host|participants?|members?|moderators?|chat|user|caller|guest|panelist|narrator|unknown|unidentified|unnamed)\b/i;
 
 const RELATION_TYPES = [
   "friend", "former_friend", "ally", "frequent_collaborator", "debate_rival", "enemy",
