@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { buildReportOnlyCsp, generateNonce } from "@/lib/csp";
+import { CAMPAIGN_COOKIE, CAMPAIGN_COOKIE_MAX_AGE, cleanCampaign } from "@/lib/attribution";
 
 const CANONICAL_HOSTS: Record<string, string> = {
   "www.cultcodex.me": "cultcodex.me",
@@ -41,6 +42,19 @@ export function proxy(request: NextRequest) {
     requestHeaders.set("Content-Security-Policy-Report-Only", csp);
     const response = NextResponse.next({ request: { headers: requestHeaders } });
     response.headers.set("Content-Security-Policy-Report-Only", csp);
+
+    // First touch wins: keep the campaign a visitor first arrived with so a
+    // checkout days later is still credited to it (see src/lib/attribution.ts).
+    const campaign = cleanCampaign(request.nextUrl.searchParams.get("utm_campaign"));
+    if (campaign && !request.cookies.has(CAMPAIGN_COOKIE)) {
+      response.cookies.set(CAMPAIGN_COOKIE, campaign, {
+        maxAge: CAMPAIGN_COOKIE_MAX_AGE,
+        path: "/",
+        sameSite: "lax",
+        secure: request.nextUrl.protocol === "https:",
+        httpOnly: true,
+      });
+    }
     return response;
   }
 

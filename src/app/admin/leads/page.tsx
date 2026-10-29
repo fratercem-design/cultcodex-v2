@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import type { Metadata } from "next";
 import { requireAdminPage } from "@/lib/auth";
+import { getStripe } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
 
@@ -45,6 +46,9 @@ async function getLeads() {
             handle: true,
             onboardingCompleted: true,
             subscriptionTier: true,
+            subscriptionStatus: true,
+            currentPeriodEnd: true,
+            isLifetimeMember: true,
             createdAt: true,
           },
         })
@@ -55,11 +59,55 @@ async function getLeads() {
     return subscribers.map((s) => {
       const account = s.email ? byEmail.get(s.email.toLowerCase()) : undefined;
       const claimed = Boolean(account && account.provider !== "initiate");
-      return { ...s, account: account ?? null, claimed };
+      const paying = Boolean(
+        account &&
+          (account.isLifetimeMember ||
+            (account.subscriptionStatus === "active" &&
+              account.currentPeriodEnd &&
+              account.currentPeriodEnd > new Date()))
+      );
+      return { ...s, account: account ?? null, claimed, paying };
     });
   } catch {
     return null;
   }
+}
+
+const CHECKOUT_WINDOW_DAYS = 90;
+
+/**
+ * Completed subscription checkouts from Stripe, grouped by the campaign the
+ * buyer first arrived with (stamped by /api/stripe/checkout from the
+ * cc_campaign cookie). Null when Stripe is unreachable or not configured.
+ */
+async function getCheckoutsByCampaign() {
+  try {
+    const since = Math.floor(Date.now() / 1000) - CHECKOUT_WINDOW_DAYS * 24 * 60 * 60;
+    const sessions = await getStripe()
+      .checkout.sessions.list({ status: "complete", created: { gte: since }, limit: 100 })
+      .autoPagingToArray({ limit: 1000 });
+
+    const byCampaign = new Map<string, { checkouts: number; amount: number; currency: string | null }>();
+    for (const session of sessions) {
+      if (session.mode !== "subscription") continue;
+      const key = session.metadata?.campaign ?? "—";
+      const row = byCampaign.get(key) ?? { checkouts: 0, amount: 0, currency: session.currency };
+      row.checkouts += 1;
+      row.amount += session.amount_total ?? 0;
+      byCampaign.set(key, row);
+    }
+    return byCampaign;
+  } catch (err) {
+    console.error("[admin/leads] Could not list Stripe checkouts:", err);
+    return null;
+  }
+}
+
+function formatAmount(cents: number, currency: string | null) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: (currency ?? "usd").toUpperCase(),
+  }).format(cents / 100);
 }
 
 type Lead = NonNullable<Awaited<ReturnType<typeof getLeads>>>[number];
@@ -115,7 +163,7 @@ function LeadRow({ lead }: { lead: Lead }) {
 export default async function AdminLeadsPage() {
   await requireAdminPage();
 
-  const leads = await getLeads();
+  const [leads, checkouts] = await Promise.all([getLeads(), getCheckoutsByCampaign()]);
 
   if (!leads) {
     return (
@@ -136,6 +184,25 @@ export default async function AdminLeadsPage() {
 
   const bySource = new Map<string, number>();
   for (const l of leads) bySource.set(l.source ?? "—", (bySource.get(l.source ?? "—") ?? 0) + 1);
+
+  const payingBySource = new Map<string, number>();
+  for (const l of leads) {
+    if (l.paying) payingBySource.set(l.source ?? "—", (payingBySource.get(l.source ?? "—") ?? 0) + 1);
+  }
+
+  const campaigns = [...new Set([...bySource.keys(), ...(checkouts?.keys() ?? [])])]
+    .map((campaign) => ({
+      campaign,
+      leads: bySource.get(campaign) ?? 0,
+      paying: payingBySource.get(campaign) ?? 0,
+      checkout: checkouts?.get(campaign),
+    }))
+    .sort(
+      (a, b) =>
+        (b.checkout?.checkouts ?? 0) - (a.checkout?.checkouts ?? 0) ||
+        b.paying - a.paying ||
+        b.leads - a.leads
+    );
 
   const unclaimed = leads.filter((l) => !l.claimed);
 
@@ -180,6 +247,54 @@ export default async function AdminLeadsPage() {
               {src} <span className="text-accent-gold-text">{n}</span>
             </span>
           ))}
+      </div>
+
+      <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-accent-gold-text">
+        Checkouts by persona
+      </h2>
+      <p className="mb-3 max-w-2xl font-mono text-[12px] leading-relaxed text-text-muted">
+        <span className="text-text-primary">Checkouts</span> are completed Initiate+ and Oracle
+        checkouts in Stripe from the last {CHECKOUT_WINDOW_DAYS} days, credited to the{" "}
+        <code>utm_campaign</code> the buyer first arrived with (kept for 30 days).{" "}
+        <span className="text-text-primary">Paying leads</span> are leads from that source whose
+        account has an active subscription today, whenever they paid. &ldquo;—&rdquo; means no
+        campaign.
+      </p>
+      {!checkouts && (
+        <p className="mb-3 font-mono text-[12px] text-red-400">
+          Could not read checkouts from Stripe. Showing leads only.
+        </p>
+      )}
+      <div className="mb-8 overflow-x-auto">
+        <table className="w-full min-w-[560px]">
+          <thead>
+            <tr className="border-b border-border text-left">
+              {["Campaign", "Leads", "Paying leads", "Checkouts", "Checkout revenue"].map((h) => (
+                <th
+                  key={h}
+                  className="pb-2 pr-4 font-mono text-[12px] uppercase tracking-[0.16em] text-text-muted"
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {campaigns.map((c) => (
+              <tr key={c.campaign} className="border-b border-border">
+                <td className="py-2 pr-4 font-mono text-xs text-text-primary">{c.campaign}</td>
+                <td className="py-2 pr-4 font-mono text-[12px] text-text-muted">{c.leads}</td>
+                <td className="py-2 pr-4 font-mono text-[12px] text-accent-cyan">{c.paying}</td>
+                <td className="py-2 pr-4 font-mono text-[12px] text-accent-gold-text">
+                  {checkouts ? (c.checkout?.checkouts ?? 0) : "—"}
+                </td>
+                <td className="py-2 pr-4 font-mono text-[12px] text-accent-gold-text">
+                  {c.checkout ? formatAmount(c.checkout.amount, c.checkout.currency) : "—"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       <h2 className="mb-2 font-mono text-xs font-semibold uppercase tracking-wider text-accent-cyan">

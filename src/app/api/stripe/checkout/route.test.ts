@@ -24,10 +24,10 @@ vi.mock("@/lib/stripe", () => ({
 import { POST } from "./route";
 
 /** Build a POST Request. `undefined` body means "no body at all" (legacy client). */
-function request(body?: unknown): Request {
+function request(body?: unknown, cookie?: string): Request {
   return new Request("http://localhost/api/stripe/checkout", {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json", ...(cookie ? { cookie } : {}) },
     ...(body === undefined
       ? {}
       : { body: typeof body === "string" ? body : JSON.stringify(body) }),
@@ -139,6 +139,22 @@ describe("POST /api/stripe/checkout", () => {
         mode: "subscription",
         line_items: [{ price: "price_access_month", quantity: 1 }],
         metadata: { codexUserId: "user_1", tier: "access", interval: "month" },
+      })
+    );
+  });
+
+  it("credits the checkout to the campaign cookie", async () => {
+    const res = await POST(request({ tier: "system" }, "cc_campaign=persona_archivist"));
+
+    expect(res.status).toBe(200);
+    expect(mocks.sessionsCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        metadata: {
+          codexUserId: "user_1",
+          tier: "system",
+          interval: "month",
+          campaign: "persona_archivist",
+        },
       })
     );
   });

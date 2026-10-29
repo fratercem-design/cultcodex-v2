@@ -89,7 +89,10 @@ Views are vanity. Rank by the last row first:
 If a persona gets views but zero clicks, the hook works and the call to action doesn't.
 Rewrite the last line of the scripts before killing the character.
 
-## What comes next (not in this pass)
+## Reading conversions by persona
 
-- Wire `utm_campaign` into the `Subscriber` / checkout records so the admin
-  dashboard can show conversions by persona instead of reading analytics by hand.
+`/admin/leads` has a **Checkouts by persona** table. For each `utm_campaign` it shows
+leads, leads who are paying now, and completed Initiate+/Oracle checkouts in Stripe
+from the last 90 days with their revenue. A visitor's first `utm_campaign` is kept in a
+cookie for 30 days and stamped on their checkout, so a sale is credited to the persona
+link they first arrived from even if they come back later without it.
