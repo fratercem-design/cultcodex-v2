@@ -2,10 +2,14 @@
  * Seed the 12 special-edition gold-foil collectibles as the "special-editions" set.
  * Idempotent. Each card gets its painted art (public/cards/art/{slug}.webp),
  * maxSupply SPECIAL_EDITION_MAX_SUPPLY and obtainMethod "secret" (never in packs).
+ * Each is also drawable in readings, with its hand-authored meaning and a very
+ * low draw weight (SPECIAL_EDITION_DIVINATION_STRENGTH).
  *   npx tsx scripts/cards/seed-special-editions.ts [--dry-run]
  */
 import { getPrisma, disconnect } from "../ingest/lib";
-import { SPECIAL_EDITIONS, SPECIAL_EDITION_MAX_SUPPLY } from "../../src/lib/cards/special-editions";
+import {
+  SPECIAL_EDITIONS, SPECIAL_EDITION_DIVINATION, SPECIAL_EDITION_DIVINATION_STRENGTH, SPECIAL_EDITION_MAX_SUPPLY,
+} from "../../src/lib/cards/special-editions";
 
 async function main() {
   const prisma = getPrisma();
@@ -28,11 +32,16 @@ async function main() {
 
   let created = 0, updated = 0;
   for (const s of SPECIAL_EDITIONS) {
+    const d = SPECIAL_EDITION_DIVINATION[s.slug];
     const data = {
       title: s.title, subtitle: s.subtitle, flavourText: s.flavourText,
       cardType: s.cardType, rarity: s.rarity, abilities: s.abilities,
       artUrl: `/cards/art/${s.slug}.webp`, maxSupply: SPECIAL_EDITION_MAX_SUPPLY,
       obtainMethod: "secret", sourceType: "special-edition",
+      uprightMeaning: d.upright, reversedMeaning: d.reversed, element: d.element, planet: d.planet,
+      archetype: d.archetype, shadowAspect: d.shadowAspect, advice: d.advice, oraclePrompt: d.oraclePrompt,
+      divinationKeywords: d.keywords, divinationStrength: SPECIAL_EDITION_DIVINATION_STRENGTH,
+      divinationEligible: true, meaningVersion: 1,
     };
     const existing = await prisma.card.findUnique({ where: { slug: s.slug }, select: { id: true } });
     const card = await prisma.card.upsert({
