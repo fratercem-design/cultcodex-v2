@@ -3,6 +3,7 @@ import { z } from "zod/v4";
 import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { getStripe } from "@/lib/stripe";
+import { campaignFromCookieHeader } from "@/lib/attribution";
 import { resolvePriceId, type TierSlug, type BillingInterval } from "@/lib/subscription-tiers";
 
 /**
@@ -112,6 +113,9 @@ export async function POST(req: Request) {
     // Stripe there would just cost the user an extra hop.
     const cancelPath = "/premium";
 
+    // The persona link the buyer first arrived from, read back by /admin/leads.
+    const campaign = campaignFromCookieHeader(req.headers.get("cookie"));
+
     const session = await getStripe().checkout.sessions.create({
       customer: customerId,
       mode: "subscription",
@@ -120,7 +124,11 @@ export async function POST(req: Request) {
       cancel_url: `${baseUrl}${cancelPath}`,
       // Stamp the tier into metadata so the webhook can record it on
       // the user without needing to re-read the price row from Stripe.
-      metadata: { codexUserId: user.id, ...(tier ? { tier, interval } : {}) },
+      metadata: {
+        codexUserId: user.id,
+        ...(tier ? { tier, interval } : {}),
+        ...(campaign ? { campaign } : {}),
+      },
       subscription_data: tier
         ? { metadata: { codexUserId: user.id, tier, interval } }
         : { metadata: { codexUserId: user.id } },

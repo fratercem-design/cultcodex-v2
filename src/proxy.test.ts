@@ -40,4 +40,24 @@ describe("canonical host proxy", () => {
     const response = proxy(new NextRequest("https://www.cultcodex.me/"));
     expect(response.headers.get("content-security-policy-report-only")).toBeNull();
   });
+
+  it("remembers the first utm_campaign a visitor arrives with", () => {
+    const response = proxy(
+      new NextRequest("https://cultcodex.me/initiation?utm_campaign=persona_sulphur")
+    );
+    const cookie = response.cookies.get("cc_campaign");
+
+    expect(cookie?.value).toBe("persona_sulphur");
+    expect(cookie?.httpOnly).toBe(true);
+  });
+
+  it("does not overwrite an existing campaign or store an unsafe one", () => {
+    const returning = new NextRequest("https://cultcodex.me/oracle?utm_campaign=persona_nyx", {
+      headers: { cookie: "cc_campaign=persona_sulphur" },
+    });
+    expect(proxy(returning).cookies.get("cc_campaign")).toBeUndefined();
+
+    const unsafe = proxy(new NextRequest("https://cultcodex.me/oracle?utm_campaign=%3Cx%3E"));
+    expect(unsafe.cookies.get("cc_campaign")).toBeUndefined();
+  });
 });
