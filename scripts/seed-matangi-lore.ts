@@ -27,7 +27,7 @@ TEXTS AND CHANTS
 The main chant is the Shyamala Dandakam by Kalidasa. Others are the Shyamala Kavacham, Navaratna Malika, the Sahasranama, the 108 names, the Matangi Kavacham, the Matangi Hridayam and the 16 names of Shyamala.
 
 THE SHYAMALA DANDAKAM
-It has five stanzas, with about 100 names in the main body and 18 in the phalashruti (the stated benefits). It is addressed to her in the first person and opens with "jaya" (be victorious). Long compound words alternate with short ones, so breaths fall at compound boundaries. Texts differ in places, for example madalasa and madashalini in the invocation, and sudhasamudranta and sudhasamudyat at the opening. The speaker chose readings by majority usage and sound flow.
+It has five stanzas, with about 100 names in the main body and 18 in the phalashruti (the stated benefits). It is addressed to her in the first person and opens with "jaya" (be victorious). Long compound words alternate with short ones, so breaths fall at compound boundaries. Texts differ in places: in the invocation verse, in the word for "obeys" (some editors changed it to "commands"), and in the opening word. The speaker chose readings by majority usage and sound flow. The stream's auto-captions garble the exact spellings, so check them against the audio.
 
 SEASON
 Magha brings the Shyamala (Gupta) Navaratri, with Vasanta Panchami during it. The four Navaratris fall once every three months, one per season.
