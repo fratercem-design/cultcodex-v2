@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { cleanTitle } from "@/lib/format/text";
 import { fixThumbnailUrl } from "@/lib/format/thumbnail";
 import { getEraById } from "@/lib/eras";
-import type { Prisma, ContentStatus, PersonType } from "@/generated/prisma/client";
+import type { Prisma, ContentStatus, ContentType, PersonType } from "@/generated/prisma/client";
 import { NOT_REMOVED_LORE } from "@/lib/lore/removed-lore";
 
 // Type for episode with all relations loaded
@@ -66,6 +66,21 @@ export function formatEpisodeForCard(episode: EpisodeWithRelations): EpisodeCard
       .map((g) => g.person.displayName),
     topicNames: episode.topics.map((t) => t.topic.title),
   };
+}
+
+/** The values of the /episodes "Type" filter, in display order. */
+export const EPISODE_CONTENT_TYPES = ["livestream", "original", "short", "clip"] as const satisfies readonly ContentType[];
+
+/**
+ * Turn the untrusted `?filter=` value from /episodes into a ContentType to
+ * filter by, or undefined for "no type filter". Anything unrecognised shows
+ * the whole archive, so a stale or mistyped link still lands on a full list.
+ */
+export function parseContentTypeFilter(raw?: unknown): ContentType | undefined {
+  // A repeated param (?filter=a&filter=b) arrives as an array at runtime.
+  if (typeof raw !== "string") return undefined;
+  const value = raw.trim().toLowerCase();
+  return EPISODE_CONTENT_TYPES.find((type) => type === value);
 }
 
 function buildEraWhere(eraId?: string): Prisma.EpisodeWhereInput {
@@ -191,6 +206,8 @@ export async function getEpisodeCards(options?: {
   topicSlug?: string;
   /** Only episodes with at least one transcript segment. */
   hasTranscript?: boolean;
+  /** Restrict to one content type (livestream, original, short, clip). */
+  contentType?: ContentType;
 }): Promise<EpisodeCardWithGuests[]> {
   const {
     status,
@@ -202,6 +219,7 @@ export async function getEpisodeCards(options?: {
     personSlug,
     topicSlug,
     hasTranscript,
+    contentType,
   } = options ?? {};
 
   const orderByClause =
@@ -212,6 +230,7 @@ export async function getEpisodeCards(options?: {
   const where: Prisma.EpisodeWhereInput = {
     ...(status ? { status } : {}),
     ...(hasTranscript ? { segments: { some: {} } } : {}),
+    ...(contentType ? { contentType } : {}),
     ...buildEraWhere(eraId),
     ...buildPersonWhere(personSlug),
     ...buildTopicWhere(topicSlug),
@@ -288,10 +307,14 @@ export async function getEpisodeCount(
   status?: ContentStatus,
   eraId?: string,
   personSlug?: string,
-  topicSlug?: string
+  topicSlug?: string,
+  contentType?: ContentType,
+  hasTranscript?: boolean,
 ) {
   const where: Prisma.EpisodeWhereInput = {
     ...(status ? { status } : {}),
+    ...(contentType ? { contentType } : {}),
+    ...(hasTranscript ? { segments: { some: {} } } : {}),
     ...buildEraWhere(eraId),
     ...buildPersonWhere(personSlug),
     ...buildTopicWhere(topicSlug),

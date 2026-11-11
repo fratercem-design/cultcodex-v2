@@ -87,3 +87,23 @@ describe("SiteCounts type completeness", () => {
     expect(Object.keys(mockCounts)).toHaveLength(9);
   });
 });
+
+describe("getEpisodeAggregates", () => {
+  it("returns Date objects after the cache round trip", async () => {
+    const { prisma: db } = await import("@/lib/db");
+    const findFirst = vi.fn()
+      .mockResolvedValueOnce({ airDate: new Date("2019-03-01T00:00:00Z") })
+      .mockResolvedValueOnce({ airDate: new Date("2026-11-10T00:00:00Z") });
+    Object.assign(db.episode, { findFirst });
+    Object.assign(db, { episodeGuest: { count: vi.fn().mockResolvedValue(7) } });
+    vi.mocked(db.episode.count).mockResolvedValue(100);
+
+    const { getEpisodeAggregates } = await import("../stats");
+    const aggregates = await getEpisodeAggregates();
+
+    expect(aggregates.total).toBe(100);
+    expect(aggregates.totalGuests).toBe(7);
+    expect(aggregates.earliestDate).toBeInstanceOf(Date);
+    expect(aggregates.latestDate?.toISOString()).toBe("2026-11-10T00:00:00.000Z");
+  });
+});

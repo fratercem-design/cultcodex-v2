@@ -158,7 +158,10 @@ export function fmtPct(n: number): string {
 // ─── Kept helpers (unchanged) ─────────────────────────────────────────────────
 // These are used by individual hub pages and don't need to move.
 
-export async function getEpisodeAggregates() {
+// Cached like getCounts(): /episodes reads its query string, so it renders per
+// request, and these four queries ran on every page view of the list.
+// unstable_cache serializes its return value, so the dates travel as ISO strings.
+async function fetchEpisodeAggregatesFromDB() {
   const [total, earliest, latest, guestCount] = await Promise.all([
     prisma.episode.count(),
     prisma.episode.findFirst({
@@ -176,9 +179,24 @@ export async function getEpisodeAggregates() {
 
   return {
     total,
-    earliestDate: earliest?.airDate ?? null,
-    latestDate: latest?.airDate ?? null,
+    earliestDate: earliest?.airDate?.toISOString() ?? null,
+    latestDate: latest?.airDate?.toISOString() ?? null,
     totalGuests: guestCount,
+  };
+}
+
+const getEpisodeAggregatesCached = unstable_cache(
+  fetchEpisodeAggregatesFromDB,
+  ["episode-aggregates"],
+  { revalidate: 300, tags: ["archive-counts"] }
+);
+
+export async function getEpisodeAggregates() {
+  const aggregates = await getEpisodeAggregatesCached();
+  return {
+    ...aggregates,
+    earliestDate: aggregates.earliestDate ? new Date(aggregates.earliestDate) : null,
+    latestDate: aggregates.latestDate ? new Date(aggregates.latestDate) : null,
   };
 }
 
