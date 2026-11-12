@@ -45,6 +45,8 @@ export function SortFilterBar({
       } else {
         params.delete(key);
       }
+      // A different sort or filter is a different list: go back to its first page.
+      params.delete("page");
       const qs = params.toString();
       router.push(qs ? `${basePath}?${qs}` : basePath);
     },

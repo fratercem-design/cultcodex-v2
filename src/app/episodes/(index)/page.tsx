@@ -15,6 +15,7 @@ import { EraTag } from "@/components/ui/era-tag";
 import {
   getEpisodeCards,
   getEpisodeCount,
+  parseContentTypeFilter,
 } from "@/lib/queries/episodes";
 import { getEpisodeAggregates, getArchiveLastUpdated } from "@/lib/queries/stats";
 import { getEraById } from "@/lib/eras";
@@ -60,7 +61,7 @@ const FILTER_OPTIONS = [
 ];
 
 interface EpisodesPageProps {
-  searchParams: Promise<{ sort?: string; page?: string; filter?: string; view?: string; era?: string; person?: string; topic?: string }>;
+  searchParams: Promise<{ sort?: string; page?: string; filter?: string; view?: string; era?: string; person?: string; topic?: string; transcript?: string }>;
 }
 
 function resolveSort(sort?: string): {
@@ -90,17 +91,28 @@ export default async function EpisodesPage({
   // /people/[slug] caps its appearance list; this is the full paginated view.
   const personSlug = params.person?.trim() || undefined;
   const topicSlug = params.topic?.trim() || undefined;
+  const contentType = parseContentTypeFilter(params.filter);
+  const transcribedOnly = params.transcript === "yes";
+  // Same list with the "Transcribed" toggle flipped, back on its first page.
+  const transcriptToggleQuery = new URLSearchParams(
+    Object.entries(params).filter(
+      (entry): entry is [string, string] =>
+        typeof entry[1] === "string" && entry[0] !== "page" && entry[0] !== "transcript",
+    ),
+  );
+  if (!transcribedOnly) transcriptToggleQuery.set("transcript", "yes");
+  const transcriptToggleHref = transcriptToggleQuery.size > 0 ? `/episodes?${transcriptToggleQuery}` : "/episodes";
 
   const [aggregates, totalCount, lastUpdated] = await Promise.all([
     getEpisodeAggregates(),
-    getEpisodeCount(undefined, activeEraId, personSlug, topicSlug),
+    getEpisodeCount(undefined, activeEraId, personSlug, topicSlug, contentType, transcribedOnly),
     getArchiveLastUpdated(),
   ]);
 
   const page = parsePage(params.page, Math.ceil(totalCount / DEFAULT_PAGE_SIZE));
   const { skip, take } = paginationArgs(page);
 
-  const cards = await getEpisodeCards({ take, skip, orderBy, order, eraId: activeEraId, personSlug, topicSlug });
+  const cards = await getEpisodeCards({ take, skip, orderBy, order, eraId: activeEraId, personSlug, topicSlug, contentType, hasTranscript: transcribedOnly });
 
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
@@ -187,9 +199,20 @@ export default async function EpisodesPage({
           currentSort={currentSort}
           filterLabel="Type"
           filterOptions={FILTER_OPTIONS}
-          currentFilter={params.filter}
+          currentFilter={contentType}
         />
         <div className="flex items-center gap-2">
+          <Link
+            href={transcriptToggleHref}
+            aria-current={transcribedOnly ? "true" : undefined}
+            className={`font-mono text-[12px] border rounded px-2.5 py-1.5 transition-colors ${
+              transcribedOnly
+                ? "border-accent-gold/40 bg-accent-gold/15 text-accent-gold-text"
+                : "border-border text-text-muted hover:border-accent-gold/40 hover:text-accent-gold-text"
+            }`}
+          >
+            Transcribed only
+          </Link>
           {!activeEra && (
             <Link
               href="/eras"

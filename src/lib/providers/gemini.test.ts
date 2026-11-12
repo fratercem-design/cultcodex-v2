@@ -39,9 +39,12 @@ function mockResponse({
 describe("GeminiProvider", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
   });
 
   it("reports an absent key as unconfigured", async () => {
+    // The constructor falls back to GEMINI_API_KEY, which developer machines set.
+    vi.stubEnv("GEMINI_API_KEY", "");
     const provider = new GeminiProvider("");
 
     expect(provider.isConfigured()).toBe(false);

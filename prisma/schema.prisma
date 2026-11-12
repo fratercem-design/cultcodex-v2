@@ -338,6 +338,9 @@ model EpisodeGuest {
   person    Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
 
   @@id([episodeId, personId])
+  // The primary key leads with episodeId, so lookups by personId alone (person and
+  // topic pages, /episodes?person=, ?topic=) had no index to use.
+  @@index([personId])
 }
 
 model EpisodeMentionedPerson {
@@ -347,6 +350,9 @@ model EpisodeMentionedPerson {
   person    Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
 
   @@id([episodeId, personId])
+  // The primary key leads with episodeId, so lookups by personId alone (person and
+  // topic pages, /episodes?person=, ?topic=) had no index to use.
+  @@index([personId])
 }
 
 model EpisodeLore {
@@ -365,6 +371,9 @@ model EpisodeTopic {
   topic     Topic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
 
   @@id([episodeId, topicId])
+  // The primary key leads with episodeId, so lookups by topicId alone (person and
+  // topic pages, /episodes?person=, ?topic=) had no index to use.
+  @@index([topicId])
 }
 
 model PersonTopic {

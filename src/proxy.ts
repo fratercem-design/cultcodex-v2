@@ -19,8 +19,18 @@ function hasSessionCookie(request: NextRequest): boolean {
     .some((c) => SESSION_COOKIE_PREFIXES.some((p) => c.name === p || c.name.startsWith(`${p}.`)));
 }
 
+// The host the visitor asked for. The standalone server (the Dockerfile sets
+// HOSTNAME=0.0.0.0) can report its bind address in nextUrl.hostname, which
+// would stop the www redirect below from ever matching, so prefer the
+// forwarded / Host headers.
+function requestedHostname(request: NextRequest): string {
+  const raw =
+    request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? request.nextUrl.hostname;
+  return raw.split(",")[0].trim().replace(/:\d+$/, "").toLowerCase();
+}
+
 export function proxy(request: NextRequest) {
-  const canonicalHost = CANONICAL_HOSTS[request.nextUrl.hostname.toLowerCase()];
+  const canonicalHost = CANONICAL_HOSTS[requestedHostname(request)];
   if (!canonicalHost) {
     // Second layer for /admin: send visitors with no session at all to sign
     // in before any admin page renders. This does not check the role (that
@@ -61,6 +71,7 @@ export function proxy(request: NextRequest) {
   const url = request.nextUrl.clone();
   url.hostname = canonicalHost;
   url.port = "";
+  url.protocol = "https:";
   return NextResponse.redirect(url, { status: 308 });
 }
 

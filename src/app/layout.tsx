@@ -122,6 +122,12 @@ export default async function RootLayout({
           title="CultCodex — Latest Episodes"
           href={`${SITE_URL}/feed.xml`}
         />
+        <link
+          rel="search"
+          type="application/opensearchdescription+xml"
+          title="CultCodex"
+          href="/opensearch.xml"
+        />
               </head>
       <body
         className={`${fontVariables} font-mono antialiased bg-void text-text-primary`}

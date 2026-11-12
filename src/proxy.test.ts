@@ -16,6 +16,37 @@ describe("canonical host proxy", () => {
     );
   });
 
+  it("redirects www by Host header when the server reports its bind address", () => {
+    // Standalone server: the request URL carries HOSTNAME=0.0.0.0, not the public host.
+    const response = proxy(
+      new NextRequest("http://0.0.0.0:3000/episodes/example?from=test", {
+        headers: { host: "www.cultcodex.me" },
+      }),
+    );
+
+    expect(response.status).toBe(308);
+    expect(response.headers.get("location")).toBe("https://cultcodex.me/episodes/example?from=test");
+  });
+
+  it("prefers x-forwarded-host and ignores a port", () => {
+    const response = proxy(
+      new NextRequest("http://0.0.0.0:3000/lore", {
+        headers: { host: "0.0.0.0:3000", "x-forwarded-host": "www.cultcodex.xyz:443" },
+      }),
+    );
+
+    expect(response.status).toBe(308);
+    expect(response.headers.get("location")).toBe("https://cultcodex.me/lore");
+  });
+
+  it("passes the canonical host through when the URL is the bind address", () => {
+    const response = proxy(
+      new NextRequest("http://0.0.0.0:3000/lore", { headers: { host: "cultcodex.me" } }),
+    );
+
+    expect(response.headers.get("x-middleware-next")).toBe("1");
+  });
+
   it("passes the canonical host through", () => {
     const response = proxy(new NextRequest("https://cultcodex.me/episodes/example"));
 
