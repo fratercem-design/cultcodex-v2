@@ -7,6 +7,7 @@ import { notifyTranscriptReady } from "@/lib/notifications";
 import { YoutubeTranscript } from "youtube-transcript";
 import { captionsToMs } from "@/lib/transcript/caption-units";
 import { isPermanentMiss } from "@/lib/transcript/permanent-miss";
+import { readSupadataJob } from "@/lib/transcript/supadata-job";
 
 export const runtime = "nodejs";
 // Vercel serverless function limit. 300s requires Pro, or Hobby with Fluid Compute
@@ -165,17 +166,12 @@ async function fetchTranscriptSupadata(
         return { chunks: null, reason: isTimeout(err) ? "supadata_job_deadline" : "supadata_job_fetch" };
       }
       if (!jobRes.ok) return { chunks: null, reason: `supadata_job_${jobRes.status}` };
-      const jobData = (await jobRes.json()) as { status: string; result?: SupadataTranscript };
-      if (jobData.status === "done" && jobData.result) {
-        const content = jobData.result.content;
-        if (typeof content === "string" || !Array.isArray(content) || content.length === 0) {
-          return { chunks: null, reason: "supadata_empty_job" };
-        }
-        return { chunks: content, reason: "supadata_async" };
+      const job = readSupadataJob<SupadataChunk>(await jobRes.json());
+      if (job.state === "done") {
+        if (!job.content) return { chunks: null, reason: "supadata_empty_job" };
+        return { chunks: job.content, reason: "supadata_async" };
       }
-      if (jobData.status === "failed" || jobData.status === "error") {
-        return { chunks: null, reason: `supadata_job_${jobData.status}` };
-      }
+      if (job.state === "failed") return { chunks: null, reason: `supadata_job_${job.status}` };
     }
     return { chunks: null, reason: "supadata_job_timeout" };
   }
