@@ -13,8 +13,8 @@ import { SECTION_HEADERS } from "@/lib/section-headers";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Collections — CultCodex",
-  description: "Cult of Psyche episodes grouped by theme.",
+  title: "Cult of Psyche Episode Collections — CultCodex",
+  description: "Hand-picked sets of Cult of Psyche episodes, grouped by theme.",
   alternates: { canonical: "/collections" },
 };
 

@@ -48,6 +48,24 @@ export function indexableLinkedSubset<T extends { _count: { episodes: number } }
   return rows.filter((r) => !isThinPage(r._count.episodes));
 }
 
+/**
+ * A segment whose query failed must not render as an empty urlset.
+ *
+ * Each loader used to end in `.catch(() => [])`, so a database timeout produced
+ * a valid, empty sitemap that the route then cached for an hour. On 2026-11-11
+ * /sitemaps/episodes.xml served zero URLs for the whole episode archive while
+ * the pool was starved. Rethrowing lets ISR keep the last good copy: Next keeps
+ * serving the previous render when a revalidation throws.
+ *
+ * The build is the exception. It has no previous render to fall back on, and CI
+ * builds without a database, so there a failure still yields an empty segment,
+ * which the first runtime revalidation replaces.
+ */
+export function emptyOnlyAtBuild(err: unknown): never[] {
+  if (process.env.NEXT_PHASE === "phase-production-build") return [];
+  throw err;
+}
+
 // -- Segment loaders -------------------------------------------------------
 // Each segment is fetched and serialised on its own request. That is the point
 // of the split: the previous single /sitemap.xml materialised all 6,582 URLs
@@ -161,7 +179,7 @@ async function episodesSegment(): Promise<SitemapEntry[]> {
   const b = baseUrl();
   const rows = await prisma.episode
     .findMany({ where: { status: "published" }, select: { slug: true, updatedAt: true } })
-    .catch(() => []);
+    .catch(emptyOnlyAtBuild);
   return rows.map((e) => ({
     url: `${b}/episodes/${e.slug}`,
     lastModified: e.updatedAt,
@@ -182,7 +200,7 @@ async function peopleSegment(): Promise<SitemapEntry[]> {
         _count: { select: { guestAppearances: true } },
       },
     })
-    .catch(() => []);
+    .catch(emptyOnlyAtBuild);
   return rows.filter((p) => isIndexablePerson({
     slug: p.slug,
     displayName: p.displayName,
@@ -201,7 +219,7 @@ async function loreSegment(): Promise<SitemapEntry[]> {
   const rows = await prisma.loreEntry
     .findMany({ where: NOT_REMOVED_LORE, select: LINKED_PAGE_SELECT })
     .then(indexableLinkedSubset)
-    .catch(() => []);
+    .catch(emptyOnlyAtBuild);
   return rows.map((l) => ({
     url: `${b}/lore/${l.slug}`,
     lastModified: l.updatedAt,
@@ -215,7 +233,7 @@ async function topicsSegment(): Promise<SitemapEntry[]> {
   const rows = await prisma.topic
     .findMany({ select: LINKED_PAGE_SELECT })
     .then(indexableLinkedSubset)
-    .catch(() => []);
+    .catch(emptyOnlyAtBuild);
   return rows.map((t) => ({
     url: `${b}/topics/${t.slug}`,
     lastModified: t.updatedAt,
@@ -226,7 +244,7 @@ async function topicsSegment(): Promise<SitemapEntry[]> {
 
 async function seriesSegment(): Promise<SitemapEntry[]> {
   const b = baseUrl();
-  const rows = await prisma.series.findMany({ select: { slug: true, updatedAt: true } }).catch(() => []);
+  const rows = await prisma.series.findMany({ select: { slug: true, updatedAt: true } }).catch(emptyOnlyAtBuild);
   return rows.map((s) => ({
     url: `${b}/series/${s.slug}`,
     lastModified: s.updatedAt,
@@ -240,7 +258,7 @@ async function chaptersSegment(): Promise<SitemapEntry[]> {
   const [chapters, free] = await Promise.all([
     prisma.psychenomiconChapter
       .findMany({ where: { status: "stable" }, select: { slug: true, updatedAt: true, chapterNumber: true } })
-      .catch(() => []),
+      .catch(emptyOnlyAtBuild),
     getFreePreviewChapterNumbers().catch(() => [] as number[]),
   ]);
   return indexableChapterSubset(chapters, free).map((c) => ({

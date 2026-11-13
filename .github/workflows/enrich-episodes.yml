@@ -1,6 +1,19 @@
 name: Enrich CultofPsyche Episodes
 
 on:
+  # Ingest (15:00 UTC) and transcript import (16:30 UTC) are scheduled, but this
+  # workflow was dispatch-only. It last ran 2026-09-24, so every episode since
+  # then got a transcript and no summary: on 2026-11-12, 47 of the 50 newest
+  # episode pages still carried the generic "Watch <title> from Cult of
+  # Psyche" fallback description.
+  #
+  # Runs after the transcript import. GitHub delays scheduled runs by hours
+  # under load, so the order is not guaranteed; an episode whose transcript
+  # lands late is picked up by the next day's run. On a schedule run
+  # github.event.inputs is null, so the `|| default` fallbacks apply: 50
+  # episodes on the free OpenRouter model.
+  schedule:
+    - cron: "30 18 * * *"
   workflow_dispatch:
     inputs:
       batch:
@@ -14,6 +27,11 @@ on:
           - openrouter
           - anthropic
         default: openrouter
+
+# Two overlapping runs select the same un-enriched episodes and pay for each twice.
+concurrency:
+  group: enrich-episodes
+  cancel-in-progress: false
 
 jobs:
   enrich:
@@ -48,6 +66,9 @@ jobs:
 
       - name: Enrich episodes
         run: |
+          # Without pipefail, tee's exit code masks the script's, so a crashed
+          # or fully-failed batch still showed as a green run.
+          set -o pipefail
           BATCH="${{ github.event.inputs.batch || '50' }}"
           echo "── Enriching up to $BATCH episodes ──"
           npx tsx scripts/enrich/enrich-episodes.ts --batch "$BATCH" | tee /tmp/enrich-output.txt

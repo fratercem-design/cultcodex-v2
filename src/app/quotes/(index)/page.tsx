@@ -26,8 +26,8 @@ export const revalidate = 300;
 
 export const metadata = {
   alternates: { canonical: "/quotes" },
-  title: "Quotes — CultCodex",
-  description: "Notable quotes from Cult of Psyche episodes",
+  title: "Cult of Psyche Quotes — CultCodex",
+  description: "Notable quotes from Cult of Psyche episodes, searchable by speaker and linked to the moment they were said.",
 };
 
 interface QuotesPageProps {

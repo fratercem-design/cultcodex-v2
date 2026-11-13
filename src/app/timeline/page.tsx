@@ -6,8 +6,8 @@ export const maxDuration = 30;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/timeline" },
-  title: "Timeline — CultCodex",
-  description: "Every Cult of Psyche episode in chronological order",
+  title: "Cult of Psyche Timeline: Every Episode in Order — CultCodex",
+  description: "Every Cult of Psyche episode in chronological order, year by year.",
 };
 
 /** The most recent archived year. Older years live at /timeline/[year]. */
