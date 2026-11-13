@@ -11,6 +11,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { getPrisma, disconnect } from "../ingest/lib";
 import { enrichEpisode, buildTranscriptText } from "./lib";
+import { selectBatch } from "./select-batch";
 
 const TRANSCRIPTS_DIR = path.join(__dirname, "..", "scrape", "data", "transcripts");
 const RAW_PATH = path.join(__dirname, "..", "scrape", "data", "youtube-raw.json");
@@ -106,7 +107,7 @@ async function main() {
 
   log(`${candidates.length} candidates with transcripts (batch: ${batch})`);
 
-  const toProcess = candidates.slice(0, batch);
+  const toProcess = selectBatch(candidates, batch);
   let success = 0;
   let failures = 0;
 
@@ -173,6 +174,10 @@ async function main() {
   log(`Run 'npx tsx scripts/enrich/import-enriched.ts' to import into DB.`);
 
   await disconnect();
+
+  // A batch where nothing succeeded is an outage (bad key, retired model, quota),
+  // not a partial result. Exit non-zero so the scheduled run goes red.
+  if (success === 0 && failures > 0) process.exit(1);
 }
 
 main().catch((e) => {

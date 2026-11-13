@@ -11,8 +11,8 @@ export const revalidate = 600;
 
 export const metadata = {
   alternates: { canonical: "/series" },
-  title: "Series — CultCodex",
-  description: "Browse Cult of Psyche series and collections",
+  title: "Cult of Psyche Series — CultCodex",
+  description: "Cult of Psyche episodes grouped into series and recurring formats.",
 };
 
 export default async function SeriesPage() {

@@ -5,6 +5,7 @@ import { PILLARS } from "@/lib/pillars/pillars";
 import { accentFor } from "@/components/collections/collection-accents";
 import { buildMetadata } from "@/lib/seo";
 import { SECTION_HEADERS } from "@/lib/section-headers";
+import { SITE_DIRECTORY } from "@/lib/site-directory";
 
 export const revalidate = 3600;
 
@@ -52,6 +53,38 @@ export default function ExploreIndexPage() {
               </Link>
             );
           })}
+        </section>
+
+        <section aria-labelledby="directory-heading" className="space-y-8 border-t border-border pt-10">
+          <div className="max-w-2xl space-y-2">
+            <h2 id="directory-heading" className="font-display text-2xl font-bold text-text-primary">
+              Everything in the archive
+            </h2>
+            <p className="text-sm text-text-muted leading-relaxed">
+              Every section of CultCodex, grouped by what you came to do.
+            </p>
+          </div>
+          <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            {SITE_DIRECTORY.map((group) => (
+              <nav key={group.title} aria-label={group.title}>
+                <h3 className="mb-3 font-mono text-[12px] font-semibold uppercase tracking-widest text-accent-gold-text">
+                  {group.title}
+                </h3>
+                <ul className="space-y-2.5">
+                  {group.links.map((link) => (
+                    <li key={link.href}>
+                      <Link href={link.href} className="group block">
+                        <span className="text-sm font-semibold text-text-primary transition-colors group-hover:text-accent-gold-text">
+                          {link.label}
+                        </span>
+                        <span className="block text-[13px] leading-snug text-text-muted">{link.blurb}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ))}
+          </div>
         </section>
       </main>
     </>
