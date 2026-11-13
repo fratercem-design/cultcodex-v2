@@ -85,6 +85,11 @@ jobs:
       - name: Import transcripts
         env:
           ENRICH_SECRET: ${{ secrets.ENRICH_SECRET }}
+          # YouTube answers runner IPs with a bot check even with cookies: on
+          # 2026-11-12 this step fetched 0 of 115 transcripts. Supadata (paid,
+          # about one credit per video) fetches the ones yt-dlp is refused.
+          # Videos that are deleted or private never reach it.
+          SUPADATA_API_KEY: ${{ secrets.SUPADATA_API_KEY }}
           APP_URL: https://cultcodex.me
           YOUTUBE_COOKIES_FILE: /tmp/yt-cookies.txt
         run: |
