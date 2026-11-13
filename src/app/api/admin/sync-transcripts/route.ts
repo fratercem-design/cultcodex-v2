@@ -6,6 +6,7 @@ import { sweepSecretMatches } from "@/lib/admin-guard";
 import { notifyTranscriptReady } from "@/lib/notifications";
 import { YoutubeTranscript } from "youtube-transcript";
 import { captionsToMs } from "@/lib/transcript/caption-units";
+import { isPermanentMiss } from "@/lib/transcript/permanent-miss";
 
 export const runtime = "nodejs";
 // Vercel serverless function limit. 300s requires Pro, or Hobby with Fluid Compute
@@ -38,8 +39,23 @@ const ROUTE_BUDGET_MS = (() => {
 const SUPADATA_POLL_ATTEMPTS = 6;
 const SUPADATA_POLL_INTERVAL_MS = 5000;
 
+// Per-request caps. Neither the youtube-transcript lib nor fetch() time out on their
+// own, so one hung request could silently eat the whole ROUTE_BUDGET_MS.
+const YT_TIMEOUT_MS = 10_000;
+const SUPADATA_REQUEST_TIMEOUT_MS = 20_000;
+
 function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+// Abort signal bounded by both the per-request cap and the route deadline.
+function requestSignal(deadlineAt: number) {
+  const left = Math.max(1000, deadlineAt - Date.now());
+  return AbortSignal.timeout(Math.min(SUPADATA_REQUEST_TIMEOUT_MS, left));
+}
+
+function isTimeout(err: unknown) {
+  return err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError");
 }
 
 interface TranscriptResult {
@@ -74,7 +90,12 @@ async function fetchTranscriptYT(
   videoId: string
 ): Promise<{ chunks: SupadataChunk[] | null; reason: string }> {
   try {
-    const segments = await YoutubeTranscript.fetchTranscript(videoId, { lang: "en" });
+    const segments = await Promise.race([
+      YoutubeTranscript.fetchTranscript(videoId, { lang: "en" }),
+      sleep(YT_TIMEOUT_MS).then(() => {
+        throw Object.assign(new Error("yt timeout"), { name: "TimeoutError" });
+      }),
+    ]);
     if (!segments || segments.length === 0) return { chunks: null, reason: "yt_empty" };
     // Milliseconds for srv3 captions but seconds for the classic format;
     // normalise so the /1000 below is right either way.
@@ -85,8 +106,10 @@ async function fetchTranscriptYT(
       lang: s.lang ?? "en",
     }));
     return { chunks, reason: "youtube-transcript" };
-  } catch {
-    return { chunks: null, reason: "yt_no_captions" };
+  } catch (err) {
+    // A timeout says nothing about whether captions exist — don't let it read as
+    // "yt_no_captions" (in practice Supadata runs next either way).
+    return { chunks: null, reason: isTimeout(err) ? "yt_timeout" : "yt_no_captions" };
   }
 }
 
@@ -95,19 +118,23 @@ async function fetchTranscriptSupadata(
   apiKey: string,
   deadlineAt: number
 ): Promise<{ chunks: SupadataChunk[] | null; reason: string; rateLimited?: boolean }> {
-  // Try YouTube-specific GET endpoint first (works for both native captions and ASR)
-  const params = new URLSearchParams({ videoId, lang: "en" });
-  let res = await fetch(`${SUPADATA_BASE}/youtube/transcript?${params}`, {
-    headers: { "x-api-key": apiKey },
+  // Universal endpoint is GET /transcript. The old fallback POSTed to it, which isn't
+  // a route — it returned a bare "404 Not Found" that got the episode wrongly stamped
+  // as permanently caption-less. mode=auto: native captions first, AI-generated
+  // transcript (async job, 202) only when none exist.
+  const params = new URLSearchParams({
+    url: `https://www.youtube.com/watch?v=${videoId}`,
+    lang: "en",
+    mode: "auto",
   });
-
-  // Fall back to general POST endpoint
-  if (!res.ok && res.status === 404) {
-    res = await fetch(`${SUPADATA_BASE}/transcript`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-api-key": apiKey },
-      body: JSON.stringify({ url: `https://www.youtube.com/watch?v=${videoId}`, lang: "en" }),
+  let res: Response;
+  try {
+    res = await fetch(`${SUPADATA_BASE}/transcript?${params}`, {
+      headers: { "x-api-key": apiKey },
+      signal: requestSignal(deadlineAt),
     });
+  } catch (err) {
+    return { chunks: null, reason: isTimeout(err) ? "supadata_timeout" : `supadata_fetch: ${String(err).slice(0, 150)}` };
   }
 
   if (!res.ok) {
@@ -128,9 +155,15 @@ async function fetchTranscriptSupadata(
         return { chunks: null, reason: "supadata_job_deadline" };
       }
       await sleep(SUPADATA_POLL_INTERVAL_MS);
-      const jobRes = await fetch(`${SUPADATA_BASE}/transcript/${data.jobId}`, {
-        headers: { "x-api-key": apiKey },
-      });
+      let jobRes: Response;
+      try {
+        jobRes = await fetch(`${SUPADATA_BASE}/transcript/${data.jobId}`, {
+          headers: { "x-api-key": apiKey },
+          signal: requestSignal(deadlineAt),
+        });
+      } catch (err) {
+        return { chunks: null, reason: isTimeout(err) ? "supadata_job_deadline" : "supadata_job_fetch" };
+      }
       if (!jobRes.ok) return { chunks: null, reason: `supadata_job_${jobRes.status}` };
       const jobData = (await jobRes.json()) as { status: string; result?: SupadataTranscript };
       if (jobData.status === "done" && jobData.result) {
@@ -260,8 +293,7 @@ export async function POST(req: NextRequest) {
 
       if (!chunks) {
         // Mark permanently unavailable episodes so we skip them on future runs.
-        // 404 = no captions; 403 = age-restricted (can't fetch); empty = no transcript data.
-        const permanent = reason.startsWith("supadata_404") || reason.startsWith("supadata_403") || reason.startsWith("supadata_empty") || reason === "yt_no_captions" || reason === "yt_empty";
+        const permanent = isPermanentMiss(reason);
         let markReason = reason;
         if (permanent) {
           try {
