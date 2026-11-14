@@ -300,8 +300,20 @@ export async function enrichEpisode(
     jsonText = jsonText.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
   }
 
-  const parsed = parseEnrichmentJson(escapeControlCharsInStrings(jsonText));
+  const parsed = parseEnrichmentJson(escapeControlCharsInStrings(repairTimestampKeys(jsonText)));
   return EnrichmentResultSchema.parse(parsed);
+}
+
+/**
+ * The free nemotron model sometimes drops the closing quote of the one numeric
+ * key in the schema and writes `"timestampSeconds: 1138,` for
+ * `"timestampSeconds": 1138,`. JSON.parse then fails with "Expected ':' after
+ * property name", and the same episodes failed on every run. Must run before
+ * escapeControlCharsInStrings, which would otherwise read the broken key as an
+ * open string and escape the newline after it.
+ */
+export function repairTimestampKeys(json: string): string {
+  return json.replace(/"timestampSeconds:\s*(-?\d+(?:\.\d+)?)/g, '"timestampSeconds": $1');
 }
 
 /**

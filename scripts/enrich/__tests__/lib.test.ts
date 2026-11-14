@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildTranscriptText, buildUserMessage, escapeControlCharsInStrings, parseEnrichmentJson } from "../lib";
+import { buildTranscriptText, buildUserMessage, escapeControlCharsInStrings, parseEnrichmentJson, repairTimestampKeys } from "../lib";
 
 describe("buildTranscriptText", () => {
   it("concatenates segments with timestamps", () => {
@@ -75,5 +75,21 @@ describe("parseEnrichmentJson", () => {
   it("names the text around the position a parse fails at", () => {
     const bad = '{"quotes":[{"text":"hi","speaker" "Psyche"}]}';
     expect(() => parseEnrichmentJson(bad)).toThrow(/near ".*speaker\\" \\"Psyche/);
+  });
+});
+
+describe("repairTimestampKeys", () => {
+  // Shape copied from the failing EP.2266 output in run 43569908402.
+  const broken = '{"quotes":[{\n      "speaker": "Psyche",\n      "timestampSeconds: 1138,\n      "context": "x"\n    }]}';
+
+  it("restores the closing quote the model drops", () => {
+    expect(JSON.parse(escapeControlCharsInStrings(repairTimestampKeys(broken)))).toEqual({
+      quotes: [{ speaker: "Psyche", timestampSeconds: 1138, context: "x" }],
+    });
+  });
+
+  it("leaves well-formed keys and string values alone", () => {
+    const ok = '{"timestampSeconds": 14, "context": "said timestampSeconds: 5 out loud"}';
+    expect(repairTimestampKeys(ok)).toBe(ok);
   });
 });
