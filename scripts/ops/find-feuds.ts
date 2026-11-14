@@ -24,7 +24,7 @@ import { getPrisma, disconnect } from "../ingest/lib";
 import { NOISE_PERSON_SLUGS, REMOVED_PERSON_SLUGS } from "../../src/lib/people/noise-slugs";
 import type { RelationType } from "../../src/generated/prisma/client";
 
-const MODEL = "claude-opus-5";
+const MODEL = "claude-haiku-5-5";
 const CONCURRENCY = 5;
 const PREVIEW = 12;
 const TIME_BUDGET_MS = 24 * 60_000;
