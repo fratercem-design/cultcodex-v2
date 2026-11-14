@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildTranscriptText, buildUserMessage, escapeControlCharsInStrings } from "../lib";
+import { buildTranscriptText, buildUserMessage, escapeControlCharsInStrings, parseEnrichmentJson, repairTimestampKeys } from "../lib";
 
 describe("buildTranscriptText", () => {
   it("concatenates segments with timestamps", () => {
@@ -64,5 +64,43 @@ describe("escapeControlCharsInStrings", () => {
   it("does not treat an escaped quote as the end of a string", () => {
     const bad = '{"q": "she said \\"hi\\"\tthen left"}';
     expect(JSON.parse(escapeControlCharsInStrings(bad))).toEqual({ q: 'she said "hi"\tthen left' });
+  });
+});
+
+describe("parseEnrichmentJson", () => {
+  it("parses valid JSON", () => {
+    expect(parseEnrichmentJson('{"a":1}')).toEqual({ a: 1 });
+  });
+
+  it("names the text around the position a parse fails at", () => {
+    const bad = '{"quotes":[{"text":"hi","speaker" "Psyche"}]}';
+    expect(() => parseEnrichmentJson(bad)).toThrow(/near ".*speaker\\" \\"Psyche/);
+  });
+});
+
+describe("repairTimestampKeys", () => {
+  // Shape copied from the failing EP.2266 output in run 43569908402.
+  const broken = '{"quotes":[{\n      "speaker": "Psyche",\n      "timestampSeconds: 1138,\n      "context": "x"\n    }]}';
+
+  it("restores the closing quote the model drops", () => {
+    expect(JSON.parse(escapeControlCharsInStrings(repairTimestampKeys(broken)))).toEqual({
+      quotes: [{ speaker: "Psyche", timestampSeconds: 1138, context: "x" }],
+    });
+  });
+
+  it("leaves an escaped quote inside a string value alone", () => {
+    const ok = JSON.stringify({ text: 'he said "timestampSeconds: 5" twice', timestampSeconds: 14 });
+    expect(repairTimestampKeys(ok)).toBe(ok);
+    expect(JSON.parse(repairTimestampKeys(ok))).toEqual(JSON.parse(ok));
+  });
+
+  it("repairs a broken key straight after { or ,", () => {
+    expect(JSON.parse(repairTimestampKeys('{"timestampSeconds: 3,"a":1}'))).toEqual({ timestampSeconds: 3, a: 1 });
+    expect(JSON.parse(repairTimestampKeys('{"a":1,"timestampSeconds: 3}'))).toEqual({ a: 1, timestampSeconds: 3 });
+  });
+
+  it("leaves well-formed keys and string values alone", () => {
+    const ok = '{"timestampSeconds": 14, "context": "said timestampSeconds: 5 out loud"}';
+    expect(repairTimestampKeys(ok)).toBe(ok);
   });
 });

@@ -300,6 +300,38 @@ export async function enrichEpisode(
     jsonText = jsonText.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
   }
 
-  const parsed = JSON.parse(escapeControlCharsInStrings(jsonText));
+  const parsed = parseEnrichmentJson(escapeControlCharsInStrings(repairTimestampKeys(jsonText)));
   return EnrichmentResultSchema.parse(parsed);
+}
+
+/**
+ * The free nemotron model sometimes drops the closing quote of the one numeric
+ * key in the schema and writes `"timestampSeconds: 1138,` for
+ * `"timestampSeconds": 1138,`. JSON.parse then fails with "Expected ':' after
+ * property name", and the same episodes failed on every run. Must run before
+ * escapeControlCharsInStrings, which would otherwise read the broken key as an
+ * open string and escape the newline after it.
+ */
+export function repairTimestampKeys(json: string): string {
+  // Only in key position: after `{`, `,` or whitespace. An escaped quote inside
+  // a string value (`\"timestampSeconds: 5`) follows a backslash and is left alone.
+  return json.replace(/(^|[{,\s])"timestampSeconds:\s*(-?\d+(?:\.\d+)?)/g, '$1"timestampSeconds": $2');
+}
+
+/**
+ * JSON.parse, but a failure names the text around the bad position. The bare
+ * "Expected ':' after property name in JSON at position 5707" said nothing
+ * about what the model actually wrote, so the same episodes failed run after
+ * run with no way to tell why.
+ */
+export function parseEnrichmentJson(text: string): unknown {
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    const pos = Number(/position (\d+)/.exec(msg)?.[1]);
+    if (!Number.isFinite(pos)) throw err;
+    const near = JSON.stringify(text.slice(Math.max(0, pos - 80), pos + 40));
+    throw new Error(`${msg} — near ${near}`);
+  }
 }
