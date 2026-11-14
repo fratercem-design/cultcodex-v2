@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildTranscriptText, buildUserMessage, escapeControlCharsInStrings } from "../lib";
+import { buildTranscriptText, buildUserMessage, escapeControlCharsInStrings, parseEnrichmentJson } from "../lib";
 
 describe("buildTranscriptText", () => {
   it("concatenates segments with timestamps", () => {
@@ -64,5 +64,16 @@ describe("escapeControlCharsInStrings", () => {
   it("does not treat an escaped quote as the end of a string", () => {
     const bad = '{"q": "she said \\"hi\\"\tthen left"}';
     expect(JSON.parse(escapeControlCharsInStrings(bad))).toEqual({ q: 'she said "hi"\tthen left' });
+  });
+});
+
+describe("parseEnrichmentJson", () => {
+  it("parses valid JSON", () => {
+    expect(parseEnrichmentJson('{"a":1}')).toEqual({ a: 1 });
+  });
+
+  it("names the text around the position a parse fails at", () => {
+    const bad = '{"quotes":[{"text":"hi","speaker" "Psyche"}]}';
+    expect(() => parseEnrichmentJson(bad)).toThrow(/near ".*speaker\\" \\"Psyche/);
   });
 });

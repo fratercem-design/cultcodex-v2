@@ -300,6 +300,24 @@ export async function enrichEpisode(
     jsonText = jsonText.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
   }
 
-  const parsed = JSON.parse(escapeControlCharsInStrings(jsonText));
+  const parsed = parseEnrichmentJson(escapeControlCharsInStrings(jsonText));
   return EnrichmentResultSchema.parse(parsed);
+}
+
+/**
+ * JSON.parse, but a failure names the text around the bad position. The bare
+ * "Expected ':' after property name in JSON at position 5707" said nothing
+ * about what the model actually wrote, so the same episodes failed run after
+ * run with no way to tell why.
+ */
+export function parseEnrichmentJson(text: string): unknown {
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    const pos = Number(/position (\d+)/.exec(msg)?.[1]);
+    if (!Number.isFinite(pos)) throw err;
+    const near = JSON.stringify(text.slice(Math.max(0, pos - 80), pos + 40));
+    throw new Error(`${msg} — near ${near}`);
+  }
 }
