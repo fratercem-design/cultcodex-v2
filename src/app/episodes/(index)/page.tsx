@@ -57,7 +57,6 @@ const FILTER_OPTIONS = [
   { label: "Livestream", value: "livestream" },
   { label: "Original", value: "original" },
   { label: "Short", value: "short" },
-  { label: "Clip", value: "clip" },
 ];
 
 interface EpisodesPageProps {
