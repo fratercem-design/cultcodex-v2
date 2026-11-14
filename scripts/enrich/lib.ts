@@ -313,7 +313,9 @@ export async function enrichEpisode(
  * open string and escape the newline after it.
  */
 export function repairTimestampKeys(json: string): string {
-  return json.replace(/"timestampSeconds:\s*(-?\d+(?:\.\d+)?)/g, '"timestampSeconds": $1');
+  // Only in key position: after `{`, `,` or whitespace. An escaped quote inside
+  // a string value (`\"timestampSeconds: 5`) follows a backslash and is left alone.
+  return json.replace(/(^|[{,\s])"timestampSeconds:\s*(-?\d+(?:\.\d+)?)/g, '$1"timestampSeconds": $2');
 }
 
 /**

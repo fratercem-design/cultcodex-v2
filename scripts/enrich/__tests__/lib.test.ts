@@ -88,6 +88,17 @@ describe("repairTimestampKeys", () => {
     });
   });
 
+  it("leaves an escaped quote inside a string value alone", () => {
+    const ok = JSON.stringify({ text: 'he said "timestampSeconds: 5" twice', timestampSeconds: 14 });
+    expect(repairTimestampKeys(ok)).toBe(ok);
+    expect(JSON.parse(repairTimestampKeys(ok))).toEqual(JSON.parse(ok));
+  });
+
+  it("repairs a broken key straight after { or ,", () => {
+    expect(JSON.parse(repairTimestampKeys('{"timestampSeconds: 3,"a":1}'))).toEqual({ timestampSeconds: 3, a: 1 });
+    expect(JSON.parse(repairTimestampKeys('{"a":1,"timestampSeconds: 3}'))).toEqual({ a: 1, timestampSeconds: 3 });
+  });
+
   it("leaves well-formed keys and string values alone", () => {
     const ok = '{"timestampSeconds": 14, "context": "said timestampSeconds: 5 out loud"}';
     expect(repairTimestampKeys(ok)).toBe(ok);
