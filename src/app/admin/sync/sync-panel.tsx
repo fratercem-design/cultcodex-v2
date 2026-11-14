@@ -367,7 +367,7 @@ export function SyncPanel({
               Stored as searchable <code>TranscriptSegment</code> rows.
             </p>
             <p className="font-mono text-[12px] text-text-muted">
-              {withoutTranscript.toLocaleString("en-US")} episodes still need transcripts. No API key required.
+              {withoutTranscript.toLocaleString("en-US")} episodes still need transcripts. YouTube captions first, Supadata as fallback.
             </p>
           </div>
           <div className="flex items-center gap-3">
