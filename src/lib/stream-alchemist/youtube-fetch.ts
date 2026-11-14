@@ -7,6 +7,7 @@ import {
   YoutubeTranscriptVideoUnavailableError,
 } from "youtube-transcript";
 import type { CaptionChunk } from "./youtube";
+import { readSupadataJob } from "@/lib/transcript/supadata-job";
 
 // Server-only. Mirrors the admin transcript sync: the free youtube-transcript
 // scraper first, Supadata (paid) only as an explicit opt-in fallback, since
@@ -76,10 +77,12 @@ export async function fetchFromSupadata(videoId: string, deadlineAt: number): Pr
     await new Promise((r) => setTimeout(r, 5000));
     const job = await fetch(`${SUPADATA_BASE}/transcript/${encodeURIComponent(data.jobId)}`, { headers });
     if (!job.ok) throw new YouTubeImportError(`Supadata returned ${job.status}.`, false);
-    const body = (await job.json()) as { status: string; result?: SupadataResponse };
-    if (body.status === "failed" || body.status === "error") throw new YouTubeImportError("Supadata couldn't transcribe this video.", false);
-    data = body.status === "done" && body.result ? body.result : data;
-    if (body.status === "done") break;
+    const result = readSupadataJob<CaptionChunk>(await job.json());
+    if (result.state === "failed") throw new YouTubeImportError("Supadata couldn't transcribe this video.", false);
+    if (result.state === "done") {
+      data = { content: result.content ?? [] };
+      break;
+    }
   }
 
   if (!Array.isArray(data.content) || !data.content.length) {
