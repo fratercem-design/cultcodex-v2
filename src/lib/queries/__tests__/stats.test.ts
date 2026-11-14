@@ -21,7 +21,9 @@ vi.mock("@/lib/db", () => ({
     series: { count: vi.fn().mockResolvedValue(10) },
     topic: { count: vi.fn().mockResolvedValue(150) },
     transcriptSegment: { count: vi.fn().mockResolvedValue(5000) },
-    $queryRaw: vi.fn().mockResolvedValue([{ total_hours: "0" }]),
+    $queryRaw: vi.fn().mockResolvedValue([
+      { episodes: 100, segments: 5000, people: 50, topics: 150, lore: 200, quotes: 300, transcribed: 80, hours: 12.5 },
+    ]),
   },
 }));
 
@@ -51,6 +53,19 @@ describe("getCounts (canonical archive stats)", () => {
   });
 });
 
+describe("getCounts query shape", () => {
+  it("reads every count in one query instead of one connection per count", async () => {
+    vi.mocked(prisma.$queryRaw).mockClear();
+    vi.mocked(prisma.episode.count).mockClear();
+    vi.mocked(prisma.transcriptSegment.count).mockClear();
+    const counts = await getCounts();
+    expect(prisma.$queryRaw).toHaveBeenCalledTimes(1);
+    expect(prisma.episode.count).not.toHaveBeenCalled();
+    expect(prisma.transcriptSegment.count).not.toHaveBeenCalled();
+    expect(counts).toMatchObject({ episodes: 100, segments: 5000, transcribedEpisodes: 80, transcribedPct: 80, totalHours: 12.5 });
+  });
+});
+
 describe("getCountsOrNull (display guard)", () => {
   it("returns the counts when the archive can be read", async () => {
     const counts = await getCountsOrNull();
@@ -58,16 +73,17 @@ describe("getCountsOrNull (display guard)", () => {
   });
 
   it("returns null when the count query fails", async () => {
-    vi.mocked(prisma.episode.count).mockRejectedValueOnce(new Error("connection refused"));
+    vi.mocked(prisma.$queryRaw).mockRejectedValueOnce(new Error("connection refused"));
     expect(await getCountsOrNull()).toBeNull();
   });
 
   it("returns null when the archive reports zero episodes", async () => {
     // An empty archive means the app is reading the wrong database, not that
     // the archive is empty: never surface it as "0 episodes".
-    vi.mocked(prisma.episode.count).mockResolvedValue(0);
+    vi.mocked(prisma.$queryRaw).mockResolvedValueOnce([
+      { episodes: 0, segments: 0, people: 0, topics: 0, lore: 0, quotes: 0, transcribed: 0, hours: 0 },
+    ] as never);
     expect(await getCountsOrNull()).toBeNull();
-    vi.mocked(prisma.episode.count).mockResolvedValue(100);
   });
 });
 

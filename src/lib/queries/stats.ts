@@ -35,60 +35,66 @@ export interface SiteCounts {
 // present on SiteCounts — so the alias is structurally compatible.
 export type ArchiveCounts = SiteCounts;
 
+interface CountsRow {
+  episodes: number;
+  segments: number;
+  people: number;
+  topics: number;
+  lore: number;
+  quotes: number;
+  transcribed: number;
+  hours: number;
+}
+
 async function fetchCountsFromDB(): Promise<SiteCounts> {
-  // Run all counts in parallel; hours come from a single aggregating SQL query
-  // so no episode rows are transferred across the wire.
-  const [
-    episodes,
-    segments,
-    people,
-    topics,
-    lore,
-    quotes,
-    transcribedEpisodes,
-    hoursResult,
-  ] = await Promise.all([
-    prisma.episode.count(),
-    prisma.transcriptSegment.count(),
-    prisma.person.count(),
-    prisma.topic.count(),
-    prisma.loreEntry.count(),
-    prisma.quote.count(),
-    // "transcribed" = has at least one TranscriptSegment row
-    prisma.episode.count({ where: { segments: { some: {} } } }),
-    // Compute total hours entirely in Postgres.
-    // Handles both "HH:MM:SS" and "MM:SS" formats; nulls/malformed rows → 0.
-    prisma.$queryRaw<[{ hours: number }]>`
-      SELECT COALESCE(SUM(
-        CASE
-          WHEN duration ~ '^\\d+:\\d{2}:\\d{2}$' THEN
-            split_part(duration,':',1)::int * 3600 +
-            split_part(duration,':',2)::int * 60  +
-            split_part(duration,':',3)::int
-          WHEN duration ~ '^\\d+:\\d{2}$' THEN
-            split_part(duration,':',1)::int * 60 +
-            split_part(duration,':',2)::int
-          ELSE 0
-        END
-      ), 0) / 3600 AS hours
-      FROM "Episode"
-    `,
-  ]);
+  // ONE query on ONE connection. This used to be eight queries under
+  // Promise.all, which took every connection in the five-connection pool at
+  // once, including an exact count(*) over TranscriptSegment (millions of rows
+  // carrying embeddings). Whenever that revalidation failed, the next request
+  // started it again. On 2026-11-11 and 2026-11-14 production logged a run of
+  // "timeout exceeded when trying to connect" errors on this key while
+  // /episodes took 15 s and episode pages returned 500.
+  //
+  // The segment total is the planner's estimate (pg_class.reltuples, kept
+  // current by autovacuum); it is shown rounded and does not need to be exact.
+  // Hours are computed in Postgres from "HH:MM:SS" / "MM:SS" durations.
+  const [row] = await prisma.$queryRaw<[CountsRow]>`
+    SELECT
+      (SELECT count(*) FROM "Episode")::int                                     AS episodes,
+      (SELECT GREATEST(reltuples, 0)::bigint FROM pg_class
+         WHERE oid = '"TranscriptSegment"'::regclass)::int                      AS segments,
+      (SELECT count(*) FROM "Person")::int                                      AS people,
+      (SELECT count(*) FROM "Topic")::int                                       AS topics,
+      (SELECT count(*) FROM "LoreEntry")::int                                   AS lore,
+      (SELECT count(*) FROM "Quote")::int                                       AS quotes,
+      (SELECT count(*) FROM "Episode" e
+         WHERE EXISTS (SELECT 1 FROM "TranscriptSegment" t WHERE t."episodeId" = e.id))::int AS transcribed,
+      (SELECT COALESCE(SUM(
+         CASE
+           WHEN duration ~ '^\\d+:\\d{2}:\\d{2}$' THEN
+             split_part(duration,':',1)::int * 3600 +
+             split_part(duration,':',2)::int * 60  +
+             split_part(duration,':',3)::int
+           WHEN duration ~ '^\\d+:\\d{2}$' THEN
+             split_part(duration,':',1)::int * 60 +
+             split_part(duration,':',2)::int
+           ELSE 0
+         END
+       ), 0) / 3600 FROM "Episode")::float8                                     AS hours
+  `;
 
-  const totalHours = Number(hoursResult[0]?.hours ?? 0);
-  const transcribedPct =
-    episodes > 0 ? Math.round((transcribedEpisodes / episodes) * 100) : 0;
-
+  const episodes = Number(row?.episodes ?? 0);
+  const transcribedEpisodes = Number(row?.transcribed ?? 0);
   return {
     episodes,
-    segments,
-    people,
-    topics,
-    lore,
-    quotes,
-    totalHours,
+    segments: Number(row?.segments ?? 0),
+    people: Number(row?.people ?? 0),
+    topics: Number(row?.topics ?? 0),
+    lore: Number(row?.lore ?? 0),
+    quotes: Number(row?.quotes ?? 0),
+    totalHours: Number(row?.hours ?? 0),
     transcribedEpisodes,
-    transcribedPct,
+    transcribedPct: episodes > 0 ? Math.round((transcribedEpisodes / episodes) * 100) : 0,
   };
 }
 
