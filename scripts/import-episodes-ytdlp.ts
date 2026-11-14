@@ -8,6 +8,7 @@
  *   ENRICH_SECRET          — API auth key (required)
  *   APP_URL             — defaults to https://cultcodex.me
  *   YOUTUBE_COOKIES_FILE   — path to Netscape cookies file (required for CI)
+ *   SUPADATA_API_KEY       — optional; paid fallback when YouTube refuses yt-dlp
  */
 import "dotenv/config";
 import * as fs from "fs";
@@ -15,6 +16,9 @@ import * as path from "path";
 import * as https from "https";
 import * as os from "os";
 import { execFileSync } from "child_process";
+import { fetchFromSupadata } from "@/lib/stream-alchemist/youtube-fetch";
+import { captionsToMs } from "@/lib/transcript/caption-units";
+import { classifyYtDlpError } from "./transcript-fallback";
 
 const BASE_URL = (process.env.APP_URL ?? "https://cultcodex.me").replace(/\/$/, "");
 const SECRET = (process.env.ENRICH_SECRET ?? "").trim();
@@ -166,6 +170,29 @@ function fetchVtt(videoId: string): string {
   return vtt;
 }
 
+// ── Supadata fallback ─────────────────────────────────────────────────────────
+
+/** Long streams come back from Supadata as an async job; give each one up to 3 minutes. */
+const SUPADATA_DEADLINE_MS = 3 * 60_000;
+
+async function fetchSupadataSegments(videoId: string): Promise<Segment[]> {
+  const chunks = captionsToMs(await fetchFromSupadata(videoId, Date.now() + SUPADATA_DEADLINE_MS));
+  return chunks
+    .map((c) => ({ offset: c.offset, duration: Math.max(c.duration, 1000), text: c.text.trim() }))
+    .filter((c) => c.text);
+}
+
+/**
+ * execFileSync's message starts with the full command line, so a console slice
+ * never reached yt-dlp's reason. Prefer the ERROR line from stderr (bot check,
+ * no captions, private video, ...).
+ */
+function ytDlpReason(err: unknown): string {
+  const stderr = String((err as { stderr?: unknown })?.stderr ?? "");
+  const ytError = stderr.split("\n").reverse().find((l) => l.includes("ERROR"))?.trim();
+  return ytError || (err instanceof Error ? err.message : String(err));
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -217,7 +244,11 @@ async function main() {
   let fetched = 0;
   let skipped = 0;
   let failed = 0;
+  let viaSupadata = 0;
+  let blocked = 0;
   const failures: string[] = [];
+  const useSupadata = !!process.env.SUPADATA_API_KEY;
+  console.log(`  Supadata fallback: ${useSupadata ? "on" : "off (SUPADATA_API_KEY not set)"}`);
 
   for (let i = 0; i < toProcess.length; i++) {
     const video = toProcess[i];
@@ -227,9 +258,24 @@ async function main() {
     const progress = `[${i + 1}/${toProcess.length}]`;
 
     try {
-      const vtt = fetchVtt(video.videoId);
-      const segments = parseVtt(vtt);
-      if (!segments.length) throw new Error("empty_transcript");
+      let segments: Segment[];
+      let source = "yt-dlp";
+      try {
+        segments = parseVtt(fetchVtt(video.videoId));
+        if (!segments.length) throw new Error("empty_transcript");
+      } catch (ytErr) {
+        const reason = ytDlpReason(ytErr);
+        const kind = classifyYtDlpError(reason);
+        if (kind === "blocked") blocked++;
+        if (!useSupadata || kind === "gone") throw new Error(reason);
+        try {
+          segments = await fetchSupadataSegments(video.videoId);
+        } catch (supErr) {
+          throw new Error(`${reason.slice(0, 80)} | supadata: ${supErr instanceof Error ? supErr.message : String(supErr)}`);
+        }
+        if (!segments.length) throw new Error(`${reason.slice(0, 80)} | supadata: empty`);
+        source = "supadata";
+      }
 
       const result = await apiPost("/api/admin/episodes", {
         mode: "import-segments",
@@ -242,7 +288,8 @@ async function main() {
         process.stdout.write(`\r  ${progress} ${epLabel} already imported. fetched:${fetched} skip:${skipped} fail:${failed}  `);
       } else if (result.ok) {
         fetched++;
-        console.log(`  ${progress} ${epLabel} ✓ ${result.segments} segs — ${video.title.slice(0, 50)}`);
+        if (source === "supadata") viaSupadata++;
+        console.log(`  ${progress} ${epLabel} ✓ ${result.segments} segs (${source}) — ${video.title.slice(0, 50)}`);
       } else {
         failed++;
         failures.push(`${epLabel} ${video.videoId}: ${result.error}`);
@@ -250,12 +297,7 @@ async function main() {
       }
     } catch (err) {
       failed++;
-      // execFileSync's message starts with the full command line, so the
-      // 80-char console slice never reached yt-dlp's reason. Prefer the
-      // ERROR line from stderr (bot check, no captions, private video, ...).
-      const stderr = String((err as { stderr?: unknown })?.stderr ?? "");
-      const ytError = stderr.split("\n").reverse().find((l) => l.includes("ERROR"))?.trim();
-      const msg = ytError || (err instanceof Error ? err.message : String(err));
+      const msg = err instanceof Error ? err.message : String(err);
       failures.push(`${epLabel} ${video.videoId}: ${msg.slice(0, 100)}`);
       console.log(`  ${progress} ${epLabel} ✗ ${msg.slice(0, 160)} — ${video.title.slice(0, 30)}`);
     }
@@ -263,12 +305,19 @@ async function main() {
     if (i < toProcess.length - 1) await sleep(delayMs);
   }
 
-  console.log(`\n  Done — fetched: ${fetched}, skipped: ${skipped}, failed: ${failed}`);
+  console.log(`\n  Done — fetched: ${fetched} (${viaSupadata} via Supadata), skipped: ${skipped}, failed: ${failed}`);
 
   if (failures.length) {
     const logPath = path.join(__dirname, "scrape", "data", "transcript-failures-episodes.log");
     fs.writeFileSync(logPath, failures.join("\n"));
     console.log(`  Failures logged: ${logPath}`);
+  }
+
+  // Nothing imported while YouTube was refusing this IP is an outage, not an
+  // empty day. Fail the run so it shows red instead of green.
+  if (fetched === 0 && blocked > 0) {
+    console.error(`  FATAL: YouTube blocked ${blocked} fetch(es) and no transcript was imported.`);
+    process.exit(1);
   }
 }
 
