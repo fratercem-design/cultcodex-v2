@@ -72,7 +72,7 @@ export default function DataOpsPage() {
   }
 
   return (
-    <main className="p-8 max-w-5xl space-y-10">
+    <div className="p-8 max-w-5xl space-y-10">
       <div>
         <h1 className="font-display text-2xl font-bold text-accent-gold">Data Ops</h1>
         <p className="font-mono text-xs text-text-muted mt-1">Name cleanup, deduplication, rename.</p>
@@ -165,7 +165,7 @@ export default function DataOpsPage() {
           </div>
         ))}
       </section>
-    </main>
+    </div>
   );
 }
 

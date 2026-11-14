@@ -217,12 +217,20 @@ export default async function HomePage() {
             </p>
           )}
 
-          <p className="mt-6 font-display text-[15px] text-ink-2">
-            New here?{" "}
-            <Link href="/start-here" className="font-semibold text-ink underline underline-offset-4 hover:text-brand-ink">
-              Start here →
+          {/* Second only to search (2026-11 audit): a real, full-size target
+              rather than a trailing text link, so a first-time visitor who
+              doesn't know what to search for has an obvious way in. */}
+          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2">
+            <Link
+              href="/start-here"
+              className="inline-flex min-h-11 items-center gap-2 rounded-sm border border-ink px-5 font-display text-[15px] font-semibold text-ink transition-colors hover:bg-ink hover:text-void"
+            >
+              New here? Start here <span aria-hidden="true">→</span>
             </Link>
-          </p>
+            <span className="font-display text-[14px] text-ink-3">
+              Six doorways in, each a theme with the episodes that define it.
+            </span>
+          </div>
         </div>
       </section>
 
@@ -237,7 +245,7 @@ export default async function HomePage() {
         ]}
       />
 
-      <main id="main-content" className="mx-auto max-w-[1120px] space-y-24 px-4 py-16">
+      <div className="mx-auto max-w-[1120px] space-y-24 px-4 py-16">
 
         {/* ── 4 · LATEST — prove the archive is alive ─────────────────── */}
         {featured && (
@@ -362,7 +370,7 @@ export default async function HomePage() {
           {/* GiftSignup carries its own heading and copy. */}
           <GiftSignup source="gift:gospel" />
         </section>
-      </main>
+      </div>
 
       {/* WebSite + SearchAction JSON-LD is emitted once in the root layout —
           avoid a second, conflicting WebSite block here. */}

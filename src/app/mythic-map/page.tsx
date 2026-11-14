@@ -270,7 +270,7 @@ export default function MythicMapPage() {
         ]}
       />
 
-      <main id="main-content" className="mx-auto max-w-5xl px-4 py-10 space-y-12">
+      <div className="mx-auto max-w-5xl px-4 py-10 space-y-12">
         {/* ── Intro ── */}
         <section className="text-center max-w-3xl mx-auto space-y-4">
           <p className="text-sm text-text-muted leading-relaxed">
@@ -676,7 +676,7 @@ export default function MythicMapPage() {
         </div>
 
         <ArchiveDisclaimer variant="full" />
-      </main>
+      </div>
     </>
   );
 }

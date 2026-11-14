@@ -16,7 +16,7 @@ export default async function AdminLivePage() {
   ]);
 
   return (
-    <main id="main-content" className="p-8 max-w-3xl space-y-8">
+    <div className="p-8 max-w-3xl space-y-8">
       <h1 className="font-display text-2xl font-bold text-accent-gold mb-2">
         Live Stream Controls
       </h1>
@@ -125,6 +125,6 @@ export default async function AdminLivePage() {
           />
         </div>
       </div>
-    </main>
+    </div>
   );
 }

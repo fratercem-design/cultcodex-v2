@@ -45,7 +45,7 @@ export default async function SyncPage() {
   ]);
 
   return (
-    <main id="main-content" className="p-8 max-w-5xl">
+    <div className="p-8 max-w-5xl">
       <div className="mb-8">
         <h1 className="font-display text-2xl font-bold text-accent-gold">Sync & Enrich</h1>
         <p className="font-mono text-xs text-text-muted mt-1">
@@ -84,6 +84,6 @@ export default async function SyncPage() {
         enrichmentQueued={enrichmentQueued}
         unenrichedPeople={unenrichedPeople}
       />
-    </main>
+    </div>
   );
 }

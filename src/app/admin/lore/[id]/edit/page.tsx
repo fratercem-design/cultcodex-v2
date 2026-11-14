@@ -26,7 +26,7 @@ export default async function EditLoreEntryPage({ params }: PageProps) {
   }
 
   return (
-    <main id="main-content" className="p-8 max-w-3xl">
+    <div className="p-8 max-w-3xl">
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display text-2xl font-bold text-accent-gold">
           Edit Lore Entry
@@ -105,6 +105,6 @@ export default async function EditLoreEntryPage({ params }: PageProps) {
           </Link>
         </div>
       </form>
-    </main>
+    </div>
   );
 }

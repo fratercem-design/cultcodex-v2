@@ -62,7 +62,7 @@ export default function AppearPage() {
         label="guests"
       />
 
-      <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-14">
+      <div className="mx-auto max-w-3xl px-4 py-12 space-y-14">
 
         <section className="space-y-4 text-center">
           <p className="text-sm text-text-muted leading-relaxed">
@@ -138,7 +138,7 @@ export default function AppearPage() {
             </Link>
           </div>
         </section>
-      </main>
+      </div>
     </>
   );
 }

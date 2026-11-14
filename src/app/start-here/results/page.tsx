@@ -296,7 +296,7 @@ export default async function ResultsPage({ searchParams }: Props) {
   };
 
   return (
-    <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-12">
+    <div className="mx-auto max-w-3xl px-4 py-12 space-y-12">
       {/* Header */}
       <section className="space-y-4">
         <div className="space-y-1">
@@ -364,6 +364,6 @@ export default async function ResultsPage({ searchParams }: Props) {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

@@ -38,7 +38,7 @@ export default async function RankPage() {
         label="rank"
       />
 
-      <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-14">
+      <div className="mx-auto max-w-3xl px-4 py-12 space-y-14">
 
         {/* Current standing */}
         {data ? (
@@ -203,7 +203,7 @@ export default async function RankPage() {
             )}
           </div>
         </section>
-      </main>
+      </div>
     </>
   );
 }

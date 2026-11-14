@@ -21,7 +21,7 @@ export default function MeowPage() {
   const quote = CAT_QUOTES[quoteIndex];
 
   return (
-    <main className="relative mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center px-4 py-20">
+    <div className="relative mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center px-4 py-20">
       {/* Cat eyes */}
       <div className="mb-12 flex items-center gap-20">
         {/* Left eye */}
@@ -107,6 +107,6 @@ export default function MeowPage() {
       >
         &larr; back to the void
       </Link>
-    </main>
+    </div>
   );
 }

@@ -104,7 +104,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
       label="transmissions"
     />
       <EntityGlanceBar items={glanceItems} />
-      <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-4">
           {/* Main content */}
           <div className="lg:col-span-3">
@@ -272,7 +272,7 @@ export default async function QuotesPage({ searchParams }: QuotesPageProps) {
             </SectionCard>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

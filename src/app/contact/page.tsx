@@ -23,7 +23,7 @@ export default function ContactPage() {
         backgroundImage={SECTION_HEADERS.colophon}
         label="contact"
       />
-      <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
+      <div className="mx-auto max-w-4xl px-4 py-8 space-y-8">
 
         <SectionCard title="General Inquiries">
           <div className="space-y-3 text-sm text-text-primary leading-relaxed">
@@ -77,7 +77,7 @@ export default function ContactPage() {
           </div>
         </SectionCard>
 
-      </main>
+      </div>
     </>
   );
 }

@@ -47,7 +47,7 @@ export default async function ConnectionPathPage({ searchParams }: PageProps) {
   const toName = endpointNames[toSlug] || toSlug;
 
   return (
-    <main id="main-content" className="mx-auto max-w-4xl px-4 py-10 space-y-10">
+    <div className="mx-auto max-w-4xl px-4 py-10 space-y-10">
 
       {/* ── Header ─────────────────────────────────────────────── */}
       <div className="space-y-3 max-w-2xl">
@@ -129,7 +129,7 @@ export default async function ConnectionPathPage({ searchParams }: PageProps) {
       ) : (
         <PathResult fromName={fromName} toName={toName} result={result} />
       )}
-    </main>
+    </div>
   );
 }
 

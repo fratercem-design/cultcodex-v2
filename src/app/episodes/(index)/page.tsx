@@ -142,7 +142,7 @@ export default async function EpisodesPage({
       label="archive"
     />
     <EntityGlanceBar items={glanceItems} />
-    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-8">
       {topicSlug && (
         <div className="mb-6 flex items-center justify-between gap-4 rounded-lg border border-border bg-elevated px-4 py-3">
           <p className="font-mono text-xs text-text-muted">
@@ -273,7 +273,7 @@ export default async function EpisodesPage({
           <PaginationControls meta={paginationMeta} basePath="/episodes" />
         </>
       )}
-    </main>
+    </div>
     </>
   );
 }

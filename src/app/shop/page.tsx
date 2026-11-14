@@ -76,7 +76,7 @@ export default function ShopPage() {
         label="the shop"
       />
 
-      <main id="main-content" className="mx-auto max-w-7xl px-4 py-8 space-y-14">
+      <div className="mx-auto max-w-7xl px-4 py-8 space-y-14">
         {!PRICING_APPROVED && (
           <div className="rounded-lg border border-accent-sulphur/40 bg-accent-sulphur/5 px-4 py-3 font-mono text-[12px] text-text-muted">
             <span className="text-accent-sulphur">Coming soon —</span> the designs below are
@@ -161,7 +161,7 @@ export default function ShopPage() {
             for availability.
           </p>
         </section>
-      </main>
+      </div>
     </>
   );
 }

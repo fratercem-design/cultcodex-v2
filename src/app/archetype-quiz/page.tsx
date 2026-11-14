@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function ArchetypeQuizPage() {
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       {/* Hero */}
       <section className="border-b border-border bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-2xl space-y-4 text-center">
@@ -39,6 +39,6 @@ export default function ArchetypeQuizPage() {
 
       {/* Quiz */}
       <QuizClient />
-    </main>
+    </div>
   );
 }

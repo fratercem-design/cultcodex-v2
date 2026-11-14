@@ -112,7 +112,7 @@ export default async function PillarPage({ params }: PageProps) {
         label="explore"
       />
 
-      <main id="main-content" className="mx-auto max-w-4xl px-4 py-12 space-y-14">
+      <div className="mx-auto max-w-4xl px-4 py-12 space-y-14">
 
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
@@ -246,7 +246,7 @@ export default async function PillarPage({ params }: PageProps) {
             Consult the Oracle →
           </Link>
         </section>
-      </main>
+      </div>
 
       {/* Structured data */}
       <script

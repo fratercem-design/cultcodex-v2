@@ -23,7 +23,7 @@ export default async function AuthErrorPage({ searchParams }: PageProps) {
   const message = ERROR_MESSAGES[error ?? "Default"] ?? ERROR_MESSAGES.Default;
 
   return (
-    <main className="min-h-screen bg-void flex items-center justify-center px-4">
+    <div className="min-h-screen bg-void flex items-center justify-center px-4">
       <div className="text-center space-y-5 max-w-sm">
         <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-crimson-text">
           {"/// auth_error"}
@@ -52,6 +52,6 @@ export default async function AuthErrorPage({ searchParams }: PageProps) {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

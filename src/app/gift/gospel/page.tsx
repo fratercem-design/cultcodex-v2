@@ -62,7 +62,7 @@ export default async function GiftGospelPage({
         <MysticalDivider className="mt-10 opacity-40 [&_svg]:!text-accent-violet-text/25" />
       </header>
 
-      <main className="relative z-10 mx-auto max-w-2xl px-4 pb-24">
+      <div className="relative z-10 mx-auto max-w-2xl px-4 pb-24">
         <p className="mb-4 text-center font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
           {"/// while_you're_here"}
         </p>
@@ -81,7 +81,7 @@ export default async function GiftGospelPage({
             </Link>
           ))}
         </div>
-      </main>
+      </div>
     </div>
   );
 }

@@ -57,7 +57,7 @@ function DotList({ items, tone = "gold" }: { items: string[]; tone?: "gold" | "r
 export default function MethodologyPage() {
   return (
     <>
-      <main className="mx-auto max-w-2xl px-4 py-8 space-y-6">
+      <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">
         <Breadcrumbs
           items={[
             { label: "CultCodex", href: "/" },
@@ -220,7 +220,7 @@ export default function MethodologyPage() {
         <p className="text-[12px] text-text-muted font-mono text-center pt-2">
           Last updated: September 2026 · CultCodex is an independent fan project
         </p>
-      </main>
+      </div>
     </>
   );
 }

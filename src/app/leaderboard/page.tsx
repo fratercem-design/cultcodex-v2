@@ -30,7 +30,7 @@ export default async function LeaderboardPage() {
         label="leaderboard"
       />
 
-      <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-8">
+      <div className="mx-auto max-w-3xl px-4 py-12 space-y-8">
         <section className="text-center max-w-xl mx-auto space-y-2">
           <p className="text-sm text-text-muted leading-relaxed">
             Ranked by <Link href="/rank" className="text-accent-gold-text hover:underline">codex score</Link> —
@@ -123,7 +123,7 @@ export default async function LeaderboardPage() {
             See your rank →
           </Link>
         </section>
-      </main>
+      </div>
     </>
   );
 }

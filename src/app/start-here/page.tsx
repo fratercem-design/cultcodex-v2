@@ -141,7 +141,7 @@ export default async function StartHerePage() {
   }));
 
   return (
-    <main id="main-content" className="mx-auto max-w-5xl px-4 py-12 space-y-20">
+    <div className="mx-auto max-w-5xl px-4 py-12 space-y-20">
 
       {/* ── 0. What is this? ── */}
       <section className="max-w-3xl mx-auto space-y-8 text-center">
@@ -479,6 +479,6 @@ export default async function StartHerePage() {
       </section>
 
       <ArchiveDisclaimer variant="full" />
-    </main>
+    </div>
   );
 }

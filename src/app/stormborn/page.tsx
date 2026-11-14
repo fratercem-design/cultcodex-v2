@@ -18,7 +18,7 @@ const STATS = [
 
 export default function StormbornPage() {
   return (
-    <main className="relative mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center px-4 py-20 text-center">
+    <div className="relative mx-auto flex min-h-screen max-w-2xl flex-col items-center justify-center px-4 py-20 text-center">
       <VoidSigil size={180} />
 
       <h1 className="mt-8 font-display text-5xl font-bold tracking-widest text-accent-violet-text">
@@ -83,6 +83,6 @@ export default function StormbornPage() {
       >
         &larr; return to the archive
       </Link>
-    </main>
+    </div>
   );
 }

@@ -61,7 +61,7 @@ export default async function WelcomeOraclePage() {
   const firstName = session?.user?.name?.split(" ")[0] ?? "Oracle";
 
   return (
-    <main className="min-h-screen bg-[#06030f]">
+    <div className="min-h-screen bg-[#06030f]">
 
       {/* ── Cinematic throne opener ── */}
       <section className="relative w-full" style={{ height: "92svh" }}>
@@ -246,6 +246,6 @@ export default async function WelcomeOraclePage() {
         </div>
       </section>
 
-    </main>
+    </div>
   );
 }

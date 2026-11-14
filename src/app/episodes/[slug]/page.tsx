@@ -26,6 +26,7 @@ import { MetaRow } from "@/components/ui/meta-row";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { EntityChipList } from "@/components/archive/entity-chip-list";
 import { groupSegments } from "@/lib/transcript/group-segments";
+import { isRecentStream } from "@/lib/format/recent-stream";
 import { GuestGrid } from "@/components/episodes/guest-grid";
 import { ShareButtons } from "@/components/ui/share-buttons";
 import { EpisodeStatsPanel } from "@/components/episodes/episode-stats-panel";
@@ -275,7 +276,7 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
           : null
       }
     />
-    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-8">
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main content */}
         <div className="lg:col-span-2 space-y-6">
@@ -448,12 +449,28 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
                             <span className="font-mono text-[12px] text-text-muted">░░░</span>
                           </div>
                           <div>
-                            <p className="font-mono text-xs text-text-muted">No transcript available</p>
-                            <p className="font-mono text-[12px] text-text-muted mt-0.5">
-                              {episode.youtubeVideoId
-                                ? "Auto-captions may be disabled for this video"
-                                : "No video source linked to extract captions from"}
-                            </p>
+                            {/* A new stream with no segments is queued, not
+                                missing: the daily pipeline transcribes it
+                                (2026-11 audit — the old copy blamed disabled
+                                captions for yesterday's stream). */}
+                            {isRecentStream(episode.airDate) ? (
+                              <>
+                                <p className="font-mono text-xs text-text-primary">Transcript in the queue</p>
+                                <p className="font-mono text-[12px] text-text-muted mt-0.5">
+                                  New streams are usually transcribed within a day or two of airing.
+                                  Search and the Oracle pick it up as soon as it lands.
+                                </p>
+                              </>
+                            ) : (
+                              <>
+                                <p className="font-mono text-xs text-text-muted">No transcript available yet</p>
+                                <p className="font-mono text-[12px] text-text-muted mt-0.5">
+                                  {episode.youtubeVideoId
+                                    ? "Captions weren't available for this video, so it needs transcribing from the audio. Get notified when it's done:"
+                                    : "No video source linked to transcribe from."}
+                                </p>
+                              </>
+                            )}
                           </div>
                         </div>
                         <TranscriptNotify episodeSlug={episode.slug} />
@@ -744,7 +761,7 @@ export default async function EpisodeDetailPage({ params }: PageProps) {
           )}
         </div>
       </div>
-    </main>
+    </div>
     </EpisodeViewerProvider>
   );
 }

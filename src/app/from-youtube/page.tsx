@@ -106,7 +106,7 @@ export default async function FromYouTubePage() {
         </div>
       </section>
 
-      <main id="main-content" className="space-y-0">
+      <div className="space-y-0">
         {/* ── STATS STRIP ──────────────────────────────────────────────── */}
         <div className="border-b border-border/40 bg-void/80 backdrop-blur-sm py-3 px-4">
           <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-center gap-x-8 gap-y-1">
@@ -258,7 +258,7 @@ export default async function FromYouTubePage() {
             subheading="One transmission per week: the pattern that surfaced most, a voice you missed, and what the Oracle flagged — straight from the archive."
           />
         </div>
-      </main>
+      </div>
     </>
   );
 }

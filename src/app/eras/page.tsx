@@ -75,7 +75,7 @@ export default async function ErasPage() {
         backgroundImage={SECTION_HEADERS.transmissions}
       />
 
-      <main id="main-content" className="mx-auto max-w-4xl px-4 py-12 space-y-4">
+      <div className="mx-auto max-w-4xl px-4 py-12 space-y-4">
         {/* Intro */}
         <p className="font-mono text-sm text-text-muted leading-relaxed mb-10">
           The archive didn&apos;t arrive all at once. It evolved — through distinct periods,
@@ -175,7 +175,7 @@ export default async function ErasPage() {
             Browse full archive →
           </Link>
         </div>
-      </main>
+      </div>
     </>
   );
 }

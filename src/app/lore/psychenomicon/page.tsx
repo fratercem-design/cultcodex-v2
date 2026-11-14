@@ -142,7 +142,7 @@ export default async function PsychenomiconPage() {
       label="psychenomicon"
       />
 
-      <main id="main-content" className="mx-auto max-w-5xl px-4 py-8">
+      <div className="mx-auto max-w-5xl px-4 py-8">
         {/* ── Prologue (visible to all) ────────────────────────── */}
         <section className="mb-12 text-center">
           <div className="mx-auto max-w-3xl">
@@ -194,7 +194,7 @@ export default async function PsychenomiconPage() {
             Return to the Lore Archive
           </Link>
         </div>
-      </main>
+      </div>
     </>
   );
 }

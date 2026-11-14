@@ -48,7 +48,7 @@ export default async function AdminUsersPage() {
   const freeUsers = users?.filter((u) => !oracleUsers.includes(u) && !otherSubscribers.includes(u)) ?? [];
 
   return (
-    <main id="main-content" className="p-8 max-w-5xl">
+    <div className="p-8 max-w-5xl">
       <h1 className="font-display text-2xl font-bold text-accent-gold mb-2">
         User Management
       </h1>
@@ -103,7 +103,7 @@ export default async function AdminUsersPage() {
       {freeUsers.length > 0 && (
         <UserTable title="Free Users" users={freeUsers} highlightColor="default" />
       )}
-    </main>
+    </div>
   );
 }
 

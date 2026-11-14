@@ -112,7 +112,7 @@ export async function TimelineView({ requestedYear }: { requestedYear?: number }
 
       label="timeline"
     />
-      <main id="main-content" className="mx-auto max-w-5xl px-4 py-8">
+      <div className="mx-auto max-w-5xl px-4 py-8">
         {/* Interactive explorer link */}
         <div className="mb-6 flex justify-center">
           <Link
@@ -257,7 +257,7 @@ export async function TimelineView({ requestedYear }: { requestedYear?: number }
             </p>
           )}
         </div>
-      </main>
+      </div>
     </>
   );
 }

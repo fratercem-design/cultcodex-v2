@@ -41,7 +41,7 @@ export default async function FeudPage({ params }: PageProps) {
   const side = (slug: string) => (slug === a.slug ? "left" : "right");
 
   return (
-    <main id="main-content" className="mx-auto max-w-3xl px-4 py-10">
+    <div className="mx-auto max-w-3xl px-4 py-10">
       <header className="space-y-4 text-center">
         <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-red-400/70">
           {"/// feud_file"} · {RELATION_LABELS[feud.state]}
@@ -119,6 +119,6 @@ export default async function FeudPage({ params }: PageProps) {
           Permalink
         </Link>
       </p>
-    </main>
+    </div>
   );
 }

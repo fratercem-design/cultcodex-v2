@@ -31,7 +31,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
         backgroundImage={SECTION_HEADERS.threshold}
         label="access"
       />
-      <main className="mx-auto max-w-md px-4 py-12">
+      <div className="mx-auto max-w-md px-4 py-12">
         <div className="rounded-lg border border-border bg-surface p-8 space-y-6">
           <div className="text-center">
             <h2 className="font-display text-lg text-text-primary">
@@ -57,7 +57,7 @@ export default async function SignInPage({ searchParams }: PageProps) {
             Email sign-in coming soon.
           </p>
         </div>
-      </main>
+      </div>
     </>
   );
 }

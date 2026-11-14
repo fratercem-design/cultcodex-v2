@@ -53,7 +53,7 @@ export default async function KitPage() {
         label="for tarot + astrology streamers"
       />
 
-      <main id="main-content" className="mx-auto max-w-3xl space-y-14 px-4 py-10">
+      <div className="mx-auto max-w-3xl space-y-14 px-4 py-10">
         {/* Hero pitch */}
         <section className="space-y-5">
           <p className="text-lg leading-relaxed text-text-primary">
@@ -184,7 +184,7 @@ export default async function KitPage() {
           </p>
           <PilotForm />
         </section>
-      </main>
+      </div>
     </>
   );
 }

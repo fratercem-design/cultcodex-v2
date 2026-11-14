@@ -64,7 +64,7 @@ export default async function MediaKitPage() {
         label="press"
       />
 
-      <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-14">
+      <div className="mx-auto max-w-3xl px-4 py-12 space-y-14">
 
         {/* What it is */}
         <section className="space-y-4">
@@ -164,7 +164,7 @@ export default async function MediaKitPage() {
             </Link>
           </div>
         </section>
-      </main>
+      </div>
     </>
   );
 }

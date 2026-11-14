@@ -70,7 +70,7 @@ const FAQ = [
 
 export default function StreamAlchemistLanding() {
   return (
-    <main id="main-content" className="mx-auto max-w-5xl px-4 py-12 sm:py-16 space-y-24 font-sans">
+    <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16 space-y-24 font-sans">
       <TrackOnMount event="sa_landing_view" />
 
       {/* Hero */}
@@ -195,6 +195,6 @@ export default function StreamAlchemistLanding() {
           Find my clips
         </Link>
       </section>
-    </main>
+    </div>
   );
 }

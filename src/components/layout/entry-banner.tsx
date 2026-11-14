@@ -37,8 +37,11 @@ export function EntryBanner({ episodeCount }: { episodeCount: string }) {
   if (!visible || HIDDEN_ON.has(pathname ?? "")) return null;
 
   return (
-    <div
-      role="banner"
+    // An <aside>, not role="banner": banner is the site-header landmark and the
+    // top bar already is one; a second made screen-reader landmark menus list
+    // this tip as the page header (2026-11 audit).
+    <aside
+      aria-label="New visitor tip"
       className="relative z-40 border-b border-accent-gold/20 bg-void/95 backdrop-blur-sm px-4 py-2.5"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
@@ -65,6 +68,6 @@ export function EntryBanner({ episodeCount }: { episodeCount: string }) {
           <span aria-hidden="true">×</span>
         </button>
       </div>
-    </div>
+    </aside>
   );
 }

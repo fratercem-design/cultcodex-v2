@@ -219,7 +219,7 @@ export default function GuidePage() {
         backgroundImage={SECTION_HEADERS.lore}
         label="doctrine"
       />
-      <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
+      <div className="mx-auto max-w-4xl px-4 py-8 space-y-8">
         <SectionCard title="The Philosophy of the Cult" accent="gold" ornament>
           <div className="space-y-3 text-sm text-text-primary leading-relaxed">
             <p>
@@ -363,7 +363,7 @@ export default function GuidePage() {
             </p>
           </div>
         </SectionCard>
-      </main>
+      </div>
     </>
   );
 }

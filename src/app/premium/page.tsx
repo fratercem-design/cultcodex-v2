@@ -35,7 +35,7 @@ const ANCHOR: Record<TierSlug, string> = {
 export default function PremiumPage() {
   return (
     <PremiumStatusProvider>
-    <main id="main-content" className="mx-auto max-w-5xl px-4 py-16 space-y-14">
+    <div className="mx-auto max-w-5xl px-4 py-16 space-y-14">
       {/* ── Threshold header ── */}
       <div className="text-center space-y-4">
         <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
@@ -131,7 +131,7 @@ export default function PremiumPage() {
         </Link>
         .
       </p>
-    </main>
+    </div>
     </PremiumStatusProvider>
   );
 }

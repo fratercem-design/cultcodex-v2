@@ -57,7 +57,7 @@ export function GrimoireApp({
   threshold: number;
 }) {
   return (
-    <main style={{ maxWidth: 820, margin: "0 auto", padding: "48px 20px 96px", color: "var(--term-fg)" }}>
+    <div style={{ maxWidth: 820, margin: "0 auto", padding: "48px 20px 96px", color: "var(--term-fg)" }}>
       <header style={{ textAlign: "center", marginBottom: 36 }}>
         <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.35em", color: "var(--accent-violet)" }}>
           ◈ THE GRIMOIRE
@@ -87,7 +87,7 @@ export function GrimoireApp({
           {readings.map((r) => <ReadingEntry key={r.id} reading={r} />)}
         </div>
       )}
-    </main>
+    </div>
   );
 }
 

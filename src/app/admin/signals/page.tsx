@@ -32,7 +32,7 @@ export default async function AdminSignalsPage() {
   const proposals = await getProposals();
 
   return (
-    <main id="main-content" className="p-8 max-w-4xl">
+    <div className="p-8 max-w-4xl">
       <h1 className="font-display text-2xl font-bold text-accent-gold mb-2">
         Signal Proposals
       </h1>
@@ -102,6 +102,6 @@ export default async function AdminSignalsPage() {
           ))}
         </div>
       )}
-    </main>
+    </div>
   );
 }

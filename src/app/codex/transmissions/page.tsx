@@ -45,8 +45,7 @@ export default async function CodexTransmissionsPage() {
       label="saved_transmissions"
       />
 
-      <main
-        id="main-content"
+      <div
         className="mx-auto max-w-6xl px-4 py-10 space-y-6"
       >
         <nav className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
@@ -117,7 +116,7 @@ export default async function CodexTransmissionsPage() {
             ))}
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

@@ -15,7 +15,7 @@ export const metadata: Metadata = buildMetadata({
 
 export default function StreamAlchemistApp() {
   return (
-    <main id="main-content" className="mx-auto max-w-4xl px-4 py-10 sm:py-14 space-y-8 font-sans">
+    <div className="mx-auto max-w-4xl px-4 py-10 sm:py-14 space-y-8 font-sans">
       <header className="space-y-2">
         <Link
           href="/stream-alchemist"
@@ -38,6 +38,6 @@ export default function StreamAlchemistApp() {
           </div>
         }
       />
-    </main>
+    </div>
   );
 }

@@ -154,7 +154,7 @@ export default async function CollectionsPage() {
       label="signal_packs"
     />
 
-      <main id="main-content" className="mx-auto max-w-6xl px-4 py-10 space-y-12">
+      <div className="mx-auto max-w-6xl px-4 py-10 space-y-12">
         <p className="text-center text-sm text-text-muted max-w-2xl mx-auto">
           Hand-picked collections to help you discover the best of the Cult of Psyche.
           Each collection groups episodes, lore, and quotes by theme.
@@ -282,7 +282,7 @@ export default async function CollectionsPage() {
             New here? Start Here →
           </Link>
         </div>
-      </main>
+      </div>
     </>
   );
 }

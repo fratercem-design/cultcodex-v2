@@ -18,7 +18,7 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <main className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 text-center">
+    <div className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 text-center">
       <span className="text-5xl">⚠️</span>
       <h1 className="mt-4 font-display text-2xl font-bold text-accent-gold">
         Something Went Wrong
@@ -46,6 +46,6 @@ export default function GlobalError({
           Return Home
         </Link>
       </div>
-    </main>
+    </div>
   );
 }

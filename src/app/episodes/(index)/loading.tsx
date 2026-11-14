@@ -11,13 +11,13 @@ export default function EpisodesLoading() {
           ))}
         </div>
       </div>
-      <main className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-3">
           {Array.from({ length: 12 }).map((_, i) => (
             <Skeleton key={i} className="h-24" />
           ))}
         </div>
-      </main>
+      </div>
     </>
   );
 }

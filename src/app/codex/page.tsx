@@ -64,8 +64,7 @@ export default async function CodexPage() {
       label="my_codex"
       />
 
-      <main
-        id="main-content"
+      <div
         className="mx-auto max-w-6xl px-4 py-10 space-y-12"
       >
         {/* Mythic framing */}
@@ -218,7 +217,7 @@ export default async function CodexPage() {
         <MysticalDivider />
 
         <SavedSearchesBlock userId={user.id} />
-      </main>
+      </div>
     </div>
   );
 }

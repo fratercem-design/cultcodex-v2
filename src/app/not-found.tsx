@@ -24,7 +24,7 @@ export default function NotFound() {
   }, []);
 
   return (
-    <main className="relative mx-auto flex min-h-[70vh] max-w-lg flex-col items-center justify-center px-4 text-center overflow-hidden">
+    <div className="relative mx-auto flex min-h-[70vh] max-w-lg flex-col items-center justify-center px-4 text-center overflow-hidden">
       {/* Floating particles - CSS only */}
       <style>{`
         @keyframes float-up {
@@ -124,6 +124,6 @@ export default function NotFound() {
 
       {/* Codex secret: "Where the map runs out, something was left behind." */}
       <SecretSigil code="lost-page-404" glyph="⌖" label="⌖" className="mt-6 text-accent-gold-text" />
-    </main>
+    </div>
   );
 }

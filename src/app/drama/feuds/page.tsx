@@ -16,7 +16,7 @@ export default async function FeudsPage() {
   const feuds = await getFeuds().catch(() => []);
 
   return (
-    <main id="main-content" className="mx-auto max-w-3xl px-4 py-10">
+    <div className="mx-auto max-w-3xl px-4 py-10">
       <header className="space-y-3 text-center">
         <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-red-400/70">{"/// feud_files"}</p>
         <h1 className="font-display text-3xl sm:text-4xl font-bold text-text-primary">Feuds</h1>
@@ -62,6 +62,6 @@ export default async function FeudsPage() {
           ← The Drama Files
         </Link>
       </p>
-    </main>
+    </div>
   );
 }

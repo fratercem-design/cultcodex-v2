@@ -48,7 +48,7 @@ export default function PsychenomiconChronicle() {
 
   if (loading || !data) return <PsychenomiconChronicleShell />;
   if (!data.canRead) return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       <div className="mx-auto max-w-2xl space-y-8 px-4 py-24">
         <div className="space-y-3 text-center">
           <p className="font-mono text-[12px] uppercase tracking-[0.08em] text-oracle">{"///"} The Psychenomicon · AI myth engine</p>
@@ -87,7 +87,7 @@ export default function PsychenomiconChronicle() {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 
   const { chapterCount, entityCount, latest, majors, entities, activeThreads } = data;
@@ -103,7 +103,7 @@ export default function PsychenomiconChronicle() {
   }
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       {/* Header */}
       <section className="relative overflow-hidden border-b border-accent-violet/20 py-12 px-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -207,6 +207,6 @@ export default function PsychenomiconChronicle() {
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -166,7 +166,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
       label="voices"
     />
     <EntityGlanceBar items={glanceItems} />
-    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-8">
       {/* Graph teaser */}
       <div className="mb-3 flex items-center justify-between gap-4 rounded-lg border border-accent-violet/20 bg-accent-violet/5 px-4 py-3">
         <p className="font-mono text-[12px] text-text-muted">
@@ -297,7 +297,7 @@ export default async function PeoplePage({ searchParams }: PeoplePageProps) {
           </div>
         </section>
       )}
-    </main>
+    </div>
     </>
   );
 }

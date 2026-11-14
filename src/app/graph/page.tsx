@@ -42,7 +42,7 @@ export default async function GraphPage({
   const totalConnections = edges.length;
 
   return (
-    <main id="main-content" className="mx-auto max-w-7xl px-4 py-10 space-y-8">
+    <div className="mx-auto max-w-7xl px-4 py-10 space-y-8">
 
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="space-y-4 max-w-3xl">
@@ -157,6 +157,6 @@ export default async function GraphPage({
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

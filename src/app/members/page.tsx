@@ -209,7 +209,7 @@ export default async function MembersPage() {
         </div>
       </section>
 
-      <main className="mx-auto max-w-5xl px-4 py-12">
+      <div className="mx-auto max-w-5xl px-4 py-12">
         {/* Oracle Contributors — always shown if any exist */}
         {oracleMembers.length > 0 && (
           <section className="mb-12">
@@ -299,7 +299,7 @@ export default async function MembersPage() {
             </Link>
           </p>
         </div>
-      </main>
+      </div>
     </>
   );
 }
