@@ -71,3 +71,40 @@ describe("fetchFromYouTube", () => {
     expect(err.retryable).toBe(true);
   });
 });
+
+describe("fetchFromSupadata async jobs", () => {
+  const chunk = { text: "hello", offset: 8150, duration: 1200, lang: "en" };
+
+  async function runJob(jobBody: unknown) {
+    vi.useFakeTimers();
+    vi.stubEnv("SUPADATA_API_KEY", "test-key");
+    const responses = [{ jobId: "job-1" }, jobBody];
+    vi.stubGlobal("fetch", async () => new Response(JSON.stringify(responses.shift())));
+    try {
+      const { fetchFromSupadata } = await import("../youtube-fetch");
+      const done = fetchFromSupadata("dQw4w9WgXcQ", Date.now() + 60_000).then(
+        (v) => ({ ok: true as const, v }),
+        (e) => ({ ok: false as const, e }),
+      );
+      await vi.advanceTimersByTimeAsync(5000);
+      return await done;
+    } finally {
+      vi.unstubAllGlobals();
+      vi.unstubAllEnvs();
+      vi.useRealTimers();
+    }
+  }
+
+  it("returns the transcript from a completed job (documented shape)", async () => {
+    expect(await runJob({ status: "completed", content: [chunk] })).toEqual({ ok: true, v: [chunk] });
+  });
+
+  it("still accepts the done + result.content shape", async () => {
+    expect(await runJob({ status: "done", result: { content: [chunk] } })).toEqual({ ok: true, v: [chunk] });
+  });
+
+  it("reports a failed job", async () => {
+    const r = await runJob({ status: "failed", error: "boom" });
+    expect(r.ok).toBe(false);
+  });
+});
