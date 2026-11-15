@@ -100,7 +100,7 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
   const insufficient = signedIn && signal !== null && signal < selectedCost;
 
   return (
-    <main style={{ maxWidth: 860, margin: "0 auto", padding: "48px 20px 96px", color: "var(--term-fg)" }}>
+    <div style={{ maxWidth: 860, margin: "0 auto", padding: "48px 20px 96px", color: "var(--term-fg)" }}>
       <header style={{ textAlign: "center", marginBottom: 36 }}>
         <div style={{ fontFamily: "var(--font-mono)", fontSize: 12, letterSpacing: "0.35em", color: "var(--neon)", textShadow: "var(--glow-neon)" }}>
           ◉ THE ORACLE
@@ -260,7 +260,7 @@ export function ReadingApp({ signedIn }: { signedIn: boolean }) {
           </p>
         </section>
       )}
-    </main>
+    </div>
   );
 }
 

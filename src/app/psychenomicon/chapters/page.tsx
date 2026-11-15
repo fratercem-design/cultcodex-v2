@@ -84,7 +84,7 @@ export default async function ChaptersIndexPage({
   const pageHref = (p: number) => `/psychenomicon/chapters?page=${p}`;
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       {/* Hero */}
       <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-4xl flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -177,6 +177,6 @@ export default async function ChaptersIndexPage({
           ) : <span />}
         </nav>
       </div>
-    </main>
+    </div>
   );
 }

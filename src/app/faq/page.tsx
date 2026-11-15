@@ -204,7 +204,7 @@ export default function FaqPage() {
         backgroundImage={SECTION_HEADERS.colophon}
         label="help"
       />
-      <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-5">
+      <div className="mx-auto max-w-4xl px-4 py-8 space-y-5">
         {FAQS.map((f) => (
           <SectionCard key={f.q} title={f.q} accent="gold">
             <div className="text-sm text-text-primary leading-relaxed">{f.body}</div>
@@ -224,7 +224,7 @@ export default function FaqPage() {
             Corrections
           </Link>
         </div>
-      </main>
+      </div>
     </>
   );
 }

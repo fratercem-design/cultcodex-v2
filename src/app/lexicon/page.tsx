@@ -2659,7 +2659,7 @@ export default function LexiconPage() {
       
       label="lexicon"
     />
-      <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
+      <div className="mx-auto max-w-4xl px-4 py-8 space-y-8">
 
         {/* Color legend */}
         <div className="rounded-lg border border-border bg-surface p-4">
@@ -2853,7 +2853,7 @@ export default function LexiconPage() {
             </p>
           </div>
         </SectionCard>
-      </main>
+      </div>
     </>
   );
 }

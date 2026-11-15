@@ -45,7 +45,7 @@ export default async function SignalPage() {
   const episode = quote?.episode ?? data?.spotlightEpisode ?? null;
 
   return (
-    <main id="main-content" className="mx-auto max-w-2xl px-4 py-16 space-y-8 text-center">
+    <div className="mx-auto max-w-2xl px-4 py-16 space-y-8 text-center">
       <div className="space-y-2">
         <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
           ✦ today&rsquo;s signal ✦
@@ -86,6 +86,6 @@ export default async function SignalPage() {
           ← back to the archive
         </Link>
       </div>
-    </main>
+    </div>
   );
 }

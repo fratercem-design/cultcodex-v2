@@ -46,7 +46,7 @@ export default async function TimelineExplorePage() {
         label="timeline"
       />
 
-      <main id="main-content" className="mx-auto max-w-4xl px-4 py-12 space-y-10">
+      <div className="mx-auto max-w-4xl px-4 py-12 space-y-10">
         {/* Era legend */}
         <section className="grid gap-3 sm:grid-cols-2">
           {ERAS.map((era) => (
@@ -71,7 +71,7 @@ export default async function TimelineExplorePage() {
             ← Classic chronological timeline
           </Link>
         </section>
-      </main>
+      </div>
     </>
   );
 }

@@ -37,7 +37,7 @@ export default function InitiationPage() {
         label="free workbook"
       />
 
-      <main id="main-content" className="mx-auto w-full max-w-4xl space-y-8 px-4 py-10">
+      <div className="mx-auto w-full max-w-4xl space-y-8 px-4 py-10">
         <div className="grid items-start gap-6 md:grid-cols-[1fr_1.1fr]">
           {/* First on phones, where most visitors arrive from a persona's bio link; right column on desktop. */}
           <WorkbookSignup className="md:order-last" />
@@ -103,7 +103,7 @@ export default function InitiationPage() {
             Take the archetype quiz first →
           </Link>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

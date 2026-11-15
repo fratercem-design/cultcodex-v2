@@ -21,7 +21,7 @@ export default function RefundPage() {
         backgroundImage={SECTION_HEADERS.colophon}
         label="legal"
       />
-      <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
+      <div className="mx-auto max-w-4xl px-4 py-8 space-y-8">
 
         <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-4 py-3 font-mono text-[12px] text-text-muted">
           Last updated: June 2026. This policy applies to cultcodex.me and is part of our{" "}
@@ -77,7 +77,7 @@ export default function RefundPage() {
           </div>
         </SectionCard>
 
-      </main>
+      </div>
     </>
   );
 }

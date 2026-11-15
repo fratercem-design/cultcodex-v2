@@ -406,7 +406,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
         { label: person.displayName },
       ]} />
       <EntityGlanceBar items={glanceItems} />
-      <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-8">
         <ArchiveNotice
           entityType="person"
           entityName={person.displayName}
@@ -775,7 +775,7 @@ export default async function PersonDetailPage({ params }: PageProps) {
           entityTitle={person.displayName}
           className="mt-8"
         />
-      </main>
+      </div>
 
       <script
         type="application/ld+json"

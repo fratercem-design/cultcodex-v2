@@ -145,8 +145,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
       label="collection"
       />
 
-      <main
-        id="main-content"
+      <div
         className="mx-auto max-w-5xl px-4 py-12 space-y-14"
       >
         {/* Breadcrumb */}
@@ -347,7 +346,7 @@ export default async function ThemedCollectionPage({ params }: PageProps) {
             ← All collections
           </Link>
         </section>
-      </main>
+      </div>
     </>
   );
 }

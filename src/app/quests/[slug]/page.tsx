@@ -53,7 +53,7 @@ export default async function QuestRewardPage({ params }: Props) {
         label="trial"
       />
 
-      <main id="main-content" className="mx-auto max-w-2xl px-4 py-12 space-y-10">
+      <div className="mx-auto max-w-2xl px-4 py-12 space-y-10">
         <nav aria-label="Breadcrumb" className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           <Link href="/quests" className="hover:text-accent-gold-text transition-colors">The Trials</Link>
           <span className="mx-2">/</span>
@@ -114,7 +114,7 @@ export default async function QuestRewardPage({ params }: Props) {
             </Link>
           </section>
         )}
-      </main>
+      </div>
     </>
   );
 }

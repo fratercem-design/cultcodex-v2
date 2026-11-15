@@ -23,7 +23,7 @@ export default async function ArchetypesIndexPage() {
 
   if (!canRead) {
     return (
-      <main className="min-h-screen bg-void flex items-center justify-center">
+      <div className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">
             {"/// initiate_only"}
@@ -38,7 +38,7 @@ export default async function ArchetypesIndexPage() {
             Become Initiate+ →
           </Link>
         </div>
-      </main>
+      </div>
     );
   }
 
@@ -46,7 +46,7 @@ export default async function ArchetypesIndexPage() {
   const totalEntities = archetypes.reduce((sum, a) => sum + a.entityCount, 0);
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-10 px-4">
         <div className="mx-auto max-w-5xl space-y-2">
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
@@ -170,6 +170,6 @@ export default async function ArchetypesIndexPage() {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

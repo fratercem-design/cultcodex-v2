@@ -17,12 +17,12 @@ function VerifyFallback() {
 
 export default function VerifyPage() {
   return (
-    <main className="min-h-screen bg-void flex items-center justify-center px-4">
+    <div className="min-h-screen bg-void flex items-center justify-center px-4">
       <div className="w-full max-w-sm rounded-lg border border-border bg-surface p-8">
         <Suspense fallback={<VerifyFallback />}>
           <VerifyContent />
         </Suspense>
       </div>
-    </main>
+    </div>
   );
 }

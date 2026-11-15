@@ -17,7 +17,7 @@ export default async function StartHereQuizPage() {
   const counts = await getCounts().catch(() => null);
 
   return (
-    <main id="main-content" className="mx-auto max-w-3xl px-4 py-16 space-y-12">
+    <div className="mx-auto max-w-3xl px-4 py-16 space-y-12">
       <div className="text-center space-y-3">
         <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
           ✦ &nbsp; CultCodex &nbsp; ✦
@@ -43,6 +43,6 @@ export default async function StartHereQuizPage() {
           ← back to start here
         </Link>
       </div>
-    </main>
+    </div>
   );
 }

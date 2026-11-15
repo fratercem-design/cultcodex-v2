@@ -31,7 +31,7 @@ export default async function KitThanksPage({
   const planName = await getPaidPlanName(session_id);
 
   return (
-    <main id="main-content" className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 text-center">
+    <div className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 text-center">
       {planName ? (
         <>
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan">{"/// order_received"}</p>
@@ -65,6 +65,6 @@ export default async function KitThanksPage({
           </Link>
         </>
       )}
-    </main>
+    </div>
   );
 }

@@ -55,7 +55,7 @@ export default async function ClapsPage() {
         label="claps"
       />
 
-      <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-10">
+      <div className="mx-auto max-w-3xl px-4 py-12 space-y-10">
         {/* Active 24-hour claps */}
         {spotlights.length > 0 && (
           <section className="space-y-3">
@@ -107,7 +107,7 @@ export default async function ClapsPage() {
             </ol>
           )}
         </section>
-      </main>
+      </div>
     </>
   );
 }

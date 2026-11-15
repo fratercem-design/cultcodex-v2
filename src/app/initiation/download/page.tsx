@@ -28,7 +28,7 @@ export default async function WorkbookDownloadPage({
 
   if (!valid) {
     return (
-      <main id="main-content" className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 text-center">
+      <div className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 text-center">
         <h1 className="font-display text-2xl font-bold text-accent-gold">That link didn&rsquo;t work</h1>
         <p className="mt-3 text-sm leading-relaxed text-text-muted">
           It may have been cut short by your email app. Ask for a fresh one and it&rsquo;ll arrive in a minute.
@@ -36,7 +36,7 @@ export default async function WorkbookDownloadPage({
         <Link href="/initiation" className="mt-6 font-mono text-xs text-accent-gold-text hover:underline">
           Send me a new link →
         </Link>
-      </main>
+      </div>
     );
   }
 
@@ -44,7 +44,7 @@ export default async function WorkbookDownloadPage({
   const fileHref = `/api/workbook/download?${new URLSearchParams({ e: e!, t: t! })}`;
 
   return (
-    <main id="main-content" className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 text-center">
+    <div className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 text-center">
       <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">{"// "}the first gate</p>
       <h1 className="mt-3 font-display text-3xl font-bold text-text-primary">Your workbook is ready, darling.</h1>
       <p className="mt-3 text-sm leading-relaxed text-text-muted">
@@ -70,6 +70,6 @@ export default async function WorkbookDownloadPage({
           </li>
         ))}
       </ul>
-    </main>
+    </div>
   );
 }

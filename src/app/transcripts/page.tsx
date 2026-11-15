@@ -63,7 +63,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
         label="transcripts"
         />
         <EntityGlanceBar items={glanceItems} />
-        <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+        <div className="mx-auto max-w-7xl px-4 py-8">
           <TranscriptSearchBox defaultValue={query} />
 
           {results.hits.length === 0 ? (
@@ -116,7 +116,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
               <PaginationControls meta={paginationMeta} basePath="/transcripts" />
             </>
           )}
-        </main>
+        </div>
       </>
     );
   }
@@ -137,7 +137,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
       label="transcripts"
       />
       <EntityGlanceBar items={glanceItems} />
-      <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-8">
         {/* Search prominently at top */}
         <SectionCard title="Search Transcripts">
           <p className="mb-3 text-xs text-text-muted">
@@ -204,7 +204,7 @@ export default async function TranscriptsPage({ searchParams }: TranscriptsPageP
             <PaginationControls meta={paginationMeta} basePath="/transcripts" />
           </>
         )}
-      </main>
+      </div>
     </>
   );
 }

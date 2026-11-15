@@ -24,7 +24,7 @@ export default async function DeepSearchPage({ searchParams }: DeepSearchPagePro
     : "/transcripts";
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "var(--term-bg)", color: "var(--term-fg)" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "var(--term-bg)", color: "var(--term-fg)" }}>
       <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-12 space-y-4">
@@ -57,6 +57,6 @@ export default async function DeepSearchPage({ searchParams }: DeepSearchPagePro
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }

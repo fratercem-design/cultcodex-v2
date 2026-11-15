@@ -43,7 +43,7 @@ export default async function EntityPage({ params }: PageProps) {
 
   if (!canRead) {
     return (
-      <main className="min-h-screen bg-void flex items-center justify-center">
+      <div className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">{"/// initiate_only"}</p>
           <p className="font-display text-xl font-bold text-text-primary">Entity sealed.</p>
@@ -51,7 +51,7 @@ export default async function EntityPage({ params }: PageProps) {
             Become Initiate+ →
           </Link>
         </div>
-      </main>
+      </div>
     );
   }
 
@@ -132,7 +132,7 @@ export default async function EntityPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       {/* Header */}
       <header className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-4xl space-y-3">
@@ -388,6 +388,6 @@ export default async function EntityPage({ params }: PageProps) {
           ),
         }}
       />
-    </main>
+    </div>
   );
 }

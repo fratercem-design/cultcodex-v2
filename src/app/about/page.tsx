@@ -40,7 +40,7 @@ export default function AboutPage() {
         backgroundImage={SECTION_HEADERS.threshold}
         label="the archive"
       />
-      <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
+      <div className="mx-auto max-w-4xl px-4 py-8 space-y-8">
         <div className="rounded-lg border border-accent-gold/20 bg-accent-gold/5 px-4 py-3 font-mono text-[12px] text-text-muted">
           An independent fan archive of the Cult of Psyche universe — not an official publication.
         </div>
@@ -173,7 +173,7 @@ export default function AboutPage() {
             Content Policy
           </Link>
         </div>
-      </main>
+      </div>
     </>
   );
 }

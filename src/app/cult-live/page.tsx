@@ -135,9 +135,9 @@ export default async function CultLivePage() {
 
   if (!apiKey) {
     return (
-      <main className="p-8">
+      <div className="p-8">
         <p className="font-mono text-sm text-red-400">YOUTUBE_API_KEY not configured.</p>
-      </main>
+      </div>
     );
   }
 
@@ -163,7 +163,7 @@ export default async function CultLivePage() {
   const liveCount = allVideos.filter((v) => v.isLive).length;
 
   return (
-    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8 space-y-8">
+    <div className="mx-auto max-w-7xl px-4 py-8 space-y-8">
 
       {/* Header */}
       <div className="space-y-1">
@@ -270,6 +270,6 @@ export default async function CultLivePage() {
         })}
       </div>
 
-    </main>
+    </div>
   );
 }

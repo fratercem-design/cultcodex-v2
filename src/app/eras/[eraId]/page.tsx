@@ -120,7 +120,7 @@ export default async function EraDetailPage({
   const nextEra = eraIndex < ERAS.length - 1 ? ERAS[eraIndex + 1] : null;
 
   return (
-    <main id="main-content" className="mx-auto max-w-6xl px-4 py-10 space-y-12">
+    <div className="mx-auto max-w-6xl px-4 py-10 space-y-12">
 
       {/* ── Breadcrumb ──────────────────────────────────────────────── */}
       <nav className="flex items-center gap-2 font-mono text-[12px] uppercase tracking-widest text-text-muted">
@@ -371,6 +371,6 @@ export default async function EraDetailPage({
         )}
       </div>
 
-    </main>
+    </div>
   );
 }

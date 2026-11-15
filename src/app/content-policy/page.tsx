@@ -19,7 +19,7 @@ export default function ContentPolicyPage() {
         backgroundImage={SECTION_HEADERS.colophon}
       label="policy"
       />
-      <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
+      <div className="mx-auto max-w-4xl px-4 py-8 space-y-8">
         <SectionCard title="Content Sources">
           <div className="space-y-3 text-sm text-text-primary leading-relaxed">
             <p>
@@ -114,7 +114,7 @@ export default function ContentPolicyPage() {
             Terms of Service
           </Link>
         </div>
-      </main>
+      </div>
     </>
   );
 }

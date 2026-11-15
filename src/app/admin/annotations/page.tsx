@@ -40,7 +40,7 @@ export default async function AdminAnnotationsPage() {
   const pending = annotations.filter((a) => a.status === "pending");
 
   return (
-    <main id="main-content" className="p-8 max-w-4xl">
+    <div className="p-8 max-w-4xl">
       <h1 className="font-display text-2xl font-bold text-accent-gold mb-2">
         Community Annotations
       </h1>
@@ -100,6 +100,6 @@ export default async function AdminAnnotationsPage() {
           ))}
         </div>
       )}
-    </main>
+    </div>
   );
 }

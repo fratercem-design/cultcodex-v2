@@ -46,7 +46,7 @@ const SUPPRESSED_FILES: { id: string; label: string; note: string; href?: string
 
 export default function BasementPage() {
   return (
-    <main className="min-h-screen bg-void flex items-center justify-center px-4 py-20">
+    <div className="min-h-screen bg-void flex items-center justify-center px-4 py-20">
       <div className="w-full max-w-xl space-y-8">
         <header className="space-y-2 text-center">
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-red-400/50">
@@ -105,6 +105,6 @@ export default function BasementPage() {
           </Link>
         </footer>
       </div>
-    </main>
+    </div>
   );
 }

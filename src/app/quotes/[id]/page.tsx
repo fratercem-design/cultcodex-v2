@@ -150,7 +150,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
   const era = quote.episode ? getEraForEpisode(quote.episode.airDate) : null;
 
   return (
-    <main id="main-content" className="mx-auto max-w-3xl px-4 py-10 space-y-10">
+    <div className="mx-auto max-w-3xl px-4 py-10 space-y-10">
 
       <Breadcrumbs
         items={[
@@ -445,7 +445,7 @@ export default async function QuotePermalinkPage({ params }: PageProps) {
           </Link>
         )}
       </div>
-    </main>
+    </div>
   );
 }
 

@@ -167,12 +167,12 @@ export default async function AdminLeadsPage() {
 
   if (!leads) {
     return (
-      <main id="main-content" className="max-w-5xl p-8">
+      <div className="max-w-5xl p-8">
         <h1 className="mb-2 font-display text-2xl font-bold text-accent-gold">Lead Pipeline</h1>
         <p className="font-mono text-xs text-red-400">
           Could not read the database. The lead tables are unavailable right now.
         </p>
-      </main>
+      </div>
     );
   }
 
@@ -207,7 +207,7 @@ export default async function AdminLeadsPage() {
   const unclaimed = leads.filter((l) => !l.claimed);
 
   return (
-    <main id="main-content" className="max-w-6xl p-8">
+    <div className="max-w-6xl p-8">
       <h1 className="mb-2 font-display text-2xl font-bold text-accent-gold">Lead Pipeline</h1>
       <p className="mb-6 max-w-2xl font-mono text-xs leading-relaxed text-text-muted">
         Everyone who has handed over an address, and how far they got. A lead becomes an{" "}
@@ -355,6 +355,6 @@ export default async function AdminLeadsPage() {
           </tbody>
         </table>
       </div>
-    </main>
+    </div>
   );
 }

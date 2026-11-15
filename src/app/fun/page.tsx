@@ -82,7 +82,7 @@ export default async function FunPage() {
   );
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       {/* Hero */}
       <section className="border-b border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
@@ -165,6 +165,6 @@ export default async function FunPage() {
           </p>
         </section>
       </div>
-    </main>
+    </div>
   );
 }

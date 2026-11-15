@@ -23,7 +23,7 @@ const STATS = [
 
 export default function GameShowPage() {
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-accent-violet/20 py-16 px-4">
         {HERO_ART && (
@@ -74,6 +74,6 @@ export default function GameShowPage() {
       <div className="mx-auto max-w-3xl px-4 pb-12 text-center">
         <Link href="/fun" className="font-mono text-[12px] text-text-muted hover:text-accent-violet-text transition-colors">← The Fun Wing</Link>
       </div>
-    </main>
+    </div>
   );
 }

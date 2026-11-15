@@ -217,7 +217,7 @@ export default async function MemberProfilePage({ params }: Props) {
         </div>
       </div>
 
-      <main className="mx-auto max-w-3xl px-4 pb-16">
+      <div className="mx-auto max-w-3xl px-4 pb-16">
         {/* Name + title block — padded for avatar overlap */}
         <div className="pt-16 pb-6 text-center">
           <h1 className="font-display text-3xl font-bold text-white sm:text-4xl">
@@ -382,7 +382,7 @@ export default async function MemberProfilePage({ params }: Props) {
             )}
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }

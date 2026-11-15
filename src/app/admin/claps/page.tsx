@@ -40,7 +40,7 @@ export default async function AdminClapsPage() {
   });
 
   return (
-    <main id="main-content" className="p-8 max-w-4xl">
+    <div className="p-8 max-w-4xl">
       <h1 className="font-display text-2xl font-bold text-accent-gold mb-2">Clap Tokens</h1>
       <p className="font-mono text-xs text-text-muted mb-8">
         {holders.length} holders · {holders.reduce((s, h) => s + h.tokens, 0)} tokens vested ·
@@ -141,6 +141,6 @@ export default async function AdminClapsPage() {
           </div>
         ))}
       </div>
-    </main>
+    </div>
   );
 }

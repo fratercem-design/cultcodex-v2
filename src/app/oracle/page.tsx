@@ -150,7 +150,7 @@ export default async function OraclePage() {
         )}
       </header>
 
-      <main className="relative z-10 mx-auto max-w-2xl px-4 pb-20 space-y-12">
+      <div className="relative z-10 mx-auto max-w-2xl px-4 pb-20 space-y-12">
 
         {/* ── For non-subscribers: show examples FIRST, then console ── */}
         {!canAccess && (
@@ -354,7 +354,7 @@ export default async function OraclePage() {
         <p className="mt-4 text-center font-serif text-xs text-text-muted italic">
           What is remembered, lives.
         </p>
-      </main>
+      </div>
     </div>
   );
 }

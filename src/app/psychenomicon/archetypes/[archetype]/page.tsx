@@ -48,7 +48,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
 
   if (!canRead) {
     return (
-      <main className="min-h-screen bg-void flex items-center justify-center">
+      <div className="min-h-screen bg-void flex items-center justify-center">
         <div className="text-center space-y-4 px-4">
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text">
             {"/// initiate_only"}
@@ -63,7 +63,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
             Become Initiate+ →
           </Link>
         </div>
-      </main>
+      </div>
     );
   }
 
@@ -78,7 +78,7 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
   );
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       {/* ── Header ────────────────────────────────────────────────── */}
       <header
         className="border-b py-10 px-4"
@@ -355,6 +355,6 @@ export default async function ArchetypeDetailPage({ params }: PageProps) {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

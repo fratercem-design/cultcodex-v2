@@ -48,7 +48,7 @@ export default async function HandbookPage() {
   ];
 
   return (
-    <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12">
       <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
         {"/// the_codex_of_gatekeepers"}
       </p>
@@ -120,6 +120,6 @@ export default async function HandbookPage() {
         </Link>
         .
       </p>
-    </main>
+    </div>
   );
 }

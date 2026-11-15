@@ -33,7 +33,7 @@ export default async function CorrectionsPage({
         backgroundImage={SECTION_HEADERS.colophon}
       label="corrections"
       />
-      <main id="main-content" className="mx-auto max-w-4xl px-4 py-8 space-y-8">
+      <div className="mx-auto max-w-4xl px-4 py-8 space-y-8">
         <SectionCard title="Report an Error">
           <div className="space-y-3 text-sm text-text-primary leading-relaxed">
             <p>
@@ -96,7 +96,7 @@ export default async function CorrectionsPage({
             Content Policy
           </Link>
         </div>
-      </main>
+      </div>
     </>
   );
 }

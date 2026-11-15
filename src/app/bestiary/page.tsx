@@ -36,7 +36,7 @@ export default async function BestiaryPage() {
     .catch(() => []);
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-4xl text-center space-y-3">
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
@@ -97,6 +97,6 @@ export default async function BestiaryPage() {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

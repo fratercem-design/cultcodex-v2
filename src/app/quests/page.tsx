@@ -41,7 +41,7 @@ export default async function QuestsPage() {
         label="trials"
       />
 
-      <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-10">
+      <div className="mx-auto max-w-3xl px-4 py-12 space-y-10">
         <section className="text-center max-w-xl mx-auto space-y-2">
           <p className="text-sm text-text-muted leading-relaxed">
             Each Trial is a rite of passage through the archive. Complete one to unlock a hidden
@@ -120,7 +120,7 @@ export default async function QuestsPage() {
             );
           })}
         </section>
-      </main>
+      </div>
     </>
   );
 }

@@ -37,7 +37,7 @@ export default async function TrollopediaPage() {
     .catch(() => []);
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       <section className="relative overflow-hidden border-b border-accent-cyan/20 py-14 px-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/images/trollopedia/hero.webp" alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-30" />
@@ -101,6 +101,6 @@ export default async function TrollopediaPage() {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

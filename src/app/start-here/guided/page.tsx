@@ -144,8 +144,7 @@ export default function GuidedPathPage() {
       label="guided_path"
       />
 
-      <main
-        id="main-content"
+      <div
         className="mx-auto max-w-6xl px-4 py-12 space-y-12"
       >
         {/* Breadcrumb */}
@@ -249,7 +248,7 @@ export default function GuidedPathPage() {
             </Link>
           </div>
         </section>
-      </main>
+      </div>
     </>
   );
 }

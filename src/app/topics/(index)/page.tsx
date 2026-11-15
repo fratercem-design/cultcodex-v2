@@ -92,7 +92,7 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
       label="signals"
     />
     <EntityGlanceBar items={glanceItems} />
-    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-8">
       <SortFilterBar
         basePath="/topics"
         sortOptions={SORT_OPTIONS}
@@ -121,7 +121,7 @@ export default async function TopicsPage({ searchParams }: TopicsPageProps) {
           <PaginationControls meta={paginationMeta} basePath="/topics" />
         </>
       )}
-    </main>
+    </div>
     </>
   );
 }

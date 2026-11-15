@@ -53,7 +53,7 @@ export default async function OracleSharePage({ searchParams }: PageProps) {
         backgroundImage={SECTION_HEADERS.oracle}
         label="oracle"
       />
-      <main className="mx-auto max-w-2xl px-4 py-12 space-y-6">
+      <div className="mx-auto max-w-2xl px-4 py-12 space-y-6">
         {question && (
           <div className="font-mono text-xs text-text-muted uppercase tracking-[0.12em]">
             Question asked:
@@ -97,7 +97,7 @@ export default async function OracleSharePage({ searchParams }: PageProps) {
             Enter the Codex
           </Link>
         </div>
-      </main>
+      </div>
     </>
   );
 }

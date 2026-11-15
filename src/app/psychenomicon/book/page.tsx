@@ -41,7 +41,7 @@ export default async function BookPage() {
       : 24;
 
   return (
-    <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12">
       <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
         {"/// psychenomicon · the_book"}
       </p>
@@ -77,6 +77,6 @@ export default async function BookPage() {
       <p className="mt-6 font-mono text-[12px] text-text-muted">
         Prefer to read online? The full archive lives in the <Link href="/psychenomicon" className="text-accent-violet-text hover:underline">Psychenomicon</Link>.
       </p>
-    </main>
+    </div>
   );
 }

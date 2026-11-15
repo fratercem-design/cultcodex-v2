@@ -7,7 +7,7 @@
  */
 export function PsychenomiconChronicleShell() {
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       <div className="mx-auto max-w-2xl space-y-3 px-4 py-24 text-center">
         <p className="font-mono text-[12px] uppercase tracking-[0.08em] text-oracle">{"///"} The Psychenomicon · AI myth engine</p>
         <h1 className="font-display text-3xl font-bold text-ink">The Psychenomicon</h1>
@@ -16,6 +16,6 @@ export function PsychenomiconChronicleShell() {
           tracks the people, conflicts and patterns running through the show.
         </p>
       </div>
-    </main>
+    </div>
   );
 }

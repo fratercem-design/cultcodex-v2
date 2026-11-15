@@ -38,7 +38,7 @@ export default async function ThisWeekPage() {
 
   if (!digest) {
     return (
-      <main id="main-content" className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
+      <div className="mx-auto max-w-3xl px-4 py-16 text-center space-y-6">
         <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           {"/// this_week"}
         </p>
@@ -54,7 +54,7 @@ export default async function ThisWeekPage() {
         >
           Browse the full archive →
         </Link>
-      </main>
+      </div>
     );
   }
 
@@ -112,7 +112,7 @@ export default async function ThisWeekPage() {
     .filter(Boolean) as typeof people;
 
   return (
-    <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-14">
+    <div className="mx-auto max-w-3xl px-4 py-12 space-y-14">
       {/* Header */}
       <section className="space-y-3 text-center">
         <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
@@ -299,6 +299,6 @@ export default async function ThisWeekPage() {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

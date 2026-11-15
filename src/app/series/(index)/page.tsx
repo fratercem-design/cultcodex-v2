@@ -41,7 +41,7 @@ export default async function SeriesPage() {
       label="series"
     />
     <EntityGlanceBar items={glanceItems} />
-    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-8">
       {series.length === 0 ? (
         <EmptyState
           message="No series catalogued yet"
@@ -54,7 +54,7 @@ export default async function SeriesPage() {
           ))}
         </div>
       )}
-    </main>
+    </div>
     </>
   );
 }

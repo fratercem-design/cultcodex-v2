@@ -129,7 +129,7 @@ export default async function ChapterPage({ params }: PageProps) {
     };
 
     return (
-      <main id="main-content" className="min-h-screen bg-void px-4 py-16">
+      <div className="min-h-screen bg-void px-4 py-16">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdScript(paywallLd) }}
@@ -200,7 +200,7 @@ export default async function ChapterPage({ params }: PageProps) {
             </Link>
           </p>
         </div>
-      </main>
+      </div>
     );
   }
 
@@ -273,7 +273,7 @@ export default async function ChapterPage({ params }: PageProps) {
   }));
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       {/* Free-preview banner for non-subscribers */}
       {isFreePreview && !subscribed && (
         <div className="border-b border-accent-gold/30 bg-accent-gold/5 px-4 py-2.5">
@@ -528,6 +528,6 @@ export default async function ChapterPage({ params }: PageProps) {
           </Link>
         </aside>
       </div>
-    </main>
+    </div>
   );
 }

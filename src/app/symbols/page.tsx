@@ -46,7 +46,7 @@ export default function SymbolsPage({
   void searchParams;
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       {/* Hero */}
       <section className="border-b border-border bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-5xl space-y-4">
@@ -93,7 +93,7 @@ export default function SymbolsPage({
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 }
 

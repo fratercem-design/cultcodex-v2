@@ -31,7 +31,7 @@ export default function RecommendsPage() {
         label="recommends"
       />
 
-      <main id="main-content" className="mx-auto max-w-5xl space-y-12 px-4 py-12">
+      <div className="mx-auto max-w-5xl space-y-12 px-4 py-12">
         {/* FTC: disclose before the links, in plain words. */}
         <p className="mx-auto max-w-2xl rounded-lg border border-border bg-surface px-4 py-3 text-center text-sm leading-relaxed text-text-muted">
           <span className="font-semibold text-text-primary">Affiliate disclosure:</span> these are
@@ -91,7 +91,7 @@ export default function RecommendsPage() {
             </section>
           ))
         )}
-      </main>
+      </div>
     </>
   );
 }

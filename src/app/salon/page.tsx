@@ -25,7 +25,7 @@ export default async function SalonPage() {
     return (
       <>
         <PageHero title="THE SALON" subtitle="The room behind the room." label="oracle_only" backgroundImage={SECTION_HEADERS.salon} />
-        <main id="main-content" className="mx-auto max-w-2xl px-4 py-16">
+        <div className="mx-auto max-w-2xl px-4 py-16">
           <div className="rounded-2xl border border-accent-violet/40 bg-gradient-to-b from-accent-violet/10 to-surface p-8 text-center space-y-4">
             <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-violet-text/70">
               {"/// oracle_tier_only"}
@@ -46,7 +46,7 @@ export default async function SalonPage() {
               </Link>
             </div>
           </div>
-        </main>
+        </div>
       </>
     );
   }
@@ -61,7 +61,7 @@ export default async function SalonPage() {
         label="oracle_salon"
         backgroundImage={SECTION_HEADERS.salon}
       />
-      <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-4">
+      <div className="mx-auto max-w-3xl px-4 py-12 space-y-4">
         {threads.length === 0 && (
           <p className="text-center font-mono text-sm text-text-muted py-12">
             No threads yet. The first prompt is on its way.
@@ -100,7 +100,7 @@ export default async function SalonPage() {
             </div>
           </Link>
         ))}
-      </main>
+      </div>
     </>
   );
 }

@@ -34,14 +34,14 @@ export default async function SalonThreadPage({ params }: PageProps) {
     return (
       <>
         <PageHero title="THE SALON" subtitle="Oracle members only." label="oracle_only" backgroundImage={SECTION_HEADERS.salon} />
-        <main id="main-content" className="mx-auto max-w-2xl px-4 py-16 text-center">
+        <div className="mx-auto max-w-2xl px-4 py-16 text-center">
           <Link
             href="/premium#system"
             className="inline-flex items-center gap-2 rounded-lg border border-accent-violet bg-accent-violet/15 px-6 py-3 font-mono text-sm font-bold text-accent-violet-text transition-all hover:bg-accent-violet/25"
           >
             Become Oracle to enter →
           </Link>
-        </main>
+        </div>
       </>
     );
   }
@@ -52,7 +52,7 @@ export default async function SalonThreadPage({ params }: PageProps) {
   return (
     <>
       <PageHero title="THE SALON" subtitle={thread.title} label="oracle_salon" backgroundImage={SECTION_HEADERS.salon} />
-      <main id="main-content" className="mx-auto max-w-3xl px-4 py-12">
+      <div className="mx-auto max-w-3xl px-4 py-12">
         <Link href="/salon" className="font-mono text-xs text-text-muted hover:text-accent-violet-text">
           ← All threads
         </Link>
@@ -80,7 +80,7 @@ export default async function SalonThreadPage({ params }: PageProps) {
           }))}
           currentUserId={user!.id}
         />
-      </main>
+      </div>
     </>
   );
 }

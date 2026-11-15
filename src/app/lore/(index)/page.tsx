@@ -109,7 +109,7 @@ export default async function LorePage({ searchParams }: LorePageProps) {
       label="lore_archive"
     />
     <EntityGlanceBar items={glanceItems} />
-    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-8">
       {/* Psychenomicon Gateway */}
       <Link
         href="/lore/psychenomicon"
@@ -171,7 +171,7 @@ export default async function LorePage({ searchParams }: LorePageProps) {
           <PaginationControls meta={paginationMeta} basePath="/lore" />
         </>
       )}
-    </main>
+    </div>
     </>
   );
 }

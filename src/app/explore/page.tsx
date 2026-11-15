@@ -26,7 +26,7 @@ export default function ExploreIndexPage() {
         label="explore"
       />
 
-      <main id="main-content" className="mx-auto max-w-5xl px-4 py-12 space-y-10">
+      <div className="mx-auto max-w-5xl px-4 py-12 space-y-10">
         <section className="max-w-2xl mx-auto text-center space-y-3">
           <p className="text-sm text-text-muted leading-relaxed">
             Cult of Psyche ranges across tarot, consciousness, the occult, AI, astrology,
@@ -86,7 +86,7 @@ export default function ExploreIndexPage() {
             ))}
           </div>
         </section>
-      </main>
+      </div>
     </>
   );
 }

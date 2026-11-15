@@ -74,7 +74,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
 
 
   return (
-    <main id="main-content" className="p-8">
+    <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-accent-gold">People</h1>
@@ -179,7 +179,7 @@ export default async function AdminPeoplePage({ searchParams }: PageProps) {
         </table>
       </div>
       <PaginationControls meta={paginationMeta} basePath="/admin/people" />
-    </main>
+    </div>
   );
 }
 

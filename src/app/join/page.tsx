@@ -50,7 +50,7 @@ export default async function JoinPage() {
         label="join"
       />
 
-      <main id="main-content" className="mx-auto max-w-5xl px-4 py-12 space-y-16">
+      <div className="mx-auto max-w-5xl px-4 py-12 space-y-16">
 
         {/* Intro */}
         <section className="max-w-2xl mx-auto text-center space-y-5">
@@ -137,7 +137,7 @@ export default async function JoinPage() {
             </Link>
           </div>
         </section>
-      </main>
+      </div>
     </>
   );
 }

@@ -75,7 +75,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     
       label="search"
     />
-    <main id="main-content" className="mx-auto max-w-7xl px-4 py-8">
+    <div className="mx-auto max-w-7xl px-4 py-8">
       {/* Search input */}
       <div className="mb-6">
         <SearchInput defaultValue={query} />
@@ -505,7 +505,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           )}
         </div>
       )}
-    </main>
+    </div>
     </>
   );
 }

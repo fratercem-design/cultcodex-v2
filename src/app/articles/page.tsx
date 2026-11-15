@@ -20,7 +20,7 @@ export default async function ArticlesPage() {
   ]);
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       {/* Hero */}
       <section className="border-b border-accent-violet/20 bg-gradient-to-b from-accent-violet/5 to-void py-12 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
@@ -78,6 +78,6 @@ export default async function ArticlesPage() {
           ))
         )}
       </div>
-    </main>
+    </div>
   );
 }

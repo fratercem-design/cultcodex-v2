@@ -114,7 +114,7 @@ export default async function ReportsPage() {
         label="reports"
       />
 
-      <main id="main-content" className="mx-auto max-w-4xl px-4 py-12 space-y-16">
+      <div className="mx-auto max-w-4xl px-4 py-12 space-y-16">
 
         {/* Intro */}
         <section className="max-w-2xl mx-auto text-center space-y-4">
@@ -247,7 +247,7 @@ export default async function ReportsPage() {
             </Link>
           </section>
         )}
-      </main>
+      </div>
     </>
   );
 }

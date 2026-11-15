@@ -52,7 +52,7 @@ const STARTING_POINTS = [
 
 export default function WelcomeInitiatePage() {
   return (
-    <main className="mx-auto max-w-4xl px-4 py-16 space-y-16">
+    <div className="mx-auto max-w-4xl px-4 py-16 space-y-16">
 
       {/* ── Hero ── */}
       <section className="text-center space-y-5">
@@ -150,6 +150,6 @@ export default function WelcomeInitiatePage() {
         </Link>
       </section>
 
-    </main>
+    </div>
   );
 }

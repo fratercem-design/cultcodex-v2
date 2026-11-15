@@ -148,7 +148,13 @@ export default async function RootLayout({
             className="terminal-main outline-none"
             style={{ backgroundColor: "var(--term-bg)" }}
           >
-            {children}
+            {/* The one <main> landmark on every route. Pages and loading.tsx
+                skeletons used to render their own; about half the routes had
+                none, and every streamed route shipped two (fallback + page)
+                in its initial HTML. Pages render plain wrappers now. */}
+            <main id="main-content" tabIndex={-1} className="outline-none">
+              {children}
+            </main>
             <SiteFooter />
           </div>
           <TerminalStatusBar feedCount={counts?.episodes ?? null} />

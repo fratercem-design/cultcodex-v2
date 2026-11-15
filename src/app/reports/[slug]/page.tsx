@@ -78,7 +78,7 @@ export default async function GuestReportPage({ params }: Props) {
         label="report"
       />
 
-      <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 space-y-12">
+      <div className="mx-auto max-w-3xl px-4 py-12 space-y-12">
         {/* Breadcrumb */}
         <nav aria-label="Breadcrumb" className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           <Link href="/reports" className="hover:text-accent-gold-text transition-colors">Codex Reports</Link>
@@ -234,7 +234,7 @@ export default async function GuestReportPage({ params }: Props) {
             </Link>
           )}
         </section>
-      </main>
+      </div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

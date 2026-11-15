@@ -64,7 +64,7 @@ export default function YouTubeMembersPage() {
         label="members"
       />
 
-      <main id="main-content" className="mx-auto max-w-5xl space-y-16 px-4 py-12">
+      <div className="mx-auto max-w-5xl space-y-16 px-4 py-12">
         {/* Emojis first: they are the thing people want to see. */}
         <section aria-labelledby="emoji-heading" className="space-y-6 text-center">
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-cyan/60">
@@ -143,7 +143,7 @@ export default function YouTubeMembersPage() {
             CultCodex archive membership.
           </p>
         </section>
-      </main>
+      </div>
     </>
   );
 }

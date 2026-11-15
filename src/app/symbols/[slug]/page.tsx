@@ -79,7 +79,7 @@ export default async function SymbolDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
-      <main className="min-h-screen bg-void">
+      <div className="min-h-screen bg-void">
         <div className="mx-auto max-w-3xl px-4 py-8">
           {/* Breadcrumb */}
           <nav className="mb-8 flex items-center gap-2 font-mono text-[12px] text-text-muted">
@@ -250,7 +250,7 @@ export default async function SymbolDetailPage({
             </div>
           </footer>
         </div>
-      </main>
+      </div>
     </>
   );
 }

@@ -30,12 +30,12 @@ export default async function SubscribedPage({
   const msg = MESSAGES[status ?? ""] ?? MESSAGES.invalid;
 
   return (
-    <main id="main-content" className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 text-center">
+    <div className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center px-4 text-center">
       <h1 className="font-display text-2xl font-bold text-accent-gold">{msg.title}</h1>
       <p className="mt-3 text-sm leading-relaxed text-text-muted">{msg.body}</p>
       <Link href="/" className="mt-6 font-mono text-xs text-accent-gold-text hover:underline">
         Back to the archive →
       </Link>
-    </main>
+    </div>
   );
 }

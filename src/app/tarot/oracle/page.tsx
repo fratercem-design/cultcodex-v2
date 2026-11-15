@@ -115,7 +115,7 @@ export default function OraclePage() {
   }
 
   return (
-    <main
+    <div
       style={{
         minHeight: "100%",
         backgroundColor: "var(--term-bg)",
@@ -261,7 +261,7 @@ export default function OraclePage() {
         )}
 
       </div>
-    </main>
+    </div>
   );
 }
 

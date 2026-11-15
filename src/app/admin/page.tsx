@@ -85,7 +85,7 @@ export default async function AdminDashboard() {
   );
 
   return (
-    <main id="main-content" className="p-8">
+    <div className="p-8">
       <h1 className="font-display text-2xl font-bold text-accent-gold mb-6">
         Dashboard
       </h1>
@@ -236,6 +236,6 @@ export default async function AdminDashboard() {
           </div>
         </SectionCard>
       </div>
-    </main>
+    </div>
   );
 }

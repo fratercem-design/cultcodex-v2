@@ -41,8 +41,7 @@ export default async function CodexSignalsPage() {
       label="saved_signals"
       />
 
-      <main
-        id="main-content"
+      <div
         className="mx-auto max-w-5xl px-4 py-10 space-y-6"
       >
         <nav className="font-mono text-[12px] uppercase tracking-widest text-text-muted">
@@ -115,7 +114,7 @@ export default async function CodexSignalsPage() {
             ))}
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

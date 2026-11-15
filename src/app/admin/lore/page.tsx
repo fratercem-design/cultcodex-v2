@@ -52,7 +52,7 @@ export default async function AdminLorePage({ searchParams }: PageProps) {
   const paginationMeta = buildPaginationMeta(page, take, totalCount);
 
   return (
-    <main id="main-content" className="p-8">
+    <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold text-accent-gold">
@@ -144,6 +144,6 @@ export default async function AdminLorePage({ searchParams }: PageProps) {
         </table>
       </div>
       <PaginationControls meta={paginationMeta} basePath="/admin/lore" />
-    </main>
+    </div>
   );
 }

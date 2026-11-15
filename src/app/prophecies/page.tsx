@@ -31,7 +31,7 @@ export default async function PropheciesPage() {
     .catch(() => []);
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       <section className="border-b border-accent-gold/20 bg-gradient-to-b from-accent-gold/5 to-void py-12 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
           <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-accent-gold-text/80">
@@ -94,6 +94,6 @@ export default async function PropheciesPage() {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

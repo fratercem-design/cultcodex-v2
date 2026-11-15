@@ -22,7 +22,7 @@ export default async function AdminCommentsPage() {
   const flaggedCount = comments.filter((c) => c.flagged).length;
 
   return (
-    <main id="main-content" className="p-8">
+    <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display text-2xl font-bold text-accent-gold">
           Comment Moderation
@@ -92,6 +92,6 @@ export default async function AdminCommentsPage() {
           ))}
         </div>
       )}
-    </main>
+    </div>
   );
 }

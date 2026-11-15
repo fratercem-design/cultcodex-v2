@@ -43,7 +43,7 @@ export default async function OnThisDayPage({ searchParams }: PageProps) {
     d.month === today.month && d.day === today.day ? "/on-this-day" : `/on-this-day?date=${formatMonthDay(d)}`;
 
   return (
-    <main id="main-content" className="mx-auto max-w-3xl px-4 py-10">
+    <div className="mx-auto max-w-3xl px-4 py-10">
       <header className="space-y-3 text-center">
         <p className="font-mono text-[12px] uppercase tracking-[0.12em] text-text-muted">
           {"/// on_this_day"}{isToday ? " · today" : ""}
@@ -128,6 +128,6 @@ export default async function OnThisDayPage({ searchParams }: PageProps) {
           </ul>
         </section>
       )}
-    </main>
+    </div>
   );
 }

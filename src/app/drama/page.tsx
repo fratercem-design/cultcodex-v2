@@ -32,7 +32,7 @@ export default async function DramaPage() {
   ]);
 
   return (
-    <main className="min-h-screen bg-void">
+    <div className="min-h-screen bg-void">
       {/* Hero */}
       <section className="border-b border-red-500/20 bg-gradient-to-b from-red-500/5 to-void py-12 px-4">
         <div className="mx-auto max-w-3xl text-center space-y-3">
@@ -124,6 +124,6 @@ export default async function DramaPage() {
           </Link>
         </div>
       </div>
-    </main>
+    </div>
   );
 }
