@@ -56,3 +56,18 @@ describe("CodexCardBack", () => {
     expect(container.querySelector("img.cx-back-art")?.getAttribute("src")).toBe("/cards/backs/special-edition.webp");
   });
 });
+
+describe("CodexCard panel cards", () => {
+  it("draws the card's procedural scene until painted art exists", () => {
+    mockReducedMotion(false);
+    const gotti: CodexCardData = {
+      slug: "panel-gotti", title: "Gotti", cardType: "MEMBER", rarity: "LEGENDARY",
+      statA: 90, statB: 90, statC: 90, artUrl: null, season: 0,
+    };
+    const { container, rerender } = render(<CodexCard card={gotti} />);
+    expect(container.querySelector(".cx-art svg")).not.toBeNull();
+    expect(container.querySelector("img.cx-art-img")).toBeNull();
+    rerender(<CodexCard card={{ ...gotti, artUrl: "/cards/art/panel-gotti.webp" }} />);
+    expect(container.querySelector("img.cx-art-img")?.getAttribute("src")).toBe("/cards/art/panel-gotti.webp");
+  });
+});

@@ -11,6 +11,7 @@ import { useRef, useState, useSyncExternalStore, type CSSProperties, type Pointe
 import type { CardType, Rarity } from "@/generated/prisma/client";
 import { CARD_TYPE_GLYPH, STAT_LABELS } from "@/lib/cards/rarity";
 import { catalogEntry, getSeason, OBTAIN_LABEL } from "@/lib/cards/codex/catalog";
+import { panelCard } from "@/lib/cards/panel";
 import { CARD_BACKS, isSpecialEdition, specialEditionAnimationUrl, specialEditionFoilUrl } from "@/lib/cards/special-editions";
 import type { Motif, ObtainMethod, Palette } from "@/lib/cards/codex/types";
 import { ArtScene } from "@/components/cards/vault/art";
@@ -100,8 +101,9 @@ function CardArt({ card, sealed, isFoil, animated }: { card: CodexCardData; seal
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={src} alt="" className="cx-art-img" loading="lazy" />;
   }
-  if (entry) {
-    return <CodexArt slug={card.slug} motif={entry.def.art.motif} palette={entry.def.art.palette} rarity={card.rarity} silhouette={sealed} />;
+  const art = entry?.def.art ?? panelCard(card.slug)?.art;
+  if (art) {
+    return <CodexArt slug={card.slug} motif={art.motif} palette={art.palette} rarity={card.rarity} silhouette={sealed} />;
   }
   if (!sealed && (card.season ?? 0) === 0) {
     // Salvaged archive art: the legacy scenes are full-card 300×420 paintings.

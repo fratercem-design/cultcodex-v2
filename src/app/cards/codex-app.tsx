@@ -25,6 +25,8 @@ export interface CodexEntry {
   progress: { current: number; target: number } | null;
   unit?: string;
   owned: Owned | null;
+  /** Shown face-up even when not owned (the Panel roster). */
+  preview?: boolean;
 }
 
 type Filter = "all" | "owned" | "sealed" | ObtainMethod;
@@ -48,6 +50,7 @@ export function CodexApp({
   season,
   entries,
   legacy,
+  panel = [],
   signedIn,
   initiationClaimed,
   balance,
@@ -56,6 +59,8 @@ export function CodexApp({
   season: { number: number; numeral: string; name: string; tagline: string; daysLeft: number; palette: Palette };
   entries: CodexEntry[];
   legacy: { card: CodexCardData; owned: Owned }[];
+  /** The Panel character set, shown as a roster whether owned or not. */
+  panel?: CodexCardData[];
   signedIn: boolean;
   initiationClaimed: boolean;
   balance: number;
@@ -84,6 +89,8 @@ export function CodexApp({
   );
   const pct = counts.total ? Math.round((counts.owned / counts.total) * 100) : 0;
   const signupCard = entries.find((e) => e.obtain === "signup");
+  const legacyBySlug = new Map(legacy.map((l) => [l.card.slug, l.owned]));
+  const panelOwned = panel.filter((c) => legacyBySlug.has(c.slug)).length;
 
   return (
     <div className="cxp">
@@ -152,6 +159,35 @@ export function CodexApp({
         </section>
       )}
 
+      {/* ── The Panel ───────────────────────────────────────────────── */}
+      {panel.length > 0 && (
+        <section className="cxp-panel" aria-labelledby="cxp-panel-title">
+          <div className="cxp-panel-head">
+            <div>
+              <p className="cxp-kicker">NEW SET · THE PANEL{signedIn ? ` · ${panelOwned}/${panel.length} FOUND` : ""}</p>
+              <h2 id="cxp-panel-title">Meet the Panel</h2>
+              <p>Twenty-five regulars of the open panel, from the mods who hold the chat together to the cat who walks across the spread. Pull them in the Panel Pack, and watch for them in your readings.</p>
+            </div>
+            <Link href="/cards/packs" className="cx-btn cx-btn-primary">Open a Panel Pack</Link>
+          </div>
+          <ul className="cxp-panel-rail">
+            {panel.map((card) => {
+              const owned = legacyBySlug.get(card.slug) ?? null;
+              return (
+                <li key={card.slug} className="cxp-panel-item" data-owned={owned ? "true" : undefined}>
+                  <CodexCard
+                    card={card}
+                    isFoil={owned?.isFoil}
+                    onClick={() => setFocus({ card, owned, obtain: "pack", clue: "", progress: null, href: "/cards/packs", preview: true })}
+                  />
+                  <span className="cxp-panel-status">{owned ? "✓ In your Codex" : "In the Panel Pack"}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
       {/* ── Filters ─────────────────────────────────────────────────── */}
       <div className="cxp-filters" role="tablist" aria-label="Filter cards">
         {FILTERS.map((f) => (
@@ -211,12 +247,12 @@ export function CodexApp({
 
       {/* ── Focus view ──────────────────────────────────────────────── */}
       {focus && (
-        <div className="cxp-focus" role="dialog" aria-modal="true" aria-label={focus.owned ? focus.card.title : "Sealed card"} onClick={() => setFocus(null)}>
+        <div className="cxp-focus" role="dialog" aria-modal="true" aria-label={focus.owned || focus.preview ? focus.card.title : "Sealed card"} onClick={() => setFocus(null)}>
           <div className="cxp-focus-inner" onClick={(ev) => ev.stopPropagation()}>
             <div className="cxp-focus-card">
               <CodexCard
                 card={focus.card}
-                state={focus.owned ? "owned" : "sealed"}
+                state={focus.owned || focus.preview ? "owned" : "sealed"}
                 isFoil={focus.owned?.isFoil}
                 animated={!!focus.owned}
                 clue={focus.clue}
@@ -227,8 +263,18 @@ export function CodexApp({
               <p className="cxp-kicker" style={{ color: RARITY_COLOR[focus.card.rarity] }}>
                 {focus.card.rarity} · {OBTAIN_LABEL[focus.obtain]}
               </p>
-              <h2>{focus.owned ? focus.card.title : "Sealed"}</h2>
-              {focus.owned ? (
+              <h2>{focus.owned || focus.preview ? focus.card.title : "Sealed"}</h2>
+              {focus.preview && !focus.owned ? (
+                <>
+                  {focus.card.subtitle && <p className="cxp-focus-meta">{focus.card.subtitle}</p>}
+                  <p className="cxp-focus-flavour">{focus.card.flavourText}</p>
+                  {focus.card.abilities && focus.card.abilities.length > 0 && (
+                    <p className="cxp-focus-abilities">{focus.card.abilities.map((a) => <span key={a}>{a}</span>)}</p>
+                  )}
+                  <p className="cxp-focus-meta">Not in your Codex yet. It drops from the Panel Pack.</p>
+                  <Link href="/cards/packs" className="cx-btn cx-btn-primary">Go to the Pack Store</Link>
+                </>
+              ) : focus.owned ? (
                 <>
                   <p className="cxp-focus-flavour">{focus.card.flavourText}</p>
                   {focus.card.abilities && focus.card.abilities.length > 0 && (
