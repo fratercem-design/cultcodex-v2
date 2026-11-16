@@ -125,3 +125,28 @@
   .cxp-focus-card { width: min(78vw, 320px); }
 }
 @media (prefers-reduced-motion: reduce) { .cxp-initiation-pack { animation: none; } }
+
+/* ── The Panel roster ──────────────────────────────────────────────────── */
+.cxp-panel {
+  margin: 28px 0;
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, #b27bff 40%, transparent);
+  background:
+    radial-gradient(ellipse 70% 120% at 0% 0%, color-mix(in srgb, #b27bff 18%, transparent), transparent 60%),
+    radial-gradient(ellipse 60% 100% at 100% 100%, color-mix(in srgb, #f6c453 10%, transparent), transparent 60%),
+    #0b0910;
+}
+.cxp-panel-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px 24px; margin-bottom: 18px; }
+.cxp-panel-head h2 { margin: 4px 0 6px; font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 500; }
+.cxp-panel-head p:not(.cxp-kicker) { margin: 0; max-width: 60ch; color: var(--term-fg-dim, #a6a2b3); line-height: 1.55; }
+.cxp-panel-rail {
+  list-style: none; margin: 0; padding: 6px 4px 14px;
+  display: grid; grid-auto-flow: column; grid-auto-columns: clamp(150px, 22vw, 190px); gap: 16px;
+  overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+.cxp-panel-item { scroll-snap-align: start; display: grid; gap: 8px; justify-items: center; }
+.cxp-panel-item > .cx-card { width: 100%; }
+.cxp-panel-status { font-family: var(--font-mono, monospace); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--term-fg-mute, #77738a); }
+.cxp-panel-item[data-owned] .cxp-panel-status { color: #3ee895; }

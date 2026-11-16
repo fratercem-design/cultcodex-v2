@@ -8,6 +8,9 @@ import { TRIAL_BY_ID } from "@/lib/cards/codex/trials";
 import { checkTrials, type GrantedCard, type TrialProgress } from "@/lib/cards/codex/codex";
 import { CodexApp, type CodexEntry } from "./codex-app";
 import type { CodexCardData } from "@/components/cards/codex/codex-card";
+import fs from "fs";
+import path from "path";
+import { PANEL, panelStats } from "@/lib/cards/panel";
 
 export const metadata: Metadata = {
   title: "The Codex — CultCodex Cards",
@@ -103,10 +106,24 @@ export default async function CodexPage() {
       }}
       entries={entries}
       legacy={legacy}
+      panel={panelRoster()}
       signedIn={!!user}
       initiationClaimed={initiationClaimed}
       balance={balance}
       justUnsealed={justUnsealed.map((g) => ({ id: g.id, slug: g.slug, title: g.title, rarity: g.rarity }))}
     />
   );
+}
+
+/** The Panel roster from code, with painted art where it exists on disk. */
+function panelRoster(): CodexCardData[] {
+  return PANEL.map((c, i) => {
+    const [statA, statB, statC] = panelStats(c);
+    const painted = fs.existsSync(path.join(process.cwd(), "public", "cards", "art", `${c.slug}.webp`));
+    return {
+      slug: c.slug, title: c.title, subtitle: c.subtitle, cardType: c.cardType, rarity: c.rarity,
+      flavourText: c.flavourText, abilities: [...c.abilities], statA, statB, statC,
+      artUrl: painted ? `/cards/art/${c.slug}.webp` : null, season: 0, collectorNo: i + 1, obtainMethod: "pack",
+    };
+  });
 }
